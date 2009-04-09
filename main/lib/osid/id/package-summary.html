@@ -1,0 +1,77 @@
+/**
+ * <center><strong>id 3.0.0</strong></center>
+ * 
+ * <p>Defines the interfaces necessary to describe the id
+ * service.</p>
+ * 
+ * <p>The Id OSID provides the means for creating and mapping identifiers. All 
+ * OSID objects are identified by a unique and immutable <code> Id. </code> 
+ * The <code> Id </code> OSID can be used to generate new <code> Ids </code> 
+ * when creating new obje_ts. </p> 
+ * 
+ * <p> Consumers wishing to persist an OSID object should instead persist the 
+ * reference to the object by serializing the <code> Id. </code> </p> 
+ * 
+ * <p> <code> </code> Most OSID interfaces are used to encapsulate 
+ * implementation-specific objects from provider to consumer. The <code> Id 
+ * </code> interface is bi-directional and as such cannot be used to 
+ * encapsulate implementation-specific data other than what is defined 
+ * explicitly in the <code> Id. </code> A provider must respect any <code> Id 
+ * </code> based on its interface alone. </p> 
+ * 
+ * <p> The <code> Id </code> service can also be used as a means to map one 
+ * identifier to another when an object is known by multiple identifiers. 
+ * Mapping identifier spaces is often a critical part of interoperability and 
+ * the Id service can be used as a shim to bridge different systems. </p> 
+ * 
+ * <p> Id mapping example: 
+ * <pre>
+ *      
+ *      
+ *      public Asset getAsset(assetId) {
+ *          Id id = idSession.getId(assetId);
+ *          return (other_impl.getAsset(assetId));
+ *      }
+ *      
+ *              
+ *      
+ * </pre>
+ * </p>
+ * 
+ * <p>Copyright &copy 2002-2008 Massachusetts Institute of Technology. All 
+ * Rights Reserved. </p>
+ * 
+ * <p>This Work is being provided by the copyright holder(s) subject to the 
+ * following license. By obtaining, using and/or copying this Work, you agree 
+ * that you have read, understand, and will comply with the following terms 
+ * and conditions. </p> 
+ * 
+ * <p> This Work and the information contained herein is provided on an "AS 
+ * IS" basis. The Massachusetts Institute of Technology, the Open Knowledge 
+ * Initiative, and THE AUTHORS DISCLAIM ALL WARRANTIES, EXPRESS OR IMPLIED, 
+ * INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF 
+ * OR IN CONNECTION WITH THE WORK OR THE USE OR OTHER DEALINGS IN THE WORK. 
+ * </p> 
+ * 
+ * <p> Permission to use, copy and distribute unmodified versions of this 
+ * Work, for any purpose, without fee or royalty is hereby granted, provided 
+ * that you include the above copyright notice and the terms of this license 
+ * on ALL copies of the Work or portions thereof. </p> 
+ * 
+ * <p> You may nodify or create Derivatives of this Work only for your 
+ * internal purposes. You shall not distribute or transfer any such Derivative 
+ * of this Work to any location or to any third party. For the purposes of 
+ * this license, Derivative shall mean any derivative of the Work as defined 
+ * in the United States Copyright Act of 1976, such as a translation or 
+ * modification. </p> 
+ * 
+ * <p> The export of software employing encryption technology may require a 
+ * specific license from the United States Government. It is the 
+ * responsibility of any person or organization comtemplating export to obtain 
+ * such a license before exporting this Work. </p>
+ * 
+ * @see org.osid
+ */
