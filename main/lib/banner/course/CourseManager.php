@@ -27,7 +27,7 @@ class banner_course_CourseManager
 	 * @access private
 	 * @since 4/9/09
 	 */
-	private $_db;
+	private $db;
 
 	/**
 	 * Set the configuration and class paths
@@ -98,9 +98,20 @@ class banner_course_CourseManager
 		}
 		
 		try {
-			$this->_db = new PDO($dsn, $username, $password);
+			$this->db = new PDO($dsn, $username, $password);
 		} catch (PDOException $e) {
-			throw new osid_OperationFailedException($e->getMessage(), $e->getCode());
+			throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode());
+		}
+		
+		try {
+			$this->idAuthority = phpkit_configuration_ConfigUtil::getSingleValuedValue(
+    								$runtime->getConfiguration(), 
+    								new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/id_authority'),
+    								new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
+    		if (!strlen($this->idAuthority))
+    			throw new osid_ConfigurationErrorException('urn:inet:middlebury.edu:config:banner_course/id_authority must be specified.');
+		} catch (osid_NotFoundException $e) {
+			throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode());
 		}
     }
 
@@ -1108,7 +1119,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseCatalogLookupSession() {
-    	return new banner_course_CourseCatalogLookupSession($this);
+    	return new banner_course_CourseCatalogLookupSession($this->db, $this->idAuthority);
 	}
 
 
@@ -1698,7 +1709,7 @@ class banner_course_CourseManager
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsCourseCatalogLookup() {
-    	return false;
+    	return true;
     }
 
 
