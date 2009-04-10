@@ -67,7 +67,8 @@
  * 
  * @package org.osid
  */
-class phpkit_ArrayOsidList
+abstract class phpkit_AbstractArrayOsidList
+	implements osid_OsidList
 {
 
 	/**
