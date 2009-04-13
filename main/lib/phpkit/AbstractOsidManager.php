@@ -219,7 +219,7 @@ abstract class phpkit_AbstractOsidManager {
 			throw new osid_IllegalStateException("this manager has been shut down");
 		
 		unset($this->runtime);
-		$this->branding = array();
+		$this->branding = new phpkit_repository_ArrayAssetList(array());
 	}
 
 /*********************************************************

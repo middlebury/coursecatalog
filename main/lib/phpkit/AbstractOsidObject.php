@@ -121,6 +121,8 @@ abstract class phpkit_AbstractOsidObject
 	protected function __construct () {
 		$this->recordTypes = array();
 		$this->id = new phpkit_id_URNInetId("urn:inet:osid.org:id:implementation/SampleChangeMe");
+		$this->genusType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:none");
+		$this->properties = array();
 	}
 
 
