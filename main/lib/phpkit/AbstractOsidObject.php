@@ -254,7 +254,7 @@ abstract class phpkit_AbstractOsidObject
      *  @compliance mandatory This method must be implemented. 
      */
     public function getRecordTypes() {
-    	return new phpkit_types_ArrayTypeList($this->recordTypes);
+    	return new phpkit_type_ArrayTypeList($this->recordTypes);
     }
 
 
