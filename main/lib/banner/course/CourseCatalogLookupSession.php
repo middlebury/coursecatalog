@@ -53,7 +53,7 @@ class banner_course_CourseCatalogLookupSession
 	 * @since 4/10/09
 	 */
 	public function __construct (PDO $db, $idAuthority) {
-		parent::construct($db, $idAuthority, 'catalog/');
+		parent::__construct($db, $idAuthority, 'catalog/');
 	}
 		
 	/**
@@ -108,16 +108,16 @@ WHERE
 ");
     	}
     	
-    	$this->getCatalogById_stmt->execute(array(':catalog_id' => $this->getDatabaseId($courseCatalogId)));
+    	$this->getCatalogById_stmt->execute(array(':catalog_id' => $this->getDatabaseIdString($courseCatalogId)));
     	
  		if (!$this->getCatalogById_stmt->rowCount())
  			throw new osid_NotFoundException("Catalog id not found.");
     	
-    	$result = $this->getCatalogById_stmt->fetchAll(PDO::FETCH_ASSOC);
+    	$result = $this->getCatalogById_stmt->fetch(PDO::FETCH_ASSOC);
     	
-    	// @todo - Finish this method.
-    	throw new osid_OperationFailedException("I haven't yet finished implementing this method.");
-    
+    	return new banner_course_CourseCatalog(
+    					$this->getOsidIdFromString($result['catalog_id']), 
+    					$result['catalog_title']);
     }
 
 
@@ -144,7 +144,21 @@ WHERE
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseCatalogsByIds(osid_id_IdList $courseCatalogIdList) {
-    	throw new osid_OperationFailedException('Unimplemented');
+    	$catalogs = array();
+    	
+    	foreach ($courseCatalogIdList as $id) {
+    		try {
+    			$catalogs[] = $this->getCourseCatalog($id);
+    		} catch (osid_NotFoundException $e) {
+    			if ($this->usesPlenaryView())
+    				throw $e;
+    		} catch (osid_PermissionDeniedException $e) {
+    			if ($this->usesPlenaryView())
+    				throw $e;
+    		}
+    	}
+    	
+    	return new phpkit_course_ArrayCourseCatalogList($catalogs);
     }
 
 
@@ -169,7 +183,10 @@ WHERE
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseCatalogsByGenusType(osid_type_Type $courseCatalogGenusType) {
-    	throw new osid_OperationFailedException('Unimplemented');
+    	if ($courseCatalogGenusType->isEqual(new phpkit_type_URNInetType("urn:inet:osid.org:genera:none")))
+    		return $this->getCourseCatalogs();
+    	else
+    		return new phpkit_course_ArrayCourseCatalogList(array());
     }
 
 
@@ -194,7 +211,7 @@ WHERE
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseCatalogsByParentGenusType(osid_type_Type $courseCatalogGenusType) {
-    	throw new osid_OperationFailedException('Unimplemented');
+    	return $this->getCourseCatalogsByGenusType($courseCatalogGenusType);
     }
 
 
@@ -218,7 +235,7 @@ WHERE
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseCatalogsByRecordType(osid_type_Type $courseCatalogRecordType) {
-    	throw new osid_OperationFailedException('Unimplemented');
+    	return new phpkit_course_ArrayCourseCatalogList(array());
     }
 
 
@@ -237,7 +254,27 @@ WHERE
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseCatalogs() {
-    	throw new osid_OperationFailedException('Unimplemented');
+    	if (!isset($this->getCatalogs_stmt)) {
+    		$this->getCatalogs_stmt = $this->db->prepare(
+"SELECT
+	catalog_id,
+	catalog_title
+FROM
+	 course_catalog
+");
+    	}
+    	
+    	$this->getCatalogs_stmt->execute();
+    	
+    	$catalogs = array();
+    	while ($result = $this->getCatalogs_stmt->fetch(PDO::FETCH_ASSOC)) {
+    	
+    		$catalogs[] = new banner_course_CourseCatalog(
+								$this->getOsidIdFromString($result['catalog_id']), 
+								$result['catalog_title']);
+		}
+		
+		return new phpkit_course_ArrayCourseCatalogList($catalogs);
     }
 }
 

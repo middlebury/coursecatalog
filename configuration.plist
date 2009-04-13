@@ -13,5 +13,9 @@
    <key>urn:inet:middlebury.edu:config:banner_course/pdo_password</key>
    <string>testpassword</string>
    
+   <!-- Course Identifier Configuration -->
+   <key>urn:inet:middlebury.edu:config:banner_course/id_authority</key>
+   <string>middlebury.edu</string>
+   
 </dict>
 </plist>
