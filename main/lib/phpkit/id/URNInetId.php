@@ -92,6 +92,17 @@ class phpkit_id_URNInetId
 	}
 	
 	/**
+	 * Convert this Id to a string for debugging purposes.
+	 * 
+	 * @return string
+	 * @access public
+	 * @since 4/13/09
+	 */
+	public function __toString () {
+		return self::getInetURNString($this);
+	}
+	
+	/**
 	 * Answer an Id as a Inet URN string
 	 * 
 	 * @param object osid_id_Id $id
