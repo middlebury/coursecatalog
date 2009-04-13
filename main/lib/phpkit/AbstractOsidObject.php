@@ -170,7 +170,7 @@ abstract class phpkit_AbstractOsidObject
 	 * @since 10/28/08
 	 */
 	protected function setId (osid_id_Id $id) {
-		if (isset($this->id))
+		if (isset($this->id) && !$this->id->isEqual(new phpkit_id_URNInetId("urn:inet:osid.org:id:implementation/SampleChangeMe")))
 			throw new osid_IllegalStateException("Already initialized");
 		
 		$this->id = $id;
