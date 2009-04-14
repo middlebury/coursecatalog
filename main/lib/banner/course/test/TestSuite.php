@@ -1,0 +1,39 @@
+<?php
+
+require_once 'PHPUnit/Framework.php';
+
+require_once(dirname(__FILE__).'/../../../autoload.php');
+
+class banner_course_test_TestSuite extends PHPUnit_Framework_TestSuite
+{
+	public static function suite()
+    {
+        $suite = new banner_course_test_TestSuite('banner.course');
+        
+        foreach (scandir(dirname(__FILE__)) as $file) {
+        	if (preg_match('/Test\.php$/', $file))
+        		$suite->addTestFile(dirname(__FILE__).'/'.$file);
+        }
+        
+        return $suite;
+    }
+    
+    protected function setUp()
+    {
+    	print "\nSetting up the Suite";
+    	$this->sharedFixture = array();
+    	$this->sharedFixture['RuntimeManager'] = new phpkit_OsidRuntimeManager(dirname(__FILE__).'/configuration.plist', OSID_BASE);
+        $this->sharedFixture['CourseManager'] = $this->sharedFixture['RuntimeManager']->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
+        print "\nDone Setting up the Suite\n";
+    }
+ 
+    protected function tearDown()
+    {
+    	print "\nBeginning to tear down the suite.";
+    	$this->sharedFixture['CourseManager']->shutdown();
+//     	$this->sharedFixture['RuntimeManager']->shutdown();
+        $this->sharedFixture = NULL;
+        print "\nSuite has been torn down.\n";
+    }
+}
+?>
