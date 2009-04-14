@@ -7,10 +7,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */ 
 
-define('OSID_BASE', dirname(__FILE__).'/main/lib');
-function __autoload($className) {
-	require_once(OSID_BASE.'/'.implode('/', explode('_', $className)).'.php');
-}
+require_once(dirname(__FILE__).'/main/lib/autoload.php');
 
 $runtimeManager = new phpkit_OsidRuntimeManager(dirname(__FILE__).'/configuration.plist', OSID_BASE);
 
