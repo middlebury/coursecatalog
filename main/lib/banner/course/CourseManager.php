@@ -19,7 +19,7 @@
  */
 class banner_course_CourseManager
 	extends phpkit_AbstractOsidManager
-	implements osid_course_CourseManager
+	implements osid_course_CourseManager, banner_course_CourseManagerInterface
 {
 
 	/**
@@ -46,6 +46,31 @@ class banner_course_CourseManager
     	$this->setDescription('This is a CourseManager implementation that provides read-only, unauthenticated, access to course information stored in Banner database tables.');
 	}
 	
+/*********************************************************
+ * From banner_course_CourseManagerInterface
+ *********************************************************/
+	/**
+	 * Answer the database connection
+	 * 
+	 * @return PDO
+	 * @access public
+	 * @since 4/13/09
+	 */
+	public function getDB () {
+		return $this->db;
+	}
+	
+	/**
+	 * Answer the Identifier authority to use.
+	 * 
+	 * @return string
+	 * @access public
+	 * @since 4/13/09
+	 */
+	public function getIdAuthority () {
+		return $this->idAuthority;
+	}
+
 /*********************************************************
  * From OsidManager
  *********************************************************/
@@ -133,7 +158,7 @@ class banner_course_CourseManager
      *              supportsCourseLookup() </code> is <code> true. </code> 
      */
     public function getCourseLookupSession() {
-    	throw new osid_UnimplementedException();
+    	throw new osid_OperationFailedException('I do not currently support a default catalog.');
 	}
 
     /**
@@ -159,7 +184,11 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseLookupSessionForCatalog(osid_id_Id $courseCatalogId) {
-    	throw new osid_UnimplementedException();
+    	try {
+	    	return new banner_course_CourseLookupSession($this, $courseCatalogId);
+	    } catch (osid_NotFoundException $e) {
+			throw new osid_NotFoundException('Can not get a CourseLookupSession for an unknown catalog id.');
+		}
 	}
 
 
@@ -1119,7 +1148,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseCatalogLookupSession() {
-    	return new banner_course_CourseCatalogLookupSession($this->db, $this->idAuthority);
+    	return new banner_course_CourseCatalogLookupSession($this);
 	}
 
 
@@ -1304,7 +1333,7 @@ class banner_course_CourseManager
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsCourseLookup() {
-    	return false;
+    	return true;
     }
 
 

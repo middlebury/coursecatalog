@@ -24,27 +24,15 @@ abstract class banner_course_AbstractCourseSession
 	/**
 	 * Constructor
 	 * 
-	 * @param PDO $db
+	 * @param banner_course_CourseManagerInterface $manager
 	 * @return void
 	 * @access public
 	 * @since 4/10/09
 	 */
-	public function __construct (PDO $db, $idAuthority, $prefix) {
-		$this->db = $db;
-		
-		if (!strlen($idAuthority))
-			throw new osid_OperationFailedException('No id authority specified.');
-		
-		$this->idAuthority = strval($idAuthority);
+	public function __construct (banner_course_CourseManagerInterface $manager, $prefix) {
+		$this->manager = $manager;
 		$this->idPrefix = strval($prefix);
 	}
-	
-	/**
-	 * @var PDO $db;  
-	 * @access protected
-	 * @since 4/10/09
-	 */
-	protected $db;
 	
 	/**
 	 * @var boolean $plenaryView; 
@@ -61,7 +49,7 @@ abstract class banner_course_AbstractCourseSession
      *
      *  @compliance mandatory This method is must be implemented. 
      */
-    public function useComparativeCourseCatalogView() {
+    public function useComparativeView() {
     	$this->plenaryView = false;
     }
 
@@ -73,7 +61,7 @@ abstract class banner_course_AbstractCourseSession
      *
      *  @compliance mandatory This method is must be implemented. 
      */
-    public function usePlenaryCourseCatalogView() {
+    public function usePlenaryView() {
     	$this->plenaryView = true;
     }
     
@@ -89,11 +77,51 @@ abstract class banner_course_AbstractCourseSession
     }
     
     /**
-	 * @var string $idAuthority; 
+	 * @var boolean $isolatedView; 
 	 * @access private
 	 * @since 4/10/09
 	 */
-	private $idAuthority;
+	private $isolatedView = true;
+    
+    /**
+     *  Federates the view for methods in this session. A federated view will 
+     *  include courses in catalogs which are children of this catalog in the 
+     *  course catalog hierarchy. 
+     *
+     *  @compliance mandatory This method is must be implemented. 
+     */
+    public function useFederatedView() {
+    	$this->isolatedView = false;
+    }
+
+
+    /**
+     *  Isolates the view for methods in this session. An isolated view 
+     *  restricts retrievals to this course catalog only. 
+     *
+     *  @compliance mandatory This method is must be implemented. 
+     */
+    public function useIsolatedView() {
+    	$this->isolatedView = true;
+    }
+    
+    /**
+     * Answer the value of the view state
+     * 
+     * @return boolean
+     * @access protected
+     * @since 4/10/09
+     */
+    protected function usesIsolatedView () {
+    	return $this->isolatedView;
+    }
+    
+    /**
+	 * @var banner_course_CourseManagerInterface $manager; 
+	 * @access protected
+	 * @since 4/10/09
+	 */
+	protected $manager;
 	
 	/**
 	 * @var string $idPrefix; 
@@ -116,8 +144,8 @@ abstract class banner_course_AbstractCourseSession
 		if ($id->getIdentifierNamespace() != 'urn')
 			throw new osid_NotFoundException('I only know about Ids in the urn namespace.');
 		
-		if ($id->getAuthority() != $this->idAuthority)
-			throw new osid_NotFoundException('I only know about Ids under the '.$this->idAuthority.' authority.');
+		if ($id->getAuthority() != $this->manager->getIdAuthority())
+			throw new osid_NotFoundException('I only know about Ids under the '.$this->manager->getIdAuthority().' authority.');
 		
 		if (is_null($prefix))
 			$prefix = $this->idPrefix;
@@ -142,7 +170,7 @@ abstract class banner_course_AbstractCourseSession
 	protected function getOsidIdFromString ($databaseId, $prefix = null) {
 		if (is_null($prefix))
 			$prefix = $this->idPrefix;
-		return new phpkit_id_Id($this->idAuthority, 'urn', $prefix.$databaseId);
+		return new phpkit_id_Id($this->manager->getIdAuthority(), 'urn', $prefix.$databaseId);
 	}
 }
 

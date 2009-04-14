@@ -47,14 +47,39 @@ class banner_course_CourseCatalogLookupSession
 	/**
 	 * Constructor
 	 * 
-	 * @param PDO $db
+	 * @param banner_course_CourseManagerInterface $manager
 	 * @return void
 	 * @access public
 	 * @since 4/10/09
 	 */
-	public function __construct (PDO $db, $idAuthority) {
-		parent::__construct($db, $idAuthority, 'catalog/');
+	public function __construct (banner_course_CourseManagerInterface $manager) {
+		parent::__construct($manager, 'catalog/');
 	}
+	
+	/**
+     *  The returns from the lookup methods may omit or translate elements 
+     *  based on this session, such as authorization, and not result in an 
+     *  error. This view is used when greater interoperability is desired at 
+     *  the expense of precision. 
+     *
+     *  @compliance mandatory This method is must be implemented. 
+     */
+    public function useComparativeCourseCatalogView() {
+    	$this->useComparativeView();
+    }
+
+
+    /**
+     *  A complete view of the <code> CourseCatalog </code> returns is 
+     *  desired. Methods will return what is requested or result in an error. 
+     *  This view is used when greater precision is desired at the expense of 
+     *  interoperability. 
+     *
+     *  @compliance mandatory This method is must be implemented. 
+     */
+    public function usePlenaryCourseCatalogView() {
+    	$this->usePlenaryView();
+    }
 		
 	/**
      *  Tests if this user can perform <code> CourseCatalog </code> lookups. A 
@@ -97,7 +122,7 @@ class banner_course_CourseCatalogLookupSession
      */
     public function getCourseCatalog(osid_id_Id $courseCatalogId) {
     	if (!isset($this->getCatalogById_stmt)) {
-    		$this->getCatalogById_stmt = $this->db->prepare(
+    		$this->getCatalogById_stmt = $this->manager->getDB()->prepare(
 "SELECT
 	catalog_id,
 	catalog_title
@@ -146,9 +171,10 @@ WHERE
     public function getCourseCatalogsByIds(osid_id_IdList $courseCatalogIdList) {
     	$catalogs = array();
     	
-    	foreach ($courseCatalogIdList as $id) {
+    	
+    	while ($courseCatalogIdList->hasNext()) {
     		try {
-    			$catalogs[] = $this->getCourseCatalog($id);
+    			$catalogs[] = $this->getCourseCatalog($courseCatalogIdList->getNextId());
     		} catch (osid_NotFoundException $e) {
     			if ($this->usesPlenaryView())
     				throw $e;
@@ -255,7 +281,7 @@ WHERE
      */
     public function getCourseCatalogs() {
     	if (!isset($this->getCatalogs_stmt)) {
-    		$this->getCatalogs_stmt = $this->db->prepare(
+    		$this->getCatalogs_stmt = $this->manager->getDB()->prepare(
 "SELECT
 	catalog_id,
 	catalog_title
