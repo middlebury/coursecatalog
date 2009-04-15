@@ -228,6 +228,9 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 		));
 		$row = $this->getCourse_stmt->fetch(PDO::FETCH_ASSOC);
 		
+		if (!($row['SCBCRSE_SUBJ_CODE'] && $row['SCBCRSE_CRSE_NUMB']))
+			throw new osid_NotFoundException("Could not find a course matching the id-component $courseIdString.");
+		
 		return new banner_course_Course(
 					new phpkit_id_URNInetId('urn:inet:'.$this->manager->getIdAuthority().':course/'
 						.$row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB']),
