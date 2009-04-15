@@ -82,118 +82,307 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testGetCourseSearchSession()
     {
-       $this->assertType('osid_course_CourseSearchSession', $this->manager->getCourseSearchSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseSearch()) {
+    		 $this->assertType('osid_course_CourseSearchSession', $this->manager->getCourseSearchSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseSearchSession', $this->manager->getCourseSearchSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+       
     }
 
     /**
      */
     public function testGetCourseSearchSessionForCatalog()
     {
-       $this->assertType('osid_course_CourseSearchSession', $this->manager->getCourseSearchSessionForCatalog($this->mcugId));
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseSearch()) {
+    		$this->assertType('osid_course_CourseSearchSession', $this->manager->getCourseSearchSessionForCatalog($this->mcugId));
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseSearchSession', $this->manager->getCourseSearchSessionForCatalog($this->mcugId));
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+       
     }
 
     /**
      */
     public function testGetCourseAdminSession()
     {
-        $this->assertType('osid_course_CourseAdminSession', $this->manager->getCourseAdminSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseAdmin()) {
+    		 $this->assertType('osid_course_CourseAdminSession', $this->manager->getCourseAdminSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->manager->getCourseAdminSession();
+				$this->fail('Should have thrown an osid_UnimplementedException');
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
     }
 
     /**
      */
     public function testGetCourseAdminSessionForCatalog()
     {
-       $this->assertType('osid_course_CourseAdminSession', $this->manager->getCourseAdminSessionForCatalog($this->mcugId));
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseAdmin()) {
+    		 $this->assertType('osid_course_CourseAdminSession', $this->manager->getCourseAdminSessionForCatalog($this->mcugId));
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseAdminSession', $this->manager->getCourseAdminSessionForCatalog($this->mcugId));
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetCourseNotificationSession()
     {
-        $this->assertType('osid_course_CourseNotificationSession', $this->manager->getCourseNotificationSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseNotification()) {
+    		 $this->assertType('osid_course_CourseNotificationSession', $this->manager->getCourseNotificationSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseNotificationSession', $this->manager->getCourseNotificationSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetCourseNotificationSessionForCatalog()
     {
-        $this->assertType('osid_course_CourseNotificationSession', $this->manager->getCourseNotificationSessionForCatalog($this->mcugId));
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseNotification()) {
+    		 $this->assertType('osid_course_CourseNotificationSession', $this->manager->getCourseNotificationSessionForCatalog($this->mcugId));
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseNotificationSession', $this->manager->getCourseNotificationSessionForCatalog($this->mcugId));
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetCourseCatalogSession()
     {
-        $this->assertType('osid_course_CourseCatalogSession', $this->manager->getCourseCatalogSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseCatalog()) {
+    		 $this->assertType('osid_course_CourseCatalogSession', $this->manager->getCourseCatalogSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseCatalogSession', $this->manager->getCourseCatalogSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetCourseCatalogAssignmentSession()
     {
-        $this->assertType('osid_course_CourseCatalogAssignmentSession', $this->manager->getCourseCatalogAssignmentSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseCatalogAssignment()) {
+    		 $this->assertType('osid_course_CourseCatalogAssignmentSession', $this->manager->getCourseCatalogAssignmentSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseCatalogAssignmentSession', $this->manager->getCourseCatalogAssignmentSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
      */
     public function testGetCourseOfferingLookupSession()
     {
-        $this->assertType('osid_course_CourseOfferingLookupSession', $this->manager->getCourseOfferingLookupSession());
+        // If supported, validate our session response
+    	if ($this->manager->supportsCourseOfferingLookup()) {
+    		 $this->assertType('osid_course_CourseOfferingLookupSession', $this->manager->getCourseOfferingLookupSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseOfferingLookupSession', $this->manager->getCourseOfferingLookupSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
      */
     public function testGetCourseOfferingLookupSessionForCatalog()
     {
-        $this->assertType('osid_course_CourseOfferingLookupSession', $this->manager->getCourseOfferingLookupSessionForCatalog($this->mcugId));
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseOfferingLookup()) {
+    		 $this->assertType('osid_course_CourseOfferingLookupSession', $this->manager->getCourseOfferingLookupSessionForCatalog($this->mcugId));
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseOfferingLookupSession', $this->manager->getCourseOfferingLookupSessionForCatalog($this->mcugId));
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
      */
     public function testGetCourseOfferingSearchSession()
     {
-        $this->assertType('osid_course_CourseOfferingSearchSession', $this->manager->getCourseOfferingSearchSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseOfferingSearch()) {
+    		 $this->assertType('osid_course_CourseOfferingSearchSession', $this->manager->getCourseOfferingSearchSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseOfferingSearchSession', $this->manager->getCourseOfferingSearchSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
      */
     public function testGetCourseOfferingSearchSessionForCatalog()
     {
-        $this->assertType('osid_course_CourseOfferingSearchSession', $this->manager->getCourseOfferingSearchSessionForCatalog($this->mcugId));
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseOfferingSearch()) {
+    		 $this->assertType('osid_course_CourseOfferingSearchSession', $this->manager->getCourseOfferingSearchSessionForCatalog($this->mcugId));
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseOfferingSearchSession', $this->manager->getCourseOfferingSearchSessionForCatalog($this->mcugId));
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
      */
     public function testGetCourseOfferingAdminSession()
     {
-        $this->assertType('osid_course_CourseOfferingAdminSession', $this->manager->getCourseOfferingAdminSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseOfferingAdmin()) {
+    		 $this->assertType('osid_course_CourseOfferingAdminSession', $this->manager->getCourseOfferingAdminSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseOfferingAdminSession', $this->manager->getCourseOfferingAdminSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
      */
     public function testGetCourseOfferingAdminSessionForCatalog()
     {
-        $this->assertType('osid_course_CourseOfferingAdminSession', $this->manager->getCourseOfferingAdminSessionForCatalog($this->mcugId));
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseOfferingAdmin()) {
+    		 $this->assertType('osid_course_CourseOfferingAdminSession', $this->manager->getCourseOfferingAdminSessionForCatalog($this->mcugId));
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseOfferingAdminSession', $this->manager->getCourseOfferingAdminSessionForCatalog($this->mcugId));
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
     }
 
     /**
-     * @expectedException osid_UnimplementedException
      */
     public function testGetCourseOfferingNotificationSession()
     {
-        $this->assertType('osid_course_CourseOfferingNotificationSession', $this->manager->getCourseOfferingNotificationSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseOfferingNotification()) {
+    		 $this->assertType('osid_course_CourseOfferingNotificationSession', $this->manager->getCourseOfferingNotificationSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseOfferingNotificationSession', $this->manager->getCourseOfferingNotificationSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetCourseOfferingNotificationSessionForCatalog()
     {
-        $this->assertType('osid_course_CourseOfferingNotificationSession', $this->manager->getCourseOfferingNotificationSessionForCatalog($this->mcugId));
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseOfferingNotification()) {
+    		 $this->assertType('osid_course_CourseOfferingNotificationSession', $this->manager->getCourseOfferingNotificationSessionForCatalog($this->mcugId));
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseOfferingNotificationSession', $this->manager->getCourseOfferingNotificationSessionForCatalog($this->mcugId));
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
@@ -201,15 +390,39 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testGetCourseOfferingHierarchySession()
     {
-        $this->assertType('osid_course_CourseOfferingHierarchySession', $this->manager->getCourseOfferingHierarchySession());
+        // If supported, validate our session response
+    	if ($this->manager->supportsCourseOfferingHierarchy()) {
+    		 $this->assertType('osid_course_CourseOfferingHierarchySession', $this->manager->getCourseOfferingHierarchySession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseOfferingHierarchySession', $this->manager->getCourseOfferingHierarchySession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetCourseOfferingHierarchyDesignSession()
     {
-        $this->assertType('osid_course_CourseOfferingHierarchyDesignSession', $this->manager->getCourseOfferingHierarchyDesignSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseOfferingHierarchyDesign()) {
+    		 $this->assertType('osid_course_CourseOfferingHierarchyDesignSession', $this->manager->getCourseOfferingHierarchyDesignSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseOfferingHierarchyDesignSession', $this->manager->getCourseOfferingHierarchyDesignSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
@@ -217,15 +430,38 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testGetCourseOfferingCatalogSession()
     {
-        $this->assertType('osid_course_CourseOfferingCatalogSession', $this->manager->getCourseOfferingCatalogSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseOfferingCatalog()) {
+    		 $this->assertType('osid_course_CourseOfferingCatalogSession', $this->manager->getCourseOfferingCatalogSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseOfferingCatalogSession', $this->manager->getCourseOfferingCatalogSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetCourseOfferingCatalogAssignmentSession()
     {
-        $this->assertType('osid_course_CourseOfferingCatalogAssignmentSession', $this->manager->getCourseOfferingCatalogAssignmentSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseOfferingCatalogAssignment()) {
+    		 $this->assertType('osid_course_CourseOfferingCatalogAssignmentSession', $this->manager->getCourseOfferingCatalogAssignmentSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseOfferingCatalogAssignmentSession', $this->manager->getCourseOfferingCatalogAssignmentSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
@@ -233,7 +469,19 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTermLookupSession()
     {
-        $this->assertType('osid_course_TermLookupSession', $this->manager->getTermLookupSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTermLookup()) {
+    		 $this->assertType('osid_course_TermLookupSession', $this->manager->getTermLookupSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TermLookupSession', $this->manager->getTermLookupSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
@@ -241,183 +489,459 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTermLookupSessionForCatalog()
     {
-        $this->assertType('osid_course_TermLookupSession', $this->manager->getTermLookupSessionForCatalog($this->mcugId));
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTermLookup()) {
+    		 $this->assertType('osid_course_TermLookupSession', $this->manager->getTermLookupSessionForCatalog($this->mcugId));
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TermLookupSession', $this->manager->getTermLookupSessionForCatalog($this->mcugId));
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTermSearchSession()
     {
-        $this->assertType('osid_course_TermSearchSession', $this->manager->getTermSearchSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTermSearch()) {
+    		 $this->assertType('osid_course_TermSearchSession', $this->manager->getTermSearchSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TermSearchSession', $this->manager->getTermSearchSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTermSearchSessionForCatalog()
     {
-        $this->assertType('osid_course_TermSearchSession', $this->manager->getTermSearchSessionForCatalog($this->mcugId));
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTermSearch()) {
+    		 $this->assertType('osid_course_TermSearchSession', $this->manager->getTermSearchSessionForCatalog($this->mcugId));
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TermSearchSession', $this->manager->getTermSearchSessionForCatalog($this->mcugId));
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTermAdminSession()
     {
-        $this->assertType('osid_course_TermAdminSession', $this->manager->getTermAdminSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTermAdmin()) {
+    		 $this->assertType('osid_course_TermAdminSession', $this->manager->getTermAdminSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TermAdminSession', $this->manager->getTermAdminSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTermAdminSessionForCatalog()
     {
-        $this->assertType('osid_course_TermAdminSession', $this->manager->getTermAdminSessionForCatalog($this->mcugId));
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTermAdmin()) {
+    		 $this->assertType('osid_course_TermAdminSession', $this->manager->getTermAdminSessionForCatalog($this->mcugId));
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TermAdminSession', $this->manager->getTermAdminSessionForCatalog($this->mcugId));
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTermNotificationSession()
     {
-        $this->assertType('osid_course_TermNotificationSession', $this->manager->getTermNotificationSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTermNotification()) {
+    		 $this->assertType('osid_course_TermNotificationSession', $this->manager->getTermNotificationSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TermNotificationSession', $this->manager->getTermNotificationSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTermNotificationSessionForCatalog()
     {
-        $this->assertType('osid_course_TermNotificationSession', $this->manager->getTermNotificationSessionForCatalog($this->mcugId));
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTermNotification()) {
+    		 $this->assertType('osid_course_TermNotificationSession', $this->manager->getTermNotificationSessionForCatalog($this->mcugId));
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TermNotificationSession', $this->manager->getTermNotificationSessionForCatalog($this->mcugId));
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTermHierarchySession()
     {
-        $this->assertType('osid_course_TermHierarchySession', $this->manager->getTermHierarchySession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTermHierarchy()) {
+    		 $this->assertType('osid_course_TermHierarchySession', $this->manager->getTermHierarchySession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TermHierarchySession', $this->manager->getTermHierarchySession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTermHierarchyDesignSession()
     {
-        $this->assertType('osid_course_TermHierarchyDesignSession', $this->manager->getTermHierarchyDesignSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTermHierarchyDesign()) {
+    		 $this->assertType('osid_course_TermHierarchyDesignSession', $this->manager->getTermHierarchyDesignSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TermHierarchyDesignSession', $this->manager->getTermHierarchyDesignSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTermCatalogSession()
     {
-        $this->assertType('osid_course_TermCatalogSession', $this->manager->getTermCatalogSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTermCatalog()) {
+    		 $this->assertType('osid_course_TermCatalogSession', $this->manager->getTermCatalogSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TermCatalogSession', $this->manager->getTermCatalogSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTermCatalogAssignmentSession()
     {
-        $this->assertType('osid_course_TermCatalogAssignmentSession', $this->manager->getTermCatalogAssignmentSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTermCatalogAssignment()) {
+    		 $this->assertType('osid_course_TermCatalogAssignmentSession', $this->manager->getTermCatalogAssignmentSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TermCatalogAssignmentSession', $this->manager->getTermCatalogAssignmentSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTopicLookupSession()
     {
-        $this->assertType('osid_course_TopicLookupSession', $this->manager->getTopicLookupSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTopicLookup()) {
+    		 $this->assertType('osid_course_TopicLookupSession', $this->manager->getTopicLookupSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TopicLookupSession', $this->manager->getTopicLookupSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTopicLookupSessionForCatalog()
     {
-        $this->assertType('osid_course_TopicLookupSession', $this->manager->getTopicLookupSessionForCatalog($this->mcugId));
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTopicLookup()) {
+    		 $this->assertType('osid_course_TopicLookupSession', $this->manager->getTopicLookupSessionForCatalog($this->mcugId));
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TopicLookupSession', $this->manager->getTopicLookupSessionForCatalog($this->mcugId));
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTopicSearchSession()
     {
-        $this->assertType('osid_course_TopicSearchSession', $this->manager->getTopicSearchSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTopicSearch()) {
+    		 $this->assertType('osid_course_TopicSearchSession', $this->manager->getTopicSearchSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TopicSearchSession', $this->manager->getTopicSearchSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTopicSearchSessionForCatalog()
     {
-        $this->assertType('osid_course_TopicSearchSession', $this->manager->getTopicSearchSessionForCatalog($this->mcugId));
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTopicSearch()) {
+    		 $this->assertType('osid_course_TopicSearchSession', $this->manager->getTopicSearchSessionForCatalog($this->mcugId));
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TopicSearchSession', $this->manager->getTopicSearchSessionForCatalog($this->mcugId));
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTopicAdminSession()
     {
-        $this->assertType('osid_course_TopicAdminSession', $this->manager->getTopicAdminSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTopicAdmin()) {
+    		 $this->assertType('osid_course_TopicAdminSession', $this->manager->getTopicAdminSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TopicAdminSession', $this->manager->getTopicAdminSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTopicAdminSessionForCatalog()
     {
-        $this->assertType('osid_course_TopicAdminSession', $this->manager->getTopicAdminSessionForCatalog($this->mcugId));
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTopicAdmin()) {
+    		 $this->assertType('osid_course_TopicAdminSession', $this->manager->getTopicAdminSessionForCatalog($this->mcugId));
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TopicAdminSession', $this->manager->getTopicAdminSessionForCatalog($this->mcugId));
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTopicNotificationSession()
     {
-        $this->assertType('osid_course_TopicNotificationSession', $this->manager->getTopicNotificationSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTopicNotification()) {
+    		 $this->assertType('osid_course_TopicNotificationSession', $this->manager->getTopicNotificationSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TopicNotificationSession', $this->manager->getTopicNotificationSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTopicNotificationSessionForCatalog()
     {
-        $this->assertType('osid_course_TopicNotificationSession', $this->manager->getTopicNotificationSessionForCatalog($this->mcugId));
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTopicNotification()) {
+    		 $this->assertType('osid_course_TopicNotificationSession', $this->manager->getTopicNotificationSessionForCatalog($this->mcugId));
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TopicNotificationSession', $this->manager->getTopicNotificationSessionForCatalog($this->mcugId));
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTopicHierarchySession()
     {
-        $this->assertType('osid_course_TopicHierarchySession', $this->manager->getTopicHierarchySession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTopicHierarchy()) {
+    		 $this->assertType('osid_course_TopicHierarchySession', $this->manager->getTopicHierarchySession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TopicHierarchySession', $this->manager->getTopicHierarchySession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTopicHierarchyDesignSession()
     {
-        $this->assertType('osid_course_TopicHierarchyDesignSession', $this->manager->getTopicHierarchyDesignSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTopicHierarchyDesign()) {
+    		 $this->assertType('osid_course_TopicHierarchyDesignSession', $this->manager->getTopicHierarchyDesignSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TopicHierarchyDesignSession', $this->manager->getTopicHierarchyDesignSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTopicCatalogSession()
     {
-        $this->assertType('osid_course_TopicCatalogSession', $this->manager->getTopicCatalogSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTopicCatalog()) {
+    		 $this->assertType('osid_course_TopicCatalogSession', $this->manager->getTopicCatalogSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TopicCatalogSession', $this->manager->getTopicCatalogSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetTopicCatalogAssignmentSession()
     {
-        $this->assertType('osid_course_TopicCatalogAssignmentSession', $this->manager->getTopicCatalogAssignmentSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsTopicCatalogAssignment()) {
+    		 $this->assertType('osid_course_TopicCatalogAssignmentSession', $this->manager->getTopicCatalogAssignmentSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_TopicCatalogAssignmentSession', $this->manager->getTopicCatalogAssignmentSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
@@ -429,43 +953,103 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetCourseCatalogSearchSession()
     {
-        $this->assertType('osid_course_CourseCatalogSearchSession', $this->manager->getCourseCatalogSearchSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseCatalogSearch()) {
+    		 $this->assertType('osid_course_CourseCatalogSearchSession', $this->manager->getCourseCatalogSearchSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseCatalogSearchSession', $this->manager->getCourseCatalogSearchSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetCourseCatalogAdminSession()
     {
-        $this->assertType('osid_course_CourseCatalogAdminSession', $this->manager->getCourseCatalogAdminSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseCatalogAdmin()) {
+    		 $this->assertType('osid_course_CourseCatalogAdminSession', $this->manager->getCourseCatalogAdminSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseCatalogAdminSession', $this->manager->getCourseCatalogAdminSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetCourseCatalogNotificationSession()
     {
-        $this->assertType('osid_course_CourseCatalogNotificationSession', $this->manager->getCourseCatalogNotificationSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseCatalogNotification()) {
+    		 $this->assertType('osid_course_CourseCatalogNotificationSession', $this->manager->getCourseCatalogNotificationSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseCatalogNotificationSession', $this->manager->getCourseCatalogNotificationSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetCourseCatalogHierarchySession()
     {
-        $this->assertType('osid_course_CourseCatalogHierarchySession', $this->manager->getCourseCatalogHierarchySession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseCatalogHierarchy()) {
+    		 $this->assertType('osid_course_CourseCatalogHierarchySession', $this->manager->getCourseCatalogHierarchySession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseCatalogHierarchySession', $this->manager->getCourseCatalogHierarchySession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * 
      */
     public function testGetCourseCatalogHierarchyDesignSession()
     {
-        $this->assertType('osid_course_CourseCatalogHierarchyDesignSession', $this->manager->getCourseCatalogHierarchyDesignSession());
+    	// If supported, validate our session response
+    	if ($this->manager->supportsCourseCatalogHierarchyDesign()) {
+    		 $this->assertType('osid_course_CourseCatalogHierarchyDesignSession', $this->manager->getCourseCatalogHierarchyDesignSession());
+    	} 
+    	// Otherwise, ensure that the propper exception is thrown
+    	else {
+    		try {
+				$this->assertType('osid_course_CourseCatalogHierarchyDesignSession', $this->manager->getCourseCatalogHierarchyDesignSession());
+			} catch (osid_UnimplementedException $e) {
+				$this->assertTrue(true);
+			}
+    	}
+        
     }
 
     /**
@@ -521,7 +1105,8 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseAdmin()
     {
-         $this->assertTrue($this->manager->supportsCourseAdmin());
+    	$this->assertTrue($this->manager->supportsCourseAdmin());
+		$this->markTestIncomplete('supportsCourseAdmin should be true.');
     }
 
     /**
@@ -537,7 +1122,8 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseCatalog()
     {
-         $this->assertTrue($this->manager->supportsCourseCatalog());
+        $this->assertTrue($this->manager->supportsCourseCatalog());
+	    $this->markTestIncomplete('supportsCourseCatalog should be true.');
     }
 
     /**
