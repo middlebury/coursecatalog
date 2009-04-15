@@ -1261,8 +1261,10 @@ class banner_course_CourseManager
      *  @compliance mandatory This method must be implemented <code> . </code> 
      */
     public function getResourceManager() {
+    	throw new osid_OperationFailedException('Not yet implemented.');
+    	
     	if (!isset($this->resourceManager)) {
-    		$this->resourceManager = $this->runtimeManager->getManager(osid_OSID::RESOURCE(), 'banner_resource_ResourceManager', '3.0.0');
+    		$this->resourceManager = $this->impl_getRuntimeManager()->getManager(osid_OSID::RESOURCE(), 'banner_resource_ResourceManager', '3.0.0');
     	}
     	
     	return $this->resourceManager;
@@ -1280,8 +1282,10 @@ class banner_course_CourseManager
      *  @compliance mandatory This method must be implemented <code> . </code> 
      */
     public function getCalendarManager() {
+    	throw new osid_OperationFailedException('Not yet implemented.');
+    	
     	if (!isset($this->calendarManager)) {
-    		$this->calendarManager = $this->runtimeManager->getManager(osid_OSID::CALENDAR(), 'banner_calendar_CalendarManager', '3.0.0');
+    		$this->calendarManager = $this->impl_getRuntimeManager()->getManager(osid_OSID::CALENDAR(), 'banner_calendar_CalendarManager', '3.0.0');
     	}
     	
     	return $this->calendarManager;
@@ -1299,8 +1303,10 @@ class banner_course_CourseManager
      *  @compliance mandatory This method must be implemented <code> . </code> 
      */
     public function getLearningManager() {
+    	throw new osid_OperationFailedException('Not yet implemented.');
+    	
     	if (!isset($this->learningManager)) {
-    		$this->learningManager = $this->runtimeManager->getManager(osid_OSID::LEARNING(), 'banner_learning_ObjectiveManager', '3.0.0');
+    		$this->learningManager = $this->impl_getRuntimeManager()->getManager(osid_OSID::LEARNING(), 'banner_learning_ObjectiveManager', '3.0.0');
     	}
     	
     	return $this->learningManager;
@@ -1310,7 +1316,7 @@ class banner_course_CourseManager
  * From osid_course_CourseProfile
  *********************************************************/
 
-	    /**
+	/**
      *  Tests if any course catalog federation is exposed. Federation is 
      *  exposed when a specific course catalog may be identified, selected and 
      *  used to create a lookup or admin session. Federation is not exposed 
@@ -1321,7 +1327,7 @@ class banner_course_CourseManager
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsVisibleFederation() {
-    	return false;
+    	return true;
     }
 
 
