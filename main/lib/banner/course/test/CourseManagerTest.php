@@ -337,7 +337,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTopicLookupSessionForCatalog()
     {
-        $this->assertType('osid_course_TopicLookupSessionForCatalog', $this->manager->getTopicLookupSessionForCatalog());
+        $this->assertType('osid_course_TopicLookupSession', $this->manager->getTopicLookupSessionForCatalog($this->mcugId));
     }
 
     /**
@@ -353,7 +353,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTopicSearchSessionForCatalog()
     {
-        $this->assertType('osid_course_TopicSearchSessionForCatalog', $this->manager->getTopicSearchSessionForCatalog());
+        $this->assertType('osid_course_TopicSearchSession', $this->manager->getTopicSearchSessionForCatalog($this->mcugId));
     }
 
     /**
@@ -497,7 +497,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsVisibleFederation()
     {
-        $this->assertTrue($this->manager->supportsCourseCatalogSearch()); 
+        $this->assertTrue($this->manager->supportsVisibleFederation()); 
     }
 
     /**
