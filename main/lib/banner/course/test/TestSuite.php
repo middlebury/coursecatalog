@@ -20,20 +20,16 @@ class banner_course_test_TestSuite extends PHPUnit_Framework_TestSuite
     
     protected function setUp()
     {
-    	print "\nSetting up the Suite";
     	$this->sharedFixture = array();
     	$this->sharedFixture['RuntimeManager'] = new phpkit_OsidRuntimeManager(dirname(__FILE__).'/configuration.plist', OSID_BASE);
         $this->sharedFixture['CourseManager'] = $this->sharedFixture['RuntimeManager']->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
-        print "\nDone Setting up the Suite\n";
     }
  
     protected function tearDown()
     {
-    	print "\nBeginning to tear down the suite.";
     	$this->sharedFixture['CourseManager']->shutdown();
 //     	$this->sharedFixture['RuntimeManager']->shutdown();
         $this->sharedFixture = NULL;
-        print "\nSuite has been torn down.\n";
     }
 }
 ?>
