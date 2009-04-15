@@ -86,7 +86,6 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testGetCourseSearchSessionForCatalog().
      */
     public function testGetCourseSearchSessionForCatalog()
     {
@@ -94,465 +93,331 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testGetCourseAdminSession().
      */
     public function testGetCourseAdminSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseAdminSession', $this->manager->getCourseAdminSession());
     }
 
     /**
-     * @todo Implement testGetCourseAdminSessionForCatalog().
      */
     public function testGetCourseAdminSessionForCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+       $this->assertType('osid_course_CourseAdminSession', $this->manager->getCourseAdminSessionForCatalog($this->mcugId));
     }
 
     /**
-     * @todo Implement testGetCourseNotificationSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetCourseNotificationSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseNotificationSession', $this->manager->getCourseNotificationSession());
     }
 
     /**
-     * @todo Implement testGetCourseNotificationSessionForCatalog().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetCourseNotificationSessionForCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseNotificationSession', $this->manager->getCourseNotificationSessionForCatalog($this->mcugId));
     }
 
     /**
-     * @todo Implement testGetCourseCatalogSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetCourseCatalogSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseCatalogSession', $this->manager->getCourseCatalogSession());
     }
 
     /**
-     * @todo Implement testGetCourseCatalogAssignmentSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetCourseCatalogAssignmentSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseCatalogAssignmentSession', $this->manager->getCourseCatalogAssignmentSession());
     }
 
     /**
-     * @todo Implement testGetCourseOfferingLookupSession().
      */
     public function testGetCourseOfferingLookupSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseOfferingLookupSession', $this->manager->getCourseOfferingLookupSession());
     }
 
     /**
-     * @todo Implement testGetCourseOfferingLookupSessionForCatalog().
      */
     public function testGetCourseOfferingLookupSessionForCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseOfferingLookupSession', $this->manager->getCourseOfferingLookupSessionForCatalog($this->mcugId));
     }
 
     /**
-     * @todo Implement testGetCourseOfferingSearchSession().
      */
     public function testGetCourseOfferingSearchSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseOfferingSearchSession', $this->manager->getCourseOfferingSearchSession());
     }
 
     /**
-     * @todo Implement testGetCourseOfferingSearchSessionForCatalog().
      */
     public function testGetCourseOfferingSearchSessionForCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseOfferingSearchSession', $this->manager->getCourseOfferingSearchSessionForCatalog($this->mcugId));
     }
 
     /**
-     * @todo Implement testGetCourseOfferingAdminSession().
      */
     public function testGetCourseOfferingAdminSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseOfferingAdminSession', $this->manager->getCourseOfferingAdminSession());
     }
 
     /**
-     * @todo Implement testGetCourseOfferingAdminSessionForCatalog().
      */
     public function testGetCourseOfferingAdminSessionForCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseOfferingAdminSession', $this->manager->getCourseOfferingAdminSessionForCatalog($this->mcugId));
     }
 
     /**
-     * @todo Implement testGetCourseOfferingNotificationSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetCourseOfferingNotificationSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseOfferingNotificationSession', $this->manager->getCourseOfferingNotificationSession());
     }
 
     /**
-     * @todo Implement testGetCourseOfferingNotificationSessionForCatalog().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetCourseOfferingNotificationSessionForCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseOfferingNotificationSession', $this->manager->getCourseOfferingNotificationSessionForCatalog($this->mcugId));
     }
 
     /**
-     * @todo Implement testGetCourseOfferingHierarchySession().
+     * 
      */
     public function testGetCourseOfferingHierarchySession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseOfferingHierarchySession', $this->manager->getCourseOfferingHierarchySession());
     }
 
     /**
-     * @todo Implement testGetCourseOfferingHierarchyDesignSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetCourseOfferingHierarchyDesignSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseOfferingHierarchyDesignSession', $this->manager->getCourseOfferingHierarchyDesignSession());
     }
 
     /**
-     * @todo Implement testGetCourseOfferingCatalogSession().
+     * 
      */
     public function testGetCourseOfferingCatalogSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseOfferingCatalogSession', $this->manager->getCourseOfferingCatalogSession());
     }
 
     /**
-     * @todo Implement testGetCourseOfferingCatalogAssignmentSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetCourseOfferingCatalogAssignmentSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseOfferingCatalogAssignmentSession', $this->manager->getCourseOfferingCatalogAssignmentSession());
     }
 
     /**
-     * @todo Implement testGetTermLookupSession().
+     * 
      */
     public function testGetTermLookupSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TermLookupSession', $this->manager->getTermLookupSession());
     }
 
     /**
-     * @todo Implement testGetTermLookupSessionForCatalog().
+     * 
      */
     public function testGetTermLookupSessionForCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TermLookupSession', $this->manager->getTermLookupSessionForCatalog($this->mcugId));
     }
 
     /**
-     * @todo Implement testGetTermSearchSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTermSearchSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TermSearchSession', $this->manager->getTermSearchSession());
     }
 
     /**
-     * @todo Implement testGetTermSearchSessionForCatalog().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTermSearchSessionForCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TermSearchSession', $this->manager->getTermSearchSessionForCatalog($this->mcugId));
     }
 
     /**
-     * @todo Implement testGetTermAdminSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTermAdminSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TermAdminSession', $this->manager->getTermAdminSession());
     }
 
     /**
-     * @todo Implement testGetTermAdminSessionForCatalog().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTermAdminSessionForCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TermAdminSession', $this->manager->getTermAdminSessionForCatalog($this->mcugId));
     }
 
     /**
-     * @todo Implement testGetTermNotificationSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTermNotificationSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TermNotificationSession', $this->manager->getTermNotificationSession());
     }
 
     /**
-     * @todo Implement testGetTermNotificationSessionForCatalog().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTermNotificationSessionForCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TermNotificationSession', $this->manager->getTermNotificationSessionForCatalog($this->mcugId));
     }
 
     /**
-     * @todo Implement testGetTermHierarchySession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTermHierarchySession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TermHierarchySession', $this->manager->getTermHierarchySession());
     }
 
     /**
-     * @todo Implement testGetTermHierarchyDesignSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTermHierarchyDesignSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TermHierarchyDesignSession', $this->manager->getTermHierarchyDesignSession());
     }
 
     /**
-     * @todo Implement testGetTermCatalogSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTermCatalogSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TermCatalogSession', $this->manager->getTermCatalogSession());
     }
 
     /**
-     * @todo Implement testGetTermCatalogAssignmentSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTermCatalogAssignmentSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TermCatalogAssignmentSession', $this->manager->getTermCatalogAssignmentSession());
     }
 
     /**
-     * @todo Implement testGetTopicLookupSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTopicLookupSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TopicLookupSession', $this->manager->getTopicLookupSession());
     }
 
     /**
-     * @todo Implement testGetTopicLookupSessionForCatalog().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTopicLookupSessionForCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TopicLookupSessionForCatalog', $this->manager->getTopicLookupSessionForCatalog());
     }
 
     /**
-     * @todo Implement testGetTopicSearchSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTopicSearchSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TopicSearchSession', $this->manager->getTopicSearchSession());
     }
 
     /**
-     * @todo Implement testGetTopicSearchSessionForCatalog().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTopicSearchSessionForCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TopicSearchSessionForCatalog', $this->manager->getTopicSearchSessionForCatalog());
     }
 
     /**
-     * @todo Implement testGetTopicAdminSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTopicAdminSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TopicAdminSession', $this->manager->getTopicAdminSession());
     }
 
     /**
-     * @todo Implement testGetTopicAdminSessionForCatalog().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTopicAdminSessionForCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TopicAdminSession', $this->manager->getTopicAdminSessionForCatalog($this->mcugId));
     }
 
     /**
-     * @todo Implement testGetTopicNotificationSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTopicNotificationSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TopicNotificationSession', $this->manager->getTopicNotificationSession());
     }
 
     /**
-     * @todo Implement testGetTopicNotificationSessionForCatalog().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTopicNotificationSessionForCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TopicNotificationSession', $this->manager->getTopicNotificationSessionForCatalog($this->mcugId));
     }
 
     /**
-     * @todo Implement testGetTopicHierarchySession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTopicHierarchySession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TopicHierarchySession', $this->manager->getTopicHierarchySession());
     }
 
     /**
-     * @todo Implement testGetTopicHierarchyDesignSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTopicHierarchyDesignSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TopicHierarchyDesignSession', $this->manager->getTopicHierarchyDesignSession());
     }
 
     /**
-     * @todo Implement testGetTopicCatalogSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTopicCatalogSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TopicCatalogSession', $this->manager->getTopicCatalogSession());
     }
 
     /**
-     * @todo Implement testGetTopicCatalogAssignmentSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTopicCatalogAssignmentSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TopicCatalogAssignmentSession', $this->manager->getTopicCatalogAssignmentSession());
     }
 
     /**
@@ -564,91 +429,67 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testGetCourseCatalogSearchSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetCourseCatalogSearchSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseCatalogSearchSession', $this->manager->getCourseCatalogSearchSession());
     }
 
     /**
-     * @todo Implement testGetCourseCatalogAdminSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetCourseCatalogAdminSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseCatalogAdminSession', $this->manager->getCourseCatalogAdminSession());
     }
 
     /**
-     * @todo Implement testGetCourseCatalogNotificationSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetCourseCatalogNotificationSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseCatalogNotificationSession', $this->manager->getCourseCatalogNotificationSession());
     }
 
     /**
-     * @todo Implement testGetCourseCatalogHierarchySession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetCourseCatalogHierarchySession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseCatalogHierarchySession', $this->manager->getCourseCatalogHierarchySession());
     }
 
     /**
-     * @todo Implement testGetCourseCatalogHierarchyDesignSession().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetCourseCatalogHierarchyDesignSession()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseCatalogHierarchyDesignSession', $this->manager->getCourseCatalogHierarchyDesignSession());
     }
 
     /**
-     * @todo Implement testGetResourceManager().
+     * 
      */
     public function testGetResourceManager()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_resource_ResourceManager', $this->manager->getResourceManager());
     }
 
     /**
-     * @todo Implement testGetCalendarManager().
+     * 
      */
     public function testGetCalendarManager()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_calendaring_CalendarManager', $this->manager->getCalendarManager());
     }
 
     /**
-     * @todo Implement testGetLearningManager().
+     * 
      */
     public function testGetLearningManager()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_learning_ObjectiveManager', $this->manager->getLearningManager());
     }
 
     /**
@@ -656,10 +497,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsVisibleFederation()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertTrue($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -683,10 +521,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseAdmin()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+         $this->assertTrue($this->manager->supportsCourseAdmin());
     }
 
     /**
@@ -702,10 +537,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+         $this->assertTrue($this->manager->supportsCourseCatalog());
     }
 
     /**
@@ -713,10 +545,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseCatalogAssignment()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -724,10 +553,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseOfferingLookup()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+       $this->assertTrue($this->manager->supportsCourseOfferingLookup());
     }
 
     /**
@@ -735,10 +561,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseOfferingSearch()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertTrue($this->manager->supportsCourseOfferingSearch());
     }
 
     /**
@@ -746,10 +569,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseOfferingAdmin()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertTrue($this->manager->supportsCourseOfferingAdmin());
     }
 
     /**
@@ -757,10 +577,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseOfferingNotification()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -768,10 +585,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseOfferingHierarchy()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertTrue($this->manager->supportsCourseOfferingHierarchy());
     }
 
     /**
@@ -779,10 +593,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseOfferingHierarchyDesign()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -790,10 +601,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseOfferingHierarchySequencing()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -801,10 +609,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseOfferingCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertTrue($this->manager->supportsCourseOfferingCatalog());
     }
 
     /**
@@ -812,10 +617,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseOfferingCatalogAssignment()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -823,10 +625,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTermLookup()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertTrue($this->manager->supportsTermLookup());
     }
 
     /**
@@ -834,10 +633,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTermSearch()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsTermSearch());
     }
 
     /**
@@ -845,10 +641,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTermAdmin()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -856,10 +649,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTermNotification()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -867,10 +657,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTermHierarchy()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -878,10 +665,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTermHierarchyDesign()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -889,10 +673,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTermHierarchySequencing()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -900,10 +681,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTermCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -911,10 +689,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTermCatalogAssignment()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -922,10 +697,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTopicLookup()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -933,10 +705,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTopicSearch()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -944,10 +713,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTopicAdmin()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -955,10 +721,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTopicNotification()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -966,10 +729,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTopicHierarchy()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -977,10 +737,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTopicHierarchyDesign()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -988,10 +745,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTopicHierarchySequencing()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -999,10 +753,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTopicCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -1010,10 +761,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTopicCatalogAssignment()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -1021,10 +769,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseCatalogLookup()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+       $this->assertTrue($this->manager->supportsCourseCatalogLookup()); 
     }
 
     /**
@@ -1032,10 +777,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseCatalogSearch()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+       $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -1043,10 +785,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseCatalogAdmin()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+       $this->assertFalse($this->manager->supportsCourseCatalogAdmin()); 
     }
 
     /**
@@ -1054,10 +793,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseCatalogNotification()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+       $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -1065,10 +801,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseCatalogHierarchy()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+       $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -1076,10 +809,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseCatalogHierarchyDesign()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -1087,10 +817,7 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseCatalogSequencing()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->manager->supportsCourseCatalogSearch()); 
     }
 
     /**
@@ -1098,32 +825,38 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testGetCourseRecordTypes()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $types = $this->manager->getCourseRecordTypes();
+        $this->assertType('osid_type_TypeList', $types);
+        
+        // Check for any needed types or an empty list.
+        $this->assertFalse($types->hasNext());
     }
 
     /**
-     * @todo Implement testSupportsCourseRecordType().
+     * 
      */
     public function testSupportsCourseRecordType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+    	// Check support for any types listed
+        $types = $this->manager->getCourseRecordTypes();
+        while ($types->hasNext()) {
+        	$this->assertTrue($this->manager->supportsCourseRecordType($types->getNextType()));
+        }
+        
+        // Check for not supporting another type
+        $this->assertFalse($this->manager->supportsCourseRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:nonexistanttype')));
     }
 
     /**
-     * @todo Implement testGetCourseSearchRecordTypes().
+     * 
      */
     public function testGetCourseSearchRecordTypes()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $types = $this->manager->getCourseSearchRecordTypes();
+        $this->assertType('osid_type_TypeList', $types);
+        
+        // Check for any needed types or an empty list.
+        $this->assertFalse($types->hasNext());
     }
 
     /**
@@ -1131,87 +864,107 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsCourseSearchRecordType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+       // Check support for any types listed
+        $types = $this->manager->getCourseSearchRecordTypes();
+        while ($types->hasNext()) {
+        	$this->assertTrue($this->manager->supportsCourseSearchRecordType($types->getNextType()));
+        }
+        
+        // Check for not supporting another type
+        $this->assertFalse($this->manager->supportsCourseSearchRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:nonexistanttype')));
     }
 
     /**
-     * @todo Implement testGetCourseOfferingRecordTypes().
+     * 
      */
     public function testGetCourseOfferingRecordTypes()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $types = $this->manager->getCourseOfferingRecordTypes();
+        $this->assertType('osid_type_TypeList', $types);
+        
+        // Check for any needed types or an empty list.
+        $this->assertFalse($types->hasNext());
     }
 
     /**
-     * @todo Implement testSupportsCourseOfferingRecordType().
+     * 
      */
     public function testSupportsCourseOfferingRecordType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+    	// Check support for any types listed
+        $types = $this->manager->getCourseOfferingRecordTypes();
+        while ($types->hasNext()) {
+        	$this->assertTrue($this->manager->supportsCourseOfferingRecordType($types->getNextType()));
+        }
+        
+        // Check for not supporting another type
+        $this->assertFalse($this->manager->supportsCourseOfferingRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:nonexistanttype')));
     }
 
     /**
-     * @todo Implement testGetCourseOfferingSearchTypes().
+     * 
      */
     public function testGetCourseOfferingSearchTypes()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $types = $this->manager->getCourseOfferingSearchTypes();
+        $this->assertType('osid_type_TypeList', $types);
+        
+        // Check for any needed types or an empty list.
+        $this->assertFalse($types->hasNext());
     }
 
     /**
-     * @todo Implement testSupportsCourseOfferingSearchType().
+     * 
      */
     public function testSupportsCourseOfferingSearchType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+    	// Check support for any types listed
+        $types = $this->manager->getCourseOfferingSearchTypes();
+        while ($types->hasNext()) {
+        	$this->assertTrue($this->manager->supportsCourseOfferingSearchType($types->getNextType()));
+        }
+        
+        // Check for not supporting another type
+        $this->assertFalse($this->manager->supportsCourseOfferingSearchType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:nonexistanttype')));
     }
 
     /**
-     * @todo Implement testGetTermRecordTypes().
+     * 
      */
     public function testGetTermRecordTypes()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $types = $this->manager->getTermRecordTypes();
+        $this->assertType('osid_type_TypeList', $types);
+        
+        // Check for any needed types or an empty list.
+        $this->assertFalse($types->hasNext());
     }
 
     /**
-     * @todo Implement testSupportsTermRecordType().
+     * 
      */
     public function testSupportsTermRecordType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+    	// Check support for any types listed
+        $types = $this->manager->getTermRecordTypes();
+        while ($types->hasNext()) {
+        	$this->assertTrue($this->manager->supportsTermRecordType($types->getNextType()));
+        }
+        
+        // Check for not supporting another type
+        $this->assertFalse($this->manager->supportsTermRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:nonexistanttype')));
     }
 
     /**
-     * @todo Implement testGetTermSearchRecordTypes().
+     * 
      */
     public function testGetTermSearchRecordTypes()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $types = $this->manager->getTermSearchRecordTypes();
+        $this->assertType('osid_type_TypeList', $types);
+        
+        // Check for any needed types or an empty list.
+        $this->assertFalse($types->hasNext());
     }
 
     /**
@@ -1219,98 +972,122 @@ class banner_course_test_CourseManagerTest extends PHPUnit_Framework_TestCase
      */
     public function testSupportsTermSearchRecordType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+    	// Check support for any types listed
+        $types = $this->manager->getTermSearchRecordTypes();
+        while ($types->hasNext()) {
+        	$this->assertTrue($this->manager->supportsTermSearchRecordType($types->getNextType()));
+        }
+        
+        // Check for not supporting another type
+        $this->assertFalse($this->manager->supportsTermSearchRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:nonexistanttype')));
     }
 
     /**
-     * @todo Implement testGetTopicRecordTypes().
+     * 
      */
     public function testGetTopicRecordTypes()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $types = $this->manager->getTopicRecordTypes();
+        $this->assertType('osid_type_TypeList', $types);
+        
+        // Check for any needed types or an empty list.
+        $this->assertFalse($types->hasNext());
     }
 
     /**
-     * @todo Implement testSupportsTopicRecordType().
+     * 
      */
     public function testSupportsTopicRecordType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+    	// Check support for any types listed
+        $types = $this->manager->getTopicRecordTypes();
+        while ($types->hasNext()) {
+        	$this->assertTrue($this->manager->supportsTopicRecordType($types->getNextType()));
+        }
+        
+        // Check for not supporting another type
+        $this->assertFalse($this->manager->supportsTopicRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:nonexistanttype')));
     }
 
     /**
-     * @todo Implement testGetTopicSearchRecordTypes().
+     * 
      */
     public function testGetTopicSearchRecordTypes()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $types = $this->manager->getTopicSearchRecordTypes();
+        $this->assertType('osid_type_TypeList', $types);
+        
+        // Check for any needed types or an empty list.
+        $this->assertFalse($types->hasNext());
     }
 
     /**
-     * @todo Implement testSupportsTopicSearchRecordType().
+     * 
      */
     public function testSupportsTopicSearchRecordType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+    	// Check support for any types listed
+        $types = $this->manager->getTopicSearchRecordTypes();
+        while ($types->hasNext()) {
+        	$this->assertTrue($this->manager->supportsTopicSearchRecordType($types->getNextType()));
+        }
+        
+        // Check for not supporting another type
+        $this->assertFalse($this->manager->supportsTopicSearchRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:nonexistanttype')));
     }
 
     /**
-     * @todo Implement testGetCourseCatalogRecordTypes().
+     * 
      */
     public function testGetCourseCatalogRecordTypes()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $types = $this->manager->getCourseCatalogRecordTypes();
+        $this->assertType('osid_type_TypeList', $types);
+        
+        // Check for any needed types or an empty list.
+        $this->assertFalse($types->hasNext());
     }
 
     /**
-     * @todo Implement testSupportsCourseCatalogRecordType().
+     * 
      */
     public function testSupportsCourseCatalogRecordType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+    	// Check support for any types listed
+        $types = $this->manager->getCourseCatalogRecordTypes();
+        while ($types->hasNext()) {
+        	$this->assertTrue($this->manager->supportsCourseCatalogRecordType($types->getNextType()));
+        }
+        
+        // Check for not supporting another type
+        $this->assertFalse($this->manager->supportsCourseCatalogRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:nonexistanttype')));
     }
 
     /**
-     * @todo Implement testGetCourseCatalogSearchRecordTypes().
+     * 
      */
     public function testGetCourseCatalogSearchRecordTypes()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $types = $this->manager->getCourseCatalogSearchRecordTypes();
+        $this->assertType('osid_type_TypeList', $types);
+        
+        // Check for any needed types or an empty list.
+        $this->assertFalse($types->hasNext());
     }
 
     /**
-     * @todo Implement testSupportsCourseCatalogSearchRecordType().
+     * 
      */
     public function testSupportsCourseCatalogSearchRecordType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+    	// Check support for any types listed
+        $types = $this->manager->getCourseCatalogSearchRecordTypes();
+        while ($types->hasNext()) {
+        	$this->assertTrue($this->manager->supportsCourseCatalogSearchRecordType($types->getNextType()));
+        }
+        
+        // Check for not supporting another type
+        $this->assertFalse($this->manager->supportsCourseCatalogSearchRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:nonexistanttype')));
     }
 }
 ?>
