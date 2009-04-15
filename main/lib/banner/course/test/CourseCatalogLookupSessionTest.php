@@ -156,7 +156,7 @@ class banner_course_CourseCatalogLookupSessionTest
      */
     public function testGetCourseCatalogs()
     {
-        $catalogs = $this->session->getCourseCatalogs($this->generaNoneType);
+        $catalogs = $this->session->getCourseCatalogs();
        	$this->assertType('osid_course_CourseCatalogList', $catalogs);
        	$this->assertTrue($catalogs->hasNext());
     }
