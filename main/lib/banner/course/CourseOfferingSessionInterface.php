@@ -1,0 +1,76 @@
+<?php
+/**
+ * @since 4/16/09
+ * @package banner.course
+ * 
+ * @copyright Copyright &copy; 2009, Middlebury College
+ * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
+ */ 
+
+/**
+ * This interface defines a few methods to allow course offering objects to get back to
+ * other data from sessions such as terms and courses.
+ * 
+ * @since 4/16/09
+ * @package banner.course
+ * 
+ * @copyright Copyright &copy; 2009, Middlebury College
+ * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
+ */
+interface banner_course_CourseOfferingSessionInterface {
+		
+	/**
+	 * Answer the term code from an id object
+	 * 
+	 * @param osid_id_Id $id
+	 * @return string
+	 * @throws an osid_NotFoundException if the id cannot match.
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getTermCodeFromOfferingId (osid_id_Id $id);
+	
+	/**
+	 * Answer the CRN from an id object
+	 * 
+	 * @param osid_id_Id $id
+	 * @return string
+	 * @throws an osid_NotFoundException if the id cannot match.
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getCrnFromOfferingId (osid_id_Id $id);
+	
+	/**
+	 * Answer an id object from a CRN
+	 * 
+	 * @param string $termCode
+	 * @param string $id
+	 * @return osid_id_Id
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getIdFromTermCodeAndCrn ($termCode, $crn);
+	
+	/**
+	 * Answer the course lookup session
+	 * 
+	 * @return osid_course_CourseLookupSession
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getCourseLookupSession ();
+	
+	/**
+	 * Answer a term lookup session
+	 * 
+	 * @return osid_course_TermLookupSession
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getTermLookupSession ();
+	
+	
+}
+
+?>
