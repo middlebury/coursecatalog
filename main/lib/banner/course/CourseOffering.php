@@ -37,6 +37,15 @@ class banner_course_CourseOffering
 			
 			'SSRMEET_BLDG_CODE',
 			'SSRMEET_ROOM_CODE',
+			'SSRMEET_BEGIN_TIME',
+			'SSRMEET_END_TIME',
+			'SSRMEET_SUN_DAY',
+			'SSRMEET_MON_DAY',
+			'SSRMEET_TUE_DAY',
+			'SSRMEET_WED_DAY',
+			'SSRMEET_THU_DAY',
+			'SSRMEET_FRI_DAY',
+			'SSRMEET_SAT_DAY',
 			
 			'STVBLDG_DESC'
 		);
@@ -79,8 +88,9 @@ class banner_course_CourseOffering
 	 */
 	protected function checkRow (array $row) {
 		 foreach (self::$requiredFields as $field) {
-		 	if (!isset($row[$field]))
-		 		throw new OperationFailedException("Required field, $field not found in data row.");
+		 	if (!array_key_exists($field, $row)) {
+		 		throw new osid_OperationFailedException("Required field, $field not found in data row.");
+		 	}
 		 }
 	}
 	

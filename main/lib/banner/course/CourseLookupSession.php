@@ -60,9 +60,7 @@ class banner_course_CourseLookupSession
 	public function __construct (banner_course_CourseManagerInterface $manager, osid_id_Id $catalogId) {
 		parent::__construct($manager, 'course/');
 		
-		$lookup = $this->manager->getCourseCatalogLookupSession();
-		$lookup->usePlenaryView();
-		$this->catalog = $lookup->getCourseCatalog($catalogId);
+		$this->catalogId = $catalogId;
 	}
 	
 	private $catalog;
@@ -77,7 +75,7 @@ class banner_course_CourseLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseCatalogId() {
-    	return $this->catalog->getId();
+    	return $this->catalogId;
     }
 
 
@@ -91,6 +89,11 @@ class banner_course_CourseLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseCatalog() {
+    	if (!isset($this->catalog)) {
+	    	$lookup = $this->manager->getCourseCatalogLookupSession();
+			$lookup->usePlenaryView();
+			$this->catalog = $lookup->getCourseCatalog($this->getCourseCatalogId());
+		}
     	return $this->catalog;
     }
 
@@ -227,6 +230,7 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 			':course_number' => $matches[2]
 		));
 		$row = $this->getCourse_stmt->fetch(PDO::FETCH_ASSOC);
+		$this->getCourse_stmt->closeCursor();
 		
 		if (!($row['SCBCRSE_SUBJ_CODE'] && $row['SCBCRSE_CRSE_NUMB']))
 			throw new osid_NotFoundException("Could not find a course matching the id-component $courseIdString.");
@@ -305,7 +309,7 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
     	if ($courseGenusType->isEqual(new phpkit_type_URNInetType("urn:inet:osid.org:genera:none")))
     		return $this->getCourses();
     	else
-    		return new phpkit_course_ArrayCourseList(array());
+    		return new phpkit_EmptyList;
     }
 
 
@@ -351,7 +355,7 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCoursesByRecordType(osid_type_Type $courseRecordType) {
-    	return new phpkit_course_ArrayCourseList(array());
+    	return new phpkit_EmptyList;
     }
 
 

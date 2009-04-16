@@ -120,7 +120,8 @@ abstract class banner_course_AbstractCourseOfferingSession
 	 */
 	public function getTermLookupSession () {
 		if (!isset($this->termLookupSession))
-			$this->termLookupSession = $this->manager->getTermLookupSessionForCatalog($this->getCourseCatalogId());
+// 			$this->termLookupSession = $this->manager->getTermLookupSessionForCatalog($this->getCourseCatalogId());
+			$this->termLookupSession = $this->manager->getTermLookupSession();
 		
 		return $this->termLookupSession;
 	}
