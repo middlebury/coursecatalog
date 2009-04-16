@@ -26,17 +26,23 @@ class banner_course_CourseOffering
 	 * @static
 	 */
 	private static $requiredFields = array(
-			// From ssbsect
 			'SSBSECT_TERM_CODE',
 			'SSBSECT_CRN',
 			'SSBSECT_SUBJ_CODE',
 			'SSBSECT_CRSE_NUMB',
 			'SSBSECT_SEQ_NUMB',
 			
-			// From stvterm
 			'STVTERM_TRMT_CODE',
-			'STVTERM_START_DATE'
+			'STVTERM_START_DATE',
+			
+			'SSRMEET_BLDG_CODE',
+			'SSRMEET_ROOM_CODE',
+			
+			'STVBLDG_DESC'
 		);
+	
+	private $row;
+	private $session;
 	
 	/**
 	 * Constructor
@@ -53,7 +59,7 @@ class banner_course_CourseOffering
 		$this->checkRow($row);
 		$this->row = $row;
 		$this->session = $session;
-		$this->setId($this->session->getIdFromTermCodeAndCrn($row['SSBSECT_TERM_CODE'], $row['SSBSECT_CRN']));
+		$this->setId($this->session->getOfferingIdFromTermCodeAndCrn($row['SSBSECT_TERM_CODE'], $row['SSBSECT_CRN']));
 		$this->setDisplayName(
 			$row['SSBSECT_SUBJ_CODE']
 			.$row['SSBSECT_CRSE_NUMB']
@@ -140,7 +146,7 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseId() {
-    	throw new osid_UnimplementedException();
+    	return $this->session->getCourseIdFromSubjectAndNumber($this->row['SSBSECT_SUBJ_CODE'], $this->row['SSBSECT_CRSE_NUMB']);
     }
 
 
@@ -152,9 +158,12 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourse() {
-    	throw new osid_UnimplementedException();
+    	if (!isset($this->course))
+    		$this->course = $this->session->getCourseLookupSession()->getCourse($this->getCourseId());
+    	return $this->course;
     }
-
+	
+	private $course;
 
     /**
      *  Gets the <code> Id </code> of the <code> Term </code> of this 
@@ -164,7 +173,7 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getTermId() {
-    	throw new osid_UnimplementedException();
+		return $this->getOsidIdFromString($this->row['SSBSECT_TERM_CODE'], 'term/');
     }
 
 
@@ -176,7 +185,7 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getTerm() {
-    	throw new osid_UnimplementedException();
+    	return $this->session->getTermLookupSession()->getTerm($this->getTermId());
     }
 
 
@@ -187,7 +196,8 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getLocationInfo() {
-    	throw new osid_UnimplementedException();
+    	return $this->row['SSRMEET_BLDG_CODE'].' ' .$this->row['SSRMEET_ROOM_CODE']
+    		.' ('.$this->row['STVBLDG_DESC'].')';
     }
 
 
@@ -199,7 +209,7 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function hasLocation() {
-    	throw new osid_UnimplementedException();
+    	return true;
     }
 
 
@@ -213,7 +223,9 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getLocationId() {
-    	throw new osid_UnimplementedException();
+    	return $this->getOsidIdFromString(
+    		$this->row['SSBSECT_CAMP_CODE'].'/'.$this->row['SSRMEET_BLDG_CODE'].'/'.$this->row['SSRMEET_ROOM_CODE'], 
+    		'location/');
     }
 
 
@@ -229,7 +241,7 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getLocation() {
-    	throw new osid_UnimplementedException();
+    	return $this->session->getResourceLookupSession()->getResource($this->getLocationId());
     }
 
 
@@ -240,7 +252,39 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getScheduleInfo() {
-    	throw new osid_UnimplementedException();
+    	$days = array();
+    	if ($this->row['SSRMEET_SUN_DAY'])	
+    		$days[] = 'Sunday';
+    	if ($this->row['SSRMEET_MON_DAY'])	
+    		$days[] = 'Monday';
+    	if ($this->row['SSRMEET_TUE_DAY'])	
+    		$days[] = 'Tuesday';
+    	if ($this->row['SSRMEET_WED_DAY'])	
+    		$days[] = 'Wednesday';
+    	if ($this->row['SSRMEET_THU_DAY'])	
+    		$days[] = 'Thursday';
+    	if ($this->row['SSRMEET_FRI_DAY'])	
+    		$days[] = 'Friday';
+    	if ($this->row['SSRMEET_SAT_DAY'])	
+    		$days[] = 'Saturday';
+    	
+    	return $this->as12HourTime($this->row['SSRMEET_BEGIN_TIME'])
+    		.'-'.$this->as12HourTime($this->row['SSRMEET_END_TIME'])
+    		.' on '.implode(', ', $days);
+    	
+    }
+    
+    /**
+     * Convert a 24-hour time into a 12-hour time
+     * 
+     * @param string $time
+     * @return string
+     * @access protected
+     * @since 4/16/09
+     */
+    protected function as12HourTime ($time) {
+    	$parts = strptime($time, '%H%M');
+    	return date('H:ia', mktime($parts['tm_hour'], $parts['tm_min']));
     }
 
 
@@ -252,7 +296,7 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function hasCalendar() {
-    	throw new osid_UnimplementedException();
+    	return false;
     }
 
 
@@ -268,7 +312,10 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCalendarId() {
-    	throw new osid_UnimplementedException();
+    	throw new osid_IllegalStateException('This version of the OSID does not support Learning Objectives');
+    	return $this->getOsidIdFromString(
+    		$this->row['SSBSECT_TERM_CODE'].'/'.$this->row['SSBSECT_CRN'], 
+    		'CourseSchedule/');
     }
 
 
@@ -284,7 +331,8 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCalendar() {
-    	throw new osid_UnimplementedException();
+    	throw new osid_IllegalStateException('This version of the OSID does not support Calendering');
+    	return $this->session->getCalendarLookupSession()->getResource($this->getCalendarId());
     }
 
 
@@ -296,7 +344,7 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function hasLearningObjective() {
-    	throw new osid_UnimplementedException();
+    	return false;
     }
 
 
@@ -311,6 +359,7 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method is must be implemented. 
      */
     public function getLearningObjectiveId() {
+    	throw new osid_IllegalStateException('This version of the OSID does not support Learning Objectives');
     	throw new osid_UnimplementedException();
     }
 
@@ -328,6 +377,7 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getLearningObjective() {
+    	throw new osid_IllegalStateException('This version of the OSID does not support Learning Objectives');
     	throw new osid_UnimplementedException();
     }
 
@@ -371,5 +421,20 @@ class banner_course_CourseOffering
     public function getCourseOfferingRecord(osid_type_Type $courseOfferingRecordType) {
     	throw new osid_UnimplementedException();
     }
+    
+    /**
+	 * Answer an Id object from a string database Id
+	 * 
+	 * @param string $databaseId
+	 * @param string optional $prefix
+	 * @return osid_id_Id
+	 * @access protected
+	 * @since 4/10/09
+	 */
+	protected function getOsidIdFromString ($databaseId, $prefix = null) {
+		if (is_null($prefix))
+			$prefix = $this->idPrefix;
+		return new phpkit_id_Id($this->session->getIdAuthority(), 'urn', $prefix.$databaseId);
+	}
 
 }

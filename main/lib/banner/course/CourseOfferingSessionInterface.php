@@ -50,7 +50,27 @@ interface banner_course_CourseOfferingSessionInterface {
 	 * @access public
 	 * @since 4/16/09
 	 */
-	public function getIdFromTermCodeAndCrn ($termCode, $crn);
+	public function getOfferingIdFromTermCodeAndCrn ($termCode, $crn);
+	
+	/**
+	 * Answer an id object from a subject code and course number
+	 * 
+	 * @param string $subjectCode
+	 * @param string $courseNumber
+	 * @return osid_id_Id
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getCourseIdFromSubjectAndNumber ($subjectCode, $number);
+	
+	/**
+	 * Answer the id authority for this session
+	 * 
+	 * @return string
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getIdAuthority ();
 	
 	/**
 	 * Answer the course lookup session
@@ -69,6 +89,15 @@ interface banner_course_CourseOfferingSessionInterface {
 	 * @since 4/16/09
 	 */
 	public function getTermLookupSession ();
+	
+	/**
+	 * Answer a resource lookup session
+	 * 
+	 * @return osid_resource_ResourceLookupSession
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getResourceLookupSession ();
 	
 	
 }

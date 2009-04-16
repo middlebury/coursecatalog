@@ -50,16 +50,18 @@ class banner_course_CourseOfferingTest
     protected function tearDown()
     {
     }
-
+	
+	public function testOfferingGetDisplayName() {
+		$this->assertEquals('PHYS0201A-S08', $this->object->getDisplayName());
+	}
+	
     /**
      * @todo Implement testGetTitle().
      */
     public function testGetTitle()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('string', $this->object->getTitle());
+        $this->assertEquals('Relativity And Quantum Physics', $this->object->getTitle());
     }
 
     /**
@@ -67,10 +69,8 @@ class banner_course_CourseOfferingTest
      */
     public function testGetNumber()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('string', $this->object->getNumber());
+        $this->assertEquals('PHYS0201A-S08', $this->object->getNumber());
     }
 
     /**
@@ -78,10 +78,8 @@ class banner_course_CourseOfferingTest
      */
     public function testGetCredits()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('float', $this->object->getCredits());
+        $this->assertEquals(1.00, $this->object->getCredits());
     }
 
     /**
@@ -89,10 +87,7 @@ class banner_course_CourseOfferingTest
      */
     public function testGetPrereqInfo()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('string', $this->object->getPrereqInfo());
     }
 
     /**
@@ -100,10 +95,7 @@ class banner_course_CourseOfferingTest
      */
     public function testGetCourseId()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_id_Id', $this->object->getCourseId());
     }
 
     /**
@@ -111,10 +103,7 @@ class banner_course_CourseOfferingTest
      */
     public function testGetCourse()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_Course', $this->object->getCourse());
     }
 
     /**
@@ -122,10 +111,7 @@ class banner_course_CourseOfferingTest
      */
     public function testGetTermId()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_id_Id', $this->object->getTermId());
     }
 
     /**
@@ -133,10 +119,7 @@ class banner_course_CourseOfferingTest
      */
     public function testGetTerm()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_Term', $this->object->getTerm());
     }
 
     /**
@@ -144,10 +127,8 @@ class banner_course_CourseOfferingTest
      */
     public function testGetLocationInfo()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('string', $this->object->getLocationInfo());
+//         $this->assertEquals('', $this->object->getLocationInfo());
     }
 
     /**
@@ -155,10 +136,7 @@ class banner_course_CourseOfferingTest
      */
     public function testHasLocation()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('boolean', $this->object->hasLocation());
     }
 
     /**
@@ -166,10 +144,16 @@ class banner_course_CourseOfferingTest
      */
     public function testGetLocationId()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        if ($this->object->hasLocation()) {
+        	$this->assertType('osid_id_Id', $this->object->getLocationId());
+        } else {
+        	try {
+        		$this->object->getLocationId();
+        		$this->fail('Should have thrown an osid_IllegalStateException');
+        	} catch (osid_IllegalStateException $e) {
+        		$this->assertTrue(true);
+        	}
+        }
     }
 
     /**
@@ -177,10 +161,16 @@ class banner_course_CourseOfferingTest
      */
     public function testGetLocation()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        if ($this->object->hasLocation()) {
+        	$this->assertType('osid_resource_Resource', $this->object->getLocation());
+        } else {
+        	try {
+        		$this->object->getLocation();
+        		$this->fail('Should have thrown an osid_IllegalStateException');
+        	} catch (osid_IllegalStateException $e) {
+        		$this->assertTrue(true);
+        	}
+        }
     }
 
     /**
@@ -188,10 +178,8 @@ class banner_course_CourseOfferingTest
      */
     public function testGetScheduleInfo()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('string', $this->object->getScheduleInfo());
+//         $this->assertEquals('', $this->object->getScheduleInfo());
     }
 
     /**
@@ -199,10 +187,7 @@ class banner_course_CourseOfferingTest
      */
     public function testHasCalendar()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('boolean', $this->object->hasCalendar());
     }
 
     /**
@@ -210,10 +195,16 @@ class banner_course_CourseOfferingTest
      */
     public function testGetCalendarId()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        if ($this->object->hasCalendar()) {
+        	$this->assertType('osid_id_Id', $this->object->getCalendarId());
+        } else {
+        	try {
+        		$this->object->getCalendarId();
+        		$this->fail('Should have thrown an osid_IllegalStateException');
+        	} catch (osid_IllegalStateException $e) {
+        		$this->assertTrue(true);
+        	}
+        }
     }
 
     /**
@@ -221,10 +212,16 @@ class banner_course_CourseOfferingTest
      */
     public function testGetCalendar()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        if ($this->object->hasCalendar()) {
+        	$this->assertType('osid_resource_Resource', $this->object->getCalendar());
+        } else {
+        	try {
+        		$this->object->getCalendar();
+        		$this->fail('Should have thrown an osid_IllegalStateException');
+        	} catch (osid_IllegalStateException $e) {
+        		$this->assertTrue(true);
+        	}
+        }
     }
 
     /**
@@ -232,10 +229,7 @@ class banner_course_CourseOfferingTest
      */
     public function testHasLearningObjective()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('boolean', $this->object->hasLearningObjective());
     }
 
     /**
@@ -243,10 +237,16 @@ class banner_course_CourseOfferingTest
      */
     public function testGetLearningObjectiveId()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        if ($this->object->hasLearningObjective()) {
+        	$this->assertType('osid_id_Id', $this->object->getLearningObjectiveId());
+        } else {
+        	try {
+        		$this->object->getLearningObjectiveId();
+        		$this->fail('Should have thrown an osid_IllegalStateException');
+        	} catch (osid_IllegalStateException $e) {
+        		$this->assertTrue(true);
+        	}
+        }
     }
 
     /**
@@ -254,10 +254,16 @@ class banner_course_CourseOfferingTest
      */
     public function testGetLearningObjective()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        if ($this->object->hasLearningObjective()) {
+        	$this->assertType('osid_id_Id', $this->object->getLearningObjective());
+        } else {
+        	try {
+        		$this->object->getLearningObjective();
+        		$this->fail('Should have thrown an osid_IllegalStateException');
+        	} catch (osid_IllegalStateException $e) {
+        		$this->assertTrue(true);
+        	}
+        }
     }
 
     /**

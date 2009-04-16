@@ -63,11 +63,38 @@ abstract class banner_course_AbstractCourseOfferingSession
 	 * @access public
 	 * @since 4/16/09
 	 */
-	public function getIdFromTermCodeAndCrn ($termCode, $crn) {
+	public function getOfferingIdFromTermCodeAndCrn ($termCode, $crn) {
 		if (!strlen($termCode) || !strlen($crn))
 			throw new osid_OperationFailedException('Both termCode and CRN must be specified.');
 		
 		return $this->getOsidIdFromString($termCode.'/'.$crn, 'section/');
+	}
+	
+	/**
+	 * Answer an id object from a subject code and course number
+	 * 
+	 * @param string $subjectCode
+	 * @param string $courseNumber
+	 * @return osid_id_Id
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getCourseIdFromSubjectAndNumber ($subjectCode, $number) {
+		if (!strlen($subjectCode) || !strlen($number))
+			throw new osid_OperationFailedException('Both subjectCode and number must be specified.');
+		
+		return $this->getOsidIdFromString($subjectCode.$number, 'course/');
+	}
+	
+	/**
+	 * Answer the id authority for this session
+	 * 
+	 * @return string
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getIdAuthority () {
+		return $this->manager->getIdAuthority();
 	}
 	
 	/**
@@ -79,7 +106,7 @@ abstract class banner_course_AbstractCourseOfferingSession
 	 */
 	public function getCourseLookupSession () {
 		if (!isset($this->courseLookupSession))
-			$this->courseLookupSession = $this->manager->getCourseLookupSession();
+			$this->courseLookupSession = $this->manager->getCourseLookupSessionForCatalog($this->getCourseCatalogId());
 		
 		return $this->courseLookupSession;
 	}
@@ -93,9 +120,23 @@ abstract class banner_course_AbstractCourseOfferingSession
 	 */
 	public function getTermLookupSession () {
 		if (!isset($this->termLookupSession))
-			$this->termLookupSession = $this->manager->getTermLookupSession();
+			$this->termLookupSession = $this->manager->getTermLookupSessionForCatalog($this->getCourseCatalogId());
 		
 		return $this->termLookupSession;
+	}
+	
+	/**
+	 * Answer a Resource lookup session
+	 * 
+	 * @return osid_resource_ResourceLookupSession
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getResourceLookupSession () {
+		if (!isset($this->resourceLookupSession))
+			$this->resourceLookupSession = $this->manager->getResourceManager()->getResourceLookupSession();
+		
+		return $this->resourceLookupSession;
 	}
 	
 	
