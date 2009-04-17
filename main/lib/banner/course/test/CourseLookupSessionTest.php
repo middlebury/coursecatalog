@@ -115,7 +115,6 @@ class banner_course_test_CourseLookupSessionTest
        					$this->physId,
        					$this->mathId,
        					$this->unknownId)));
-        $this->assertEquals(2, $courses->available());
     }
 
     /**
@@ -137,6 +136,7 @@ class banner_course_test_CourseLookupSessionTest
        					$this->physId,
        					$this->mathId,
        					$this->unknownId)));
+       		$this->fail('should have thrown an osid_NotFoundException.');
        	} catch (osid_NotFoundException $e) {
        		$this->assertTrue(true);
        	}
