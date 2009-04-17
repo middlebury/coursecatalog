@@ -1283,7 +1283,7 @@ class banner_course_CourseManager
      *  @compliance mandatory This method must be implemented <code> . </code> 
      */
     public function getCalendarManager() {
-    	throw new osid_OperationFailedException('Not yet implemented.');
+    	throw new osid_OperationFailedException('getCalendarManager() is not yet implemented.');
     	
     	if (!isset($this->calendarManager)) {
     		$this->calendarManager = $this->impl_getRuntimeManager()->getManager(osid_OSID::CALENDAR(), 'banner_calendar_CalendarManager', '3.0.0');
@@ -1304,7 +1304,7 @@ class banner_course_CourseManager
      *  @compliance mandatory This method must be implemented <code> . </code> 
      */
     public function getLearningManager() {
-    	throw new osid_OperationFailedException('Not yet implemented.');
+    	throw new osid_OperationFailedException('getLearningManager() is not yet implemented.');
     	
     	if (!isset($this->learningManager)) {
     		$this->learningManager = $this->impl_getRuntimeManager()->getManager(osid_OSID::LEARNING(), 'banner_learning_ObjectiveManager', '3.0.0');
