@@ -161,7 +161,7 @@ class banner_course_CourseLookupSession
      *  @compliance mandatory This method is must be implemented. 
      */
     public function useIsolatedCourseCatalogView() {
-    	$this->useIsolateView();
+    	$this->useIsolatedView();
     }
 
 
