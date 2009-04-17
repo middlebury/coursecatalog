@@ -31,6 +31,7 @@ class banner_course_CourseOffering
 			'SSBSECT_SUBJ_CODE',
 			'SSBSECT_CRSE_NUMB',
 			'SSBSECT_SEQ_NUMB',
+			'SSBSECT_CAMP_CODE',
 			
 			'STVTERM_TRMT_CODE',
 			'STVTERM_START_DATE',
