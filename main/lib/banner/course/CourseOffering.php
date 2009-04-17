@@ -430,7 +430,7 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingRecord(osid_type_Type $courseOfferingRecordType) {
-    	throw new osid_UnimplementedException();
+    	throw new osid_UnsupportedException('Record type is not supported.');
     }
     
     /**

@@ -56,7 +56,7 @@ class banner_course_CourseOfferingTest
 	}
 	
     /**
-     * @todo Implement testGetTitle().
+     * 
      */
     public function testGetTitle()
     {
@@ -65,7 +65,7 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testGetNumber().
+     * 
      */
     public function testGetNumber()
     {
@@ -74,7 +74,7 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testGetCredits().
+     * 
      */
     public function testGetCredits()
     {
@@ -83,7 +83,7 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testGetPrereqInfo().
+     * 
      */
     public function testGetPrereqInfo()
     {
@@ -91,7 +91,7 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testGetCourseId().
+     * 
      */
     public function testGetCourseId()
     {
@@ -99,7 +99,7 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testGetCourse().
+     * 
      */
     public function testGetCourse()
     {
@@ -107,7 +107,7 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testGetTermId().
+     * 
      */
     public function testGetTermId()
     {
@@ -115,7 +115,7 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testGetTerm().
+     * 
      */
     public function testGetTerm()
     {
@@ -123,7 +123,7 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testGetLocationInfo().
+     * 
      */
     public function testGetLocationInfo()
     {
@@ -132,7 +132,7 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testHasLocation().
+     * 
      */
     public function testHasLocation()
     {
@@ -140,7 +140,7 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testGetLocationId().
+     * 
      */
     public function testGetLocationId()
     {
@@ -157,7 +157,7 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testGetLocation().
+     * 
      */
     public function testGetLocation()
     {
@@ -174,7 +174,7 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testGetScheduleInfo().
+     * 
      */
     public function testGetScheduleInfo()
     {
@@ -183,7 +183,7 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testHasCalendar().
+     * 
      */
     public function testHasCalendar()
     {
@@ -191,7 +191,7 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testGetCalendarId().
+     * 
      */
     public function testGetCalendarId()
     {
@@ -208,7 +208,7 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testGetCalendar().
+     * 
      */
     public function testGetCalendar()
     {
@@ -225,7 +225,7 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testHasLearningObjective().
+     * 
      */
     public function testHasLearningObjective()
     {
@@ -233,7 +233,7 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testGetLearningObjectiveId().
+     * 
      */
     public function testGetLearningObjectiveId()
     {
@@ -250,7 +250,7 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testGetLearningObjective().
+     * 
      */
     public function testGetLearningObjective()
     {
@@ -278,14 +278,14 @@ class banner_course_CourseOfferingTest
     }
 
     /**
-     * @todo Implement testGetCourseOfferingRecord().
+     * 
      */
     public function testGetCourseOfferingRecord()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $types = $this->object->getRecordTypes();
+    	while ($types->hasNext()) {
+	        $this->assertType('osid_course_CourseOfferingRecord', $this->object->getCourseOfferingRecord($types->getNextType()));
+	    }
     }
 }
 ?>
