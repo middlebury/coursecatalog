@@ -172,6 +172,17 @@ abstract class banner_course_AbstractCourseSession
 			$prefix = $this->idPrefix;
 		return new phpkit_id_Id($this->manager->getIdAuthority(), 'urn', $prefix.$databaseId);
 	}
+	
+	/**
+	 * Answer the combined catalog id
+	 * 
+	 * @return osid_id_Id
+	 * @access protected
+	 * @since 4/17/09
+	 */
+	protected function getCombinedCatalogId () {
+		return $this->getOsidIdFromSTring('all');
+	}
 }
 
 ?>

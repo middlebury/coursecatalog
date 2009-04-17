@@ -31,8 +31,22 @@ class banner_course_AllCoursesList
 	 * @since 4/13/09
 	 */
 	public function __construct (PDO $db, $catalogDatabaseId, $idAuthority, $idPrefix) {
-		$query =
-"SELECT 
+		$this->catalogDatabaseId = $catalogDatabaseId;
+		$this->idAuthority = $idAuthority;
+		$this->idPrefix = $idPrefix;
+		
+		parent::__construct($db, $this->getQuery(), $this->getInputParameters());
+	}
+	
+	/**
+	 * Answer the query
+	 * 
+	 * @return string
+	 * @access protected
+	 * @since 4/17/09
+	 */
+	protected function getQuery () {
+		return "SELECT 
 	SCBCRSE_SUBJ_CODE , 
 	SCBCRSE_CRSE_NUMB , 
 	MAX( SCBCRSE_EFF_TERM ) AS SCBCRSE_EFF_TERM , 
@@ -59,9 +73,17 @@ WHERE
 GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC	
 ";
-		parent::__construct($db, $query, array(':catalog_id' => $catalogDatabaseId));
-		$this->idAuthority = $idAuthority;
-		$this->idPrefix = $idPrefix;
+	}
+	
+	/**
+	 * Answer the input parameters
+	 * 
+	 * @return array
+	 * @access protected
+	 * @since 4/17/09
+	 */
+	protected function getInputParameters () {
+		return array(':catalog_id' => $this->catalogDatabaseId);
 	}
 		
 	/**

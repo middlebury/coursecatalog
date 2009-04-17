@@ -158,7 +158,8 @@ class banner_course_CourseManager
      *              supportsCourseLookup() </code> is <code> true. </code> 
      */
     public function getCourseLookupSession() {
-    	throw new osid_OperationFailedException('I do not currently support a default catalog.');
+    	return new banner_course_CombinedCourseLookupSession($this, 
+    		new phpkit_id_URNInetId('urn:inet:'.$this->idAuthority.':catalog/all'));
 	}
 
     /**

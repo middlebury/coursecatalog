@@ -121,6 +121,9 @@ class banner_course_CourseCatalogLookupSession
      *  @compliance mandatory This method is must be implemented. 
      */
     public function getCourseCatalog(osid_id_Id $courseCatalogId) {
+    	if ($courseCatalogId->isEqual($this->getCombinedCatalogId()))
+    		return new banner_course_CombinedCourseCatalog($this->getCombinedCatalogId());
+    	
     	if (!isset($this->getCatalogById_stmt)) {
     		$this->getCatalogById_stmt = $this->manager->getDB()->prepare(
 "SELECT
@@ -293,6 +296,7 @@ FROM
     	$this->getCatalogs_stmt->execute();
     	
     	$catalogs = array();
+    	$catalogs[] = new banner_course_CombinedCourseCatalog($this->getCombinedCatalogId());
     	while ($result = $this->getCatalogs_stmt->fetch(PDO::FETCH_ASSOC)) {
     	
     		$catalogs[] = new banner_course_CourseCatalog(
