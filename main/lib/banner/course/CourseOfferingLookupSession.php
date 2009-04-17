@@ -152,7 +152,7 @@ class banner_course_CourseOfferingLookupSession
      *  @compliance mandatory This method is must be implemented. 
      */
     public function useIsolatedCourseCatalogView() {
-    	$this->useIsolateView();
+    	$this->useIsolatedView();
     }
 
 
@@ -250,7 +250,21 @@ WHERE
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingsByIds(osid_id_IdList $courseOfferingIdList) {
-    	throw new osid_UnimplementedException();
+    	$offerings = array();
+    	
+    	while ($courseOfferingIdList->hasNext()) {
+    		try {
+    			$offerings[] = $this->getCourseOffering($courseOfferingIdList->getNextId());
+    		} catch (osid_NotFoundException $e) {
+    			if ($this->usesPlenaryView())
+    				throw $e;
+    		} catch (osid_PermissionDeniedException $e) {
+    			if ($this->usesPlenaryView())
+    				throw $e;
+    		}
+    	}
+    	
+    	return new phpkit_course_ArrayCourseOfferingList($offerings);
     }
 
 
@@ -275,7 +289,10 @@ WHERE
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingsByGenusType(osid_type_Type $courseOfferingGenusType) {
-    	throw new osid_UnimplementedException();
+    	if ($courseOfferingGenusType->isEqual(new phpkit_type_URNInetType("urn:inet:osid.org:genera:none")))
+    		return $this->getCourseOfferings();
+    	else
+    		return new phpkit_EmptyList;
     }
 
 
@@ -300,7 +317,7 @@ WHERE
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingsByParentGenusType(osid_type_Type $courseOfferingGenusType) {
-    	throw new osid_UnimplementedException();
+    	return $this->getCourseOfferingsByGenusType($courseOfferingGenusType);
     }
 
 
@@ -324,7 +341,7 @@ WHERE
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingsByRecordType(osid_type_Type $courseOfferingRecordType) {
-    	throw new osid_UnimplementedException();
+    	return new phpkit_EmptyList;
     }
 
 
@@ -412,7 +429,12 @@ WHERE
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferings() {
-    	throw new osid_UnimplementedException();
+    	return new banner_course_AllCourseOfferingsList(
+    		$this->manager->getDB(), 
+    		$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/'),
+    		$this,
+    		$this->manager->getIdAuthority(),
+    		'section/');
     }
 
 }
