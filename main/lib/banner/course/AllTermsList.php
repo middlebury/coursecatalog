@@ -25,24 +25,52 @@ class banner_course_AllTermsList
 	 * Constructor
 	 * 
 	 * @param PDO $db
+	 * @param banner_course_CourseOfferingSessionInterface $session
 	 * @return void
 	 * @access public
 	 * @since 4/13/09
 	 */
-	public function __construct (PDO $db, $idAuthority, $idPrefix) {
+	public function __construct (PDO $db, banner_course_CourseOfferingSessionInterface $session) {
 		$query =
 "SELECT 
-	STVTERM_CODE,
+    section_coll_code,
+    STVTERM_CODE,
 	STVTERM_DESC,
 	STVTERM_START_DATE,
 	STVTERM_END_DATE
 FROM 
-	stvterm
+	course_section_college
+	INNER JOIN stvterm ON section_term_code = STVTERM_CODE
+	
+WHERE 
+	section_coll_code IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms()."
+	)
+GROUP BY section_term_code
 ORDER BY STVTERM_CODE DESC
 ";
 		parent::__construct($db, $query, array());
 		$this->idAuthority = $idAuthority;
 		$this->idPrefix = $idPrefix;
+	}
+	
+	/**
+	 * Answer the catalog where terms
+	 * 
+	 * @return string
+	 * @access private
+	 * @since 4/20/09
+	 */
+	private function getCatalogWhereTerms () {
+		if ($this->session->getCourseCatalogId()->isEqual($this->session->getCombinedCatalogId()))
+			return 'TRUE';
+		else
+			return 'catalog_id = :catalog_id';
 	}
 		
 	/**
@@ -55,7 +83,7 @@ ORDER BY STVTERM_CODE DESC
 	 */
 	protected function getObjectFromRow (array $row) {
 		return new banner_course_Term(
-					new phpkit_id_URNInetId('urn:inet:'.$this->idAuthority.':'.$this->idPrefix.$row['STVTERM_CODE']),
+					$this->session->getOsidIdFromString($row['STVTERM_CODE'], 'term/')
 					$row['STVTERM_DESC'],
 					$row['STVTERM_START_DATE'], 
 					$row['STVTERM_END_DATE']);

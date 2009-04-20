@@ -681,7 +681,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getTermLookupSessionForCatalog(osid_id_Id $courseCatalogId) {
-    	throw new osid_UnimplementedException();
+    	return new banner_course_TermLookupSession($this, $this->getCombinedCatalogId());
 	}
 
 

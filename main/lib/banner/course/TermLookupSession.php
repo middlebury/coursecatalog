@@ -47,13 +47,18 @@ class banner_course_TermLookupSession
 	 * Constructor
 	 * 
 	 * @param banner_course_CourseManagerInterface $manager
-	 * @param osid_id_Id $catalogId
+	 * @param optional osid_id_Id $catalogId
 	 * @return void
 	 * @access public
 	 * @since 4/10/09
 	 */
-	public function __construct (banner_course_CourseManagerInterface $manager) {
+	public function __construct (banner_course_CourseManagerInterface $manager, osid_id_Id $catalogId = null) {
 		parent::__construct($manager, 'term/');
+		
+		if (is_null($catalogId))
+			$this->catalogId = $manager->getCombinedCatalogId();
+		else
+			$this->catalogId = $catalogId;
 	}
 
     /**
@@ -66,7 +71,7 @@ class banner_course_TermLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseCatalogId() {
-    	return $this->getOsidIdFromString('ALL', 'catalog/');
+    	return $this->catalogId;
     }
 
 
@@ -182,21 +187,38 @@ class banner_course_TermLookupSession
 		if (!isset($this->getTerm_stmt)) {
 	    	$query =
 "SELECT 
-	STVTERM_CODE,
+    section_coll_code,
+    STVTERM_CODE,
 	STVTERM_DESC,
 	STVTERM_START_DATE,
 	STVTERM_END_DATE
 FROM 
-	stvterm
-WHERE
+	course_section_college
+	INNER JOIN stvterm ON section_term_code = STVTERM_CODE
+	
+WHERE 
 	STVTERM_CODE = :term_code
+	AND section_coll_code IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms()."
+	)
+GROUP BY section_term_code
+ORDER BY STVTERM_CODE DESC
 ";
 			$this->getTerm_stmt = $this->manager->getDB()->prepare($query);
 		}
 		
-		$this->getTerm_stmt->execute(array(
-			':term_code' => $idString
-		));
+		$parameters = array_merge(
+			array(
+				':term_code' => $idString
+			),
+			$this->getCatalogParameters());
+		$this->getTerm_stmt->execute($parameters);
+		
 		$row = $this->getTerm_stmt->fetch(PDO::FETCH_ASSOC);
 		$this->getTerm_stmt->closeCursor();
 		
@@ -209,6 +231,34 @@ WHERE
 					$row['STVTERM_START_DATE'], 
 					$row['STVTERM_END_DATE']);
     }
+    
+    /**
+	 * Answer the catalog where terms
+	 * 
+	 * @return string
+	 * @access private
+	 * @since 4/20/09
+	 */
+	private function getCatalogWhereTerms () {
+		if (is_null($this->catalogId) || $this->catalogId->isEqual($this->getCombinedCatalogId()))
+			return 'TRUE';
+		else
+			return 'catalog_id = :catalog_id';
+	}
+	
+	/**
+	 * Answer the input parameters
+	 * 
+	 * @return array
+	 * @access private
+	 * @since 4/17/09
+	 */
+	private function getCatalogParameters () {
+		$params = array();
+		if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->getCombinedCatalogId()))
+			$params[':catalog_id'] = $this->getDatabaseIdString($this->catalogId, 'catalog/');
+		return $params;
+	}
 
     /**
      *  Gets a <code> TermList </code> corresponding to the given <code> 
@@ -338,8 +388,7 @@ WHERE
     public function getTerms() {
     	return new banner_course_AllTermsList(
     		$this->manager->getDB(),
-    		$this->manager->getIdAuthority(),
-    		'term/');
+    		$this);
     }
 
 }
