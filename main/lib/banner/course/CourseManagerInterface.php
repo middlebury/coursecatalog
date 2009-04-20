@@ -38,6 +38,15 @@ interface banner_course_CourseManagerInterface
 	 * @since 4/13/09
 	 */
 	public function getIdAuthority ();
+	
+	/**
+	 * Answer the Id of the 'All'/'Combined' catalog.
+	 * 
+	 * @return osid_id_Id
+	 * @access public
+	 * @since 4/20/09
+	 */
+	public function getCombinedCatalogId ();
 }
 
 ?>

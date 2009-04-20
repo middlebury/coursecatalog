@@ -70,6 +70,17 @@ class banner_course_CourseManager
 	public function getIdAuthority () {
 		return $this->idAuthority;
 	}
+	
+	/**
+	 * Answer the Id of the 'All'/'Combined' catalog.
+	 * 
+	 * @return osid_id_Id
+	 * @access public
+	 * @since 4/20/09
+	 */
+	public function getCombinedCatalogId () {
+		return new phpkit_id_Id($this->getIdAuthority(), 'urn', 'catalog/all');
+	}
 
 /*********************************************************
  * From OsidManager

@@ -151,7 +151,7 @@ abstract class banner_course_AbstractCourseOfferingSession
 	 * @since 4/20/09
 	 */
 	public function getCombinedCatalogId () {
-		return $this->getOsidIdFromString('all', 'catalog/');
+		return $this->manager->getCombinedCatalogId();
 	}
 	
 	/**
