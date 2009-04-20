@@ -241,10 +241,9 @@ class banner_course_test_CourseOfferingLookupSessionTest
      */
     public function testGetCourseOfferingsForCourse()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $offerings = $this->session->getCourseOfferingsForCourse($this->physId);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertEquals(2, $offerings->available());
     }
 
     /**

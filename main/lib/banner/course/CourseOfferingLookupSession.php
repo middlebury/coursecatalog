@@ -363,7 +363,11 @@ WHERE
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingsForCourse(osid_id_Id $courseId) {
-    	throw new osid_UnimplementedException();
+    	return  new banner_course_CourseOfferingsForCourseList(
+    		$this->manager->getDB(), 
+    		$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/'),
+    		$this,
+    		$courseId);
     }
 
 
