@@ -392,7 +392,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseOfferingLookupSession() {
-    	throw new osid_UnimplementedException();
+    	return new banner_course_CombinedCourseOfferingLookupSession($this);
 	}
 
 
