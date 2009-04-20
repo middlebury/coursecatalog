@@ -124,7 +124,7 @@ class banner_course_test_CourseOfferingLookupSessionTest
     }
 
     /**
-     * @todo Implement testUseFederatedCourseCatalogView().
+     * 
      */
     public function testUseFederatedCourseCatalogView()
     {
@@ -149,7 +149,7 @@ class banner_course_test_CourseOfferingLookupSessionTest
     }
 
     /**
-     * @todo Implement testUseIsolatedCourseCatalogView().
+     * 
      */
     public function testUseIsolatedCourseCatalogView()
     {
@@ -180,7 +180,7 @@ class banner_course_test_CourseOfferingLookupSessionTest
     }
 
     /**
-     * @todo Implement testGetCourseOffering().
+     * 
      */
     public function testGetCourseOffering()
     {
@@ -188,7 +188,7 @@ class banner_course_test_CourseOfferingLookupSessionTest
     }
 
     /**
-     * @todo Implement testGetCourseOfferingsByIds().
+     * 
      */
     public function testGetCourseOfferingsByIds()
     {
@@ -202,7 +202,7 @@ class banner_course_test_CourseOfferingLookupSessionTest
     }
 
     /**
-     * @todo Implement testGetCourseOfferingsByGenusType().
+     * 
      */
     public function testGetCourseOfferingsByGenusType()
     {
@@ -216,7 +216,7 @@ class banner_course_test_CourseOfferingLookupSessionTest
     }
 
     /**
-     * @todo Implement testGetCourseOfferingsByParentGenusType().
+     * 
      */
     public function testGetCourseOfferingsByParentGenusType()
     {
@@ -230,7 +230,7 @@ class banner_course_test_CourseOfferingLookupSessionTest
     }
 
     /**
-     * @todo Implement testGetCourseOfferingsByRecordType().
+     * 
      */
     public function testGetCourseOfferingsByRecordType()
     {
@@ -240,7 +240,7 @@ class banner_course_test_CourseOfferingLookupSessionTest
     }
 
     /**
-     * @todo Implement testGetCourseOfferingsForCourse().
+     * 
      */
     public function testGetCourseOfferingsForCourse()
     {
@@ -254,7 +254,7 @@ class banner_course_test_CourseOfferingLookupSessionTest
     }
 
     /**
-     * @todo Implement testGetCourseOfferingsByTerm().
+     * 
      */
     public function testGetCourseOfferingsByTerm()
     {
@@ -270,7 +270,7 @@ class banner_course_test_CourseOfferingLookupSessionTest
     }
 
     /**
-     * @todo Implement testGetCourseOfferingsByTermForCourse().
+     * 
      */
     public function testGetCourseOfferingsByTermForCourse()
     {
@@ -294,7 +294,7 @@ class banner_course_test_CourseOfferingLookupSessionTest
     }
 
     /**
-     * @todo Implement testGetCourseOfferings().
+     * 
      */
     public function testGetCourseOfferings()
     {        

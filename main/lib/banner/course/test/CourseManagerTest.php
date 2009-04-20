@@ -957,7 +957,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testGetCourseCatalogLookupSession().
+     * 
      */
     public function testGetCourseCatalogLookupSession()
     {
@@ -1089,7 +1089,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsVisibleFederation().
+     * 
      */
     public function testSupportsVisibleFederation()
     {
@@ -1097,7 +1097,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseLookup().
+     * 
      */
     public function testSupportsCourseLookup()
     {
@@ -1105,7 +1105,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseSearch().
+     * 
      */
     public function testSupportsCourseSearch()
     {
@@ -1113,7 +1113,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseAdmin().
+     * 
      */
     public function testSupportsCourseAdmin()
     {
@@ -1122,7 +1122,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseNotification().
+     * 
      */
     public function testSupportsCourseNotification()
     {
@@ -1130,7 +1130,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseCatalog().
+     * 
      */
     public function testSupportsCourseCatalog()
     {
@@ -1139,7 +1139,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseCatalogAssignment().
+     * 
      */
     public function testSupportsCourseCatalogAssignment()
     {
@@ -1147,7 +1147,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseOfferingLookup().
+     * 
      */
     public function testSupportsCourseOfferingLookup()
     {
@@ -1155,7 +1155,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseOfferingSearch().
+     * 
      */
     public function testSupportsCourseOfferingSearch()
     {
@@ -1163,7 +1163,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseOfferingAdmin().
+     * 
      */
     public function testSupportsCourseOfferingAdmin()
     {
@@ -1171,7 +1171,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseOfferingNotification().
+     * 
      */
     public function testSupportsCourseOfferingNotification()
     {
@@ -1179,7 +1179,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseOfferingHierarchy().
+     * 
      */
     public function testSupportsCourseOfferingHierarchy()
     {
@@ -1187,7 +1187,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseOfferingHierarchyDesign().
+     * 
      */
     public function testSupportsCourseOfferingHierarchyDesign()
     {
@@ -1195,7 +1195,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseOfferingHierarchySequencing().
+     * 
      */
     public function testSupportsCourseOfferingHierarchySequencing()
     {
@@ -1203,7 +1203,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseOfferingCatalog().
+     * 
      */
     public function testSupportsCourseOfferingCatalog()
     {
@@ -1211,7 +1211,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseOfferingCatalogAssignment().
+     * 
      */
     public function testSupportsCourseOfferingCatalogAssignment()
     {
@@ -1219,7 +1219,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTermLookup().
+     * 
      */
     public function testSupportsTermLookup()
     {
@@ -1227,7 +1227,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTermSearch().
+     * 
      */
     public function testSupportsTermSearch()
     {
@@ -1235,7 +1235,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTermAdmin().
+     * 
      */
     public function testSupportsTermAdmin()
     {
@@ -1243,7 +1243,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTermNotification().
+     * 
      */
     public function testSupportsTermNotification()
     {
@@ -1251,7 +1251,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTermHierarchy().
+     * 
      */
     public function testSupportsTermHierarchy()
     {
@@ -1259,7 +1259,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTermHierarchyDesign().
+     * 
      */
     public function testSupportsTermHierarchyDesign()
     {
@@ -1267,7 +1267,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTermHierarchySequencing().
+     * 
      */
     public function testSupportsTermHierarchySequencing()
     {
@@ -1275,7 +1275,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTermCatalog().
+     * 
      */
     public function testSupportsTermCatalog()
     {
@@ -1283,7 +1283,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTermCatalogAssignment().
+     * 
      */
     public function testSupportsTermCatalogAssignment()
     {
@@ -1291,7 +1291,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTopicLookup().
+     * 
      */
     public function testSupportsTopicLookup()
     {
@@ -1299,7 +1299,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTopicSearch().
+     * 
      */
     public function testSupportsTopicSearch()
     {
@@ -1307,7 +1307,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTopicAdmin().
+     * 
      */
     public function testSupportsTopicAdmin()
     {
@@ -1315,7 +1315,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTopicNotification().
+     * 
      */
     public function testSupportsTopicNotification()
     {
@@ -1323,7 +1323,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTopicHierarchy().
+     * 
      */
     public function testSupportsTopicHierarchy()
     {
@@ -1331,7 +1331,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTopicHierarchyDesign().
+     * 
      */
     public function testSupportsTopicHierarchyDesign()
     {
@@ -1339,7 +1339,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTopicHierarchySequencing().
+     * 
      */
     public function testSupportsTopicHierarchySequencing()
     {
@@ -1347,7 +1347,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTopicCatalog().
+     * 
      */
     public function testSupportsTopicCatalog()
     {
@@ -1355,7 +1355,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTopicCatalogAssignment().
+     * 
      */
     public function testSupportsTopicCatalogAssignment()
     {
@@ -1363,7 +1363,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseCatalogLookup().
+     * 
      */
     public function testSupportsCourseCatalogLookup()
     {
@@ -1371,7 +1371,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseCatalogSearch().
+     * 
      */
     public function testSupportsCourseCatalogSearch()
     {
@@ -1379,7 +1379,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseCatalogAdmin().
+     * 
      */
     public function testSupportsCourseCatalogAdmin()
     {
@@ -1387,7 +1387,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseCatalogNotification().
+     * 
      */
     public function testSupportsCourseCatalogNotification()
     {
@@ -1395,7 +1395,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseCatalogHierarchy().
+     * 
      */
     public function testSupportsCourseCatalogHierarchy()
     {
@@ -1403,7 +1403,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseCatalogHierarchyDesign().
+     * 
      */
     public function testSupportsCourseCatalogHierarchyDesign()
     {
@@ -1411,7 +1411,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseCatalogSequencing().
+     * 
      */
     public function testSupportsCourseCatalogSequencing()
     {
@@ -1419,7 +1419,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testGetCourseRecordTypes().
+     * 
      */
     public function testGetCourseRecordTypes()
     {
@@ -1458,7 +1458,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsCourseSearchRecordType().
+     * 
      */
     public function testSupportsCourseSearchRecordType()
     {
@@ -1566,7 +1566,7 @@ class banner_course_test_CourseManagerTest
     }
 
     /**
-     * @todo Implement testSupportsTermSearchRecordType().
+     * 
      */
     public function testSupportsTermSearchRecordType()
     {
