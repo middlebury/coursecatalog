@@ -64,6 +64,36 @@ interface banner_course_CourseOfferingSessionInterface {
 	public function getCourseIdFromSubjectAndNumber ($subjectCode, $number);
 	
 	/**
+	 * Answer a course subject code from an id.
+	 * 
+	 * @param osid_id_Id $id
+	 * @return string
+	 * @access public
+	 * @since 4/17/09
+	 */
+	public function getSubjectFromCourseId (osid_id_Id $id);
+	
+	/**
+	 * Answer a course number from an id.
+	 * 
+	 * @param osid_id_Id $id
+	 * @return string
+	 * @access public
+	 * @since 4/17/09
+	 */
+	public function getNumberFromCourseId (osid_id_Id $id);
+	
+	/**
+	 * Answer a term code from an id.
+	 * 
+	 * @param osid_id_Id $id
+	 * @return string
+	 * @access public
+	 * @since 4/17/09
+	 */
+	public function getTermCodeFromTermId (osid_id_Id $id);
+	
+	/**
 	 * Answer the id authority for this session
 	 * 
 	 * @return string

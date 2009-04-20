@@ -389,7 +389,11 @@ WHERE
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingsByTerm(osid_id_Id $termId) {
-    	throw new osid_UnimplementedException();
+    	return  new banner_course_CourseOfferingsByTermList(
+    		$this->manager->getDB(), 
+    		$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/'),
+    		$this,
+    		$termId);
     }
 
 
@@ -414,7 +418,12 @@ WHERE
      */
     public function getCourseOfferingsByTermForCourse(osid_id_Id $termId, 
                                                       osid_id_Id $courseId) {
-    	throw new osid_UnimplementedException();
+    	return  new banner_course_CourseOfferingsByTermForCourseList(
+    		$this->manager->getDB(), 
+    		$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/'),
+    		$this,
+    		$termId,
+    		$courseId);
     }
 
 

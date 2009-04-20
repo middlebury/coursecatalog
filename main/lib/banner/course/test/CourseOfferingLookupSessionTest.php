@@ -46,10 +46,13 @@ class banner_course_test_CourseOfferingLookupSessionTest
         
         $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
         $this->mathId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/MATH0300');
+        $this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHEM0104');
         
        	$this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200893/90143');
        	$this->geolOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200420/20663');
         $this->unknownOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/178293/2101');
+        
+        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200893');
         
         $this->unknownType = new phpkit_type_URNInetType("urn:inet:osid.org:unknown_type");
     	
@@ -243,7 +246,11 @@ class banner_course_test_CourseOfferingLookupSessionTest
     {
         $offerings = $this->session->getCourseOfferingsForCourse($this->physId);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertEquals(2, $offerings->available());
+       	$this->assertEquals(16, $offerings->available());
+       	while ($offerings->hasNext()) {
+       		$offering = $offerings->getNextCourseOffering();
+       		$this->assertTrue($this->physId->isEqual($offering->getCourseId()));
+       	}
     }
 
     /**
@@ -251,10 +258,15 @@ class banner_course_test_CourseOfferingLookupSessionTest
      */
     public function testGetCourseOfferingsByTerm()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $offerings = $this->session->getCourseOfferingsByTerm($this->termId);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertEquals(1894, $offerings->available());
+       	$i = 0;
+       	while ($offerings->hasNext() && $i < 10) {
+       		$offering = $offerings->getNextCourseOffering();
+       		$this->assertTrue($this->termId->isEqual($offering->getTermId()));
+       		$i++;
+       	}
     }
 
     /**
@@ -262,10 +274,23 @@ class banner_course_test_CourseOfferingLookupSessionTest
      */
     public function testGetCourseOfferingsByTermForCourse()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $offerings = $this->session->getCourseOfferingsByTermForCourse($this->termId, $this->physId);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertEquals(1, $offerings->available());
+       	while ($offerings->hasNext()) {
+       		$offering = $offerings->getNextCourseOffering();
+       		$this->assertTrue($this->termId->isEqual($offering->getTermId()));
+       		$this->assertTrue($this->physId->isEqual($offering->getCourseId()));
+       	}
+       	
+       	$offerings = $this->session->getCourseOfferingsByTermForCourse($this->termId, $this->chemId);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertEquals(4, $offerings->available());
+       	while ($offerings->hasNext()) {
+       		$offering = $offerings->getNextCourseOffering();
+       		$this->assertTrue($this->termId->isEqual($offering->getTermId()));
+       		$this->assertTrue($this->chemId->isEqual($offering->getCourseId()));
+       	}
     }
 
     /**

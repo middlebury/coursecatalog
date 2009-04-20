@@ -117,6 +117,21 @@ abstract class banner_course_AbstractCourseOfferingSession
 	}
 	
 	/**
+	 * Answer a term code from an id.
+	 * 
+	 * @param osid_id_Id $id
+	 * @return string
+	 * @access public
+	 * @since 4/17/09
+	 */
+	public function getTermCodeFromTermId (osid_id_Id $id) {
+		$string = $this->getDatabaseIdString($id, 'term/');
+		if (!preg_match('#^([0-9]{6})$#', $string, $matches))
+			throw new osid_NotFoundException("String '$string' cannot be converted into a valid term code.");
+		return $matches[1];
+	}
+	
+	/**
 	 * Answer the id authority for this session
 	 * 
 	 * @return string
