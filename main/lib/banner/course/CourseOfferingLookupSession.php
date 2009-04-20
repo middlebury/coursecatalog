@@ -55,9 +55,7 @@ class banner_course_CourseOfferingLookupSession
 	public function __construct (banner_course_CourseManagerInterface $manager, osid_id_Id $catalogId) {
 		parent::__construct($manager, 'section/');
 		
-		$lookup = $this->manager->getCourseCatalogLookupSession();
-		$lookup->usePlenaryView();
-		$this->catalog = $lookup->getCourseCatalog($catalogId);
+		$this->catalogId = $catalogId;
 	}
 
     /**
@@ -70,7 +68,7 @@ class banner_course_CourseOfferingLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseCatalogId() {
-    	return $this->catalog->getId();
+    	return $this->catalogId;
     }
 
 
@@ -85,7 +83,12 @@ class banner_course_CourseOfferingLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseCatalog() {
-    	return $this->catalog;
+    	if (!isset($this->catalog)) {
+	    	$lookup = $this->manager->getCourseCatalogLookupSession();
+			$lookup->usePlenaryView();
+			$this->catalog = $lookup->getCourseCatalog($this->getCourseCatalogId());
+		}
+		return $this->catalog;
     }
 
 
@@ -181,6 +184,7 @@ class banner_course_CourseOfferingLookupSession
     	if (!isset($this->getOffering_stmt)) {
 	    	$query =
 "SELECT 
+    section_coll_code,
 	SSBSECT_TERM_CODE,
 	SSBSECT_CRN,
 	SSBSECT_SUBJ_CODE,
@@ -202,21 +206,35 @@ class banner_course_CourseOfferingLookupSession
 	SSRMEET_SAT_DAY,
 	STVBLDG_DESC
 FROM 
-	ssbsect
+	course_section_college
+	INNER JOIN ssbsect ON (section_term_code = SSBSECT_TERM_CODE AND section_crn = SSBSECT_CRN)
 	LEFT JOIN stvterm ON SSBSECT_TERM_CODE = STVTERM_CODE
 	LEFT JOIN ssrmeet ON (SSBSECT_TERM_CODE = SSRMEET_TERM_CODE AND SSBSECT_CRN = SSRMEET_CRN)
 	LEFT JOIN stvbldg ON SSRMEET_BLDG_CODE = STVBLDG_CODE
 WHERE
 	SSBSECT_TERM_CODE = :section_term_code
 	AND SSBSECT_CRN = :section_CRN
+	AND section_coll_code IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms()."
+	)
+
+GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 ";
 			$this->getOffering_stmt = $this->manager->getDB()->prepare($query);
 		}
 		
-		$this->getOffering_stmt->execute(array(
-			':section_term_code' => $this->getTermCodeFromOfferingId($courseOfferingId),
-			':section_CRN' => $this->getCrnFromOfferingId($courseOfferingId)
-		));
+		$parameters = array_merge(
+			array(
+				':section_term_code' => $this->getTermCodeFromOfferingId($courseOfferingId),
+				':section_CRN' => $this->getCrnFromOfferingId($courseOfferingId)
+			),
+			$this->getCatalogParameters());
+		$this->getOffering_stmt->execute($parameters);
 		$row = $this->getOffering_stmt->fetch(PDO::FETCH_ASSOC);
 		$this->getOffering_stmt->closeCursor();
 		
@@ -225,6 +243,34 @@ WHERE
 		
 		return new banner_course_CourseOffering($row, $this);
     }
+    
+    /**
+	 * Answer the catalog where terms
+	 * 
+	 * @return string
+	 * @access private
+	 * @since 4/20/09
+	 */
+	private function getCatalogWhereTerms () {
+		if (is_null($this->catalogId) || $this->catalogId->isEqual($this->getCombinedCatalogId()))
+			return 'TRUE';
+		else
+			return 'catalog_id = :catalog_id';
+	}
+	
+	/**
+	 * Answer the input parameters
+	 * 
+	 * @return array
+	 * @access private
+	 * @since 4/17/09
+	 */
+	private function getCatalogParameters () {
+		$params = array();
+		if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->getCombinedCatalogId()))
+			$params[':catalog_id'] = $this->getCatalogDatabaseId($this->catalogId);
+		return $params;
+	}
 
 
     /**
