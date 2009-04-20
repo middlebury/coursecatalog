@@ -365,8 +365,8 @@ WHERE
     public function getCourseOfferingsForCourse(osid_id_Id $courseId) {
     	return  new banner_course_CourseOfferingsForCourseList(
     		$this->manager->getDB(), 
-    		$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/'),
     		$this,
+    		$this->getCourseCatalogId(),
     		$courseId);
     }
 
@@ -391,8 +391,8 @@ WHERE
     public function getCourseOfferingsByTerm(osid_id_Id $termId) {
     	return  new banner_course_CourseOfferingsByTermList(
     		$this->manager->getDB(), 
-    		$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/'),
     		$this,
+    		$this->getCourseCatalogId(),
     		$termId);
     }
 
@@ -420,8 +420,8 @@ WHERE
                                                       osid_id_Id $courseId) {
     	return  new banner_course_CourseOfferingsByTermForCourseList(
     		$this->manager->getDB(), 
-    		$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/'),
     		$this,
+    		$this->getCourseCatalogId(),
     		$termId,
     		$courseId);
     }
@@ -444,10 +444,8 @@ WHERE
     public function getCourseOfferings() {
     	return new banner_course_AllCourseOfferingsList(
     		$this->manager->getDB(), 
-    		$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/'),
     		$this,
-    		$this->manager->getIdAuthority(),
-    		'section/');
+    		$this->getCourseCatalogId());
     }
 
 }

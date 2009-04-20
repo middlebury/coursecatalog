@@ -94,6 +94,25 @@ interface banner_course_CourseOfferingSessionInterface {
 	public function getTermCodeFromTermId (osid_id_Id $id);
 	
 	/**
+	 * Answer a catalog database id string.
+	 * 
+	 * @param osid_id_Id $id
+	 * @return string
+	 * @access public
+	 * @since 4/20/09
+	 */
+	public function getCatalogDatabaseId (osid_id_Id $id);
+	
+	/**
+	 * Answer the Id of the 'All'/'Combined' catalog.
+	 * 
+	 * @return osid_id_Id
+	 * @access public
+	 * @since 4/20/09
+	 */
+	public function getCombinedCatalogId ();
+	
+	/**
 	 * Answer the id authority for this session
 	 * 
 	 * @return string
