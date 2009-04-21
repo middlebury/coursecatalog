@@ -1,0 +1,16 @@
+<?php
+// print "\n\t<div>".$this->escape($this->course->getDisplayName())."</div>";
+print "\n\t<div>".$this->escape($this->course->getTitle())."</div>";
+print "\n\t<div>".$this->escape($this->course->getDescription())."</div>";
+
+print "\n\t<h2>Sections</h2>";
+$offeringParams = array(	
+					'controller' 	=> 'offerings',
+					'action'		=> 'view',
+					'course'		=> null
+				);
+while ($this->offerings->hasNext()) {
+	$offering = $this->offerings->getNextCourseOffering();
+	$offeringParams['offering'] = AbstractCatalogController::getStringFromOsidId($offering->getId());
+	print "\n\t<div><a href='".$this->url($offeringParams)."'>".$this->escape($offering->getDisplayName())."</a></div>";
+}

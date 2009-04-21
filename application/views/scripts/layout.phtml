@@ -1,0 +1,27 @@
+<!DOCTYPE html
+	PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <?php echo $this->headTitle() ?>
+    <?php echo $this->headScript() ?>
+    <?php echo $this->headStyle() ?>
+
+</head>
+<body>
+    <?php echo $this->render('header.phtml') ?>
+
+    <div id="nav">
+    	<?php echo $this->placeholder('nav') ?>
+    
+    </div>
+
+    <div id="content">
+    	<?php echo $this->layout()->content ?>
+    	
+    </div>
+
+    <?php echo $this->render('footer.phtml') ?>
+</body>
+</html>

@@ -55,6 +55,31 @@ abstract class AbstractCatalogController
 		return $this->runtimeManager;
 	}
 	
+	/**
+	 * Get and OSID id object from a string.
+	 * 
+	 * @param string $idString
+	 * @return osid_id_Id
+	 * @access public
+	 * @since 4/21/09
+	 * @static
+	 */
+	public static function getOsidIdFromString ($idString) {
+		return new phpkit_id_URNInetId($idString);
+	}
+	
+	/**
+	 * Answer a string representation of an OSID id object
+	 * 
+	 * @param osid_id_Id $id
+	 * @return string
+	 * @access public
+	 * @since 4/21/09
+	 * @static
+	 */
+	public static function getStringFromOsidId (osid_id_Id $id) {
+		return phpkit_id_URNInetId::getInetURNString($id);
+	}
 }
 
 ?>

@@ -1,0 +1,34 @@
+<?php
+print "\n\t<div>".$this->escape($this->offering->getDisplayName())."</div>";
+print "\n\t<div>".$this->escape($this->offering->getTitle())."</div>";
+print "\n\t<div>".$this->escape($this->offering->getDescription())."</div>";
+
+$term = $this->offering->getTerm();
+$termUrl = $this->url(array(
+						'controller'	=> 'term',
+						'action'		=> 'view',
+						'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId())
+					));
+print "\n\t<div>Term: <a href='".$termUrl."'>".$this->escape($term->getDisplayName())."</a></div>";
+print "\n\t<div>Location: ".$this->escape($this->offering->getLocationInfo())."</div>";
+print "\n\t<div>Schedule: ".$this->escape($this->offering->getScheduleInfo())."</div>";
+
+$offeringParams = array(	
+						'controller' 	=> 'offerings',
+						'action'		=> 'view',
+						'course'		=> null
+					);
+
+if (isset($this->parentOffering)) {
+	$offeringParams['offering'] = AbstractCatalogController::getStringFromOsidId($this->parentOffering->getId());
+	print "\n\t<div>Offering: <a href='".$this->url($offeringParams)."'>".$this->escape($section->getDisplayName())."</a></div>";
+}
+
+if (isset($this->sections) && $this->sections->hasNext()) {
+	print "\n\t<h2>Sections</h2>";
+	while ($this->sections->hasNext()) {
+		$section = $this->sections->getNextCourseOffering();
+		$offeringParams['offering'] = AbstractCatalogController::getStringFromOsidId($section->getId());
+		print "\n\t<div><a href='".$this->url($offeringParams)."'>".$this->escape($section->getDisplayName())."</a></div>";
+	}
+}
