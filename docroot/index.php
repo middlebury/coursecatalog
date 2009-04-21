@@ -1,19 +1,31 @@
 <?php
 
-define('BASE_PATH', realpath(dirname(__FILE__) . '/../'));
-define('APPLICATION_PATH', BASE_PATH . '/application');
+require_once(dirname(__FILE__) . '/../application/autoload.php');
 
-set_include_path(
-	BASE_PATH . '/library/incubator'
-    . PATH_SEPARATOR .BASE_PATH . '/library'
-    . PATH_SEPARATOR .APPLICATION_PATH . '/library'
-    . PATH_SEPARATOR . get_include_path()
-);
+define('DISPLAY_ERROR_BACKTRACE', true);
+set_exception_handler(array('harmoni_ErrorHandler', 'handleException'));
+try {
 
-// require_once('Zend/Loader.php');
-// $autoloader = Zend_Loader_Autoloader::getInstance();
-function __autoload($className) {
-	require_once(implode('/', explode('_', $className)).'.php');
+	$front = Zend_Controller_Front::getInstance();
+	$front->throwExceptions(true);
+	Zend_Layout::startMvc();
+	Zend_Controller_Front::run(APPLICATION_PATH.'/controllers');
+
+// Handle certain types of uncaught exceptions specially. In particular,
+// Send back HTTP Headers indicating that an error has ocurred to help prevent
+// crawlers from continuing to pound invalid urls.
+} catch (UnknownActionException $e) {
+	ErrorPrinter::handleException($e, 404);
+} catch (NullArgumentException $e) {
+	ErrorPrinter::handleException($e, 400);
+} catch (InvalidArgumentException $e) {
+	ErrorPrinter::handleException($e, 400);
+} catch (PermissionDeniedException $e) {
+	ErrorPrinter::handleException($e, 403);
+} catch (UnknownIdException $e) {
+	ErrorPrinter::handleException($e, 404);
 }
-
-Zend_Controller_Front::run(APPLICATION_PATH.'/controllers');
+// Default 
+catch (Exception $e) {
+	ErrorPrinter::handleException($e, 500);
+}

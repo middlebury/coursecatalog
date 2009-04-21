@@ -1,0 +1,25 @@
+<?php
+/**
+ * @since 4/14/09
+ * @package catalog
+ * 
+ * @copyright Copyright &copy; 2009, Middlebury College
+ * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
+ */ 
+
+if (!defined('BASE_PATH')) {
+	define('BASE_PATH', realpath(dirname(__FILE__) . '/../'));
+	define('APPLICATION_PATH', BASE_PATH.'/application');
+	set_include_path(
+		BASE_PATH . '/library/incubator'
+		. PATH_SEPARATOR .BASE_PATH . '/library'
+		. PATH_SEPARATOR .APPLICATION_PATH . '/library'
+		. PATH_SEPARATOR . get_include_path()
+	);
+}
+
+if (!function_exists('__autoload')) {
+	function __autoload($className) {
+		require_once(implode('/', explode('_', $className)).'.php');
+	}
+}
