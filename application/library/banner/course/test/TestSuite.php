@@ -2,7 +2,7 @@
 
 require_once 'PHPUnit/Framework.php';
 
-require_once(dirname(__FILE__).'/../../../autoload.php');
+require_once(dirname(__FILE__).'/../../../../autoload.php');
 
 class banner_course_test_TestSuite extends PHPUnit_Framework_TestSuite
 {
@@ -21,7 +21,7 @@ class banner_course_test_TestSuite extends PHPUnit_Framework_TestSuite
     protected function setUp()
     {
     	$this->sharedFixture = array();
-    	$this->sharedFixture['RuntimeManager'] = new phpkit_OsidRuntimeManager(dirname(__FILE__).'/configuration.plist', OSID_BASE);
+    	$this->sharedFixture['RuntimeManager'] = new phpkit_AutoloadOsidRuntimeManager(dirname(__FILE__).'/configuration.plist');
         $this->sharedFixture['CourseManager'] = $this->sharedFixture['RuntimeManager']->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
     }
  
