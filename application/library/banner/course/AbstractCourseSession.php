@@ -174,13 +174,25 @@ abstract class banner_course_AbstractCourseSession
 	}
 	
 	/**
-	 * Answer the combined catalog id
+	 * Answer a catalog database id string.
+	 * 
+	 * @param osid_id_Id $id
+	 * @return string
+	 * @access public
+	 * @since 4/20/09
+	 */
+	public function getCatalogDatabaseId (osid_id_Id $id) {
+		return $this->getDatabaseIdString($id, 'catalog/');
+	}
+	
+	/**
+	 * Answer the Id of the 'All'/'Combined' catalog.
 	 * 
 	 * @return osid_id_Id
-	 * @access protected
-	 * @since 4/17/09
+	 * @access public
+	 * @since 4/20/09
 	 */
-	protected function getCombinedCatalogId () {
+	public function getCombinedCatalogId () {
 		return $this->manager->getCombinedCatalogId();
 	}
 }
