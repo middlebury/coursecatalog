@@ -72,54 +72,7 @@ class banner_course_CombinedCourseLookupSession
     public function getCourse(osid_id_Id $courseId) {
     	if ($this->usesIsolatedView())
     		throw new osid_NotFoundException('This catalog does not directly contain any courses. Use useFederatedView() to access courses in child catalogs.');
-    	
-    	if (!isset($this->getCourse_stmt)) {
-	    	$query =
-"SELECT 
-	SCBCRSE_SUBJ_CODE , 
-	SCBCRSE_CRSE_NUMB , 
-	MAX( SCBCRSE_EFF_TERM ) AS SCBCRSE_EFF_TERM , 
-	SCBCRSE_COLL_CODE , 
-	SCBCRSE_DIVS_CODE , 
-	SCBCRSE_DEPT_CODE , 
-	SCBCRSE_CSTA_CODE , 
-	SCBCRSE_TITLE ,
-	SCBCRSE_CREDIT_HR_HIGH
-FROM 
-	scbcrse
-WHERE
-	SCBCRSE_SUBJ_CODE = :subject_code
-	AND SCBCRSE_CRSE_NUMB = :course_number
-	AND SCBCRSE_CSTA_CODE NOT IN (
-		'C', 'I', 'P', 'T', 'X'
-	)
-GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
-ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC	
-";
-			$this->getCourse_stmt = $this->manager->getDB()->prepare($query);
-		}
-		
-		$courseIdString = $this->getDatabaseIdString($courseId, 'course/');
-		if (!preg_match('/^([A-Z]{2,4})([0-9]{3,4})$/', $courseIdString, $matches))
-			throw new osid_NotFoundException('Course id component \''.$courseIdString.'\' could not be converted to a subject code and number.');
-		
-		$this->getCourse_stmt->execute(array(
-			':subject_code' =>  $matches[1],
-			':course_number' => $matches[2]
-		));
-		$row = $this->getCourse_stmt->fetch(PDO::FETCH_ASSOC);
-		$this->getCourse_stmt->closeCursor();
-		
-		if (!($row['SCBCRSE_SUBJ_CODE'] && $row['SCBCRSE_CRSE_NUMB']))
-			throw new osid_NotFoundException("Could not find a course matching the id-component $courseIdString.");
-		
-		return new banner_course_Course(
-					new phpkit_id_URNInetId('urn:inet:'.$this->manager->getIdAuthority().':course/'
-						.$row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB']),
-					$row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'],
-					'',	// Description
-					$row['SCBCRSE_TITLE'], 
-					$row['SCBCRSE_CREDIT_HR_HIGH']);
+    	return parent::getCourse($courseId);
     }
 
 
@@ -146,21 +99,14 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCoursesByIds(osid_id_IdList $courseIdList) {
-    	$courses = array();
+    	if ($this->usesIsolatedView()) {
+    		if ($this->usesPlenaryView())
+	    		throw new osid_NotFoundException('This catalog does not directly contain any courses. Use useFederatedView() to access courses in child catalogs.');
+	    	else
+	    		return new phpkit_EmptyList();
+	    }
     	
-    	while ($courseIdList->hasNext()) {
-    		try {
-    			$courses[] = $this->getCourse($courseIdList->getNextId());
-    		} catch (osid_NotFoundException $e) {
-    			if ($this->usesPlenaryView())
-    				throw $e;
-    		} catch (osid_PermissionDeniedException $e) {
-    			if ($this->usesPlenaryView())
-    				throw $e;
-    		}
-    	}
-    	
-    	return new phpkit_course_ArrayCourseList($courses);
+    	return parent::getCoursesByIds($courseIdList);
     }
 
 
@@ -184,10 +130,10 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCoursesByGenusType(osid_type_Type $courseGenusType) {
-    	if ($courseGenusType->isEqual(new phpkit_type_URNInetType("urn:inet:osid.org:genera:none")))
-    		return $this->getCourses();
-    	else
-    		return new phpkit_EmptyList;
+    	if ($this->usesIsolatedView())
+    		return new phpkit_EmptyList();
+    	
+    	return parent::getCoursesByGenusType($courseGenusType);
     }
 
 
@@ -211,7 +157,10 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCoursesByParentGenusType(osid_type_Type $courseGenusType) {
-    	return $this->getCoursesByGenusType($courseGenusType);
+    	if ($this->usesIsolatedView())
+    		return new phpkit_EmptyList();
+    	
+    	return parent::getCoursesByParentGenusType($courseGenusType);
     }
 
 
@@ -233,7 +182,10 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCoursesByRecordType(osid_type_Type $courseRecordType) {
-    	return new phpkit_EmptyList;
+    	if ($this->usesIsolatedView())
+    		return new phpkit_EmptyList();
+    	
+    	return parent::getCoursesByRecordType($courseRecordType);
     }
 
 
@@ -251,6 +203,9 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourses() {
+    	if ($this->usesIsolatedView())
+    		return new phpkit_EmptyList();
+    	
     	return new banner_course_CombinedAllCoursesList(
     		$this->manager->getDB(), 
     		$this->manager->getIdAuthority(),

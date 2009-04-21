@@ -212,7 +212,7 @@ WHERE
 		FROM
 			course_catalog_college
 		WHERE
-			catalog_id = :catalog_id
+			".$this->getCatalogWhereTerms()."
 	)
 GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC	
@@ -224,16 +224,19 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 		if (!preg_match('/^([A-Z]{2,4})([0-9]{3,4})$/', $courseIdString, $matches))
 			throw new osid_NotFoundException('Course id component \''.$courseIdString.'\' could not be converted to a subject code and number.');
 		
-		$this->getCourse_stmt->execute(array(
-			':catalog_id' => $this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/'),
-			':subject_code' =>  $matches[1],
-			':course_number' => $matches[2]
-		));
+		$parameters = array_merge(
+			array(
+				':subject_code' =>  $matches[1],
+				':course_number' => $matches[2]
+			),
+			$this->getCatalogParameters());
+		
+		$this->getCourse_stmt->execute($parameters);
 		$row = $this->getCourse_stmt->fetch(PDO::FETCH_ASSOC);
 		$this->getCourse_stmt->closeCursor();
 		
 		if (!($row['SCBCRSE_SUBJ_CODE'] && $row['SCBCRSE_CRSE_NUMB']))
-			throw new osid_NotFoundException("Could not find a course matching the id-component $courseIdString.");
+			throw new osid_NotFoundException("Could not find a course matching the id-component '$courseIdString' for the catalog '".$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/')."'.");
 		
 		return new banner_course_Course(
 					new phpkit_id_URNInetId('urn:inet:'.$this->manager->getIdAuthority().':course/'
@@ -244,6 +247,33 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 					$row['SCBCRSE_CREDIT_HR_HIGH']);
     }
 
+	/**
+	 * Answer the catalog where terms
+	 * 
+	 * @return string
+	 * @access private
+	 * @since 4/20/09
+	 */
+	private function getCatalogWhereTerms () {
+		if (is_null($this->catalogId) || $this->catalogId->isEqual($this->getCombinedCatalogId()))
+			return 'TRUE';
+		else
+			return 'catalog_id = :catalog_id';
+	}
+	
+	/**
+	 * Answer the input parameters
+	 * 
+	 * @return array
+	 * @access private
+	 * @since 4/17/09
+	 */
+	private function getCatalogParameters () {
+		$params = array();
+		if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->getCombinedCatalogId()))
+			$params[':catalog_id'] = $this->getCatalogDatabaseId($this->catalogId);
+		return $params;
+	}
 
     /**
      *  Gets a <code> CourseList </code> corresponding to the given <code> 

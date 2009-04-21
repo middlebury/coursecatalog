@@ -150,9 +150,10 @@ abstract class banner_course_AbstractCourseOfferingSession
 	 * @since 4/16/09
 	 */
 	public function getCourseLookupSession () {
-		if (!isset($this->courseLookupSession))
+		if (!isset($this->courseLookupSession)) {
 			$this->courseLookupSession = $this->manager->getCourseLookupSessionForCatalog($this->getCourseCatalogId());
-		
+			$this->courseLookupSession->useFederatedCourseCatalogView();
+		}
 		return $this->courseLookupSession;
 	}
 	
@@ -164,9 +165,11 @@ abstract class banner_course_AbstractCourseOfferingSession
 	 * @since 4/16/09
 	 */
 	public function getTermLookupSession () {
-		if (!isset($this->termLookupSession))
+		if (!isset($this->termLookupSession)) {
 			$this->termLookupSession = $this->manager->getTermLookupSessionForCatalog($this->getCourseCatalogId());
 // 			$this->termLookupSession = $this->manager->getTermLookupSession();
+			$this->termLookupSession->useFederatedCourseCatalogView();
+		}
 		
 		return $this->termLookupSession;
 	}
