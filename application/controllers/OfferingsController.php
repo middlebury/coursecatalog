@@ -56,9 +56,10 @@ class OfferingsController
 		$lookupSession->useFederatedCourseCatalogView();
 		$this->view->offering = $lookupSession->getCourseOffering($id);
 		
-// 		$hierarchySession = $this->getCourseManager()->getCourseOfferingHierarchySession();
-// 		$hierarchySession->useFederatedCourseCatalogView();
-// 		$this->view->sections = $hierarchySession->getChildCourseOfferings($id);
+ 		$this->view->otherSections = $lookupSession->getCourseOfferingsByTermForCourse(
+ 			$this->view->offering->getTermId(),
+ 			$this->view->offering->getCourseId()
+ 		);
 		
 		$this->view->title = $this->view->offering->getDisplayName();
 // 		$this->view->headTitle($this->view->title);

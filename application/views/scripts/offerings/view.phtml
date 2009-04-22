@@ -24,11 +24,17 @@ if (isset($this->parentOffering)) {
 	print "\n\t<div>Offering: <a href='".$this->url($offeringParams)."'>".$this->escape($section->getDisplayName())."</a></div>";
 }
 
-if (isset($this->sections) && $this->sections->hasNext()) {
-	print "\n\t<h2>Sections</h2>";
-	while ($this->sections->hasNext()) {
-		$section = $this->sections->getNextCourseOffering();
+if (isset($this->otherSections) && $this->otherSections->hasNext()) {
+	print "\n\t<h2>Other Sections</h2>";
+	while ($this->otherSections->hasNext()) {
+		$section = $this->otherSections->getNextCourseOffering();
 		$offeringParams['offering'] = AbstractCatalogController::getStringFromOsidId($section->getId());
-		print "\n\t<div><a href='".$this->url($offeringParams)."'>".$this->escape($section->getDisplayName())."</a></div>";
+		print "\n\t<div>";
+		if ($this->offering->getId()->isEqual($section->getId())) {
+			print $this->escape($section->getDisplayName());
+		} else {
+			print "<a href='".$this->url($offeringParams)."'>".$this->escape($section->getDisplayName())."</a>";
+		}
+		print "</div>";
 	}
 }
