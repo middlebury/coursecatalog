@@ -31,7 +31,7 @@ class CatalogsController
 	 * @since 4/21/09
 	 */
 	public function listAction() {
-		$lookupSession = $this->getCourseManager()->getCourseCatalogLookupSession();
+		$lookupSession = self::getCourseManager()->getCourseCatalogLookupSession();
 		$this->view->catalogs = $lookupSession->getCourseCatalogs();
 		
 		$this->view->title = 'Available Catalogs';
@@ -47,7 +47,7 @@ class CatalogsController
 	 */
 	public function viewAction () {
 		$id = self::getOsidIdFromString($this->_getParam('catalog'));
-		$lookupSession = $this->getCourseManager()->getCourseCatalogLookupSession();
+		$lookupSession = self::getCourseManager()->getCourseCatalogLookupSession();
 		$this->view->catalog = $lookupSession->getCourseCatalog($id);
 		
 		$this->view->title = $this->view->catalog->getDisplayName();

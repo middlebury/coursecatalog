@@ -21,38 +21,40 @@ abstract class AbstractCatalogController
 	extends Zend_Controller_Action
 {
 	
-	private $runtimeManager;
-	private $courseManager;
+	private static $runtimeManager;
+	private static $courseManager;
 	
 	/**
 	 * Answer the CourseManager
 	 * 
 	 * @return osid_course_CourseManager
-	 * @access protected
+	 * @access public
 	 * @since 4/20/09
+	 * @static
 	 */
-	protected function getCourseManager () {
-		if (!isset($this->courseManager)) {
-			$runtimeManager = $this->getRuntimeManager();
-			$this->courseManager = $runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
+	public static function getCourseManager () {
+		if (!isset(self::$courseManager)) {
+			$runtimeManager = self::getRuntimeManager();
+			self::$courseManager = $runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
 		}
 		
-		return $this->courseManager;
+		return self::$courseManager;
 	}
 	
 	/**
 	 * Answer the Runtime Manager
 	 * 
 	 * @return osid_OsidRuntimeManager
-	 * @access protected
+	 * @access public
 	 * @since 4/20/09
+	 * @static
 	 */
-	protected function getRuntimeManager () {
-		if (!isset($this->runtimeManager)) {
-			$this->runtimeManager = new phpkit_AutoloadOsidRuntimeManager(BASE_PATH.'/configuration.plist');
+	public static function getRuntimeManager () {
+		if (!isset(self::$runtimeManager)) {
+			self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(BASE_PATH.'/configuration.plist');
 		}
 		
-		return $this->runtimeManager;
+		return self::$runtimeManager;
 	}
 	
 	/**
