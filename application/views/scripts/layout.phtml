@@ -1,27 +1,70 @@
-<!DOCTYPE html
-	PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <?php echo $this->headTitle() ?>
-    <?php echo $this->headScript() ?>
-    <?php echo $this->headStyle() ?>
-
-</head>
-<body>
-    <?php echo $this->render('header.phtml') ?>
-
-    <div id="nav">
-    	<?php echo $this->placeholder('nav') ?>
-    
-    </div>
-
-    <div id="content">
-    	<?php echo $this->layout()->content ?>
-    	
-    </div>
-
-    <?php echo $this->render('footer.phtml') ?>
-</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<?php echo $this->headTitle() ?> 
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="robots" content="follow,index" />
+		<link rel="stylesheet" media="screen" type="text/css" href="http://web.middlebury.edu/development/tools/2d/Stylesheets/2d.css" />
+		<link rel="stylesheet" media="screen" type="text/css" href="http://web.middlebury.edu/development/tools/2d/Stylesheets/2dFlex.css" title="flex" />
+		<link rel="alternate stylesheet" media="screen" type="text/css" href="http://web.middlebury.edu/development/tools/2d/Stylesheets/2dFixed.css" title="fixed" />
+		<link rel="stylesheet" media="screen" type="text/css" href="http://web.middlebury.edu/development/tools/2d/StyleSheets/Menu.css" />
+		<link rel="stylesheet" media="screen" type="text/css" href="/development/tools/2d/StyleSheets/MenuStyle.css" />
+		<script type="text/javascript" src="http://web.middlebury.edu/development/tools/2d/JavaScript/StyleSwitcher.js"></script>
+		<?php echo $this->headScript() ?> 
+	    <?php echo $this->headStyle() ?> 
+	</head>
+	<body>
+		<div class="main">
+			<div class="header">
+				<div class="headerWelcome">
+					Welcome USERNAME &#160; | &#160;
+					<a href="#">Logout</a> &#160; | &#160;
+					<a href="#" onclick="setActiveStyleSheet('fixed'); return false;">Fixed</a> or
+					<a href="#" onclick="setActiveStyleSheet('flex'); return false;">Flex</a>
+				</div>
+				<div class="clear">&#160;</div>
+				<a href="http://www.middlebury.edu">
+					<img class="headerLogo" src="https://web.middlebury.edu/development/tools/2d/Images/mclogo.gif" alt="Click here to return to Middlebury College home page" />
+				</a>
+				<div class="headerSite">
+					<h1>Course Catalog</h1>
+				</div>
+				<div class="clear">
+					&#160;
+				</div>
+			</div>
+			<?php // echo $this->placeholder('nav') ?>
+			<div class="headerNavigation">
+				<div class="CssMenu">
+					<div class="AspNet-Menu-Horizontal">
+						<ul class="AspNet-Menu">
+							<li class="AspNet-Menu-Leaf  AspNet-Menu-Selected">
+								<a href="Default.aspx" class="AspNet-Menu-Link  AspNet-Menu-Selected">PAGE_NAME</a>
+							</li>
+							<li class="AspNet-Menu-Leaf">
+								<a href="Default2.aspx" class="AspNet-Menu-Link">PAGE_NAME</a>
+							</li>
+							<li class="AspNet-Menu-WithChildren">
+								<a href="/Subdir/Default.aspx" class="AspNet-Menu-Link">SITE_NAME</a>
+								<ul>
+									<li class="AspNet-Menu-Leaf">
+										<a href="/Subdir/Default2.aspx" class="AspNet-Menu-Link">PAGE_NAME</a>
+									</li>
+									<li class="AspNet-Menu-Leaf">
+										<a href="/Subdir/Default3.aspx" class="AspNet-Menu-Link">PAGE_NAME</a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="clear">&#160;</div>
+			</div>
+			<div class="content">
+				<?php echo $this->render('header.phtml') ?> 
+				<?php echo $this->layout()->content ?> 
+				<?php echo $this->render('footer.phtml') ?> 
+			</div>
+		</div>
+	</body>
 </html>
