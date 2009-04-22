@@ -1424,7 +1424,7 @@ class banner_course_CourseManager
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsCourseOfferingLookup() {
-    	return false;
+    	return true;
     }
 
 

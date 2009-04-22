@@ -1183,7 +1183,7 @@ class banner_course_test_CourseManagerTest
      */
     public function testSupportsCourseOfferingHierarchy()
     {
-        $this->assertTrue($this->manager->supportsCourseOfferingHierarchy());
+        $this->assertFalse($this->manager->supportsCourseOfferingHierarchy());
     }
 
     /**
