@@ -8,7 +8,7 @@
 		<link rel="stylesheet" media="screen" type="text/css" href="http://web.middlebury.edu/development/tools/2d/Stylesheets/2dFlex.css" title="flex" />
 		<link rel="alternate stylesheet" media="screen" type="text/css" href="http://web.middlebury.edu/development/tools/2d/Stylesheets/2dFixed.css" title="fixed" />
 		<link rel="stylesheet" media="screen" type="text/css" href="http://web.middlebury.edu/development/tools/2d/StyleSheets/Menu.css" />
-		<link rel="stylesheet" media="screen" type="text/css" href="/development/tools/2d/StyleSheets/MenuStyle.css" />
+		<link rel="stylesheet" media="screen" type="text/css" href="<?php echo $this->url(array(), null, true) ?>2d/StyleSheets/MenuStyle.css" />
 		<script type="text/javascript" src="http://web.middlebury.edu/development/tools/2d/JavaScript/StyleSwitcher.js"></script>
 		<?php echo $this->headScript() ?> 
 	    <?php echo $this->headStyle() ?> 
@@ -37,25 +37,7 @@
 			<div class="headerNavigation">
 				<div class="CssMenu">
 					<div class="AspNet-Menu-Horizontal">
-						<ul class="AspNet-Menu">
-							<li class="AspNet-Menu-Leaf  AspNet-Menu-Selected">
-								<a href="Default.aspx" class="AspNet-Menu-Link  AspNet-Menu-Selected">PAGE_NAME</a>
-							</li>
-							<li class="AspNet-Menu-Leaf">
-								<a href="Default2.aspx" class="AspNet-Menu-Link">PAGE_NAME</a>
-							</li>
-							<li class="AspNet-Menu-WithChildren">
-								<a href="/Subdir/Default.aspx" class="AspNet-Menu-Link">SITE_NAME</a>
-								<ul>
-									<li class="AspNet-Menu-Leaf">
-										<a href="/Subdir/Default2.aspx" class="AspNet-Menu-Link">PAGE_NAME</a>
-									</li>
-									<li class="AspNet-Menu-Leaf">
-										<a href="/Subdir/Default3.aspx" class="AspNet-Menu-Link">PAGE_NAME</a>
-									</li>
-								</ul>
-							</li>
-						</ul>
+						<?php echo $this->render('menu.phtml') ?> 
 					</div>
 				</div>
 				<div class="clear">&#160;</div>

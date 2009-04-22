@@ -50,6 +50,7 @@ class CatalogsController
 		$lookupSession = self::getCourseManager()->getCourseCatalogLookupSession();
 		$this->view->catalog = $lookupSession->getCourseCatalog($id);
 		
+		$this->setSelectedCatalogId($id);
 		$this->view->title = $this->view->catalog->getDisplayName();
 		$this->view->headTitle($this->view->title);
 	}

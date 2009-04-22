@@ -1,0 +1,25 @@
+
+								<ul>
+<?php
+
+while ($this->menuCatalogs->hasNext()) {
+	$catalog = $this->menuCatalogs->getNextCourseCatalog();
+	print "\n\t\t\t\t\t\t\t\t\t<li class=\"AspNet-Menu-Leaf";
+	if (isset($this->menuCatalogSelectedId) && $catalog->getId()->isEqual($this->menuCatalogSelectedId))
+		print " AspNet-Menu-Selected";
+	print "\">";
+	print "\n\t\t\t\t\t\t\t\t\t<a class=\"AspNet-Menu-Link\" href=\"";
+	print $this->url(
+				array(
+					'controller' => 'catalogs', 
+					'action' => 'view', 
+					'catalog' => AbstractCatalogController::getStringFromOsidId($catalog->getId())),
+				null,
+				true);
+	print "\">".$this->escape($catalog->getDisplayName())."</a>";
+	print "\n\t\t\t\t\t\t\t\t\t</li>";
+}
+
+?> 
+
+								</ul>

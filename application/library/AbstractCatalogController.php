@@ -25,6 +25,30 @@ abstract class AbstractCatalogController
 	private static $courseManager;
 	
 	/**
+	 * Initialize our view with common properties
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 4/22/09
+	 */
+	public function init () {
+		// Add the catalog list for menu generation.
+		$this->view->menuCatalogs = self::getCourseManager()->getCourseCatalogLookupSession()->getCourseCatalogs();
+	}
+	
+	/**
+	 * Set the selected catalog id.
+	 * 
+	 * @param osid_id_Id $id
+	 * @return void
+	 * @access protected
+	 * @since 4/22/09
+	 */
+	protected function setSelectedCatalogId (osid_id_Id $id) {
+		$this->view->menuCatalogSelectedId = $id;
+	}
+	
+	/**
 	 * Answer the CourseManager
 	 * 
 	 * @return osid_course_CourseManager
