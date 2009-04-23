@@ -213,24 +213,7 @@ class banner_course_CourseCatalogSession
      *  @throws osid_IllegalStateException this session has been closed 
      *  @compliance mandatory This method must be implemented. 
      */
-    public function getCatalogIdsByCourse(osid_id_Id $courseId) {
-    	if (!isset($this->getCatalogIdsByCourse_stmt)) {
-    		$this->getCatalogIdsByCourse_stmt = $this->manager->getDB()->prepare(
-"SELECT
-	catalog_id
-FROM
-	scbcrse
-	LEFT JOIN course_catalog_college ON SCBCRSE_COLL_CODE = coll_code
-WHERE
-	SCBCRSE_SUBJ_CODE = :subject_code
-	AND SCBCRSE_CRSE_NUMB = :course_number
-	AND SCBCRSE_CSTA_CODE NOT IN (
-		'C', 'I', 'P', 'T', 'X'
-	)
-GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB, catalog_id
-");
-    	}
-    	
+    public function getCatalogIdsByCourse(osid_id_Id $courseId) {    	
     	$courseIdString = $this->getDatabaseIdString($courseId, 'course/');
 		if (!preg_match('/^([A-Z]{2,4})([0-9]{3,4})$/', $courseIdString, $matches))
 			throw new osid_NotFoundException('Course id component \''.$courseIdString.'\' could not be converted to a subject code and number.');
@@ -239,16 +222,14 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB, catalog_id
 				':subject_code' =>  $matches[1],
 				':course_number' => $matches[2]
 			);
-		$this->getCatalogIdsByCourse_stmt->execute($parameters);
-    	
- 		if (!$this->getCatalogIdsByCourse_stmt->rowCount())
- 			throw new osid_NotFoundException("Catalog id not found.");
+		$statement = $this->getGetCatalogsStatement();
+		$statement->execute($parameters);
     	
     	$ids = array();
-    	while ($row = $this->getCatalogIdsByCourse_stmt->fetch(PDO::FETCH_ASSOC)) {
+    	while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
     		$ids[] = $this->getOsidIdFromString($row['catalog_id'], 'catalog/');
     	}
-    	$this->getCatalogIdsByCourse_stmt->closeCursor();
+    	$statement->closeCursor();
     	
     	return new phpkit_id_ArrayIdList($ids);
     }
@@ -270,6 +251,36 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB, catalog_id
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCatalogsByCourse(osid_id_Id $courseId) {
+    	$courseIdString = $this->getDatabaseIdString($courseId, 'course/');
+		if (!preg_match('/^([A-Z]{2,4})([0-9]{3,4})$/', $courseIdString, $matches))
+			throw new osid_NotFoundException('Course id component \''.$courseIdString.'\' could not be converted to a subject code and number.');
+		
+		$parameters = array(
+				':subject_code' =>  $matches[1],
+				':course_number' => $matches[2]
+			);
+		$statement = $this->getGetCatalogsStatement();
+		$statement->execute($parameters);
+    	
+    	$catalogs = array();
+    	while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+    		$catalogs[] = new banner_course_CourseCatalog(
+    					$this->getOsidIdFromString($row['catalog_id'], 'catalog/'), 
+    					$row['catalog_title']);
+    	}
+    	$statement->closeCursor();
+    	
+    	return new phpkit_course_ArrayCourseCatalogList($catalogs);
+    }
+    
+    /**
+     * Answer the statement for fetching catalogs
+     * 
+     * @return void
+     * @access private
+     * @since 4/23/09
+     */
+    private function getGetCatalogsStatement () {
     	if (!isset($this->getCatalogsByCourse_stmt)) {
     		$this->getCatalogsByCourse_stmt = $this->manager->getDB()->prepare(
 "SELECT
@@ -288,29 +299,7 @@ WHERE
 GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB, catalog_id
 ");
     	}
-    	
-    	$courseIdString = $this->getDatabaseIdString($courseId, 'course/');
-		if (!preg_match('/^([A-Z]{2,4})([0-9]{3,4})$/', $courseIdString, $matches))
-			throw new osid_NotFoundException('Course id component \''.$courseIdString.'\' could not be converted to a subject code and number.');
-		
-		$parameters = array(
-				':subject_code' =>  $matches[1],
-				':course_number' => $matches[2]
-			);
-		$this->getCatalogsByCourse_stmt->execute($parameters);
-    	
- 		if (!$this->getCatalogsByCourse_stmt->rowCount())
- 			throw new osid_NotFoundException("Catalog id not found.");
-    	
-    	$catalogs = array();
-    	while ($row = $this->getCatalogsByCourse_stmt->fetch(PDO::FETCH_ASSOC)) {
-    		$catalogs[] = new banner_course_CourseCatalog(
-    					$this->getOsidIdFromString($row['catalog_id'], 'catalog/'), 
-    					$row['catalog_title']);
-    	}
-    	$this->getCatalogsByCourse_stmt->closeCursor();
-    	
-    	return new phpkit_course_ArrayCourseCatalogList($catalogs);
+    	return $this->getCatalogsByCourse_stmt;
     }
 
 }
