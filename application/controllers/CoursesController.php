@@ -34,12 +34,13 @@ class CoursesController
 			$this->view->title = 'Courses in '.$lookupSession->getCourseCatalog()->getDisplayName();
 		} else {
 			$lookupSession = self::getCourseManager()->getCourseLookupSession();
-			$lookupSession->useFederatedCourseCatalogView();
 			$this->view->title = 'Courses in All Catalogs';
 		}
+		$lookupSession->useFederatedCourseCatalogView();
 		
 		$this->view->courses = $lookupSession->getCourses();
 		
+		$this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
 		$this->view->headTitle($this->view->title);
 	}
 	
@@ -60,6 +61,14 @@ class CoursesController
 		$lookupSession->useFederatedCourseCatalogView();
 		$this->view->offerings = $lookupSession->getCourseOfferingsForCourse($id);
 		
+		// Set the selected Catalog Id.
+		$catalogSession = self::getCourseManager()->getCourseCatalogSession();
+		$catalogIds = $catalogSession->getCatalogIdsByCourse($id);
+		if ($catalogIds->hasNext()) {
+			$this->setSelectedCatalogId($catalogIds->getNextId());
+		}
+		
+		// Set the title
 		$this->view->title = $this->view->course->getDisplayName();
 		$this->view->headTitle($this->view->title);
 	}

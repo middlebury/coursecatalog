@@ -353,7 +353,7 @@ class banner_course_CourseManager
      *              supportsCourseCatalog() </code> is <code> true. </code> 
      */
     public function getCourseCatalogSession() {
-    	throw new osid_UnimplementedException();
+    	return new banner_course_CourseCatalogSession($this);
 	}
 
 
@@ -1399,7 +1399,7 @@ class banner_course_CourseManager
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsCourseCatalog() {
-    	return false;
+    	return true;
     }
 
 
