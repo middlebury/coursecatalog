@@ -28,19 +28,20 @@ class OfferingsController
 	 * @since 4/21/09
 	 */
 	public function listAction () {
-// 		if ($this->_getParam('catalog')) {
-// 			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
-// 			$lookupSession = self::getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
-// 			$this->view->title = 'Courses in '.$lookupSession->getCourseCatalog()->getDisplayName();
-// 		} else {
-// 			$lookupSession = self::getCourseManager()->getCourseLookupSession();
-// 			$lookupSession->useFederatedCourseCatalogView();
-// 			$this->view->title = 'Courses in All Catalogs';
-// 		}
-// 		
-// 		$this->view->courses = $lookupSession->getCourses();
-// 		
-// 		$this->view->headTitle($this->view->title);
+		if ($this->_getParam('catalog')) {
+			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
+			$lookupSession = self::getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
+			$this->view->title = 'Courses in '.$lookupSession->getCourseCatalog()->getDisplayName();
+		} else {
+			$lookupSession = self::getCourseManager()->getCourseOfferingLookupSession();
+			$this->view->title = 'Courses in All Catalogs';
+		}
+		$lookupSession->useFederatedCourseCatalogView();
+		
+		$this->view->offerings = $lookupSession->getCourseOfferings();
+		
+		$this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
+		$this->view->headTitle($this->view->title);
 	}
 	
 	/**
@@ -61,8 +62,16 @@ class OfferingsController
  			$this->view->offering->getCourseId()
  		);
 		
+		// Set the selected Catalog Id.
+		$catalogSession = self::getCourseManager()->getCourseOfferingCatalogSession();
+		$catalogIds = $catalogSession->getCatalogIdsByCourseOffering($id);
+		if ($catalogIds->hasNext()) {
+			$this->setSelectedCatalogId($catalogIds->getNextId());
+		}
+		
+		// Set the title
 		$this->view->title = $this->view->offering->getDisplayName();
-// 		$this->view->headTitle($this->view->title);
+		$this->view->headTitle($this->view->title);
 	}
 	
 }

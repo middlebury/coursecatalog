@@ -616,7 +616,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseOfferingCatalogSession() {
-    	throw new osid_UnimplementedException();
+    	return new banner_course_CourseOfferingCatalogSession($this);
 	}
 
 
@@ -1512,7 +1512,7 @@ class banner_course_CourseManager
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsCourseOfferingCatalog() {
-    	return false;
+    	return true;
     }
 
 
