@@ -40,10 +40,6 @@ class banner_course_test_CourseOfferingLookupSessionTest
         $this->manager = $this->sharedFixture['CourseManager'];
         $this->session = $this->manager->getCourseOfferingLookupSessionForCatalog($this->mcugId);
         
-        // Use the smaller language-school catalog for loading up testing.
-    	$this->mclsId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCLS');
-        $this->mclsSession = $this->manager->getCourseOfferingLookupSessionForCatalog($this->mclsId);
-        
         $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
         $this->mathId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/MATH0300');
         $this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHEM0104');
@@ -206,11 +202,11 @@ class banner_course_test_CourseOfferingLookupSessionTest
      */
     public function testGetCourseOfferingsByGenusType()
     {
-        $offerings = $this->mclsSession->getCourseOfferingsByGenusType($this->generaNoneType);
+        $offerings = $this->session->getCourseOfferingsByGenusType($this->generaNoneType);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
        	$this->assertTrue($offerings->hasNext());
        	
-       	$offerings = $this->mclsSession->getCourseOfferingsByGenusType($this->secondaryType);
+       	$offerings = $this->session->getCourseOfferingsByGenusType($this->secondaryType);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
        	$this->assertFalse($offerings->hasNext());
     }
@@ -220,11 +216,11 @@ class banner_course_test_CourseOfferingLookupSessionTest
      */
     public function testGetCourseOfferingsByParentGenusType()
     {
-        $offerings = $this->mclsSession->getCourseOfferingsByParentGenusType($this->generaNoneType);
+        $offerings = $this->session->getCourseOfferingsByParentGenusType($this->generaNoneType);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
        	$this->assertTrue($offerings->hasNext());
        	
-       	$offerings = $this->mclsSession->getCourseOfferingsByParentGenusType($this->secondaryType);
+       	$offerings = $this->session->getCourseOfferingsByParentGenusType($this->secondaryType);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
        	$this->assertFalse($offerings->hasNext());
     }
@@ -260,7 +256,7 @@ class banner_course_test_CourseOfferingLookupSessionTest
     {
         $offerings = $this->session->getCourseOfferingsByTerm($this->termId);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertEquals(1894, $offerings->available());
+       	$this->assertEquals(7, $offerings->available());
        	$i = 0;
        	while ($offerings->hasNext() && $i < 10) {
        		$offering = $offerings->getNextCourseOffering();
@@ -298,10 +294,10 @@ class banner_course_test_CourseOfferingLookupSessionTest
      */
     public function testGetCourseOfferings()
     {        
-        $offerings = $this->mclsSession->getCourseOfferings();
+        $offerings = $this->session->getCourseOfferings();
         
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertEquals(3239, $offerings->available());
+       	$this->assertEquals(228, $offerings->available());
        	
        	$this->assertTrue($offerings->hasNext());
        	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());

@@ -43,7 +43,7 @@ class banner_course_test_CourseCatalogSessionTest
         $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
         
-        $this->chineseId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHNS0101');
+        $this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHEM0104');
     }
 
     /**
@@ -66,12 +66,12 @@ class banner_course_test_CourseCatalogSessionTest
        $courseIds = $this->session->getCourseIdsByCatalogs(new phpkit_id_ArrayIdList(array(
        					$this->mcugId,
        					$this->unknownId)));
-       $this->assertEquals(3260, $courseIds->available());
+       $this->assertEquals(4, $courseIds->available());
        
        $courses = $this->session->getCoursesByCatalogs(new phpkit_id_ArrayIdList(array(
        					$this->mcugId,
        					$this->unknownId)));
-       $this->assertEquals(3260, $courses->available());
+       $this->assertEquals(4, $courses->available());
     }
 
     /**
@@ -114,7 +114,7 @@ class banner_course_test_CourseCatalogSessionTest
     {
        $courseIds = $this->session->getCourseIdsByCatalog($this->mcugId);
        $this->assertType('osid_id_IdList', $courseIds);
-       $this->assertEquals(3260, $courseIds->available());
+       $this->assertEquals(4, $courseIds->available());
        $this->assertType('osid_id_Id', $courseIds->getNextId());
     }
 
@@ -125,7 +125,7 @@ class banner_course_test_CourseCatalogSessionTest
     {
        $courses = $this->session->getCoursesByCatalog($this->mcugId);
        $this->assertType('osid_course_CourseList', $courses);
-       $this->assertEquals(3260, $courses->available());
+       $this->assertEquals(4, $courses->available());
        $this->assertType('osid_course_Course', $courses->getNextCourse());
     }
 
@@ -137,7 +137,7 @@ class banner_course_test_CourseCatalogSessionTest
        $courseIds = $this->session->getCourseIdsByCatalogs(new phpkit_id_ArrayIdList(array(
        					$this->mcugId)));
        $this->assertType('osid_id_IdList', $courseIds);
-       $this->assertEquals(3260, $courseIds->available());
+       $this->assertEquals(4, $courseIds->available());
        $this->assertType('osid_id_Id', $courseIds->getNextId());
     }
 
@@ -149,7 +149,7 @@ class banner_course_test_CourseCatalogSessionTest
        $courses = $this->session->getCoursesByCatalogs(new phpkit_id_ArrayIdList(array(
        					$this->mcugId)));
        $this->assertType('osid_course_CourseList', $courses);
-       $this->assertEquals(3260, $courses->available());
+       $this->assertEquals(4, $courses->available());
        $this->assertType('osid_course_Course', $courses->getNextCourse());
     }
 
@@ -158,7 +158,7 @@ class banner_course_test_CourseCatalogSessionTest
      */
     public function testGetCatalogIdsByCourse()
     {
-        $catalogIds = $this->session->getCatalogIdsByCourse($this->chineseId);
+        $catalogIds = $this->session->getCatalogIdsByCourse($this->chemId);
         $this->assertEquals(1, $catalogIds->available());
         $this->assertTrue($catalogIds->getNextId()->isEqual($this->mcugId));
     }
@@ -168,7 +168,7 @@ class banner_course_test_CourseCatalogSessionTest
      */
     public function testGetCatalogsByCourse()
     {
-        $catalogs = $this->session->getCatalogsByCourse($this->chineseId);
+        $catalogs = $this->session->getCatalogsByCourse($this->chemId);
         $this->assertEquals(1, $catalogs->available());
         $this->assertTrue($catalogs->getNextCourseCatalog()->getId()->isEqual($this->mcugId));
     }

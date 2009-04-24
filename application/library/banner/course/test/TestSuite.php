@@ -23,12 +23,22 @@ class banner_course_test_TestSuite extends PHPUnit_Framework_TestSuite
     	$this->sharedFixture = array();
     	$this->sharedFixture['RuntimeManager'] = new phpkit_AutoloadOsidRuntimeManager(dirname(__FILE__).'/configuration.plist');
         $this->sharedFixture['CourseManager'] = $this->sharedFixture['RuntimeManager']->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
+        
+        // Initialize our testing database
+        $db = $this->sharedFixture['CourseManager']->getDB();
+        harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/../sql/table_creation.sql', $db);
+        harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/../sql/test_data.sql', $db);
     }
  
     protected function tearDown()
     {
     	$this->sharedFixture['CourseManager']->shutdown();
 //     	$this->sharedFixture['RuntimeManager']->shutdown();
+        
+        // Remove our testing database
+        $db = $this->sharedFixture['CourseManager']->getDB();
+        harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/../sql/drop_tables.sql', $db);
+        
         $this->sharedFixture = NULL;
     }
 }

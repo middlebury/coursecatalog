@@ -246,8 +246,7 @@ class banner_course_test_CourseLookupSessionTest
         $courses = $this->session->getCourses();
        	$this->assertType('osid_course_CourseList', $courses);
        	
-       	$this->assertGreaterThan(10, $courses->available());
-       	$this->assertLessThan(10000, $courses->available());
+       	$this->assertEquals(4, $courses->available());
        	
        	$this->assertTrue($courses->hasNext());
        	$this->assertType('osid_course_Course', $courses->getNextCourse());

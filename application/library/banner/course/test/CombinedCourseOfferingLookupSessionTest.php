@@ -268,7 +268,7 @@ class banner_course_test_CombinedCourseOfferingLookupSessionTest
     {
         $offerings = $this->session->getCourseOfferingsByTerm($this->termId);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertEquals(1894, $offerings->available());
+       	$this->assertEquals(7, $offerings->available());
        	$i = 0;
        	while ($offerings->hasNext() && $i < 10) {
        		$offering = $offerings->getNextCourseOffering();
@@ -309,7 +309,7 @@ class banner_course_test_CombinedCourseOfferingLookupSessionTest
         $offerings = $this->session->getCourseOfferings();
         
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertEquals(68097, $offerings->available());
+       	$this->assertEquals(228, $offerings->available());
        	
        	$this->assertTrue($offerings->hasNext());
        	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
