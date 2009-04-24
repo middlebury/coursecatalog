@@ -906,7 +906,7 @@ class banner_course_CourseManager
      *              supportsTopicLookup() </code> is <code> true. </code> 
      */
     public function getTopicLookupSession() {
-    	throw new osid_UnimplementedException();
+    	return new banner_course_TopicLookupSession($this, $this->getCombinedCatalogId());
 	}
 
 
@@ -933,7 +933,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getTopicLookupSessionForCatalog(osid_id_Id $courseCatalogId) {
-    	throw new osid_UnimplementedException();
+    	return new banner_course_TopicLookupSession($this, $courseCatalogId);
 	}
 
 
@@ -1646,7 +1646,7 @@ class banner_course_CourseManager
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsTopicLookup() {
-    	return false;
+    	return true;
     }
 
 

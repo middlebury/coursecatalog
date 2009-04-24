@@ -230,7 +230,7 @@ class banner_course_test_CourseOfferingLookupSessionTest
      */
     public function testGetCourseOfferingsByRecordType()
     {
-        $offerings = $this->session->getCourseOfferingsByParentGenusType($this->unknownType);
+        $offerings = $this->session->getCourseOfferingsByRecordType($this->unknownType);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
        	$this->assertFalse($offerings->hasNext());
     }
