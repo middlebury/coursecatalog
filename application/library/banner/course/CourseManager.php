@@ -134,7 +134,7 @@ class banner_course_CourseManager
 		}
 		
 		try {
-			$this->db = new PDO($dsn, $username, $password);
+			$this->db = new PDODebug_PDO($dsn, $username, $password);
 		} catch (PDOException $e) {
 			throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode());
 		}
