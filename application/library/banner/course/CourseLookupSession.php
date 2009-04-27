@@ -239,12 +239,17 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 			throw new osid_NotFoundException("Could not find a course matching the id-component '$courseIdString' for the catalog '".$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/')."'.");
 		
 		return new banner_course_Course(
-					new phpkit_id_URNInetId('urn:inet:'.$this->manager->getIdAuthority().':course/'
-						.$row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB']),
+					$this->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'], 'course/'),
 					$row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'],
 					'',	// Description
 					$row['SCBCRSE_TITLE'], 
-					$row['SCBCRSE_CREDIT_HR_HIGH']);
+					$row['SCBCRSE_CREDIT_HR_HIGH'],
+					array(
+						$this->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'], 'topic/subject/'),
+						$this->getOsidIdFromString($row['SCBCRSE_DEPT_CODE'], 'topic/department/') //,
+// 						$this->getOsidIdFromString($row['SCBCRSE_DIVS_CODE'], 'topic/division/')
+					),
+					$this);
     }
 
 	/**
@@ -405,9 +410,9 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
     public function getCourses() {
     	return new banner_course_AllCoursesList(
     		$this->manager->getDB(), 
-    		$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/'),
-    		$this->manager->getIdAuthority(),
-    		'course/');
+    		$this,
+    		$this->getCourseCatalogId()
+    	);
     }
 
 }

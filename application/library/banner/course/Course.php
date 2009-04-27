@@ -29,17 +29,20 @@ class banner_course_Course
 	 * 
 	 * @param osid_id_Id $id
 	 * @param string $displayName
+	 * @param banner_course_AbstractCourseSession $session
 	 * @return void
 	 * @access public
 	 * @since 4/13/09
 	 */
-	public function __construct (osid_id_Id $id, $displayName, $description, $title, $credits) {
+	public function __construct (osid_id_Id $id, $displayName, $description, $title, $credits, array $topicIds, banner_course_AbstractCourseSession $session) {
 		parent::__construct();
 		$this->setId($id);
 		$this->setDisplayName($displayName);
 		$this->setDescription($description);
 		$this->title = $title;
 		$this->credits = floatval($credits);
+		$this->topicIds = $topicIds;
+		$this->session = $session;
 	}
 	
     /**
