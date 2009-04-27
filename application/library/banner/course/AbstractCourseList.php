@@ -159,8 +159,8 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 					$row['SCBCRSE_CREDIT_HR_HIGH'],
 					array(
 						$this->session->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'], 'topic/subject/'),
-						$this->session->getOsidIdFromString($row['SCBCRSE_DEPT_CODE'], 'topic/department/') //,
-// 						$this->session->getOsidIdFromString($row['SCBCRSE_DIVS_CODE'], 'topic/division/')
+						$this->session->getOsidIdFromString($row['SCBCRSE_DEPT_CODE'], 'topic/department/'),
+						$this->session->getOsidIdFromString($row['SCBCRSE_DIVS_CODE'], 'topic/division/')
 					),
 					$this->session);
 	}

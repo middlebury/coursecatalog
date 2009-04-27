@@ -186,6 +186,8 @@ class banner_course_TopicLookupSession
    				return $this->getSubjectTopic($topicId);
    			case 'department':
    				return $this->getDepartmentTopic($topicId);
+   			case 'division':
+   				return $this->getDivisionTopic($topicId);
    			case 'requirement':
    				return $this->getRequirementTopic($topicId);
    			default:
@@ -198,15 +200,31 @@ class banner_course_TopicLookupSession
      * 
      * @param osid_id_Id $topicId
      * @return string
-     * @access private
+     * @access public
      * @since 4/24/09
      */
-    private function getTopicType (osid_id_Id $topicId) {
+    public function getTopicType (osid_id_Id $topicId) {
     	$string = $this->getDatabaseIdString($topicId, 'topic/');
-    	if (!preg_match('#(subject|department|requirement)/.+#', $string, $matches))
+    	if (!preg_match('#(subject|department|division|requirement)/.+#', $string, $matches))
     		throw new osid_NotFoundException('Could not turn "'.$string.'" into a topic type.');
     	
     	return $matches[1];
+    }
+    
+    /**
+     * Answer the value string corresponding to the topic id
+     * 
+     * @param osid_id_Id $topicId
+     * @return string
+     * @access public
+     * @since 4/24/09
+     */
+    public function getTopicValue (osid_id_Id $topicId) {
+    	$string = $this->getDatabaseIdString($topicId, 'topic/');
+    	if (!preg_match('#(subject|department|division|requirement)/(.+)#', $string, $matches))
+    		throw new osid_NotFoundException('Could not turn "'.$string.'" into a topic type.');
+    	
+    	return $matches[2];
     }
     
     /**
@@ -407,6 +425,106 @@ GROUP BY SCBCRSE_DEPT_CODE
 				);
 		}
 		$this->getDepartmentTopics_stmt->closeCursor();
+		return new phpkit_course_ArrayTopicList($topics);
+    }
+    
+    /**
+     * Answer a division topic by id
+     * 
+     * @param osid_id_Id $topicId
+     * @return osid_course_Topic
+     * @access private
+     * @since 4/24/09
+     */
+    private function getDivisionTopic (osid_id_Id $topicId) {
+    	if (!isset($this->getDivisionTopic_stmt)) {
+	    	$query =
+"SELECT 
+    STVDIVS_CODE,
+	STVDIVS_DESC
+FROM 
+	scbcrse
+	INNER JOIN stvdivs ON SCBCRSE_DIVS_CODE = STVDIVS_CODE
+WHERE
+	SCBCRSE_DIVS_CODE = :division_code
+	AND SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms()."
+	)
+
+GROUP BY SCBCRSE_DIVS_CODE
+";
+			$this->getDivisionTopic_stmt = $this->manager->getDB()->prepare($query);
+		}
+		
+		$parameters = array_merge(
+			array(
+				':division_code' => $this->getDatabaseIdString($topicId, 'topic/division/')
+			),
+			$this->getCatalogParameters());
+		$this->getDivisionTopic_stmt->execute($parameters);
+		$row = $this->getDivisionTopic_stmt->fetch(PDO::FETCH_ASSOC);
+		$this->getDivisionTopic_stmt->closeCursor();
+		
+		if (!$row['STVDIVS_CODE'])
+			throw new osid_NotFoundException("Could not find a topic matching the division code ".$this->getDatabaseIdString($topicId, 'topic/division/').".");
+		
+		return new banner_course_Topic(
+					$this->getOsidIdFromString($row['STVDIVS_CODE'], 'topic/division/'),
+					$row['STVDIVS_CODE'],
+					$row['STVDIVS_DESC'],
+					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division")
+			);
+    }
+    
+    /**
+     * Answer all of the Division topics
+     * 
+     * @return osid_course_TopicList
+     * @access private
+     * @since 4/24/09
+     */
+    private function getDivisionTopics () {
+    	if (!isset($this->getDivisionTopics_stmt)) {
+	    	$query =
+"SELECT 
+    STVDIVS_CODE,
+	STVDIVS_DESC
+FROM 
+	scbcrse
+	INNER JOIN stvdivs ON SCBCRSE_DIVS_CODE = STVDIVS_CODE
+WHERE
+	SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms()."
+	)
+
+GROUP BY SCBCRSE_DIVS_CODE
+";
+			$this->getDivisionTopics_stmt = $this->manager->getDB()->prepare($query);
+		}
+		
+		$parameters = $this->getCatalogParameters();
+		$this->getDivisionTopics_stmt->execute($parameters);
+				
+		$topics = array();
+		while ($row = $this->getDivisionTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
+			$topics[] = new banner_course_Topic(
+						$this->getOsidIdFromString($row['STVDIVS_CODE'], 'topic/division/'),
+						$row['STVDIVS_CODE'],
+						$row['STVDIVS_DESC'],
+						new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division")
+				);
+		}
+		$this->getDivisionTopics_stmt->closeCursor();
 		return new phpkit_course_ArrayTopicList($topics);
     }
     
@@ -612,6 +730,8 @@ GROUP BY STVATTR_CODE
    				return $this->getSubjectTopics();
    			case 'genera:topic/department':
    				return $this->getDepartmentTopics();
+   			case 'genera:topic/division':
+   				return $this->getDivisionTopics();
    			case 'genera:topic/requirement':
    				return $this->getRequirementTopics();
    			default:
@@ -682,6 +802,7 @@ GROUP BY STVATTR_CODE
     	$topicList = new phpkit_CombinedList('osid_course_TopicList');
     	$topicList->addList($this->getSubjectTopics());
     	$topicList->addList($this->getDepartmentTopics());
+    	$topicList->addList($this->getDivisionTopics());
     	$topicList->addList($this->getRequirementTopics());
     	return $topicList;
     }

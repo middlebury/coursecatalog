@@ -277,6 +277,64 @@ class banner_course_CombinedCourseOfferingLookupSession
     	
     	return parent::getCourseOfferingsByTermForCourse($termId, $courseId);
     }
+    
+    /**
+     *  WARNING: This method was not in the OSID trunk as of 2009-04-27. A 
+     *  ticket requesting the addition of this method is available at: 
+     *  http://oki.assembla.com/spaces/osid-dev/tickets/18-osid-course---No-way-to-map-Topics-to-Courses-or-CourseOfferings- 
+     *  Gets all <code> CourseOfferings </code> associated with a given <code> 
+     *  Topic. </code> In plenary mode, the returned list contains all known 
+     *  course offerings or an error results. Otherwise, the returned list may 
+     *  contain only those course offerings that are accessible through this 
+     *  session. In both cases, the order of the set is not specified. 
+     *
+     *  @param object osid_id_Id $topicId a topic <code> Id </code> 
+     *  @return object osid_course_CourseOfferingList a list of <code> 
+     *          CoursesOfferings </code> 
+     *  @throws osid_NullArgumentException <code> topicId </code> is <code> 
+     *          null </code> 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     *  @throws osid_IllegalStateException this session has been closed 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function getCourseOfferingsByTopic(osid_id_Id $topicId) {
+    	if ($this->usesIsolatedView())
+    		return new phpkit_EmptyList();
+    	
+    	return parent::getCourseOfferingsByTopic($topicId);
+    }
+
+
+    /**
+     *  WARNING: This method was not in the OSID trunk as of 2009-04-27. A 
+     *  ticket requesting the addition of this method is available at: 
+     *  http://oki.assembla.com/spaces/osid-dev/tickets/18-osid-course---No-way-to-map-Topics-to-Courses-or-CourseOfferings- 
+     *  Gets all <code> CourseOfferings </code> associated with a given <code> 
+     *  Term </code> and a given <code> Topic </code> . In plenary mode, the 
+     *  returned list contains all known course offerings or an error results. 
+     *  Otherwise, the returned list may contain only those course offerings 
+     *  that are accessible through this session. In both cases, the order of 
+     *  the set is not specified. 
+     *
+     *  @param object osid_id_Id $termId a term <code> Id </code> 
+     *  @param object osid_id_Id $topicId a topic <code> Id </code> 
+     *  @return object osid_course_CourseOfferingList a list of <code> 
+     *          CoursesOfferings </code> 
+     *  @throws osid_NullArgumentException <code> termId </code> or <code> 
+     *          topicId </code> is <code> null </code> 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     *  @throws osid_IllegalStateException this session has been closed 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function getCourseOfferingsByTermByTopic(osid_id_Id $termId, 
+                                                    osid_id_Id $topicId) {
+    	if ($this->usesIsolatedView())
+    		return new phpkit_EmptyList();
+    	
+    	return parent::getCourseOfferingsByTermByTopic($termId, $topicId);
+    }
 
 
     /**

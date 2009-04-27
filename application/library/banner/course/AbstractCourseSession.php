@@ -195,6 +195,23 @@ abstract class banner_course_AbstractCourseSession
 	public function getCombinedCatalogId () {
 		return $this->manager->getCombinedCatalogId();
 	}
+	
+	/**
+	 * Answer a topic lookup session
+	 * 
+	 * @return osid_course_TopicLookupSession
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getTopicLookupSession () {
+		if (!isset($this->topicLookupSession)) {
+			$this->topicLookupSession = $this->manager->getTopicLookupSessionForCatalog($this->getCourseCatalogId());
+// 			$this->topicLookupSession = $this->manager->getTopicLookupSession();
+			$this->topicLookupSession->useFederatedCourseCatalogView();
+		}
+		
+		return $this->topicLookupSession;
+	}
 }
 
 ?>

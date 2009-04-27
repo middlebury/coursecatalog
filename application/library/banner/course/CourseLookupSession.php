@@ -246,8 +246,8 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 					$row['SCBCRSE_CREDIT_HR_HIGH'],
 					array(
 						$this->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'], 'topic/subject/'),
-						$this->getOsidIdFromString($row['SCBCRSE_DEPT_CODE'], 'topic/department/') //,
-// 						$this->getOsidIdFromString($row['SCBCRSE_DIVS_CODE'], 'topic/division/')
+						$this->getOsidIdFromString($row['SCBCRSE_DEPT_CODE'], 'topic/department/'),
+						$this->getOsidIdFromString($row['SCBCRSE_DIVS_CODE'], 'topic/division/')
 					),
 					$this);
     }
@@ -391,6 +391,34 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
      */
     public function getCoursesByRecordType(osid_type_Type $courseRecordType) {
     	return new phpkit_EmptyList;
+    }
+
+	/**
+     *  WARNING: This method was not in the OSID trunk as of 2009-04-27. A 
+     *  ticket requesting the addition of this method is available at: 
+     *  http://oki.assembla.com/spaces/osid-dev/tickets/18-osid-course---No-way-to-map-Topics-to-Courses-or-CourseOfferings- 
+     *  Gets a <code> CourseList </code> corresponding to the given topic 
+     *  <code> Id </code> . In plenary mode, the returned list contains all 
+     *  known courses or an error results. Otherwise, the returned list may 
+     *  contain only those courses that are accessible through this session. 
+     *  In both cases, the order of the set is not specified. 
+     *
+     *  @param object osid_id_Id $topicId a topic id 
+     *  @return object osid_course_CourseList the returned <code> Course list 
+     *          </code> 
+     *  @throws osid_NullArgumentException <code> courseGenusType </code> is 
+     *          <code> null </code> 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     *  @throws osid_IllegalStateException this session has been closed 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function getCoursesByTopic(osid_id_Id $topicId) {
+    	return  new banner_course_CoursesByTopicList(
+    		$this->manager->getDB(), 
+    		$this,
+    		$this->getCourseCatalogId(),
+    		$topicId);
     }
 
 

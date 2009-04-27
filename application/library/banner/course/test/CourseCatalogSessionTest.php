@@ -66,12 +66,12 @@ class banner_course_test_CourseCatalogSessionTest
        $courseIds = $this->session->getCourseIdsByCatalogs(new phpkit_id_ArrayIdList(array(
        					$this->mcugId,
        					$this->unknownId)));
-       $this->assertEquals(4, $courseIds->available());
+       $this->assertEquals(3, $courseIds->available());
        
        $courses = $this->session->getCoursesByCatalogs(new phpkit_id_ArrayIdList(array(
        					$this->mcugId,
        					$this->unknownId)));
-       $this->assertEquals(4, $courses->available());
+       $this->assertEquals(3, $courses->available());
     }
 
     /**
@@ -114,7 +114,7 @@ class banner_course_test_CourseCatalogSessionTest
     {
        $courseIds = $this->session->getCourseIdsByCatalog($this->mcugId);
        $this->assertType('osid_id_IdList', $courseIds);
-       $this->assertEquals(4, $courseIds->available());
+       $this->assertEquals(3, $courseIds->available());
        $this->assertType('osid_id_Id', $courseIds->getNextId());
     }
 
@@ -125,7 +125,7 @@ class banner_course_test_CourseCatalogSessionTest
     {
        $courses = $this->session->getCoursesByCatalog($this->mcugId);
        $this->assertType('osid_course_CourseList', $courses);
-       $this->assertEquals(4, $courses->available());
+       $this->assertEquals(3, $courses->available());
        $this->assertType('osid_course_Course', $courses->getNextCourse());
     }
 
@@ -137,7 +137,7 @@ class banner_course_test_CourseCatalogSessionTest
        $courseIds = $this->session->getCourseIdsByCatalogs(new phpkit_id_ArrayIdList(array(
        					$this->mcugId)));
        $this->assertType('osid_id_IdList', $courseIds);
-       $this->assertEquals(4, $courseIds->available());
+       $this->assertEquals(3, $courseIds->available());
        $this->assertType('osid_id_Id', $courseIds->getNextId());
     }
 
@@ -149,7 +149,7 @@ class banner_course_test_CourseCatalogSessionTest
        $courses = $this->session->getCoursesByCatalogs(new phpkit_id_ArrayIdList(array(
        					$this->mcugId)));
        $this->assertType('osid_course_CourseList', $courses);
-       $this->assertEquals(4, $courses->available());
+       $this->assertEquals(3, $courses->available());
        $this->assertType('osid_course_Course', $courses->getNextCourse());
     }
 
