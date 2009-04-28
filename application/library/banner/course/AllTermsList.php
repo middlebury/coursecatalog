@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 class banner_course_AllTermsList
-	extends phpkit_PdoQueryList
+	extends banner_course_CachingPdoQueryList
 	implements osid_course_TermList
 {
 
