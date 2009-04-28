@@ -276,8 +276,8 @@ GROUP BY SCBCRSE_SUBJ_CODE
 		
 		return new banner_course_Topic(
 					$this->getOsidIdFromString($row['STVSUBJ_CODE'], 'topic/subject/'),
-					$row['STVSUBJ_CODE'],
 					$row['STVSUBJ_DESC'],
+					'',
 					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject")
 			);
     }
@@ -323,8 +323,8 @@ GROUP BY SCBCRSE_SUBJ_CODE
 		while ($row = self::$getSubjectTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
 			$topics[] = new banner_course_Topic(
 						$this->getOsidIdFromString($row['STVSUBJ_CODE'], 'topic/subject/'),
-						$row['STVSUBJ_CODE'],
 						$row['STVSUBJ_DESC'],
+						'',
 						new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject")
 				);
 		}
@@ -381,8 +381,8 @@ GROUP BY SCBCRSE_DEPT_CODE
 		
 		return new banner_course_Topic(
 					$this->getOsidIdFromString($row['STVDEPT_CODE'], 'topic/department/'),
-					$row['STVDEPT_CODE'],
 					$row['STVDEPT_DESC'],
+					'',
 					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department")
 			);
     }
@@ -427,8 +427,8 @@ GROUP BY SCBCRSE_DEPT_CODE
 		while ($row = self::$getDepartmentTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
 			$topics[] = new banner_course_Topic(
 						$this->getOsidIdFromString($row['STVDEPT_CODE'], 'topic/department/'),
-						$row['STVDEPT_CODE'],
 						$row['STVDEPT_DESC'],
+						'',
 						new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department")
 				);
 		}
@@ -485,8 +485,8 @@ GROUP BY SCBCRSE_DIVS_CODE
 		
 		return new banner_course_Topic(
 					$this->getOsidIdFromString($row['STVDIVS_CODE'], 'topic/division/'),
-					$row['STVDIVS_CODE'],
 					$row['STVDIVS_DESC'],
+					'',
 					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division")
 			);
     }
@@ -531,8 +531,8 @@ GROUP BY SCBCRSE_DIVS_CODE
 		while ($row = self::$getDivisionTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
 			$topics[] = new banner_course_Topic(
 						$this->getOsidIdFromString($row['STVDIVS_CODE'], 'topic/division/'),
-						$row['STVDIVS_CODE'],
 						$row['STVDIVS_DESC'],
+						'',
 						new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division")
 				);
 		}
@@ -590,8 +590,8 @@ GROUP BY STVATTR_CODE
 		
 		return new banner_course_Topic(
 					$this->getOsidIdFromString($row['STVATTR_CODE'], 'topic/requirement/'),
-					$row['STVATTR_CODE'],
 					$row['STVATTR_DESC'],
+					'',
 					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement")
 			);
     }
@@ -637,8 +637,8 @@ GROUP BY STVATTR_CODE
 		while ($row = self::$getRequirementTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
 			$topics[] = new banner_course_Topic(
 						$this->getOsidIdFromString($row['STVATTR_CODE'], 'topic/requirement/'),
-						$row['STVATTR_CODE'],
 						$row['STVATTR_DESC'],
+						'',
 						new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement")
 				);
 		}

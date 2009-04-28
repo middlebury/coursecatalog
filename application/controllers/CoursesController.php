@@ -57,6 +57,9 @@ class CoursesController
 		$lookupSession->useFederatedCourseCatalogView();
 		$this->view->course = $lookupSession->getCourse($id);
 		
+		// Load the topics into our view
+ 		$this->loadTopics($this->view->course->getTopics());
+ 		
 		$lookupSession = self::getCourseManager()->getCourseOfferingLookupSession();
 		$lookupSession->useFederatedCourseCatalogView();
 		$this->view->offerings = $lookupSession->getCourseOfferingsForCourse($id);

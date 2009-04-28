@@ -106,6 +106,60 @@ abstract class AbstractCatalogController
 	public static function getStringFromOsidId (osid_id_Id $id) {
 		return phpkit_id_URNInetId::getInetURNString($id);
 	}
+	
+	/**
+	 * Load topics into our view
+	 * 
+	 * @param osid_course_TopicList
+	 * @return void
+	 * @access protected
+	 * @since 4/28/09
+	 */
+	protected function loadTopics (osid_course_TopicList $topicList) {
+		$topics = $this->topicListAsArray($topicList);
+		
+ 		$this->view->subjectTopics = $this->filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject"));
+ 		
+ 		$this->view->departmentTopics = $this->filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department"));
+ 		
+ 		$this->view->divisionTopics = $this->filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division"));
+ 		
+ 		$this->view->requirementTopics = $this->filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement"));
+	}
+	
+	/**
+	 * Answer an array containing the list items.
+	 * 
+	 * @param osid_course_TopicList $topicList
+	 * @return array
+	 * @access private
+	 * @since 4/28/09
+	 */
+	private function topicListAsArray (osid_course_TopicList $topicList) {
+		$topics = array();
+		while ($topicList->hasNext()) {
+			$topics[] = $topicList->getNextTopic();
+		}
+		return $topics;
+	}
+	
+	/**
+	 * Return an array of topics matching a type 
+	 * 
+	 * @param array $topics
+	 * @param osid_type_Type $type
+	 * @return array
+	 * @access private
+	 * @since 4/28/09
+	 */
+	private function filterTopicsByType (array $topics, osid_type_Type $type) {
+		$matching = array();
+		foreach ($topics as $topic) {
+			if ($topic->getGenusType()->isEqual($type)) 
+				$matching[] = $topic;
+		}
+		return $matching;
+	}
 }
 
 ?>
