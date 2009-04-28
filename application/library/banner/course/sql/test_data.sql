@@ -739,8 +739,54 @@ INSERT INTO `stvattr` (`STVATTR_CODE`, `STVATTR_DESC`, `STVATTR_ACTIVITY_DATE`) 
 INSERT INTO `stvdept` (`STVDEPT_CODE`, `STVDEPT_DESC`, `STVDEPT_ACTIVITY_DATE`, `STVDEPT_SYSTEM_REQ_IND`, `STVDEPT_VR_MSG_NO`) VALUES
 ('CHEM', 'Chemistry & Biochemistry', '0000-00-00', '1', NULL),
 ('GEOL', 'Geology', '0000-00-00', '1', NULL),
-('MATH', 'Mathematics', '0000-00-00', '1', NULL),
 ('PHYS', 'Physics', '0000-00-00', '1', NULL);
+
+--
+-- Dumping data for table `stvdivs`
+--
+
+INSERT INTO `stvdivs` (`STVDIVS_CODE`, `STVDIVS_DESC`, `STVDIVS_ACTIVITY_DATE`) VALUES
+('ARTS', 'Arts', '2001-05-30'),
+('BLSE', 'Bread Loaf School of English', '2003-01-23'),
+('HUMN', 'Humanities', '2003-01-09'),
+('IM', 'International Management', '2009-02-19'),
+('INTR', 'Interdisciplinary', '2004-10-11'),
+('IP', 'International Policy Studies', '2009-02-19'),
+('IPMG', 'Int''l Policy & Management', '2009-02-19'),
+('LANG', 'Languages', '2001-05-30'),
+('LE', 'Language Education', '2009-02-19'),
+('LITR', 'Literature', '2003-01-09'),
+('LS', 'Language Studies', '2009-02-19'),
+('LSCH', 'Language School', '2003-01-09'),
+('MSAB', 'Middlebury Schools Abroad', '2003-06-16'),
+('NSCI', 'Natural Sciences', '2001-05-30'),
+('OCST', 'Approved Off-Campus Study', '2003-06-16'),
+('PE', 'Physical Education', '2003-01-17'),
+('SSCI', 'Social Sciences', '2001-05-30'),
+('TI', 'Translation & Interpretation', '2009-02-19'),
+('TILE', 'Transltn, Interpret & Lang Edu', '2009-02-19');
+
+--
+-- Dumping data for table `stvschd`
+--
+
+INSERT INTO `stvschd` (`STVSCHD_CODE`, `STVSCHD_DESC`, `STVSCHD_ACTIVITY_DATE`, `STVSCHD_INSTRUCT_METHOD`, `STVSCHD_COOP_IND`, `STVSCHD_AUTO_SCHEDULER_IND`, `STVSCHD_INSM_CODE`, `STVSCHD_VR_MSG_NO`) VALUES
+('DML', 'DML Research Paper', '2003-10-18', NULL, 'N', 'N', NULL, NULL),
+('DR1', ' Drill 1', '2003-10-18', NULL, 'N', 'Y', NULL, NULL),
+('DR2', ' Drill 2', '2003-10-18', NULL, 'N', 'N', NULL, NULL),
+('DSC', ' Discussion', '2003-10-18', NULL, 'N', 'Y', NULL, NULL),
+('IND', ' Independent Study', '2003-10-18', NULL, 'N', 'N', NULL, NULL),
+('INT', ' Internship', '2003-10-18', NULL, 'N', 'N', NULL, NULL),
+('LA2', 'Additional Lab', '2004-04-16', NULL, 'N', 'N', NULL, NULL),
+('LA3', 'Additional Lab', '2004-04-16', NULL, 'N', 'N', NULL, NULL),
+('LAB', '  Lab', '2003-10-18', NULL, 'N', 'Y', NULL, NULL),
+('LCT', '    Lecture', '2003-10-18', NULL, 'N', 'Y', NULL, NULL),
+('PE', ' PE Course', '2003-10-18', NULL, 'N', 'Y', NULL, NULL),
+('PLB', ' Pre-Lab', '2003-10-18', NULL, 'N', 'Y', NULL, NULL),
+('SCR', ' Screening', '2003-10-18', NULL, 'N', 'Y', NULL, NULL),
+('SEM', ' Seminar', '2003-10-18', NULL, 'N', 'Y', NULL, NULL),
+('SNR', ' Senior Work', '2003-10-18', NULL, 'N', 'N', NULL, NULL),
+('WKS', 'Workshop', '2009-02-19', NULL, 'N', 'N', NULL, '8');
 
 --
 -- Dumping data for table `stvsubj`
