@@ -273,6 +273,7 @@ class banner_course_CourseCatalogSession
     	return new phpkit_course_ArrayCourseCatalogList($catalogs);
     }
     
+    private static $getCatalogsByCourse_stmt;
     /**
      * Answer the statement for fetching catalogs
      * 
@@ -281,8 +282,8 @@ class banner_course_CourseCatalogSession
      * @since 4/23/09
      */
     private function getGetCatalogsStatement () {
-    	if (!isset($this->getCatalogsByCourse_stmt)) {
-    		$this->getCatalogsByCourse_stmt = $this->manager->getDB()->prepare(
+    	if (!isset(self::$getCatalogsByCourse_stmt)) {
+    		self::$getCatalogsByCourse_stmt = $this->manager->getDB()->prepare(
 "SELECT
 	course_catalog.catalog_id,
 	catalog_title
@@ -299,7 +300,7 @@ WHERE
 GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB, catalog_id
 ");
     	}
-    	return $this->getCatalogsByCourse_stmt;
+    	return self::$getCatalogsByCourse_stmt;
     }
 
 }

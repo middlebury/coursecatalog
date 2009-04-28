@@ -227,6 +227,7 @@ class banner_course_TopicLookupSession
     	return $matches[2];
     }
     
+    private static $getSubjectTopic_stmts = array();
     /**
      * Answer a subject topic by id
      * 
@@ -236,7 +237,8 @@ class banner_course_TopicLookupSession
      * @since 4/24/09
      */
     private function getSubjectTopic (osid_id_Id $topicId) {
-    	if (!isset($this->getSubjectTopic_stmt)) {
+    	$catalogWhere = $this->getCatalogWhereTerms();
+    	if (!isset(self::$getSubjectTopic_stmts[$catalogWhere])) {
 	    	$query =
 "SELECT 
     STVSUBJ_CODE,
@@ -257,7 +259,7 @@ WHERE
 
 GROUP BY SCBCRSE_SUBJ_CODE
 ";
-			$this->getSubjectTopic_stmt = $this->manager->getDB()->prepare($query);
+			self::$getSubjectTopic_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
 		}
 		
 		$parameters = array_merge(
@@ -265,9 +267,9 @@ GROUP BY SCBCRSE_SUBJ_CODE
 				':subject_code' => $this->getDatabaseIdString($topicId, 'topic/subject/')
 			),
 			$this->getCatalogParameters());
-		$this->getSubjectTopic_stmt->execute($parameters);
-		$row = $this->getSubjectTopic_stmt->fetch(PDO::FETCH_ASSOC);
-		$this->getSubjectTopic_stmt->closeCursor();
+		self::$getSubjectTopic_stmts[$catalogWhere]->execute($parameters);
+		$row = self::$getSubjectTopic_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
+		self::$getSubjectTopic_stmts[$catalogWhere]->closeCursor();
 		
 		if (!$row['STVSUBJ_CODE'])
 			throw new osid_NotFoundException("Could not find a topic  matching the subject code ".$this->getDatabaseIdString($topicId, 'topic/subject/').".");
@@ -280,6 +282,7 @@ GROUP BY SCBCRSE_SUBJ_CODE
 			);
     }
     
+    private static $getSubjectTopics_stmts = array();
     /**
      * Answer all of the subject topics
      * 
@@ -288,7 +291,8 @@ GROUP BY SCBCRSE_SUBJ_CODE
      * @since 4/24/09
      */
     private function getSubjectTopics () {
-    	if (!isset($this->getSubjectTopics_stmt)) {
+    	$catalogWhere = $this->getCatalogWhereTerms();
+    	if (!isset(self::$getSubjectTopics_stmts[$catalogWhere])) {
 	    	$query =
 "SELECT 
     STVSUBJ_CODE,
@@ -309,14 +313,14 @@ WHERE
 
 GROUP BY SCBCRSE_SUBJ_CODE
 ";
-			$this->getSubjectTopics_stmt = $this->manager->getDB()->prepare($query);
+			self::$getSubjectTopics_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
 		}
 		
 		$parameters = $this->getCatalogParameters();
-		$this->getSubjectTopics_stmt->execute($parameters);
+		self::$getSubjectTopics_stmts[$catalogWhere]->execute($parameters);
 				
 		$topics = array();
-		while ($row = $this->getSubjectTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
+		while ($row = self::$getSubjectTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
 			$topics[] = new banner_course_Topic(
 						$this->getOsidIdFromString($row['STVSUBJ_CODE'], 'topic/subject/'),
 						$row['STVSUBJ_CODE'],
@@ -324,10 +328,11 @@ GROUP BY SCBCRSE_SUBJ_CODE
 						new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject")
 				);
 		}
-		$this->getSubjectTopics_stmt->closeCursor();
+		self::$getSubjectTopics_stmts[$catalogWhere]->closeCursor();
 		return new phpkit_course_ArrayTopicList($topics);
     }
     
+    private static $getDepartmentTopic_stmts = array();
     /**
      * Answer a department topic by id
      * 
@@ -337,7 +342,8 @@ GROUP BY SCBCRSE_SUBJ_CODE
      * @since 4/24/09
      */
     private function getDepartmentTopic (osid_id_Id $topicId) {
-    	if (!isset($this->getDepartmentTopic_stmt)) {
+    	$catalogWhere = $this->getCatalogWhereTerms();
+    	if (!isset(self::$getDepartmentTopic_stmts[$catalogWhere])) {
 	    	$query =
 "SELECT 
     STVDEPT_CODE,
@@ -358,7 +364,7 @@ WHERE
 
 GROUP BY SCBCRSE_DEPT_CODE
 ";
-			$this->getDepartmentTopic_stmt = $this->manager->getDB()->prepare($query);
+			self::$getDepartmentTopic_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
 		}
 		
 		$parameters = array_merge(
@@ -366,9 +372,9 @@ GROUP BY SCBCRSE_DEPT_CODE
 				':department_code' => $this->getDatabaseIdString($topicId, 'topic/department/')
 			),
 			$this->getCatalogParameters());
-		$this->getDepartmentTopic_stmt->execute($parameters);
-		$row = $this->getDepartmentTopic_stmt->fetch(PDO::FETCH_ASSOC);
-		$this->getDepartmentTopic_stmt->closeCursor();
+		self::$getDepartmentTopic_stmts[$catalogWhere]->execute($parameters);
+		$row = self::$getDepartmentTopic_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
+		self::$getDepartmentTopic_stmts[$catalogWhere]->closeCursor();
 		
 		if (!$row['STVDEPT_CODE'])
 			throw new osid_NotFoundException("Could not find a topic matching the department code ".$this->getDatabaseIdString($topicId, 'topic/department/').".");
@@ -381,6 +387,7 @@ GROUP BY SCBCRSE_DEPT_CODE
 			);
     }
     
+    private static $getDepartmentTopics_stmts = array();
     /**
      * Answer all of the Department topics
      * 
@@ -389,7 +396,8 @@ GROUP BY SCBCRSE_DEPT_CODE
      * @since 4/24/09
      */
     private function getDepartmentTopics () {
-    	if (!isset($this->getDepartmentTopics_stmt)) {
+    	$catalogWhere = $this->getCatalogWhereTerms();
+    	if (!isset(self::$getDepartmentTopics_stmts[$catalogWhere])) {
 	    	$query =
 "SELECT 
     STVDEPT_CODE,
@@ -409,14 +417,14 @@ WHERE
 
 GROUP BY SCBCRSE_DEPT_CODE
 ";
-			$this->getDepartmentTopics_stmt = $this->manager->getDB()->prepare($query);
+			self::$getDepartmentTopics_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
 		}
 		
 		$parameters = $this->getCatalogParameters();
-		$this->getDepartmentTopics_stmt->execute($parameters);
+		self::$getDepartmentTopics_stmts[$catalogWhere]->execute($parameters);
 				
 		$topics = array();
-		while ($row = $this->getDepartmentTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
+		while ($row = self::$getDepartmentTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
 			$topics[] = new banner_course_Topic(
 						$this->getOsidIdFromString($row['STVDEPT_CODE'], 'topic/department/'),
 						$row['STVDEPT_CODE'],
@@ -424,10 +432,11 @@ GROUP BY SCBCRSE_DEPT_CODE
 						new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department")
 				);
 		}
-		$this->getDepartmentTopics_stmt->closeCursor();
+		self::$getDepartmentTopics_stmts[$catalogWhere]->closeCursor();
 		return new phpkit_course_ArrayTopicList($topics);
     }
     
+    private static $getDivisionTopic_stmts = array();
     /**
      * Answer a division topic by id
      * 
@@ -437,7 +446,8 @@ GROUP BY SCBCRSE_DEPT_CODE
      * @since 4/24/09
      */
     private function getDivisionTopic (osid_id_Id $topicId) {
-    	if (!isset($this->getDivisionTopic_stmt)) {
+    	$catalogWhere = $this->getCatalogWhereTerms();
+    	if (!isset(self::$getDivisionTopic_stmts[$catalogWhere])) {
 	    	$query =
 "SELECT 
     STVDIVS_CODE,
@@ -458,7 +468,7 @@ WHERE
 
 GROUP BY SCBCRSE_DIVS_CODE
 ";
-			$this->getDivisionTopic_stmt = $this->manager->getDB()->prepare($query);
+			self::$getDivisionTopic_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
 		}
 		
 		$parameters = array_merge(
@@ -466,9 +476,9 @@ GROUP BY SCBCRSE_DIVS_CODE
 				':division_code' => $this->getDatabaseIdString($topicId, 'topic/division/')
 			),
 			$this->getCatalogParameters());
-		$this->getDivisionTopic_stmt->execute($parameters);
-		$row = $this->getDivisionTopic_stmt->fetch(PDO::FETCH_ASSOC);
-		$this->getDivisionTopic_stmt->closeCursor();
+		self::$getDivisionTopic_stmts[$catalogWhere]->execute($parameters);
+		$row = self::$getDivisionTopic_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
+		self::$getDivisionTopic_stmts[$catalogWhere]->closeCursor();
 		
 		if (!$row['STVDIVS_CODE'])
 			throw new osid_NotFoundException("Could not find a topic matching the division code ".$this->getDatabaseIdString($topicId, 'topic/division/').".");
@@ -481,6 +491,7 @@ GROUP BY SCBCRSE_DIVS_CODE
 			);
     }
     
+    private static $getDivisionTopics_stmts = array();
     /**
      * Answer all of the Division topics
      * 
@@ -489,7 +500,8 @@ GROUP BY SCBCRSE_DIVS_CODE
      * @since 4/24/09
      */
     private function getDivisionTopics () {
-    	if (!isset($this->getDivisionTopics_stmt)) {
+    	$catalogWhere = $this->getCatalogWhereTerms();
+    	if (!isset(self::$getDivisionTopics_stmts[$catalogWhere])) {
 	    	$query =
 "SELECT 
     STVDIVS_CODE,
@@ -509,14 +521,14 @@ WHERE
 
 GROUP BY SCBCRSE_DIVS_CODE
 ";
-			$this->getDivisionTopics_stmt = $this->manager->getDB()->prepare($query);
+			self::$getDivisionTopics_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
 		}
 		
 		$parameters = $this->getCatalogParameters();
-		$this->getDivisionTopics_stmt->execute($parameters);
+		self::$getDivisionTopics_stmts[$catalogWhere]->execute($parameters);
 				
 		$topics = array();
-		while ($row = $this->getDivisionTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
+		while ($row = self::$getDivisionTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
 			$topics[] = new banner_course_Topic(
 						$this->getOsidIdFromString($row['STVDIVS_CODE'], 'topic/division/'),
 						$row['STVDIVS_CODE'],
@@ -524,10 +536,11 @@ GROUP BY SCBCRSE_DIVS_CODE
 						new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division")
 				);
 		}
-		$this->getDivisionTopics_stmt->closeCursor();
+		self::$getDivisionTopics_stmts[$catalogWhere]->closeCursor();
 		return new phpkit_course_ArrayTopicList($topics);
     }
     
+    private static $getRequirementTopic_stmts = array();
     /**
      * Answer a requirement topic by id
      * 
@@ -537,7 +550,8 @@ GROUP BY SCBCRSE_DIVS_CODE
      * @since 4/24/09
      */
     private function getRequirementTopic (osid_id_Id $topicId) {
-    	if (!isset($this->getRequirementTopic_stmt)) {
+    	$catalogWhere = $this->getCatalogWhereTerms();
+    	if (!isset(self::$getRequirementTopic_stmts[$catalogWhere])) {
 	    	$query =
 "SELECT 
     STVATTR_CODE,
@@ -559,7 +573,7 @@ WHERE
 
 GROUP BY STVATTR_CODE
 ";
-			$this->getRequirementTopic_stmt = $this->manager->getDB()->prepare($query);
+			self::$getRequirementTopic_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
 		}
 		
 		$parameters = array_merge(
@@ -567,9 +581,9 @@ GROUP BY STVATTR_CODE
 				':requirement_code' => $this->getDatabaseIdString($topicId, 'topic/requirement/')
 			),
 			$this->getCatalogParameters());
-		$this->getRequirementTopic_stmt->execute($parameters);
-		$row = $this->getRequirementTopic_stmt->fetch(PDO::FETCH_ASSOC);
-		$this->getRequirementTopic_stmt->closeCursor();
+		self::$getRequirementTopic_stmts[$catalogWhere]->execute($parameters);
+		$row = self::$getRequirementTopic_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
+		self::$getRequirementTopic_stmts[$catalogWhere]->closeCursor();
 		
 		if (!$row['STVATTR_CODE'])
 			throw new osid_NotFoundException("Could not find a topic matching the requirement code ".$this->getDatabaseIdString($topicId, 'topic/requirement/').".");
@@ -582,6 +596,7 @@ GROUP BY STVATTR_CODE
 			);
     }
     
+    private static $getRequirementTopics_stmts = array();
     /**
      * Answer all of the requirement topics
      * 
@@ -590,7 +605,8 @@ GROUP BY STVATTR_CODE
      * @since 4/24/09
      */
     private function getRequirementTopics () {
-    	if (!isset($this->getRequirementTopics_stmt)) {
+    	$catalogWhere = $this->getCatalogWhereTerms();
+    	if (!isset(self::$getRequirementTopics_stmts[$catalogWhere])) {
 	    	$query =
 "SELECT 
     STVATTR_CODE,
@@ -611,14 +627,14 @@ WHERE
 
 GROUP BY STVATTR_CODE
 ";
-			$this->getRequirementTopics_stmt = $this->manager->getDB()->prepare($query);
+			self::$getRequirementTopics_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
 		}
 		
 		$parameters = $this->getCatalogParameters();
-		$this->getRequirementTopics_stmt->execute($parameters);
+		self::$getRequirementTopics_stmts[$catalogWhere]->execute($parameters);
 				
 		$topics = array();
-		while ($row = $this->getRequirementTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
+		while ($row = self::$getRequirementTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
 			$topics[] = new banner_course_Topic(
 						$this->getOsidIdFromString($row['STVATTR_CODE'], 'topic/requirement/'),
 						$row['STVATTR_CODE'],
@@ -626,7 +642,7 @@ GROUP BY STVATTR_CODE
 						new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement")
 				);
 		}
-		$this->getRequirementTopics_stmt->closeCursor();
+		self::$getRequirementTopics_stmts[$catalogWhere]->closeCursor();
 		return new phpkit_course_ArrayTopicList($topics);
     }
     

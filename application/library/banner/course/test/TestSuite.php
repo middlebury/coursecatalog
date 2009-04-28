@@ -31,6 +31,7 @@ class banner_course_test_TestSuite extends PHPUnit_Framework_TestSuite
         
         if (method_exists($db, 'resetCounters')) {
 	       $db->resetCounters();
+	       $db->recordDuplicates();
 	    }
     }
  
@@ -56,6 +57,25 @@ class banner_course_test_TestSuite extends PHPUnit_Framework_TestSuite
 				print str_pad($num, $maxNum, ' ', STR_PAD_LEFT);
 			}
 	        print "\n";
+	        
+	        try {
+	        	$dupes = $db->getDuplicates();
+	        	$totalDupes = 0;
+	        	ob_start();
+	        	foreach ($db->getDuplicates() as $dup) {
+	        		print "\nDuplicated ". $dup['count']." times:\n";
+	        		print $dup['query'];
+	        		$totalDupes = $totalDupes + $dup['count'];
+	        	}
+	        	$detail = ob_get_clean();
+	        	print "\nTotal duplicated statement preparations: ".$totalDupes;
+	        	if ($totalDupes)
+	        		print "\n";
+	        	print $detail;
+	        	print "\n";
+	        } catch (Exception $e) {
+	        	print "\nDuplicate statement preparations not recorded.\n";
+	        }
 	    }
         harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/../sql/drop_tables.sql', $db);
         

@@ -26,6 +26,10 @@ class PDODebug_PDO
 	public $queries = 0;
 	public $cursorsClosed = 0;
 	
+	private $checkForDuplicatePreparation = false;
+	private $preparedQueries = array();
+	private $duplicateQueries = array();
+	
 	public function __construct($dsn, $username="", $password="", $driver_options=array()) {
 		parent::__construct($dsn, $username, $password, $driver_options);
 		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('PDODebug_PDOStatement', array($this)));
@@ -71,6 +75,16 @@ class PDODebug_PDO
 	 */
 	public function prepare ($statement, $driver_options = array()) {
 		$this->preparations++;
+		if ($this->checkForDuplicatePreparation) {
+			if (in_array($statement, $this->preparedQueries)) {
+				$hash = md5($statement);
+				if (!isset($this->duplicateQueries[$hash])) {
+					$this->duplicateQueries[$hash] = array('count' => 0, 'query' => $statement);
+				}
+				$this->duplicateQueries[$hash]['count']++;
+			}
+			$this->preparedQueries[] = $statement;
+		}
 		return parent::prepare($statement, $driver_options);
 	}
 	
@@ -87,6 +101,8 @@ class PDODebug_PDO
 		$this->execs = 0;
 		$this->queries = 0;
 		$this->cursorsClosed = 0;
+		$this->preparedQueries = array();
+		$this->duplicateQueries = array();
 	}
 	
 	/**
@@ -104,6 +120,30 @@ class PDODebug_PDO
 				'PDOStatement::execute()'		=> $this->executions,
 				'PDOStatement::closeCursor()'	=> $this->cursorsClosed
 			);
+	}
+	
+	/**
+	 * Set this connection to record duplicate query preparations.
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 4/28/09
+	 */
+	public function recordDuplicates () {
+		$this->checkForDuplicatePreparation = true;
+	}
+	
+	/**
+	 * Answer an array of all duplicate queries
+	 * 
+	 * @return array
+	 * @access public
+	 * @since 4/28/09
+	 */
+	public function getDuplicates () {
+		if (!$this->checkForDuplicatePreparation)
+			throw new Exception("Duplicates have not been recorded. Use recordDuplicates() to start recording.");
+		return $this->duplicateQueries;
 	}
 }
 

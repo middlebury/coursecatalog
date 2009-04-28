@@ -158,7 +158,7 @@ class banner_course_CourseOfferingLookupSession
     	$this->useIsolatedView();
     }
 
-
+	private static $getOffering_stmts = array();
     /**
      *  Gets the <code> CourseOffering </code> specified by its <code> Id. 
      *  </code> In plenary mode, the exact <code> Id </code> is found or a 
@@ -181,7 +181,8 @@ class banner_course_CourseOfferingLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOffering(osid_id_Id $courseOfferingId) {
-    	if (!isset($this->getOffering_stmt)) {
+    	$catalogWhere = $this->getCatalogWhereTerms();
+    	if (!isset(self::$getOffering_stmts[$catalogWhere])) {
 	    	$query =
 "SELECT 
     section_coll_code,
@@ -229,7 +230,7 @@ WHERE
 
 GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 ";
-			$this->getOffering_stmt = $this->manager->getDB()->prepare($query);
+			self::$getOffering_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
 		}
 		
 		$parameters = array_merge(
@@ -238,9 +239,9 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 				':section_CRN' => $this->getCrnFromOfferingId($courseOfferingId)
 			),
 			$this->getCatalogParameters());
-		$this->getOffering_stmt->execute($parameters);
-		$row = $this->getOffering_stmt->fetch(PDO::FETCH_ASSOC);
-		$this->getOffering_stmt->closeCursor();
+		self::$getOffering_stmts[$catalogWhere]->execute($parameters);
+		$row = self::$getOffering_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
+		self::$getOffering_stmts[$catalogWhere]->closeCursor();
 		
 		if (!$row['SSBSECT_CRN'] || !$row['SSBSECT_TERM_CODE'])
 			throw new osid_NotFoundException("Could not find a course offering matching the term code ".$this->getTermCodeFromOfferingId($courseOfferingId)." and the crn ".$this->getCrnFromOfferingId($courseOfferingId).".");
@@ -559,6 +560,7 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
     		$this->getCourseCatalogId());
     }
     
+    private static $requirementTopics_stmt;
     /**
      * Answer the requirement topic ids for a given course offering id.
      * 
@@ -568,7 +570,7 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
      * @since 4/27/09
      */
     public function getRequirementTopicIdsForCourseOffering (osid_id_Id $courseOfferingId) {
-    	if (!isset($this->requirementTopics_stmt)) {
+    	if (!isset(self::$requirementTopics_stmt)) {
     		$query = "
 SELECT 
 	SSRATTR_ATTR_CODE
@@ -578,19 +580,19 @@ WHERE
 	SSRATTR_TERM_CODE = :term_code
 	AND SSRATTR_CRN = :crn
 ";
-			$this->requirementTopics_stmt = $this->manager->getDB()->prepare($query);
+			self::$requirementTopics_stmt = $this->manager->getDB()->prepare($query);
 		}
 		
 		$parameters = array(
 				':term_code' => $this->getTermCodeFromOfferingId($courseOfferingId),
 				':crn' => $this->getCrnFromOfferingId($courseOfferingId)
 			);
-		$this->requirementTopics_stmt->execute($parameters);
+		self::$requirementTopics_stmt->execute($parameters);
 		$topicIds = array();
-		while ($row = $this->requirementTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
+		while ($row = self::$requirementTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
 			$topicIds[] = $this->getOsidIdFromString($row['SSRATTR_ATTR_CODE'], 'topic/requirement/');
     	}
-    	$this->requirementTopics_stmt->closeCursor();
+    	self::$requirementTopics_stmt->closeCursor();
     	return $topicIds;
     }
 

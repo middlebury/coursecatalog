@@ -164,7 +164,7 @@ class banner_course_CourseLookupSession
     	$this->useIsolatedView();
     }
 
-
+	private static $getCourse_stmts = array();
     /**
      *  Gets the <code> Course </code> specified by its <code> Id. </code> In 
      *  plenary mode, the exact <code> Id </code> is found or a <code> 
@@ -186,7 +186,8 @@ class banner_course_CourseLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourse(osid_id_Id $courseId) {
-    	if (!isset($this->getCourse_stmt)) {
+    	$catalogWhere = $this->getCatalogWhereTerms();
+    	if (!isset(self::$getCourse_stmts[$catalogWhere])) {
 	    	$query =
 "SELECT 
 	SCBCRSE_SUBJ_CODE , 
@@ -217,7 +218,7 @@ WHERE
 GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC	
 ";
-			$this->getCourse_stmt = $this->manager->getDB()->prepare($query);
+			self::$getCourse_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
 		}
 		
 		$courseIdString = $this->getDatabaseIdString($courseId, 'course/');
@@ -231,9 +232,9 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 			),
 			$this->getCatalogParameters());
 		
-		$this->getCourse_stmt->execute($parameters);
-		$row = $this->getCourse_stmt->fetch(PDO::FETCH_ASSOC);
-		$this->getCourse_stmt->closeCursor();
+		self::$getCourse_stmts[$catalogWhere]->execute($parameters);
+		$row = self::$getCourse_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
+		self::$getCourse_stmts[$catalogWhere]->closeCursor();
 		
 		if (!($row['SCBCRSE_SUBJ_CODE'] && $row['SCBCRSE_CRSE_NUMB']))
 			throw new osid_NotFoundException("Could not find a course matching the id-component '$courseIdString' for the catalog '".$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/')."'.");

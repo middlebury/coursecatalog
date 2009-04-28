@@ -10,5 +10,7 @@
 	<string>testpassword</string>
 	<key>urn:inet:middlebury.edu:config:banner_course/pdo_username</key>
 	<string>testuser</string>
+	<key>urn:inet:middlebury.edu:config:banner_course/pdo_count_queries</key>
+	<true/>
 </dict>
 </plist>
