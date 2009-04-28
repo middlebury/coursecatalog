@@ -33,7 +33,7 @@ foreach ($this->subjectTopics as $topic) {
 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
-	print "</a>";
+	print "</a> ";
 }
 print "</dd>";
 
@@ -43,7 +43,7 @@ foreach ($this->departmentTopics as $topic) {
 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
-	print "</a>";
+	print "</a> ";
 }
 print "</dd>";
 
@@ -53,7 +53,7 @@ foreach ($this->divisionTopics as $topic) {
 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
-	print "</a>";
+	print "</a> ";
 }
 print "</dd>";
 
@@ -63,7 +63,7 @@ foreach ($this->requirementTopics as $topic) {
 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
-	print "</a>";
+	print "</a> ";
 }
 print "</dd>";
 

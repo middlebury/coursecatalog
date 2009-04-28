@@ -36,6 +36,9 @@ class banner_course_CourseOffering
 			'STVTERM_TRMT_CODE',
 			'STVTERM_START_DATE',
 			
+			'STVSCHD_CODE',
+			'STVSCHD_DESC',
+			
 			'SSRMEET_BLDG_CODE',
 			'SSRMEET_ROOM_CODE',
 			'SSRMEET_BEGIN_TIME',
@@ -80,6 +83,15 @@ class banner_course_CourseOffering
 			.'-'.$row['STVTERM_TRMT_CODE']
 			.substr($row['STVTERM_START_DATE'], 2, 2));
 		$this->setDescription('');
+		
+		$this->setGenusType(new phpkit_type_Type(
+			'urn', 										// namespace
+			$this->session->getIdAuthority(), 			// id authority
+			'genera:offering/'.$row['STVSCHD_CODE'], 	// identifier
+			'Course Offerings', 						// domain
+			$row['STVSCHD_DESC'], 						// display name
+			$row['STVSCHD_CODE']						// display label
+		));
 	}
 	
 	/**

@@ -16,7 +16,7 @@ foreach ($this->subjectTopics as $topic) {
 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
-	print "</a>";
+	print "</a> ";
 }
 print "</dd>";
 
@@ -26,7 +26,7 @@ foreach ($this->departmentTopics as $topic) {
 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
-	print "</a>";
+	print "</a> ";
 }
 print "</dd>";
 
@@ -36,7 +36,7 @@ foreach ($this->divisionTopics as $topic) {
 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
-	print "</a>";
+	print "</a> ";
 }
 print "</dd>";
 
@@ -52,5 +52,8 @@ $offeringParams = array(
 while ($this->offerings->hasNext()) {
 	$offering = $this->offerings->getNextCourseOffering();
 	$offeringParams['offering'] = AbstractCatalogController::getStringFromOsidId($offering->getId());
-	print "\n\t<div><a href='".$this->url($offeringParams)."'>".$this->escape($offering->getDisplayName())."</a></div>";
+	print "\n\t<div>";
+	print "<a href='".$this->url($offeringParams)."'>".$this->escape($offering->getDisplayName())."</a>";
+	print " <em>".$this->escape($offering->getGenusType()->getDisplayName())."</em>";
+	print "</div>";
 }

@@ -55,6 +55,13 @@ class banner_course_CourseOfferingTest
 		$this->assertEquals('PHYS0201A-S08', $this->object->getDisplayName());
 	}
 	
+	public function testGenusType() {
+    	$type = $this->object->getGenusType();
+    	$this->assertType('osid_type_Type', $type);
+    	$this->assertEquals('genera:offering/LCT', $type->getIdentifier());
+    	$this->assertEquals('Lecture', trim($type->getDisplayName()));
+    }
+	
     /**
      * 
      */
