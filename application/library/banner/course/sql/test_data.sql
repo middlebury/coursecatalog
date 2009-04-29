@@ -13,6 +13,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Database: `afranco_courses_banner`
 --
 
+
 --
 -- Dumping data for table `course_catalog`
 --
@@ -53,6 +54,37 @@ INSERT INTO `course_catalog_college` (`catalog_id`, `coll_code`) VALUES
 ('BLSE', 'WC'),
 ('MMLA', 'AX'),
 ('MCSA', 'SA');
+
+--
+-- Dumping data for table `catalog_term_match`
+--
+
+INSERT INTO `catalog_term_match` (`catalog_id`, `term_code_match`) VALUES
+('BLSE', '%70'),
+('MCLS', '%60'),
+('MCUG', '%10'),
+('MCUG', '%20'),
+('MCUG', '%90'),
+('MIIS', '%8');
+
+--
+-- Dumping data for table `catalog_term`
+--
+
+INSERT INTO `catalog_term` (`catalog_id`, `term_code`) VALUES
+('MCUG', '200390'),
+('MCUG', '200420'),
+('MCUG', '200490'),
+('MCUG', '200520'),
+('MCUG', '200590'),
+('MCUG', '200620'),
+('MCUG', '200690'),
+('MCUG', '200720'),
+('MCUG', '200790'),
+('MCUG', '200820'),
+('MCUG', '200890'),
+('MCUG', '200920'),
+('MCUG', '200990');
 
 
 --
