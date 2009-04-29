@@ -185,14 +185,13 @@ class banner_course_CourseOfferingLookupSession
     	if (!isset(self::$getOffering_stmts[$catalogWhere])) {
 	    	$query =
 "SELECT 
-    section_coll_code,
 	SSBSECT_TERM_CODE,
 	SSBSECT_CRN,
 	SSBSECT_SUBJ_CODE,
 	SSBSECT_CRSE_NUMB,
 	SSBSECT_SEQ_NUMB,
 	SSBSECT_CAMP_CODE,
-	STVTERM_TRMT_CODE,
+	term_display_label,
 	STVTERM_START_DATE,
 	STVSCHD_CODE,
 	STVSCHD_DESC,
@@ -212,24 +211,17 @@ class banner_course_CourseOfferingLookupSession
 	SCBCRSE_DEPT_CODE,
 	SCBCRSE_DIVS_CODE
 FROM 
-	course_section_college
-	INNER JOIN ssbsect ON (section_term_code = SSBSECT_TERM_CODE AND section_crn = SSBSECT_CRN)
+	catalog_term
+	LEFT JOIN ssbsect ON term_code = SSBSECT_TERM_CODE
 	LEFT JOIN stvterm ON SSBSECT_TERM_CODE = STVTERM_CODE
 	LEFT JOIN ssrmeet ON (SSBSECT_TERM_CODE = SSRMEET_TERM_CODE AND SSBSECT_CRN = SSRMEET_CRN)
 	LEFT JOIN stvbldg ON SSRMEET_BLDG_CODE = STVBLDG_CODE
 	LEFT JOIN stvschd ON SSBSECT_SCHD_CODE = STVSCHD_CODE
 	LEFT JOIN scbcrse ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
 WHERE
-	SSBSECT_TERM_CODE = :section_term_code
-	AND SSBSECT_CRN = :section_CRN
-	AND section_coll_code IN (
-		SELECT
-			coll_code
-		FROM
-			course_catalog_college
-		WHERE
-			".$this->getCatalogWhereTerms()."
-	)
+	".$this->getCatalogWhereTerms()."
+	AND term_code = :section_term_code
+	AND SSBSECT_CRN = :section_crn
 
 GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 ";
@@ -239,7 +231,7 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 		$parameters = array_merge(
 			array(
 				':section_term_code' => $this->getTermCodeFromOfferingId($courseOfferingId),
-				':section_CRN' => $this->getCrnFromOfferingId($courseOfferingId)
+				':section_crn' => $this->getCrnFromOfferingId($courseOfferingId)
 			),
 			$this->getCatalogParameters());
 		self::$getOffering_stmts[$catalogWhere]->execute($parameters);

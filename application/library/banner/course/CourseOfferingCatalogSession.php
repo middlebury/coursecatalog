@@ -219,8 +219,7 @@ class banner_course_CourseOfferingCatalogSession
      */
     public function getCatalogIdsByCourseOffering(osid_id_Id $courseOfferingId) {
     	$parameters = array(
-				':section_term_code' => $this->getTermCodeFromOfferingId($courseOfferingId),
-				':section_CRN' => $this->getCrnFromOfferingId($courseOfferingId)
+				':section_term_code' => $this->getTermCodeFromOfferingId($courseOfferingId)
 			);
 		$statement = $this->getGetCatalogsStatement();
 		$statement->execute($parameters);
@@ -253,8 +252,7 @@ class banner_course_CourseOfferingCatalogSession
      */
     public function getCatalogsByCourseOffering(osid_id_Id $courseOfferingId) {
 		$parameters = array(
-				':section_term_code' => $this->getTermCodeFromOfferingId($courseOfferingId),
-				':section_CRN' => $this->getCrnFromOfferingId($courseOfferingId)
+				':section_term_code' => $this->getTermCodeFromOfferingId($courseOfferingId)
 			);
 		$statement = $this->getGetCatalogsStatement();
 		$statement->execute($parameters);
@@ -285,13 +283,11 @@ class banner_course_CourseOfferingCatalogSession
 	course_catalog.catalog_id,
 	catalog_title
 FROM
-	course_section_college
-	LEFT JOIN course_catalog_college ON section_coll_code = coll_code
-	LEFT JOIN course_catalog ON course_catalog_college.catalog_id = course_catalog.catalog_id
+	catalog_term
+	LEFT JOIN course_catalog ON catalog_term.catalog_id = course_catalog.catalog_id
 WHERE
-	section_term_code = :section_term_code
-	AND section_crn = :section_CRN
-GROUP BY section_term_code , section_crn, catalog_id
+	term_code = :section_term_code
+GROUP BY course_catalog.catalog_id
 ");
     	}
     	return self::$getCatalogsByCourse_stmt;

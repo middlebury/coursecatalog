@@ -35,28 +35,25 @@ class banner_course_AllTermsList
 		
 		$query =
 "SELECT 
-    section_coll_code,
     STVTERM_CODE,
 	STVTERM_DESC,
 	STVTERM_START_DATE,
 	STVTERM_END_DATE
 FROM 
-	course_section_college
-	INNER JOIN stvterm ON section_term_code = STVTERM_CODE
+	stvterm
 	
 WHERE 
-	section_coll_code IN (
+	STVTERM_CODE IN (
 		SELECT
-			coll_code
+			term_code
 		FROM
-			course_catalog_college
+			catalog_term
 		WHERE
 			".$this->getCatalogWhereTerms()."
 	)
-GROUP BY section_term_code
 ORDER BY STVTERM_CODE DESC
 ";
-		parent::__construct($db, $query, array());
+		parent::__construct($db, $query, $this->getAllInputParameters());
 		
 	}
 	
@@ -72,6 +69,22 @@ ORDER BY STVTERM_CODE DESC
 			return 'TRUE';
 		else
 			return 'catalog_id = :catalog_id';
+	}
+	
+	/**
+	 * Answer the input parameters
+	 * 
+	 * @return array
+	 * @access private
+	 * @since 4/17/09
+	 */
+	private function getAllInputParameters () {
+// 		$params = $this->getInputParameters();
+		$params = array();
+		$catalogId = $this->session->getCourseCatalogId();
+		if (!$catalogId->isEqual($this->session->getCombinedCatalogId()))
+			$params[':catalog_id'] = $this->session->getCatalogDatabaseId($catalogId);
+		return $params;
 	}
 		
 	/**

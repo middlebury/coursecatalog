@@ -557,19 +557,12 @@ GROUP BY SCBCRSE_DIVS_CODE
     STVATTR_CODE,
 	STVATTR_DESC
 FROM 
-	course_section_college
-	INNER JOIN ssrattr ON (section_term_code = SSRATTR_TERM_CODE AND section_crn = SSRATTR_CRN)
+	ssrattr
+	INNER JOIN catalog_term ON SSRATTR_TERM_CODE = term_code
 	INNER JOIN stvattr ON SSRATTR_ATTR_CODE = STVATTR_CODE
 WHERE
 	SSRATTR_ATTR_CODE = :requirement_code
-	AND section_coll_code IN (
-		SELECT
-			coll_code
-		FROM
-			course_catalog_college
-		WHERE
-			".$this->getCatalogWhereTerms()."
-	)
+	AND ".$this->getCatalogWhereTerms()."
 
 GROUP BY STVATTR_CODE
 ";
@@ -612,18 +605,11 @@ GROUP BY STVATTR_CODE
     STVATTR_CODE,
 	STVATTR_DESC
 FROM 
-	course_section_college
-	INNER JOIN ssrattr ON (section_term_code = SSRATTR_TERM_CODE AND section_crn = SSRATTR_CRN)
+	ssrattr
+	INNER JOIN catalog_term ON SSRATTR_TERM_CODE = term_code
 	INNER JOIN stvattr ON SSRATTR_ATTR_CODE = STVATTR_CODE
 WHERE
-	section_coll_code IN (
-		SELECT
-			coll_code
-		FROM
-			course_catalog_college
-		WHERE
-			".$this->getCatalogWhereTerms()."
-	)
+	".$this->getCatalogWhereTerms()."
 
 GROUP BY STVATTR_CODE
 ";

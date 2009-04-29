@@ -35,7 +35,8 @@ class banner_course_CourseOfferingTest
     {
         $this->mcugCatalogId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
     	$this->physCourseId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
-    	$this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200893/90143');
+    	$this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/90143');
+    	$this->chemOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200520/20022');
     	$this->manager = $this->sharedFixture['CourseManager'];
         $this->session = $this->manager->getCourseOfferingLookupSessionForCatalog($this->mcugCatalogId);
         $this->object = $this->session->getCourseOffering($this->physOfferingId);
@@ -52,7 +53,7 @@ class banner_course_CourseOfferingTest
     }
 	
 	public function testOfferingGetDisplayName() {
-		$this->assertEquals('PHYS0201A-S08', $this->object->getDisplayName());
+		$this->assertEquals('PHYS0201A-F08', $this->object->getDisplayName());
 	}
 	
 	public function testGenusType() {
@@ -70,6 +71,16 @@ class banner_course_CourseOfferingTest
         $this->assertType('string', $this->object->getTitle());
         $this->assertEquals('Relativity And Quantum Physics', $this->object->getTitle());
     }
+    
+    /**
+     * 
+     */
+    public function testChemGetNumber()
+    {
+    	$object = $this->session->getCourseOffering($this->chemOfferingId);
+        $this->assertType('string', $object->getNumber());
+        $this->assertEquals('CHEM0104T-S05', $object->getNumber());
+    }
 
     /**
      * 
@@ -77,7 +88,7 @@ class banner_course_CourseOfferingTest
     public function testGetNumber()
     {
         $this->assertType('string', $this->object->getNumber());
-        $this->assertEquals('PHYS0201A-S08', $this->object->getNumber());
+        $this->assertEquals('PHYS0201A-F08', $this->object->getNumber());
     }
 
     /**

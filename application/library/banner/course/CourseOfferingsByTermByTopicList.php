@@ -91,6 +91,20 @@ class banner_course_CourseOfferingsByTermByTopicList
    				throw new osid_NotFoundException('No topic found with category '.$type);
 		}
 	}
+	
+	/**
+	 * Answer any additional table join clauses to use
+	 * 
+	 * @return string
+	 * @access protected
+	 * @since 4/29/09
+	 */
+	protected function getAdditionalTableJoins () {
+		if ('requirement' == $this->session->getTopicLookupSession()->getTopicType($this->topicId))
+			return 'LEFT JOIN ssrattr ON (SSBSECT_TERM_CODE = SSRATTR_TERM_CODE AND SSBSECT_CRN = SSRATTR_CRN)';
+		else
+			return '';
+	}
 }
 
 ?>
