@@ -61,6 +61,47 @@ CREATE TABLE IF NOT EXISTS `course_section_college` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `catalog_term`
+--
+
+CREATE TABLE IF NOT EXISTS `catalog_term` (
+  `catalog_id` varchar(10) NOT NULL,
+  `term_code` varchar(6) NOT NULL COMMENT 'Maps to stvterm.STVTERM_CODE',
+  PRIMARY KEY  (`catalog_id`,`term_code`),
+  KEY `catalog_id` (`catalog_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table maps term_code patterns to a given catalog.';
+
+--
+-- Constraints for table `catalog_term`
+--
+ALTER TABLE `catalog_term`
+  ADD CONSTRAINT `catalog_term_ibfk_1` FOREIGN KEY (`catalog_id`) REFERENCES `course_catalog` (`catalog_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `catalog_term_match`
+--
+
+CREATE TABLE IF NOT EXISTS `catalog_term_match` (
+  `catalog_id` varchar(10) NOT NULL,
+  `term_code_match` varchar(10) NOT NULL,
+  PRIMARY KEY  (`catalog_id`,`term_code_match`),
+  KEY `catalog_id` (`catalog_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table maps term_code patterns to a given catalog.';
+
+--
+-- Constraints for table `catalog_term_match`
+--
+ALTER TABLE `catalog_term_match`
+  ADD CONSTRAINT `catalog_term_match_ibfk_1` FOREIGN KEY (`catalog_id`) REFERENCES `course_catalog` (`catalog_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+-- --------------------------------------------------------
+
+
+--
 -- Table structure for table `gorintg`
 --
 
