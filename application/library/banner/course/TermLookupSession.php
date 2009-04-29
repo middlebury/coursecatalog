@@ -159,7 +159,7 @@ class banner_course_TermLookupSession
     	$this->useIsolateView();
     }
 
-
+	private static $getTerm_stmts = array();
     /**
      *  Gets the <code> Term </code> specified by its <code> Id. </code> In 
      *  plenary mode, the exact <code> Id </code> is found or a <code> 
@@ -183,8 +183,9 @@ class banner_course_TermLookupSession
     	$idString = $this->getDatabaseIdString($termId, 'term/');
     	if (!preg_match('/^([0-9]{6})$/', $idString))
 			throw new osid_NotFoundException('Term id component \''.$idString.'\' could not be converted to a term code.');
-			
-		if (!isset($this->getTerm_stmt)) {
+		
+		$catalogWhere = $this->getCatalogWhereTerms();
+		if (!isset(self::$getTerm_stmts[$catalogWhere])) {
 	    	$query =
 "SELECT 
     section_coll_code,
@@ -209,7 +210,7 @@ WHERE
 GROUP BY section_term_code
 ORDER BY STVTERM_CODE DESC
 ";
-			$this->getTerm_stmt = $this->manager->getDB()->prepare($query);
+			self::$getTerm_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
 		}
 		
 		$parameters = array_merge(
@@ -217,10 +218,10 @@ ORDER BY STVTERM_CODE DESC
 				':term_code' => $idString
 			),
 			$this->getCatalogParameters());
-		$this->getTerm_stmt->execute($parameters);
+		self::$getTerm_stmts[$catalogWhere]->execute($parameters);
 		
-		$row = $this->getTerm_stmt->fetch(PDO::FETCH_ASSOC);
-		$this->getTerm_stmt->closeCursor();
+		$row = self::$getTerm_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
+		self::$getTerm_stmts[$catalogWhere]->closeCursor();
 		
 		if (!$row['STVTERM_CODE'])
 			throw new osid_NotFoundException("Could not find a term matching the term code $idString.");
@@ -296,7 +297,7 @@ ORDER BY STVTERM_CODE DESC
     		}
     	}
     	
-    	return new phpkit_course_ArrayCourseList($terms);
+    	return new phpkit_course_ArrayTermList($terms);
     }
 
 

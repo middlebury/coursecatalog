@@ -57,9 +57,12 @@ class banner_course_CombinedTopicLookupSessionTest extends PHPUnit_Framework_Tes
         $this->dedReqId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/DED');
         $this->sciReqId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/SCI');
         
+        $this->nsciDivId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/division/NSCI');
+        $this->artsDivId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/division/ARTS');
         
         $this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
         $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
+        $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
         $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
         
        	$this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200893/90143');
@@ -200,6 +203,7 @@ class banner_course_CombinedTopicLookupSessionTest extends PHPUnit_Framework_Tes
         $this->assertType('osid_course_Topic', $this->session->getTopic($this->physSubjId));
         $this->assertType('osid_course_Topic', $this->session->getTopic($this->chemDeptId));
         $this->assertType('osid_course_Topic', $this->session->getTopic($this->dedReqId));
+        $this->assertType('osid_course_Topic', $this->session->getTopic($this->nsciDivId));
     }
 
     /**
@@ -208,10 +212,11 @@ class banner_course_CombinedTopicLookupSessionTest extends PHPUnit_Framework_Tes
     public function testGetTopicsByIds()
     {
         $topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
-        				$this->geolSubjId, $this->physDeptId, $this->sciReqId)));
+        				$this->geolSubjId, $this->physDeptId, $this->sciReqId, $this->nsciDivId)));
         $this->assertType('osid_course_TopicList', $topics);
         $this->assertTrue($topics->hasNext());
-        $this->assertEquals(3, $topics->available());
+        $this->assertEquals(4, $topics->available());
+        $this->assertType('osid_course_Topic', $topics->getNextTopic());
         $this->assertType('osid_course_Topic', $topics->getNextTopic());
         $this->assertType('osid_course_Topic', $topics->getNextTopic());
         $this->assertType('osid_course_Topic', $topics->getNextTopic());
@@ -241,7 +246,7 @@ class banner_course_CombinedTopicLookupSessionTest extends PHPUnit_Framework_Tes
         $topics = $this->session->getTopicsByGenusType($this->departmentType);
         $this->assertType('osid_course_TopicList', $topics);
         $this->assertTrue($topics->hasNext());
-        $this->assertEquals(4, $topics->available());
+        $this->assertEquals(3, $topics->available());
         $this->assertType('osid_course_Topic', $topics->getNextTopic());
         $this->assertType('osid_course_Topic', $topics->getNextTopic());
         $this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->departmentType));
@@ -260,6 +265,21 @@ class banner_course_CombinedTopicLookupSessionTest extends PHPUnit_Framework_Tes
         $this->assertType('osid_course_Topic', $topics->getNextTopic());
         $this->assertType('osid_course_Topic', $topics->getNextTopic());
         $this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->subjectType));
+        
+    }
+    
+    /**
+     * 
+     */
+    public function testGetTopicsByDivisionGenusType()
+    { 
+        $topics = $this->session->getTopicsByGenusType($this->divisionType);
+        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertTrue($topics->hasNext());
+        $this->assertEquals(1, $topics->available());
+        $topic = $topics->getNextTopic();
+        $this->assertType('osid_course_Topic', $topic);
+        $this->assertTrue($topic->getGenusType()->isEqual($this->divisionType));
         
     }
     
@@ -298,7 +318,7 @@ class banner_course_CombinedTopicLookupSessionTest extends PHPUnit_Framework_Tes
         $topics = $this->session->getTopicsByParentGenusType($this->departmentType);
         $this->assertType('osid_course_TopicList', $topics);
         $this->assertTrue($topics->hasNext());
-        $this->assertEquals(4, $topics->available());
+        $this->assertEquals(3, $topics->available());
         $this->assertType('osid_course_Topic', $topics->getNextTopic());
         $this->assertType('osid_course_Topic', $topics->getNextTopic());
         $this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->departmentType));
@@ -316,6 +336,20 @@ class banner_course_CombinedTopicLookupSessionTest extends PHPUnit_Framework_Tes
         $this->assertType('osid_course_Topic', $topics->getNextTopic());
         $this->assertType('osid_course_Topic', $topics->getNextTopic());
         $this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->subjectType));
+     }
+
+    /**
+     * 
+     */
+    public function testGetTopicsByDivisionParentGenusType()
+    {    
+        $topics = $this->session->getTopicsByParentGenusType($this->divisionType);
+        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertTrue($topics->hasNext());
+        $this->assertEquals(1, $topics->available());
+        $topic = $topics->getNextTopic();
+        $this->assertType('osid_course_Topic', $topic);
+        $this->assertTrue($topic->getGenusType()->isEqual($this->divisionType));
      }
 
     /**

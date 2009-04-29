@@ -61,6 +61,9 @@ class OfferingsController
  			$this->view->offering->getTermId(),
  			$this->view->offering->getCourseId()
  		);
+ 		
+ 		// Load the topics into our view
+ 		$this->loadTopics($this->view->offering->getTopics());
 		
 		// Set the selected Catalog Id.
 		$catalogSession = self::getCourseManager()->getCourseOfferingCatalogSession();

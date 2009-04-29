@@ -98,7 +98,7 @@ class banner_course_CourseCatalogLookupSession
     	return true;
     }
     
-
+	private static $getCatalogById_stmt;
     /**
      *  Gets the <code> CourseCatalog </code> specified by its <code> Id. 
      *  </code> In plenary mode, the exact <code> Id </code> is found or a 
@@ -124,8 +124,8 @@ class banner_course_CourseCatalogLookupSession
     	if ($courseCatalogId->isEqual($this->getCombinedCatalogId()))
     		return new banner_course_CombinedCourseCatalog($this->getCombinedCatalogId());
     	
-    	if (!isset($this->getCatalogById_stmt)) {
-    		$this->getCatalogById_stmt = $this->manager->getDB()->prepare(
+    	if (!isset(self::$getCatalogById_stmt)) {
+    		self::$getCatalogById_stmt = $this->manager->getDB()->prepare(
 "SELECT
 	catalog_id,
 	catalog_title
@@ -136,13 +136,13 @@ WHERE
 ");
     	}
     	
-    	$this->getCatalogById_stmt->execute(array(':catalog_id' => $this->getDatabaseIdString($courseCatalogId)));
+    	self::$getCatalogById_stmt->execute(array(':catalog_id' => $this->getDatabaseIdString($courseCatalogId)));
     	
- 		if (!$this->getCatalogById_stmt->rowCount())
+ 		if (!self::$getCatalogById_stmt->rowCount())
  			throw new osid_NotFoundException("Catalog id not found.");
     	
-    	$result = $this->getCatalogById_stmt->fetch(PDO::FETCH_ASSOC);
-    	$this->getCatalogById_stmt->closeCursor();
+    	$result = self::$getCatalogById_stmt->fetch(PDO::FETCH_ASSOC);
+    	self::$getCatalogById_stmt->closeCursor();
     	
     	return new banner_course_CourseCatalog(
     					$this->getOsidIdFromString($result['catalog_id']), 
@@ -268,7 +268,7 @@ WHERE
     	return new phpkit_course_ArrayCourseCatalogList(array());
     }
 
-
+	private static $getCatalogs_stmt;
     /**
      *  Gets all <code> CourseCatalogs. </code> In plenary mode, the returned 
      *  list contains all known course catalogs or an error results. 
@@ -284,8 +284,8 @@ WHERE
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseCatalogs() {
-    	if (!isset($this->getCatalogs_stmt)) {
-    		$this->getCatalogs_stmt = $this->manager->getDB()->prepare(
+    	if (!isset(self::$getCatalogs_stmt)) {
+    		self::$getCatalogs_stmt = $this->manager->getDB()->prepare(
 "SELECT
 	catalog_id,
 	catalog_title
@@ -294,16 +294,18 @@ FROM
 ");
     	}
     	
-    	$this->getCatalogs_stmt->execute();
+    	self::$getCatalogs_stmt->execute();
     	
     	$catalogs = array();
     	$catalogs[] = new banner_course_CombinedCourseCatalog($this->getCombinedCatalogId());
-    	while ($result = $this->getCatalogs_stmt->fetch(PDO::FETCH_ASSOC)) {
+    	while ($result = self::$getCatalogs_stmt->fetch(PDO::FETCH_ASSOC)) {
     	
     		$catalogs[] = new banner_course_CourseCatalog(
 								$this->getOsidIdFromString($result['catalog_id']), 
 								$result['catalog_title']);
 		}
+		
+		self::$getCatalogs_stmt->closeCursor();
 		
 		return new phpkit_course_ArrayCourseCatalogList($catalogs);
     }

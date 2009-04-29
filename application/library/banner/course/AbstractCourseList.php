@@ -16,9 +16,9 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-abstract class banner_course_AbstractCourseOfferingList
+abstract class banner_course_AbstractCourseList
 	extends banner_course_CachingPdoQueryList
-	implements osid_course_CourseOfferingList
+	implements osid_course_CourseList
 {
 
 	protected $session;
@@ -34,7 +34,7 @@ abstract class banner_course_AbstractCourseOfferingList
 	 * @access public
 	 * @since 4/13/09
 	 */
-	public function __construct (PDO $db, banner_course_CourseOfferingSessionInterface $session, osid_id_Id $catalogId = null) {
+	public function __construct (PDO $db, banner_course_AbstractCourseSession $session, osid_id_Id $catalogId = null) {
 		$this->session = $session;
 		$this->catalogId = $catalogId;
 		
@@ -51,45 +51,23 @@ abstract class banner_course_AbstractCourseOfferingList
 	private function getQuery () {
 		return "
 SELECT 
-    section_coll_code,
-	SSBSECT_TERM_CODE,
-	SSBSECT_CRN,
-	SSBSECT_SUBJ_CODE,
-	SSBSECT_CRSE_NUMB,
-	SSBSECT_SEQ_NUMB,
-	SSBSECT_CAMP_CODE,
-	STVTERM_TRMT_CODE,
-	STVTERM_START_DATE,
-	STVSCHD_CODE,
-	STVSCHD_DESC,
-	SSRMEET_BLDG_CODE,
-	SSRMEET_ROOM_CODE,
-	SSRMEET_BEGIN_TIME,
-	SSRMEET_END_TIME,
-	SSRMEET_SUN_DAY,
-	SSRMEET_MON_DAY,
-	SSRMEET_TUE_DAY,
-	SSRMEET_WED_DAY,
-	SSRMEET_THU_DAY,
-	SSRMEET_FRI_DAY,
-	SSRMEET_SAT_DAY,
-	STVBLDG_DESC,
+	SCBCRSE_SUBJ_CODE , 
+	SCBCRSE_CRSE_NUMB , 
 	MAX( SCBCRSE_EFF_TERM ) AS SCBCRSE_EFF_TERM , 
-	SCBCRSE_DEPT_CODE,
-	SCBCRSE_DIVS_CODE,
-	SSRATTR_ATTR_CODE
+	SCBCRSE_COLL_CODE , 
+	SCBCRSE_DIVS_CODE , 
+	SCBCRSE_DEPT_CODE , 
+	SCBCRSE_CSTA_CODE , 
+	SCBCRSE_TITLE ,
+	SCBCRSE_CREDIT_HR_HIGH
 FROM 
-	course_section_college
-	INNER JOIN ssbsect ON (section_term_code = SSBSECT_TERM_CODE AND section_crn = SSBSECT_CRN)
-	LEFT JOIN stvterm ON SSBSECT_TERM_CODE = STVTERM_CODE
-	LEFT JOIN ssrmeet ON (SSBSECT_TERM_CODE = SSRMEET_TERM_CODE AND SSBSECT_CRN = SSRMEET_CRN)
-	LEFT JOIN stvbldg ON SSRMEET_BLDG_CODE = STVBLDG_CODE
-	LEFT JOIN stvschd ON SSBSECT_SCHD_CODE = STVSCHD_CODE
-	LEFT JOIN scbcrse ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
-	LEFT JOIN ssrattr ON (SSBSECT_TERM_CODE = SSRATTR_TERM_CODE AND SSBSECT_CRN = SSRATTR_CRN)
-WHERE 
+	scbcrse
+WHERE
 	".$this->getAllWhereTerms()."
-	AND section_coll_code IN (
+	AND SCBCRSE_CSTA_CODE NOT IN (
+		'C', 'I', 'P', 'T', 'X'
+	)
+	AND SCBCRSE_COLL_CODE IN (
 		SELECT
 			coll_code
 		FROM
@@ -98,8 +76,8 @@ WHERE
 			".$this->getCatalogWhereTerms()."
 	)
 
-GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
-ORDER BY section_coll_code, SSBSECT_TERM_CODE DESC, SSBSECT_SUBJ_CODE, SSBSECT_CRSE_NUMB, SSBSECT_SEQ_NUMB
+GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
+ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC	
 ";
 	}
 	
@@ -173,48 +151,57 @@ ORDER BY section_coll_code, SSBSECT_TERM_CODE DESC, SSBSECT_SUBJ_CODE, SSBSECT_C
 	 * @since 4/13/09
 	 */
 	final protected function getObjectFromRow (array $row) {
-		return new banner_course_CourseOffering($row, $this->session);
+		return new banner_course_Course(
+					$this->session->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'], 'course/'),
+					$row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'],
+					'',	// Description
+					$row['SCBCRSE_TITLE'], 
+					$row['SCBCRSE_CREDIT_HR_HIGH'],
+					array(
+						$this->session->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'], 'topic/subject/'),
+						$this->session->getOsidIdFromString($row['SCBCRSE_DEPT_CODE'], 'topic/department/'),
+						$this->session->getOsidIdFromString($row['SCBCRSE_DIVS_CODE'], 'topic/division/')
+					),
+					$this->session);
 	}
 	
 	/**
-     *  Gets the next <code> CourseOffering </code> in this list. 
+     *  Gets the next <code> Course </code> in this list. 
      *
-     *  @return object osid_course_CourseOffering the next <code> 
-     *          CourseOffering </code> in this list. The <code> hasNext() 
-     *          </code> method should be used to test that a next <code> 
-     *          CourseOffering </code> is available before calling this 
-     *          method. 
+     *  @return object osid_course_Course the next <code> Course </code> in 
+     *          this list. The <code> hasNext() </code> method should be used 
+     *          to test that a next <code> Course </code> is available before 
+     *          calling this method. 
      *  @throws osid_IllegalStateException no more elements available in this 
      *          list or this list has been closed 
      *  @throws osid_OperationFailedException unable to complete request 
      *  @compliance mandatory This method must be implemented. 
      */
-    final public function getNextCourseOffering() {
+    public function getNextCourse() {
     	return $this->next();
     }
 
 
     /**
-     *  Gets the next set of <code> CourseOffering </code> elements in this 
-     *  list. The specified amount must be less than or equal to the return 
-     *  from <code> available(). </code> 
+     *  Gets the next set of <code> Course </code> elements in this list. The 
+     *  specified amount must be less than or equal to the return from <code> 
+     *  available(). </code> 
      *
-     *  @param integer $n the number of <code> CourseOffering </code> elements 
+     *  @param integer $n the number of <code> Course </code> elements 
      *          requested which must be less than or equal to <code> 
      *          available() </code> 
-     *  @return array of osid_course_CourseOffering objects  an array of 
-     *          <code> CourseOffering </code> elements. <code> </code> The 
-     *          length of the array is less than or equal to the number 
-     *          specified. 
+     *  @return array of osid_course_Course objects  an array of <code> Course 
+     *          </code> elements. <code> </code> The length of the array is 
+     *          less than or equal to the number specified. 
      *  @throws osid_IllegalStateException no more elements available in this 
      *          list or this list has been closed 
      *  @throws osid_OperationFailedException unable to complete request 
      *  @throws osid_NullArgumentException null argument provided 
      *  @compliance mandatory This method must be implemented. 
      */
-    final public function getNextCourseOfferings($n) {
+    public function getNextCourses($n) {
     	return $this->getNext($n);
-    }   
+    }
 }
 
 ?>

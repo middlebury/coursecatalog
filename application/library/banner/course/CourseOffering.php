@@ -36,6 +36,9 @@ class banner_course_CourseOffering
 			'STVTERM_TRMT_CODE',
 			'STVTERM_START_DATE',
 			
+			'STVSCHD_CODE',
+			'STVSCHD_DESC',
+			
 			'SSRMEET_BLDG_CODE',
 			'SSRMEET_ROOM_CODE',
 			'SSRMEET_BEGIN_TIME',
@@ -48,7 +51,10 @@ class banner_course_CourseOffering
 			'SSRMEET_FRI_DAY',
 			'SSRMEET_SAT_DAY',
 			
-			'STVBLDG_DESC'
+			'STVBLDG_DESC',
+			
+			'SCBCRSE_DEPT_CODE',
+			'SCBCRSE_DIVS_CODE'
 		);
 	
 	private $row;
@@ -77,6 +83,15 @@ class banner_course_CourseOffering
 			.'-'.$row['STVTERM_TRMT_CODE']
 			.substr($row['STVTERM_START_DATE'], 2, 2));
 		$this->setDescription('');
+		
+		$this->setGenusType(new phpkit_type_Type(
+			'urn', 										// namespace
+			$this->session->getIdAuthority(), 			// id authority
+			'genera:offering/'.$row['STVSCHD_CODE'], 	// identifier
+			'Course Offerings', 						// domain
+			$row['STVSCHD_DESC'], 						// display name
+			$row['STVSCHD_CODE']						// display label
+		));
 	}
 	
 	/**
@@ -197,6 +212,47 @@ class banner_course_CourseOffering
      */
     public function getTerm() {
     	return $this->session->getTermLookupSession()->getTerm($this->getTermId());
+    }
+    
+    /**
+     *  WARNING: This method was not in the OSID trunk as of 2009-04-27. A 
+     *  ticket requesting the addition of this method is available at: 
+     *  http://oki.assembla.com/spaces/osid-dev/tickets/18-osid-course---No-way-to-map-Topics-to-Courses-or-CourseOfferings- 
+     *  Gets a list of the <code> Id </code> s of the <code> Topic </code> s 
+     *  this offering is associated with. 
+     *
+     *  @return object osid_id_IdList the <code> Topic </code> <code> Id 
+     *          </code> s 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function getTopicIds() {
+    	if (!isset($this->topicIds)) {
+	    	$this->topicIds = array();
+	    	if ($this->row['SCBCRSE_DEPT_CODE'])
+	    		$this->topicIds[] = $this->getOsidIdFromString($this->row['SCBCRSE_DEPT_CODE'], 'topic/department/');
+	    	if ($this->row['SSBSECT_SUBJ_CODE'])
+	    		$this->topicIds[] = $this->getOsidIdFromString($this->row['SSBSECT_SUBJ_CODE'], 'topic/subject/');
+	    	if ($this->row['SCBCRSE_DIVS_CODE'])
+	    		$this->topicIds[] = $this->getOsidIdFromString($this->row['SCBCRSE_DIVS_CODE'], 'topic/division/');
+	    	
+	    	$this->topicIds = array_merge($this->topicIds, $this->session->getRequirementTopicIdsForCourseOffering($this->getId()));
+	    }
+	    return new phpkit_id_ArrayIdList($this->topicIds);
+    }
+	private $topicIds;
+
+    /**
+     *  WARNING: This method was not in the OSID trunk as of 2009-04-27. A 
+     *  ticket requesting the addition of this method is available at: 
+     *  http://oki.assembla.com/spaces/osid-dev/tickets/18-osid-course---No-way-to-map-Topics-to-Courses-or-CourseOfferings- 
+     *  Gets the <code> Topic </code> s this offering is associated with. 
+     *
+     *  @return object osid_course_TopicList the topics 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function getTopics() {
+    	return $this->session->getTopicLookupSession()->getTopicsByIds($this->getTopicIds());
     }
 
 

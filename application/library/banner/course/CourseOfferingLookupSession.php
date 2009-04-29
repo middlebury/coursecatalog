@@ -158,7 +158,7 @@ class banner_course_CourseOfferingLookupSession
     	$this->useIsolatedView();
     }
 
-
+	private static $getOffering_stmts = array();
     /**
      *  Gets the <code> CourseOffering </code> specified by its <code> Id. 
      *  </code> In plenary mode, the exact <code> Id </code> is found or a 
@@ -181,7 +181,8 @@ class banner_course_CourseOfferingLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOffering(osid_id_Id $courseOfferingId) {
-    	if (!isset($this->getOffering_stmt)) {
+    	$catalogWhere = $this->getCatalogWhereTerms();
+    	if (!isset(self::$getOffering_stmts[$catalogWhere])) {
 	    	$query =
 "SELECT 
     section_coll_code,
@@ -193,6 +194,8 @@ class banner_course_CourseOfferingLookupSession
 	SSBSECT_CAMP_CODE,
 	STVTERM_TRMT_CODE,
 	STVTERM_START_DATE,
+	STVSCHD_CODE,
+	STVSCHD_DESC,
 	SSRMEET_BLDG_CODE,
 	SSRMEET_ROOM_CODE,
 	SSRMEET_BEGIN_TIME,
@@ -204,13 +207,18 @@ class banner_course_CourseOfferingLookupSession
 	SSRMEET_THU_DAY,
 	SSRMEET_FRI_DAY,
 	SSRMEET_SAT_DAY,
-	STVBLDG_DESC
+	STVBLDG_DESC,
+	MAX( SCBCRSE_EFF_TERM ) AS SCBCRSE_EFF_TERM , 
+	SCBCRSE_DEPT_CODE,
+	SCBCRSE_DIVS_CODE
 FROM 
 	course_section_college
 	INNER JOIN ssbsect ON (section_term_code = SSBSECT_TERM_CODE AND section_crn = SSBSECT_CRN)
 	LEFT JOIN stvterm ON SSBSECT_TERM_CODE = STVTERM_CODE
 	LEFT JOIN ssrmeet ON (SSBSECT_TERM_CODE = SSRMEET_TERM_CODE AND SSBSECT_CRN = SSRMEET_CRN)
 	LEFT JOIN stvbldg ON SSRMEET_BLDG_CODE = STVBLDG_CODE
+	LEFT JOIN stvschd ON SSBSECT_SCHD_CODE = STVSCHD_CODE
+	LEFT JOIN scbcrse ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
 WHERE
 	SSBSECT_TERM_CODE = :section_term_code
 	AND SSBSECT_CRN = :section_CRN
@@ -225,7 +233,7 @@ WHERE
 
 GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 ";
-			$this->getOffering_stmt = $this->manager->getDB()->prepare($query);
+			self::$getOffering_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
 		}
 		
 		$parameters = array_merge(
@@ -234,9 +242,9 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 				':section_CRN' => $this->getCrnFromOfferingId($courseOfferingId)
 			),
 			$this->getCatalogParameters());
-		$this->getOffering_stmt->execute($parameters);
-		$row = $this->getOffering_stmt->fetch(PDO::FETCH_ASSOC);
-		$this->getOffering_stmt->closeCursor();
+		self::$getOffering_stmts[$catalogWhere]->execute($parameters);
+		$row = self::$getOffering_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
+		self::$getOffering_stmts[$catalogWhere]->closeCursor();
 		
 		if (!$row['SSBSECT_CRN'] || !$row['SSBSECT_TERM_CODE'])
 			throw new osid_NotFoundException("Could not find a course offering matching the term code ".$this->getTermCodeFromOfferingId($courseOfferingId)." and the crn ".$this->getCrnFromOfferingId($courseOfferingId).".");
@@ -471,6 +479,67 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
     		$termId,
     		$courseId);
     }
+    
+    /**
+     *  WARNING: This method was not in the OSID trunk as of 2009-04-27. A 
+     *  ticket requesting the addition of this method is available at: 
+     *  http://oki.assembla.com/spaces/osid-dev/tickets/18-osid-course---No-way-to-map-Topics-to-Courses-or-CourseOfferings- 
+     *  Gets all <code> CourseOfferings </code> associated with a given <code> 
+     *  Topic. </code> In plenary mode, the returned list contains all known 
+     *  course offerings or an error results. Otherwise, the returned list may 
+     *  contain only those course offerings that are accessible through this 
+     *  session. In both cases, the order of the set is not specified. 
+     *
+     *  @param object osid_id_Id $topicId a topic <code> Id </code> 
+     *  @return object osid_course_CourseOfferingList a list of <code> 
+     *          CoursesOfferings </code> 
+     *  @throws osid_NullArgumentException <code> topicId </code> is <code> 
+     *          null </code> 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     *  @throws osid_IllegalStateException this session has been closed 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function getCourseOfferingsByTopic(osid_id_Id $topicId) {
+    	return  new banner_course_CourseOfferingsByTopicList(
+    		$this->manager->getDB(), 
+    		$this,
+    		$this->getCourseCatalogId(),
+    		$topicId);
+    }
+
+
+    /**
+     *  WARNING: This method was not in the OSID trunk as of 2009-04-27. A 
+     *  ticket requesting the addition of this method is available at: 
+     *  http://oki.assembla.com/spaces/osid-dev/tickets/18-osid-course---No-way-to-map-Topics-to-Courses-or-CourseOfferings- 
+     *  Gets all <code> CourseOfferings </code> associated with a given <code> 
+     *  Term </code> and a given <code> Topic </code> . In plenary mode, the 
+     *  returned list contains all known course offerings or an error results. 
+     *  Otherwise, the returned list may contain only those course offerings 
+     *  that are accessible through this session. In both cases, the order of 
+     *  the set is not specified. 
+     *
+     *  @param object osid_id_Id $termId a term <code> Id </code> 
+     *  @param object osid_id_Id $topicId a topic <code> Id </code> 
+     *  @return object osid_course_CourseOfferingList a list of <code> 
+     *          CoursesOfferings </code> 
+     *  @throws osid_NullArgumentException <code> termId </code> or <code> 
+     *          topicId </code> is <code> null </code> 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     *  @throws osid_IllegalStateException this session has been closed 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function getCourseOfferingsByTermByTopic(osid_id_Id $termId, 
+                                                    osid_id_Id $topicId) {
+    	return  new banner_course_CourseOfferingsByTermByTopicList(
+    		$this->manager->getDB(), 
+    		$this,
+    		$this->getCourseCatalogId(),
+    		$termId,
+    		$topicId);
+    }
 
 
     /**
@@ -492,6 +561,42 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
     		$this->manager->getDB(), 
     		$this,
     		$this->getCourseCatalogId());
+    }
+    
+    private static $requirementTopics_stmt;
+    /**
+     * Answer the requirement topic ids for a given course offering id.
+     * 
+     * @param string osid_id_Id $courseOfferingId
+     * @return array of osid_id_Id objects
+     * @access public
+     * @since 4/27/09
+     */
+    public function getRequirementTopicIdsForCourseOffering (osid_id_Id $courseOfferingId) {
+    	if (!isset(self::$requirementTopics_stmt)) {
+    		$query = "
+SELECT 
+	SSRATTR_ATTR_CODE
+FROM
+	ssrattr
+WHERE
+	SSRATTR_TERM_CODE = :term_code
+	AND SSRATTR_CRN = :crn
+";
+			self::$requirementTopics_stmt = $this->manager->getDB()->prepare($query);
+		}
+		
+		$parameters = array(
+				':term_code' => $this->getTermCodeFromOfferingId($courseOfferingId),
+				':crn' => $this->getCrnFromOfferingId($courseOfferingId)
+			);
+		self::$requirementTopics_stmt->execute($parameters);
+		$topicIds = array();
+		while ($row = self::$requirementTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
+			$topicIds[] = $this->getOsidIdFromString($row['SSRATTR_ATTR_CODE'], 'topic/requirement/');
+    	}
+    	self::$requirementTopics_stmt->closeCursor();
+    	return $topicIds;
     }
 
 }

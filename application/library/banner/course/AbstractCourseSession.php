@@ -137,10 +137,10 @@ abstract class banner_course_AbstractCourseSession
 	 * @param object osid_id_Id $id
 	 * @param string optional $prefix
 	 * @return string
-	 * @access protected
+	 * @access public
 	 * @since 4/10/09
 	 */
-	protected function getDatabaseIdString (osid_id_Id $id, $prefix = null) {
+	public function getDatabaseIdString (osid_id_Id $id, $prefix = null) {
 		if ($id->getIdentifierNamespace() != 'urn')
 			throw new osid_NotFoundException('I only know about Ids in the urn namespace.');
 		
@@ -164,10 +164,10 @@ abstract class banner_course_AbstractCourseSession
 	 * @param string $databaseId
 	 * @param string optional $prefix
 	 * @return osid_id_Id
-	 * @access protected
+	 * @access public
 	 * @since 4/10/09
 	 */
-	protected function getOsidIdFromString ($databaseId, $prefix = null) {
+	public function getOsidIdFromString ($databaseId, $prefix = null) {
 		if (is_null($prefix))
 			$prefix = $this->idPrefix;
 		return new phpkit_id_Id($this->manager->getIdAuthority(), 'urn', $prefix.$databaseId);
@@ -194,6 +194,23 @@ abstract class banner_course_AbstractCourseSession
 	 */
 	public function getCombinedCatalogId () {
 		return $this->manager->getCombinedCatalogId();
+	}
+	
+	/**
+	 * Answer a topic lookup session
+	 * 
+	 * @return osid_course_TopicLookupSession
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getTopicLookupSession () {
+		if (!isset($this->topicLookupSession)) {
+			$this->topicLookupSession = $this->manager->getTopicLookupSessionForCatalog($this->getCourseCatalogId());
+// 			$this->topicLookupSession = $this->manager->getTopicLookupSession();
+			$this->topicLookupSession->useFederatedCourseCatalogView();
+		}
+		
+		return $this->topicLookupSession;
 	}
 }
 

@@ -206,10 +206,7 @@ class banner_course_CombinedCourseLookupSession
     	if ($this->usesIsolatedView())
     		return new phpkit_EmptyList();
     	
-    	return new banner_course_CombinedAllCoursesList(
-    		$this->manager->getDB(), 
-    		$this->manager->getIdAuthority(),
-    		'course/');
+    	return parent::getCourses();
     }
 
 }

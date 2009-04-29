@@ -16,11 +16,11 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class banner_course_AllCoursesList
+class banner_course_CoursesByTopicList
 	extends banner_course_AbstractCourseList
 	implements osid_course_CourseList
 {
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -32,10 +32,12 @@ class banner_course_AllCoursesList
 	 * @access public
 	 * @since 4/13/09
 	 */
-	public function __construct (PDO $db, banner_course_AbstractCourseSession $session, osid_id_Id $catalogId) {
+	public function __construct (PDO $db, banner_course_AbstractCourseSession $session, osid_id_Id $catalogId, osid_id_Id $topicId) {
+		$this->topicId = $topicId;
+		
 		parent::__construct($db, $session, $catalogId);
 	}
-	
+		
 	/**
 	 * Answer the input parameters
 	 * 
@@ -44,7 +46,18 @@ class banner_course_AllCoursesList
 	 * @since 4/17/09
 	 */
 	protected function getInputParameters () {
-		return array();
+		$type = $this->session->getTopicLookupSession()->getTopicType($this->topicId);
+		$value = $this->session->getTopicLookupSession()->getTopicValue($this->topicId);
+		switch ($type) {
+			case 'subject':
+   				return array(':subject_code' => $value);
+   			case 'department':
+   				return array(':department_code' => $value);
+   			case 'division':
+   				return array(':division_code' => $value);
+   			default:
+   				throw new osid_NotFoundException('No topic found with category '.$type);
+		}
 	}
 	
 	/**
@@ -55,9 +68,18 @@ class banner_course_AllCoursesList
 	 * @since 4/17/09
 	 */
 	protected function getWhereTerms() {
-		return '';
+		$type = $this->session->getTopicLookupSession()->getTopicType($this->topicId);
+		switch ($type) {
+			case 'subject':
+				return 'SCBCRSE_SUBJ_CODE = :subject_code';
+   			case 'department':
+   				return 'SCBCRSE_DEPT_CODE = :department_code';
+   			case 'division':
+   				return 'SCBCRSE_DIVS_CODE = :division_code';
+   			default:
+   				throw new osid_NotFoundException('No topic found with category '.$type);
+		}
 	}
-    
 }
 
 ?>

@@ -52,6 +52,13 @@ class banner_course_test_CombinedCourseOfferingLookupSessionTest
         
         $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200893');
         
+        $this->physDeptTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/PHYS');
+        $this->chemDeptTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/CHEM');
+        $this->physSubjTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/PHYS');
+        $this->chemSubjTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/CHEM');
+        $this->dedReqTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/DED');
+        $this->sciReqTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/SCI');
+        
         $this->unknownType = new phpkit_type_URNInetType("urn:inet:osid.org:unknown_type");
     	
         $this->generaNoneType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:none");
@@ -242,7 +249,7 @@ class banner_course_test_CombinedCourseOfferingLookupSessionTest
      */
     public function testGetCourseOfferingsByRecordType()
     {
-        $offerings = $this->session->getCourseOfferingsByParentGenusType($this->unknownType);
+        $offerings = $this->session->getCourseOfferingsByRecordType($this->unknownType);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
        	$this->assertFalse($offerings->hasNext());
     }
@@ -299,6 +306,116 @@ class banner_course_test_CombinedCourseOfferingLookupSessionTest
        		$this->assertTrue($this->termId->isEqual($offering->getTermId()));
        		$this->assertTrue($this->chemId->isEqual($offering->getCourseId()));
        	}
+    }
+    
+    /**
+     * 
+     */
+    public function testPhysDeptGetCourseOfferingsByTopic()
+    {
+        $offerings = $this->session->getCourseOfferingsByTopic($this->physDeptTopicId);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertEquals(16, $offerings->available());
+       	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
+    }
+    
+    /**
+     * 
+     */
+    public function testChemDeptGetCourseOfferingsByTopic()
+    {
+        $offerings = $this->session->getCourseOfferingsByTopic($this->chemDeptTopicId);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertEquals(190, $offerings->available());
+       	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
+    }
+
+    /**
+     * 
+     */
+    public function testPhysDeptGetCourseOfferingsByTermByTopic()
+    {
+        $offerings = $this->session->getCourseOfferingsByTermByTopic($this->termId, $this->physDeptTopicId);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertEquals(1, $offerings->available());
+       	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
+    }
+    
+    /**
+     * 
+     */
+    public function testChemDeptGetCourseOfferingsByTermByTopic()
+    {
+        $offerings = $this->session->getCourseOfferingsByTermByTopic($this->termId, $this->chemDeptTopicId);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertEquals(4, $offerings->available());
+       	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
+    }
+    
+    /**
+     * 
+     */
+    public function testPhysSubjGetCourseOfferingsByTopic()
+    {
+        $offerings = $this->session->getCourseOfferingsByTopic($this->physSubjTopicId);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertEquals(16, $offerings->available());
+       	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
+    }
+    
+    /**
+     * 
+     */
+    public function testChemSubjGetCourseOfferingsByTopic()
+    {
+        $offerings = $this->session->getCourseOfferingsByTopic($this->chemSubjTopicId);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertEquals(190, $offerings->available());
+       	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
+    }
+
+    /**
+     * 
+     */
+    public function testPhysSubjGetCourseOfferingsByTermByTopic()
+    {
+        $offerings = $this->session->getCourseOfferingsByTermByTopic($this->termId, $this->physSubjTopicId);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertEquals(1, $offerings->available());
+       	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
+    }
+    
+    /**
+     * 
+     */
+    public function testChemSubjGetCourseOfferingsByTermByTopic()
+    {
+        $offerings = $this->session->getCourseOfferingsByTermByTopic($this->termId, $this->chemSubjTopicId);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertEquals(4, $offerings->available());
+       	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
+    }
+    
+    /**
+     * 
+     */
+    public function testReqGetCourseOfferingsByTopic()
+    {
+        $offerings = $this->session->getCourseOfferingsByTopic($this->dedReqTopicId);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertEquals(66, $offerings->available());
+       	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
+    }
+
+    /**
+     * 
+     */
+    public function testReqGetCourseOfferingsByTermByTopic()
+    {
+        $offerings = $this->session->getCourseOfferingsByTermByTopic($this->termId, $this->dedReqTopicId);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertEquals(3, $offerings->available());
+       	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
     }
 
     /**

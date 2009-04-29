@@ -29,17 +29,20 @@ class banner_course_Course
 	 * 
 	 * @param osid_id_Id $id
 	 * @param string $displayName
+	 * @param banner_course_AbstractCourseSession $session
 	 * @return void
 	 * @access public
 	 * @since 4/13/09
 	 */
-	public function __construct (osid_id_Id $id, $displayName, $description, $title, $credits) {
+	public function __construct (osid_id_Id $id, $displayName, $description, $title, $credits, array $topicIds, banner_course_AbstractCourseSession $session) {
 		parent::__construct();
 		$this->setId($id);
 		$this->setDisplayName($displayName);
 		$this->setDescription($description);
 		$this->title = $title;
 		$this->credits = floatval($credits);
+		$this->topicIds = $topicIds;
+		$this->session = $session;
 	}
 	
     /**
@@ -87,6 +90,36 @@ class banner_course_Course
      */
     public function getPrereqInfo() {
     	return '';
+    }
+    
+    /**
+     *  WARNING: This method was not in the OSID trunk as of 2009-04-27. A 
+     *  ticket requesting the addition of this method is available at: 
+     *  http://oki.assembla.com/spaces/osid-dev/tickets/18-osid-course---No-way-to-map-Topics-to-Courses-or-CourseOfferings- 
+     *  Gets a list of the <code> Id </code> s of the <code> Topic </code> s 
+     *  this course is associated with. 
+     *
+     *  @return object osid_id_IdList the <code> Topic </code> <code> Id 
+     *          </code> s 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function getTopicIds() {
+    	return new phpkit_id_ArrayIdList($this->topicIds);
+    }
+
+
+    /**
+     *  WARNING: This method was not in the OSID trunk as of 2009-04-27. A 
+     *  ticket requesting the addition of this method is available at: 
+     *  http://oki.assembla.com/spaces/osid-dev/tickets/18-osid-course---No-way-to-map-Topics-to-Courses-or-CourseOfferings- 
+     *  Gets the <code> Topic </code> s this course is associated with. 
+     *
+     *  @return object osid_course_TopicList the topics 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function getTopics() {
+    	return $this->session->getTopicLookupSession()->getTopicsByIds($this->getTopicIds());
     }
 
 

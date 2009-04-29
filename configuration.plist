@@ -13,6 +13,10 @@
    <key>urn:inet:middlebury.edu:config:banner_course/pdo_password</key>
    <string>testpassword</string>
    
+   <!-- Database query-count logging for debugging purposes -->
+   <key>urn:inet:middlebury.edu:config:banner_course/pdo_count_queries</key>
+   <false/>
+   
    <!-- Course Identifier Configuration -->
    <key>urn:inet:middlebury.edu:config:banner_course/id_authority</key>
    <string>middlebury.edu</string>

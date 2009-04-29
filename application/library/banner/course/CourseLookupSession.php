@@ -164,7 +164,7 @@ class banner_course_CourseLookupSession
     	$this->useIsolatedView();
     }
 
-
+	private static $getCourse_stmts = array();
     /**
      *  Gets the <code> Course </code> specified by its <code> Id. </code> In 
      *  plenary mode, the exact <code> Id </code> is found or a <code> 
@@ -186,7 +186,8 @@ class banner_course_CourseLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourse(osid_id_Id $courseId) {
-    	if (!isset($this->getCourse_stmt)) {
+    	$catalogWhere = $this->getCatalogWhereTerms();
+    	if (!isset(self::$getCourse_stmts[$catalogWhere])) {
 	    	$query =
 "SELECT 
 	SCBCRSE_SUBJ_CODE , 
@@ -217,7 +218,7 @@ WHERE
 GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC	
 ";
-			$this->getCourse_stmt = $this->manager->getDB()->prepare($query);
+			self::$getCourse_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
 		}
 		
 		$courseIdString = $this->getDatabaseIdString($courseId, 'course/');
@@ -231,20 +232,25 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 			),
 			$this->getCatalogParameters());
 		
-		$this->getCourse_stmt->execute($parameters);
-		$row = $this->getCourse_stmt->fetch(PDO::FETCH_ASSOC);
-		$this->getCourse_stmt->closeCursor();
+		self::$getCourse_stmts[$catalogWhere]->execute($parameters);
+		$row = self::$getCourse_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
+		self::$getCourse_stmts[$catalogWhere]->closeCursor();
 		
 		if (!($row['SCBCRSE_SUBJ_CODE'] && $row['SCBCRSE_CRSE_NUMB']))
 			throw new osid_NotFoundException("Could not find a course matching the id-component '$courseIdString' for the catalog '".$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/')."'.");
 		
 		return new banner_course_Course(
-					new phpkit_id_URNInetId('urn:inet:'.$this->manager->getIdAuthority().':course/'
-						.$row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB']),
+					$this->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'], 'course/'),
 					$row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'],
 					'',	// Description
 					$row['SCBCRSE_TITLE'], 
-					$row['SCBCRSE_CREDIT_HR_HIGH']);
+					$row['SCBCRSE_CREDIT_HR_HIGH'],
+					array(
+						$this->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'], 'topic/subject/'),
+						$this->getOsidIdFromString($row['SCBCRSE_DEPT_CODE'], 'topic/department/'),
+						$this->getOsidIdFromString($row['SCBCRSE_DIVS_CODE'], 'topic/division/')
+					),
+					$this);
     }
 
 	/**
@@ -388,6 +394,34 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
     	return new phpkit_EmptyList;
     }
 
+	/**
+     *  WARNING: This method was not in the OSID trunk as of 2009-04-27. A 
+     *  ticket requesting the addition of this method is available at: 
+     *  http://oki.assembla.com/spaces/osid-dev/tickets/18-osid-course---No-way-to-map-Topics-to-Courses-or-CourseOfferings- 
+     *  Gets a <code> CourseList </code> corresponding to the given topic 
+     *  <code> Id </code> . In plenary mode, the returned list contains all 
+     *  known courses or an error results. Otherwise, the returned list may 
+     *  contain only those courses that are accessible through this session. 
+     *  In both cases, the order of the set is not specified. 
+     *
+     *  @param object osid_id_Id $topicId a topic id 
+     *  @return object osid_course_CourseList the returned <code> Course list 
+     *          </code> 
+     *  @throws osid_NullArgumentException <code> courseGenusType </code> is 
+     *          <code> null </code> 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     *  @throws osid_IllegalStateException this session has been closed 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function getCoursesByTopic(osid_id_Id $topicId) {
+    	return  new banner_course_CoursesByTopicList(
+    		$this->manager->getDB(), 
+    		$this,
+    		$this->getCourseCatalogId(),
+    		$topicId);
+    }
+
 
     /**
      *  Gets all <code> Courses. </code> In plenary mode, the returned list 
@@ -405,9 +439,9 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
     public function getCourses() {
     	return new banner_course_AllCoursesList(
     		$this->manager->getDB(), 
-    		$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/'),
-    		$this->manager->getIdAuthority(),
-    		'course/');
+    		$this,
+    		$this->getCourseCatalogId()
+    	);
     }
 
 }

@@ -55,6 +55,13 @@ class banner_course_CourseOfferingTest
 		$this->assertEquals('PHYS0201A-S08', $this->object->getDisplayName());
 	}
 	
+	public function testGenusType() {
+    	$type = $this->object->getGenusType();
+    	$this->assertType('osid_type_Type', $type);
+    	$this->assertEquals('genera:offering/LCT', $type->getIdentifier());
+    	$this->assertEquals('Lecture', trim($type->getDisplayName()));
+    }
+	
     /**
      * 
      */
@@ -120,6 +127,51 @@ class banner_course_CourseOfferingTest
     public function testGetTerm()
     {
         $this->assertType('osid_course_Term', $this->object->getTerm());
+    }
+    
+    /**
+     * 
+     */
+    public function testGetTopicIds()
+    {
+    	$list = $this->object->getTopicIds();
+        $this->assertType('osid_id_IdList', $list);
+        $this->assertEquals(5, $list->available());
+        $this->assertType('osid_id_Id', $list->getNextId());
+    }
+
+    /**
+     * 
+     */
+    public function testGetTopics()
+    {
+        $list = $this->object->getTopics();
+        $this->assertType('osid_course_TopicList', $list);
+        $this->assertEquals(5, $list->available());
+        $this->assertType('osid_course_Topic', $list->getNextTopic());
+    }
+    
+    /**
+     * 
+     */
+    public function testTopicIds()
+    {
+        $list = $this->object->getTopicIds();
+        $identifiers = array(
+        					'topic/subject/PHYS', 
+        					'topic/department/PHYS', 
+        					'topic/division/NSCI',
+        					'topic/requirement/DED',
+        					'topic/requirement/SCI'
+        				);
+        $found = array();
+        while ($list->hasNext()) {
+        	$found[] = $list->getNextId()->getIdentifier();
+        }
+        foreach ($identifiers as $id) {
+        	if (!in_array($id, $found))
+        		$this->fail('Topic "'.$id.'" was not found.');
+        }
     }
 
     /**
