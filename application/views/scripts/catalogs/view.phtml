@@ -1,4 +1,9 @@
 <?php
+$termUrl = $this->url(array(	
+					'controller' 	=> 'terms',
+					'action'		=> 'list',
+					'catalog'		=> AbstractCatalogController::getStringFromOsidId($this->catalog->getId())
+				));
 $courseUrl = $this->url(array(	
 					'controller' 	=> 'courses',
 					'action'		=> 'list',
@@ -12,5 +17,6 @@ $offeringUrl = $this->url(array(
 
 print "\n\t<div>".$this->escape($this->catalog->getDescription())."</div>";
 
+print "\n\t<div><a href='".$termUrl."'>Terms</a></div>";
 print "\n\t<div><a href='".$courseUrl."'>Courses</a></div>";
 print "\n\t<div><a href='".$offeringUrl."'>Offerings</a></div>";
