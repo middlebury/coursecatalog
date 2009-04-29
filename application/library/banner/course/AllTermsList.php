@@ -30,7 +30,9 @@ class banner_course_AllTermsList
 	 * @access public
 	 * @since 4/13/09
 	 */
-	public function __construct (PDO $db, banner_course_CourseOfferingSessionInterface $session) {
+	public function __construct (PDO $db, banner_course_AbstractCourseSession $session) {
+		$this->session = $session;
+		
 		$query =
 "SELECT 
     section_coll_code,
@@ -55,8 +57,7 @@ GROUP BY section_term_code
 ORDER BY STVTERM_CODE DESC
 ";
 		parent::__construct($db, $query, array());
-		$this->idAuthority = $idAuthority;
-		$this->idPrefix = $idPrefix;
+		
 	}
 	
 	/**
@@ -83,7 +84,7 @@ ORDER BY STVTERM_CODE DESC
 	 */
 	protected function getObjectFromRow (array $row) {
 		return new banner_course_Term(
-					$this->session->getOsidIdFromString($row['STVTERM_CODE'], 'term/')
+					$this->session->getOsidIdFromString($row['STVTERM_CODE'], 'term/'),
 					$row['STVTERM_DESC'],
 					$row['STVTERM_START_DATE'], 
 					$row['STVTERM_END_DATE']);

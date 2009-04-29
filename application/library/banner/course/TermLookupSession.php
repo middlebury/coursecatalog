@@ -297,7 +297,7 @@ ORDER BY STVTERM_CODE DESC
     		}
     	}
     	
-    	return new phpkit_course_ArrayCourseList($terms);
+    	return new phpkit_course_ArrayTermList($terms);
     }
 
 

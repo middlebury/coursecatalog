@@ -57,7 +57,7 @@ class banner_course_Term
      *  @compliance mandatory This method must be implemented. 
      */
     public function getStartTime() {
-    	return new osid_DateTime($this->startDate);
+    	return new DateTime($this->startDate);
     }
 
 
@@ -68,7 +68,7 @@ class banner_course_Term
      *  @compliance mandatory This method must be implemented. 
      */
     public function getEndTime() {
-    	return new osid_DateTime($this->endDate);
+    	return new DateTime($this->endDate);
     }
 
 
