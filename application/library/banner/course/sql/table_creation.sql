@@ -44,19 +44,6 @@ CREATE TABLE IF NOT EXISTS `course_catalog_college` (
 --       `course_catalog` -> `catalog_id`
 --
 
--- --------------------------------------------------------
-
---
--- Table structure for table `course_section_college`
---
-
-CREATE TABLE IF NOT EXISTS `course_section_college` (
-  `section_coll_code` char(2) NOT NULL COMMENT 'The coll code derived from scbcrse',
-  `section_term_code` varchar(6) NOT NULL,
-  `section_crn` varchar(5) NOT NULL,
-  PRIMARY KEY  (`section_term_code`,`section_crn`),
-  KEY `section_coll_code` (`section_coll_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This is a derived table that maps the coll code from scbcrse';
 
 -- --------------------------------------------------------
 
@@ -67,6 +54,7 @@ CREATE TABLE IF NOT EXISTS `course_section_college` (
 CREATE TABLE IF NOT EXISTS `catalog_term` (
   `catalog_id` varchar(10) NOT NULL,
   `term_code` varchar(6) NOT NULL COMMENT 'Maps to stvterm.STVTERM_CODE',
+  `term_display_label` varchar(4) NOT NULL COMMENT 'The label such as ''F'', ''S'', ''W'', ''L'', etc used to build a section display name.',
   PRIMARY KEY  (`catalog_id`,`term_code`),
   KEY `catalog_id` (`catalog_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table maps term_code patterns to a given catalog.';
@@ -87,6 +75,7 @@ ALTER TABLE `catalog_term`
 CREATE TABLE IF NOT EXISTS `catalog_term_match` (
   `catalog_id` varchar(10) NOT NULL,
   `term_code_match` varchar(10) NOT NULL,
+  `term_display_label` varchar(4) NOT NULL COMMENT 'The label such as ''F'', ''S'', ''W'', ''L'', etc used to build a section display name.',
   PRIMARY KEY  (`catalog_id`,`term_code_match`),
   KEY `catalog_id` (`catalog_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table maps term_code patterns to a given catalog.';

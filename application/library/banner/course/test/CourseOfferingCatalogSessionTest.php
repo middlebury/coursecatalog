@@ -43,7 +43,7 @@ class banner_course_test_CourseOfferingCatalogSessionTest
         $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
         
-        $this->sectionId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200893/92418');
+        $this->sectionId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/92418');
     }
 
     /**

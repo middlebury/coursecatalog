@@ -1108,38 +1108,6 @@ try {
 	$mysql->rollBack();
 }
 
-// Build derived table for easier section-college lookups
-try {
-	$mysql->beginTransaction();
-	$tsectcoll = $mysql->prepare("TRUNCATE TABLE course_section_college");
-	$tsectcoll ->execute();
-	
-	$isectcoll = $mysql->prepare("
-INSERT INTO
-	course_section_college
-	(section_coll_code, section_term_code, section_crn)
-SELECT 
-	SCBCRSE_COLL_CODE,
-	SSBSECT_TERM_CODE,
-	SSBSECT_CRN
-FROM 
-	ssbsect
-
-	LEFT JOIN scbcrse ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
-
-GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN;
-");
-	$isectcoll ->execute();
-	
-	$mysql->commit();
-	print "Updated derived table: course_section_college\n";
-
-} catch (Exception $e) {
-	$exceptions[] = $e->__toString();
-	$mysql->rollBack();
-}
-
-
 // Build derived table for easier term-catalog lookups
 try {
 	$mysql->beginTransaction();
@@ -1151,10 +1119,11 @@ try {
 	$itermcat = $mysql->prepare("
 INSERT INTO
 	catalog_term
-	(catalog_id, term_code)
+	(catalog_id, term_code, term_display_label)
 SELECT
 	:catalog_id,
-	STVTERM_CODE
+	STVTERM_CODE,
+	:term_display_label
 FROM
 	stvterm
 WHERE
@@ -1162,7 +1131,11 @@ WHERE
 ");
 
 	foreach ($searches as $search) {
-		$itermcat->execute(array(':catalog_id' => $search['catalog_id'], ':term_code_match' => $search['term_code_match']));
+		$itermcat->execute(array(
+			':catalog_id' => $search['catalog_id'], 
+			':term_code_match' => $search['term_code_match'],
+			':term_display_label' => $search['term_display_label']
+		));
 	}
 
 	$mysql->commit();

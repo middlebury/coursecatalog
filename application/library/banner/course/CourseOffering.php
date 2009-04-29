@@ -33,7 +33,7 @@ class banner_course_CourseOffering
 			'SSBSECT_SEQ_NUMB',
 			'SSBSECT_CAMP_CODE',
 			
-			'STVTERM_TRMT_CODE',
+			'term_display_label',
 			'STVTERM_START_DATE',
 			
 			'STVSCHD_CODE',
@@ -80,7 +80,7 @@ class banner_course_CourseOffering
 			$row['SSBSECT_SUBJ_CODE']
 			.$row['SSBSECT_CRSE_NUMB']
 			.$row['SSBSECT_SEQ_NUMB']
-			.'-'.$row['STVTERM_TRMT_CODE']
+			.'-'.$row['term_display_label']
 			.substr($row['STVTERM_START_DATE'], 2, 2));
 		$this->setDescription('');
 		

@@ -57,7 +57,7 @@ SELECT
 	SSBSECT_CRSE_NUMB,
 	SSBSECT_SEQ_NUMB,
 	SSBSECT_CAMP_CODE,
-	STVTERM_TRMT_CODE,
+	term_display_label,
 	STVTERM_START_DATE,
 	STVSCHD_CODE,
 	STVSCHD_DESC,
@@ -75,16 +75,16 @@ SELECT
 	STVBLDG_DESC,
 	MAX( SCBCRSE_EFF_TERM ) AS SCBCRSE_EFF_TERM , 
 	SCBCRSE_DEPT_CODE,
-	SCBCRSE_DIVS_CODE,
-	SSRATTR_ATTR_CODE
+	SCBCRSE_DIVS_CODE
 FROM 
 	ssbsect
+	LEFT JOIN catalog_term ON SSBSECT_TERM_CODE = catalog_term.term_code
 	LEFT JOIN stvterm ON SSBSECT_TERM_CODE = STVTERM_CODE
 	LEFT JOIN ssrmeet ON (SSBSECT_TERM_CODE = SSRMEET_TERM_CODE AND SSBSECT_CRN = SSRMEET_CRN)
 	LEFT JOIN stvbldg ON SSRMEET_BLDG_CODE = STVBLDG_CODE
 	LEFT JOIN stvschd ON SSBSECT_SCHD_CODE = STVSCHD_CODE
 	LEFT JOIN scbcrse ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
-	LEFT JOIN ssrattr ON (SSBSECT_TERM_CODE = SSRATTR_TERM_CODE AND SSBSECT_CRN = SSRATTR_CRN)
+	".$this->getAdditionalTableJoins()."
 WHERE 
 	".$this->getAllWhereTerms()."
 	AND SSBSECT_TERM_CODE IN (
@@ -142,6 +142,17 @@ ORDER BY SSBSECT_TERM_CODE DESC, SSBSECT_SUBJ_CODE, SSBSECT_CRSE_NUMB, SSBSECT_S
 			return 'TRUE';
 		else
 			return 'catalog_id = :catalog_id';
+	}
+	
+	/**
+	 * Answer any additional table join clauses to use
+	 * 
+	 * @return string
+	 * @access protected
+	 * @since 4/29/09
+	 */
+	protected function getAdditionalTableJoins () {
+		return '';
 	}
 	
 	/**

@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS course_catalog_college;
-DROP TABLE IF EXISTS course_section_college;
+DROP TABLE IF EXISTS catalog_term;
+DROP TABLE IF EXISTS catalog_term_match;
 DROP TABLE IF EXISTS course_catalog;
 DROP TABLE IF EXISTS gorintg;
 DROP TABLE IF EXISTS gtvdunt;
