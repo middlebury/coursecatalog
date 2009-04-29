@@ -719,7 +719,7 @@ CREATE TABLE IF NOT EXISTS `stvschd` (
 
 CREATE TABLE IF NOT EXISTS `stvsubj` (
   `STVSUBJ_CODE` varchar(4) NOT NULL default '' COMMENT 'This field identifies the subject code referenced in the Catalog, Registration and Acad.  Hist.  Modules.',
-  `STVSUBJ_DESC` varchar(4) default NULL COMMENT 'This field specifies the subject associated with the subject code.',
+  `STVSUBJ_DESC` varchar(30) default NULL COMMENT 'This field specifies the subject associated with the subject code.',
   `STVSUBJ_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most recent date a record was created or updated.  ',
   `STVSUBJ_VR_MSG_NO` decimal(6,0) default NULL COMMENT 'The Voice Response message number assigned to the recorded message that describes the subject code.',
   `STVSUBJ_DISP_WEB_IND` char(1) NOT NULL default '' COMMENT 'Web registration indicator',

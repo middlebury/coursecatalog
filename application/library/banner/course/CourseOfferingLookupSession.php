@@ -185,7 +185,6 @@ class banner_course_CourseOfferingLookupSession
     	if (!isset(self::$getOffering_stmts[$catalogWhere])) {
 	    	$query =
 "SELECT 
-    section_coll_code,
 	SSBSECT_TERM_CODE,
 	SSBSECT_CRN,
 	SSBSECT_SUBJ_CODE,
@@ -212,8 +211,7 @@ class banner_course_CourseOfferingLookupSession
 	SCBCRSE_DEPT_CODE,
 	SCBCRSE_DIVS_CODE
 FROM 
-	course_section_college
-	INNER JOIN ssbsect ON (section_term_code = SSBSECT_TERM_CODE AND section_crn = SSBSECT_CRN)
+	ssbsect
 	LEFT JOIN stvterm ON SSBSECT_TERM_CODE = STVTERM_CODE
 	LEFT JOIN ssrmeet ON (SSBSECT_TERM_CODE = SSRMEET_TERM_CODE AND SSBSECT_CRN = SSRMEET_CRN)
 	LEFT JOIN stvbldg ON SSRMEET_BLDG_CODE = STVBLDG_CODE
@@ -222,11 +220,11 @@ FROM
 WHERE
 	SSBSECT_TERM_CODE = :section_term_code
 	AND SSBSECT_CRN = :section_CRN
-	AND section_coll_code IN (
+	AND SSBSECT_TERM_CODE IN (
 		SELECT
-			coll_code
+			term_code
 		FROM
-			course_catalog_college
+			catalog_term
 		WHERE
 			".$this->getCatalogWhereTerms()."
 	)

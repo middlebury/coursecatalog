@@ -188,26 +188,16 @@ class banner_course_TermLookupSession
 		if (!isset(self::$getTerm_stmts[$catalogWhere])) {
 	    	$query =
 "SELECT 
-    section_coll_code,
     STVTERM_CODE,
 	STVTERM_DESC,
 	STVTERM_START_DATE,
 	STVTERM_END_DATE
 FROM 
-	course_section_college
-	INNER JOIN stvterm ON section_term_code = STVTERM_CODE
-	
+	stvterm
+	LEFT JOIN catalog_term ON STVTERM_CODE = term_code
 WHERE 
 	STVTERM_CODE = :term_code
-	AND section_coll_code IN (
-		SELECT
-			coll_code
-		FROM
-			course_catalog_college
-		WHERE
-			".$this->getCatalogWhereTerms()."
-	)
-GROUP BY section_term_code
+	AND ".$this->getCatalogWhereTerms()."
 ORDER BY STVTERM_CODE DESC
 ";
 			self::$getTerm_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);

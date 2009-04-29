@@ -40,8 +40,7 @@ class banner_course_AllTermsList
 	STVTERM_START_DATE,
 	STVTERM_END_DATE
 FROM 
-	course_section_college
-	INNER JOIN stvterm ON section_term_code = STVTERM_CODE
+	stvterm
 	
 WHERE 
 	STVTERM_CODE IN (
@@ -52,7 +51,6 @@ WHERE
 		WHERE
 			".$this->getCatalogWhereTerms()."
 	)
-GROUP BY section_term_code
 ORDER BY STVTERM_CODE DESC
 ";
 		parent::__construct($db, $query, $this->getAllInputParameters());

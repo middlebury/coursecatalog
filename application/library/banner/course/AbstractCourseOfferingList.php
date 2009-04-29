@@ -51,7 +51,6 @@ abstract class banner_course_AbstractCourseOfferingList
 	private function getQuery () {
 		return "
 SELECT 
-    section_coll_code,
 	SSBSECT_TERM_CODE,
 	SSBSECT_CRN,
 	SSBSECT_SUBJ_CODE,
@@ -79,8 +78,7 @@ SELECT
 	SCBCRSE_DIVS_CODE,
 	SSRATTR_ATTR_CODE
 FROM 
-	course_section_college
-	INNER JOIN ssbsect ON (section_term_code = SSBSECT_TERM_CODE AND section_crn = SSBSECT_CRN)
+	ssbsect
 	LEFT JOIN stvterm ON SSBSECT_TERM_CODE = STVTERM_CODE
 	LEFT JOIN ssrmeet ON (SSBSECT_TERM_CODE = SSRMEET_TERM_CODE AND SSBSECT_CRN = SSRMEET_CRN)
 	LEFT JOIN stvbldg ON SSRMEET_BLDG_CODE = STVBLDG_CODE
@@ -89,17 +87,17 @@ FROM
 	LEFT JOIN ssrattr ON (SSBSECT_TERM_CODE = SSRATTR_TERM_CODE AND SSBSECT_CRN = SSRATTR_CRN)
 WHERE 
 	".$this->getAllWhereTerms()."
-	AND section_coll_code IN (
+	AND SSBSECT_TERM_CODE IN (
 		SELECT
-			coll_code
+			term_code
 		FROM
-			course_catalog_college
+			catalog_term
 		WHERE
 			".$this->getCatalogWhereTerms()."
 	)
 
 GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
-ORDER BY section_coll_code, SSBSECT_TERM_CODE DESC, SSBSECT_SUBJ_CODE, SSBSECT_CRSE_NUMB, SSBSECT_SEQ_NUMB
+ORDER BY SSBSECT_TERM_CODE DESC, SSBSECT_SUBJ_CODE, SSBSECT_CRSE_NUMB, SSBSECT_SEQ_NUMB
 ";
 	}
 	
