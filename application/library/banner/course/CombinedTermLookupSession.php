@@ -38,128 +38,11 @@
  * 
  * @package org.osid.course
  */
-class banner_course_TermLookupSession
-    extends banner_course_AbstractCourseSession
-    implements osid_course_TermLookupSession
+class banner_course_CombinedTermLookupSession
+    extends banner_course_TermLookupSession
 {
 	
-	/**
-	 * Constructor
-	 * 
-	 * @param banner_course_CourseManagerInterface $manager
-	 * @param optional osid_id_Id $catalogId
-	 * @return void
-	 * @access public
-	 * @since 4/10/09
-	 */
-	public function __construct (banner_course_CourseManagerInterface $manager, osid_id_Id $catalogId = null) {
-		parent::__construct($manager, 'term/');
-		
-		if (is_null($catalogId))
-			$this->catalogId = $manager->getCombinedCatalogId();
-		else
-			$this->catalogId = $catalogId;
-	}
 
-    /**
-     *  Gets the <code> CourseCatalog </code> <code> Id </code> associated 
-     *  with this session. 
-     *
-     *  @return object osid_id_Id the <code> CourseCatalog Id </code> 
-     *          associated with this session 
-     *  @throws osid_IllegalStateException this session has been closed 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function getCourseCatalogId() {
-    	return $this->catalogId;
-    }
-
-
-    /**
-     *  Gets the <code> CourseCatalog </code> associated with this session. 
-     *
-     *  @return object osid_course_CourseCatalog the course catalog 
-     *  @throws osid_OperationFailedException unable to complete request 
-     *  @throws osid_PermissionDeniedException authorization failure 
-     *  @throws osid_IllegalStateException this session has been closed 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function getCourseCatalog() {
-    	if (!isset($this->catalog)) {
-	    	$lookup = $this->manager->getCourseCatalogLookupSession();
-			$lookup->usePlenaryView();
-			$this->catalog = $lookup->getCourseCatalog($this->getCourseCatalogId());
-		}
-    	return $this->catalog;
-    }
-
-
-    /**
-     *  Tests if this user can perform <code> Term </code> lookups. A return 
-     *  of true does not guarantee successful authorization. A return of false 
-     *  indicates that it is known all methods in this session will result in 
-     *  a <code> PERMISSION_DENIED. </code> This is intended as a hint to an 
-     *  application that may opt not to offer lookup operations to 
-     *  unauthorized users. 
-     *
-     *  @return boolean <code> false </code> if lookup methods are not 
-     *          authorized, <code> true </code> otherwise 
-     *  @throws osid_IllegalStateException this session has been closed 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function canLookupTerms() {
-    	return true;
-    }
-
-
-    /**
-     *  The returns from the lookup methods may omit or translate elements 
-     *  based on this session, such as authorization, and not result in an 
-     *  error. This view is used when greater interoperability is desired at 
-     *  the expense of precision. 
-     *
-     *  @compliance mandatory This method is must be implemented. 
-     */
-    public function useComparativeTermView() {
-    	$this->useComparativeView();
-    }
-
-
-    /**
-     *  A complete view of the <code> Term </code> returns is desired. Methods 
-     *  will return what is requested or result in an error. This view is used 
-     *  when greater precision is desired at the expense of interoperability. 
-     *
-     *  @compliance mandatory This method is must be implemented. 
-     */
-    public function usePlenaryTermView() {
-    	$this->usePlenaryView();
-    }
-
-
-    /**
-     *  Federates the view for methods in this session. A federated view will 
-     *  include terms in course catalogs which are children of this course 
-     *  catalog in the course catalog hierarchy. 
-     *
-     *  @compliance mandatory This method is must be implemented. 
-     */
-    public function useFederatedCourseCatalogView() {
-    	$this->useFederatedView();
-    }
-
-
-    /**
-     *  Isolates the view for methods in this session. An isolated view 
-     *  restricts lookups to this course catalog only. 
-     *
-     *  @compliance mandatory This method is must be implemented. 
-     */
-    public function useIsolatedCourseCatalogView() {
-    	$this->useIsolatedView();
-    }
-
-	private static $getTerm_stmts = array();
     /**
      *  Gets the <code> Term </code> specified by its <code> Id. </code> In 
      *  plenary mode, the exact <code> Id </code> is found or a <code> 
@@ -180,87 +63,11 @@ class banner_course_TermLookupSession
      *  @compliance mandatory This method is must be implemented. 
      */
     public function getTerm(osid_id_Id $termId) {
-    	$idString = $this->getDatabaseIdString($termId, 'term/');
-    	if (!preg_match('/^([0-9]{6})$/', $idString))
-			throw new osid_NotFoundException('Term id component \''.$idString.'\' could not be converted to a term code.');
-		
-		$catalogWhere = $this->getCatalogWhereTerms();
-		if (!isset(self::$getTerm_stmts[$catalogWhere])) {
-	    	$query =
-"SELECT 
-    section_coll_code,
-    STVTERM_CODE,
-	STVTERM_DESC,
-	STVTERM_START_DATE,
-	STVTERM_END_DATE
-FROM 
-	course_section_college
-	INNER JOIN stvterm ON section_term_code = STVTERM_CODE
-	
-WHERE 
-	STVTERM_CODE = :term_code
-	AND section_coll_code IN (
-		SELECT
-			coll_code
-		FROM
-			course_catalog_college
-		WHERE
-			".$this->getCatalogWhereTerms()."
-	)
-GROUP BY section_term_code
-ORDER BY STVTERM_CODE DESC
-";
-			self::$getTerm_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
-		}
-		
-		$parameters = array_merge(
-			array(
-				':term_code' => $idString
-			),
-			$this->getCatalogParameters());
-		self::$getTerm_stmts[$catalogWhere]->execute($parameters);
-		
-		$row = self::$getTerm_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
-		self::$getTerm_stmts[$catalogWhere]->closeCursor();
-		
-		if (!$row['STVTERM_CODE'])
-			throw new osid_NotFoundException("Could not find a term matching the term code $idString.");
-		
-		return new banner_course_Term(
-					$this->getOsidIdFromString($row['STVTERM_CODE'], 'term/'),
-					$row['STVTERM_DESC'],
-					$row['STVTERM_START_DATE'], 
-					$row['STVTERM_END_DATE']);
+    	if ($this->usesIsolatedView())
+    		throw new osid_NotFoundException('This catalog does not directly contain any terms. Use useFederatedView() to access terms in child catalogs.');
+    	return parent::getTerm($termId);
     }
     
-    /**
-	 * Answer the catalog where terms
-	 * 
-	 * @return string
-	 * @access private
-	 * @since 4/20/09
-	 */
-	private function getCatalogWhereTerms () {
-		if (is_null($this->catalogId) || $this->catalogId->isEqual($this->getCombinedCatalogId()))
-			return 'TRUE';
-		else
-			return 'catalog_id = :catalog_id';
-	}
-	
-	/**
-	 * Answer the input parameters
-	 * 
-	 * @return array
-	 * @access private
-	 * @since 4/17/09
-	 */
-	private function getCatalogParameters () {
-		$params = array();
-		if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->getCombinedCatalogId()))
-			$params[':catalog_id'] = $this->getDatabaseIdString($this->catalogId, 'catalog/');
-		return $params;
-	}
-
     /**
      *  Gets a <code> TermList </code> corresponding to the given <code> 
      *  IdList. </code> In plenary mode, the returned list contains all of the 
@@ -283,21 +90,14 @@ ORDER BY STVTERM_CODE DESC
      *  @compliance mandatory This method must be implemented. 
      */
     public function getTermsByIds(osid_id_IdList $termIdList) {
-    	$terms = array();
+    	if ($this->usesIsolatedView()) {
+    		if ($this->usesPlenaryView())
+	    		throw new osid_NotFoundException('This catalog does not directly contain any terms. Use useFederatedView() to access terms in child catalogs.');
+	    	else
+	    		return new phpkit_EmptyList();
+	    }
     	
-    	while ($termIdList->hasNext()) {
-    		try {
-    			$terms[] = $this->getTerm($termIdList->getNextId());
-    		} catch (osid_NotFoundException $e) {
-    			if ($this->usesPlenaryView())
-    				throw $e;
-    		} catch (osid_PermissionDeniedException $e) {
-    			if ($this->usesPlenaryView())
-    				throw $e;
-    		}
-    	}
-    	
-    	return new phpkit_course_ArrayTermList($terms);
+    	return parent::getTermsByIds($termIdList);
     }
 
 
@@ -321,10 +121,10 @@ ORDER BY STVTERM_CODE DESC
      *  @compliance mandatory This method must be implemented. 
      */
     public function getTermsByGenusType(osid_type_Type $termGenusType) {
-    	if ($termGenusType->isEqual(new phpkit_type_URNInetType("urn:inet:osid.org:genera:none")))
-    		return $this->getTerms();
-    	else
-    		return new phpkit_EmptyList;
+    	if ($this->usesIsolatedView())
+    		return new phpkit_EmptyList();
+    	
+    	return parent::getTermsByGenusType($termGenusType);
     }
 
 
@@ -348,7 +148,10 @@ ORDER BY STVTERM_CODE DESC
      *  @compliance mandatory This method must be implemented. 
      */
     public function getTermsByParentGenusType(osid_type_Type $termGenusType) {
-    	return $this->getTermsByGenusType($termGenusType);
+    	if ($this->usesIsolatedView())
+    		return new phpkit_EmptyList();
+    	
+    	return parent::getTermsByParentGenusType($termGenusType);
     }
 
 
@@ -370,7 +173,10 @@ ORDER BY STVTERM_CODE DESC
      *  @compliance mandatory This method must be implemented. 
      */
     public function getTermsByRecordType(osid_type_Type $termRecordType) {
-    	return new phpkit_EmptyList;
+    	if ($this->usesIsolatedView())
+    		return new phpkit_EmptyList();
+    	
+    	return parent::getTermsByRecordType($termRecordType);
     }
 
 
@@ -387,9 +193,10 @@ ORDER BY STVTERM_CODE DESC
      *  @compliance mandatory This method must be implemented. 
      */
     public function getTerms() {
-    	return new banner_course_AllTermsList(
-    		$this->manager->getDB(),
-    		$this);
+    	if ($this->usesIsolatedView())
+    		return new phpkit_EmptyList();
+    	
+    	return parent::getTerms();
     }
 
 }
