@@ -33,6 +33,7 @@ class banner_course_Term
 		parent::__construct();
 		$this->setId($id);
 		$this->setDisplayName($displayName);
+		$this->setDescription('');
 		
 		$this->startDate = $startDate;
 		$this->endDate = $endDate;

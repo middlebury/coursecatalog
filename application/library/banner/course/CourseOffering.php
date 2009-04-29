@@ -122,8 +122,12 @@ class banner_course_CourseOffering
     public function getTitle() {
     	if (isset($this->row['SSBSECT_CRSE_TITLE']) && strlen($this->row['SSBSECT_CRSE_TITLE']))
     		return $this->row['SSBSECT_CRSE_TITLE'];
-    	else
+    	
+    	try {
     		return $this->getCourse()->getTitle();
+    	} catch (osid_NotFoundException $e) {
+    		return '';
+    	}
     }
 
 
