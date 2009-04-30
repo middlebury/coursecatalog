@@ -160,6 +160,74 @@ abstract class AbstractCatalogController
 		}
 		return $matching;
 	}
+	
+	private $startTime;
+	
+	/**
+	 * Answer the execution time
+	 * 
+	 * @return float
+	 * @access private
+	 * @since 4/30/09
+	 */
+	private function getExecTime () {
+		if (isset($GLOBALS['start_time']))
+			$start = $GLOBALS['start_time'];
+		else if (isset($this->startTime))
+			$start = $this->startTime;
+		else
+			return null;
+		
+		$end = microtime();
+		
+		list($sm, $ss) = explode(" ", $start);
+		list($em, $es) = explode(" ", $end);
+
+		$s = $ss + $sm;
+		$e = $es + $em;
+
+		return round($e-$s, 6);
+	}
+	
+	/**
+     * Pre-dispatch routines
+     *
+     * Called before action method. If using class with
+     * {@link Zend_Controller_Front}, it may modify the
+     * {@link $_request Request object} and reset its dispatched flag in order
+     * to skip processing the current action.
+     *
+     * @return void
+     */
+    public function preDispatch()
+    {
+    	$this->startTime = microtime();
+    }
+	
+	/**
+     * Post-dispatch routines
+     *
+     * Called after action method execution. If using class with
+     * {@link Zend_Controller_Front}, it may modify the
+     * {@link $_request Request object} and reset its dispatched flag in order
+     * to process an additional action.
+     *
+     * Common usages for postDispatch() include rendering content in a sitewide
+     * template, link url correction, setting headers, etc.
+     *
+     * @return void
+     */
+    public function postDispatch()
+    {
+    	$response = $this->getResponse();
+    	$db = self::getCourseManager()->getDB();
+    	if (method_exists($db, 'getCounters')) {
+    		foreach ($db->getCounters() as $name => $num) {
+		    	$response->setHeader('X-'.$name, $num);
+		    }
+		}
+    	$response->setHeader('X-Runtime', $this->getExecTime());
+    }
 }
 
 ?>
