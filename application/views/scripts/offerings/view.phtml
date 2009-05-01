@@ -21,6 +21,23 @@ print "\n\t\t<dd>".$this->escape($this->offering->getScheduleInfo())."</dd>";
 print "\n\t\t<dt>Type:</dt>";
 print "\n\t\t<dd>".$this->escape($this->offering->getGenusType()->getDisplayName())."</dd>";
 
+$resourceParams = array(
+						'controller'	=> 'resources',
+						'action'		=> 'view',
+						'offering'		=> null
+					);
+print "\n\t\t<dt>Instructors:</dt>";
+print "\n\t\t<dd>";
+$instructors = $this->offering->getInstructors();
+while ($instructors->hasNext()) {
+	$instructor = $instructors->getNextResource();
+	$resourceParams['resource'] = AbstractCatalogController::getStringFromOsidId($instructor->getId());
+	print "<a href=\"".$this->url($resourceParams)."\">";
+	print $this->escape($instructor->getDisplayName());
+	print "</a> ";
+}
+print "</dd>";
+
 // Topics
 $topicParams = array(
 						'controller'	=> 'topics',
