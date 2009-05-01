@@ -16,6 +16,7 @@ class banner_test_TestSuite extends PHPUnit_Framework_TestSuite
         }
         
         $suite->addTestSuite('banner_course_test_TestSuite');
+        $suite->addTestSuite('banner_resource_test_TestSuite');
         
         
         return $suite;

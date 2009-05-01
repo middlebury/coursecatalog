@@ -217,8 +217,8 @@ abstract class banner_course_AbstractCourseOfferingSession
 		foreach ($this->getInstructorDataForOffering($offeringId) as $row) {
 			$people[] = new banner_resource_PersonResource(
 								$this->getOsidIdFromString($row['SYVINST_PIDM'], 'people/'),
-								$row['SYVINST_FIRST_NAME'].' '.$row['SYVINST_LAST_NAME'],
-								''
+								$row['SYVINST_LAST_NAME'],
+								$row['SYVINST_FIRST_NAME']
 							);
 		}
 		return new phpkit_resource_ArrayResourceList($people);
