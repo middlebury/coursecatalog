@@ -40,6 +40,8 @@ class banner_course_CourseOfferingTest
     	$this->manager = $this->sharedFixture['CourseManager'];
         $this->session = $this->manager->getCourseOfferingLookupSessionForCatalog($this->mcugCatalogId);
         $this->object = $this->session->getCourseOffering($this->physOfferingId);
+        
+        $this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
     }
 
     /**
@@ -354,6 +356,83 @@ class banner_course_CourseOfferingTest
     	while ($types->hasNext()) {
 	        $this->assertType('osid_course_CourseOfferingRecord', $this->object->getCourseOfferingRecord($types->getNextType()));
 	    }
+    }
+    
+    /**
+     * 
+     */
+    public function testHasInstructorsRecord()
+    {
+        $this->assertTrue($this->object->hasRecordType($this->instructorsType));
+    }
+    
+    /**
+     * 
+     */
+    public function testGetInstructorsRecord()
+    {
+        $record = $this->object->getCourseOfferingRecord($this->instructorsType);
+        $this->assertType('osid_course_CourseOfferingRecord', $record);
+        $this->assertType('types_course_CourseOfferingInstructorsRecord', $record);
+    }
+    
+    /**
+     * 
+     */
+    public function testInstructorsRecordGetInstructorIds()
+    {
+        $record = $this->object->getCourseOfferingRecord($this->instructorsType);
+        $ids = $record->getInstructorIds();
+        $this->assertType('osid_id_IdList', $ids);
+        $this->assertEquals(1, $ids->available());
+        $this->assertType('osid_id_Id', $ids->getNextId());
+    }
+    
+    /**
+     * 
+     */
+    public function testInstructorsRecordGetInstructors()
+    {
+        $record = $this->object->getCourseOfferingRecord($this->instructorsType);
+        $instructors = $record->getInstructors();
+        $this->assertType('osid_resource_ResourceList', $instructors);
+        $this->assertEquals(1, $instructors->available());
+        $person = $instructors->getNextResource();
+        $this->assertType('osid_resource_Resource', $person);
+        $this->assertEquals('Nevin Nordemire', $person->getDisplayName());
+    }
+    
+    /**
+     * 
+     */
+    public function testChemInstructorsRecordGetInstructorIds()
+    {
+    	$object = $this->session->getCourseOffering($this->chemOfferingId);
+        $record = $object->getCourseOfferingRecord($this->instructorsType);
+        $ids = $record->getInstructorIds();
+        $this->assertType('osid_id_IdList', $ids);
+        $this->assertEquals(2, $ids->available());
+        $this->assertType('osid_id_Id', $ids->getNextId());
+    }
+    
+    /**
+     * 
+     */
+    public function testChemInstructorsRecordGetInstructors()
+    {
+        $object = $this->session->getCourseOffering($this->chemOfferingId);
+        $record = $object->getCourseOfferingRecord($this->instructorsType);
+        $instructors = $record->getInstructors();
+        $this->assertType('osid_resource_ResourceList', $instructors);
+        $this->assertEquals(2, $instructors->available());
+        
+        $person = $instructors->getNextResource();
+        $this->assertType('osid_resource_Resource', $person);
+        $this->assertEquals('Barry Bancroft', $person->getDisplayName());
+        
+        $person = $instructors->getNextResource();
+        $this->assertType('osid_resource_Resource', $person);
+        $this->assertEquals('Georges Gleuseau', $person->getDisplayName());
     }
 }
 ?>

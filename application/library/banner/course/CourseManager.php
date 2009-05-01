@@ -880,7 +880,7 @@ class banner_course_CourseManager
      *              supportsTermCatalog() </code> is <code> true. </code> 
      */
     public function getTermCatalogSession() {
-    	throw new osid_UnimplementedException();
+    	return new banner_course_TermCatalogSession($this);
 	}
 
 
@@ -1633,7 +1633,7 @@ class banner_course_CourseManager
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsTermCatalog() {
-    	return false;
+    	return true;
     }
 
 

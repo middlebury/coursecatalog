@@ -1,5 +1,5 @@
 <?php
-
+$GLOBALS['start_time'] = microtime();
 require_once(dirname(__FILE__) . '/../application/autoload.php');
 
 define('DISPLAY_ERROR_BACKTRACE', true);

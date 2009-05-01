@@ -13,11 +13,12 @@
  *  time and place through the creation of a <code> CourseOffering. </code> 
  *  </p>
  * 
- * @package org.osid.course
+ * @package banner.course
  */
 class banner_course_CourseOffering
     extends phpkit_AbstractOsidObject
-    implements osid_course_CourseOffering
+    implements osid_course_CourseOffering,
+    types_course_CourseOfferingInstructorsRecord
 {
 	/**
 	 * @var array $requiredFields;
@@ -71,6 +72,8 @@ class banner_course_CourseOffering
 	 * @since 4/13/09
 	 */
 	public function __construct (array $row, banner_course_CourseOfferingSessionInterface $session) {
+		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		
 		parent::__construct();
 		$this->checkRow($row);
 		$this->row = $row;
@@ -92,6 +95,8 @@ class banner_course_CourseOffering
 			$row['STVSCHD_DESC'], 						// display name
 			$row['STVSCHD_CODE']						// display label
 		));
+		
+		$this->addRecordType($this->instructorsType);
 	}
 	
 	/**
@@ -122,8 +127,12 @@ class banner_course_CourseOffering
     public function getTitle() {
     	if (isset($this->row['SSBSECT_CRSE_TITLE']) && strlen($this->row['SSBSECT_CRSE_TITLE']))
     		return $this->row['SSBSECT_CRSE_TITLE'];
-    	else
+    	
+    	try {
     		return $this->getCourse()->getTitle();
+    	} catch (osid_NotFoundException $e) {
+    		return '';
+    	}
     }
 
 
@@ -486,6 +495,9 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingRecord(osid_type_Type $courseOfferingRecordType) {
+    	if ($courseOfferingRecordType->isEqual($this->instructorsType))
+    		return $this;
+    	
     	throw new osid_UnsupportedException('Record type is not supported.');
     }
     
@@ -503,5 +515,67 @@ class banner_course_CourseOffering
 			$prefix = $this->idPrefix;
 		return new phpkit_id_Id($this->session->getIdAuthority(), 'urn', $prefix.$databaseId);
 	}
+	
+/*********************************************************
+ * Record support
+ *********************************************************/
+ 	/**
+     *  Tests if the given type is implemented by this record. Other types 
+     *  than that directly indicated by <code> getType() </code> may be 
+     *  supported through an inheritance scheme where the given type specifies 
+     *  a record that is a parent interface of the interface specified by 
+     *  <code> getType(). </code> 
+     *
+     *  @param object osid_type_Type $recordType a type 
+     *  @return boolean <code> true </code> if the given record <code> Type 
+     *          </code> is implemented by this record, <code> false </code> 
+     *          otherwise 
+     *  @throws osid_NullArgumentException <code> recordType </code> is <code> 
+     *          null </code> 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function implementsRecordType(osid_type_Type $recordType) {
+    	return $recordType->isEqual($this->instructorsType);
+    }
+    
+    /**
+     *  Gets the <code> CourseOffering </code> from which this record 
+     *  originated. 
+     *
+     *  @return object osid_course_CourseOffering the course offering 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function getCourseOffering() {
+    	return $this;
+    }
+	
+/*********************************************************
+ * InstructorsRecord support
+ *********************************************************/
+
+	/**
+     *  Gets the Ids of the instructors associated with this course offering
+     *
+     *  @return object osid_id_IdList the list of instructor ids.
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     */
+    public function getInstructorIds() {
+    	return $this->session->getInstructorIdsForOffering($this->getId());
+    }
+    
+    /**
+     *  Gets the <code> Resources </code> representing the instructors associated
+     *  with this course offering.
+     *
+     *  @return object osid_resource_ResourceList the list of instructors.
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     */
+    public function getInstructors() {
+    	return $this->session->getInstructorsForOffering($this->getId());
+    }
 
 }

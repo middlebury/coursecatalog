@@ -6,7 +6,7 @@ if ($this->offering->getDescription())
 
 $term = $this->offering->getTerm();
 $termUrl = $this->url(array(
-						'controller'	=> 'term',
+						'controller'	=> 'terms',
 						'action'		=> 'view',
 						'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId()),
 						'offering'		=> null
