@@ -56,11 +56,6 @@ class OfferingsController
 		$lookupSession = self::getCourseManager()->getCourseOfferingLookupSession();
 		$lookupSession->useFederatedCourseCatalogView();
 		$this->view->offering = $lookupSession->getCourseOffering($id);
-		
- 		$this->view->otherSections = $lookupSession->getCourseOfferingsByTermForCourse(
- 			$this->view->offering->getTermId(),
- 			$this->view->offering->getCourseId()
- 		);
  		
  		// Load the topics into our view
  		$this->loadTopics($this->view->offering->getTopics());
@@ -75,6 +70,19 @@ class OfferingsController
 		// Set the title
 		$this->view->title = $this->view->offering->getDisplayName();
 		$this->view->headTitle($this->view->title);
+		
+		$this->render();
+		
+		// Term
+		$this->view->term = $this->view->offering->getTerm();
+		
+		// Other offerings
+		$this->view->offeringsTitle = "All Sections";
+ 		$this->view->offerings = $lookupSession->getCourseOfferingsByTermForCourse(
+ 			$this->view->offering->getTermId(),
+ 			$this->view->offering->getCourseId()
+ 		);
+ 		$this->render('offerings', null, true);
 	}
 	
 }

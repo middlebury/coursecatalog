@@ -1,0 +1,16 @@
+.offering_list .all_terms_link {
+	margin-bottom: 10px;
+	font-size: smaller;
+}
+
+.offering_list .selected_offering a {
+	font-weight: bold;
+}
+
+.offering_list .type {
+	font-style: italic;
+}
+
+.offering_list .instructor {
+	font-style: italic;
+}

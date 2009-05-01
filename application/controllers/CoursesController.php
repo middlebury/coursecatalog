@@ -59,10 +59,6 @@ class CoursesController
 		
 		// Load the topics into our view
  		$this->loadTopics($this->view->course->getTopics());
- 		
-		$lookupSession = self::getCourseManager()->getCourseOfferingLookupSession();
-		$lookupSession->useFederatedCourseCatalogView();
-		$this->view->offerings = $lookupSession->getCourseOfferingsForCourse($id);
 		
 		// Set the selected Catalog Id.
 		$catalogSession = self::getCourseManager()->getCourseCatalogSession();
@@ -74,6 +70,36 @@ class CoursesController
 		// Set the title
 		$this->view->title = $this->view->course->getDisplayName();
 		$this->view->headTitle($this->view->title);
+		
+		$this->render();
+		
+		// Term
+		if ($this->_getParam('term')) {
+			$termId = self::getOsidIdFromString($this->_getParam('term'));
+			$termLookupSession = self::getCourseManager()->getTermLookupSession();
+			$termLookupSession->useFederatedCourseCatalogView();
+			$this->view->term = $termLookupSession->getTerm($termId);
+			
+			$allParams = array();
+			$allParams['course'] = $this->_getParam('course');
+			if ($this->getSelectedCatalogId())
+				$allParams['catalog'] = self::getStringFromOsidId($this->getSelectedCatalogId());
+			$this->view->offeringsForAllTermsUrl = $this->_helper->url('view', 'courses', null, $allParams);
+		}
+		
+		// offerings
+		$this->view->offeringsTitle = "Sections";
+		$offeringLookupSession = self::getCourseManager()->getCourseOfferingLookupSession();
+		$offeringLookupSession->useFederatedCourseCatalogView();
+		if (isset($this->view->term)) {
+			$this->view->offerings = $offeringLookupSession->getCourseOfferingsByTermForCourse(
+				$this->view->term->getId(),
+				$id
+			);
+		} else {
+			$this->view->offerings = $offeringLookupSession->getCourseOfferingsForCourse($id);
+		}
+ 		$this->render('offerings', null, true);
 	}
 	
 }

@@ -49,6 +49,17 @@ abstract class AbstractCatalogController
 	}
 	
 	/**
+	 * Answer the selected catalog id
+	 * 
+	 * @return osid_id_Id
+	 * @access protected
+	 * @since 5/1/09
+	 */
+	protected function getSelectedCatalogId () {
+		return $this->view->menuCatalogSelectedId;
+	}
+	
+	/**
 	 * Answer the CourseManager
 	 * 
 	 * @return osid_course_CourseManager

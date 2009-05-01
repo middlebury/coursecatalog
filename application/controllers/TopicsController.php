@@ -62,9 +62,18 @@ class TopicsController
 		if ($this->_getParam('term')) {
 			$termId = self::getOsidIdFromString($this->_getParam('term'));
 			$this->view->offerings = $lookupSession->getCourseOfferingsByTermByTopic($termId, $id);
+			
+			$termLookupSession = self::getCourseManager()->getTermLookupSession();
+			$termLookupSession->useFederatedCourseCatalogView();
+			$this->view->term = $termLookupSession->getTerm($termId);
 		} else {
 			$this->view->offerings = $lookupSession->getCourseOfferingsByTopic($id);
 		}
+		
+		// Don't do the work to display instructors if we have a very large number of
+		// offerings.
+		if ($this->view->offerings->available() > 200)
+			$this->view->hideOfferingInstructors = true;
 		
 		// Set the selected Catalog Id.
 		if ($this->_getParam('catalog')) {
@@ -74,6 +83,16 @@ class TopicsController
 		// Set the title
 		$this->view->title = $this->view->topic->getDisplayName();
 		$this->view->headTitle($this->view->title);
+		
+		$this->view->offeringsTitle = "Sections";
+		
+		$allParams = array();
+		$allParams['topic'] = $this->_getParam('topic');
+		if ($this->getSelectedCatalogId())
+			$allParams['catalog'] = self::getStringFromOsidId($this->getSelectedCatalogId());
+		$this->view->offeringsForAllTermsUrl = $this->_helper->url('view', 'topics', null, $allParams);
+		
+ 		$this->render('offerings', null, true);
 	}
 	
 }
