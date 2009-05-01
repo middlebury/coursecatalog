@@ -148,6 +148,26 @@ interface banner_course_CourseOfferingSessionInterface {
 	 */
 	public function getResourceLookupSession ();
 	
+	/**
+	 * Answer a list of instructors for the course offering id passed
+	 * 
+	 * @param osid_id_Id $offeringId
+	 * @return osid_id_IdList
+	 * @access public
+	 * @since 4/30/09
+	 */
+	public function getInstructorIdsForOffering (osid_id_Id $offeringId);
+	
+	/**
+	 * Answer a list of instructors for the course offering id passed
+	 * 
+	 * @param osid_id_Id $offeringId
+	 * @return osid_resource_ResourceList
+	 * @access public
+	 * @since 4/30/09
+	 */
+	public function getInstructorsForOffering (osid_id_Id $offeringId);
+	
 	
 }
 
