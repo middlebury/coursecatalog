@@ -16,7 +16,9 @@ if (isset($this->term)) {
 $offeringParams = array(	
 					'controller' 	=> 'offerings',
 					'action'		=> 'view',
-					'course'		=> null
+					'course'		=> null,
+					'topic'			=> null,
+					'resource'		=> null
 				);
 while ($this->offerings->hasNext()) {
 	$offering = $this->offerings->getNextCourseOffering();

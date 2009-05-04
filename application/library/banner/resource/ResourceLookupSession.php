@@ -332,7 +332,7 @@ WHERE
 		return new banner_resource_PlaceResource(
 					$this->getOsidIdFromString($row['STVBLDG_CODE'], 'resource/place/building/'),
 					$row['STVBLDG_DESC'],
-					'',
+					$row['STVBLDG_CODE'],
 					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/building")
 			);
     }
@@ -364,7 +364,7 @@ FROM
 			$resources[] = new banner_resource_PlaceResource(
 					$this->getOsidIdFromString($row['STVBLDG_CODE'], 'resource/place/building/'),
 					$row['STVBLDG_DESC'],
-					'',
+					$row['STVBLDG_CODE'],
 					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/building")
 				);
 		}
@@ -418,7 +418,7 @@ GROUP BY
 		return new banner_resource_PlaceResource(
 					$this->getOsidIdFromString($row['STVBLDG_CODE'].'/'.$row['SSRMEET_ROOM_CODE'], 'resource/place/room/'),
 					$row['STVBLDG_DESC'].' '.$row['SSRMEET_ROOM_CODE'],
-					'',
+					$row['STVBLDG_CODE'].' '.$row['SSRMEET_ROOM_CODE'],
 					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/room")
 			);
     }
@@ -456,7 +456,7 @@ GROUP BY
 			$resources[] = new banner_resource_PlaceResource(
 					$this->getOsidIdFromString($row['STVBLDG_CODE'].'/'.$row['SSRMEET_ROOM_CODE'], 'resource/place/room/'),
 					$row['STVBLDG_DESC'].' '.$row['SSRMEET_ROOM_CODE'],
-					'',
+					$row['STVBLDG_CODE'].' '.$row['SSRMEET_ROOM_CODE'],
 					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/room")
 				);
 		}
