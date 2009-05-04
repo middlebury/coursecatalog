@@ -31,6 +31,11 @@
  * The methods specified by the record type are available through the 
  * underlying object. </p>
  * 
+ *  The type for this record is:
+ *		id namespace:	urn
+ *		authority:		middlebury.edu
+ *		identifier:		record:instructors
+ *
  * @package phpkit.course
  */
 interface types_course_CourseOfferingInstructorsRecord

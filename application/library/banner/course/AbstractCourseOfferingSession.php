@@ -96,7 +96,7 @@ abstract class banner_course_AbstractCourseOfferingSession
 	 */
 	public function getSubjectFromCourseId (osid_id_Id $id) {
 		$string = $this->getDatabaseIdString($id, 'course/');
-		if (!preg_match('#^([A-Z]{4})([0-9]{4})$#', $string, $matches))
+		if (!preg_match('#^([A-Z]{3,4})([0-9]{4})$#', $string, $matches))
 			throw new osid_NotFoundException("String '$string' cannot be broken into a subject-code and Number.");
 		return $matches[1];
 	}
@@ -111,7 +111,7 @@ abstract class banner_course_AbstractCourseOfferingSession
 	 */
 	public function getNumberFromCourseId (osid_id_Id $id) {
 		$string = $this->getDatabaseIdString($id, 'course/');
-		if (!preg_match('#^([A-Z]{4})([0-9]{4})$#', $string, $matches))
+		if (!preg_match('#^([A-Z]{3,4})([0-9]{4})$#', $string, $matches))
 			throw new osid_NotFoundException("String '$string' cannot be broken into a subject-code and Number.");
 		return $matches[2];
 	}
@@ -217,8 +217,8 @@ abstract class banner_course_AbstractCourseOfferingSession
 		foreach ($this->getInstructorDataForOffering($offeringId) as $row) {
 			$people[] = new banner_resource_PersonResource(
 								$this->getOsidIdFromString($row['SYVINST_PIDM'], 'people/'),
-								$row['SYVINST_FIRST_NAME'].' '.$row['SYVINST_LAST_NAME'],
-								''
+								$row['SYVINST_LAST_NAME'],
+								$row['SYVINST_FIRST_NAME']
 							);
 		}
 		return new phpkit_resource_ArrayResourceList($people);

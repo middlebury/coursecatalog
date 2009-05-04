@@ -1285,7 +1285,7 @@ class banner_course_CourseManager
      *  @compliance mandatory This method must be implemented <code> . </code> 
      */
     public function getResourceManager() {
-    	throw new osid_OperationFailedException('getResourceManager() is not yet implemented.');
+//     	throw new osid_OperationFailedException('getResourceManager() is not yet implemented.');
     	
     	if (!isset($this->resourceManager)) {
     		$this->resourceManager = $this->impl_getRuntimeManager()->getManager(osid_OSID::RESOURCE(), 'banner_resource_ResourceManager', '3.0.0');

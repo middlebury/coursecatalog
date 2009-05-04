@@ -300,8 +300,8 @@ class banner_course_CourseOffering
      */
     public function getLocationId() {
     	return $this->getOsidIdFromString(
-    		$this->row['SSBSECT_CAMP_CODE'].'/'.$this->row['SSRMEET_BLDG_CODE'].'/'.$this->row['SSRMEET_ROOM_CODE'], 
-    		'location/');
+    		$this->row['SSRMEET_BLDG_CODE'].'/'.$this->row['SSRMEET_ROOM_CODE'], 
+    		'resource/place/room/');
     }
 
 

@@ -21,11 +21,32 @@ print "\n\t\t<dd>".$this->escape($this->offering->getScheduleInfo())."</dd>";
 print "\n\t\t<dt>Type:</dt>";
 print "\n\t\t<dd>".$this->escape($this->offering->getGenusType()->getDisplayName())."</dd>";
 
+$instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+if ($this->offering->hasRecordType($instructorsType)) {
+	$instructorsRecord = $this->offering->getCourseOfferingRecord($instructorsType);
+	$resourceParams = array(
+							'controller'	=> 'resources',
+							'action'		=> 'view',
+							'offering'		=> null
+						);
+	print "\n\t\t<dt>Instructors:</dt>";
+	print "\n\t\t<dd>";
+	$instructors = $instructorsRecord->getInstructors();
+	while ($instructors->hasNext()) {
+		$instructor = $instructors->getNextResource();
+		$resourceParams['resource'] = AbstractCatalogController::getStringFromOsidId($instructor->getId());
+		print "<a href=\"".$this->url($resourceParams)."\">";
+		print $this->escape($instructor->getDisplayName());
+		print "</a> ";
+	}
+	print "</dd>";
+}
 // Topics
 $topicParams = array(
 						'controller'	=> 'topics',
 						'action'		=> 'view',
-						'offering'		=> null
+						'offering'		=> null,
+						'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId())
 					);
 print "\n\t<dt>Subject:</dt>";
 print "\n\t\t<dd>";
@@ -89,22 +110,4 @@ if (isset($this->parentOffering)) {
 	$offeringParams['offering'] = AbstractCatalogController::getStringFromOsidId($this->parentOffering->getId());
 	print "\n\t	<h2>Offering</h2>";
 print "\n\t\t<div><a href='".$this->url($offeringParams)."'>".$this->escape($section->getDisplayName())."</a></div>";
-}
-
-if (isset($this->otherSections) && $this->otherSections->hasNext()) {
-	print "\n\t<h2>Other Sections</h2>";
-	while ($this->otherSections->hasNext()) {
-		$section = $this->otherSections->getNextCourseOffering();
-		if ($section->getId()->isEqual($this->offering->getId()))
-			continue;
-		$offeringParams['offering'] = AbstractCatalogController::getStringFromOsidId($section->getId());
-		print "\n\t<div>";
-		if ($this->offering->getId()->isEqual($section->getId())) {
-			print $this->escape($section->getDisplayName());
-		} else {
-			print "<a href='".$this->url($offeringParams)."'>".$this->escape($section->getDisplayName())."</a>";
-		}
-		print " <em>".$this->escape($section->getGenusType()->getDisplayName())."</em>";
-		print "</div>";
-	}
 }
