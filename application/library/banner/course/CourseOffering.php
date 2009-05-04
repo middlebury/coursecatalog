@@ -360,7 +360,7 @@ class banner_course_CourseOffering
      */
     protected function as12HourTime ($time) {
     	$parts = strptime($time, '%H%M');
-    	return date('H:ia', mktime($parts['tm_hour'], $parts['tm_min']));
+    	return date('g:ia', mktime($parts['tm_hour'], $parts['tm_min']));
     }
 
 
