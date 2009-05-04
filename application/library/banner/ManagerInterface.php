@@ -17,17 +17,26 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-interface banner_course_CourseManagerInterface 
-	extends banner_ManagerInterface
+interface banner_ManagerInterface
 {
+		
 	/**
-	 * Answer the Id of the 'All'/'Combined' catalog.
+	 * Answer the database connection
 	 * 
-	 * @return osid_id_Id
+	 * @return PDO
 	 * @access public
-	 * @since 4/20/09
+	 * @since 4/13/09
 	 */
-	public function getCombinedCatalogId ();
+	public function getDB ();
+	
+	/**
+	 * Answer the Identifier authority to use.
+	 * 
+	 * @return string
+	 * @access public
+	 * @since 4/13/09
+	 */
+	public function getIdAuthority ();
 }
 
 ?>
