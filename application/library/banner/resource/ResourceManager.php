@@ -73,6 +73,17 @@ class banner_resource_ResourceManager
 	public function getIdAuthority () {
 		return $this->idAuthority;
 	}
+	
+	/**
+	 * Answer the Id of the 'All'/'Combined' resource bin.
+	 * 
+	 * @return osid_id_Id
+	 * @access public
+	 * @since 4/20/09
+	 */
+	public function getCombinedBinId () {
+		return new phpkit_id_Id($this->getIdAuthority(), 'urn', 'resource/all');
+	}
 
 /*********************************************************
  * From OsidManager
@@ -173,7 +184,7 @@ class banner_resource_ResourceManager
      *              supportsResourceLookup() </code> is <code> true. </code> 
      */
     public function getResourceLookupSession() {
-    	throw new osid_UnimplementedException();
+    	return new banner_resource_ResourceLookupSession($this);
 	}
 
 
@@ -199,7 +210,10 @@ class banner_resource_ResourceManager
      *              </code> 
      */
     public function getResourceLookupSessionForBin(osid_id_Id $binId) {
-    	throw new osid_UnimplementedException();
+    	if (!$binId->isEqual($this->getCombinedBinId()))
+    		throw new osid_NotFoundException('Unknown bin id passed.');
+    	
+    	return $this->getResourceLookupSession();
 	}
 
 
@@ -505,7 +519,7 @@ class banner_resource_ResourceManager
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsResourceLookup() {
-    	return false;
+    	return true;
     }
 
 

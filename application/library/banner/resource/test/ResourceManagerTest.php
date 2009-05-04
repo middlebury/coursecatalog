@@ -420,7 +420,7 @@ class banner_resource_test_ResourceManagerTest
      */
     public function testSupportsResourceLookup()
     {
-        $this->assertFalse($this->manager->supportsResourceLookup());
+        $this->assertTrue($this->manager->supportsResourceLookup());
     }
 
     /**
