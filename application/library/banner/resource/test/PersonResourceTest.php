@@ -41,6 +41,7 @@ class banner_resource_test_PersonResourceTest
     {
         $this->namesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:person_names');
         $this->unknownType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:unknown');
+        $this->personType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/person");
 
         $this->object = new banner_resource_PersonResource(
         	new phpkit_id_Id('urn', 'middlebury.edu', 'person/12345'),
@@ -185,6 +186,16 @@ class banner_resource_test_PersonResourceTest
     {
         $this->assertEquals('Dr. Thaddeus P.M. O\'Brien III, Ph.D.', $this->names->getDisplayName());
         $this->assertEquals('Howard Jones', $this->names2->getDisplayName());
+    }
+    
+    public function testGetGenusType()
+    {
+    	$type = $this->object->getGenusType();
+    	$this->assertType('osid_type_Type', $type);
+    	$this->assertEquals('urn', $type->getIdentifierNamespace());
+    	$this->assertEquals('middlebury.edu', $type->getAuthority());
+    	$this->assertEquals('genera:resource/person', $type->getIdentifier());
+    	$this->assertTrue($type->isEqual($this->personType));
     }
 }
 ?>

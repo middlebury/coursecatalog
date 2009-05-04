@@ -75,6 +75,8 @@ class banner_resource_PersonResource
 		$this->setDescription('');
 		
 		$this->addRecordType($this->namesType);
+		
+		$this->setGenusType(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/person"));
 	}
 
     /**

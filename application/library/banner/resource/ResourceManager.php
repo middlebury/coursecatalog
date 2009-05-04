@@ -45,7 +45,7 @@
  */
 class banner_resource_ResourceManager
 	extends phpkit_AbstractOsidManager
-    implements osid_resource_ResourceManager, banner_ManagerInterface
+    implements osid_resource_ResourceManager, banner_resource_ResourceManagerInterface
 {
 
 

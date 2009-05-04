@@ -1069,11 +1069,7 @@ class banner_course_test_CourseManagerTest
      */
     public function testGetResourceManager()
     {
-    	try {
-	        $this->assertType('osid_resource_ResourceManager', $this->manager->getResourceManager());
-	    } catch (osid_OperationFailedException $e) {
-	    	$this->markTestIncomplete('getResourceManager() needs to be fully implemented..');
-	    }
+		$this->assertType('osid_resource_ResourceManager', $this->manager->getResourceManager());
     }
 
     /**

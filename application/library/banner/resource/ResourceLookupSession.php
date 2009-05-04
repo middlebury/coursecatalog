@@ -64,7 +64,7 @@ class banner_resource_ResourceLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getBinId() {
-    	throw new osid_UnimplementedException();
+    	return $this->manager->getCombinedBinId();
     }
 
 
@@ -79,7 +79,7 @@ class banner_resource_ResourceLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getBin() {
-    	throw new osid_UnimplementedException();
+    	return new banner_resource_CombinedBin($this->manager);
     }
 
 
@@ -96,7 +96,7 @@ class banner_resource_ResourceLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function canLookupResources() {
-    	throw new osid_UnimplementedException();
+    	return true;
     }
 
 
@@ -108,8 +108,8 @@ class banner_resource_ResourceLookupSession
      *
      *  @compliance mandatory This method is must be implemented. 
      */
-    public function useComparativeResourceView() {
-    	throw new osid_UnimplementedException();
+    public function useComparativeResourceView(){
+    	$this->useComparativeView();
     }
 
 
@@ -122,7 +122,7 @@ class banner_resource_ResourceLookupSession
      *  @compliance mandatory This method is must be implemented. 
      */
     public function usePlenaryResourceView() {
-    	throw new osid_UnimplementedException();
+    	$this->usePlenaryView();
     }
 
 
@@ -134,7 +134,7 @@ class banner_resource_ResourceLookupSession
      *  @compliance mandatory This method is must be implemented. 
      */
     public function useFederatedBinView() {
-    	throw new osid_UnimplementedException();
+    	$this->useFederatedView();
     }
 
 
@@ -145,7 +145,7 @@ class banner_resource_ResourceLookupSession
      *  @compliance mandatory This method is must be implemented. 
      */
     public function useIsolatedBinView() {
-    	throw new osid_UnimplementedException();
+    	$this->useIsolatedView();
     }
 
 
@@ -171,9 +171,374 @@ class banner_resource_ResourceLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getResource(osid_id_Id $resourceId) {
-    	throw new osid_UnimplementedException();
+//     	if ($this->usesIsolatedView() && $this->getBinId()->isEqual($this->manager->getCombinedBinId()))
+//     		throw new osid_NotFoundException('This Bin does not directly contain any resources. Use useFederatedView() to access resources in child bins.');
+   		$type = $this->getResourceType($resourceId);
+   		switch ($type) {
+   			case 'person':
+   				return $this->getPersonResource($resourceId);
+   			case 'place/room':
+   				return $this->getRoomResource($resourceId);
+   			case 'place/building':
+   				return $this->getBuildingResource($resourceId);
+   			case 'place/campus':
+   				return $this->getCampusResource($resourceId);
+   			default:
+   				throw new osid_NotFoundException('No resource found with category '.$type);
+   		}
     }
 
+	/**
+     * Answer the type string corresponding to the resource id
+     * 
+     * @param osid_id_Id $resourceId
+     * @return string
+     * @access public
+     * @since 4/24/09
+     */
+    public function getResourceType (osid_id_Id $resourceId) {
+    	$string = $this->getDatabaseIdString($resourceId, 'resource/');
+    	if (!preg_match('#(person|place/room|place/building|place/campus)/(.+)#', $string, $matches))
+    		throw new osid_NotFoundException('Could not turn "'.$string.'" into a resource type.');
+    	
+    	return $matches[1];
+    }
+    
+    /**
+     * Answer the value string corresponding to the resource id
+     * 
+     * @param osid_id_Id $resourceId
+     * @return string
+     * @access public
+     * @since 4/24/09
+     */
+    public function getResourceValue (osid_id_Id $resourceId) {
+    	$string = $this->getDatabaseIdString($resourceId, 'resource/');
+    	if (!preg_match('#(person|place/room|place/building|place/campus)/(.+)#', $string, $matches))
+    		throw new osid_NotFoundException('Could not turn "'.$string.'" into a resource type.');
+    	
+    	return $matches[2];
+    }
+    
+    private static $getPersonResource_stmt;
+    /**
+     * Answer a person Resource by id
+     * 
+     * @param osid_id_Id $resourceId
+     * @return osid_resource_Resource
+     * @access private
+     * @since 4/24/09
+     */
+    private function getPersonResource (osid_id_Id $resourceId) {
+    	if (!isset(self::$getPersonResource_stmt)) {
+	    	$query =
+"SELECT 
+    SYVINST_PIDM,
+	SYVINST_LAST_NAME,
+	SYVINST_FIRST_NAME
+FROM 
+	syvinst
+WHERE
+	SYVINST_PIDM = :pidm
+";
+			self::$getPersonResource_stmt = $this->manager->getDB()->prepare($query);
+		}
+		
+		$parameters = array(
+				':pidm' => $this->getDatabaseIdString($resourceId, 'resource/person/')
+			);
+		self::$getPersonResource_stmt->execute($parameters);
+		$row = self::$getPersonResource_stmt->fetch(PDO::FETCH_ASSOC);
+		self::$getPersonResource_stmt->closeCursor();
+		
+		if (!$row['SYVINST_PIDM'])
+			throw new osid_NotFoundException("Could not find a resource  matching the person code ".$this->getDatabaseIdString($resourceId, 'resource/person/').".");
+		
+		return new banner_resource_PersonResource(
+					$this->getOsidIdFromString($row['SYVINST_PIDM'], 'resource/person/'),
+					$row['SYVINST_LAST_NAME'],
+					$row['SYVINST_FIRST_NAME']
+			);
+    }
+    
+    private static $getPersonResources_stmt;
+    /**
+     * Answer all of the person resources
+     * 
+     * @return osid_resource_ResourceList
+     * @access private
+     * @since 4/24/09
+     */
+    private function getPersonResources () {
+    	if (!isset(self::$getPersonResources_stmt)) {
+	    	$query =
+"SELECT 
+    SYVINST_PIDM,
+	SYVINST_LAST_NAME,
+	SYVINST_FIRST_NAME
+FROM 
+	syvinst
+";
+			self::$getPersonResources_stmt = $this->manager->getDB()->prepare($query);
+		}
+		
+		self::$getPersonResources_stmt->execute();
+				
+		$resources = array();
+		while ($row = self::$getPersonResources_stmt->fetch(PDO::FETCH_ASSOC)) {
+			$resources[] = new banner_resource_PersonResource(
+					$this->getOsidIdFromString($row['SYVINST_PIDM'], 'resource/person/'),
+					$row['SYVINST_LAST_NAME'],
+					$row['SYVINST_FIRST_NAME']
+				);
+		}
+		self::$getPersonResources_stmt->closeCursor();
+		return new phpkit_resource_ArrayResourceList($resources);
+    }
+    
+    private static $getBuildingResource_stmt;
+    /**
+     * Answer a building Resource by id
+     * 
+     * @param osid_id_Id $resourceId
+     * @return osid_resource_Resource
+     * @access private
+     * @since 4/24/09
+     */
+    private function getBuildingResource (osid_id_Id $resourceId) {
+    	if (!isset(self::$getBuildingResource_stmt)) {
+	    	$query =
+"SELECT 
+    STVBLDG_CODE,
+	STVBLDG_DESC
+FROM 
+	stvbldg
+WHERE
+	STVBLDG_CODE = :code
+";
+			self::$getBuildingResource_stmt = $this->manager->getDB()->prepare($query);
+		}
+		
+		$parameters = array(
+				':code' => $this->getDatabaseIdString($resourceId, 'resource/place/building/')
+			);
+		self::$getBuildingResource_stmt->execute($parameters);
+		$row = self::$getBuildingResource_stmt->fetch(PDO::FETCH_ASSOC);
+		self::$getBuildingResource_stmt->closeCursor();
+		
+		if (!$row['STVBLDG_CODE'])
+			throw new osid_NotFoundException("Could not find a resource  matching the building code ".$this->getDatabaseIdString($resourceId, 'resource/place/building/').".");
+		
+		return new banner_resource_PlaceResource(
+					$this->getOsidIdFromString($row['STVBLDG_CODE'], 'resource/place/building/'),
+					$row['STVBLDG_DESC'],
+					'',
+					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/building")
+			);
+    }
+    
+    private static $getBuildingResources_stmt;
+    /**
+     * Answer all of the building resources
+     * 
+     * @return osid_resource_ResourceList
+     * @access private
+     * @since 4/24/09
+     */
+    private function getBuildingResources () {
+    	if (!isset(self::$getBuildingResources_stmt)) {
+	    	$query =
+"SELECT 
+    STVBLDG_CODE,
+	STVBLDG_DESC
+FROM 
+	stvbldg
+";
+			self::$getBuildingResources_stmt = $this->manager->getDB()->prepare($query);
+		}
+		
+		self::$getBuildingResources_stmt->execute();
+				
+		$resources = array();
+		while ($row = self::$getBuildingResources_stmt->fetch(PDO::FETCH_ASSOC)) {
+			$resources[] = new banner_resource_PlaceResource(
+					$this->getOsidIdFromString($row['STVBLDG_CODE'], 'resource/place/building/'),
+					$row['STVBLDG_DESC'],
+					'',
+					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/building")
+				);
+		}
+		self::$getBuildingResources_stmt->closeCursor();
+		return new phpkit_resource_ArrayResourceList($resources);
+    }
+    
+    private static $getRoomResource_stmt;
+    /**
+     * Answer a room Resource by id
+     * 
+     * @param osid_id_Id $resourceId
+     * @return osid_resource_Resource
+     * @access private
+     * @since 4/24/09
+     */
+    private function getRoomResource (osid_id_Id $resourceId) {
+    	if (!isset(self::$getRoomResource_stmt)) {
+	    	$query =
+"SELECT 
+	SSRMEET_ROOM_CODE,
+    STVBLDG_CODE,
+	STVBLDG_DESC
+FROM 
+	ssrmeet
+	LEFT JOIN stvbldg ON SSRMEET_BLDG_CODE = STVBLDG_CODE
+WHERE
+	SSRMEET_BLDG_CODE = :bldg_code
+	AND SSRMEET_ROOM_CODE = :room_code
+GROUP BY
+	STVBLDG_CODE, SSRMEET_ROOM_CODE
+";
+			self::$getRoomResource_stmt = $this->manager->getDB()->prepare($query);
+		}
+		
+		$roomString = $this->getDatabaseIdString($resourceId, 'resource/place/room/');
+		if (!preg_match('#^([a-z0-9_-]+)/(.+)$#i', $roomString, $matches))
+			throw new osid_NotFoundException("Room string '$roomString' doesn't match.");
+		
+		$parameters = array(
+				':bldg_code' => $matches[1],
+				':room_code' => $matches[2]
+			);
+		self::$getRoomResource_stmt->execute($parameters);
+		$row = self::$getRoomResource_stmt->fetch(PDO::FETCH_ASSOC);
+		self::$getRoomResource_stmt->closeCursor();
+		
+		if (!$row['STVBLDG_CODE'])
+			throw new osid_NotFoundException("Could not find a resource  matching the room code ".$this->getDatabaseIdString($resourceId, 'resource/place/room/').".");
+		
+		return new banner_resource_PlaceResource(
+					$this->getOsidIdFromString($row['STVBLDG_CODE'].'/'.$row['SSRMEET_ROOM_CODE'], 'resource/place/room/'),
+					$row['STVBLDG_DESC'].' '.$row['SSRMEET_ROOM_CODE'],
+					'',
+					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/room")
+			);
+    }
+    
+    private static $getRoomResources_stmt;
+    /**
+     * Answer all of the room resources
+     * 
+     * @return osid_resource_ResourceList
+     * @access private
+     * @since 4/24/09
+     */
+    private function getRoomResources () {
+    	if (!isset(self::$getRoomResources_stmt)) {
+	    	$query =
+"SELECT 
+	SSRMEET_ROOM_CODE,
+    STVBLDG_CODE,
+	STVBLDG_DESC
+FROM 
+	ssrmeet
+	LEFT JOIN stvbldg ON SSRMEET_BLDG_CODE = STVBLDG_CODE
+WHERE
+	SSRMEET_BLDG_CODE IS NOT NULL
+GROUP BY
+	STVBLDG_CODE, SSRMEET_ROOM_CODE
+";
+			self::$getRoomResources_stmt = $this->manager->getDB()->prepare($query);
+		}
+		
+		self::$getRoomResources_stmt->execute();
+				
+		$resources = array();
+		while ($row = self::$getRoomResources_stmt->fetch(PDO::FETCH_ASSOC)) {
+			$resources[] = new banner_resource_PlaceResource(
+					$this->getOsidIdFromString($row['STVBLDG_CODE'].'/'.$row['SSRMEET_ROOM_CODE'], 'resource/place/room/'),
+					$row['STVBLDG_DESC'].' '.$row['SSRMEET_ROOM_CODE'],
+					'',
+					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/room")
+				);
+		}
+		self::$getRoomResources_stmt->closeCursor();
+		return new phpkit_resource_ArrayResourceList($resources);
+    }
+    
+    private static $getCampusResource_stmt;
+    /**
+     * Answer a campus Resource by id
+     * 
+     * @param osid_id_Id $resourceId
+     * @return osid_resource_Resource
+     * @access private
+     * @since 4/24/09
+     */
+    private function getCampusResource (osid_id_Id $resourceId) {
+    	if (!isset(self::$getCampusResource_stmt)) {
+	    	$query =
+"SELECT 
+    STVCAMP_CODE,
+	STVCAMP_DESC
+FROM 
+	stvcamp
+WHERE
+	STVCAMP_CODE = :code
+";
+			self::$getCampusResource_stmt = $this->manager->getDB()->prepare($query);
+		}
+		
+		$parameters = array(
+				':code' => $this->getDatabaseIdString($resourceId, 'resource/place/campus/')
+			);
+		self::$getCampusResource_stmt->execute($parameters);
+		$row = self::$getCampusResource_stmt->fetch(PDO::FETCH_ASSOC);
+		self::$getCampusResource_stmt->closeCursor();
+		
+		if (!$row['STVCAMP_CODE'])
+			throw new osid_NotFoundException("Could not find a resource  matching the campus code ".$this->getDatabaseIdString($resourceId, 'resource/place/campus/').".");
+		
+		return new banner_resource_PlaceResource(
+					$this->getOsidIdFromString($row['STVCAMP_CODE'], 'resource/place/campus/'),
+					$row['STVCAMP_DESC'],
+					'',
+					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/campus")
+			);
+    }
+    
+    private static $getCampusResources_stmt;
+    /**
+     * Answer all of the campus resources
+     * 
+     * @return osid_resource_ResourceList
+     * @access private
+     * @since 4/24/09
+     */
+    private function getCampusResources () {
+    	if (!isset(self::$getCampusResources_stmt)) {
+	    	$query =
+"SELECT 
+    STVCAMP_CODE,
+	STVCAMP_DESC
+FROM 
+	stvcamp
+";
+			self::$getCampusResources_stmt = $this->manager->getDB()->prepare($query);
+		}
+		
+		self::$getCampusResources_stmt->execute();
+				
+		$resources = array();
+		while ($row = self::$getCampusResources_stmt->fetch(PDO::FETCH_ASSOC)) {
+			$resources[] = new banner_resource_PlaceResource(
+					$this->getOsidIdFromString($row['STVCAMP_CODE'], 'resource/place/campus/'),
+					$row['STVCAMP_DESC'],
+					'',
+					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/campus")
+				);
+		}
+		self::$getCampusResources_stmt->closeCursor();
+		return new phpkit_resource_ArrayResourceList($resources);
+    }
 
     /**
      *  Gets a <code> ResourceList </code> corresponding to the given <code> 
@@ -198,7 +563,21 @@ class banner_resource_ResourceLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getResourcesByIds(osid_id_IdList $resourceIdList) {
-    	throw new osid_UnimplementedException();
+    	$resources = array();
+    	
+    	while ($resourceIdList->hasNext()) {
+    		try {
+    			$resources[] = $this->getResource($resourceIdList->getNextId());
+    		} catch (osid_NotFoundException $e) {
+    			if ($this->usesPlenaryView())
+    				throw $e;
+    		} catch (osid_PermissionDeniedException $e) {
+    			if ($this->usesPlenaryView())
+    				throw $e;
+    		}
+    	}
+    	
+    	return new phpkit_resource_ArrayResourceList($resources);
     }
 
 
@@ -222,7 +601,25 @@ class banner_resource_ResourceLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getResourcesByGenusType(osid_type_Type $resourceGenusType) {
-    	throw new osid_UnimplementedException();
+    	if (strtolower($resourceGenusType->getIdentifierNamespace()) != 'urn'
+    		|| $resourceGenusType->getAuthority() != 'middlebury.edu')
+    	{
+    		return new phpkit_EmptyList('osid_resource_ResourceList');
+    	}
+   		switch ($resourceGenusType->getIdentifier()) {
+   			case 'genera:resource/person':
+   				return $this->getPersonResources();
+   			case 'genera:resource/place/campus':
+   				return $this->getCampusResources();
+   			case 'genera:resource/place/building':
+   				return $this->getBuildingResources();
+   			case 'genera:resource/place/room':
+   				return $this->getRoomResources();
+//    			case 'genera:resource/place':
+//    				return $this->getPlaceResources();
+   			default:
+   				return new phpkit_EmptyList('osid_resource_ResourceList');
+   		}
     }
 
 
@@ -246,7 +643,21 @@ class banner_resource_ResourceLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getResourcesByParentGenusType(osid_type_Type $resourceGenusType) {
-    	throw new osid_UnimplementedException();
+    	if (strtolower($resourceGenusType->getIdentifierNamespace()) != 'urn'
+    		|| $resourceGenusType->getAuthority() != 'middlebury.edu')
+    	{
+    		return new phpkit_EmptyList('osid_resource_ResourceList');
+    	}
+   		
+   		if ($resourceGenusType->getIdentifier() == 'genera:resource/place') {
+   			$resourceList = new phpkit_CombinedList('osid_resource_ResourceList');
+			$resourceList->addList($this->getCampusResources());
+			$resourceList->addList($this->getBuildingResources());
+			$resourceList->addList($this->getRoomResources());
+			return $resourceList;
+   		} else {
+   			return $this->getResourcesByGenusType($resourceGenusType);
+   		}
     }
 
 
@@ -270,7 +681,7 @@ class banner_resource_ResourceLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getResourcesByRecordType(osid_type_Type $resourceRecordType) {
-    	throw new osid_UnimplementedException();
+    	return new phpkit_EmptyList;
     }
 
 
@@ -289,7 +700,12 @@ class banner_resource_ResourceLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getResources() {
-    	throw new osid_UnimplementedException();
+    	$resourceList = new phpkit_CombinedList('osid_resource_ResourceList');
+    	$resourceList->addList($this->getPersonResources());
+    	$resourceList->addList($this->getCampusResources());
+    	$resourceList->addList($this->getBuildingResources());
+    	$resourceList->addList($this->getRoomResources());
+    	return $resourceList;
     }
 
 }

@@ -37,6 +37,22 @@ class banner_resource_test_ResourceLookupSessionTest
 		$this->courseManager = $this->sharedFixture['CourseManager'];
         $this->manager = $this->courseManager->getResourceManager();
         $this->session = $this->manager->getResourceLookupSession();
+        
+        $this->personType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/person");
+        $this->roomType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/room");
+        $this->buildingType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/building");
+        $this->campusType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/campus");
+        $this->placeType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place");
+        
+        $this->person1Id = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/1000002');
+        $this->person2Id = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/1000007');
+        $this->campusId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/place/campus/M');
+        $this->buildingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/place/building/MBH');
+        $this->roomId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/place/room/MBH/538');
+        
+        $this->unknownType = new phpkit_type_URNInetType("urn:inet:osid.org:unknown_type");
+        $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
+
     }
 
     /**
@@ -50,146 +66,207 @@ class banner_resource_test_ResourceLookupSessionTest
     }
 
     /**
-     * @todo Implement testGetBinId().
+     * 
      */
     public function testGetBinId()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+    	$this->assertType('osid_id_Id', $this->session->getBinId());
+    	$this->assertTrue($this->manager->getCombinedBinId()->isEqual($this->session->getBinId()));
     }
 
     /**
-     * @todo Implement testGetBin().
+     * 
      */
     public function testGetBin()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_resource_Bin', $this->session->getBin());
+    	$this->assertTrue($this->manager->getCombinedBinId()->isEqual($this->session->getBin()->getId()));
     }
 
     /**
-     * @todo Implement testCanLookupResources().
+     * 
      */
     public function testCanLookupResources()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertTrue($this->session->canLookupResources());
     }
 
     /**
-     * @todo Implement testUseComparativeResourceView().
+     * 
      */
     public function testUseComparativeResourceView()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->session->useComparativeResourceView();
+        $resources = $this->session->getResourcesByIds(new phpkit_id_ArrayIdList(array(
+        				$this->person1Id, $this->campusId, $this->buildingId, $this->roomId, $this->unknownId)));
+        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertEquals(4, $resources->available());
     }
 
     /**
-     * @todo Implement testUsePlenaryResourceView().
+     * Should thrown osid_NotFoundExceptions for unknown results.
+     * @expectedException osid_NotFoundException
      */
     public function testUsePlenaryResourceView()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->session->usePlenaryResourceView();
+        $resources = $this->session->getResourcesByIds(new phpkit_id_ArrayIdList(array(
+        				$this->person1Id, $this->campusId, $this->buildingId, $this->roomId, $this->unknownId)));
     }
 
     /**
-     * @todo Implement testUseFederatedBinView().
+     * 
      */
     public function testUseFederatedBinView()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->session->useFederatedBinView();
     }
 
     /**
-     * @todo Implement testUseIsolatedBinView().
+     * 
      */
     public function testUseIsolatedBinView()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->session->useIsolatedBinView();
     }
 
     /**
-     * @todo Implement testGetResource().
+     * 
      */
     public function testGetResource()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_resource_Resource', $this->session->getResource($this->person1Id));
+        $this->assertType('osid_resource_Resource', $this->session->getResource($this->person2Id));
     }
 
     /**
-     * @todo Implement testGetResourcesByIds().
+     * 
      */
     public function testGetResourcesByIds()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $resources = $this->session->getResourcesByIds(new phpkit_id_ArrayIdList(array(
+        				$this->person1Id, $this->person2Id)));
+        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertTrue($resources->hasNext());
+        $this->assertEquals(2, $resources->available());
+        $this->assertType('osid_resource_Resource', $resources->getNextResource());
+        $this->assertType('osid_resource_Resource', $resources->getNextResource());
+        $this->assertFalse($resources->hasNext());
+        $this->assertEquals(0, $resources->available());
     }
 
     /**
-     * @todo Implement testGetResourcesByGenusType().
+     * 
      */
-    public function testGetResourcesByGenusType()
+    public function testGetResourcesByUnknownGenusType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $resources = $this->session->getResourcesByGenusType($this->unknownType);
+        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertEquals(0, $resources->available());
     }
-
+    
     /**
-     * @todo Implement testGetResourcesByParentGenusType().
+     * 
      */
-    public function testGetResourcesByParentGenusType()
+    public function testGetResourcesByPersonGenusType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $resources = $this->session->getResourcesByGenusType($this->personType);
+        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertTrue($resources->hasNext());
+        $this->assertEquals(251, $resources->available());
+        $this->assertType('osid_resource_Resource', $resources->getNextResource());
+        $resourceGenusType = $resources->getNextResource()->getGenusType();
+        $this->assertEquals('genera:resource/person', $resourceGenusType->getIdentifier());
+        $this->assertTrue($resourceGenusType->isEqual($this->personType));
+    }
+    
+    /**
+     * 
+     */
+    public function testGetResourcesByPlaceGenusType()
+    {
+        $resources = $this->session->getResourcesByGenusType($this->placeType);
+        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertEquals(0, $resources->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testGetResourcesByParentPlaceGenusType()
+    {
+        $resources = $this->session->getResourcesByParentGenusType($this->placeType);
+        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertEquals(12, $resources->available());
+		$this->assertTrue($resources->hasNext());
+
+    }
+    
+    /**
+     * 
+     */
+    public function testGetResourcesByCampusGenusType()
+    {
+        $resources = $this->session->getResourcesByGenusType($this->campusType);
+        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertEquals(2, $resources->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testGetResourcesByBuildingGenusType()
+    {
+        $resources = $this->session->getResourcesByGenusType($this->buildingType);
+        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertEquals(1, $resources->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testGetResourcesByRoomGenusType()
+    {
+        $resources = $this->session->getResourcesByGenusType($this->roomType);
+        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertEquals(9, $resources->available());
     }
 
     /**
-     * @todo Implement testGetResourcesByRecordType().
+     * 
+     */
+    public function testGetResourcesByParentPersonGenusType()
+    {
+        $resources = $this->session->getResourcesByParentGenusType($this->personType);
+        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertTrue($resources->hasNext());
+        $this->assertEquals(251, $resources->available());
+        $this->assertType('osid_resource_Resource', $resources->getNextResource());
+        $resourceGenusType = $resources->getNextResource()->getGenusType();
+        $this->assertEquals('genera:resource/person', $resourceGenusType->getIdentifier());
+        $this->assertTrue($resourceGenusType->isEqual($this->personType));
+    }
+
+    /**
+     * 
      */
     public function testGetResourcesByRecordType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $resources = $this->session->getResourcesByRecordType($this->unknownType);
+        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertFalse($resources->hasNext());
     }
 
     /**
-     * @todo Implement testGetResources().
+     * 
      */
     public function testGetResources()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $resources = $this->session->getResources();
+        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertTrue($resources->hasNext());
+        $this->assertEquals(263, $resources->available());
+        $this->assertType('osid_resource_Resource', $resources->getNextResource());
     }
 }
 ?>
