@@ -11,10 +11,9 @@ if (!defined('BASE_PATH')) {
 	define('BASE_PATH', realpath(dirname(__FILE__) . '/../'));
 	define('APPLICATION_PATH', BASE_PATH.'/application');
 	set_include_path(
-		BASE_PATH . '/library/incubator'
-		. PATH_SEPARATOR .BASE_PATH . '/library/osid-phpkit'
-		. PATH_SEPARATOR .BASE_PATH . '/library'
-		. PATH_SEPARATOR .APPLICATION_PATH . '/library'
+		APPLICATION_PATH . '/library'
+		. PATH_SEPARATOR . BASE_PATH . '/library/osid-phpkit'
+		. PATH_SEPARATOR . BASE_PATH . '/library/ZendFramework/library'
 		. PATH_SEPARATOR . get_include_path()
 	);
 }
