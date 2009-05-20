@@ -1166,8 +1166,7 @@ class banner_course_test_CourseManagerTest
      */
     public function testSupportsCourseOfferingSearch()
     {
-        $this->assertFalse($this->manager->supportsCourseOfferingSearch());
-        $this->markTestIncomplete('supportsCourseOfferingSearch should be true.');
+        $this->assertTrue($this->manager->supportsCourseOfferingSearch());
     }
 
     /**

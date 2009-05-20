@@ -450,7 +450,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseOfferingSearchSession() {
-    	throw new osid_UnimplementedException();
+    	return new banner_course_CombinedCourseOfferingSearchSession($this);
 	}
 
 
@@ -477,7 +477,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseOfferingSearchSessionForCatalog(osid_id_Id $courseCatalogId) {
-    	throw new osid_UnimplementedException();
+    	return new banner_course_CourseOfferingSearchSession($this, $courseCatalogId);
 	}
 
 
@@ -1448,7 +1448,7 @@ class banner_course_CourseManager
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsCourseOfferingSearch() {
-    	return false;
+    	return true;
     }
 
 
