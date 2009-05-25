@@ -39,7 +39,7 @@ class banner_course_CourseOfferingSearch
     		throw new osid_NullArgumentException('$start and $end must be integers.');
     	if (!is_int($start) || !is_int($end))
     		throw new osid_NullArgumentException('$start and $end must be integers.');
-		if ($start <= $end)
+		if ($start >= $end)
     		throw new osid_NullArgumentException('$start must be less than $end.');
     	
     	
