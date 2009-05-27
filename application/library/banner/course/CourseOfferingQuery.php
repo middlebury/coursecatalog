@@ -241,11 +241,12 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchGenusType(osid_type_Type $genusType, $match) {
-    	$typeCode = $this->getGenusTypeCode($genusType);
-    	if (is_null($typeCode))
+    	try {
+	    	$schdCode = $this->session->getScheduleCodeFromGenusType($genusType);
+	    	$this->addClause('genus_type', 'SSBSECT_SCHD_CODE = ?', array($schdCode), $match);
+    	} catch (osid_NotFoundException $e) {
     		$this->addClause('genus_type', 'FALSE', array(), $match);
-    	else
-    		$this->addClause('genus_type', 'SSBSECT_SCHD_CODE = ?', array($typeCode), $match);
+    	}
     }
     
     /**
