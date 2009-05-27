@@ -577,12 +577,73 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     /**
      * 
      */
-    public function testMatchCredits()
+    public function testMatchCredits11()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->matchCredits(1, 1, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals(1.0, $params[0]);
+        $this->assertEquals(1.0, $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals('((SSBSECT_CREDIT_HRS >= ? AND SSBSECT_CREDIT_HRS <= ?))', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(27, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchCredits01()
+    {
+        $this->object->matchCredits(0, 1, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals(0.0, $params[0]);
+        $this->assertEquals(1.0, $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals('((SSBSECT_CREDIT_HRS >= ? AND SSBSECT_CREDIT_HRS <= ?))', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(107, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchCredits22()
+    {
+        $this->object->matchCredits(2.0, 2.0, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals(2.0, $params[0]);
+        $this->assertEquals(2.0, $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals('((SSBSECT_CREDIT_HRS >= ? AND SSBSECT_CREDIT_HRS <= ?))', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(0, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchCredits00()
+    {
+        $this->object->matchCredits(0.0, 0.0, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals(0.0, $params[0]);
+        $this->assertEquals(0.0, $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals('((SSBSECT_CREDIT_HRS >= ? AND SSBSECT_CREDIT_HRS <= ?))', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(80, $courseOfferings->available());
     }
 
     /**
@@ -590,10 +651,31 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
      */
     public function testMatchAnyCredits()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->matchAnyCredits(true);
+
+        $params = $this->object->getParameters();
+        $this->assertFalse(isset($params[0]));
+        
+        $this->assertEquals('(SSBSECT_CREDIT_HRS > 0)', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(27, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchAnyCreditsInverted()
+    {
+        $this->object->matchAnyCredits(false);
+
+        $params = $this->object->getParameters();
+        $this->assertFalse(isset($params[0]));
+        
+        $this->assertEquals('(NOT SSBSECT_CREDIT_HRS > 0)', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(80, $courseOfferings->available());
     }
 
     /**

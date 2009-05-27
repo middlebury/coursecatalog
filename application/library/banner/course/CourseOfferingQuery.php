@@ -488,7 +488,18 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchCredits($min, $max, $match) {
-    	throw new osid_UnimplementedException();
+    	if (!is_numeric($min))
+    		throw new osid_InvalidArgumentException("\$min must be a float. '$min' given.");
+    	if (!is_numeric($max))
+    		throw new osid_InvalidArgumentException("\$max must be a float. '$max' given.");
+    	$min = floatval($min);
+    	$max = floatval($max);
+    	if ($min < 0)
+    		throw new osid_InvalidArgumentException("\$min must be a float greater than or equal to zero.");
+    	if ($min > $max)
+    		throw new osid_InvalidArgumentException("\$min must be less than or equal to \$max.");
+    		
+    	$this->addClause('credits', '(SSBSECT_CREDIT_HRS >= ? AND SSBSECT_CREDIT_HRS <= ?)', array($min, $max), $match);
     }
 
 
@@ -502,7 +513,7 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchAnyCredits($match) {
-    	throw new osid_UnimplementedException();
+    	$this->addClause('credits', 'SSBSECT_CREDIT_HRS > 0', array(), $match);
     }
 
 
