@@ -39,6 +39,7 @@ class banner_course_CourseOfferingQuery
 		$this->parameterTicker = 1;
 		$this->clauseSets = array();
 		$this->parameters = array();
+		$this->additionalTableJoins = array();
 	}
 	
 	/**
@@ -75,6 +76,19 @@ class banner_course_CourseOfferingQuery
 	}
 	
 	/**
+	 * Add a table join
+	 * 
+	 * @param string $joinClause
+	 * @return void
+	 * @access protected
+	 * @since 5/27/09
+	 */
+	protected function addTableJoin ($joinClause) {
+		if (!in_array($joinClause, $this->additionalTableJoins))
+			$this->additionalTableJoins[] = $joinClause;
+	}
+	
+	/**
 	 * Answer the SQL WHERE clause that reflects our current state
 	 * 
 	 * @return string
@@ -105,6 +119,17 @@ class banner_course_CourseOfferingQuery
 			}
 		}
 		return $params;
+	}
+	
+	/**
+	 * Answer any additional table join clauses to use
+	 * 
+	 * @return string
+	 * @access public
+	 * @since 4/29/09
+	 */
+	public function getAdditionalTableJoins () {
+		return implode('\n\t', $this->additionalTableJoins);
 	}
 	
 /*********************************************************
@@ -700,7 +725,66 @@ class banner_course_CourseOfferingQuery
     	throw new osid_UnimplementedException();
     }
 
+    /**
+     *  Sets the topic <code> Id </code> for this query to match courses 
+     *  offerings that have a related topic. 
+     *
+     *  @param object osid_id_Id $topicId a topic <code> Id </code> 
+     *  @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     *  @throws osid_NullArgumentException <code> topicId </code> is <code> 
+     *          null </code> 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function matchTopicId(osid_id_Id $topicId, $match) {
+    	$type = $this->session->getTopicLookupSession()->getTopicType($topicId);
+		$value = $this->session->getTopicLookupSession()->getTopicValue($topicId);
+		switch ($type) {
+			case 'subject':
+				$this->addClause('subject_topic_id', 'SSBSECT_SUBJ_CODE = ?', array($value), $match);
+				return;
+   			case 'department':
+   				$this->addClause('department_topic_id', 'SCBCRSE_DEPT_CODE = ?', array($value), $match);
+   				return;
+   			case 'division':
+   				$this->addClause('division_topic_id', 'SCBCRSE_DIVS_CODE = ?', array($value), $match);
+   				return;
+   			case 'requirement':
+   				$this->addClause('requirement_topic_id', 'SSRATTR_ATTR_CODE = ?', array($value), $match);
+   				$this->addTableJoin('LEFT JOIN ssrattr ON (SSRATTR_TERM_CODE = SSBSECT_TERM_CODE AND SSRATTR_CRN = SSBSECT_CRN)');
+   				return;
+   			default:
+   				$this->addClause('topic_id', 'FALSE', array(), $match);
+		}
+    }
 
+
+    /**
+     *  Tests if a <code> TopicQuery </code> is available. 
+     *
+     *  @return boolean <code> true </code> if a topic query interface is 
+     *          available, <code> false </code> otherwise 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function supportsTopicQuery() {
+    	return false;
+    }
+
+
+    /**
+     *  Gets the query interface for a topic. Multiple retrievals produce a 
+     *  nested <code> OR </code> topic. 
+     *
+     *  @return object osid_course_TopicQuery the topic query 
+     *  @throws osid_UnimplementedException <code> supportsTopicQuery() </code> 
+     *          is <code> false </code> 
+     *  @compliance optional This method must be implemented if <code> 
+     *              supportsTopicQuery() </code> is <code> true. </code> 
+     */
+    public function getTopicQuery() {
+    	throw new osid_UnimplementedException();
+    }
+    
     /**
      *  Adds a location informational string for this query. 
      *

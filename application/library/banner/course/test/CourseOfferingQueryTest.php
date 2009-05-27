@@ -32,6 +32,15 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
         $this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHEM0104');
         $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200890');
         $this->termId2 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200790');
+        
+        $this->physDeptTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/PHYS');
+        $this->chemDeptTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/CHEM');
+        $this->physSubjTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/PHYS');
+        $this->geolSubjTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/GEOL');
+        $this->chemSubjTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/CHEM');
+        $this->dedReqTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/DED');
+        $this->sciReqTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/SCI');
+        $this->natsciDivTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/division/NSCI');
 		
 		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 		
@@ -55,10 +64,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
      */
     public function testGetWhereClause()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('string', $this->object->getWhereClause());
     }
 
     /**
@@ -66,10 +72,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
      */
     public function testGetParameters()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('array', $this->object->getParameters());
     }
 
     /**
@@ -1114,6 +1117,134 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     public function testGetTermQuery()
     {
         $this->object->getTermQuery();
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchChemDeptTopicId()
+    {
+        $this->object->matchTopicId($this->chemDeptTopicId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('CHEM', $params[0]);
+        $this->assertFalse(isset($params[1]));
+        
+        $this->assertEquals('(SCBCRSE_DEPT_CODE = ?)', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(85, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchNSCIDivTopicId()
+    {
+        $this->object->matchTopicId($this->natsciDivTopicId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('NSCI', $params[0]);
+        $this->assertFalse(isset($params[1]));
+        
+        $this->assertEquals('(SCBCRSE_DIVS_CODE = ?)', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(107, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchDedReqTopicId()
+    {
+        $this->object->matchTopicId($this->dedReqTopicId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('DED', $params[0]);
+        $this->assertFalse(isset($params[1]));
+        
+        $this->assertEquals('(SSRATTR_ATTR_CODE = ?)', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(28, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchGeolSubjTopicId()
+    {
+        $this->object->matchTopicId($this->geolSubjTopicId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('GEOL', $params[0]);
+        $this->assertFalse(isset($params[1]));
+        
+        $this->assertEquals('(SSBSECT_SUBJ_CODE = ?)', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(14, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchChemDeptTopicIdAndLectureType()
+    {
+        $this->object->matchTopicId($this->chemDeptTopicId, true);
+        $this->object->matchGenusType($this->lectureType, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('CHEM', $params[0]);
+        $this->assertEquals('LCT', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals('(SCBCRSE_DEPT_CODE = ?) AND (SSBSECT_SCHD_CODE = ?)', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(13, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchChemDeptAndDedTopicIds()
+    {
+        $this->object->matchTopicId($this->chemDeptTopicId, true);
+        $this->object->matchTopicId($this->dedReqTopicId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('CHEM', $params[0]);
+        $this->assertEquals('DED', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals('(SCBCRSE_DEPT_CODE = ?) AND (SSRATTR_ATTR_CODE = ?)', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(16, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testSupportsTopicQuery()
+    {
+        $this->assertFalse($this->object->supportsTopicQuery());
+    }
+
+    /**
+     * @expectedException osid_UnimplementedException
+     */
+    public function testGetTopicQuery()
+    {
+        $this->object->getTopicQuery();
     }
 
     /**

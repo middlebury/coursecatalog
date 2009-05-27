@@ -37,6 +37,7 @@ class banner_course_CourseOfferingSearchList
 		
 		$this->parameters = array();
 		$this->where = $courseQuery->getWhereClause();
+		$this->additionalTableJoins = $courseQuery->getAdditionalTableJoins();
 		
 		foreach ($courseQuery->getParameters() as $i => $val) {
 			$name = ':co_search_'.$i;
@@ -45,6 +46,17 @@ class banner_course_CourseOfferingSearchList
 		}
 		
 		parent::__construct($db, $session, $catalogId);
+	}
+	
+	/**
+	 * Answer any additional table join clauses to use
+	 * 
+	 * @return string
+	 * @access protected
+	 * @since 4/29/09
+	 */
+	protected function getAdditionalTableJoins () {
+		return $this->additionalTableJoins;
 	}
 	
 	/**
