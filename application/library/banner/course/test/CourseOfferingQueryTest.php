@@ -32,7 +32,8 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
         $this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHEM0104');
         $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200890');
         $this->termId2 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200790');
-
+		
+		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
     }
 
     /**
@@ -224,10 +225,31 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
      */
     public function testMatchRecordType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->matchRecordType($this->instructorsType, true);
+
+        $params = $this->object->getParameters();
+        $this->assertFalse(isset($params[0]));
+        
+        $this->assertEquals('(TRUE)', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(107, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchOtherRecordType()
+    {
+        $this->object->matchRecordType(new phpkit_type_URNInetType("urn:inet:osid.org:record:other"), true);
+
+        $params = $this->object->getParameters();
+        $this->assertFalse(isset($params[0]));
+        
+        $this->assertEquals('(FALSE)', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(0, $courseOfferings->available());
     }
 
     /**
@@ -235,10 +257,8 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
      */
     public function testHasRecordType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertTrue($this->object->hasRecordType($this->instructorsType));
+        $this->assertFalse($this->object->hasRecordType(new phpkit_type_URNInetType("urn:inet:osid.org:record:other")));
     }
 
     /**

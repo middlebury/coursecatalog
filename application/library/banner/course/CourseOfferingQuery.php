@@ -30,7 +30,8 @@ class banner_course_CourseOfferingQuery
 		$this->session = $session;
 		
 		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
-		
+		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+
 		$this->stringMatchTypes = array(
 			$this->wildcardStringMatchType
 		);
@@ -282,7 +283,10 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchRecordType(osid_type_Type $recordType, $match) {
-    	throw new osid_UnimplementedException();
+    	if ($recordType->isEqual($this->instructorsType))
+    		$this->addClause('record_type', 'TRUE', array(), $match);
+    	else
+    		$this->addClause('record_type', 'FALSE', array(), $match);
     }
 
 
@@ -301,7 +305,7 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function hasRecordType(osid_type_Type $recordType) {
-    	throw new osid_UnimplementedException();
+    	return $recordType->isEqual($this->instructorsType);
     }
 
 
@@ -309,6 +313,32 @@ class banner_course_CourseOfferingQuery
 /*********************************************************
  * Methods from osid_course_CourseOfferingQuery
  *********************************************************/
+ 
+ 	/**
+     *  Gets the record query interface corresponding to the given <code> 
+     *  CourseOffering </code> record <code> Type. </code> Multiple record 
+     *  retrievals produce a nested <code> OR </code> term. 
+     *
+     *  @param object osid_type_Type $courseOfferingRecordType a course 
+     *          offering record type 
+     *  @return object osid_course_CourseOfferingQueryRecord the course 
+     *          offering query record 
+     *  @throws osid_NullArgumentException <code> courseOfferingRecordType 
+     *          </code> is <code> null </code> 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure occurred 
+     *  @throws osid_UnsupportedException <code> 
+     *          hasRecordType(courseOfferingRecordType) </code> is <code> 
+     *          false </code> 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function getCourseOfferingQueryRecord(osid_type_Type $courseOfferingRecordType) {
+    	if (!$this->hasRecordType($courseOfferingRecordType))
+    		throw new osid_UnsupportedException('The record type passed is not supported.');
+    	
+    	
+    	throw new osid_UnimplementedException();
+    }
 
 
     /**
@@ -975,29 +1005,6 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchAnyURL($match) {
-    	throw new osid_UnimplementedException();
-    }
-
-
-    /**
-     *  Gets the record query interface corresponding to the given <code> 
-     *  CourseOffering </code> record <code> Type. </code> Multiple record 
-     *  retrievals produce a nested <code> OR </code> term. 
-     *
-     *  @param object osid_type_Type $courseOfferingRecordType a course 
-     *          offering record type 
-     *  @return object osid_course_CourseOfferingQueryRecord the course 
-     *          offering query record 
-     *  @throws osid_NullArgumentException <code> courseOfferingRecordType 
-     *          </code> is <code> null </code> 
-     *  @throws osid_OperationFailedException unable to complete request 
-     *  @throws osid_PermissionDeniedException authorization failure occurred 
-     *  @throws osid_UnsupportedException <code> 
-     *          hasRecordType(courseOfferingRecordType) </code> is <code> 
-     *          false </code> 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function getCourseOfferingQueryRecord(osid_type_Type $courseOfferingRecordType) {
     	throw new osid_UnimplementedException();
     }
 

@@ -387,7 +387,10 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingsByRecordType(osid_type_Type $courseOfferingRecordType) {
-    	return new phpkit_EmptyList;
+    	if ($courseOfferingRecordType->isEqual(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors')))
+    		return $this->getCourseOfferings();
+    	else
+	    	return new phpkit_EmptyList;
     }
 
 
