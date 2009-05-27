@@ -138,11 +138,12 @@ class banner_course_CourseOfferingSearchSessionTest
     public function testGetCourseOfferingsByQuery()
     {
     	$query = $this->session->getCourseOfferingQuery();
-    	$query->matchDisplayName('Relativity*', $this->wildcardStringMatchType, true);
+    	$query->matchDisplayName('PHYS0201*', $this->wildcardStringMatchType, true);
     	
         $offerings = $this->session->getCourseOfferingsByQuery($query);
+//         print $offerings->debug();
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertEquals(1111, $offerings->available());
+       	$this->assertEquals(8, $offerings->available());
        	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
     }
 
@@ -168,7 +169,9 @@ class banner_course_CourseOfferingSearchSessionTest
     public function testGetCourseOfferingsBySearch()
     {
         $query = $this->session->getCourseOfferingQuery();
-    	$query->matchDisplayName('Relativity*', $this->wildcardStringMatchType, true);
+//     	$query->matchDisplayName('PH*', $this->wildcardStringMatchType, true);
+    	
+    	$query->matchDisplayName('*201*', $this->wildcardStringMatchType, true);
     	
     	$search = $this->session->getCourseOfferingSearch();
     	$search->limitResultSet(1, 3);

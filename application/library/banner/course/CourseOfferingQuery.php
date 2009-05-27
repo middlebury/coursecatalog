@@ -17,7 +17,92 @@
 class banner_course_CourseOfferingQuery
     implements osid_course_CourseOfferingQuery
 {
-
+	
+	/**
+	 * Constructor
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 5/20/09
+	 */
+	public function __construct () {
+		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
+		
+		$this->stringMatchTypes = array(
+			$this->wildcardStringMatchType
+		);
+		
+		$this->parameterTicker = 1;
+		$this->clauseSets = array();
+		$this->parameters = array();
+	}
+	
+	/**
+	 * Add a clause. All clauses in the same set will be OR'ed, sets will be AND'ed.
+	 * 
+	 * @param string $set 
+	 * @param string $where A where clause with parameters in '?' form.
+	 * @param array $parameters An indexed array of parameters
+     * @param boolean $match <code> true </code> for a positive match, <code> 
+     *          false </code> for a negative match 
+	 * @return void
+	 * @access protected
+	 * @since 5/20/09
+	 */
+	protected function addClause ($set, $where, array $parameters, $match) {
+		$numParams = preg_match_all('/\?/', $where, $matches);
+		if ($numParams === false)
+			throw new osid_OperationFailedException('An error occured in matching.');
+		if ($numParams != count($parameters))
+			throw new osid_InvalidArgumentException('The number of \'?\'s must match the number of parameters.');
+		if (!is_bool($match))
+    		throw new osid_InvalidArgumentException("\$match '$match' must be a boolean.");
+		
+		if (!isset($this->clauseSets[$set]))
+			$this->clauseSets[$set] = array();
+		if (!isset($this->parameters[$set]))
+			$this->parameters[$set] = array();
+		
+		if ($match)
+			$this->clauseSets[$set][] = $where;
+		else
+			$this->clauseSets[$set][] = 'NOT '.$where;
+		$this->parameters[$set][] = $parameters;
+	}
+	
+	/**
+	 * Answer the SQL WHERE clause that reflects our current state
+	 * 
+	 * @return string
+	 * @access public
+	 * @since 5/20/09
+	 */
+	public function getWhereClause () {
+		$sets = array();
+		foreach ($this->clauseSets as $set) {
+			$sets[] = '('.implode(' OR ', $set).')';
+		}
+		
+		return implode(' AND ', $sets);
+	}
+	
+	/**
+	 * Answer the array of parameters that matches our current state
+	 * 
+	 * @return array
+	 * @access public
+	 * @since 5/20/09
+	 */
+	public function getParameters () {
+		$params = array();
+		foreach ($this->parameters as $set) {
+			foreach ($set as $clauseParams) {
+				$params = array_merge($params, $clauseParams);
+			}
+		}
+		return $params;
+	}
+	
 /*********************************************************
  * Methods from osid_OsidQuery
  *********************************************************/
@@ -32,7 +117,7 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function getStringMatchTypes() {
-    	throw new osid_UnimplementedException();
+    	return new phpkit_ArrayTypeList($this->stringMatchTypes);
     }
 
 
@@ -47,7 +132,11 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsStringMatchType(osid_type_Type $searchType) {
-    	throw new osid_UnimplementedException();
+    	foreach ($this->stringMatchTypes as $type) {
+    		if ($searchType->isEqual($type))
+    			return true;
+    	}
+    	return false;
     }
 
 
@@ -71,8 +160,7 @@ class banner_course_CourseOfferingQuery
      *          false </code> 
      *  @compliance mandatory This method must be implemented. 
      */
-    public function matchKeyword($keyword, osid_type_Type $stringMatchType, 
-                                 $match) {
+    public function matchKeyword($keyword, osid_type_Type $stringMatchType, $match) {
     	throw new osid_UnimplementedException();
     }
 
@@ -96,9 +184,8 @@ class banner_course_CourseOfferingQuery
      *          false </code> 
      *  @compliance mandatory This method must be implemented. 
      */
-    public function matchDisplayName($displayName, 
-                                     osid_type_Type $stringMatchType, $match) {
-    	throw new osid_UnimplementedException();
+    public function matchDisplayName($displayName, osid_type_Type $stringMatchType, $match) {
+    	$this->matchNumber($displayName, $stringMatchType, $match);
     }
 
 
@@ -119,8 +206,7 @@ class banner_course_CourseOfferingQuery
      *          false </code> 
      *  @compliance mandatory This method must be implemented. 
      */
-    public function matchDescription($description, 
-                                     osid_type_Type $stringMatchType, $match) {
+    public function matchDescription($description, osid_type_Type $stringMatchType, $match) {
     	throw new osid_UnimplementedException();
     }
 
@@ -232,8 +318,15 @@ class banner_course_CourseOfferingQuery
      *          false </code> 
      *  @compliance mandatory This method must be implemented. 
      */
-    public function matchTitle($title, osid_type_Type $stringMatchType, $match) {
-    	throw new osid_UnimplementedException();
+    public function matchTitle($title, osid_type_Type $stringMatchType, $match) {    	
+    	if (!is_string($displayName))
+    		throw new osid_InvalidArgumentException("\$displayName '$displayName' must be a string.");
+    	
+        if ($stringMatchType->isEqual($this->wildcardStringMatchType)) {
+        	$param = str_replace('*', '%', $title);
+        	$this->addClause('title', '(SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?))', array($param, $param), $match);
+        }
+    	throw new osid_UnsupportedException("The stringMatchType passed is not supported.");
     }
 
 
@@ -247,7 +340,7 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchAnyTitle($match) {
-    	throw new osid_UnimplementedException();
+    	$this->addClause('title', '(SSBSECT_CRSE_TITLE NOT NULL OR SCBCRSE_TITLE NOT NULL)', array(), $match);
     }
 
 
@@ -269,7 +362,99 @@ class banner_course_CourseOfferingQuery
      */
     public function matchNumber($number, osid_type_Type $stringMatchType, 
                                 $match) {
-    	throw new osid_UnimplementedException();
+    	if (!is_string($number))
+    		throw new osid_InvalidArgumentException("\$number '$number' must be a string.");
+    	
+        if ($stringMatchType->isEqual($this->wildcardStringMatchType)) {
+        	if (!preg_match('/
+       
+       # 1 SUBJECT CODE, with optional leading wildcard
+       (
+       	(?: \*)?
+       	[a-z\*]{0,3}[a-z]
+       )?	 
+       
+       # 2 Optional wildcard
+       (\*)?
+       
+       # 3 COURSE NUMBER
+       (
+         [0-9][0-9\*]{0,5}
+         (?: \*)?
+       )?
+       
+       # 4 SEQUENCE NUMBER
+       ([a-z])?
+       
+       (?: -
+         # 5 term designation
+         ([a-z])
+         # 6 year designation
+         ([0-9]{2})
+       )?
+       
+       		/ix', $number, $matches)) {
+        		$this->addClause('number', 'FALSE', array(), $match);
+        		return;
+        	}
+        	
+        	$clauses = array();
+        	$params = array();
+        	
+        	// Subject
+        	if (isset($matches[1]) && $matches[1]) {
+        		$param = strtoupper(str_replace('*', '%', $matches[1]));
+        		if (isset($matches[2]) && $matches[2])
+        			$param = $param.'%';
+        		
+        		$clauses[] = 'SSBSECT_SUBJ_CODE LIKE(?)';
+        		$params[] = $param;
+        	}
+        	
+        	// Number
+        	if (isset($matches[3]) && $matches[3]) {
+        		$param = str_replace('*', '%', $matches[3]);
+        		if ($matches[2])
+        			$param = '%'.$param;
+        		
+        		$clauses[] = 'SSBSECT_CRSE_NUMB LIKE(?)';
+        		$params[] = $param;
+        	}
+        	
+        	// Sequence number
+        	if (isset($matches[4]) && $matches[4]) {
+        		$param = strtoupper($matches[4]);
+        		
+        		$clauses[] = 'SSBSECT_SEQ_NUMB = ?';
+        		$params[] = $param;
+        	}
+        	
+        	// Term designation
+        	if (isset($matches[5]) && $matches[5]) {
+        		$param = strtoupper($matches[5]);
+        		
+        		$clauses[] = 'term_display_label = ?';
+        		$params[] = $param;
+        	}
+        	
+        	// Year designation
+        	if (isset($matches[6]) && $matches[6]) {
+        		$param = strtoupper($matches[6]);
+        		
+        		$clauses[] = 'SSBSECT_TERM_CODE LIKE(?)';
+        		$params[] = '20'.$param.'%';
+        	}
+        	
+//         	if ($number == 'PHYS0*') {
+// 				print_r($matches);
+// 				print_r($clauses);
+// 				print_r($params);
+//         	}
+        	
+        	$this->addClause('number', '('.implode(' AND ', $clauses).')', $params, $match);
+        } else {
+        	throw new osid_UnsupportedException("The type Authority: ".$stringMatchType->getAuthority()." IdNamespace: ".$stringMatchType->getIdentifierNamespace()." Id: ".$stringMatchType->getIdentifier()."  is not supported. Only Authority: ".$this->wildcardStringMatchType->getAuthority()." IdNamespace: ".$this->wildcardStringMatchType->getIdentifierNamespace()." Id: ".$this->wildcardStringMatchType->getIdentifier()." are supported");
+       }
     }
 
 
@@ -283,7 +468,7 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchAnyNumber($match) {
-    	throw new osid_UnimplementedException();
+    	$this->addClause('number', 'TRUE', array(), $match);
     }
 
 
@@ -377,7 +562,7 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsCourseQuery() {
-    	throw new osid_UnimplementedException();
+    	return false;
     }
 
 

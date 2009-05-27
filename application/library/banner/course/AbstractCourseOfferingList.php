@@ -42,6 +42,17 @@ abstract class banner_course_AbstractCourseOfferingList
 	}
 	
 	/**
+	 * Answer a debugging string.
+	 * 
+	 * @return string
+	 * @access public
+	 * @since 5/27/09
+	 */
+	public function debug () {
+		return "\n\n".get_class($this)."\nQuery:\n".$this->getQuery()."\nParameters:\n".print_r($this->getAllInputParameters(), true);
+	}
+	
+	/**
 	 * Answer the query
 	 * 
 	 * @return string

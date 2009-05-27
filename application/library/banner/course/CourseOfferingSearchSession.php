@@ -165,7 +165,7 @@ class banner_course_CourseOfferingSearchSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingsByQuery(osid_course_CourseOfferingQuery $courseQuery) {
-    	throw new osid_UnimplementedException();
+    	return new banner_course_CourseOfferingSearchList($this->manager->getDB(), $this, $this->getCourseCatalogId(), $courseQuery);
     }
 
 
