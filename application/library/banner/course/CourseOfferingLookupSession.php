@@ -337,10 +337,11 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingsByGenusType(osid_type_Type $courseOfferingGenusType) {
-    	if ($courseOfferingGenusType->isEqual(new phpkit_type_URNInetType("urn:inet:osid.org:genera:none")))
-    		return $this->getCourseOfferings();
-    	else
+    	try {
+    		return new banner_course_CourseOfferingsByGenusTypeList($this->manager->getDB(), $this, $this->getCourseCatalogId(), $courseOfferingGenusType);
+    	} catch (osid_NotFoundException $e) {
     		return new phpkit_EmptyList;
+    	}
     }
 
 

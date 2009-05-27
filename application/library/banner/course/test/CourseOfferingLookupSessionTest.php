@@ -62,6 +62,10 @@ class banner_course_test_CourseOfferingLookupSessionTest
         $this->generaNoneType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:none");
         $this->secondaryType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:secondary");
         $this->undergraduateType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:undergraduate");
+        
+        $this->lectureType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/LCT');
+		$this->labType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/LAB');
+		$this->discussionType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/DSC');
     }
 
     /**
@@ -211,11 +215,26 @@ class banner_course_test_CourseOfferingLookupSessionTest
     {
         $offerings = $this->session->getCourseOfferingsByGenusType($this->generaNoneType);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertTrue($offerings->hasNext());
+       	$this->assertFalse($offerings->hasNext());
        	
        	$offerings = $this->session->getCourseOfferingsByGenusType($this->secondaryType);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
        	$this->assertFalse($offerings->hasNext());
+       	
+       	$offerings = $this->session->getCourseOfferingsByGenusType($this->lectureType);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertTrue($offerings->hasNext());
+       	$this->assertEquals(27, $offerings->available());
+       	
+       	$offerings = $this->session->getCourseOfferingsByGenusType($this->labType);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertTrue($offerings->hasNext());
+       	$this->assertEquals(48, $offerings->available());
+       	
+       	$offerings = $this->session->getCourseOfferingsByGenusType($this->discussionType);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertTrue($offerings->hasNext());
+       	$this->assertEquals(32, $offerings->available());
     }
 
     /**
@@ -225,11 +244,26 @@ class banner_course_test_CourseOfferingLookupSessionTest
     {
         $offerings = $this->session->getCourseOfferingsByParentGenusType($this->generaNoneType);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertTrue($offerings->hasNext());
+       	$this->assertFalse($offerings->hasNext());
        	
        	$offerings = $this->session->getCourseOfferingsByParentGenusType($this->secondaryType);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
        	$this->assertFalse($offerings->hasNext());
+       	
+       	$offerings = $this->session->getCourseOfferingsByParentGenusType($this->lectureType);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertTrue($offerings->hasNext());
+       	$this->assertEquals(27, $offerings->available());
+       	
+       	$offerings = $this->session->getCourseOfferingsByParentGenusType($this->labType);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertTrue($offerings->hasNext());
+       	$this->assertEquals(48, $offerings->available());
+       	
+       	$offerings = $this->session->getCourseOfferingsByParentGenusType($this->discussionType);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertTrue($offerings->hasNext());
+       	$this->assertEquals(32, $offerings->available());
     }
 
     /**
