@@ -358,14 +358,15 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchTitle($title, osid_type_Type $stringMatchType, $match) {    	
-    	if (!is_string($displayName))
-    		throw new osid_InvalidArgumentException("\$displayName '$displayName' must be a string.");
+    	if (!is_string($title))
+    		throw new osid_InvalidArgumentException("\$title '$title' must be a string.");
     	
         if ($stringMatchType->isEqual($this->wildcardStringMatchType)) {
         	$param = str_replace('*', '%', $title);
         	$this->addClause('title', '(SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?))', array($param, $param), $match);
-        }
-    	throw new osid_UnsupportedException("The stringMatchType passed is not supported.");
+        } else {
+	    	throw new osid_UnsupportedException("The stringMatchType passed is not supported.");
+	    }
     }
 
 
@@ -379,7 +380,7 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchAnyTitle($match) {
-    	$this->addClause('title', '(SSBSECT_CRSE_TITLE NOT NULL OR SCBCRSE_TITLE NOT NULL)', array(), $match);
+    	$this->addClause('title', '(SSBSECT_CRSE_TITLE IS NOT NULL OR SCBCRSE_TITLE IS NOT NULL)', array(), $match);
     }
 
 

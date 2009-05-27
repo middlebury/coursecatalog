@@ -266,10 +266,108 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
      */
     public function testMatchTitle()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->matchTitle('Relativity And Quantum Physics', $this->wildcardStringMatchType, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('Relativity And Quantum Physics', $params[0]);
+        $this->assertEquals('Relativity And Quantum Physics', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals('((SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?)))', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(8, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchTitleWithWild()
+    {
+        $this->object->matchTitle('*Quantum*', $this->wildcardStringMatchType, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('%Quantum%', $params[0]);
+        $this->assertEquals('%Quantum%', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals('((SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?)))', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(8, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchTitleWithWildMixedCase()
+    {
+        $this->object->matchTitle('*qUAntum*', $this->wildcardStringMatchType, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('%qUAntum%', $params[0]);
+        $this->assertEquals('%qUAntum%', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals('((SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?)))', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(8, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchTitleWithWildAnd()
+    {
+        $this->object->matchTitle('*and*', $this->wildcardStringMatchType, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('%and%', $params[0]);
+        $this->assertEquals('%and%', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals('((SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?)))', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(22, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchLabTitle()
+    {
+        $this->object->matchTitle('*lab*', $this->wildcardStringMatchType, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('%lab%', $params[0]);
+        $this->assertEquals('%lab%', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals('((SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?)))', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(48, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchLabTitleCapital()
+    {
+        $this->object->matchTitle('*Lab*', $this->wildcardStringMatchType, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('%Lab%', $params[0]);
+        $this->assertEquals('%Lab%', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals('((SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?)))', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(48, $courseOfferings->available());
     }
 
     /**
@@ -277,10 +375,32 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
      */
     public function testMatchAnyTitle()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->matchAnyTitle(true);
+
+        $params = $this->object->getParameters();
+        $this->assertFalse(isset($params[0]));
+        
+        $this->assertEquals('((SSBSECT_CRSE_TITLE IS NOT NULL OR SCBCRSE_TITLE IS NOT NULL))', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(107, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchAnyTitleInverted()
+    {
+        $this->object->matchAnyTitle(false);
+
+        $params = $this->object->getParameters();
+        $this->assertFalse(isset($params[0]));
+        
+        $this->assertEquals('(NOT (SSBSECT_CRSE_TITLE IS NOT NULL OR SCBCRSE_TITLE IS NOT NULL))', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(0, $courseOfferings->available());
     }
 
     /**
