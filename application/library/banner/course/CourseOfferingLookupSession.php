@@ -190,6 +190,8 @@ class banner_course_CourseOfferingLookupSession
 	SSBSECT_SUBJ_CODE,
 	SSBSECT_CRSE_NUMB,
 	SSBSECT_SEQ_NUMB,
+	SSBSECT_CRSE_TITLE,
+	SCBCRSE_TITLE,
 	SSBSECT_CAMP_CODE,
 	term_display_label,
 	STVTERM_START_DATE,

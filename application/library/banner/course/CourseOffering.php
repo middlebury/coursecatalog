@@ -33,6 +33,7 @@ class banner_course_CourseOffering
 			'SSBSECT_CRSE_NUMB',
 			'SSBSECT_SEQ_NUMB',
 			'SSBSECT_CAMP_CODE',
+			'SSBSECT_CRSE_TITLE',
 			
 			'term_display_label',
 			'STVTERM_START_DATE',
@@ -54,6 +55,7 @@ class banner_course_CourseOffering
 			
 			'STVBLDG_DESC',
 			
+			'SCBCRSE_TITLE',
 			'SCBCRSE_DEPT_CODE',
 			'SCBCRSE_DIVS_CODE'
 		);
@@ -127,6 +129,9 @@ class banner_course_CourseOffering
     public function getTitle() {
     	if (isset($this->row['SSBSECT_CRSE_TITLE']) && strlen($this->row['SSBSECT_CRSE_TITLE']))
     		return $this->row['SSBSECT_CRSE_TITLE'];
+    	
+    	else if (isset($this->row['SCBCRSE_TITLE']) && strlen($this->row['SCBCRSE_TITLE']))
+    		return $this->row['SCBCRSE_TITLE'];
     	
     	try {
     		return $this->getCourse()->getTitle();
