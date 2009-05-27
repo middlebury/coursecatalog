@@ -693,7 +693,7 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsLocationQuery() {
-    	throw new osid_UnimplementedException();
+    	return false;
     }
 
 
@@ -786,7 +786,7 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsCalendarQuery() {
-    	throw new osid_UnimplementedException();
+    	return false;
     }
 
 
@@ -846,7 +846,7 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsLearningObjectiveQuery() {
-    	throw new osid_UnimplementedException();
+    	return false;
     }
 
 
@@ -907,7 +907,7 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsCourseCatalogQuery() {
-    	throw new osid_UnimplementedException();
+    	return false;
     }
 
 
