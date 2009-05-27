@@ -34,6 +34,10 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
         $this->termId2 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200790');
 		
 		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		
+		$this->lectureType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/LCT');
+		$this->labType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/LAB');
+		$this->discussionType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/DSC');
     }
 
     /**
@@ -143,14 +147,30 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     /**
      * 
      */
-    public function testMatchGenusType()
+    public function testMatchInvalidGenusType()
     {
         $this->object->matchGenusType(new phpkit_type_URNInetType("urn:inet:osid.org:genera:none"), true);
 
         $params = $this->object->getParameters();
         $this->assertFalse(isset($params[0]));
         
-        $this->assertEquals('(TRUE)', $this->object->getWhereClause());
+        $this->assertEquals('(FALSE)', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(0, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchInvalidGenusTypeInverted()
+    {
+        $this->object->matchGenusType(new phpkit_type_URNInetType("urn:inet:osid.org:genera:none"), false);
+
+        $params = $this->object->getParameters();
+        $this->assertFalse(isset($params[0]));
+        
+        $this->assertEquals('(NOT FALSE)', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 		$this->assertEquals(107, $courseOfferings->available());
@@ -159,17 +179,69 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     /**
      * 
      */
-    public function testMatchGenusTypeInverted()
+    public function testMatchLectureGenusType()
     {
-        $this->object->matchGenusType(new phpkit_type_URNInetType("urn:inet:osid.org:genera:none"), false);
-
+        $this->object->matchGenusType($this->lectureType, true);
+		
         $params = $this->object->getParameters();
-        $this->assertFalse(isset($params[0]));
+        $this->assertEquals('LCT', $params[0]);
+        $this->assertFalse(isset($params[1]));
         
-        $this->assertEquals('(NOT TRUE)', $this->object->getWhereClause());
+        $this->assertEquals('(SSBSECT_SCHD_CODE = ?)', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
-		$this->assertEquals(0, $courseOfferings->available());
+		$this->assertEquals(27, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchLectureGenusTypeInverted()
+    {
+        $this->object->matchGenusType($this->lectureType, false);
+		
+        $params = $this->object->getParameters();
+        $this->assertEquals('LCT', $params[0]);
+        $this->assertFalse(isset($params[1]));
+        
+        $this->assertEquals('(NOT SSBSECT_SCHD_CODE = ?)', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals((107 - 27), $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchLabGenusType()
+    {
+        $this->object->matchGenusType($this->labType, true);
+		
+        $params = $this->object->getParameters();
+        $this->assertEquals('LAB', $params[0]);
+        $this->assertFalse(isset($params[1]));
+        
+        $this->assertEquals('(SSBSECT_SCHD_CODE = ?)', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(48, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchDiscussionGenusType()
+    {
+        $this->object->matchGenusType($this->discussionType, true);
+		
+        $params = $this->object->getParameters();
+        $this->assertEquals('DSC', $params[0]);
+        $this->assertFalse(isset($params[1]));
+        
+        $this->assertEquals('(SSBSECT_SCHD_CODE = ?)', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(32, $courseOfferings->available());
     }
     
     /**

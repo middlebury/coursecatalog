@@ -241,12 +241,32 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchGenusType(osid_type_Type $genusType, $match) {
-    	if ($genusType->isEqual(new phpkit_type_URNInetType("urn:inet:osid.org:genera:none")))
-    		$this->addClause('genus_type', 'TRUE', array(), $match);
-    	else
+    	$typeCode = $this->getGenusTypeCode($genusType);
+    	if (is_null($typeCode))
     		$this->addClause('genus_type', 'FALSE', array(), $match);
+    	else
+    		$this->addClause('genus_type', 'SSBSECT_SCHD_CODE = ?', array($typeCode), $match);
     }
-
+    
+    /**
+     * Answer the schedule code from a genus type
+     * 
+     * @param osid_type_Type $genusType
+     * @return mixed string or null
+     * @access private
+     * @since 5/27/09
+     */
+    private function getGenusTypeCode (osid_type_Type $genusType) {
+    	if (strtolower($genusType->getIdentifierNamespace()) != 'urn')
+    		return null;
+    	else if (strtolower($genusType->getAuthority()) != strtolower($this->session->getIdAuthority()))
+    		return null;
+    		
+    	if (!preg_match('/^genera:offering\/([a-z]+)$/i', $genusType->getIdentifier(), $matches))
+    		return null;
+    	
+    	return $matches[1];	
+    }
 
     /**
      *  Sets a <code> Type </code> for querying objects of a given genus. A 
