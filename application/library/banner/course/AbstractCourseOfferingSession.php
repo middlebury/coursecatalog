@@ -132,6 +132,26 @@ abstract class banner_course_AbstractCourseOfferingSession
 	}
 	
 	/**
+     * Answer the schedule code from a genus type
+     * 
+     * @param osid_type_Type $genusType
+     * @return string
+     * @access private
+     * @since 5/27/09
+     */
+    public function getScheduleCodeFromGenusType (osid_type_Type $genusType) {
+    	if (strtolower($genusType->getIdentifierNamespace()) != 'urn')
+    		throw new osid_NotFoundException("I only know about the urn namespace");
+    	else if (strtolower($genusType->getAuthority()) != strtolower($this->getIdAuthority()))
+    		throw new osid_NotFoundException("I only know about the '".$this->getIdAuthority()."' authority");
+    		
+    	if (!preg_match('/^genera:offering\/([a-z]+)$/i', $genusType->getIdentifier(), $matches))
+    		throw new osid_NotFoundException("I only know about identifiers beginning with 'genera:offering/'");
+    	
+    	return $matches[1];	
+    }
+	
+	/**
 	 * Answer the id authority for this session
 	 * 
 	 * @return string
