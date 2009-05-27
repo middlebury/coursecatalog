@@ -21,11 +21,14 @@ class banner_course_CourseOfferingQuery
 	/**
 	 * Constructor
 	 * 
+	 * @param banner_course_AbstractCourseOfferingSession $session
 	 * @return void
 	 * @access public
 	 * @since 5/20/09
 	 */
-	public function __construct () {
+	public function __construct (banner_course_AbstractCourseOfferingSession $session) {
+		$this->session = $session;
+		
 		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
 		
 		$this->stringMatchTypes = array(
@@ -550,7 +553,10 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchCourseId(osid_id_Id $courseId, $match) {
-    	throw new osid_UnimplementedException();
+    	$this->addClause('course_id', '(SSBSECT_SUBJ_CODE = ? AND SSBSECT_CRSE_NUMB = ?)', 
+    		array($this->session->getSubjectFromCourseId($courseId),
+    			$this->session->getNumberFromCourseId($courseId)),
+    		$match);
     }
 
 
@@ -593,7 +599,9 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchTermId(osid_id_Id $termId, $match) {
-    	throw new osid_UnimplementedException();
+    	$this->addClause('term_id', 'SSBSECT_TERM_CODE = ?', 
+    		array($this->session->getTermCodeFromTermId($termId)),
+    		$match);
     }
 
 
@@ -605,7 +613,7 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsTermQuery() {
-    	throw new osid_UnimplementedException();
+    	return false;
     }
 
 

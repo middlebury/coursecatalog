@@ -143,7 +143,7 @@ class banner_course_CourseOfferingSearchSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingQuery() {
-    	return new banner_course_CourseOfferingQuery();
+    	return new banner_course_CourseOfferingQuery($this);
     }
 
 

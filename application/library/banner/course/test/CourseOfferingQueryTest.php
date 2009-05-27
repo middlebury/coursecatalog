@@ -22,11 +22,17 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
     	$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
-        $this->object = new banner_course_CourseOfferingQuery;
         
     	$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
 	 	$this->manager = $this->sharedFixture['CourseManager'];
         $this->session = $this->manager->getCourseOfferingSearchSessionForCatalog($this->mcugId);
+        $this->object = $this->session->getCourseOfferingQuery();
+        
+        $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
+        $this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHEM0104');
+        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200890');
+        $this->termId2 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200790');
+
     }
 
     /**
@@ -40,7 +46,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testGetWhereClause().
+     * 
      */
     public function testGetWhereClause()
     {
@@ -51,7 +57,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testGetParameters().
+     * 
      */
     public function testGetParameters()
     {
@@ -62,7 +68,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testGetStringMatchTypes().
+     * 
      */
     public function testGetStringMatchTypes()
     {
@@ -73,7 +79,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testSupportsStringMatchType().
+     * 
      */
     public function testSupportsStringMatchType()
     {
@@ -86,7 +92,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchKeyword().
+     * 
      */
     public function testMatchKeyword()
     {
@@ -97,7 +103,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchDisplayName().
+     * 
      */
     public function testMatchDisplayName()
     {
@@ -108,7 +114,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchDescription().
+     * 
      */
     public function testMatchDescription()
     {
@@ -119,7 +125,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchAnyDescription().
+     * 
      */
     public function testMatchAnyDescription()
     {
@@ -130,7 +136,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchGenusType().
+     * 
      */
     public function testMatchGenusType()
     {
@@ -141,7 +147,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchParentGenusType().
+     * 
      */
     public function testMatchParentGenusType()
     {
@@ -152,7 +158,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchRecordType().
+     * 
      */
     public function testMatchRecordType()
     {
@@ -163,7 +169,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testHasRecordType().
+     * 
      */
     public function testHasRecordType()
     {
@@ -174,7 +180,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchTitle().
+     * 
      */
     public function testMatchTitle()
     {
@@ -185,7 +191,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchAnyTitle().
+     * 
      */
     public function testMatchAnyTitle()
     {
@@ -569,7 +575,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
 	}
 
     /**
-     * @todo Implement testMatchCredits().
+     * 
      */
     public function testMatchCredits()
     {
@@ -580,7 +586,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchAnyCredits().
+     * 
      */
     public function testMatchAnyCredits()
     {
@@ -591,7 +597,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchPrereqInfo().
+     * 
      */
     public function testMatchPrereqInfo()
     {
@@ -602,7 +608,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchAnyPrereqInfo().
+     * 
      */
     public function testMatchAnyPrereqInfo()
     {
@@ -613,73 +619,145 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchCourseId().
+     * 
      */
     public function testMatchCourseId()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->matchCourseId($this->chemId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('CHEM', $params[0]);
+        $this->assertEquals('0104', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals('((SSBSECT_SUBJ_CODE = ? AND SSBSECT_CRSE_NUMB = ?))', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(85, $courseOfferings->available());
     }
 
     /**
-     * @todo Implement testSupportsCourseQuery().
+     * 
      */
     public function testSupportsCourseQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->object->supportsCourseQuery());
     }
 
     /**
-     * @todo Implement testGetCourseQuery().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetCourseQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->getCourseQuery();
     }
 
     /**
-     * @todo Implement testMatchTermId().
+     * 
      */
     public function testMatchTermId()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->matchTermId($this->termId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('200890', $params[0]);
+        $this->assertFalse(isset($params[1]));
+        
+        $this->assertEquals('(SSBSECT_TERM_CODE = ?)', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(8, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchTwoTermIds()
+    {
+        $this->object->matchTermId($this->termId, true);
+        $this->object->matchTermId($this->termId2, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('200890', $params[0]);
+        $this->assertEquals('200790', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals('(SSBSECT_TERM_CODE = ? OR SSBSECT_TERM_CODE = ?)', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(18, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchTwoTermIdsAndACourseId()
+    {
+        $this->object->matchTermId($this->termId, true);
+        $this->object->matchTermId($this->termId2, true);
+        $this->object->matchCourseId($this->chemId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('200890', $params[0]);
+        $this->assertEquals('200790', $params[1]);
+        $this->assertEquals('CHEM', $params[2]);
+        $this->assertEquals('0104', $params[3]);
+        $this->assertFalse(isset($params[4]));
+        
+        $this->assertEquals('(SSBSECT_TERM_CODE = ? OR SSBSECT_TERM_CODE = ?) AND ((SSBSECT_SUBJ_CODE = ? AND SSBSECT_CRSE_NUMB = ?))', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(12, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchTwoTermIdsAndTwoCourseIds()
+    {
+        $this->object->matchTermId($this->termId, true);
+        $this->object->matchTermId($this->termId2, true);
+        $this->object->matchCourseId($this->chemId, true);
+        $this->object->matchCourseId($this->physId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('200890', $params[0]);
+        $this->assertEquals('200790', $params[1]);
+        $this->assertEquals('CHEM', $params[2]);
+        $this->assertEquals('0104', $params[3]);
+        $this->assertEquals('PHYS', $params[4]);
+        $this->assertEquals('0201', $params[5]);
+        $this->assertFalse(isset($params[6]));
+        
+        $this->assertEquals('(SSBSECT_TERM_CODE = ? OR SSBSECT_TERM_CODE = ?) AND ((SSBSECT_SUBJ_CODE = ? AND SSBSECT_CRSE_NUMB = ?) OR (SSBSECT_SUBJ_CODE = ? AND SSBSECT_CRSE_NUMB = ?))', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(14, $courseOfferings->available());
     }
 
     /**
-     * @todo Implement testSupportsTermQuery().
+     * 
      */
     public function testSupportsTermQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->object->supportsTermQuery());
     }
 
     /**
-     * @todo Implement testGetTermQuery().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetTermQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->getTermQuery();
     }
 
     /**
-     * @todo Implement testMatchLocationInfo().
+     * 
      */
     public function testMatchLocationInfo()
     {
@@ -690,7 +768,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchAnyLocationInfo().
+     * 
      */
     public function testMatchAnyLocationInfo()
     {
@@ -701,7 +779,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchLocationId().
+     * 
      */
     public function testMatchLocationId()
     {
@@ -712,29 +790,23 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testSupportsLocationQuery().
+     * 
      */
     public function testSupportsLocationQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->object->supportsLocationQuery());
     }
 
     /**
-     * @todo Implement testGetLocationQuery().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetLocationQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->getLocationQuery();
     }
 
     /**
-     * @todo Implement testMatchAnyLocation().
+     * 
      */
     public function testMatchAnyLocation()
     {
@@ -745,7 +817,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchScheduleInfo().
+     * 
      */
     public function testMatchScheduleInfo()
     {
@@ -756,7 +828,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchAnyScheduleInfo().
+     * 
      */
     public function testMatchAnyScheduleInfo()
     {
@@ -767,7 +839,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchCalendarId().
+     * 
      */
     public function testMatchCalendarId()
     {
@@ -778,29 +850,23 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testSupportsCalendarQuery().
+     * 
      */
     public function testSupportsCalendarQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->object->supportsCalendarQuery());
     }
 
     /**
-     * @todo Implement testGetCalendarQuery().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetCalendarQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->getCalendarQuery();
     }
 
     /**
-     * @todo Implement testMatchAnyCalendar().
+     * 
      */
     public function testMatchAnyCalendar()
     {
@@ -811,7 +877,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchLearningObjectiveId().
+     * 
      */
     public function testMatchLearningObjectiveId()
     {
@@ -822,29 +888,23 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testSupportsLearningObjectiveQuery().
+     * 
      */
     public function testSupportsLearningObjectiveQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+         $this->assertFalse($this->object->supportsLearningObjectiveQuery());
     }
 
     /**
-     * @todo Implement testGetLearningObjectiveQuery().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetLearningObjectiveQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->getLearningObjectiveQuery();
     }
 
     /**
-     * @todo Implement testMatchAnyLearningObjective().
+     * 
      */
     public function testMatchAnyLearningObjective()
     {
@@ -855,7 +915,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchCourseCatalogId().
+     * 
      */
     public function testMatchCourseCatalogId()
     {
@@ -866,29 +926,23 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testSupportsCourseCatalogQuery().
+     * 
      */
     public function testSupportsCourseCatalogQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->object->supportsCourseCatalogQuery());
     }
 
     /**
-     * @todo Implement testGetCourseCatalogQuery().
+     * @expectedException osid_UnimplementedException
      */
     public function testGetCourseCatalogQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->getCourseCatalogQuery();
     }
 
     /**
-     * @todo Implement testMatchURL().
+     * 
      */
     public function testMatchURL()
     {
@@ -899,7 +953,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testMatchAnyURL().
+     * 
      */
     public function testMatchAnyURL()
     {
@@ -910,7 +964,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testGetCourseOfferingQueryRecord().
+     * 
      */
     public function testGetCourseOfferingQueryRecord()
     {
