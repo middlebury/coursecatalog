@@ -114,7 +114,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('((SSBSECT_SUBJ_CODE LIKE(?) AND SSBSECT_CRSE_NUMB LIKE(?) AND SSBSECT_SEQ_NUMB = ? AND term_display_label = ? AND SSBSECT_TERM_CODE LIKE(?)))', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
-		$this->assertEquals(1, $courseOfferings->available());;
+		$this->assertEquals(1, $courseOfferings->available());
     }
 
     /**
@@ -144,10 +144,63 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
      */
     public function testMatchGenusType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->matchGenusType(new phpkit_type_URNInetType("urn:inet:osid.org:genera:none"), true);
+
+        $params = $this->object->getParameters();
+        $this->assertFalse(isset($params[0]));
+        
+        $this->assertEquals('(TRUE)', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(107, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchGenusTypeInverted()
+    {
+        $this->object->matchGenusType(new phpkit_type_URNInetType("urn:inet:osid.org:genera:none"), false);
+
+        $params = $this->object->getParameters();
+        $this->assertFalse(isset($params[0]));
+        
+        $this->assertEquals('(NOT TRUE)', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(0, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchOtherGenusType()
+    {
+        $this->object->matchGenusType(new phpkit_type_URNInetType("urn:inet:osid.org:genera:stuff"), true);
+
+        $params = $this->object->getParameters();
+        $this->assertFalse(isset($params[0]));
+        
+        $this->assertEquals('(FALSE)', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(0, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchOtherGenusTypeInverted()
+    {
+        $this->object->matchGenusType(new phpkit_type_URNInetType("urn:inet:osid.org:genera:stuff"), false);
+
+        $params = $this->object->getParameters();
+        $this->assertFalse(isset($params[0]));
+        
+        $this->assertEquals('(NOT FALSE)', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(107, $courseOfferings->available());
     }
 
     /**
@@ -155,10 +208,15 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
      */
     public function testMatchParentGenusType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->matchParentGenusType(new phpkit_type_URNInetType("urn:inet:osid.org:genera:none"), true);
+
+        $params = $this->object->getParameters();
+        $this->assertFalse(isset($params[0]));
+        
+        $this->assertEquals('(TRUE)', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(107, $courseOfferings->available());
     }
 
     /**

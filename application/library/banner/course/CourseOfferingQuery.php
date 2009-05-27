@@ -240,7 +240,10 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchGenusType(osid_type_Type $genusType, $match) {
-    	throw new osid_UnimplementedException();
+    	if ($genusType->isEqual(new phpkit_type_URNInetType("urn:inet:osid.org:genera:none")))
+    		$this->addClause('genus_type', 'TRUE', array(), $match);
+    	else
+    		$this->addClause('genus_type', 'FALSE', array(), $match);
     }
 
 
@@ -258,7 +261,10 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchParentGenusType(osid_type_Type $genusType, $match) {
-    	throw new osid_UnimplementedException();
+    	if ($genusType->isEqual(new phpkit_type_URNInetType("urn:inet:osid.org:genera:none")))
+    		$this->addClause('parent_genus_type', 'TRUE', array(), $match);
+    	else
+    		$this->addClause('parent_genus_type', 'FALSE', array(), $match);
     }
 
 
