@@ -102,10 +102,19 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
      */
     public function testMatchDisplayName()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->matchDisplayName('PHYS0201A-F08', $this->wildcardStringMatchType, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('PHYS', $params[0]);
+        $this->assertEquals('0201', $params[1]);
+        $this->assertEquals('A', $params[2]);
+        $this->assertEquals('F', $params[3]);
+        $this->assertEquals('2008%', $params[4]);
+        
+        $this->assertEquals('((SSBSECT_SUBJ_CODE LIKE(?) AND SSBSECT_CRSE_NUMB LIKE(?) AND SSBSECT_SEQ_NUMB = ? AND term_display_label = ? AND SSBSECT_TERM_CODE LIKE(?)))', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(1, $courseOfferings->available());;
     }
 
     /**
