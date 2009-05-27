@@ -72,10 +72,10 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
      */
     public function testGetStringMatchTypes()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $types = $this->object->getStringMatchTypes();
+        $this->assertType('osid_type_TypeList', $types);
+        $this->assertEquals(1, $types->available());
+        $this->assertTrue($this->wildcardStringMatchType->isEqual($types->getNextType()));
     }
 
     /**
@@ -84,11 +84,6 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     public function testSupportsStringMatchType()
     {
     	$this->assertTrue($this->object->supportsStringMatchType($this->wildcardStringMatchType));
-    	
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
     }
 
     /**

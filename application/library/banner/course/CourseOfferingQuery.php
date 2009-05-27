@@ -120,7 +120,7 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function getStringMatchTypes() {
-    	return new phpkit_ArrayTypeList($this->stringMatchTypes);
+    	return new phpkit_type_ArrayTypeList($this->stringMatchTypes);
     }
 
 
