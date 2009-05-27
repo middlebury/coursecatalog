@@ -368,6 +368,10 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 		$this->assertEquals(48, $courseOfferings->available());
+		
+		while ($courseOfferings->hasNext()) {
+			$this->assertGreaterThanOrEqual(1, preg_match('/lab/i', $courseOfferings->getNextCourseOffering()->getTitle()));
+		}
     }
 
     /**
