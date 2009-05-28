@@ -38,7 +38,6 @@ class banner_course_CourseOfferingQuery
 			$this->wildcardStringMatchType
 		);
 		
-		$this->parameterTicker = 1;
 		$this->clauseSets = array();
 		$this->parameters = array();
 		$this->additionalTableJoins = array();
@@ -131,7 +130,7 @@ class banner_course_CourseOfferingQuery
 	 * @since 4/29/09
 	 */
 	public function getAdditionalTableJoins () {
-		return implode('\n\t', $this->additionalTableJoins);
+		return $this->additionalTableJoins;
 	}
 	
 /*********************************************************

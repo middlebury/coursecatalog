@@ -110,7 +110,8 @@ WHERE
 	)
 
 GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
-ORDER BY SSBSECT_TERM_CODE DESC, SSBSECT_SUBJ_CODE, SSBSECT_CRSE_NUMB, SSBSECT_SEQ_NUMB
+".$this->getOrderByClause()."
+".$this->getLimitClause()."
 ";
 	}
 	
@@ -165,6 +166,28 @@ ORDER BY SSBSECT_TERM_CODE DESC, SSBSECT_SUBJ_CODE, SSBSECT_CRSE_NUMB, SSBSECT_S
 	 * @since 4/29/09
 	 */
 	protected function getAdditionalTableJoins () {
+		return '';
+	}
+	
+	/**
+	 * Answer the ORDER BY clause to use
+	 * 
+	 * @return string
+	 * @access protected
+	 * @since 5/28/09
+	 */
+	protected function getOrderByClause () {
+		return 'ORDER BY SSBSECT_TERM_CODE DESC, SSBSECT_SUBJ_CODE, SSBSECT_CRSE_NUMB, SSBSECT_SEQ_NUMB';
+	}
+	
+	/**
+	 * Answer the LIMIT clause to use
+	 * 
+	 * @return string
+	 * @access protected
+	 * @since 5/28/09
+	 */
+	protected function getLimitClause () {
 		return '';
 	}
 	

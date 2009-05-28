@@ -14,8 +14,92 @@
  * @package org.osid.course
  */
 class banner_course_CourseOfferingSearchOrder
-    implements osid_course_CourseOfferingSearchOrder
+    implements osid_course_CourseOfferingSearchOrder,
+    osid_course_CourseOfferingSearchOrderRecord,
+    types_course_CourseOfferingInstructorsSearchOrderRecord
 {
+
+	/**
+	 * Constructor
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 5/28/09
+	 */
+	public function __construct () {
+		$this->terms = array();
+		$this->additionalTableJoins = array();
+		
+		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+	}
+	
+	/**
+	 * Answer th SQL ORDER BY clause
+	 * 
+	 * @return string
+	 * @access public
+	 * @since 5/28/09
+	 */
+	public function getOrderByClause () {
+		$parts = array();
+		foreach ($this->terms as $term) {
+			foreach ($term['columns'] as $column) {
+				$parts[] = $column.' '.$term['direction'];
+			}
+		}
+		
+		if (count($parts))
+			return 'ORDER BY '.implode(', ', $parts);
+		else
+			return '';
+	}
+	
+	/**
+	 * Answer any additional table join clauses to use
+	 * 
+	 * @return array
+	 * @access public
+	 * @since 4/29/09
+	 */
+	public function getAdditionalTableJoins () {
+		return $this->additionalTableJoins;
+	}
+	
+	/**
+	 * Add a set of columns to order on.
+	 * 
+	 * @param array $columns An array of column strings
+	 * @return void
+	 * @access protected
+	 * @since 5/28/09
+	 */
+	protected function addOrderColumns (array $columns) {
+		// Check that this set hasn't been added yet.
+		$key = implode(',', $columns);
+		foreach ($this->terms as $term) {
+			if ($term['key'] == $key)
+				return;
+		}
+		
+		$this->terms[] = array(
+				'key'		=> $key,
+				'columns'	=> $columns,
+				'direction'	=> 'ASC'
+			);
+	}
+	
+	/**
+	 * Add a table join
+	 * 
+	 * @param string $joinClause
+	 * @return void
+	 * @access protected
+	 * @since 5/27/09
+	 */
+	protected function addTableJoin ($joinClause) {
+		if (!in_array($joinClause, $this->additionalTableJoins))
+			$this->additionalTableJoins[] = $joinClause;
+	}
 
 /*********************************************************
  * Methods from osid_OsidSearchOrder
@@ -28,7 +112,9 @@ class banner_course_CourseOfferingSearchOrder
      *  @compliance mandatory This method must be implemented. 
      */
     public function ascend() {
-    	throw new osid_UnimplementedException();
+    	if (count($this->terms)) {
+    		$this->terms[count($this->terms) - 1]['direction'] = 'ASC';
+    	}
     }
 
 
@@ -39,7 +125,9 @@ class banner_course_CourseOfferingSearchOrder
      *  @compliance mandatory This method must be implemented. 
      */
     public function descend() {
-    	throw new osid_UnimplementedException();
+    	if (count($this->terms)) {
+    		$this->terms[count($this->terms) - 1]['direction'] = 'DESC';
+    	}
     }
 
 
@@ -50,7 +138,7 @@ class banner_course_CourseOfferingSearchOrder
      *  @compliance mandatory This method must be implemented. 
      */
     public function orderByDisplayName() {
-    	throw new osid_UnimplementedException();
+    	$this->orderByNumber();
     }
 
 
@@ -60,7 +148,7 @@ class banner_course_CourseOfferingSearchOrder
      *  @compliance mandatory This method must be implemented. 
      */
     public function orderByGenusType() {
-    	throw new osid_UnimplementedException();
+    	$this->addOrderColumns(array('SSBSECT_SCHD_CODE'));
     }
 
 
@@ -79,13 +167,75 @@ class banner_course_CourseOfferingSearchOrder
      *  @compliance mandatory This method must be implemented. 
      */
     public function hasRecordType(osid_type_Type $recordType) {
-    	throw new osid_UnimplementedException();
+    	return $this->implementsRecordType($recordType);
+    }
+    
+/*********************************************************
+ * Methods from osid_OsidSearchRecord
+ *********************************************************/
+
+    /**
+     *  Tests if the given type is implemented by this record. Other types 
+     *  than that directly indicated by <code> getType() </code> may be 
+     *  supported through an inheritance scheme where the given type specifies 
+     *  a record that is a parent interface of the interface specified by 
+     *  <code> getType(). </code> 
+     *
+     *  @param object osid_type_Type $recordType a type 
+     *  @return boolean <code> true </code> if the given record <code> Type 
+     *          </code> is implemented by this record, <code> false </code> 
+     *          otherwise 
+     *  @throws osid_NullArgumentException <code> recordType </code> is <code> 
+     *          null </code> 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function implementsRecordType(osid_type_Type $recordType) {
+    	return $recordType->isEqual($this->instructorsType);
+    }
+    
+/*********************************************************
+ * Methods from osid_course_CourseOfferingSearchOrderRecord
+ *********************************************************/
+ 
+    /**
+     *  Gets the <code> CourseOfferingSearchOrder </code> from which this 
+     *  record originated. 
+     *
+     *  @return object osid_course_CourseOfferingSearchOrder the course 
+     *          offering search order 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function getCourseOfferingSearchOrder() {
+    	return $this;
     }
 
 /*********************************************************
  * Methods from osid_course_CourseOfferingSearchOrder
  *********************************************************/
 
+	/**
+     *  Gets the course search order record corresponding to the given course 
+     *  record <code> Type. </code> Multiple retrievals return the same 
+     *  underlying object. 
+     *
+     *  @param object osid_type_Type $courseRecordType a course record type 
+     *  @return object osid_course_CourseSearchOrderRecord the course search 
+     *          order record interface 
+     *  @throws osid_NullArgumentException <code> courseRecordType </code> is 
+     *          <code> null </code> 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure occurred 
+     *  @throws osid_UnsupportedException <code> 
+     *          hasRecordType(courseRecordType) </code> is <code> false 
+     *          </code> 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function getCourseSearchOrderRecord(osid_type_Type $courseRecordType) {
+    	if (!$this->implementsRecordType($courseRecordType))
+    		throw new osid_UnsupportedException('The record type passed is not supported.');
+    	
+    	return $this;
+    }
 
     /**
      *  Specifies a preference for ordering the result set by course title. 
@@ -93,7 +243,29 @@ class banner_course_CourseOfferingSearchOrder
      *  @compliance mandatory This method must be implemented. 
      */
     public function orderByTitle() {
-    	throw new osid_UnimplementedException();
+    	$this->addOrderColumns(array('sectitle_title'));
+    	$this->addTableJoin(
+    'INNER JOIN (SELECT 
+			SSBSECT_TERM_CODE as sectitle_term_code,
+			SSBSECT_CRN as sectitle_crn,
+			SSBSECT_CRSE_TITLE as sectitle_title
+		FROM 
+			`ssbsect`
+			LEFT JOIN scbcrse ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
+		WHERE
+			SSBSECT_CRSE_TITLE IS NOT NULL
+		
+		UNION
+		
+		SELECT 
+			SSBSECT_TERM_CODE as sectitle_term_code,
+			SSBSECT_CRN as sectitle_crn,
+			SCBCRSE_TITLE as sectitle_title
+		FROM 
+			`ssbsect`
+			LEFT JOIN scbcrse ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
+		WHERE
+			SSBSECT_CRSE_TITLE IS NULL) as sectitle ON (SSBSECT_TERM_CODE = sectitle_term_code AND SSBSECT_CRN = sectitle_crn)');
     }
 
 
@@ -103,7 +275,7 @@ class banner_course_CourseOfferingSearchOrder
      *  @compliance mandatory This method must be implemented. 
      */
     public function orderByNumber() {
-    	throw new osid_UnimplementedException();
+    	$this->addOrderColumns(array('SSBSECT_SUBJ_CODE', 'SSBSECT_CRSE_NUMB', 'SSBSECT_SEQ_NUMB', 'term_display_label', 'SSBSECT_TERM_CODE'));
     }
 
 
@@ -113,7 +285,7 @@ class banner_course_CourseOfferingSearchOrder
      *  @compliance mandatory This method must be implemented. 
      */
     public function orderByCredits() {
-    	throw new osid_UnimplementedException();
+    	$this->addOrderColumns(array('SSBSECT_CREDIT_HRS'));
     }
 
 
@@ -134,7 +306,7 @@ class banner_course_CourseOfferingSearchOrder
      *  @compliance mandatory This method must be implemented. 
      */
     public function orderByCourse() {
-    	throw new osid_UnimplementedException();
+    	$this->addOrderColumns(array('SSBSECT_SUBJ_CODE', 'SSBSECT_CRSE_NUMB'));
     }
 
 
@@ -146,7 +318,7 @@ class banner_course_CourseOfferingSearchOrder
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsCourseSearchOrder() {
-    	throw new osid_UnimplementedException();
+    	return false;
     }
 
 
@@ -172,7 +344,7 @@ class banner_course_CourseOfferingSearchOrder
      *  @compliance mandatory This method must be implemented. 
      */
     public function orderByTerm() {
-    	throw new osid_UnimplementedException();
+    	$this->addOrderColumns(array('SSBSECT_TERM_CODE'));
     }
 
 
@@ -184,7 +356,7 @@ class banner_course_CourseOfferingSearchOrder
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsTermSearchOrder() {
-    	throw new osid_UnimplementedException();
+    	return false;
     }
 
 
@@ -209,7 +381,7 @@ class banner_course_CourseOfferingSearchOrder
      *  @compliance mandatory This method must be implemented. 
      */
     public function orderByLocationInfo() {
-    	throw new osid_UnimplementedException();
+    	$this->addOrderColumns(array('SSRMEET_BLDG_CODE', 'SSRMEET_ROOM_CODE'));
     }
 
 
@@ -219,7 +391,7 @@ class banner_course_CourseOfferingSearchOrder
      *  @compliance mandatory This method must be implemented. 
      */
     public function orderByLocation() {
-    	throw new osid_UnimplementedException();
+    	$this->addOrderColumns(array('SSRMEET_BLDG_CODE', 'SSRMEET_ROOM_CODE'));
     }
 
 
@@ -231,7 +403,7 @@ class banner_course_CourseOfferingSearchOrder
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsLocationSearchOrder() {
-    	throw new osid_UnimplementedException();
+    	return false;
     }
 
 
@@ -257,7 +429,16 @@ class banner_course_CourseOfferingSearchOrder
      *  @compliance mandatory This method must be implemented. 
      */
     public function orderByScheduleInfo() {
-    	throw new osid_UnimplementedException();
+    	$this->addOrderColumns(array(
+    		'SSRMEET_SUN_DAY', 
+    		'SSRMEET_MON_DAY', 
+    		'SSRMEET_TUE_DAY', 
+    		'SSRMEET_WED_DAY', 
+    		'SSRMEET_THU_DAY', 
+    		'SSRMEET_FRI_DAY', 
+    		'SSRMEET_SAT_DAY', 
+    		'SSRMEET_BEGIN_TIME', 
+    		'SSRMEET_END_TIME'));
     }
 
 
@@ -279,7 +460,7 @@ class banner_course_CourseOfferingSearchOrder
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsCalendarSearchOrder() {
-    	throw new osid_UnimplementedException();
+    	return false;
     }
 
 
@@ -319,7 +500,7 @@ class banner_course_CourseOfferingSearchOrder
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsLearningObjectiveSearchOrder() {
-    	throw new osid_UnimplementedException();
+    	return false;
     }
 
 
@@ -349,26 +530,19 @@ class banner_course_CourseOfferingSearchOrder
     	throw new osid_UnimplementedException();
     }
 
+/*********************************************************
+ * Methods from types_course_CourseOfferingInstructorsSearchOrderRecord
+ *********************************************************/
 
-    /**
-     *  Gets the course search order record corresponding to the given course 
-     *  record <code> Type. </code> Multiple retrievals return the same 
-     *  underlying object. 
+	/**
+     *  Specifies a preference for ordering the result set by the instructor
      *
-     *  @param object osid_type_Type $courseRecordType a course record type 
-     *  @return object osid_course_CourseSearchOrderRecord the course search 
-     *          order record interface 
-     *  @throws osid_NullArgumentException <code> courseRecordType </code> is 
-     *          <code> null </code> 
-     *  @throws osid_OperationFailedException unable to complete request 
-     *  @throws osid_PermissionDeniedException authorization failure occurred 
-     *  @throws osid_UnsupportedException <code> 
-     *          hasRecordType(courseRecordType) </code> is <code> false 
-     *          </code> 
      *  @compliance mandatory This method must be implemented. 
      */
-    public function getCourseSearchOrderRecord(osid_type_Type $courseRecordType) {
-    	throw new osid_UnimplementedException();
+    public function orderByInstructor() {
+    	$this->addOrderColumns(array('SYVINST_LAST_NAME', 'SYVINST_FIRST_NAME'));
+		$this->addTableJoin('LEFT JOIN syvinst ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)');
     }
+    
 
 }

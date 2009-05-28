@@ -178,11 +178,64 @@ class banner_course_CourseOfferingSearchSessionTest
     	
         $results = $this->session->getCourseOfferingsBySearch($query, $search);
        	$this->assertType('osid_course_CourseOfferingSearchResults', $results);
-       	$this->assertEquals(1111, $results->getResultSize());
+//        	print $results->debug();
+       	$this->assertEquals(3, $results->getResultSize());
        	
        	$offerings = $results->getCourseOfferings();
-       	$this->assertEquals(1111, $offerings->available());
+       	$this->assertEquals(3, $offerings->available());
        	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
+    }
+    
+    /**
+     * @todo Implement testGetCourseOfferingsBySearch().
+     */
+    public function testGetCourseOfferingsBySearchWithOrder()
+    {
+        $query = $this->session->getCourseOfferingQuery();
+    	
+    	$query->matchTermId($this->termId, true);
+    	
+    	$search = $this->session->getCourseOfferingSearch();
+    	
+    	$order = $this->session->getCourseOfferingSearchOrder();
+    	$order->orderByTitle();
+    	$order->ascend();
+    	$search->orderCourseOfferingResults($order);
+    	
+    	// Set up our first result set.
+        $results = $this->session->getCourseOfferingsBySearch($query, $search);
+       	$this->assertType('osid_course_CourseOfferingSearchResults', $results);
+//        	print $results->debug();
+       	$this->assertEquals(8, $results->getResultSize());
+       	
+       	$offerings = $results->getCourseOfferings();
+       	$this->assertEquals(8, $offerings->available());
+       	$firstTitles = array();
+       	while ($offerings->hasNext()) {
+       		$firstTitles[] = $offerings->getNextCourseOffering()->getTitle();
+       	}
+       	
+       	// Set up our second result-set.
+       	$order->descend();
+       	$search->orderCourseOfferingResults($order);
+       	
+       	$results = $this->session->getCourseOfferingsBySearch($query, $search);
+       	$this->assertType('osid_course_CourseOfferingSearchResults', $results);
+//        	print $results->debug();
+       	$this->assertEquals(8, $results->getResultSize());
+       	
+       	$offerings = $results->getCourseOfferings();
+       	$this->assertEquals(8, $offerings->available());
+       	$secondTitles = array();
+       	while ($offerings->hasNext()) {
+       		$secondTitles[] = $offerings->getNextCourseOffering()->getTitle();
+       	}
+       	$secondTitles = array_reverse($secondTitles);
+       	
+       	// Check that the titles match
+       	foreach ($firstTitles as $key => $val) {
+       		$this->assertEquals($val, $secondTitles[$key]);
+       	}
     }
 }
 ?>

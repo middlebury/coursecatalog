@@ -45,6 +45,7 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
         $this->natsciDivTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/division/NSCI');
 		
 		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		$this->otherType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:other');
 		
 		$this->lectureType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/LCT');
 		$this->labType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/LAB');
@@ -71,6 +72,14 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     public function testGetWhereClause()
     {
         $this->assertType('string', $this->object->getWhereClause());
+    }
+    
+    /**
+     * 
+     */
+    public function testGetAdditionalTableJoins()
+    {
+        $this->assertType('array', $this->object->getAdditionalTableJoins());
     }
 
     /**
@@ -1519,10 +1528,17 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
      */
     public function testGetCourseOfferingQueryRecord()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $record = $this->object->getCourseOfferingQueryRecord($this->instructorsType);
+        $this->assertType('osid_course_CourseOfferingQueryRecord', $record);
+        $this->assertType('types_course_CourseOfferingInstructorsQueryRecord', $record);
+    }
+    
+    /**
+     * @expectedException osid_UnsupportedException
+     */
+    public function testGetCourseOfferingQueryRecordOther()
+    {
+        $record = $this->object->getCourseOfferingQueryRecord($this->otherType);
     }
     
     /**
@@ -1530,7 +1546,8 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
      */
     public function testMatchInstructorId()
     {
-        $this->object->matchInstructorId($this->barryId, true);
+    	$record = $this->object->getCourseOfferingQueryRecord($this->instructorsType);
+        $record->matchInstructorId($this->barryId, true);
 
         $params = $this->object->getParameters();
         $this->assertEquals('1000002', $params[0]);
@@ -1548,7 +1565,8 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
      */
     public function testMatchSecondInstructorId()
     {
-        $this->object->matchInstructorId($this->calvinId, true);
+    	$record = $this->object->getCourseOfferingQueryRecord($this->instructorsType);
+        $record->matchInstructorId($this->calvinId, true);
 
         $params = $this->object->getParameters();
         $this->assertEquals('1000003', $params[0]);
@@ -1566,8 +1584,9 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
      */
     public function testMatch2InstructorIds()
     {
-        $this->object->matchInstructorId($this->barryId, true);
-        $this->object->matchInstructorId($this->calvinId, true);
+        $record = $this->object->getCourseOfferingQueryRecord($this->instructorsType);
+        $record->matchInstructorId($this->barryId, true);
+        $record->matchInstructorId($this->calvinId, true);
 
         $params = $this->object->getParameters();
         $this->assertEquals('1000002', $params[0]);

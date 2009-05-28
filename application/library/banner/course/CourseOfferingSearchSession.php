@@ -165,7 +165,7 @@ class banner_course_CourseOfferingSearchSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingsByQuery(osid_course_CourseOfferingQuery $courseQuery) {
-    	return new banner_course_CourseOfferingSearchList($this->manager->getDB(), $this, $this->getCourseCatalogId(), $courseQuery);
+    	return new banner_course_CourseOfferingSearchList($this->manager->getDB(), $this, $this->getCourseCatalogId(), $courseQuery, $this->getCourseOfferingSearch());
     }
 
 
@@ -178,7 +178,7 @@ class banner_course_CourseOfferingSearchSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingSearch() {
-    	return new banner_course_CourseOfferingSearch();
+    	return new banner_course_CourseOfferingSearch($this);
     }
 
 
@@ -218,7 +218,7 @@ class banner_course_CourseOfferingSearchSession
      */
     public function getCourseOfferingsBySearch(osid_course_CourseOfferingQuery $courseOfferingQuery, 
                                                osid_course_CourseOfferingSearch $courseOfferingSearch) {
-    	throw new osid_UnimplementedException();
+    	return new banner_course_CourseOfferingSearchList($this->manager->getDB(), $this, $this->getCourseCatalogId(), $courseOfferingQuery, $courseOfferingSearch);
     }
 
 }

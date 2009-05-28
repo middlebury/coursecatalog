@@ -16,6 +16,124 @@ class banner_course_CourseOfferingSearch
     implements osid_course_CourseOfferingSearch
 {
 
+	/**
+	 * Constructor
+	 * 
+	 * @param banner_course_AbstractCourseOfferingSession $session
+	 * @return void
+	 * @access public
+	 * @since 5/28/09
+	 */
+	public function __construct (banner_course_AbstractCourseOfferingSession $session) {
+		$this->session = $session;
+		
+		$this->limit = '';
+		$this->order = null;
+		
+		$this->clauseSets = array();
+		$this->parameters = array();
+	}
+	
+	/**
+	 * Add a clause. All clauses in the same set will be OR'ed, sets will be AND'ed.
+	 * 
+	 * @param string $set 
+	 * @param string $where A where clause with parameters in '?' form.
+	 * @param array $parameters An indexed array of parameters
+     * @param boolean $match <code> true </code> for a positive match, <code> 
+     *          false </code> for a negative match 
+	 * @return void
+	 * @access protected
+	 * @since 5/20/09
+	 */
+	protected function addWhereClause ($set, $where, array $parameters) {
+		$numParams = preg_match_all('/\?/', $where, $matches);
+		if ($numParams === false)
+			throw new osid_OperationFailedException('An error occured in matching.');
+		if ($numParams != count($parameters))
+			throw new osid_InvalidArgumentException('The number of \'?\'s must match the number of parameters.');
+		
+		if (!isset($this->clauseSets[$set]))
+			$this->clauseSets[$set] = array();
+		if (!isset($this->parameters[$set]))
+			$this->parameters[$set] = array();
+		
+		$this->clauseSets[$set][] = $where;
+		$this->parameters[$set][] = $parameters;
+	}
+	
+	/**
+	 * Answer the LIMIT clause
+	 * 
+	 * @return string
+	 * @access public
+	 * @since 5/28/09
+	 */
+	public function getLimitClause () {
+		return $this->limit;
+	}
+	
+	/**
+	 * Answer the ORDER BY clause
+	 * 
+	 * @return string
+	 * @access public
+	 * @since 5/28/09
+	 */
+	public function getOrderByClause () {
+		if (is_null($this->order))
+			return '';
+		else
+			return $this->order->getOrderByClause();
+	}
+	
+	/**
+	 * Answer the SQL WHERE clause that reflects our current state
+	 * 
+	 * @return string
+	 * @access public
+	 * @since 5/20/09
+	 */
+	public function getWhereClause () {
+		$sets = array();
+		foreach ($this->clauseSets as $set) {
+			$sets[] = '('.implode("\n\t\tOR ", $set).')';
+		}
+		
+		return implode("\n\tAND ", $sets);
+	}
+	
+	/**
+	 * Answer the array of parameters that matches our current state
+	 * 
+	 * @return array
+	 * @access public
+	 * @since 5/20/09
+	 */
+	public function getParameters () {
+		$params = array();
+		foreach ($this->parameters as $set) {
+			foreach ($set as $clauseParams) {
+				$params = array_merge($params, $clauseParams);
+			}
+		}
+		return $params;
+	}
+	
+	/**
+	 * Answer any additional table join clauses to use
+	 * 
+	 * @return array
+	 * @access public
+	 * @since 4/29/09
+	 */
+	public function getAdditionalTableJoins () {
+		if ($this->order)
+			return $this->order->getAdditionalTableJoins();
+		else
+			return array();
+	}
+
 /*********************************************************
  * Methods from osid_OsidSearch
  *********************************************************/
@@ -38,12 +156,14 @@ class banner_course_CourseOfferingSearch
     	if (is_null($start) || is_null($end))
     		throw new osid_NullArgumentException('$start and $end must be integers.');
     	if (!is_int($start) || !is_int($end))
-    		throw new osid_NullArgumentException('$start and $end must be integers.');
+    		throw new osid_InvalidArgumentException('$start and $end must be integers.');
+    	if ($start < 1)
+    		throw new osid_InvalidArgumentException('$start must be greater than or equal to 1.');
 		if ($start >= $end)
-    		throw new osid_NullArgumentException('$start must be less than $end.');
+    		throw new osid_InvalidArgumentException('$start must be less than $end.');
     	
     	
-    	// @todo actually do something here.
+    	$this->limit = 'LIMIT '.$start.', '.$end;
     }
 
 
@@ -83,12 +203,12 @@ class banner_course_CourseOfferingSearch
      */
     public function searchWithinCourseOfferingResults(osid_course_CourseOfferingSearchResults $results) {
     	$ids = array();
-    	$courseOfferings = $results->getCourseOfferings();
-    	while ($courseOfferings->hasNext()) {
-    		$ids[] = $courseOfferings->getNextCourseOffering()->getId();
+    	while ($results->hasNext()) {
+    		$id = $results->getNextCourseOffering()->getId();
+    		$this->addWhereClause('course_offering_id', '(SSBSECT_TERM_CODE = ? AND SSBSECT_CRN = ?)', 
+    			array(	$this->session->getTermCodeFromOfferingId($id),
+    					$this->session->getCrnFromOfferingId($id)));
     	}
-    	
-    	$this->searchAmongCourseOfferings(new phpkit_id_ArrayIdList($ids));
     }
 
 	
@@ -101,7 +221,12 @@ class banner_course_CourseOfferingSearch
      *  @compliance mandatory This method must be implemented. 
      */
     public function searchAmongCourseOfferings(osid_id_IdList $courseOfferingIds) {
-    	$this->ids = $courseOfferingIds;
+    	while ($courseOfferingIds->hasNext()) {
+    		$id = $courseOfferingIds->getNextId();
+    		$this->addWhereClause('course_offering_id', '(SSBSECT_TERM_CODE = ? AND SSBSECT_CRN = ?)', 
+    			array(	$this->session->getTermCodeFromOfferingId($id),
+    					$this->session->getCrnFromOfferingId($id)));
+    	}
     }
 
 
