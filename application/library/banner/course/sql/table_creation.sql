@@ -775,7 +775,9 @@ CREATE TABLE IF NOT EXISTS `syvinst` (
   `SYVINST_CRN` varchar(5) NOT NULL default '' COMMENT 'The course reference of the course that the instructor was assigned to',
   `SYVINST_PIDM` decimal(8,0) NOT NULL default '0' COMMENT 'The Pidm of the faculty member',
   `SYVINST_LAST_NAME` varchar(60) NOT NULL default '' COMMENT 'This field defines the last name of person.',
-  `SYVINST_FIRST_NAME` varchar(15) default NULL COMMENT 'This field identifies the first name of person.'
+  `SYVINST_FIRST_NAME` varchar(15) default NULL COMMENT 'This field identifies the first name of person.',
+  PRIMARY KEY  (`SYVINST_TERM_CODE`,`SYVINST_CRN`,`SYVINST_PIDM`),
+  KEY `SYVINST_PIDM` (`SYVINST_PIDM`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --

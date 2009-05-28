@@ -49,6 +49,10 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
 		$this->lectureType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/LCT');
 		$this->labType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/LAB');
 		$this->discussionType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/DSC');
+		
+    	$this->barryId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/1000002');
+    	$this->calvinId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/1000003');
+
     }
 
     /**
@@ -1519,6 +1523,78 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
         $this->markTestIncomplete(
           'This test has not been implemented yet.'
         );
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchInstructorId()
+    {
+        $this->object->matchInstructorId($this->barryId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('1000002', $params[0]);
+        $this->assertFalse(isset($params[1]));
+        
+        $this->assertEquals('(SYVINST_PIDM = ?)', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(20, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchSecondInstructorId()
+    {
+        $this->object->matchInstructorId($this->calvinId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('1000003', $params[0]);
+        $this->assertFalse(isset($params[1]));
+        
+        $this->assertEquals('(SYVINST_PIDM = ?)', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(3, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatch2InstructorIds()
+    {
+        $this->object->matchInstructorId($this->barryId, true);
+        $this->object->matchInstructorId($this->calvinId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('1000002', $params[0]);
+        $this->assertEquals('1000003', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals("(SYVINST_PIDM = ?\n\t\tOR SYVINST_PIDM = ?)", $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(23, $courseOfferings->available());
+    }
+
+    /**
+     * 
+     */
+    public function testSupportsInstructorQuery()
+    {
+        $this->assertFalse($this->object->supportsInstructorQuery());
+    }
+
+    /**
+     * @expectedException osid_UnimplementedException
+     */
+    public function testGetInstructorQuery()
+    {
+        $this->object->getInstructorQuery();
     }
 }
 ?>

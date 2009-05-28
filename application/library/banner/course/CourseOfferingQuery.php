@@ -15,7 +15,9 @@
  * @package org.osid.course
  */
 class banner_course_CourseOfferingQuery
-    implements osid_course_CourseOfferingQuery
+    implements osid_course_CourseOfferingQuery,
+    osid_course_CourseOfferingQueryRecord,
+    types_course_CourseOfferingInstructorsQueryRecord
 {
 	
 	/**
@@ -329,7 +331,7 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchRecordType(osid_type_Type $recordType, $match) {
-    	if ($recordType->isEqual($this->instructorsType))
+    	if ($this->implementsRecordType($recordType))
     		$this->addClause('record_type', 'TRUE', array(), $match);
     	else
     		$this->addClause('record_type', 'FALSE', array(), $match);
@@ -351,10 +353,43 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function hasRecordType(osid_type_Type $recordType) {
-    	return $recordType->isEqual($this->instructorsType);
+    	return $this->implementsRecordType($recordType);
     }
 
+/*********************************************************
+ * Methods From osid_course_CourseOfferingQueryRecord
+ *********************************************************/
 
+	/**
+     *  Gets the <code> CourseOfferingQuery </code> from which this record 
+     *  originated. 
+     *
+     *  @return object osid_course_CourseOfferingQuery the course offering 
+     *          query 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function getCourseOfferingQuery() {
+    	return $this;
+    }
+    
+    /**
+     *  Tests if the given type is implemented by this record. Other types 
+     *  than that directly indicated by <code> getType() </code> may be 
+     *  supported through an inheritance scheme where the given type specifies 
+     *  a record that is a parent interface of the interface specified by 
+     *  <code> getType(). </code> 
+     *
+     *  @param object osid_type_Type $recordType a type 
+     *  @return boolean <code> true </code> if the given record <code> Type 
+     *          </code> is implemented by this record, <code> false </code> 
+     *          otherwise 
+     *  @throws osid_NullArgumentException <code> recordType </code> is <code> 
+     *          null </code> 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function implementsRecordType(osid_type_Type $recordType) {
+    	return $recordType->isEqual($this->instructorsType);
+    }
 
 /*********************************************************
  * Methods from osid_course_CourseOfferingQuery
@@ -379,14 +414,16 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingQueryRecord(osid_type_Type $courseOfferingRecordType) {
-    	if (!$this->hasRecordType($courseOfferingRecordType))
+    	if (!$this->implementsRecordType($courseOfferingRecordType))
     		throw new osid_UnsupportedException('The record type passed is not supported.');
     	
-    	
-    	throw new osid_UnimplementedException();
+    	return $this;
     }
 
 
+/*********************************************************
+ * Matching methods from osid_course_CourseOfferingQuery
+ *********************************************************/
     /**
      *  Adds a title for this query. 
      *
@@ -1121,5 +1158,52 @@ class banner_course_CourseOfferingQuery
     public function matchAnyURL($match) {
     	throw new osid_UnimplementedException();
     }
+
+
+/*********************************************************
+ * Methods from types_course_CourseOfferingInstructorsQueryRecord
+ *********************************************************/
+
+	/**
+     *  Sets the instructor <code> Id </code> for this query to match course 
+     *  offerings that have a related instructor. 
+     *
+     *  @param object osid_id_Id $instructorId an instructor <code> Id </code> 
+     *  @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     *  @throws osid_NullArgumentException <code> instructorId </code> is <code> 
+     *          null </code> 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function matchInstructorId(osid_id_Id $instructorId, $match) {
+		$this->addClause('instructor_id', 'SYVINST_PIDM = ?', array($this->session->getDatabaseIdString($instructorId, 'resource/person/')), $match);
+		$this->addTableJoin('LEFT JOIN syvinst ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)');
+    }
+
+    /**
+     *  Tests if an <code> InstructorQuery </code> is available. 
+     *
+     *  @return boolean <code> true </code> if a instructor query interface is 
+     *          available, <code> false </code> otherwise 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function supportsInstructorQuery() {
+    	return false;
+    }
+
+    /**
+     *  Gets the query interface for an instructor. Multiple retrievals produce a 
+     *  nested <code> OR </code> term. 
+     *
+     *  @return object types_course_CourseOfferingInstructorQuery the instructor query 
+     *  @throws osid_UnimplementedException <code> supportsInstructorQuery() 
+     *          </code> is <code> false </code> 
+     *  @compliance optional This method must be implemented if <code> 
+     *              supportsInstructorQuery() </code> is <code> true. </code> 
+     */
+    public function getInstructorQuery() {
+    	throw new osid_UnimplementedException();
+    }
+    
 
 }
