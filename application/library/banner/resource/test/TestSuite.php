@@ -27,6 +27,7 @@ class banner_resource_test_TestSuite extends PHPUnit_Framework_TestSuite
         
         // Initialize our testing database
         $db = $this->sharedFixture['CourseManager']->getDB();
+        harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/../sql/drop_tables.sql', $db);
         harmoni_SQLUtils::runSQLfile($this->courseDir.'/sql/table_creation.sql', $db);
         harmoni_SQLUtils::runSQLfile($this->courseDir.'/sql/test_data.sql', $db);
         
