@@ -98,10 +98,10 @@ class banner_course_CourseOfferingQuery
 	public function getWhereClause () {
 		$sets = array();
 		foreach ($this->clauseSets as $set) {
-			$sets[] = '('.implode(' OR ', $set).')';
+			$sets[] = '('.implode("\n\t\tOR ", $set).')';
 		}
 		
-		return implode(' AND ', $sets);
+		return implode("\n\tAND ", $sets);
 	}
 	
 	/**

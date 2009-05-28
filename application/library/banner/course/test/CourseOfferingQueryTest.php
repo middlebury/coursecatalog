@@ -24,6 +24,8 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
     	$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
         
     	$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
+        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
+
 	 	$this->manager = $this->sharedFixture['CourseManager'];
         $this->session = $this->manager->getCourseOfferingSearchSessionForCatalog($this->mcugId);
         $this->object = $this->session->getCourseOfferingQuery();
@@ -1047,7 +1049,8 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('200790', $params[1]);
         $this->assertFalse(isset($params[2]));
         
-        $this->assertEquals('(SSBSECT_TERM_CODE = ? OR SSBSECT_TERM_CODE = ?)', $this->object->getWhereClause());
+        $this->assertEquals('(SSBSECT_TERM_CODE = ?
+		OR SSBSECT_TERM_CODE = ?)', $this->object->getWhereClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
@@ -1070,7 +1073,9 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('0104', $params[3]);
         $this->assertFalse(isset($params[4]));
         
-        $this->assertEquals('(SSBSECT_TERM_CODE = ? OR SSBSECT_TERM_CODE = ?) AND ((SSBSECT_SUBJ_CODE = ? AND SSBSECT_CRSE_NUMB = ?))', $this->object->getWhereClause());
+        $this->assertEquals('(SSBSECT_TERM_CODE = ?
+		OR SSBSECT_TERM_CODE = ?)
+	AND ((SSBSECT_SUBJ_CODE = ? AND SSBSECT_CRSE_NUMB = ?))', $this->object->getWhereClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
@@ -1096,7 +1101,10 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('0201', $params[5]);
         $this->assertFalse(isset($params[6]));
         
-        $this->assertEquals('(SSBSECT_TERM_CODE = ? OR SSBSECT_TERM_CODE = ?) AND ((SSBSECT_SUBJ_CODE = ? AND SSBSECT_CRSE_NUMB = ?) OR (SSBSECT_SUBJ_CODE = ? AND SSBSECT_CRSE_NUMB = ?))', $this->object->getWhereClause());
+        $this->assertEquals('(SSBSECT_TERM_CODE = ?
+		OR SSBSECT_TERM_CODE = ?)
+	AND ((SSBSECT_SUBJ_CODE = ? AND SSBSECT_CRSE_NUMB = ?)
+		OR (SSBSECT_SUBJ_CODE = ? AND SSBSECT_CRSE_NUMB = ?))', $this->object->getWhereClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
@@ -1204,7 +1212,8 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('LCT', $params[1]);
         $this->assertFalse(isset($params[2]));
         
-        $this->assertEquals('(SCBCRSE_DEPT_CODE = ?) AND (SSBSECT_SCHD_CODE = ?)', $this->object->getWhereClause());
+        $this->assertEquals('(SCBCRSE_DEPT_CODE = ?)
+	AND (SSBSECT_SCHD_CODE = ?)', $this->object->getWhereClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
@@ -1224,7 +1233,8 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('DED', $params[1]);
         $this->assertFalse(isset($params[2]));
         
-        $this->assertEquals('(SCBCRSE_DEPT_CODE = ?) AND (SSRATTR_ATTR_CODE = ?)', $this->object->getWhereClause());
+        $this->assertEquals('(SCBCRSE_DEPT_CODE = ?)
+	AND (SSRATTR_ATTR_CODE = ?)', $this->object->getWhereClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
