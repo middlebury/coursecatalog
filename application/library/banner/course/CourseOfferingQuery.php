@@ -1048,7 +1048,15 @@ class banner_course_CourseOfferingQuery
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchCourseCatalogId(osid_id_Id $courseCatalogId, $match) {
-    	throw new osid_UnimplementedException();
+    	$this->addClause('course_catalog_id', 'SSBSECT_TERM_CODE IN (
+			SELECT
+				term_code
+			FROM
+				catalog_term
+			WHERE
+				catalog_id = ?)', 
+    		array($this->session->getDatabaseIdString($courseCatalogId, 'catalog/')),
+    		$match);
     }
 
 

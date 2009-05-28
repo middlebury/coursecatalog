@@ -1420,10 +1420,56 @@ class banner_course_CourseOfferingQueryTest extends PHPUnit_Framework_TestCase
      */
     public function testMatchCourseCatalogId()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->matchCourseCatalogId($this->mcugId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('MCUG', $params[0]);
+        $this->assertFalse(isset($params[1]));
+        
+        $this->assertEquals('(SSBSECT_TERM_CODE IN (
+			SELECT
+				term_code
+			FROM
+				catalog_term
+			WHERE
+				catalog_id = ?))', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(107, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatch2CourseCatalogIds()
+    {
+        $this->object->matchCourseCatalogId($this->mcugId, true);
+        $this->object->matchCourseCatalogId($this->miisId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('MCUG', $params[0]);
+        $this->assertEquals('MIIS', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals('(SSBSECT_TERM_CODE IN (
+			SELECT
+				term_code
+			FROM
+				catalog_term
+			WHERE
+				catalog_id = ?)
+		OR SSBSECT_TERM_CODE IN (
+			SELECT
+				term_code
+			FROM
+				catalog_term
+			WHERE
+				catalog_id = ?))', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(107, $courseOfferings->available());
     }
 
     /**
