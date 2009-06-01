@@ -57,23 +57,27 @@ class ResourcesController
 		$lookupSession->useFederatedBinView();
 		$this->view->resource = $lookupSession->getResource($id);
 		
-// 		$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSession();
-// 		$offeringSearchSession->useFederatedCourseCatalogView();
-// 		if ($this->_getParam('term')) {
-// 			$termId = self::getOsidIdFromString($this->_getParam('term'));
-// 			$this->view->offerings = $offeringSearchSession->getCourseOfferingsByTermByTopic($termId, $id);
-// 			
-// 			$termLookupSession = self::getCourseManager()->getTermLookupSession();
-// 			$termLookupSession->useFederatedCourseCatalogView();
-// 			$this->view->term = $termLookupSession->getTerm($termId);
-// 		} else {
-// 			$this->view->offerings = $offeringSearchSession->getCourseOfferingsByTopic($id);
-// 		}
+		$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSession();
+		$offeringSearchSession->useFederatedCourseCatalogView();
+		$query = $offeringSearchSession->getCourseOfferingQuery();
+		$query->matchInstructorId($id, true);
+		
+		if ($this->_getParam('term')) {
+			$termId = self::getOsidIdFromString($this->_getParam('term'));
+			
+			$query->matchTermId($termId, true);
+			
+			$termLookupSession = self::getCourseManager()->getTermLookupSession();
+			$termLookupSession->useFederatedCourseCatalogView();
+			$this->view->term = $termLookupSession->getTerm($termId);
+		}
+		
+		$this->view->offerings = $offeringSearchSession->getCourseOfferingsByQuery($query);
 		
 		// Don't do the work to display instructors if we have a very large number of
 		// offerings.
-// 		if ($this->view->offerings->available() > 200)
-// 			$this->view->hideOfferingInstructors = true;
+		if ($this->view->offerings->available() > 200)
+			$this->view->hideOfferingInstructors = true;
 		
 		// Set the selected Catalog Id.
 		if ($this->_getParam('catalog')) {
@@ -86,13 +90,13 @@ class ResourcesController
 		
 		$this->view->offeringsTitle = "Sections";
 		
-// 		$allParams = array();
-// 		$allParams['topic'] = $this->_getParam('topic');
-// 		if ($this->getSelectedCatalogId())
-// 			$allParams['catalog'] = self::getStringFromOsidId($this->getSelectedCatalogId());
-// 		$this->view->offeringsForAllTermsUrl = $this->_helper->url('view', 'topics', null, $allParams);
-// 		
-//  		$this->render('offerings', null, true);
+		$allParams = array();
+		$allParams['resource'] = $this->_getParam('resource');
+		if ($this->getSelectedCatalogId())
+			$allParams['catalog'] = self::getStringFromOsidId($this->getSelectedCatalogId());
+		$this->view->offeringsForAllTermsUrl = $this->_helper->url('view', 'resources', null, $allParams);
+		
+ 		$this->render('offerings', null, true);
 	}
 	
 }
