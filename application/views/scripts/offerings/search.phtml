@@ -120,7 +120,12 @@ if (isset($this->paginator)) {
 ?>
 <h2>Results</h2>
 
-<?php print $this->paginationControl($this->paginator, 'Sliding', 'ItemPaginationControl.phtml', array('search_params' => $this->searchParams)); ?>
+<?php
+if (!count($this->paginator)) {
+	print "<div class='search_empty'>No Matches</div>";
+}
+
+print $this->paginationControl($this->paginator, 'Sliding', 'ItemPaginationControl.phtml', array('search_params' => $this->searchParams)); ?>
 
 <table class='search_results'>
 	<tbody>
