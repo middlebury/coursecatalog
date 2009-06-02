@@ -34,6 +34,8 @@ abstract class AbstractCatalogController
 	public function init () {
 		// Add the catalog list for menu generation.
 		$this->view->menuCatalogs = self::getCourseManager()->getCourseCatalogLookupSession()->getCourseCatalogs();
+		$this->view->catalogIdString = $this->_getParam('catalog');
+		$this->view->termIdString = $this->_getParam('term');
 	}
 	
 	/**

@@ -42,6 +42,8 @@ class TermsController
 		
 		$this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
 		$this->view->headTitle($this->view->title);
+		
+		$this->view->menuIsTerms = true;
 	}
 	
 	/**
@@ -71,6 +73,8 @@ class TermsController
 		// Set the title
 		$this->view->title = $this->view->term->getDisplayName();
 		$this->view->headTitle($this->view->title);
+		
+		$this->view->menuIsTerms = true;
 	}
 	
 }

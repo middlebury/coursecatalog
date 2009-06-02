@@ -59,6 +59,8 @@ class OfferingsController
 		
 		$this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
 		$this->view->headTitle($this->view->title);
+		
+		$this->view->menuIsOfferings = true;
 	}
 	
 	/**
@@ -165,6 +167,8 @@ class OfferingsController
 		
 		$this->setSelectedCatalogId($offeringSearchSession->getCourseCatalogId());
 		$this->view->headTitle($this->view->title);
+		
+		$this->view->menuIsSearch = true;
 	
 	}
 	
@@ -207,6 +211,8 @@ class OfferingsController
  			$this->view->offering->getCourseId()
  		);
  		$this->render('offerings', null, true);
+ 		
+ 		$this->view->menuIsOfferings = true;
 	}
 	
 }
