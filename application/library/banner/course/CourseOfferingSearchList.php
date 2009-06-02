@@ -35,6 +35,7 @@ class banner_course_CourseOfferingSearchList
 	 * @since 4/13/09
 	 */
 	public function __construct (PDO $db, banner_course_CourseOfferingSessionInterface $session, osid_id_Id $catalogId, osid_course_CourseOfferingQuery $courseQuery, osid_course_CourseOfferingSearch $courseOfferingSearch) {
+		$this->db = $db;
 		$this->courseQuery = $courseQuery;
 		
 		$this->where = $courseQuery->getWhereClause();
@@ -136,7 +137,23 @@ class banner_course_CourseOfferingSearchList
      *  @compliance mandatory This method must be implemented. 
      */
     public function getResultSize() {
-    	return $this->available();
+    	if (!isset($this->resultSize)) {
+	    	if ($this->limit) {
+	    		$tmpLimit = $this->limit;
+	    		$this->limit = null;
+	    		
+	    		$stmt = $this->db->prepare($this->getCountQuery($this->getQuery()));
+				$stmt->execute($this->getAllInputParameters());
+				$this->resultSize = intval($stmt->fetchColumn());
+				$stmt->closeCursor();
+				
+	    		$this->limit = $tmpLimit;
+	    	} else {
+	    		$this->resultSize = $this->available();
+	    	}
+    	
+    	}
+    	return $this->resultSize;
     }
 
 

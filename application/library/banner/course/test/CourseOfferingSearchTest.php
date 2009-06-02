@@ -110,7 +110,9 @@ class banner_course_CourseOfferingSearchTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('LIMIT 1, 10', $this->object->getLimitClause());
         
         $results = $this->session->getCourseOfferingsBySearch($this->query, $this->object);
-        $this->assertEquals(10, $results->getResultSize());
+        $this->assertEquals(12, $results->getResultSize());
+        
+        $this->assertEquals(10, $results->getCourseOfferings()->available());
 
     }
     

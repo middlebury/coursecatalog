@@ -179,7 +179,7 @@ class banner_course_CourseOfferingSearchSessionTest
         $results = $this->session->getCourseOfferingsBySearch($query, $search);
        	$this->assertType('osid_course_CourseOfferingSearchResults', $results);
 //        	print $results->debug();
-       	$this->assertEquals(3, $results->getResultSize());
+       	$this->assertEquals(8, $results->getResultSize());
        	
        	$offerings = $results->getCourseOfferings();
        	$this->assertEquals(3, $offerings->available());

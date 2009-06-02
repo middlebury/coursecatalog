@@ -56,10 +56,10 @@ abstract class banner_course_AbstractCourseOfferingList
 	 * Answer the query
 	 * 
 	 * @return string
-	 * @access private
+	 * @access protected
 	 * @since 4/17/09
 	 */
-	private function getQuery () {
+	protected function getQuery () {
 		return "
 SELECT 
 	SSBSECT_TERM_CODE,
@@ -119,10 +119,10 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 	 * Answer the input parameters
 	 * 
 	 * @return array
-	 * @access private
+	 * @access protected
 	 * @since 4/17/09
 	 */
-	private function getAllInputParameters () {
+	protected function getAllInputParameters () {
 		$params = $this->getInputParameters();
 		if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->session->getCombinedCatalogId()))
 			$params[':catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
