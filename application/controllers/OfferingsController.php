@@ -98,7 +98,9 @@ class OfferingsController
 	
 		$query = $offeringSearchSession->getCourseOfferingQuery();
 		$search = $offeringSearchSession->getCourseOfferingSearch();
-		$search->limitResultSet(1, 20);
+		$start = 1;
+		$end = 20;
+		$search->limitResultSet($start, $end);
 		
 		// Add our parameters to the search query
 		if ($this->_getParam('department')) {
@@ -145,8 +147,18 @@ class OfferingsController
 		}
 		
 		// Run the query if submitted.
-		if ($this->_getParam('submit'))
-			$this->view->offerings = $offeringSearchSession->getCourseOfferingsBySearch($query, $search);
+		if ($this->_getParam('submit')) {
+			$this->view->searchResults = $offeringSearchSession->getCourseOfferingsBySearch($query, $search);
+			$this->view->offerings = $this->view->searchResults->getCourseOfferings();
+			
+			if ($start == 1 && !$this->view->offerings->available()) {
+				$this->view->start = 0;
+			} else {
+				$this->view->start = $start;
+			}
+			
+			$this->view->end = ($start - 1 + $this->view->offerings->available());
+		}
 			
 	/*********************************************************
 	 * Options for output

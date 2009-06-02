@@ -98,9 +98,18 @@ while ($this->requirements->hasNext()) {
 	</table>
 <form>
 
-<?php if (isset($this->offerings)) { ?>
-<h2>Results</h2>
+<?php
+/*********************************************************
+ * Search results
+ *********************************************************/
+if (isset($this->offerings)) { 
 
+?>
+<h2>Results</h2>
+<div class='search_results_metadata'>
+	<?php print $this->start; ?> to <?php print $this->end; ?> of
+	<?php print $this->searchResults->getResultSize(); ?>
+</div>
 <table class='search_results'>
 	<tbody>
 <?php 
