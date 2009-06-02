@@ -322,7 +322,11 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getLocation() {
-    	return $this->session->getResourceLookupSession()->getResource($this->getLocationId());
+    	try {
+	    	return $this->session->getResourceLookupSession()->getResource($this->getLocationId());
+	    } catch (osid_NotFoundException $e) {
+	    	throw new osid_OperationFailedException($e->getMessage());
+	    }
     }
 
 
