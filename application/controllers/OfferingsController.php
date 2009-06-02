@@ -19,7 +19,24 @@
 class OfferingsController
 	extends AbstractCatalogController
 {
+	
+	/**
+     * Initialize object
+     *
+     * Called from {@link __construct()} as final step of object instantiation.
+     *
+     * @return void
+     */
+    public function init() {
+		$this->instructorType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		parent::init();
 		
+		$this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
+        $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
+        $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
+        $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
+	}
+	
 	/**
 	 * Print out a list of all courses
 	 * 
@@ -42,6 +59,103 @@ class OfferingsController
 		
 		$this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
 		$this->view->headTitle($this->view->title);
+	}
+	
+	/**
+	 * Display a search form and search results
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 6/1/09
+	 */
+	public function searchAction () {
+		if ($this->_getParam('catalog')) {
+			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
+			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
+			$topicLookupSession = self::getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+			$this->view->title = 'Search in '.$offeringSearchSession->getCourseCatalog()->getDisplayName();
+		} else {
+			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSession();
+			$topicLookupSession = self::getCourseManager()->getTopicLookupSession();
+			$this->view->title = 'Search in All Catalogs';
+		}
+		$topicLookupSession->useFederatedCourseCatalogView();
+		$offeringSearchSession->useFederatedCourseCatalogView();
+		
+		
+	/*********************************************************
+	 * Build option lists for the search form
+	 *********************************************************/
+		$this->view->departments = $topicLookupSession->getTopicsByGenusType($this->departmentType);
+		$this->view->subjects = $topicLookupSession->getTopicsByGenusType($this->subjectType);
+		$this->view->divisions = $topicLookupSession->getTopicsByGenusType($this->divisionType);
+		$this->view->requirements = $topicLookupSession->getTopicsByGenusType($this->requirementType);
+		
+		
+	/*********************************************************
+	 * Set up and run our search query.
+	 *********************************************************/
+	
+		$query = $offeringSearchSession->getCourseOfferingQuery();
+		$search = $offeringSearchSession->getCourseOfferingSearch();
+		$search->limitResultSet(1, 20);
+		
+		// Add our parameters to the search query
+		if ($this->_getParam('department')) {
+			$query->matchTopicId(self::getOsidIdFromString($this->_getParam('department')), true);
+			$this->view->selectedDepartmentId = self::getOsidIdFromString($this->_getParam('department'));
+		}
+		
+		if ($this->_getParam('subject')) {
+			$query->matchTopicId(self::getOsidIdFromString($this->_getParam('subject')), true);
+			$this->view->selectedSubjectId = self::getOsidIdFromString($this->_getParam('subject'));
+		}
+		
+		if ($this->_getParam('division')) {
+			$query->matchTopicId(self::getOsidIdFromString($this->_getParam('division')), true);
+			$this->view->selectedDivisionId = self::getOsidIdFromString($this->_getParam('division'));
+		}
+			
+		$this->view->selectedRequirementIds = array();
+		if ($this->_getParam('requirement') && count($this->_getParam('requirement'))) {
+			foreach ($this->_getParam('requirement') as $reqIdString) {
+				$reqId = self::getOsidIdFromString($reqIdString);
+				$query->matchTopicId($reqId, true);
+				$this->view->selectedRequirementIds[] = $reqId;
+			}
+		}
+		
+		if ($this->_getParam('instructor')) {
+			if ($query->hasRecordType($this->instructorType)) {
+				$queryRecord = $query->getCourseOfferingQueryRecord($this->instructorType);
+				$queryRecord->matchInstructorId(self::getOsidIdFromString($this->_getParam('instructor')), true);
+			}
+		}
+		
+		if ($this->_getParam('term')) {
+			$termId = self::getOsidIdFromString($this->_getParam('term'));
+			
+			$query->matchTermId($termId, true);
+			
+			$termLookupSession = self::getCourseManager()->getTermLookupSession();
+			$termLookupSession->useFederatedCourseCatalogView();
+			$this->view->term = $termLookupSession->getTerm($termId);
+			
+			$this->view->title .= " ".$this->view->term->getDisplayName();
+		}
+		
+		// Run the query if submitted.
+		if ($this->_getParam('submit'))
+			$this->view->offerings = $offeringSearchSession->getCourseOfferingsBySearch($query, $search);
+			
+	/*********************************************************
+	 * Options for output
+	 *********************************************************/
+	 	
+		
+		$this->setSelectedCatalogId($offeringSearchSession->getCourseCatalogId());
+		$this->view->headTitle($this->view->title);
+	
 	}
 	
 	/**

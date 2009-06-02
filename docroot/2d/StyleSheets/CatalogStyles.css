@@ -14,3 +14,17 @@
 .offering_list .instructor {
 	font-style: italic;
 }
+
+.requirement_group {
+	float: left;
+}
+
+table.search_results th {
+	border: 1px solid #000;
+	vertical-align: top;
+}
+
+table.search_results td {
+	border: 1px solid #000;
+	vertical-align: top;
+}
