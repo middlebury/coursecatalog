@@ -163,7 +163,7 @@ class banner_course_CourseOfferingSearch
     		throw new osid_InvalidArgumentException('$start must be less than $end.');
     	
     	
-    	$this->limit = 'LIMIT '.$start.', '.$end;
+    	$this->limit = 'LIMIT '.($start - 1).', '.($end + 1 - $start);
     }
 
 
