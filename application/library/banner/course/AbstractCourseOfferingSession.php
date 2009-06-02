@@ -289,6 +289,42 @@ ORDER BY
 		return self::$instructorsForOffering_stmt;
 	}
 	
+	private static $requirementTopics_stmt;
+    /**
+     * Answer the requirement topic ids for a given course offering id.
+     * 
+     * @param string osid_id_Id $courseOfferingId
+     * @return array of osid_id_Id objects
+     * @access public
+     * @since 4/27/09
+     */
+    public function getRequirementTopicIdsForCourseOffering (osid_id_Id $courseOfferingId) {
+    	if (!isset(self::$requirementTopics_stmt)) {
+    		$query = "
+SELECT 
+	SSRATTR_ATTR_CODE
+FROM
+	ssrattr
+WHERE
+	SSRATTR_TERM_CODE = :term_code
+	AND SSRATTR_CRN = :crn
+";
+			self::$requirementTopics_stmt = $this->manager->getDB()->prepare($query);
+		}
+		
+		$parameters = array(
+				':term_code' => $this->getTermCodeFromOfferingId($courseOfferingId),
+				':crn' => $this->getCrnFromOfferingId($courseOfferingId)
+			);
+		self::$requirementTopics_stmt->execute($parameters);
+		$topicIds = array();
+		while ($row = self::$requirementTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
+			$topicIds[] = $this->getOsidIdFromString($row['SSRATTR_ATTR_CODE'], 'topic/requirement/');
+    	}
+    	self::$requirementTopics_stmt->closeCursor();
+    	return $topicIds;
+    }
+	
 }
 
 ?>
