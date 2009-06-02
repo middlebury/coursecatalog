@@ -98,24 +98,25 @@ class OfferingsController
 	
 		$query = $offeringSearchSession->getCourseOfferingQuery();
 		$search = $offeringSearchSession->getCourseOfferingSearch();
-		$start = 1;
-		$end = 20;
-		$search->limitResultSet($start, $end);
+		$this->view->searchParams = array();
 		
 		// Add our parameters to the search query
 		if ($this->_getParam('department')) {
 			$query->matchTopicId(self::getOsidIdFromString($this->_getParam('department')), true);
 			$this->view->selectedDepartmentId = self::getOsidIdFromString($this->_getParam('department'));
+			$this->view->searchParams['department'] = $this->_getParam('department');
 		}
 		
 		if ($this->_getParam('subject')) {
 			$query->matchTopicId(self::getOsidIdFromString($this->_getParam('subject')), true);
 			$this->view->selectedSubjectId = self::getOsidIdFromString($this->_getParam('subject'));
+			$this->view->searchParams['subject'] = $this->_getParam('subject');
 		}
 		
 		if ($this->_getParam('division')) {
 			$query->matchTopicId(self::getOsidIdFromString($this->_getParam('division')), true);
 			$this->view->selectedDivisionId = self::getOsidIdFromString($this->_getParam('division'));
+			$this->view->searchParams['division'] = $this->_getParam('division');
 		}
 			
 		$this->view->selectedRequirementIds = array();
@@ -125,6 +126,8 @@ class OfferingsController
 				$query->matchTopicId($reqId, true);
 				$this->view->selectedRequirementIds[] = $reqId;
 			}
+			
+			$this->view->searchParams['requirement'] = $this->_getParam('requirement');
 		}
 		
 		if ($this->_getParam('instructor')) {
@@ -132,10 +135,12 @@ class OfferingsController
 				$queryRecord = $query->getCourseOfferingQueryRecord($this->instructorType);
 				$queryRecord->matchInstructorId(self::getOsidIdFromString($this->_getParam('instructor')), true);
 			}
+			$this->view->searchParams['instructor'] = $this->_getParam('instructor');
 		}
 		
 		if ($this->_getParam('term')) {
 			$termId = self::getOsidIdFromString($this->_getParam('term'));
+			$this->view->searchParams['term'] = $this->_getParam('term');
 			
 			$query->matchTermId($termId, true);
 			
@@ -148,16 +153,9 @@ class OfferingsController
 		
 		// Run the query if submitted.
 		if ($this->_getParam('submit')) {
-			$this->view->searchResults = $offeringSearchSession->getCourseOfferingsBySearch($query, $search);
-			$this->view->offerings = $this->view->searchResults->getCourseOfferings();
-			
-			if ($start == 1 && !$this->view->offerings->available()) {
-				$this->view->start = 0;
-			} else {
-				$this->view->start = $start;
-			}
-			
-			$this->view->end = ($start - 1 + $this->view->offerings->available());
+			$this->view->searchParams['submit'] = $this->_getParam('submit');
+			$this->view->paginator = new Zend_Paginator(new Paginator_Adaptor_CourseOfferingSearch($offeringSearchSession, $query));
+			$this->view->paginator->setCurrentPageNumber($this->_getParam('page'));
 		}
 			
 	/*********************************************************

@@ -1,4 +1,17 @@
-<form action="<?php print $this->url(); ?>" method="get">
+<?php 
+	$formParams = array(
+							'controller'	=> 'offerings',
+							'action'		=> 'search',
+							'department'	=> null,
+							'subject'		=> null,
+							'division'		=> null,
+							'requirement'	=> null,
+							'page'			=> null,
+							'submit'		=> null
+						);
+?>
+
+<form action="<?php print $this->url($formParams); ?>" method="get">
 	<table class='search_options'>
 
 		<tr>
@@ -102,19 +115,17 @@ while ($this->requirements->hasNext()) {
 /*********************************************************
  * Search results
  *********************************************************/
-if (isset($this->offerings)) { 
+if (isset($this->paginator)) { 
 
 ?>
 <h2>Results</h2>
-<div class='search_results_metadata'>
-	<?php print $this->start; ?> to <?php print $this->end; ?> of
-	<?php print $this->searchResults->getResultSize(); ?>
-</div>
+
+<?php print $this->paginationControl($this->paginator, 'Sliding', 'ItemPaginationControl.phtml', array('search_params' => $this->searchParams)); ?>
+
 <table class='search_results'>
 	<tbody>
 <?php 
-	while ($this->offerings->hasNext()) { 
-		$section = $this->offerings->getNextCourseOffering();
+	foreach ($this->paginator as $section) { 
 ?>
 		<tr>
 			<th><?php print $section->getDisplayName(); ?></th>
@@ -251,5 +262,7 @@ print "\n\t</dl>";
 <?php } ?>
 	</tbody>
 </table>
+
+<?php print $this->paginationControl($this->paginator, 'Sliding', 'SearchPaginationControl.phtml', array('search_params' => $this->searchParams)); ?>
 
 <?php } ?>
