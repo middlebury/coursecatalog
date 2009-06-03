@@ -666,7 +666,7 @@ class banner_course_CourseManager
      *              supportsTermLookup() </code> is <code> true. </code> 
      */
     public function getTermLookupSession() {
-    	return new banner_course_CombinedTermLookupSession($this);
+    	return new banner_course_Term_Lookup_CombinedSession($this);
 	}
 
 

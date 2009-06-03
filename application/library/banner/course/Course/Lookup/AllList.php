@@ -25,14 +25,14 @@ class banner_course_Course_Lookup_AllList
 	 * Constructor
 	 * 
 	 * @param PDO $db
-	 * @param banner_course_AbstractCourseSession $session
+	 * @param banner_course_AbstractSession $session
 	 * @param osid_id_Id $catalogDatabaseId
 	 * @param osid_id_Id $topicId
 	 * @return void
 	 * @access public
 	 * @since 4/13/09
 	 */
-	public function __construct (PDO $db, banner_course_AbstractCourseSession $session, osid_id_Id $catalogId) {
+	public function __construct (PDO $db, banner_course_AbstractSession $session, osid_id_Id $catalogId) {
 		parent::__construct($db, $session, $catalogId);
 	}
 	

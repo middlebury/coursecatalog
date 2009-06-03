@@ -18,7 +18,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 abstract class banner_course_CourseOffering_AbstractSession
-	extends banner_course_AbstractCourseSession
+	extends banner_course_AbstractSession
 	implements banner_course_CourseOffering_SessionInterface 
 {
 	

@@ -44,7 +44,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 class banner_course_Course_Lookup_Session
-    extends banner_course_AbstractCourseSession
+    extends banner_course_AbstractSession
     implements osid_course_CourseLookupSession
 {
 	

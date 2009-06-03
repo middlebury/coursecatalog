@@ -30,7 +30,7 @@ class banner_course_Term_Lookup_AllList
 	 * @access public
 	 * @since 4/13/09
 	 */
-	public function __construct (PDO $db, banner_course_AbstractCourseSession $session) {
+	public function __construct (PDO $db, banner_course_AbstractSession $session) {
 		$this->session = $session;
 		
 		$query =

@@ -34,7 +34,7 @@ abstract class banner_course_Course_Lookup_AbstractList
 	 * @access public
 	 * @since 4/13/09
 	 */
-	public function __construct (PDO $db, banner_course_AbstractCourseSession $session, osid_id_Id $catalogId = null) {
+	public function __construct (PDO $db, banner_course_AbstractSession $session, osid_id_Id $catalogId = null) {
 		$this->session = $session;
 		$this->catalogId = $catalogId;
 		
