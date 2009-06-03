@@ -181,7 +181,7 @@ class banner_course_CourseManager
      *              supportsCourseLookup() </code> is <code> true. </code> 
      */
     public function getCourseLookupSession() {
-    	return new banner_course_CombinedCourseLookupSession($this, 
+    	return new banner_course_Course_Lookup_CombinedSession($this, 
     		new phpkit_id_URNInetId('urn:inet:'.$this->idAuthority.':catalog/all'));
 	}
 
@@ -209,7 +209,7 @@ class banner_course_CourseManager
      */
     public function getCourseLookupSessionForCatalog(osid_id_Id $courseCatalogId) {
     	try {
-	    	return new banner_course_CourseLookupSession($this, $courseCatalogId);
+	    	return new banner_course_Course_Lookup_Session($this, $courseCatalogId);
 	    } catch (osid_NotFoundException $e) {
 			throw new osid_NotFoundException('Can not get a CourseLookupSession for an unknown catalog id.');
 		}
@@ -365,7 +365,7 @@ class banner_course_CourseManager
      *              supportsCourseCatalog() </code> is <code> true. </code> 
      */
     public function getCourseCatalogSession() {
-    	return new banner_course_CourseCatalogSession($this);
+    	return new banner_course_Course_Catalog_Session($this);
 	}
 
 

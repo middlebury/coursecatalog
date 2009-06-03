@@ -16,8 +16,8 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class banner_course_AllCoursesList
-	extends banner_course_AbstractCourseList
+class banner_course_Course_Lookup_AllList
+	extends banner_course_Course_Lookup_AbstractList
 	implements osid_course_CourseList
 {
 	

@@ -26,7 +26,7 @@
  * 
  * @package org.osid.course
  */
-class banner_course_CourseCatalogSession
+class banner_course_Course_Catalog_Session
     extends banner_course_AbstractCourseSession
     implements osid_course_CourseCatalogSession
 {

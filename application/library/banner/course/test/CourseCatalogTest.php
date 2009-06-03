@@ -15,7 +15,7 @@ class banner_course_CourseCatalogTest
     protected $object;
 
     /**
-     * @var    banner_course_CourseLookupSession
+     * @var    banner_course_Course_Lookup_Session
      * @access protected
      */
     protected $session;

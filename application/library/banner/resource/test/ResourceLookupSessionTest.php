@@ -9,7 +9,7 @@ class banner_resource_test_ResourceLookupSessionTest
 	extends phpkit_test_phpunit_AbstractOsidSessionTest
 {
     /**
-     * @var    banner_course_CourseLookupSession
+     * @var    banner_course_Course_Lookup_Session
      * @access protected
      */
     protected $session;

@@ -43,7 +43,7 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class banner_course_CourseLookupSession
+class banner_course_Course_Lookup_Session
     extends banner_course_AbstractCourseSession
     implements osid_course_CourseLookupSession
 {
@@ -415,7 +415,7 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCoursesByTopic(osid_id_Id $topicId) {
-    	return  new banner_course_CoursesByTopicList(
+    	return  new banner_course_Course_Lookup_ByTopicList(
     		$this->manager->getDB(), 
     		$this,
     		$this->getCourseCatalogId(),
@@ -437,7 +437,7 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourses() {
-    	return new banner_course_AllCoursesList(
+    	return new banner_course_Course_Lookup_AllList(
     		$this->manager->getDB(), 
     		$this,
     		$this->getCourseCatalogId()

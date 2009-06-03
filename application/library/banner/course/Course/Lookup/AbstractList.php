@@ -16,7 +16,7 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-abstract class banner_course_AbstractCourseList
+abstract class banner_course_Course_Lookup_AbstractList
 	extends banner_course_CachingPdoQueryList
 	implements osid_course_CourseList
 {
