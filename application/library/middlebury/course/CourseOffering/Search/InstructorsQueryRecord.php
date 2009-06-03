@@ -38,7 +38,7 @@
  *
  * @package phpkit.course
  */
-interface types_course_CourseOfferingInstructorsQueryRecord
+interface middlebury_course_CourseOffering_Search_InstructorsQueryRecord
     extends osid_course_CourseOfferingQueryRecord
 {
 

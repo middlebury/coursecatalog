@@ -17,7 +17,7 @@
 class banner_course_CourseOffering_Search_Query
     implements osid_course_CourseOfferingQuery,
     osid_course_CourseOfferingQueryRecord,
-    types_course_CourseOfferingInstructorsQueryRecord
+    middlebury_course_CourseOffering_Search_InstructorsQueryRecord
 {
 	
 	/**
@@ -1160,7 +1160,7 @@ class banner_course_CourseOffering_Search_Query
 
 
 /*********************************************************
- * Methods from types_course_CourseOfferingInstructorsQueryRecord
+ * Methods from middlebury_course_CourseOffering_Search_InstructorsQueryRecord
  *********************************************************/
 
 	/**

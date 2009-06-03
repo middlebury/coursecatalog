@@ -27,7 +27,7 @@
  */
 
 /**
- * <p>A record for ordering by the instructors of a <code> CourseOffering. </code>
+ * <p>A record for accessing the instructors of a <code> CourseOffering. </code>
  * The methods specified by the record type are available through the 
  * underlying object. </p>
  * 
@@ -38,14 +38,30 @@
  *
  * @package phpkit.course
  */
-interface types_course_CourseOfferingInstructorsSearchOrderRecord
-    extends osid_course_CourseOfferingSearchOrderRecord
+interface middlebury_course_CourseOffering_InstructorsRecord
+    extends osid_course_CourseOfferingRecord
 {
 
-	/**
-     *  Specifies a preference for ordering the result set by the instructor
+
+    /**
+     *  Gets the Ids of the instructors associated with this course offering
      *
+     *  @return object osid_id_IdList the list of instructor ids.
      *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
      */
-    public function orderByInstructor();
+    public function getInstructorIds();
+    
+    /**
+     *  Gets the <code> Resources </code> representing the instructors associated
+     *  with this course offering.
+     *
+     *  @return object osid_resource_ResourceList the list of instructors.
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     */
+    public function getInstructors();
+
 }

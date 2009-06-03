@@ -16,7 +16,7 @@
 class banner_course_CourseOffering_Search_Order
     implements osid_course_CourseOfferingSearchOrder,
     osid_course_CourseOfferingSearchOrderRecord,
-    types_course_CourseOfferingInstructorsSearchOrderRecord
+    middlebury_course_CourseOffering_Search_InstructorsSearchOrderRecord
 {
 
 	/**
@@ -531,7 +531,7 @@ class banner_course_CourseOffering_Search_Order
     }
 
 /*********************************************************
- * Methods from types_course_CourseOfferingInstructorsSearchOrderRecord
+ * Methods from middlebury_course_CourseOffering_Search_InstructorsSearchOrderRecord
  *********************************************************/
 
 	/**

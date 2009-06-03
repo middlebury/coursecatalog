@@ -18,7 +18,7 @@
 class banner_course_CourseOffering
     extends phpkit_AbstractOsidObject
     implements osid_course_CourseOffering,
-    types_course_CourseOfferingInstructorsRecord
+    middlebury_course_CourseOffering_InstructorsRecord
 {
 	/**
 	 * @var array $requiredFields;

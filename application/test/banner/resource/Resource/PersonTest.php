@@ -95,7 +95,7 @@ class banner_resource_Resource_PersonTest
     public function testGetResourceRecord()
     {
         $names = $this->object->getResourceRecord($this->namesType);
-        $this->assertType('types_resource_PersonNamesResourceRecord', $names);
+        $this->assertType('middlebury_resource_Resource_PersonNamesRecord', $names);
     }
 
     /**
@@ -113,7 +113,7 @@ class banner_resource_Resource_PersonTest
     public function testGetResource()
     {
         $resource = $this->names->getResource();
-        $this->assertType('types_resource_PersonNamesResourceRecord', $resource);
+        $this->assertType('middlebury_resource_Resource_PersonNamesRecord', $resource);
     }
 
     /**

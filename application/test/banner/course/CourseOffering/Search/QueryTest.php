@@ -1531,7 +1531,7 @@ class banner_course_CourseOffering_Search_QueryTest
     {
         $record = $this->object->getCourseOfferingQueryRecord($this->instructorsType);
         $this->assertType('osid_course_CourseOfferingQueryRecord', $record);
-        $this->assertType('types_course_CourseOfferingInstructorsQueryRecord', $record);
+        $this->assertType('middlebury_course_CourseOffering_Search_InstructorsQueryRecord', $record);
     }
     
     /**

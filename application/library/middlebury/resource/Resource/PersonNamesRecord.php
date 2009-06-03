@@ -37,7 +37,7 @@
  *
  * @package phpkit.resource
  */
-interface types_resource_PersonNamesResourceRecord
+interface middlebury_resource_Resource_PersonNamesRecord
     extends osid_resource_ResourceRecord
 {
 	

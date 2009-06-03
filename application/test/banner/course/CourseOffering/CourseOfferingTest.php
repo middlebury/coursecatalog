@@ -374,7 +374,7 @@ class banner_course_CourseOffering_CourseOfferingTest
     {
         $record = $this->object->getCourseOfferingRecord($this->instructorsType);
         $this->assertType('osid_course_CourseOfferingRecord', $record);
-        $this->assertType('types_course_CourseOfferingInstructorsRecord', $record);
+        $this->assertType('middlebury_course_CourseOffering_InstructorsRecord', $record);
     }
     
     /**
