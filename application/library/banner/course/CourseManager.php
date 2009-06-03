@@ -918,7 +918,7 @@ class banner_course_CourseManager
      *              supportsTopicLookup() </code> is <code> true. </code> 
      */
     public function getTopicLookupSession() {
-    	return new banner_course_TopicLookupSession($this, $this->getCombinedCatalogId());
+    	return new banner_course_Topic_Lookup_Session($this, $this->getCombinedCatalogId());
 	}
 
 
@@ -945,7 +945,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getTopicLookupSessionForCatalog(osid_id_Id $courseCatalogId) {
-    	return new banner_course_TopicLookupSession($this, $courseCatalogId);
+    	return new banner_course_Topic_Lookup_Session($this, $courseCatalogId);
 	}
 
 
