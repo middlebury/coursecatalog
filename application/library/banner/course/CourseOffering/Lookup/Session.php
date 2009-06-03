@@ -39,8 +39,8 @@
  * 
  * @package org.osid.course
  */
-class banner_course_CourseOfferingLookupSession
-    extends banner_course_AbstractCourseOfferingSession
+class banner_course_CourseOffering_Lookup_Session
+    extends banner_course_CourseOffering_AbstractSession
     implements osid_course_CourseOfferingLookupSession
 {
 	/**
@@ -338,7 +338,7 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
      */
     public function getCourseOfferingsByGenusType(osid_type_Type $courseOfferingGenusType) {
     	try {
-    		return new banner_course_CourseOfferingsByGenusTypeList($this->manager->getDB(), $this, $this->getCourseCatalogId(), $courseOfferingGenusType);
+    		return new banner_course_CourseOffering_Lookup_ByGenusTypeList($this->manager->getDB(), $this, $this->getCourseCatalogId(), $courseOfferingGenusType);
     	} catch (osid_NotFoundException $e) {
     		return new phpkit_EmptyList;
     	}
@@ -415,7 +415,7 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingsForCourse(osid_id_Id $courseId) {
-    	return  new banner_course_CourseOfferingsForCourseList(
+    	return  new banner_course_CourseOffering_Lookup_ForCourseList(
     		$this->manager->getDB(), 
     		$this,
     		$this->getCourseCatalogId(),
@@ -441,7 +441,7 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingsByTerm(osid_id_Id $termId) {
-    	return  new banner_course_CourseOfferingsByTermList(
+    	return  new banner_course_CourseOffering_Lookup_ByTermList(
     		$this->manager->getDB(), 
     		$this,
     		$this->getCourseCatalogId(),
@@ -470,7 +470,7 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
      */
     public function getCourseOfferingsByTermForCourse(osid_id_Id $termId, 
                                                       osid_id_Id $courseId) {
-    	return  new banner_course_CourseOfferingsByTermForCourseList(
+    	return  new banner_course_CourseOffering_Lookup_ByTermForCourseList(
     		$this->manager->getDB(), 
     		$this,
     		$this->getCourseCatalogId(),
@@ -499,7 +499,7 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingsByTopic(osid_id_Id $topicId) {
-    	return  new banner_course_CourseOfferingsByTopicList(
+    	return  new banner_course_CourseOffering_Lookup_ByTopicList(
     		$this->manager->getDB(), 
     		$this,
     		$this->getCourseCatalogId(),
@@ -531,7 +531,7 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
      */
     public function getCourseOfferingsByTermByTopic(osid_id_Id $termId, 
                                                     osid_id_Id $topicId) {
-    	return  new banner_course_CourseOfferingsByTermByTopicList(
+    	return  new banner_course_CourseOffering_Lookup_ByTermByTopicList(
     		$this->manager->getDB(), 
     		$this,
     		$this->getCourseCatalogId(),
@@ -555,7 +555,7 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferings() {
-    	return new banner_course_AllCourseOfferingsList(
+    	return new banner_course_CourseOffering_Lookup_AllList(
     		$this->manager->getDB(), 
     		$this,
     		$this->getCourseCatalogId());

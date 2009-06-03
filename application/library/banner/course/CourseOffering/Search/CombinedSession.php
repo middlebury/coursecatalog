@@ -39,8 +39,8 @@
  * 
  * @package banner.course
  */
-class banner_course_CombinedCourseOfferingSearchSession
-    extends banner_course_CourseOfferingSearchSession
+class banner_course_CourseOffering_Search_CombinedSession
+    extends banner_course_CourseOffering_Search_Session
 {
 
 	/**

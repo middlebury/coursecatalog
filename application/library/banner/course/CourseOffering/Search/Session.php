@@ -39,8 +39,8 @@
  * 
  * @package banner.course
  */
-class banner_course_CourseOfferingSearchSession
-    extends banner_course_AbstractCourseOfferingSession
+class banner_course_CourseOffering_Search_Session
+    extends banner_course_CourseOffering_AbstractSession
     implements osid_course_CourseOfferingSearchSession
 {
 
@@ -143,7 +143,7 @@ class banner_course_CourseOfferingSearchSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingQuery() {
-    	return new banner_course_CourseOfferingQuery($this);
+    	return new banner_course_CourseOffering_Search_Query($this);
     }
 
 
@@ -165,7 +165,7 @@ class banner_course_CourseOfferingSearchSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingsByQuery(osid_course_CourseOfferingQuery $courseQuery) {
-    	return new banner_course_CourseOfferingSearchList($this->manager->getDB(), $this, $this->getCourseCatalogId(), $courseQuery, $this->getCourseOfferingSearch());
+    	return new banner_course_CourseOffering_Search_List($this->manager->getDB(), $this, $this->getCourseCatalogId(), $courseQuery, $this->getCourseOfferingSearch());
     }
 
 
@@ -178,7 +178,7 @@ class banner_course_CourseOfferingSearchSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingSearch() {
-    	return new banner_course_CourseOfferingSearch($this);
+    	return new banner_course_CourseOffering_Search_Search($this);
     }
 
 
@@ -193,7 +193,7 @@ class banner_course_CourseOfferingSearchSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingSearchOrder() {
-    	return new banner_course_CourseOfferingSearchOrder();
+    	return new banner_course_CourseOffering_Search_Order();
     }
 
 
@@ -218,7 +218,7 @@ class banner_course_CourseOfferingSearchSession
      */
     public function getCourseOfferingsBySearch(osid_course_CourseOfferingQuery $courseOfferingQuery, 
                                                osid_course_CourseOfferingSearch $courseOfferingSearch) {
-    	return new banner_course_CourseOfferingSearchList($this->manager->getDB(), $this, $this->getCourseCatalogId(), $courseOfferingQuery, $courseOfferingSearch);
+    	return new banner_course_CourseOffering_Search_List($this->manager->getDB(), $this, $this->getCourseCatalogId(), $courseOfferingQuery, $courseOfferingSearch);
     }
 
 }

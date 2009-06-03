@@ -404,7 +404,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseOfferingLookupSession() {
-    	return new banner_course_CombinedCourseOfferingLookupSession($this);
+    	return new banner_course_CourseOffering_Lookup_CombinedSession($this);
 	}
 
 
@@ -431,7 +431,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseOfferingLookupSessionForCatalog(osid_id_Id $courseCatalogId) {
-    	return new banner_course_CourseOfferingLookupSession($this, $courseCatalogId);
+    	return new banner_course_CourseOffering_Lookup_Session($this, $courseCatalogId);
 	}
 
 
@@ -450,7 +450,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseOfferingSearchSession() {
-    	return new banner_course_CombinedCourseOfferingSearchSession($this);
+    	return new banner_course_CourseOffering_Search_CombinedSession($this);
 	}
 
 
@@ -477,7 +477,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseOfferingSearchSessionForCatalog(osid_id_Id $courseCatalogId) {
-    	return new banner_course_CourseOfferingSearchSession($this, $courseCatalogId);
+    	return new banner_course_CourseOffering_Search_Session($this, $courseCatalogId);
 	}
 
 
@@ -628,7 +628,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseOfferingCatalogSession() {
-    	return new banner_course_CourseOfferingCatalogSession($this);
+    	return new banner_course_CourseOffering_Catalog_Session($this);
 	}
 
 

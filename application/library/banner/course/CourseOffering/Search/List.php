@@ -16,8 +16,8 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class banner_course_CourseOfferingSearchList
-	extends banner_course_AbstractCourseOfferingList
+class banner_course_CourseOffering_Search_List
+	extends banner_course_CourseOffering_AbstractList
 	implements osid_course_CourseOfferingList,
 	osid_course_CourseOfferingSearchResults
 {
@@ -25,7 +25,7 @@ class banner_course_CourseOfferingSearchList
 	 * Constructor
 	 * 
 	 * @param PDO $db
-	 * @param banner_course_CourseOfferingSessionInterface $session
+	 * @param banner_course_CourseOffering_SessionInterface $session
 	 * @param osid_id_Id $catalogDatabaseId
      * @param osid_course_CourseOfferingQuery $courseQuery the search 
      *          query 
@@ -34,7 +34,7 @@ class banner_course_CourseOfferingSearchList
 	 * @access public
 	 * @since 4/13/09
 	 */
-	public function __construct (PDO $db, banner_course_CourseOfferingSessionInterface $session, osid_id_Id $catalogId, osid_course_CourseOfferingQuery $courseQuery, osid_course_CourseOfferingSearch $courseOfferingSearch) {
+	public function __construct (PDO $db, banner_course_CourseOffering_SessionInterface $session, osid_id_Id $catalogId, osid_course_CourseOfferingQuery $courseQuery, osid_course_CourseOfferingSearch $courseOfferingSearch) {
 		$this->db = $db;
 		$this->courseQuery = $courseQuery;
 		

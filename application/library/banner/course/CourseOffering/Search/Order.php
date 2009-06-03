@@ -13,7 +13,7 @@
  * 
  * @package org.osid.course
  */
-class banner_course_CourseOfferingSearchOrder
+class banner_course_CourseOffering_Search_Order
     implements osid_course_CourseOfferingSearchOrder,
     osid_course_CourseOfferingSearchOrderRecord,
     types_course_CourseOfferingInstructorsSearchOrderRecord

@@ -16,8 +16,8 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class banner_course_CourseOfferingsByTopicList
-	extends banner_course_AbstractCourseOfferingList
+class banner_course_CourseOffering_Lookup_ByTermByTopicList
+	extends banner_course_CourseOffering_AbstractList
 	implements osid_course_CourseOfferingList
 {
 
@@ -25,14 +25,16 @@ class banner_course_CourseOfferingsByTopicList
 	 * Constructor
 	 * 
 	 * @param PDO $db
-	 * @param banner_course_CourseOfferingSessionInterface $session
+	 * @param banner_course_CourseOffering_SessionInterface $session
 	 * @param osid_id_Id $catalogDatabaseId
+	 * @param osid_id_Id $termId
 	 * @param osid_id_Id $topicId
 	 * @return void
 	 * @access public
 	 * @since 4/13/09
 	 */
-	public function __construct (PDO $db, banner_course_CourseOfferingSessionInterface $session, osid_id_Id $catalogId, osid_id_Id $topicId) {
+	public function __construct (PDO $db, banner_course_CourseOffering_SessionInterface $session, osid_id_Id $catalogId, osid_id_Id $termId, osid_id_Id $topicId) {
+		$this->termId = $termId;
 		$this->topicId = $topicId;
 		
 		parent::__construct($db, $session, $catalogId);
@@ -48,15 +50,20 @@ class banner_course_CourseOfferingsByTopicList
 	protected function getInputParameters () {
 		$type = $this->session->getTopicLookupSession()->getTopicType($this->topicId);
 		$value = $this->session->getTopicLookupSession()->getTopicValue($this->topicId);
+		$params = array(':term_code' => $this->session->getTermCodeFromTermId($this->termId));
 		switch ($type) {
 			case 'subject':
-   				return array(':subject_code' => $value);
+   				$params[':subject_code'] = $value;
+   				return $params;
    			case 'department':
-   				return array(':department_code' => $value);
+   				$params[':department_code'] = $value;
+   				return $params;
    			case 'division':
-   				return array(':division_code' => $value);
-   			case 'requirement':
-   				return array(':requirement_code' => $value);
+   				$params[':division_code'] = $value;
+   				return $params;
+			case 'requirement':
+ 				$params[':requirement_code'] = $value;
+				return $params;
    			default:
    				throw new osid_NotFoundException('No topic found with category '.$type);
 		}
@@ -73,13 +80,13 @@ class banner_course_CourseOfferingsByTopicList
 		$type = $this->session->getTopicLookupSession()->getTopicType($this->topicId);
 		switch ($type) {
 			case 'subject':
-				return 'SSBSECT_SUBJ_CODE = :subject_code';
+				return 'SSBSECT_TERM_CODE = :term_code AND SSBSECT_SUBJ_CODE = :subject_code';
    			case 'department':
-   				return 'SCBCRSE_DEPT_CODE = :department_code';
+   				return 'SSBSECT_TERM_CODE = :term_code AND SCBCRSE_DEPT_CODE = :department_code';
    			case 'division':
-   				return 'SCBCRSE_DIVS_CODE = :division_code';
+   				return 'SSBSECT_TERM_CODE = :term_code AND SCBCRSE_DIVS_CODE = :division_code';
    			case 'requirement':
-   				return 'SSRATTR_ATTR_CODE = :requirement_code';
+   				return 'SSBSECT_TERM_CODE = :term_code AND SSRATTR_ATTR_CODE = :requirement_code';
    			default:
    				throw new osid_NotFoundException('No topic found with category '.$type);
 		}

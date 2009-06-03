@@ -25,7 +25,7 @@ class banner_course_AllTermsList
 	 * Constructor
 	 * 
 	 * @param PDO $db
-	 * @param banner_course_CourseOfferingSessionInterface $session
+	 * @param banner_course_CourseOffering_SessionInterface $session
 	 * @return void
 	 * @access public
 	 * @since 4/13/09

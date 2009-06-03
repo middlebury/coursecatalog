@@ -16,8 +16,8 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class banner_course_CourseOfferingsByTermList
-	extends banner_course_AbstractCourseOfferingList
+class banner_course_CourseOffering_Lookup_ByGenusTypeList
+	extends banner_course_CourseOffering_AbstractList
 	implements osid_course_CourseOfferingList
 {
 
@@ -25,15 +25,15 @@ class banner_course_CourseOfferingsByTermList
 	 * Constructor
 	 * 
 	 * @param PDO $db
-	 * @param banner_course_CourseOfferingSessionInterface $session
+	 * @param banner_course_CourseOffering_SessionInterface $session
 	 * @param osid_id_Id $catalogDatabaseId
 	 * @param osid_id_Id $termId
 	 * @return void
 	 * @access public
 	 * @since 4/13/09
 	 */
-	public function __construct (PDO $db, banner_course_CourseOfferingSessionInterface $session, osid_id_Id $catalogId, osid_id_Id $termId) {
-		$this->termId = $termId;
+	public function __construct (PDO $db, banner_course_CourseOffering_SessionInterface $session, osid_id_Id $catalogId, osid_type_Type $genusType) {
+		$this->genusType = $genusType;
 		
 		parent::__construct($db, $session, $catalogId);
 	}
@@ -46,7 +46,7 @@ class banner_course_CourseOfferingsByTermList
 	 * @since 4/17/09
 	 */
 	protected function getInputParameters () {
-		return array(	':term_code' => $this->session->getTermCodeFromTermId($this->termId));
+		return array(	':schd_code' => $this->session->getScheduleCodeFromGenusType($this->genusType));
 	}
 	
 	/**
@@ -57,7 +57,7 @@ class banner_course_CourseOfferingsByTermList
 	 * @since 4/17/09
 	 */
 	protected function getWhereTerms() {
-		return 'SSBSECT_TERM_CODE = :term_code';
+		return 'SSBSECT_SCHD_CODE = :schd_code';
 	}
 }
 

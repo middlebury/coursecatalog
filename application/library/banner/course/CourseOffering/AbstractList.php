@@ -16,7 +16,7 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-abstract class banner_course_AbstractCourseOfferingList
+abstract class banner_course_CourseOffering_AbstractList
 	extends banner_course_CachingPdoQueryList
 	implements osid_course_CourseOfferingList
 {
@@ -28,13 +28,13 @@ abstract class banner_course_AbstractCourseOfferingList
 	 * Constructor
 	 * 
 	 * @param PDO $db
-	 * @param banner_course_CourseOfferingSessionInterface $session
+	 * @param banner_course_CourseOffering_SessionInterface $session
 	 * @param optional osid_id_Id $catalogDatabaseId
 	 * @return void
 	 * @access public
 	 * @since 4/13/09
 	 */
-	public function __construct (PDO $db, banner_course_CourseOfferingSessionInterface $session, osid_id_Id $catalogId = null) {
+	public function __construct (PDO $db, banner_course_CourseOffering_SessionInterface $session, osid_id_Id $catalogId = null) {
 		$this->session = $session;
 		$this->catalogId = $catalogId;
 		

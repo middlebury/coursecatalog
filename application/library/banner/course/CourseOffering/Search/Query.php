@@ -14,7 +14,7 @@
  * 
  * @package org.osid.course
  */
-class banner_course_CourseOfferingQuery
+class banner_course_CourseOffering_Search_Query
     implements osid_course_CourseOfferingQuery,
     osid_course_CourseOfferingQueryRecord,
     types_course_CourseOfferingInstructorsQueryRecord
@@ -23,12 +23,12 @@ class banner_course_CourseOfferingQuery
 	/**
 	 * Constructor
 	 * 
-	 * @param banner_course_AbstractCourseOfferingSession $session
+	 * @param banner_course_CourseOffering_AbstractSession $session
 	 * @return void
 	 * @access public
 	 * @since 5/20/09
 	 */
-	public function __construct (banner_course_AbstractCourseOfferingSession $session) {
+	public function __construct (banner_course_CourseOffering_AbstractSession $session) {
 		$this->session = $session;
 		
 		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");

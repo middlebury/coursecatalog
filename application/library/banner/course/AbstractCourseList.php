@@ -28,7 +28,7 @@ abstract class banner_course_AbstractCourseList
 	 * Constructor
 	 * 
 	 * @param PDO $db
-	 * @param banner_course_CourseOfferingSessionInterface $session
+	 * @param banner_course_CourseOffering_SessionInterface $session
 	 * @param optional osid_id_Id $catalogDatabaseId
 	 * @return void
 	 * @access public

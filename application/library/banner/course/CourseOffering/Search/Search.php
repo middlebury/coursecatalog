@@ -12,19 +12,19 @@
  * 
  * @package banner.course
  */
-class banner_course_CourseOfferingSearch
+class banner_course_CourseOffering_Search_Search
     implements osid_course_CourseOfferingSearch
 {
 
 	/**
 	 * Constructor
 	 * 
-	 * @param banner_course_AbstractCourseOfferingSession $session
+	 * @param banner_course_CourseOffering_AbstractSession $session
 	 * @return void
 	 * @access public
 	 * @since 5/28/09
 	 */
-	public function __construct (banner_course_AbstractCourseOfferingSession $session) {
+	public function __construct (banner_course_CourseOffering_AbstractSession $session) {
 		$this->session = $session;
 		
 		$this->limit = '';

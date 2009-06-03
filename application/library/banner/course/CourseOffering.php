@@ -67,13 +67,13 @@ class banner_course_CourseOffering
 	 * Constructor
 	 * 
 	 * @param array $dbRow
-	 * @param banner_course_CourseOfferingSessionInterface $session
+	 * @param banner_course_CourseOffering_SessionInterface $session
 	 * @param string $displayName
 	 * @return void
 	 * @access public
 	 * @since 4/13/09
 	 */
-	public function __construct (array $row, banner_course_CourseOfferingSessionInterface $session) {
+	public function __construct (array $row, banner_course_CourseOffering_SessionInterface $session) {
 		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 		
 		parent::__construct();

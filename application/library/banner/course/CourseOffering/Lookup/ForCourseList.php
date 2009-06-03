@@ -16,8 +16,8 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class banner_course_CourseOfferingsByTermForCourseList
-	extends banner_course_AbstractCourseOfferingList
+class banner_course_CourseOffering_Lookup_ForCourseList
+	extends banner_course_CourseOffering_AbstractList
 	implements osid_course_CourseOfferingList
 {
 
@@ -25,16 +25,14 @@ class banner_course_CourseOfferingsByTermForCourseList
 	 * Constructor
 	 * 
 	 * @param PDO $db
-	 * @param banner_course_CourseOfferingSessionInterface $session
+	 * @param banner_course_CourseOffering_SessionInterface $session
 	 * @param osid_id_Id $catalogDatabaseId
-	 * @param osid_id_Id $termId
 	 * @param osid_id_Id $courseId
 	 * @return void
 	 * @access public
 	 * @since 4/13/09
 	 */
-	public function __construct (PDO $db, banner_course_CourseOfferingSessionInterface $session, osid_id_Id $catalogId, osid_id_Id $termId, osid_id_Id $courseId) {
-		$this->termId = $termId;
+	public function __construct (PDO $db, banner_course_CourseOffering_SessionInterface $session, osid_id_Id $catalogId, osid_id_Id $courseId) {
 		$this->courseId = $courseId;
 		
 		parent::__construct($db, $session, $catalogId);
@@ -49,8 +47,7 @@ class banner_course_CourseOfferingsByTermForCourseList
 	 */
 	protected function getInputParameters () {
 		return array(	':subj_code' => $this->session->getSubjectFromCourseId($this->courseId),
-						':crse_numb' => $this->session->getNumberFromCourseId($this->courseId),
-						':term_code' => $this->session->getTermCodeFromTermId($this->termId));
+						':crse_numb' => $this->session->getNumberFromCourseId($this->courseId));
 	}
 	
 	/**
@@ -62,9 +59,9 @@ class banner_course_CourseOfferingsByTermForCourseList
 	 */
 	protected function getWhereTerms() {
 		return 'SSBSECT_SUBJ_CODE = :subj_code
-	AND SSBSECT_CRSE_NUMB = :crse_numb
-	AND SSBSECT_TERM_CODE = :term_code';
+	AND SSBSECT_CRSE_NUMB = :crse_numb';
 	}
+
 }
 
 ?>

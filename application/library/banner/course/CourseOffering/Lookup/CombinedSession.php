@@ -39,8 +39,8 @@
  * 
  * @package org.osid.course
  */
-class banner_course_CombinedCourseOfferingLookupSession
-    extends banner_course_CourseOfferingLookupSession
+class banner_course_CourseOffering_Lookup_CombinedSession
+    extends banner_course_CourseOffering_Lookup_Session
     implements osid_course_CourseOfferingLookupSession
 {
 	/**
