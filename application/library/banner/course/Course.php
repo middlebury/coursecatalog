@@ -29,12 +29,12 @@ class banner_course_Course
 	 * 
 	 * @param osid_id_Id $id
 	 * @param string $displayName
-	 * @param banner_course_AbstractCourseSession $session
+	 * @param banner_course_AbstractSession $session
 	 * @return void
 	 * @access public
 	 * @since 4/13/09
 	 */
-	public function __construct (osid_id_Id $id, $displayName, $description, $title, $credits, array $topicIds, banner_course_AbstractCourseSession $session) {
+	public function __construct (osid_id_Id $id, $displayName, $description, $title, $credits, array $topicIds, banner_course_AbstractSession $session) {
 		parent::__construct();
 		$this->setId($id);
 		$this->setDisplayName($displayName);

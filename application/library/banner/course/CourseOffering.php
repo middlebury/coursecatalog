@@ -33,6 +33,7 @@ class banner_course_CourseOffering
 			'SSBSECT_CRSE_NUMB',
 			'SSBSECT_SEQ_NUMB',
 			'SSBSECT_CAMP_CODE',
+			'SSBSECT_CRSE_TITLE',
 			
 			'term_display_label',
 			'STVTERM_START_DATE',
@@ -54,6 +55,7 @@ class banner_course_CourseOffering
 			
 			'STVBLDG_DESC',
 			
+			'SCBCRSE_TITLE',
 			'SCBCRSE_DEPT_CODE',
 			'SCBCRSE_DIVS_CODE'
 		);
@@ -65,13 +67,13 @@ class banner_course_CourseOffering
 	 * Constructor
 	 * 
 	 * @param array $dbRow
-	 * @param banner_course_CourseOfferingSessionInterface $session
+	 * @param banner_course_CourseOffering_SessionInterface $session
 	 * @param string $displayName
 	 * @return void
 	 * @access public
 	 * @since 4/13/09
 	 */
-	public function __construct (array $row, banner_course_CourseOfferingSessionInterface $session) {
+	public function __construct (array $row, banner_course_CourseOffering_SessionInterface $session) {
 		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 		
 		parent::__construct();
@@ -127,6 +129,9 @@ class banner_course_CourseOffering
     public function getTitle() {
     	if (isset($this->row['SSBSECT_CRSE_TITLE']) && strlen($this->row['SSBSECT_CRSE_TITLE']))
     		return $this->row['SSBSECT_CRSE_TITLE'];
+    	
+    	else if (isset($this->row['SCBCRSE_TITLE']) && strlen($this->row['SCBCRSE_TITLE']))
+    		return $this->row['SCBCRSE_TITLE'];
     	
     	try {
     		return $this->getCourse()->getTitle();
@@ -317,7 +322,11 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getLocation() {
-    	return $this->session->getResourceLookupSession()->getResource($this->getLocationId());
+    	try {
+	    	return $this->session->getResourceLookupSession()->getResource($this->getLocationId());
+	    } catch (osid_NotFoundException $e) {
+	    	throw new osid_OperationFailedException($e->getMessage());
+	    }
     }
 
 
@@ -360,7 +369,7 @@ class banner_course_CourseOffering
      */
     protected function as12HourTime ($time) {
     	$parts = strptime($time, '%H%M');
-    	return date('H:ia', mktime($parts['tm_hour'], $parts['tm_min']));
+    	return date('g:ia', mktime($parts['tm_hour'], $parts['tm_min']));
     }
 
 

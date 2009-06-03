@@ -1,0 +1,6 @@
+[submodule "library/osid-phpkit"]
+	path = library/osid-phpkit
+	url = git://git.assembla.com/osid-phpkit.git
+[submodule "library/ZendFramework"]
+	path = library/ZendFramework
+	url = http://community.middlebury.edu/~afranco/git/external/ZendFramework.git/

@@ -34,6 +34,8 @@ abstract class AbstractCatalogController
 	public function init () {
 		// Add the catalog list for menu generation.
 		$this->view->menuCatalogs = self::getCourseManager()->getCourseCatalogLookupSession()->getCourseCatalogs();
+		$this->view->catalogIdString = $this->_getParam('catalog');
+		$this->view->termIdString = $this->_getParam('term');
 	}
 	
 	/**
@@ -127,15 +129,15 @@ abstract class AbstractCatalogController
 	 * @since 4/28/09
 	 */
 	protected function loadTopics (osid_course_TopicList $topicList) {
-		$topics = $this->topicListAsArray($topicList);
+		$topics = self::topicListAsArray($topicList);
 		
- 		$this->view->subjectTopics = $this->filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject"));
+ 		$this->view->subjectTopics = self::filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject"));
  		
- 		$this->view->departmentTopics = $this->filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department"));
+ 		$this->view->departmentTopics = self::filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department"));
  		
- 		$this->view->divisionTopics = $this->filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division"));
+ 		$this->view->divisionTopics = self::filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division"));
  		
- 		$this->view->requirementTopics = $this->filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement"));
+ 		$this->view->requirementTopics = self::filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement"));
 	}
 	
 	/**
@@ -143,10 +145,11 @@ abstract class AbstractCatalogController
 	 * 
 	 * @param osid_course_TopicList $topicList
 	 * @return array
-	 * @access private
+	 * @access public
 	 * @since 4/28/09
+	 * @static
 	 */
-	private function topicListAsArray (osid_course_TopicList $topicList) {
+	public static function topicListAsArray (osid_course_TopicList $topicList) {
 		$topics = array();
 		while ($topicList->hasNext()) {
 			$topics[] = $topicList->getNextTopic();
@@ -160,10 +163,11 @@ abstract class AbstractCatalogController
 	 * @param array $topics
 	 * @param osid_type_Type $type
 	 * @return array
-	 * @access private
+	 * @access public
 	 * @since 4/28/09
+	 * @static
 	 */
-	private function filterTopicsByType (array $topics, osid_type_Type $type) {
+	public static function filterTopicsByType (array $topics, osid_type_Type $type) {
 		$matching = array();
 		foreach ($topics as $topic) {
 			if ($topic->getGenusType()->isEqual($type)) 

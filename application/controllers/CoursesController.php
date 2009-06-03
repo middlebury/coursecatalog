@@ -42,6 +42,8 @@ class CoursesController
 		
 		$this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
 		$this->view->headTitle($this->view->title);
+		
+		$this->view->menuIsCourses = true;
 	}
 	
 	/**
@@ -70,6 +72,8 @@ class CoursesController
 		// Set the title
 		$this->view->title = $this->view->course->getDisplayName();
 		$this->view->headTitle($this->view->title);
+		
+		$this->view->menuIsCourses = true;
 		
 		$this->render();
 		

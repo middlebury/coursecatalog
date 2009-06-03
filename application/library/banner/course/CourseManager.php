@@ -181,7 +181,7 @@ class banner_course_CourseManager
      *              supportsCourseLookup() </code> is <code> true. </code> 
      */
     public function getCourseLookupSession() {
-    	return new banner_course_CombinedCourseLookupSession($this, 
+    	return new banner_course_Course_Lookup_CombinedSession($this, 
     		new phpkit_id_URNInetId('urn:inet:'.$this->idAuthority.':catalog/all'));
 	}
 
@@ -209,7 +209,7 @@ class banner_course_CourseManager
      */
     public function getCourseLookupSessionForCatalog(osid_id_Id $courseCatalogId) {
     	try {
-	    	return new banner_course_CourseLookupSession($this, $courseCatalogId);
+	    	return new banner_course_Course_Lookup_Session($this, $courseCatalogId);
 	    } catch (osid_NotFoundException $e) {
 			throw new osid_NotFoundException('Can not get a CourseLookupSession for an unknown catalog id.');
 		}
@@ -365,7 +365,7 @@ class banner_course_CourseManager
      *              supportsCourseCatalog() </code> is <code> true. </code> 
      */
     public function getCourseCatalogSession() {
-    	return new banner_course_CourseCatalogSession($this);
+    	return new banner_course_Course_Catalog_Session($this);
 	}
 
 
@@ -404,7 +404,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseOfferingLookupSession() {
-    	return new banner_course_CombinedCourseOfferingLookupSession($this);
+    	return new banner_course_CourseOffering_Lookup_CombinedSession($this);
 	}
 
 
@@ -431,7 +431,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseOfferingLookupSessionForCatalog(osid_id_Id $courseCatalogId) {
-    	return new banner_course_CourseOfferingLookupSession($this, $courseCatalogId);
+    	return new banner_course_CourseOffering_Lookup_Session($this, $courseCatalogId);
 	}
 
 
@@ -450,7 +450,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseOfferingSearchSession() {
-    	throw new osid_UnimplementedException();
+    	return new banner_course_CourseOffering_Search_CombinedSession($this);
 	}
 
 
@@ -477,7 +477,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseOfferingSearchSessionForCatalog(osid_id_Id $courseCatalogId) {
-    	throw new osid_UnimplementedException();
+    	return new banner_course_CourseOffering_Search_Session($this, $courseCatalogId);
 	}
 
 
@@ -628,7 +628,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseOfferingCatalogSession() {
-    	return new banner_course_CourseOfferingCatalogSession($this);
+    	return new banner_course_CourseOffering_Catalog_Session($this);
 	}
 
 
@@ -666,7 +666,7 @@ class banner_course_CourseManager
      *              supportsTermLookup() </code> is <code> true. </code> 
      */
     public function getTermLookupSession() {
-    	return new banner_course_CombinedTermLookupSession($this);
+    	return new banner_course_Term_Lookup_CombinedSession($this);
 	}
 
 
@@ -693,7 +693,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getTermLookupSessionForCatalog(osid_id_Id $courseCatalogId) {
-    	return new banner_course_TermLookupSession($this, $courseCatalogId);
+    	return new banner_course_Term_Lookup_Session($this, $courseCatalogId);
 	}
 
 
@@ -880,7 +880,7 @@ class banner_course_CourseManager
      *              supportsTermCatalog() </code> is <code> true. </code> 
      */
     public function getTermCatalogSession() {
-    	return new banner_course_TermCatalogSession($this);
+    	return new banner_course_Term_Catalog_Session($this);
 	}
 
 
@@ -918,7 +918,7 @@ class banner_course_CourseManager
      *              supportsTopicLookup() </code> is <code> true. </code> 
      */
     public function getTopicLookupSession() {
-    	return new banner_course_TopicLookupSession($this, $this->getCombinedCatalogId());
+    	return new banner_course_Topic_Lookup_Session($this, $this->getCombinedCatalogId());
 	}
 
 
@@ -945,7 +945,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getTopicLookupSessionForCatalog(osid_id_Id $courseCatalogId) {
-    	return new banner_course_TopicLookupSession($this, $courseCatalogId);
+    	return new banner_course_Topic_Lookup_Session($this, $courseCatalogId);
 	}
 
 
@@ -1172,7 +1172,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseCatalogLookupSession() {
-    	return new banner_course_CourseCatalogLookupSession($this);
+    	return new banner_course_CourseCatalog_Lookup_Session($this);
 	}
 
 
@@ -1448,7 +1448,7 @@ class banner_course_CourseManager
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsCourseOfferingSearch() {
-    	return false;
+    	return true;
     }
 
 

@@ -38,7 +38,7 @@ class harmoni_SQLUtils {
 		if ($queryString)
 			return self::parseSQLString($queryString);
 		else
-			throw new DatabaseException("The file, '".$file."' was empty or doesn't exist.");
+			throw new harmoni_DatabaseException("The file, '".$file."' was empty or doesn't exist.");
 	}
 	
 	/**

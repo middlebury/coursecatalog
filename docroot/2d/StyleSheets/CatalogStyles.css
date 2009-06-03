@@ -14,3 +14,46 @@
 .offering_list .instructor {
 	font-style: italic;
 }
+
+.requirement_group {
+	float: left;
+}
+
+/*********************************************************
+ * Search
+ *********************************************************/
+
+table.search_options th {
+	vertical-align: top;
+	text-align: left;
+}
+
+table.search_options td {
+	vertical-align: top;
+}
+
+table.search_results {
+	width: 800px;
+}
+
+table.search_results th {
+	border: 1px solid #000;
+	vertical-align: top;
+	text-align: right;
+}
+
+table.search_results td {
+	border: 1px solid #000;
+	vertical-align: top;
+}
+
+div.search_results_item_pagination {
+	width: 800px;
+	text-align: right;
+}
+
+div.search_results_search_pagination {
+	width: 800px;
+	text-align: center;
+}
+

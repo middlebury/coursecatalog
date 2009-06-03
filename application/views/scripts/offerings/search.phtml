@@ -1,0 +1,273 @@
+<?php 
+	$formParams = array(
+							'controller'	=> 'offerings',
+							'action'		=> 'search',
+							'department'	=> null,
+							'subject'		=> null,
+							'division'		=> null,
+							'requirement'	=> null,
+							'page'			=> null,
+							'submit'		=> null
+						);
+?>
+
+<form action="<?php print $this->url($formParams); ?>" method="get">
+	<table class='search_options'>
+
+		<tr>
+			<th>By Department:</th>
+			<td>
+				<select name="department">
+					<option value=''>Any Department</option>
+<?php
+while ($this->departments->hasNext()) {
+	$topic = $this->departments->getNextTopic();
+	print "\n\t\t\t\t\t<option value='";
+	print AbstractCatalogController::getStringFromOsidId($topic->getId());
+	print "'";
+	if (isset($this->selectedDepartmentId) && $topic->getId()->isEqual($this->selectedDepartmentId))
+		print " selected='selected'";
+	print ">".$topic->getDisplayName()."</option>";
+}
+?>
+				</select>
+			</td>
+		</tr>
+
+		<tr>
+			<th>By Subject:</th>
+			<td>
+				<select name="subject">
+					<option value=''>Any Subject</option>
+<?php
+while ($this->subjects->hasNext()) {
+	$topic = $this->subjects->getNextTopic();
+	print "\n\t\t\t\t\t<option value='";
+	print AbstractCatalogController::getStringFromOsidId($topic->getId());
+	print "'";
+	if (isset($this->selectedSubjectId) && $topic->getId()->isEqual($this->selectedSubjectId))
+		print " selected='selected'";
+	print ">".$topic->getDisplayName()."</option>";
+}
+?>
+				</select>
+			</td>
+		</tr>
+
+		<tr>
+			<th>By Division:</th>
+			<td>
+				<select name="division">
+					<option value=''>Any Division</option>
+<?php
+while ($this->divisions->hasNext()) {
+	$topic = $this->divisions->getNextTopic();
+	print "\n\t\t\t\t\t<option value='";
+	print AbstractCatalogController::getStringFromOsidId($topic->getId());
+	print "'";
+	if (isset($this->selectedDivisionId) && $topic->getId()->isEqual($this->selectedDivisionId))
+		print " selected='selected'";
+	print ">".$topic->getDisplayName()."</option>";
+}
+?>
+				</select>
+			</td>
+		</tr>
+
+		<tr>
+			<th>Satisfies Requirements:</th>
+			<td>
+				(Leave all blank for no preference)
+				<div class='requirement_group'>
+<?php
+$i = 0;
+while ($this->requirements->hasNext()) {
+	if (!($i % 5))
+		print "\n\t\t\t</div>\n\t\t\t<div class='requirement_group'>";
+	
+	$topic = $this->requirements->getNextTopic();
+	print "\n\t\t\t\t<input type='checkbox' name='requirement[]' value='";
+	print AbstractCatalogController::getStringFromOsidId($topic->getId());
+	print "'";
+	foreach ($this->selectedRequirementIds as $selectedId) {
+		if ($topic->getId()->isEqual($selectedId)) {
+			print " checked='checked'";
+			break;
+		}
+	}
+	print "/><label>".$topic->getDisplayName()."</label><br/>";
+	
+	$i++;
+}
+?>
+				</div>
+			</td>
+		</tr>
+		
+		<tr>
+			<td colspan='2'><input type='submit' name='submit' value='Search'/>
+		</tr>
+
+	</table>
+<form>
+
+<?php
+/*********************************************************
+ * Search results
+ *********************************************************/
+if (isset($this->paginator)) { 
+
+?>
+<h2>Results</h2>
+
+<?php
+if (!count($this->paginator)) {
+	print "<div class='search_empty'>No Matches</div>";
+}
+
+print $this->paginationControl($this->paginator, 'Sliding', 'ItemPaginationControl.phtml', array('search_params' => $this->searchParams)); ?>
+
+<table class='search_results'>
+	<tbody>
+<?php 
+	foreach ($this->paginator as $section) { 
+?>
+		<tr>
+			<th><?php print $section->getDisplayName(); ?></th>
+			<td>
+				<div class='title'><?php print $section->getTitle(); ?></div>
+				<div class='description'><?php print $section->getDescription(); ?></div>				
+<?php
+
+$resourceParams = array(
+							'controller'	=> 'resources',
+							'action'		=> 'view',
+							'offering'		=> null
+						);
+
+$term = $section->getTerm();
+$termUrl = $this->url(array(
+						'controller'	=> 'terms',
+						'action'		=> 'view',
+						'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId()),
+						'offering'		=> null
+					));
+$topicParams = array(
+						'controller'	=> 'topics',
+						'action'		=> 'view',
+						'offering'		=> null,
+						'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId())
+					);
+
+print "\n\t<dl>";
+print "\n\t\t<dt>Location:</dt>";
+if ($section->hasLocation()) {
+	try {
+		$locationResource = $section->getLocation();
+		print "\n\t\t<dd>";
+		$resourceParams['resource'] = AbstractCatalogController::getStringFromOsidId($locationResource->getId());
+		print "<a href=\"".$this->url($resourceParams)."\">";
+		print $this->escape($locationResource->getDisplayName());
+		print "</a> ";
+		if ($locationResource->getDescription())
+			print "<span class='location_description'>(".$this->escape($locationResource->getDescription()).")</span>";
+		print "\n\t\t</dd>";
+	} catch (osid_OperationFailedException $e) {
+		print "\n\t\t<dd>".$this->escape($section->getLocationInfo())."</dd>";
+	}
+} else {
+	print "\n\t\t<dd>".$this->escape($section->getLocationInfo())."</dd>";
+}
+print "\n\t\t<dt>Schedule:</dt>";
+print "\n\t\t<dd>".$this->escape($section->getScheduleInfo())."</dd>";
+
+$instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+if ($section->hasRecordType($instructorsType)) {
+	$instructorsRecord = $section->getCourseOfferingRecord($instructorsType);
+	print "\n\t\t<dt>Instructors:</dt>";
+	print "\n\t\t<dd>";
+	$instructors = $instructorsRecord->getInstructors();
+	while ($instructors->hasNext()) {
+		$instructor = $instructors->getNextResource();
+		$resourceParams['resource'] = AbstractCatalogController::getStringFromOsidId($instructor->getId());
+		print "<a href=\"".$this->url($resourceParams)."\">";
+		print $this->escape($instructor->getDisplayName());
+		print "</a> ";
+	}
+	print "</dd>";
+}
+
+print "\n\t</dl>";
+print "\n\t</td>\n\t<td>";
+print "\n\t<dl>";
+// Topics
+$allTopics = AbstractCatalogController::topicListAsArray($section->getTopics());
+
+print "\n\t<dt>Subject:</dt>";
+print "\n\t\t<dd>";
+$topics = AbstractCatalogController::filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject"));
+foreach ($topics as $topic) {
+	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+	print "<a href=\"".$this->url($topicParams)."\">";
+	print $this->escape($topic->getDisplayName());
+	print "</a> ";
+}
+print "</dd>";
+
+print "\n\t\t<dt>Department:</dt>";
+print "\n\t\t<dd>";
+$topics = AbstractCatalogController::filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department"));
+foreach ($topics as $topic) {
+	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+	print "<a href=\"".$this->url($topicParams)."\">";
+	print $this->escape($topic->getDisplayName());
+	print "</a> ";
+}
+print "</dd>";
+
+print "\n\t\t<dt>Division:</dt>";
+print "\n\t\t<dd>";
+$topics = AbstractCatalogController::filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division"));
+foreach ($topics as $topic) {
+	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+	print "<a href=\"".$this->url($topicParams)."\">";
+	print $this->escape($topic->getDisplayName());
+	print "</a> ";
+}
+print "</dd>";
+
+print "\n\t\t<dt>Requirements Fulfilled:</dt>";
+print "\n\t\t<dd>";
+$topics = AbstractCatalogController::filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement"));
+foreach ($topics as $topic) {
+	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+	print "<a href=\"".$this->url($topicParams)."\">";
+	print $this->escape($topic->getDisplayName());
+	print "</a> ";
+}
+print "</dd>";
+
+print "\n\t</dl>";
+print "\n\t</td>\n\t<td>";
+print "\n\t<dl>";
+
+print "\n\t\t<dt>Type:</dt>";
+print "\n\t\t<dd>".$this->escape($section->getGenusType()->getDisplayName())."</dd>";
+
+print "\n\t\t<dt>Term:</dt>";
+print "\n\t\t<dd><a href='".$termUrl."'>".$this->escape($term->getDisplayName())."</a></dd>";
+
+print "\n\t</dl>";
+
+
+
+?>
+			</td>
+		</tr>
+<?php } ?>
+	</tbody>
+</table>
+
+<?php print $this->paginationControl($this->paginator, 'Sliding', 'SearchPaginationControl.phtml', array('search_params' => $this->searchParams)); ?>
+
+<?php } ?>
