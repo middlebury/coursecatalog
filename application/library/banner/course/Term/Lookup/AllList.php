@@ -16,7 +16,7 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class banner_course_AllTermsList
+class banner_course_Term_Lookup_AllList
 	extends banner_course_CachingPdoQueryList
 	implements osid_course_TermList
 {

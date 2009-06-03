@@ -693,7 +693,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getTermLookupSessionForCatalog(osid_id_Id $courseCatalogId) {
-    	return new banner_course_TermLookupSession($this, $courseCatalogId);
+    	return new banner_course_Term_Lookup_Session($this, $courseCatalogId);
 	}
 
 
@@ -880,7 +880,7 @@ class banner_course_CourseManager
      *              supportsTermCatalog() </code> is <code> true. </code> 
      */
     public function getTermCatalogSession() {
-    	return new banner_course_TermCatalogSession($this);
+    	return new banner_course_Term_Catalog_Session($this);
 	}
 
 

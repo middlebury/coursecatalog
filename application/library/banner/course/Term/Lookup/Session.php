@@ -38,7 +38,7 @@
  * 
  * @package org.osid.course
  */
-class banner_course_TermLookupSession
+class banner_course_Term_Lookup_Session
     extends banner_course_AbstractCourseSession
     implements osid_course_TermLookupSession
 {
@@ -377,7 +377,7 @@ ORDER BY STVTERM_CODE DESC
      *  @compliance mandatory This method must be implemented. 
      */
     public function getTerms() {
-    	return new banner_course_AllTermsList(
+    	return new banner_course_Term_Lookup_AllList(
     		$this->manager->getDB(),
     		$this);
     }

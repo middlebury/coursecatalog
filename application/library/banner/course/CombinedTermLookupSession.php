@@ -39,7 +39,7 @@
  * @package org.osid.course
  */
 class banner_course_CombinedTermLookupSession
-    extends banner_course_TermLookupSession
+    extends banner_course_Term_Lookup_Session
 {
 	
 
