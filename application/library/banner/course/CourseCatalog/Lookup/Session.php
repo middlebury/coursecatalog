@@ -39,7 +39,7 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class banner_course_CourseCatalogLookupSession
+class banner_course_CourseCatalog_Lookup_Session
 	extends banner_course_AbstractSession
 	implements osid_course_CourseCatalogLookupSession
 {

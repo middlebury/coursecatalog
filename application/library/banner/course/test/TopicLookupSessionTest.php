@@ -8,7 +8,7 @@ require_once 'PHPUnit/Framework.php';
 class banner_course_Topic_Lookup_SessionTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var    banner_course_CourseCatalogLookupSession
+     * @var    banner_course_CourseCatalog_Lookup_Session
      * @access protected
      */
     protected $session;

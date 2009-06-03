@@ -1172,7 +1172,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseCatalogLookupSession() {
-    	return new banner_course_CourseCatalogLookupSession($this);
+    	return new banner_course_CourseCatalog_Lookup_Session($this);
 	}
 
 

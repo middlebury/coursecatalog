@@ -9,7 +9,7 @@ class banner_course_test_CombinedCourseOfferingLookupSessionTest
 	extends phpkit_test_phpunit_AbstractOsidSessionTest
 {
 	/**
-     * @var    banner_course_CourseCatalogLookupSession
+     * @var    banner_course_CourseCatalog_Lookup_Session
      * @access protected
      */
     protected $session;
