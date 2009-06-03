@@ -21,7 +21,7 @@
  * 
  * @package org.osid.resource
  */
-class banner_resource_PlaceResource 
+class banner_resource_Resource_Place 
     extends phpkit_AbstractOsidObject
     implements osid_resource_Resource
 {

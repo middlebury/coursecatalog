@@ -22,7 +22,7 @@
  * 
  * @package banner.resource
  */
-class banner_resource_PersonResource
+class banner_resource_Resource_Person
     extends phpkit_AbstractOsidObject
     implements osid_resource_Resource,
     types_resource_PersonNamesResourceRecord

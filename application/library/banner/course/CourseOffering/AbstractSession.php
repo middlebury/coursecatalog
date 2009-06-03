@@ -235,7 +235,7 @@ abstract class banner_course_CourseOffering_AbstractSession
 	public function getInstructorsForOffering (osid_id_Id $offeringId) {
 		$people = array();
 		foreach ($this->getInstructorDataForOffering($offeringId) as $row) {
-			$people[] = new banner_resource_PersonResource(
+			$people[] = new banner_resource_Resource_Person(
 								$this->getOsidIdFromString($row['SYVINST_PIDM'], 'resource/person/'),
 								$row['SYVINST_LAST_NAME'],
 								$row['SYVINST_FIRST_NAME']

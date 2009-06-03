@@ -184,7 +184,7 @@ class banner_resource_ResourceManager
      *              supportsResourceLookup() </code> is <code> true. </code> 
      */
     public function getResourceLookupSession() {
-    	return new banner_resource_ResourceLookupSession($this);
+    	return new banner_resource_Resource_Lookup_Session($this);
 	}
 
 

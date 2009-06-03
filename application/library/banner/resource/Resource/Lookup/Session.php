@@ -37,7 +37,7 @@
  * 
  * @package banner.resource
  */
-class banner_resource_ResourceLookupSession
+class banner_resource_Resource_Lookup_Session
     extends banner_AbstractSession
     implements osid_resource_ResourceLookupSession
 {
@@ -79,7 +79,7 @@ class banner_resource_ResourceLookupSession
      *  @compliance mandatory This method must be implemented. 
      */
     public function getBin() {
-    	return new banner_resource_CombinedBin($this->manager);
+    	return new banner_resource_Bin_Combined($this->manager);
     }
 
 
@@ -254,7 +254,7 @@ WHERE
 		if (!$row['SYVINST_PIDM'])
 			throw new osid_NotFoundException("Could not find a resource  matching the person code ".$this->getDatabaseIdString($resourceId, 'resource/person/').".");
 		
-		return new banner_resource_PersonResource(
+		return new banner_resource_Resource_Person(
 					$this->getOsidIdFromString($row['SYVINST_PIDM'], 'resource/person/'),
 					$row['SYVINST_LAST_NAME'],
 					$row['SYVINST_FIRST_NAME']
@@ -286,7 +286,7 @@ FROM
 				
 		$resources = array();
 		while ($row = self::$getPersonResources_stmt->fetch(PDO::FETCH_ASSOC)) {
-			$resources[] = new banner_resource_PersonResource(
+			$resources[] = new banner_resource_Resource_Person(
 					$this->getOsidIdFromString($row['SYVINST_PIDM'], 'resource/person/'),
 					$row['SYVINST_LAST_NAME'],
 					$row['SYVINST_FIRST_NAME']
@@ -329,7 +329,7 @@ WHERE
 		if (!$row['STVBLDG_CODE'])
 			throw new osid_NotFoundException("Could not find a resource  matching the building code ".$this->getDatabaseIdString($resourceId, 'resource/place/building/').".");
 		
-		return new banner_resource_PlaceResource(
+		return new banner_resource_Resource_Place(
 					$this->getOsidIdFromString($row['STVBLDG_CODE'], 'resource/place/building/'),
 					$row['STVBLDG_DESC'],
 					$row['STVBLDG_CODE'],
@@ -361,7 +361,7 @@ FROM
 				
 		$resources = array();
 		while ($row = self::$getBuildingResources_stmt->fetch(PDO::FETCH_ASSOC)) {
-			$resources[] = new banner_resource_PlaceResource(
+			$resources[] = new banner_resource_Resource_Place(
 					$this->getOsidIdFromString($row['STVBLDG_CODE'], 'resource/place/building/'),
 					$row['STVBLDG_DESC'],
 					$row['STVBLDG_CODE'],
@@ -415,7 +415,7 @@ GROUP BY
 		if (!$row['STVBLDG_CODE'])
 			throw new osid_NotFoundException("Could not find a resource  matching the room code ".$this->getDatabaseIdString($resourceId, 'resource/place/room/').".");
 		
-		return new banner_resource_PlaceResource(
+		return new banner_resource_Resource_Place(
 					$this->getOsidIdFromString($row['STVBLDG_CODE'].'/'.$row['SSRMEET_ROOM_CODE'], 'resource/place/room/'),
 					$row['STVBLDG_DESC'].' '.$row['SSRMEET_ROOM_CODE'],
 					$row['STVBLDG_CODE'].' '.$row['SSRMEET_ROOM_CODE'],
@@ -453,7 +453,7 @@ GROUP BY
 				
 		$resources = array();
 		while ($row = self::$getRoomResources_stmt->fetch(PDO::FETCH_ASSOC)) {
-			$resources[] = new banner_resource_PlaceResource(
+			$resources[] = new banner_resource_Resource_Place(
 					$this->getOsidIdFromString($row['STVBLDG_CODE'].'/'.$row['SSRMEET_ROOM_CODE'], 'resource/place/room/'),
 					$row['STVBLDG_DESC'].' '.$row['SSRMEET_ROOM_CODE'],
 					$row['STVBLDG_CODE'].' '.$row['SSRMEET_ROOM_CODE'],
@@ -497,7 +497,7 @@ WHERE
 		if (!$row['STVCAMP_CODE'])
 			throw new osid_NotFoundException("Could not find a resource  matching the campus code ".$this->getDatabaseIdString($resourceId, 'resource/place/campus/').".");
 		
-		return new banner_resource_PlaceResource(
+		return new banner_resource_Resource_Place(
 					$this->getOsidIdFromString($row['STVCAMP_CODE'], 'resource/place/campus/'),
 					$row['STVCAMP_DESC'],
 					'',
@@ -529,7 +529,7 @@ FROM
 				
 		$resources = array();
 		while ($row = self::$getCampusResources_stmt->fetch(PDO::FETCH_ASSOC)) {
-			$resources[] = new banner_resource_PlaceResource(
+			$resources[] = new banner_resource_Resource_Place(
 					$this->getOsidIdFromString($row['STVCAMP_CODE'], 'resource/place/campus/'),
 					$row['STVCAMP_DESC'],
 					'',

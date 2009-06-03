@@ -12,7 +12,7 @@
  * 
  * @package banner.resource
  */
-class banner_resource_CombinedBin
+class banner_resource_Bin_Combined
     extends phpkit_AbstractOsidCatalog
     implements osid_resource_Bin
 {
