@@ -17,7 +17,7 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class banner_course_CombinedCourseCatalog
+class banner_course_CourseCatalog_Combined
 	extends phpkit_AbstractOsidCatalog
 	implements osid_course_CourseCatalog
 {

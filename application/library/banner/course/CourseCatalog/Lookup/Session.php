@@ -122,7 +122,7 @@ class banner_course_CourseCatalog_Lookup_Session
      */
     public function getCourseCatalog(osid_id_Id $courseCatalogId) {
     	if ($courseCatalogId->isEqual($this->getCombinedCatalogId()))
-    		return new banner_course_CombinedCourseCatalog($this->getCombinedCatalogId());
+    		return new banner_course_CourseCatalog_Combined($this->getCombinedCatalogId());
     	
     	if (!isset(self::$getCatalogById_stmt)) {
     		self::$getCatalogById_stmt = $this->manager->getDB()->prepare(
@@ -297,7 +297,7 @@ FROM
     	self::$getCatalogs_stmt->execute();
     	
     	$catalogs = array();
-    	$catalogs[] = new banner_course_CombinedCourseCatalog($this->getCombinedCatalogId());
+    	$catalogs[] = new banner_course_CourseCatalog_Combined($this->getCombinedCatalogId());
     	while ($result = self::$getCatalogs_stmt->fetch(PDO::FETCH_ASSOC)) {
     	
     		$catalogs[] = new banner_course_CourseCatalog(
