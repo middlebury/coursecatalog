@@ -115,10 +115,37 @@ class banner_course_CourseOffering_Search_QueryTest
      */
     public function testMatchKeyword()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->matchKeyword('Quantum', $this->wildcardStringMatchType, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('%Quantum%', $params[0]);
+        $this->assertEquals('%Quantum%', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+         $this->assertEquals('((SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?)))', $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(8, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchKeywords()
+    {
+        $this->object->matchKeyword('Quantum Environment', $this->wildcardStringMatchType, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('%Quantum%', $params[0]);
+        $this->assertEquals('%Quantum%', $params[1]);
+        $this->assertEquals('%Environment%', $params[2]);
+        $this->assertEquals('%Environment%', $params[3]);
+        $this->assertFalse(isset($params[4]));
+        
+         $this->assertEquals("((SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?))\n\t\tOR (SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?)))", $this->object->getWhereClause());
+		
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+		$this->assertEquals(22, $courseOfferings->available());
     }
 
     /**

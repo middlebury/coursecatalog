@@ -191,7 +191,16 @@ class banner_course_CourseOffering_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchKeyword($keyword, osid_type_Type $stringMatchType, $match) {
-    	throw new osid_UnimplementedException();
+    	if (!is_string($keyword))
+    		throw new osid_InvalidArgumentException("\$keyword '$keyword' must be a string.");
+    	
+        if ($stringMatchType->isEqual($this->wildcardStringMatchType)) {
+        	$string = str_replace('*', '%', $keyword);
+        	foreach (explode(' ', $string) as $param)
+	        	$this->addClause('keyword', '(SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?))', array('%'.$param.'%', '%'.$param.'%'), $match);
+        } else {
+	    	throw new osid_UnsupportedException("The stringMatchType passed is not supported.");
+	    }
     }
 
 
