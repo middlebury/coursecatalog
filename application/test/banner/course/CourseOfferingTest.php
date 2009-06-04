@@ -342,10 +342,7 @@ class banner_course_CourseOfferingTest
      */
     public function testGetURL()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('string', $this->object->getURL());
     }
 
     /**

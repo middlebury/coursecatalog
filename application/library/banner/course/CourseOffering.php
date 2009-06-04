@@ -482,7 +482,7 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getURL() {
-    	throw new osid_UnimplementedException();
+    	return '';
     }
 
 
