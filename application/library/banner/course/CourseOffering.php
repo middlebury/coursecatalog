@@ -127,11 +127,18 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getTitle() {
-    	if (isset($this->row['SSBSECT_CRSE_TITLE']) && strlen($this->row['SSBSECT_CRSE_TITLE']))
-    		return $this->row['SSBSECT_CRSE_TITLE'];
+    	$title = '';
     	
-    	else if (isset($this->row['SCBCRSE_TITLE']) && strlen($this->row['SCBCRSE_TITLE']))
-    		return $this->row['SCBCRSE_TITLE'];
+    	if (isset($this->row['SCBCRSE_TITLE']) && strlen($this->row['SCBCRSE_TITLE']))
+    		$title .= $this->row['SCBCRSE_TITLE'].' ';
+    	
+    	if (isset($this->row['SSBSECT_CRSE_TITLE']) && strlen($this->row['SSBSECT_CRSE_TITLE']))
+    		$title .= $this->row['SSBSECT_CRSE_TITLE'];
+    	
+    	$title = trim($title);
+    	
+    	if (strlen($title))
+    		return $title;
     	
     	try {
     		return $this->getCourse()->getTitle();
