@@ -131,34 +131,39 @@ print $this->paginationControl($this->paginator, 'Sliding', 'ItemPaginationContr
 	<tbody>
 <?php 
 	foreach ($this->paginator as $section) { 
-?>
-		<tr>
-			<th><?php print $section->getDisplayName(); ?></th>
-			<td>
-				<div class='title'><?php print $section->getTitle(); ?></div>
-				<div class='description'><?php print $section->getDescription(); ?></div>				
-<?php
-
-$resourceParams = array(
+		$offeringParams = array(
+							'controller'	=> 'offerings',
+							'action'		=> 'view',
+							'offering'		=> AbstractCatalogController::getStringFromOsidId($section->getId())
+						);
+		$resourceParams = array(
 							'controller'	=> 'resources',
 							'action'		=> 'view',
 							'offering'		=> null
 						);
 
-$term = $section->getTerm();
-$termUrl = $this->url(array(
+		$term = $section->getTerm();
+		$termUrl = $this->url(array(
 						'controller'	=> 'terms',
 						'action'		=> 'view',
 						'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId()),
 						'offering'		=> null
 					));
-$topicParams = array(
+		$topicParams = array(
 						'controller'	=> 'topics',
 						'action'		=> 'view',
 						'offering'		=> null,
 						'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId())
 					);
-
+?>
+		<tr>
+			<th>
+				<a href='<?php print $this->url($offeringParams); ?>'><?php print $section->getDisplayName(); ?></a>
+			</th>
+			<td>
+				<div class='title'><?php print $section->getTitle(); ?></div>
+				<div class='description'><?php print $section->getDescription(); ?></div>				
+<?php
 print "\n\t<dl>";
 print "\n\t\t<dt>Location:</dt>";
 if ($section->hasLocation()) {
