@@ -595,5 +595,72 @@ class banner_course_CourseOffering
     public function getInstructors() {
     	return $this->session->getInstructorsForOffering($this->getId());
     }
+    
+/*********************************************************
+ * Full-text search indexing support. Internal to this implementation.
+ *********************************************************/
+	
+	/**
+	 * Answer a string to be indexed for full-text search.
+	 *
+	 * WARNING: This method is internal to this implementation.
+	 * 
+	 * @return string
+	 * @access public
+	 * @since 6/9/09
+	 */
+	public function getFulltextStringForIndex () {
+		$text = '';
+		
+		$text .= ' '.$this->getNumber();
+		$text .= ' '.$this->row['SSBSECT_SUBJ_CODE'].$this->row['SSBSECT_CRSE_NUMB'];
+		$text .= ' '.$this->row['SSBSECT_SUBJ_CODE'];
+		$text .= ' '.$this->row['SSBSECT_CRSE_NUMB'];
+		$text .= ' '.$row['term_display_label'].substr($row['STVTERM_START_DATE'], 2, 2);
+		$text .= ' '.$this->row['SCBCRSE_DEPT_CODE'];
+		$text .= ' '.$this->row['SCBCRSE_DIVS_CODE'];
+
+		
+		$text .= ' '.$this->getTitle();
+		
+		$text .= ' '.$this->getDescription();
+		
+// 		$text .= ' '.$this->getPrereqInfo();
+
+			
+// 		try {
+// 			$topics = $this->getTopics();
+// 			while ($topics->hasNext()) {
+// 				$topic = $topics->getNextTopic();
+// 				$text .= ' '.$topic->getDisplayName();
+// 			}
+// 		} catch (osid_OperationFailedException $e) {}
+// 		
+		$text .= ' '.$this->getLocationInfo();
+// 		$text .= ' '.$this->getScheduleInfo();
+// 		
+// 		
+// 		if ($this->hasLearningObjective()) {
+// 			try {
+// 				$objective = $this->getLearningObjective();
+// 				$text .= ' '.$objective->getDisplayName();
+// 			} catch (osid_OperationFailedException $e) {}
+// 		}
+// 					
+// 		if ($this->hasRecordType($this->instructorsType)) {
+// 			try {
+// 				$record = $this->getCourseOfferingRecord($this->instructorsType);
+// 				$instructors = $record->getInstructors();
+// 				while ($instructors->hasNext()) {
+// 					$instructor = $instructors->getNextResource();
+// 					$text .= ' '.$instructor->getDisplayName();
+// 				}
+// 			} catch (osid_OperationFailedException $e) {
+// 			} catch (osid_PermissionDeniedException $e) {
+// 			}
+// 		}
+
+		return $text;
+	}
 
 }

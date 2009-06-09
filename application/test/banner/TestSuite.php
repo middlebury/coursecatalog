@@ -31,6 +31,10 @@ class banner_TestSuite extends PHPUnit_Framework_TestSuite
         harmoni_SQLUtils::runSQLfile(APPLICATION_PATH.'/library/banner/sql/table_creation.sql', $db);
         harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/test_data.sql', $db);
         
+        // Build our full-text search index.
+        $searchSession = $this->sharedFixture['CourseManager']->getCourseOfferingSearchSession();
+        $searchSession->buildIndex(true);
+        
         if (method_exists($db, 'resetCounters')) {
 	       $db->resetCounters();
 	       $db->recordDuplicates();
