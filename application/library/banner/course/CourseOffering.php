@@ -616,7 +616,7 @@ class banner_course_CourseOffering
 		$text .= ' '.$this->row['SSBSECT_SUBJ_CODE'].$this->row['SSBSECT_CRSE_NUMB'];
 		$text .= ' '.$this->row['SSBSECT_SUBJ_CODE'];
 		$text .= ' '.$this->row['SSBSECT_CRSE_NUMB'];
-		$text .= ' '.$row['term_display_label'].substr($row['STVTERM_START_DATE'], 2, 2);
+		$text .= ' '.$this->row['term_display_label'].substr($this->row['STVTERM_START_DATE'], 2, 2);
 		$text .= ' '.$this->row['SCBCRSE_DEPT_CODE'];
 		$text .= ' '.$this->row['SCBCRSE_DIVS_CODE'];
 

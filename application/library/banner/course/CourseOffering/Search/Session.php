@@ -239,8 +239,8 @@ class banner_course_CourseOffering_Search_Session
 	 * @since 6/4/09
 	 */
 	public function buildIndex ($displayStatus = false) {
-		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_drop_tables.sql', $this->manager->getDB());
-		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_create_tables.sql', $this->manager->getDB());
+		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_drop_index_structure.sql', $this->manager->getDB());
+		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_create_index_structure.sql', $this->manager->getDB());
 		
 		$lookupSession = $this->manager->getCourseOfferingLookupSession();
 		$lookupSession->useFederatedCourseCatalogView();
@@ -261,7 +261,7 @@ class banner_course_CourseOffering_Search_Session
 			print "\nBuilding Index of $total offerings:\n";
 		}
 		
-		$insertStmt = $this->manager->getDB()->prepare('INSERT INTO section_fulltext (section_fulltext_term_code, section_fulltext_crn, section_fulltext_text) VALUES (:term_code, :crn, :text)');
+		$insertStmt = $this->manager->getDB()->prepare('UPDATE ssbsect SET SSBSECT_fulltext=:text WHERE SSBSECT_TERM_CODE = :term_code AND SSBSECT_CRN = :crn');
 		
 		$i = 0;
 		while ($offerings->hasNext()) {
@@ -269,12 +269,14 @@ class banner_course_CourseOffering_Search_Session
 			$termCode = $this->getTermCodeFromOfferingId($offering->getId());
 			$crn = $this->getCrnFromOfferingId($offering->getId());
 			
-			$insertStmt->execute(array(':term_code' => $termCode, ':crn' => $crn, ':text' => $offering->getFulltextStringForIndex()));
+			if (!$insertStmt->execute(array(':term_code' => $termCode, ':crn' => $crn, ':text' => $offering->getFulltextStringForIndex())))
+				throw new osid_OperationFailedException('FullText update failed');
 			
 			$i++;
 			if ($displayStatus) {
-				print ".";
-				if (!($i % 100)) {
+				if (!($i % 100))
+					print ".";
+				if (!($i % 10000)) {
 					print " ";
 					print str_pad($i, $numLength, ' ', STR_PAD_LEFT);
 					print " / $total\n";
@@ -285,7 +287,7 @@ class banner_course_CourseOffering_Search_Session
 		if ($displayStatus)
 			print "\nData Populated, adding index to columns...";
 		
-		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_add_indices.sql', $this->manager->getDB());
+		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_add_index.sql', $this->manager->getDB());
 		
 		if ($displayStatus)
 			print "\nIndex Built\n";

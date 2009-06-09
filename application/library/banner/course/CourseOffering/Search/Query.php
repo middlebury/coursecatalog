@@ -32,6 +32,7 @@ class banner_course_CourseOffering_Search_Query
 		$this->session = $session;
 		
 		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
+		$this->booleanStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:boolean");
 		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 
 		$this->stringMatchTypes = array(
@@ -41,6 +42,8 @@ class banner_course_CourseOffering_Search_Query
 		$this->clauseSets = array();
 		$this->parameters = array();
 		$this->additionalTableJoins = array();
+		
+		$this->keywordString = '';
 	}
 	
 	/**
@@ -102,6 +105,10 @@ class banner_course_CourseOffering_Search_Query
 			$sets[] = '('.implode("\n\t\tOR ", $set).')';
 		}
 		
+		if (strlen($this->keywordString)) {
+			$sets[] = 'MATCH (SSBSECT_fulltext) AGAINST (? IN BOOLEAN MODE)';
+		}
+		
 		return implode("\n\tAND ", $sets);
 	}
 	
@@ -119,6 +126,11 @@ class banner_course_CourseOffering_Search_Query
 				$params = array_merge($params, $clauseParams);
 			}
 		}
+		
+		if (strlen($this->keywordString)) {
+			$params[] = trim($this->keywordString);
+		}
+		
 		return $params;
 	}
 	
@@ -194,10 +206,15 @@ class banner_course_CourseOffering_Search_Query
     	if (!is_string($keyword))
     		throw new osid_InvalidArgumentException("\$keyword '$keyword' must be a string.");
     	
-        if ($stringMatchType->isEqual($this->wildcardStringMatchType)) {
-        	$string = str_replace('*', '%', $keyword);
-        	foreach (explode(' ', $string) as $param)
-	        	$this->addClause('keyword', '(SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?))', array('%'.$param.'%', '%'.$param.'%'), $match);
+        if ($stringMatchType->isEqual($this->booleanStringMatchType)
+        		|| $stringMatchType->isEqual($this->wildcardStringMatchType)) 
+        {
+        	foreach (explode(' ', $keyword) as $param) {
+        		if ($match)
+	        		$this->keywordString .= $param.' ';
+	        	else
+	        		$this->keywordString .= '-'.preg_replace('/^[+-]*(.+)$/i', '\1', $param).' ';
+        	}
         } else {
 	    	throw new osid_UnsupportedException("The stringMatchType passed is not supported.");
 	    }
