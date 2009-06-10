@@ -23,7 +23,7 @@
  *     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  *     DEALINGS IN THE SOFTWARE.
  * 
- * @package phpkit.course
+ * @package middlebury.course
  */
 
 /**
@@ -36,7 +36,7 @@
  *		authority:		middlebury.edu
  *		identifier:		record:instructors
  *
- * @package phpkit.course
+ * @package middlebury.course
  */
 interface middlebury_course_CourseOffering_Search_InstructorsSearchOrderRecord
     extends osid_course_CourseOfferingSearchOrderRecord
