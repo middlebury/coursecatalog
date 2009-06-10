@@ -75,19 +75,23 @@ class OfferingsController
 			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
 			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
 			$topicLookupSession = self::getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+			$termLookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 			$this->view->title = 'Search in '.$offeringSearchSession->getCourseCatalog()->getDisplayName();
 		} else {
 			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSession();
 			$topicLookupSession = self::getCourseManager()->getTopicLookupSession();
+			$termLookupSession = self::getCourseManager()->getTermLookupSession();
 			$this->view->title = 'Search in All Catalogs';
 		}
 		$topicLookupSession->useFederatedCourseCatalogView();
+		$termLookupSession->useFederatedCourseCatalogView();
 		$offeringSearchSession->useFederatedCourseCatalogView();
 		
 		
 	/*********************************************************
 	 * Build option lists for the search form
 	 *********************************************************/
+	 	$this->view->terms = $termLookupSession->getTerms();
 		$this->view->departments = $topicLookupSession->getTopicsByGenusType($this->departmentType);
 		$this->view->subjects = $topicLookupSession->getTopicsByGenusType($this->subjectType);
 		$this->view->divisions = $topicLookupSession->getTopicsByGenusType($this->divisionType);
@@ -103,6 +107,20 @@ class OfferingsController
 		$this->view->searchParams = array();
 		
 		// Add our parameters to the search query
+		if ($this->_getParam('term')) {
+			$termId = self::getOsidIdFromString($this->_getParam('term'));
+			$this->view->searchParams['term'] = $this->_getParam('term');
+			
+			$query->matchTermId($termId, true);
+			
+			$termLookupSession = self::getCourseManager()->getTermLookupSession();
+			$termLookupSession->useFederatedCourseCatalogView();
+			$this->view->term = $termLookupSession->getTerm($termId);
+			$this->view->selectedTermId = $termId;
+
+			$this->view->title .= " ".$this->view->term->getDisplayName();
+		}
+		
 		if ($this->_getParam('department')) {
 			$query->matchTopicId(self::getOsidIdFromString($this->_getParam('department')), true);
 			$this->view->selectedDepartmentId = self::getOsidIdFromString($this->_getParam('department'));
@@ -138,19 +156,6 @@ class OfferingsController
 				$queryRecord->matchInstructorId(self::getOsidIdFromString($this->_getParam('instructor')), true);
 			}
 			$this->view->searchParams['instructor'] = $this->_getParam('instructor');
-		}
-		
-		if ($this->_getParam('term')) {
-			$termId = self::getOsidIdFromString($this->_getParam('term'));
-			$this->view->searchParams['term'] = $this->_getParam('term');
-			
-			$query->matchTermId($termId, true);
-			
-			$termLookupSession = self::getCourseManager()->getTermLookupSession();
-			$termLookupSession->useFederatedCourseCatalogView();
-			$this->view->term = $termLookupSession->getTerm($termId);
-			
-			$this->view->title .= " ".$this->view->term->getDisplayName();
 		}
 		
 		// Run the query if submitted.

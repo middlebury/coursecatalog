@@ -15,6 +15,26 @@
 	<table class='search_options'>
 
 		<tr>
+			<th>By Term:</th>
+			<td>
+				<select name="department">
+					<option value=''>Any Term</option>
+<?php
+while ($this->terms->hasNext()) {
+	$term = $this->terms->getNextTerm();
+	print "\n\t\t\t\t\t<option value='";
+	print AbstractCatalogController::getStringFromOsidId($term->getId());
+	print "'";
+	if (isset($this->selectedTermId) && $term->getId()->isEqual($this->selectedTermId))
+		print " selected='selected'";
+	print ">".$term->getDisplayName()."</option>";
+}
+?>
+				</select>
+			</td>
+		</tr>
+
+		<tr>
 			<th>By Department:</th>
 			<td>
 				<select name="department">
