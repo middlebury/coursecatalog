@@ -145,13 +145,18 @@ class OfferingsController
 			
 		$this->view->selectedRequirementIds = array();
 		if ($this->_getParam('requirement') && count($this->_getParam('requirement'))) {
-			foreach ($this->_getParam('requirement') as $reqIdString) {
+			if (is_array($this->_getParam('requirement')))
+				$requirements = $this->_getParam('requirement');
+			else
+				$requirements = array($this->_getParam('requirement'));
+			
+			foreach ($requirements as $reqIdString) {
 				$reqId = self::getOsidIdFromString($reqIdString);
 				$query->matchTopicId($reqId, true);
 				$this->view->selectedRequirementIds[] = $reqId;
 			}
 			
-			$this->view->searchParams['requirement'] = $this->_getParam('requirement');
+			$this->view->searchParams['requirement'] = $requirements;
 		}
 		
 		if ($query->hasRecordType($this->weeklyScheduleType)) {
@@ -201,7 +206,7 @@ class OfferingsController
 				$this->view->timeStart = $start;
 				$this->view->timeEnd = $end;
 				$this->view->searchParams['time_start'] = $start;
-				$this->view->searchParams['time_end'] = $start;
+				$this->view->searchParams['time_end'] = $end;
 			} else {
 				$this->view->timeStart = 0;
 				$this->view->timeEnd = 86400;
