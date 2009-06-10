@@ -176,6 +176,21 @@ abstract class AbstractCatalogController
 		return $matching;
 	}
 	
+	/**
+     * Answer a 24-hour time string from an integer number of seconds.
+     * 
+     * @param integer $seconds
+     * @return string
+     * @access protected
+     * @since 6/10/09
+     * @static
+     */
+    public static function getTimeString ($seconds) {
+    	$hour = floor($seconds/3600);
+    	$minute = floor(($seconds - ($hour * 3600))/60);
+    	return str_pad($hour, 2, '0', STR_PAD_LEFT).':'.str_pad($minute, 2, '0', STR_PAD_LEFT);
+    }
+	
 	private $startTime;
 	
 	/**

@@ -31,6 +31,8 @@ class OfferingsController
     	$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
 		$this->booleanStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:boolean");
 		$this->instructorType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
+
 		parent::init();
 		
 		$this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
@@ -150,6 +152,60 @@ class OfferingsController
 			}
 			
 			$this->view->searchParams['requirement'] = $this->_getParam('requirement');
+		}
+		
+		if ($query->hasRecordType($this->weeklyScheduleType)) {
+			$queryRecord = $query->getCourseOfferingQueryRecord($this->weeklyScheduleType);
+			
+			if ($this->_getParam('days') && count($this->_getParam('days'))) {
+				if (is_array($this->_getParam('days')))
+					$days = $this->_getParam('days');
+				else
+					$days = array($this->_getParam('days'));
+					
+				if (!in_array('sunday', $days))
+					$queryRecord->matchMeetsSunday(false);
+				
+				if (!in_array('monday', $days))
+					$queryRecord->matchMeetsMonday(false);
+				
+				if (!in_array('tuesday', $days))
+					$queryRecord->matchMeetsTuesday(false);
+				
+				if (!in_array('wednesday', $days))
+					$queryRecord->matchMeetsWednesday(false);
+				
+				if (!in_array('thursday', $days))
+					$queryRecord->matchMeetsThursday(false);
+				
+				if (!in_array('friday', $days))
+					$queryRecord->matchMeetsFriday(false);
+				
+				if (!in_array('saturday', $days))
+					$queryRecord->matchMeetsSaturday(false);
+				
+				$this->view->searchParams['days'] = $days;
+			} else {
+				$this->view->searchParams['days'] = array();
+			}
+			
+			if ($this->_getParam('time_start') || $this->_getParam('time_end')) {
+				$start = intval($this->_getParam('time_start'));
+				$end = intval($this->_getParam('time_end'));
+				if (!$end) {
+					$end = 86400;
+				}
+				if ($start > 0 || $end < 86400)
+					$queryRecord->matchMeetingTime($start, $end, true);
+				
+				$this->view->timeStart = $start;
+				$this->view->timeEnd = $end;
+				$this->view->searchParams['time_start'] = $start;
+				$this->view->searchParams['time_end'] = $start;
+			} else {
+				$this->view->timeStart = 0;
+				$this->view->timeEnd = 86400;
+			}
 		}
 		
 		if ($this->_getParam('keywords')) {

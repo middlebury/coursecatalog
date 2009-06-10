@@ -2,11 +2,12 @@
 	$formParams = array(
 							'controller'	=> 'offerings',
 							'action'		=> 'search',
-							'term'	=> null,
+							'term'			=> null,
 							'department'	=> null,
 							'subject'		=> null,
 							'division'		=> null,
 							'requirement'	=> null,
+							'days'			=> null,
 							'keywords'		=> null,
 							'page'			=> null,
 							'submit'		=> null
@@ -133,7 +134,56 @@ while ($this->requirements->hasNext()) {
 				<div class='help_text'>By default results only have to match one of the supplied keywords. Use a plus (+) before a word to require it or a minus (-) to exclude it. Use an asterisk (*) as a wildcard.</div>
 			</td>
 		</tr>
+		
+<?php if (isset($this->searchParams['days'])) { ?>
+		<tr>
+			<th>Days of the week:</th>
+			<td>
+				<label><input type='checkbox' name='days[]' value='sunday' <?php if (in_array('sunday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Sunday</label> 
+				<label><input type='checkbox' name='days[]' value='monday' <?php if (in_array('monday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Monday</label> 
+				<label><input type='checkbox' name='days[]' value='tuesday' <?php if (in_array('tuesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Tuesday</label> 
+				<label><input type='checkbox' name='days[]' value='wednesday' <?php if (in_array('wednesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Wednesday</label> 
+				<label><input type='checkbox' name='days[]' value='thursday' <?php if (in_array('thursday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Thursday</label> 
+				<label><input type='checkbox' name='days[]' value='friday' <?php if (in_array('friday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Friday</label> 
+				<label><input type='checkbox' name='days[]' value='saturday' <?php if (in_array('saturday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Saturday</label> 
+				<div class='help_text'>Leave all unchecked if no preference.</div>
+			</td>
+		</tr>
+		
+		<tr>
+			<th>Time:</th>
+			<td>
+				<label>From 
+				<select name='time_start' class='time_select'>
+					<option value='0'<?php if (!$this->timeStart) { print  " selected='selected'"; } ?>>Any Time</option>
+<?php
+	for ($i = 1800; $i < 86400; $i = $i + 1800) {
+		print "\n\t\t\t\t\t<option value='$i'";
+		if ($this->timeStart == $i)
+			print " selected='selected'";
+		print ">".AbstractCatalogController::getTimeString($i)."</option>";
+	}
+?>
+				</select> 
+				</label>
+				
+				<label>To 
+				<select name='time_end' class='time_select'>
+<?php
+	for ($i = 1800; $i < 86400; $i = $i + 1800) {
+		print "\n\t\t\t\t\t<option value='$i'";
+		if ($this->timeEnd == $i)
+			print " selected='selected'";
+		print ">".AbstractCatalogController::getTimeString($i)."</option>";
+	}
+?>
+				<option value='86400'<?php if ($this->timeEnd == 86400) { print  " selected='selected'"; } ?>>Any Time</option>
+				</select> 
+				</label>
+			</td>
+		</tr>
 
+<?php } ?>
 
 		<tr>
 			<td colspan='2'><input type='submit' name='submit' value='Search'/>

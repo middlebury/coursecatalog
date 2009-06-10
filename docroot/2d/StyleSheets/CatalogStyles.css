@@ -32,6 +32,10 @@ table.search_options select {
 	width: 300px;
 }
 
+table.search_options select.time_select {
+	width: 100px;
+}
+
 table.search_options input.text_input {
 	width: 300px;
 }
