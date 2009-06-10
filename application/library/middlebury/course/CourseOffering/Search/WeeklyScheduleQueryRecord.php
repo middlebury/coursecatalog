@@ -45,8 +45,6 @@ interface middlebury_course_CourseOffering_Search_WeeklyScheduleQueryRecord
 	/**
      * Matches a meeting on Sunday.
      *
-     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
-     *
      * @param boolean $match <code> true </code> if a positive match, <code> 
      *          false </code> for negative match 
      * @compliance mandatory This method must be implemented. 
@@ -55,8 +53,6 @@ interface middlebury_course_CourseOffering_Search_WeeklyScheduleQueryRecord
 
 	/**
      * Matches a meeting on Monday.
-     *
-     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
      *
      * @param boolean $match <code> true </code> if a positive match, <code> 
      *          false </code> for negative match 
@@ -67,8 +63,6 @@ interface middlebury_course_CourseOffering_Search_WeeklyScheduleQueryRecord
 	/**
      * Matches a meeting on Tuesday.
      *
-     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
-     *
      * @param boolean $match <code> true </code> if a positive match, <code> 
      *          false </code> for negative match 
      * @compliance mandatory This method must be implemented. 
@@ -77,8 +71,6 @@ interface middlebury_course_CourseOffering_Search_WeeklyScheduleQueryRecord
 	
 	/**
      * Matches a meeting on Wednesday.
-     *
-     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
      *
      * @param boolean $match <code> true </code> if a positive match, <code> 
      *          false </code> for negative match 
@@ -89,8 +81,6 @@ interface middlebury_course_CourseOffering_Search_WeeklyScheduleQueryRecord
     /**
      * Matches a meeting on Thursday.
      *
-     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
-     *
      * @param boolean $match <code> true </code> if a positive match, <code> 
      *          false </code> for negative match 
      * @compliance mandatory This method must be implemented. 
@@ -100,8 +90,6 @@ interface middlebury_course_CourseOffering_Search_WeeklyScheduleQueryRecord
     /**
      * Matches a meeting on Friday.
      *
-     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
-     *
      * @param boolean $match <code> true </code> if a positive match, <code> 
      *          false </code> for negative match 
      * @compliance mandatory This method must be implemented. 
@@ -110,8 +98,6 @@ interface middlebury_course_CourseOffering_Search_WeeklyScheduleQueryRecord
     
     /**
      * Matches a meeting on Saturday.
-     *
-     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
      *
      * @param boolean $match <code> true </code> if a positive match, <code> 
      *          false </code> for negative match 

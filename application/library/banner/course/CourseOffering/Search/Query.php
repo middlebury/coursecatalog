@@ -1270,92 +1270,78 @@ class banner_course_CourseOffering_Search_Query
 	/**
      * Matches a meeting on Sunday.
      *
-     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
-     *
      * @param boolean $match <code> true </code> if a positive match, <code> 
      *          false </code> for negative match 
      * @compliance mandatory This method must be implemented. 
      */
     public function matchMeetsSunday($match) {
-    	$this->addClause('meeting_day', "SSRMEET_SUN_DAY IS NOT NULL", array(), $match);
+    	$this->addClause('meets_sunday', "SSRMEET_SUN_DAY IS NOT NULL", array(), $match);
     }
 
 	/**
      * Matches a meeting on Monday.
-     *
-     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
      *
      * @param boolean $match <code> true </code> if a positive match, <code> 
      *          false </code> for negative match 
      * @compliance mandatory This method must be implemented. 
      */
     public function matchMeetsMonday($match) {
-    	$this->addClause('meeting_day', "SSRMEET_MON_DAY IS NOT NULL", array(), $match);
+    	$this->addClause('meets_monday', "SSRMEET_MON_DAY IS NOT NULL", array(), $match);
     }
     
 	/**
      * Matches a meeting on Tuesday.
-     *
-     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
      *
      * @param boolean $match <code> true </code> if a positive match, <code> 
      *          false </code> for negative match 
      * @compliance mandatory This method must be implemented. 
      */
     public function matchMeetsTuesday($match) {
-    	$this->addClause('meeting_day', "SSRMEET_TUE_DAY IS NOT NULL", array(), $match);
+    	$this->addClause('meets_tuesday', "SSRMEET_TUE_DAY IS NOT NULL", array(), $match);
     }
 	
 	/**
      * Matches a meeting on Wednesday.
-     *
-     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
      *
      * @param boolean $match <code> true </code> if a positive match, <code> 
      *          false </code> for negative match 
      * @compliance mandatory This method must be implemented. 
      */
     public function matchMeetsWednesday($match) {
-    	$this->addClause('meeting_day', "SSRMEET_WED_DAY IS NOT NULL", array(), $match);
+    	$this->addClause('meets_wednesday', "SSRMEET_WED_DAY IS NOT NULL", array(), $match);
     }
     
     /**
      * Matches a meeting on Thursday.
-     *
-     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
      *
      * @param boolean $match <code> true </code> if a positive match, <code> 
      *          false </code> for negative match 
      * @compliance mandatory This method must be implemented. 
      */
     public function matchMeetsThursday($match) {
-    	$this->addClause('meeting_day', "SSRMEET_THU_DAY IS NOT NULL", array(), $match);
+    	$this->addClause('meets_thursday', "SSRMEET_THU_DAY IS NOT NULL", array(), $match);
     }
     
     /**
      * Matches a meeting on Friday.
-     *
-     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
      *
      * @param boolean $match <code> true </code> if a positive match, <code> 
      *          false </code> for negative match 
      * @compliance mandatory This method must be implemented. 
      */
     public function matchMeetsFriday($match) {
-    	$this->addClause('meeting_day', "SSRMEET_FRI_DAY IS NOT NULL", array(), $match);
+    	$this->addClause('meets_friday', "SSRMEET_FRI_DAY IS NOT NULL", array(), $match);
     }
     
     /**
      * Matches a meeting on Saturday.
-     *
-     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
      *
      * @param boolean $match <code> true </code> if a positive match, <code> 
      *          false </code> for negative match 
      * @compliance mandatory This method must be implemented. 
      */
     public function matchMeetsSaturday($match) {
-    	$this->addClause('meeting_day', "SSRMEET_SAT_DAY IS NOT NULL", array(), $match);
+    	$this->addClause('meets_saturday', "SSRMEET_SAT_DAY IS NOT NULL", array(), $match);
     }
     
     /**
