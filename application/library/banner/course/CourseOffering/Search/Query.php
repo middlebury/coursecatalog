@@ -106,7 +106,7 @@ class banner_course_CourseOffering_Search_Query
 		}
 		
 		if (strlen($this->keywordString)) {
-			$sets[] = 'MATCH (SSBSECT_fulltext) AGAINST (? IN BOOLEAN MODE)';
+			$sets[] = 'MATCH (SSBSECT_fulltext) AGAINST (:co_keyword_param IN BOOLEAN MODE)';
 		}
 		
 		return implode("\n\tAND ", $sets);
@@ -128,10 +128,41 @@ class banner_course_CourseOffering_Search_Query
 		}
 		
 		if (strlen($this->keywordString)) {
-			$params[] = trim($this->keywordString);
+			$params[':co_keyword_param'] = trim($this->keywordString);
+			$params[':co_relevence_param'] = trim($this->keywordString);
 		}
 		
 		return $params;
+	}
+	
+	/**
+	 * Answer an array of additional columns to return.
+	 * 
+	 * @return array
+	 * @access public
+	 * @since 6/10/09
+	 */
+	public function getAdditionalColumns () {
+		$columns = array();
+		if (strlen($this->keywordString)) {
+			$columns[] = 'MATCH (SSBSECT_fulltext) AGAINST (:co_relevence_param IN BOOLEAN MODE) AS relevence';
+		}
+		return $columns;
+	}
+	
+	/**
+	 * Answer an array column/direction terms for a SQL ORDER BY clause
+	 * 
+	 * @return array
+	 * @access public
+	 * @since 5/28/09
+	 */
+	public function getOrderByTerms () {
+		$parts = array();
+		if (strlen($this->keywordString)) {
+			$parts[] = 'relevence DESC';
+		}
+		return $parts;
 	}
 	
 	/**

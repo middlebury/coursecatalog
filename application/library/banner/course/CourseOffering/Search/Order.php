@@ -41,17 +41,28 @@ class banner_course_CourseOffering_Search_Order
 	 * @since 5/28/09
 	 */
 	public function getOrderByClause () {
+		$orderTerms = $this->getOrderByTerms();
+		if (count($orderTerms))
+			return 'ORDER BY '.(implode(', ', $orderTerms));
+		else
+			return '';
+	}
+	
+	/**
+	 * Answer an array column/direction terms for a SQL ORDER BY clause
+	 * 
+	 * @return array
+	 * @access public
+	 * @since 5/28/09
+	 */
+	public function getOrderByTerms () {
 		$parts = array();
 		foreach ($this->terms as $term) {
 			foreach ($term['columns'] as $column) {
 				$parts[] = $column.' '.$term['direction'];
 			}
 		}
-		
-		if (count($parts))
-			return 'ORDER BY '.implode(', ', $parts);
-		else
-			return '';
+		return $parts;
 	}
 	
 	/**

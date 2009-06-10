@@ -118,10 +118,11 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->object->matchKeyword('Quantum', $this->wildcardStringMatchType, true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals('Quantum', $params[0]);
-        $this->assertFalse(isset($params[1]));
+        $this->assertEquals('Quantum', $params[':co_keyword_param']);
+        $this->assertEquals('Quantum', $params[':co_relevence_param']);
+        $this->assertEquals(2, count($params));
         
-         $this->assertEquals('MATCH (SSBSECT_fulltext) AGAINST (? IN BOOLEAN MODE)', $this->object->getWhereClause());
+         $this->assertEquals('MATCH (SSBSECT_fulltext) AGAINST (:co_keyword_param IN BOOLEAN MODE)', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 		$this->assertEquals(8, $courseOfferings->available());
@@ -135,13 +136,16 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->object->matchKeyword('Quantum Environments', $this->wildcardStringMatchType, true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals('Quantum Environments', $params[0]);
-        $this->assertFalse(isset($params[1]));
+        $this->assertEquals('Quantum Environments', $params[':co_keyword_param']);
+        $this->assertEquals('Quantum Environments', $params[':co_relevence_param']);
+        $this->assertEquals(2, count($params));
         
-         $this->assertEquals("MATCH (SSBSECT_fulltext) AGAINST (? IN BOOLEAN MODE)", $this->object->getWhereClause());
+        $this->assertEquals('MATCH (SSBSECT_fulltext) AGAINST (:co_keyword_param IN BOOLEAN MODE)', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 		$this->assertEquals(22, $courseOfferings->available());
+		
+// 		print $courseOfferings->debug();
     }
     
     /**
@@ -152,10 +156,11 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->object->matchKeyword('Quantum Environment*', $this->wildcardStringMatchType, true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals('Quantum Environment*', $params[0]);
-        $this->assertFalse(isset($params[1]));
+        $this->assertEquals('Quantum Environment*', $params[':co_keyword_param']);
+        $this->assertEquals('Quantum Environment*', $params[':co_relevence_param']);
+        $this->assertEquals(2, count($params));
         
-         $this->assertEquals("MATCH (SSBSECT_fulltext) AGAINST (? IN BOOLEAN MODE)", $this->object->getWhereClause());
+         $this->assertEquals('MATCH (SSBSECT_fulltext) AGAINST (:co_keyword_param IN BOOLEAN MODE)', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 		$this->assertEquals(22, $courseOfferings->available());

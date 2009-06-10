@@ -88,7 +88,7 @@ SELECT
 	STVBLDG_DESC,
 	MAX( SCBCRSE_EFF_TERM ) AS SCBCRSE_EFF_TERM , 
 	SCBCRSE_DEPT_CODE,
-	SCBCRSE_DIVS_CODE
+	SCBCRSE_DIVS_CODE".$this->getAdditionalColumnsString()."
 FROM 
 	ssbsect
 	LEFT JOIN catalog_term ON SSBSECT_TERM_CODE = catalog_term.term_code
@@ -113,6 +113,22 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 ".$this->getOrderByClause()."
 ".$this->getLimitClause()."
 ";
+	}
+	
+	/**
+	 * Answer a string to append to the column list of additional columns.
+	 * 
+	 * @return string
+	 * @access protected
+	 * @since 6/10/09
+	 */
+	protected function getAdditionalColumnsString () {
+		$columns = $this->getAdditionalColumns();
+		if (count($columns)) {
+			return ",\n\t".implode(",\n\t", $columns);
+		} else {
+			return '';
+		}
 	}
 	
 	/**
@@ -183,12 +199,27 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 	/**
 	 * Answer the LIMIT clause to use
 	 * 
+	 * Override this method in child classes to add functionality.
+	 * 
 	 * @return string
 	 * @access protected
 	 * @since 5/28/09
 	 */
 	protected function getLimitClause () {
 		return '';
+	}
+	
+	/**
+	 * Answer an array of additional columns to return.
+	 *
+	 * Override this method in child classes to add functionality.
+	 * 
+	 * @return array
+	 * @access protected
+	 * @since 6/10/09
+	 */
+	protected function getAdditionalColumns () {
+		return array();
 	}
 	
 	/**
