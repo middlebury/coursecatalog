@@ -52,6 +52,7 @@ class banner_course_CourseOffering
 			'SSRMEET_THU_DAY',
 			'SSRMEET_FRI_DAY',
 			'SSRMEET_SAT_DAY',
+			'num_meet',
 			
 			'STVBLDG_DESC',
 			
@@ -75,6 +76,7 @@ class banner_course_CourseOffering
 	 */
 	public function __construct (array $row, banner_course_CourseOffering_SessionInterface $session) {
 		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 		
 		parent::__construct();
 		$this->checkRow($row);
@@ -99,6 +101,7 @@ class banner_course_CourseOffering
 		));
 		
 		$this->addRecordType($this->instructorsType);
+		$this->addRecordType($this->weeklyScheduleType);
 	}
 	
 	/**
@@ -116,6 +119,31 @@ class banner_course_CourseOffering
 		 	}
 		 }
 	}
+	
+	/**
+	 * Answer the rows that contain the meeting info.
+	 * 
+	 * @return array
+	 * @access protected
+	 * @since 6/10/09
+	 */
+	protected function getMeetingRows () {
+		if (!isset($this->meetingRows)) {
+			if (intval($this->row['num_meet']) > 1) {
+				$this->meetingRows = $this->session->getCourseOfferingMeetingRows($this->getId());
+			} else {
+				$this->meetingRows = array();
+				$this->meetingRows[] = $this->row;
+			}
+		}
+		
+		return $this->meetingRows;
+	}
+	
+/*********************************************************
+ * Interface Methods
+ *********************************************************/
+
 	
     /**
      *  Gets the formal title of this course. It may be the same as the 
@@ -286,8 +314,13 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getLocationInfo() {
-    	return $this->row['SSRMEET_BLDG_CODE'].' ' .$this->row['SSRMEET_ROOM_CODE']
-    		.' ('.$this->row['STVBLDG_DESC'].')';
+    	$parts = array();
+    	foreach ($this->getMeetingRows() as $row) {
+	    	$parts[] = $row['SSRMEET_BLDG_CODE'].' ' .$row['SSRMEET_ROOM_CODE']
+    		.' ('.$row['STVBLDG_DESC'].')';
+    	}
+    	
+    	return implode(", ", $parts);
     }
 
 
@@ -346,26 +379,34 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getScheduleInfo() {
-    	$days = array();
-    	if ($this->row['SSRMEET_SUN_DAY'])	
-    		$days[] = 'Sunday';
-    	if ($this->row['SSRMEET_MON_DAY'])	
-    		$days[] = 'Monday';
-    	if ($this->row['SSRMEET_TUE_DAY'])	
-    		$days[] = 'Tuesday';
-    	if ($this->row['SSRMEET_WED_DAY'])	
-    		$days[] = 'Wednesday';
-    	if ($this->row['SSRMEET_THU_DAY'])	
-    		$days[] = 'Thursday';
-    	if ($this->row['SSRMEET_FRI_DAY'])	
-    		$days[] = 'Friday';
-    	if ($this->row['SSRMEET_SAT_DAY'])	
-    		$days[] = 'Saturday';
-    	
-    	return $this->as12HourTime($this->row['SSRMEET_BEGIN_TIME'])
-    		.'-'.$this->as12HourTime($this->row['SSRMEET_END_TIME'])
-    		.' on '.implode(', ', $days);
-    	
+    	$parts = array();
+    	$rows = $this->getMeetingRows();
+    	foreach ($rows as $row) {
+			$days = array();
+			if ($row['SSRMEET_SUN_DAY'])	
+				$days[] = 'Sunday';
+			if ($row['SSRMEET_MON_DAY'])	
+				$days[] = 'Monday';
+			if ($row['SSRMEET_TUE_DAY'])	
+				$days[] = 'Tuesday';
+			if ($row['SSRMEET_WED_DAY'])	
+				$days[] = 'Wednesday';
+			if ($row['SSRMEET_THU_DAY'])	
+				$days[] = 'Thursday';
+			if ($row['SSRMEET_FRI_DAY'])	
+				$days[] = 'Friday';
+			if ($row['SSRMEET_SAT_DAY'])	
+				$days[] = 'Saturday';
+			
+			$info = $this->as12HourTime($row['SSRMEET_BEGIN_TIME'])
+				.'-'.$this->as12HourTime($row['SSRMEET_END_TIME'])
+				.' on '.implode(', ', $days);
+			if (count($rows) > 1)
+				$info .= ' at '.$this->row['SSRMEET_BLDG_CODE'].' ' .$this->row['SSRMEET_ROOM_CODE'];
+			$parts[] = $info;
+		}
+		
+		return implode("\n", $parts);
     }
     
     /**
@@ -513,7 +554,7 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseOfferingRecord(osid_type_Type $courseOfferingRecordType) {
-    	if ($courseOfferingRecordType->isEqual($this->instructorsType))
+    	if ($this->hasRecordType($courseOfferingRecordType))
     		return $this;
     	
     	throw new osid_UnsupportedException('Record type is not supported.');
@@ -553,7 +594,7 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function implementsRecordType(osid_type_Type $recordType) {
-    	return $recordType->isEqual($this->instructorsType);
+    	return $this->hasRecordType($recordType);
     }
     
     /**
@@ -595,6 +636,396 @@ class banner_course_CourseOffering
     public function getInstructors() {
     	return $this->session->getInstructorsForOffering($this->getId());
     }
+    
+/*********************************************************
+ * WeeklyScheduleRecord support
+ *********************************************************/
+ 
+ 	/**
+     * Answer true if this CourseOffering meets on Sunday
+     * 
+     * @return boolean
+     * @access public
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function meetsOnSunday () {
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_SUN_DAY']))
+    			return true;
+    	}
+		return false;
+	}
+    
+    /**
+     * Answer time the meeting starts on Sunday
+     * 
+     * @return array An array of start-times whose order matches those returned by getSundayEndTimes()
+	 *		Times are  in seconds from midnight Sunday morning.
+     * @compliance mandatory This method must be implemented. 
+     * @throws osid_IllegalStateException <code>meetsOnSunday()</code> is <code>false</code> 
+     * @access public
+     * @since 6/10/09
+     */
+    public function getSundayStartTimes () {
+    	$times = array();
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_SUN_DAY']))
+    			$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
+    	}
+		return $times;
+	}
+    
+    /**
+     * Answer time the meeting ends on Sunday
+     * 
+     * @return array An array of end-times whose order matches those returned by getSundayStartTimes()
+	 *		Times are  in seconds from midnight Sunday morning.
+     * @compliance mandatory This method must be implemented. 
+     * @throws osid_IllegalStateException <code>meetsOnSunday()</code> is <code>false</code> 
+     * @access public
+     * @since 6/10/09
+     */
+    public function getSundayEndTimes () {
+    	$times = array();
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_SUN_DAY']))
+    			$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
+    	}
+		return $times;
+	}
+    
+    /**
+     * Answer true if this CourseOffering meets on Monday
+     * 
+     * @return boolean
+     * @access public
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function meetsOnMonday () {
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_MON_DAY']))
+    			return true;
+    	}
+		return false;
+	}
+    
+    /**
+     * Answer time the meeting starts on Monday
+     * 
+     * @return array An array of start-times whose order matches those returned by getMondayEndTimes()
+	 *		Times are  in seconds from midnight Monday morning.
+     * @compliance mandatory This method must be implemented. 
+     * @throws osid_IllegalStateException <code>meetsOnMonday()</code> is <code>false</code> 
+     * @access public
+     * @since 6/10/09
+     */
+    public function getMondayStartTimes () {
+    	$times = array();
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_MON_DAY']))
+    			$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
+    	}
+		return $times;
+	}
+    
+    /**
+     * Answer time the meeting ends on Monday
+     * 
+     * @return array An array of end-times whose order matches those returned by getMondayStartTimes()
+	 *		Times are  in seconds from midnight Monday morning.
+     * @compliance mandatory This method must be implemented. 
+     * @throws osid_IllegalStateException <code>meetsOnMonday()</code> is <code>false</code> 
+     * @access public
+     * @since 6/10/09
+     */
+    public function getMondayEndTimes () {
+    	$times = array();
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_MON_DAY']))
+    			$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
+    	}
+		return $times;
+	}
+    
+    /**
+     * Answer true if this CourseOffering meets on Tuesday
+     * 
+     * @return boolean
+     * @access public
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function meetsOnTuesday () {
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_TUE_DAY']))
+    			return true;
+    	}
+		return false;
+	}
+    
+    /**
+     * Answer time the meeting starts on Tuesday
+     * 
+     * @return array An array of start-times whose order matches those returned by getTuesdayEndTimes()
+	 *		Times are  in seconds from midnight Tuesday morning.
+     * @compliance mandatory This method must be implemented. 
+     * @throws osid_IllegalStateException <code>meetsOnTuesday()</code> is <code>false</code> 
+     * @access public
+     * @since 6/10/09
+     */
+    public function getTuesdayStartTimes () {
+    	$times = array();
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_TUE_DAY']))
+    			$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
+    	}
+		return $times;
+	}
+    
+    /**
+     * Answer time the meeting ends on Tuesday
+     * 
+     * @return array An array of end-times whose order matches those returned by getTuesdayStartTimes()
+	 *		Times are  in seconds from midnight Tuesday morning.
+     * @compliance mandatory This method must be implemented. 
+     * @throws osid_IllegalStateException <code>meetsOnTuesday()</code> is <code>false</code> 
+     * @access public
+     * @since 6/10/09
+     */
+    public function getTuesdayEndTimes () {
+    	$times = array();
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_TUE_DAY']))
+    			$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
+    	}
+		return $times;
+	}
+
+	/**
+     * Answer true if this CourseOffering meets on Wednesday
+     * 
+     * @return boolean
+     * @access public
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function meetsOnWednesday () {
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_WED_DAY']))
+    			return true;
+    	}
+		return false;
+	}
+    
+    /**
+     * Answer time the meeting starts on Wednesday
+     * 
+     * @return array An array of start-times whose order matches those returned by getWednesdayEndTimes()
+	 *		Times are  in seconds from midnight Wednesday morning.
+     * @compliance mandatory This method must be implemented. 
+     * @throws osid_IllegalStateException <code>meetsOnWednesday()</code> is <code>false</code> 
+     * @access public
+     * @since 6/10/09
+     */
+    public function getWednesdayStartTimes () {
+    	$times = array();
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_WED_DAY']))
+    			$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
+    	}
+		return $times;
+	}
+    
+    /**
+     * Answer time the meeting ends on Wednesday
+     * 
+     * @return array An array of end-times whose order matches those returned by getWednesdayStartTimes()
+	 *		Times are  in seconds from midnight Wednesday morning.
+     * @compliance mandatory This method must be implemented. 
+     * @throws osid_IllegalStateException <code>meetsOnWednesday()</code> is <code>false</code> 
+     * @access public
+     * @since 6/10/09
+     */
+    public function getWednesdayEndTimes () {
+    	$times = array();
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_WED_DAY']))
+    			$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
+    	}
+		return $times;
+	}
+    
+    /**
+     * Answer true if this CourseOffering meets on Thursday
+     * 
+     * @return boolean
+     * @access public
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function meetsOnThursday () {
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_THU_DAY']))
+    			return true;
+    	}
+		return false;
+	}
+    
+    /**
+     * Answer time the meeting starts on Thursday
+     * 
+     * @return array An array of start-times whose order matches those returned by getThursdayEndTimes()
+	 *		Times are  in seconds from midnight Thursday morning.
+     * @compliance mandatory This method must be implemented. 
+     * @throws osid_IllegalStateException <code>meetsOnThursday()</code> is <code>false</code> 
+     * @access public
+     * @since 6/10/09
+     */
+    public function getThursdayStartTimes () {
+    	$times = array();
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_THU_DAY']))
+    			$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
+    	}
+		return $times;
+	}
+    
+    /**
+     * Answer time the meeting ends on Thursday
+     * 
+     * @return array An array of end-times whose order matches those returned by getThursdayStartTimes()
+	 *		Times are  in seconds from midnight Thursday morning.
+     * @compliance mandatory This method must be implemented. 
+     * @throws osid_IllegalStateException <code>meetsOnThursday()</code> is <code>false</code> 
+     * @access public
+     * @since 6/10/09
+     */
+    public function getThursdayEndTimes () {
+    	$times = array();
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_THU_DAY']))
+    			$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
+    	}
+		return $times;
+	}
+    
+    /**
+     * Answer true if this CourseOffering meets on Friday
+     * 
+     * @return boolean
+     * @access public
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function meetsOnFriday () {
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_FRI_DAY']))
+    			return true;
+    	}
+		return false;
+	}
+    
+    /**
+     * Answer time the meeting starts on Friday
+     * 
+     * @return array An array of start-times whose order matches those returned by getFridayEndTimes()
+	 *		Times are  in seconds from midnight Friday morning.
+     * @compliance mandatory This method must be implemented. 
+     * @throws osid_IllegalStateException <code>meetsOnFriday()</code> is <code>false</code> 
+     * @access public
+     * @since 6/10/09
+     */
+    public function getFridayStartTimes () {
+    	$times = array();
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_FRI_DAY']))
+    			$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
+    	}
+		return $times;
+	}
+    
+    /**
+     * Answer time the meeting ends on Friday
+     * 
+     * @return array An array of end-times whose order matches those returned by getFridayStartTimes()
+	 *		Times are  in seconds from midnight Friday morning.
+     * @compliance mandatory This method must be implemented. 
+     * @throws osid_IllegalStateException <code>meetsOnFriday()</code> is <code>false</code> 
+     * @access public
+     * @since 6/10/09
+     */
+    public function getFridayEndTimes () {
+    	$times = array();
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_FRI_DAY']))
+    			$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
+    	}
+		return $times;
+	}
+    
+    /**
+     * Answer true if this CourseOffering meets on Saturday
+     * 
+     * @return boolean
+     * @access public
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function meetsOnSaturday () {
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_SAT_DAY']))
+    			return true;
+    	}
+		return false;
+	}
+    
+    /**
+     * Answer time the meeting starts on Saturday
+     * 
+     * @return array An array of start-times whose order matches those returned by getSaturdayEndTimes()
+	 *		Times are  in seconds from midnight Saturday morning.
+     * @compliance mandatory This method must be implemented. 
+     * @throws osid_IllegalStateException <code>meetsOnSaturday()</code> is <code>false</code> 
+     * @access public
+     * @since 6/10/09
+     */
+    public function getSaturdayStartTimes () {
+    	$times = array();
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_SAT_DAY']))
+    			$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
+    	}
+		return $times;
+	}
+    
+    /**
+     * Answer time the meeting ends on Saturday
+     * 
+     * @return array An array of end-times whose order matches those returned by getSaturdayStartTimes()
+	 *		Times are  in seconds from midnight Saturday morning.
+     * @compliance mandatory This method must be implemented. 
+     * @throws osid_IllegalStateException <code>meetsOnSaturday()</code> is <code>false</code> 
+     * @access public
+     * @since 6/10/09
+     */
+    public function getSaturdayEndTimes () {
+    	$times = array();
+    	foreach ($this->getMeetingRows() as $row) {
+    		if (strlen($row['SSRMEET_SAT_DAY']))
+    			$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
+    	}
+		return $times;
+	}
+    
+    
+    /**
+     * Answer the number of seconds since midnight for a time-string from our db
+     * 
+     * @param string $timeString
+     * @return integer
+     * @access protected
+     * @since 6/10/09
+     */
+    protected function asSeconds ($timeString) {
+    	$parts = strptime($timeString, '%H%M');
+    	return (intval($parts['tm_hour']) * 3600) + (intval($parts['tm_min']) * 60);
+    }
+    
     
 /*********************************************************
  * Full-text search indexing support. Internal to this implementation.

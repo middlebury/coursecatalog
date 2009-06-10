@@ -215,7 +215,7 @@ if ($section->hasLocation()) {
 	print "\n\t\t<dd>".$this->escape($section->getLocationInfo())."</dd>";
 }
 print "\n\t\t<dt>Schedule:</dt>";
-print "\n\t\t<dd>".$this->escape($section->getScheduleInfo())."</dd>";
+print "\n\t\t<dd>".nl2br($this->escape($section->getScheduleInfo()))."</dd>";
 
 $instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 if ($section->hasRecordType($instructorsType)) {

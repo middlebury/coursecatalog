@@ -55,24 +55,26 @@ interface middlebury_course_CourseOffering_WeeklyScheduleRecord
     /**
      * Answer time the meeting starts on Sunday
      * 
-     * @return integer The start-time in seconds from midnight Sunday morning.
+     * @return array An array of start-times whose order matches those returned by getSundayEndTimes()
+	 *		Times are  in seconds from midnight Sunday morning.
      * @compliance mandatory This method must be implemented. 
      * @throws osid_IllegalStateException <code>meetsOnSunday()</code> is <code>false</code> 
      * @access public
      * @since 6/10/09
      */
-    public function getSundayStartTime ();
+    public function getSundayStartTimes ();
     
     /**
      * Answer time the meeting ends on Sunday
      * 
-     * @return integer The end-time in seconds from midnight Sunday morning.
+     * @return array An array of end-times whose order matches those returned by getSundayStartTimes()
+	 *		Times are  in seconds from midnight Sunday morning.
      * @compliance mandatory This method must be implemented. 
      * @throws osid_IllegalStateException <code>meetsOnSunday()</code> is <code>false</code> 
      * @access public
      * @since 6/10/09
      */
-    public function getSundayEndTime ();
+    public function getSundayEndTimes ();
     
     /**
      * Answer true if this CourseOffering meets on Monday
@@ -86,24 +88,26 @@ interface middlebury_course_CourseOffering_WeeklyScheduleRecord
     /**
      * Answer time the meeting starts on Monday
      * 
-     * @return integer The start-time in seconds from midnight Monday morning.
+     * @return array An array of start-times whose order matches those returned by getMondayEndTimes()
+	 *		Times are  in seconds from midnight Monday morning.
      * @compliance mandatory This method must be implemented. 
      * @throws osid_IllegalStateException <code>meetsOnMonday()</code> is <code>false</code> 
      * @access public
      * @since 6/10/09
      */
-    public function getMondayStartTime ();
+    public function getMondayStartTimes ();
     
     /**
      * Answer time the meeting ends on Monday
      * 
-     * @return integer The end-time in seconds from midnight Monday morning.
+     * @return array An array of end-times whose order matches those returned by getMondayStartTimes()
+	 *		Times are  in seconds from midnight Monday morning.
      * @compliance mandatory This method must be implemented. 
      * @throws osid_IllegalStateException <code>meetsOnMonday()</code> is <code>false</code> 
      * @access public
      * @since 6/10/09
      */
-    public function getMondayEndTime ();
+    public function getMondayEndTimes ();
     
     /**
      * Answer true if this CourseOffering meets on Tuesday
@@ -117,24 +121,26 @@ interface middlebury_course_CourseOffering_WeeklyScheduleRecord
     /**
      * Answer time the meeting starts on Tuesday
      * 
-     * @return integer The start-time in seconds from midnight Tuesday morning.
+     * @return array An array of start-times whose order matches those returned by getTuesdayEndTimes()
+	 *		Times are  in seconds from midnight Tuesday morning.
      * @compliance mandatory This method must be implemented. 
      * @throws osid_IllegalStateException <code>meetsOnTuesday()</code> is <code>false</code> 
      * @access public
      * @since 6/10/09
      */
-    public function getTuesdayStartTime ();
+    public function getTuesdayStartTimes ();
     
     /**
      * Answer time the meeting ends on Tuesday
      * 
-     * @return integer The end-time in seconds from midnight Tuesday morning.
+     * @return array An array of end-times whose order matches those returned by getTuesdayStartTimes()
+	 *		Times are  in seconds from midnight Tuesday morning.
      * @compliance mandatory This method must be implemented. 
      * @throws osid_IllegalStateException <code>meetsOnTuesday()</code> is <code>false</code> 
      * @access public
      * @since 6/10/09
      */
-    public function getTuesdayEndTime ();
+    public function getTuesdayEndTimes ();
 
 	/**
      * Answer true if this CourseOffering meets on Wednesday
@@ -148,24 +154,26 @@ interface middlebury_course_CourseOffering_WeeklyScheduleRecord
     /**
      * Answer time the meeting starts on Wednesday
      * 
-     * @return integer The start-time in seconds from midnight Wednesday morning.
+     * @return array An array of start-times whose order matches those returned by getWednesdayEndTimes()
+	 *		Times are  in seconds from midnight Wednesday morning.
      * @compliance mandatory This method must be implemented. 
      * @throws osid_IllegalStateException <code>meetsOnWednesday()</code> is <code>false</code> 
      * @access public
      * @since 6/10/09
      */
-    public function getWednesdayStartTime ();
+    public function getWednesdayStartTimes ();
     
     /**
      * Answer time the meeting ends on Wednesday
      * 
-     * @return integer The end-time in seconds from midnight Wednesday morning.
+     * @return array An array of end-times whose order matches those returned by getWednesdayStartTimes()
+	 *		Times are  in seconds from midnight Wednesday morning.
      * @compliance mandatory This method must be implemented. 
      * @throws osid_IllegalStateException <code>meetsOnWednesday()</code> is <code>false</code> 
      * @access public
      * @since 6/10/09
      */
-    public function getWednesdayEndTime ();
+    public function getWednesdayEndTimes ();
     
     /**
      * Answer true if this CourseOffering meets on Thursday
@@ -179,24 +187,26 @@ interface middlebury_course_CourseOffering_WeeklyScheduleRecord
     /**
      * Answer time the meeting starts on Thursday
      * 
-     * @return integer The start-time in seconds from midnight Thursday morning.
+     * @return array An array of start-times whose order matches those returned by getThursdayEndTimes()
+	 *		Times are  in seconds from midnight Thursday morning.
      * @compliance mandatory This method must be implemented. 
      * @throws osid_IllegalStateException <code>meetsOnThursday()</code> is <code>false</code> 
      * @access public
      * @since 6/10/09
      */
-    public function getThursdayStartTime ();
+    public function getThursdayStartTimes ();
     
     /**
      * Answer time the meeting ends on Thursday
      * 
-     * @return integer The end-time in seconds from midnight Thursday morning.
+     * @return array An array of end-times whose order matches those returned by getThursdayStartTimes()
+	 *		Times are  in seconds from midnight Thursday morning.
      * @compliance mandatory This method must be implemented. 
      * @throws osid_IllegalStateException <code>meetsOnThursday()</code> is <code>false</code> 
      * @access public
      * @since 6/10/09
      */
-    public function getThursdayEndTime ();
+    public function getThursdayEndTimes ();
     
     /**
      * Answer true if this CourseOffering meets on Friday
@@ -210,24 +220,26 @@ interface middlebury_course_CourseOffering_WeeklyScheduleRecord
     /**
      * Answer time the meeting starts on Friday
      * 
-     * @return integer The start-time in seconds from midnight Friday morning.
+     * @return array An array of start-times whose order matches those returned by getFridayEndTimes()
+	 *		Times are  in seconds from midnight Friday morning.
      * @compliance mandatory This method must be implemented. 
      * @throws osid_IllegalStateException <code>meetsOnFriday()</code> is <code>false</code> 
      * @access public
      * @since 6/10/09
      */
-    public function getFridayStartTime ();
+    public function getFridayStartTimes ();
     
     /**
      * Answer time the meeting ends on Friday
      * 
-     * @return integer The end-time in seconds from midnight Friday morning.
+     * @return array An array of end-times whose order matches those returned by getFridayStartTimes()
+	 *		Times are  in seconds from midnight Friday morning.
      * @compliance mandatory This method must be implemented. 
      * @throws osid_IllegalStateException <code>meetsOnFriday()</code> is <code>false</code> 
      * @access public
      * @since 6/10/09
      */
-    public function getFridayEndTime ();
+    public function getFridayEndTimes ();
     
     /**
      * Answer true if this CourseOffering meets on Saturday
@@ -241,22 +253,24 @@ interface middlebury_course_CourseOffering_WeeklyScheduleRecord
     /**
      * Answer time the meeting starts on Saturday
      * 
-     * @return integer The start-time in seconds from midnight Saturday morning.
+     * @return array An array of start-times whose order matches those returned by getSaturdayEndTimes()
+	 *		Times are  in seconds from midnight Saturday morning.
      * @compliance mandatory This method must be implemented. 
      * @throws osid_IllegalStateException <code>meetsOnSaturday()</code> is <code>false</code> 
      * @access public
      * @since 6/10/09
      */
-    public function getSaturdayStartTime ();
+    public function getSaturdayStartTimes ();
     
     /**
      * Answer time the meeting ends on Saturday
      * 
-     * @return integer The end-time in seconds from midnight Saturday morning.
+     * @return array An array of end-times whose order matches those returned by getSaturdayStartTimes()
+	 *		Times are  in seconds from midnight Saturday morning.
      * @compliance mandatory This method must be implemented. 
      * @throws osid_IllegalStateException <code>meetsOnSaturday()</code> is <code>false</code> 
      * @access public
      * @since 6/10/09
      */
-    public function getSaturdayEndTime ();
+    public function getSaturdayEndTimes ();
 }

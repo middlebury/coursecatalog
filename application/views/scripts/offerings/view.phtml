@@ -35,7 +35,7 @@ if ($this->offering->hasLocation()) {
 	print "\n\t\t<dd>".$this->escape($this->offering->getLocationInfo())."</dd>";
 }
 print "\n\t\t<dt>Schedule:</dt>";
-print "\n\t\t<dd>".$this->escape($this->offering->getScheduleInfo())."</dd>";
+print "\n\t\t<dd>".nl2br($this->escape($this->offering->getScheduleInfo()))."</dd>";
 print "\n\t\t<dt>Type:</dt>";
 print "\n\t\t<dd>".$this->escape($this->offering->getGenusType()->getDisplayName())."</dd>";
 

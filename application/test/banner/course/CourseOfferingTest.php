@@ -42,6 +42,7 @@ class banner_course_CourseOfferingTest
         $this->object = $this->session->getCourseOffering($this->physOfferingId);
         
         $this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
         $this->namesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:person_names');
     }
 
@@ -444,5 +445,213 @@ class banner_course_CourseOfferingTest
         $this->assertEquals('Georges', $names->getGivenName());
         $this->assertEquals('Gleuseau', $names->getSurname());
     }
+    
+
+/*********************************************************
+ * Tests for weeklySchedule record.
+ *********************************************************/
+ 
+ 	/**
+     * 
+     */
+    public function testMeetsOnSunday () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$this->assertFalse($record->meetsOnSunday());
+    }
+    
+    /**
+     * 
+     */
+    public function testGetSundayStartTimes () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$times = $record->getSundayStartTimes();
+    	$this->assertType('array', $times);
+    	$this->assertEquals(0, count($times));
+    }
+    
+    /**
+     * 
+     */
+    public function testGetSundayEndTimes () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$times = $record->getSundayEndTimes();
+    	$this->assertType('array', $times);
+    	$this->assertEquals(0, count($times));
+    }
+    
+    /**
+     * 
+     */
+    public function testMeetsOnMonday () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$this->assertTrue($record->meetsOnMonday());
+    }
+    
+    /**
+     * 
+     */
+    public function testGetMondayStartTimes () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$times = $record->getMondayStartTimes();
+    	$this->assertType('array', $times);
+    	$this->assertEquals(1, count($times));
+    	$this->assertEquals(40500, $times[0]);	// 11:15am
+    }
+    
+    /**
+     * 
+     */
+    public function testGetMondayEndTimes () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$times = $record->getMondayEndTimes();
+    	$this->assertType('array', $times);
+    	$this->assertEquals(1, count($times));
+    	$this->assertEquals(43500, $times[0]);	// 12:05pm
+    }
+    
+    /**
+     * 
+     */
+    public function testMeetsOnTuesday () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$this->assertFalse($record->meetsOnTuesday());
+    }
+    
+    /**
+     * 
+     */
+    public function testGetTuesdayStartTimes () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$times = $record->getTuesdayStartTimes();
+    	$this->assertType('array', $times);
+    	$this->assertEquals(0, count($times));
+    }
+    
+    /**
+     * 
+     */
+    public function testGetTuesdayEndTimes () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$times = $record->getTuesdayEndTimes();
+    	$this->assertType('array', $times);
+    	$this->assertEquals(0, count($times));
+    }
+
+	/**
+     * 
+     */
+    public function testMeetsOnWednesday () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$this->assertTrue($record->meetsOnWednesday());
+    }
+    
+    /**
+     * 
+     */
+    public function testGetWednesdayStartTimes () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$times = $record->getWednesdayStartTimes();
+    	$this->assertType('array', $times);
+    	$this->assertEquals(1, count($times));
+    	$this->assertEquals(40500, $times[0]);	// 11:15am
+    }
+    
+    /**
+     * 
+     */
+    public function testGetWednesdayEndTimes () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$times = $record->getWednesdayEndTimes();
+    	$this->assertType('array', $times);
+    	$this->assertEquals(1, count($times));
+    	$this->assertEquals(43500, $times[0]);	// 12:05pm
+    }
+    
+    /**
+     * 
+     */
+    public function testMeetsOnThursday () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$this->assertFalse($record->meetsOnThursday());
+    }
+    
+    /**
+     * 
+     */
+    public function testGetThursdayStartTimes () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$times = $record->getThursdayStartTimes();
+    	$this->assertType('array', $times);
+    	$this->assertEquals(0, count($times));
+    }
+    
+    /**
+     * 
+     */
+    public function testGetThursdayEndTimes () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$times = $record->getThursdayEndTimes();
+    	$this->assertType('array', $times);
+    	$this->assertEquals(0, count($times));
+    }
+    
+    /**
+     * 
+     */
+    public function testMeetsOnFriday () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$this->assertTrue($record->meetsOnFriday());
+    }
+    
+    /**
+     * 
+     */
+    public function testGetFridayStartTimes () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$times = $record->getFridayStartTimes();
+    	$this->assertType('array', $times);
+    	$this->assertEquals(1, count($times));
+    	$this->assertEquals(40500, $times[0]);	// 11:15am
+    }
+    
+    /**
+     * 
+     */
+    public function testGetFridayEndTimes () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$times = $record->getFridayEndTimes();
+    	$this->assertType('array', $times);
+    	$this->assertEquals(1, count($times));
+    	$this->assertEquals(43500, $times[0]);	// 12:05pm
+    }
+    
+    /**
+     * 
+     */
+    public function testMeetsOnSaturday () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$this->assertFalse($record->meetsOnSaturday());
+    }
+    
+    /**
+     * 
+     */
+    public function testGetSaturdayStartTimes () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$times = $record->getSaturdayStartTimes();
+    	$this->assertType('array', $times);
+    	$this->assertEquals(0, count($times));
+    }
+    
+    /**
+     * 
+     */
+    public function testGetSaturdayEndTimes () {
+    	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
+    	$times = $record->getSaturdayEndTimes();
+    	$this->assertType('array', $times);
+    	$this->assertEquals(0, count($times));
+    }
+
 }
 ?>
