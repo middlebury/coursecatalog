@@ -28,6 +28,8 @@ class OfferingsController
      * @return void
      */
     public function init() {
+    	$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
+		$this->booleanStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:boolean");
 		$this->instructorType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 		parent::init();
 		
@@ -148,6 +150,14 @@ class OfferingsController
 			}
 			
 			$this->view->searchParams['requirement'] = $this->_getParam('requirement');
+		}
+		
+		if ($this->_getParam('keywords')) {
+			$query->matchKeyword($this->_getParam('keywords'), $this->booleanStringMatchType, true);
+			$this->view->keywords = $this->_getParam('keywords');
+			$this->view->searchParams['keywords'] = $this->_getParam('keywords');
+		} else {
+			$this->view->keywords = '';
 		}
 		
 		if ($this->_getParam('instructor')) {

@@ -28,6 +28,14 @@ table.search_options th {
 	text-align: left;
 }
 
+table.search_options select {
+	width: 300px;
+}
+
+table.search_options input.text_input {
+	width: 300px;
+}
+
 table.search_options td {
 	vertical-align: top;
 }

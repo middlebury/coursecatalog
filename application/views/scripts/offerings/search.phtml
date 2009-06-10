@@ -2,10 +2,12 @@
 	$formParams = array(
 							'controller'	=> 'offerings',
 							'action'		=> 'search',
+							'term'	=> null,
 							'department'	=> null,
 							'subject'		=> null,
 							'division'		=> null,
 							'requirement'	=> null,
+							'keywords'		=> null,
 							'page'			=> null,
 							'submit'		=> null
 						);
@@ -17,7 +19,7 @@
 		<tr>
 			<th>By Term:</th>
 			<td>
-				<select name="department">
+				<select name="term">
 					<option value=''>Any Term</option>
 <?php
 while ($this->terms->hasNext()) {
@@ -97,7 +99,7 @@ while ($this->divisions->hasNext()) {
 		<tr>
 			<th>Satisfies Requirements:</th>
 			<td>
-				(Leave all blank for no preference)
+				<div class='help_text'>(Leave all blank for no preference)</div>
 				<div class='requirement_group'>
 <?php
 $i = 0;
@@ -124,6 +126,15 @@ while ($this->requirements->hasNext()) {
 			</td>
 		</tr>
 		
+		<tr>
+			<th>Keywords:</th>
+			<td>
+				<input class='text_input' type='text' name='keywords' value='<?php print $this->keywords; ?>' />
+				<div class='help_text'>By default results only have to match one of the supplied keywords. Use a plus (+) before a word to require it or a minus (-) to exclude it. Use an asterisk (*) as a wildcard.</div>
+			</td>
+		</tr>
+
+
 		<tr>
 			<td colspan='2'><input type='submit' name='submit' value='Search'/>
 		</tr>
