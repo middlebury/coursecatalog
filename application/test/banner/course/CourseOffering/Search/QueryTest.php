@@ -46,6 +46,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->natsciDivTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/division/NSCI');
 		
 		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 		$this->otherType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:other');
 		
 		$this->lectureType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/LCT');
@@ -1660,6 +1661,256 @@ class banner_course_CourseOffering_Search_QueryTest
     public function testGetInstructorQuery()
     {
         $this->object->getInstructorQuery();
+    }
+    
+/*********************************************************
+ * Tests for methods from middlebury_course_CourseOffering_Search_WeeklyScheduleQueryRecord
+ *********************************************************/
+	
+	/**
+     * 
+     */
+    public function testMatchMeetsSunday()
+    {
+        $record = $this->object->getCourseOfferingQueryRecord($this->weeklyScheduleType);
+        $record->matchMeetsSunday(true);
+		
+        $params = $this->object->getParameters();
+        $this->assertEquals(0, count($params));
+        
+        $this->assertEquals("(SSRMEET_SUN_DAY IS NOT NULL)", $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(0, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchMeetsMonday()
+    {
+        $record = $this->object->getCourseOfferingQueryRecord($this->weeklyScheduleType);
+        $record->matchMeetsMonday(true);
+		
+        $params = $this->object->getParameters();
+        $this->assertEquals(0, count($params));
+        
+        $this->assertEquals("(SSRMEET_MON_DAY IS NOT NULL)", $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(32, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchMeetsTuesday()
+    {
+        $record = $this->object->getCourseOfferingQueryRecord($this->weeklyScheduleType);
+        $record->matchMeetsTuesday(true);
+		
+        $params = $this->object->getParameters();
+        $this->assertEquals(0, count($params));
+        
+        $this->assertEquals("(SSRMEET_TUE_DAY IS NOT NULL)", $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(29, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchMeetsWednesday()
+    {
+        $record = $this->object->getCourseOfferingQueryRecord($this->weeklyScheduleType);
+        $record->matchMeetsWednesday(true);
+		
+        $params = $this->object->getParameters();
+        $this->assertEquals(0, count($params));
+        
+        $this->assertEquals("(SSRMEET_WED_DAY IS NOT NULL)", $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(21, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchMeetsThursday()
+    {
+        $record = $this->object->getCourseOfferingQueryRecord($this->weeklyScheduleType);
+        $record->matchMeetsThursday(true);
+		
+        $params = $this->object->getParameters();
+        $this->assertEquals(0, count($params));
+        
+        $this->assertEquals("(SSRMEET_THU_DAY IS NOT NULL)", $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(24, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchMeetsFriday()
+    {
+        $record = $this->object->getCourseOfferingQueryRecord($this->weeklyScheduleType);
+        $record->matchMeetsFriday(true);
+		
+        $params = $this->object->getParameters();
+        $this->assertEquals(0, count($params));
+        
+        $this->assertEquals("(SSRMEET_FRI_DAY IS NOT NULL)", $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(17, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchMeetsSaturday()
+    {
+        $record = $this->object->getCourseOfferingQueryRecord($this->weeklyScheduleType);
+        $record->matchMeetsSaturday(true);
+		
+        $params = $this->object->getParameters();
+        $this->assertEquals(0, count($params));
+        
+        $this->assertEquals("(SSRMEET_SAT_DAY IS NOT NULL)", $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(0, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchMeetingTime()
+    {
+        $record = $this->object->getCourseOfferingQueryRecord($this->weeklyScheduleType);
+        $record->matchMeetingTime(0, 86400, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('0000', $params[0]);
+        $this->assertEquals('2400', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals("((SSRMEET_BEGIN_TIME >= ? AND SSRMEET_END_TIME <= ?))", $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(90, $courseOfferings->available()); // A few don't have meeting times.
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchMeetingTimeEarlyMorning()
+    {
+        $record = $this->object->getCourseOfferingQueryRecord($this->weeklyScheduleType);
+        $record->matchMeetingTime(0, 28800, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('0000', $params[0]);
+        $this->assertEquals('0800', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals("((SSRMEET_BEGIN_TIME >= ? AND SSRMEET_END_TIME <= ?))", $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(0, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchMeetingTimeMorning()
+    {
+        $record = $this->object->getCourseOfferingQueryRecord($this->weeklyScheduleType);
+        $record->matchMeetingTime(28800, 43200, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('0800', $params[0]);
+        $this->assertEquals('1200', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals("((SSRMEET_BEGIN_TIME >= ? AND SSRMEET_END_TIME <= ?))", $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(20, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchMeetingTimeSpanningNoon()
+    {
+        $record = $this->object->getCourseOfferingQueryRecord($this->weeklyScheduleType);
+        $record->matchMeetingTime(39600, 46800, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('1100', $params[0]);
+        $this->assertEquals('1300', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals("((SSRMEET_BEGIN_TIME >= ? AND SSRMEET_END_TIME <= ?))", $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(16, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchMeetingTimeAfternoon()
+    {
+        $record = $this->object->getCourseOfferingQueryRecord($this->weeklyScheduleType);
+        $record->matchMeetingTime(43200, 61200, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('1200', $params[0]);
+        $this->assertEquals('1700', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals("((SSRMEET_BEGIN_TIME >= ? AND SSRMEET_END_TIME <= ?))", $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(54, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchMeetingTimeEvening()
+    {
+        $record = $this->object->getCourseOfferingQueryRecord($this->weeklyScheduleType);
+        $record->matchMeetingTime(61200, 86400, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('1700', $params[0]);
+        $this->assertEquals('2400', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals("((SSRMEET_BEGIN_TIME >= ? AND SSRMEET_END_TIME <= ?))", $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(0, $courseOfferings->available());
     }
 }
 ?>

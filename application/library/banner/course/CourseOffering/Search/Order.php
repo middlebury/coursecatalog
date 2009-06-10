@@ -31,6 +31,7 @@ class banner_course_CourseOffering_Search_Order
 		$this->additionalTableJoins = array();
 		
 		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 	}
 	
 	/**
@@ -124,7 +125,12 @@ class banner_course_CourseOffering_Search_Order
      */
     public function ascend() {
     	if (count($this->terms)) {
-    		$this->terms[count($this->terms) - 1]['direction'] = 'ASC';
+    		$last = count($this->terms) - 1;
+    		$last = count($this->terms) - 1;
+    		if (preg_match('/^SSRMEET_[A-Z]{3}_DAY$/', $this->terms[$last]['key']))
+    			$this->terms[$last]['direction'] = 'DESC';
+    		else
+	    		$this->terms[$last]['direction'] = 'ASC';
     	}
     }
 
@@ -137,7 +143,11 @@ class banner_course_CourseOffering_Search_Order
      */
     public function descend() {
     	if (count($this->terms)) {
-    		$this->terms[count($this->terms) - 1]['direction'] = 'DESC';
+    		$last = count($this->terms) - 1;
+    		if (preg_match('/^SSRMEET_[A-Z]{3}_DAY$/', $this->terms[$last]['key']))
+    			$this->terms[$last]['direction'] = 'ASC';
+    		else
+	    		$this->terms[$last]['direction'] = 'DESC';
     	}
     }
 
@@ -201,7 +211,7 @@ class banner_course_CourseOffering_Search_Order
      *  @compliance mandatory This method must be implemented. 
      */
     public function implementsRecordType(osid_type_Type $recordType) {
-    	return $recordType->isEqual($this->instructorsType);
+    	return ($recordType->isEqual($this->instructorsType) || $recordType->isEqual($this->weeklyScheduleType));
     }
     
 /*********************************************************
@@ -555,5 +565,87 @@ class banner_course_CourseOffering_Search_Order
 		$this->addTableJoin('LEFT JOIN syvinst ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)');
     }
     
+/*********************************************************
+ * Methods from middlebury_course_CourseOffering_Search_InstructorsSearchOrderRecord
+ *********************************************************/
+ 
+ 	/**
+     * Order by meeting on Sunday.
+     *
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function orderByMeetsSunday() {
+    	$this->addOrderColumns(array('SSRMEET_SUN_DAY'));
+    	$this->ascend();
+    }
+
+	/**
+     * Order by meeting on Monday.
+     *
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function orderByMeetsMonday() {
+    	$this->addOrderColumns(array('SSRMEET_MON_DAY'));
+    	$this->ascend();
+    }
+    
+	/**
+     * Order by meeting on Tuesday.
+     *
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function orderByMeetsTuesday() {
+    	$this->addOrderColumns(array('SSRMEET_TUE_DAY'));
+    	$this->ascend();
+    }
+	
+	/**
+     * Order by meeting on Wednesday.
+     *
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function orderByMeetsWednesday() {
+    	$this->addOrderColumns(array('SSRMEET_WED_DAY'));
+    	$this->ascend();
+    }
+    
+    /**
+     * Order by meeting on Thursday.
+     *
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function orderByMeetsThursday() {
+    	$this->addOrderColumns(array('SSRMEET_THU_DAY'));
+    	$this->ascend();
+    }
+    
+    /**
+     * Order by meeting on Friday.
+     *
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function orderByMeetsFriday() {
+    	$this->addOrderColumns(array('SSRMEET_FRI_DAY'));
+    	$this->ascend();
+    }
+    
+    /**
+     * Order by meeting on Saturday.
+     *
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function orderByMeetsSaturday() {
+    	$this->addOrderColumns(array('SSRMEET_SAT_DAY'));
+    	$this->ascend();
+    }
+    
+    /**
+     * Order by meeting times
+     * 
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function orderByMeetingTime () {
+    	$this->addOrderColumns(array('SSRMEET_BEGIN_TIME'));
+    }
 
 }

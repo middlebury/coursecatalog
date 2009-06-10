@@ -17,7 +17,8 @@
 class banner_course_CourseOffering_Search_Query
     implements osid_course_CourseOfferingQuery,
     osid_course_CourseOfferingQueryRecord,
-    middlebury_course_CourseOffering_Search_InstructorsQueryRecord
+    middlebury_course_CourseOffering_Search_InstructorsQueryRecord,
+    middlebury_course_CourseOffering_Search_WeeklyScheduleQueryRecord
 {
 	
 	/**
@@ -34,6 +35,7 @@ class banner_course_CourseOffering_Search_Query
 		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
 		$this->booleanStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:boolean");
 		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 
 		$this->stringMatchTypes = array(
 			$this->wildcardStringMatchType
@@ -444,7 +446,7 @@ class banner_course_CourseOffering_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function implementsRecordType(osid_type_Type $recordType) {
-    	return $recordType->isEqual($this->instructorsType);
+    	return ($recordType->isEqual($this->instructorsType) || $recordType->isEqual($this->weeklyScheduleType));
     }
 
 /*********************************************************
@@ -1261,5 +1263,143 @@ class banner_course_CourseOffering_Search_Query
     	throw new osid_UnimplementedException();
     }
     
+/*********************************************************
+ * Methods from middlebury_course_CourseOffering_Search_WeeklyScheduleQueryRecord
+ *********************************************************/
+	
+	/**
+     * Matches a meeting on Sunday.
+     *
+     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
+     *
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function matchMeetsSunday($match) {
+    	$this->addClause('meeting_day', "SSRMEET_SUN_DAY IS NOT NULL", array(), $match);
+    }
 
+	/**
+     * Matches a meeting on Monday.
+     *
+     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
+     *
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function matchMeetsMonday($match) {
+    	$this->addClause('meeting_day', "SSRMEET_MON_DAY IS NOT NULL", array(), $match);
+    }
+    
+	/**
+     * Matches a meeting on Tuesday.
+     *
+     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
+     *
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function matchMeetsTuesday($match) {
+    	$this->addClause('meeting_day', "SSRMEET_TUE_DAY IS NOT NULL", array(), $match);
+    }
+	
+	/**
+     * Matches a meeting on Wednesday.
+     *
+     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
+     *
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function matchMeetsWednesday($match) {
+    	$this->addClause('meeting_day', "SSRMEET_WED_DAY IS NOT NULL", array(), $match);
+    }
+    
+    /**
+     * Matches a meeting on Thursday.
+     *
+     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
+     *
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function matchMeetsThursday($match) {
+    	$this->addClause('meeting_day', "SSRMEET_THU_DAY IS NOT NULL", array(), $match);
+    }
+    
+    /**
+     * Matches a meeting on Friday.
+     *
+     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
+     *
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function matchMeetsFriday($match) {
+    	$this->addClause('meeting_day', "SSRMEET_FRI_DAY IS NOT NULL", array(), $match);
+    }
+    
+    /**
+     * Matches a meeting on Saturday.
+     *
+     * Additional calls to any of the matchMeetsXxxx() methods will OR the days.
+     *
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function matchMeetsSaturday($match) {
+    	$this->addClause('meeting_day', "SSRMEET_SAT_DAY IS NOT NULL", array(), $match);
+    }
+    
+    /**
+     * Matches meeting times that fall within the range given.
+     * 
+     * @param integer $rangeStart The lower bound of the start time in seconds since midnight. 0-86399
+     * @param integer $rangeEnd The upper bound of the end time in seconds since midnight. 1-86400
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     * @compliance mandatory This method must be implemented. 
+     * @throws osid_NullArgumentException rangeStart or rangeEnd are null.
+     * @throws osid_InvalidArgumentException rangeStart or rangeEnd are out of range.
+     */
+    public function matchMeetingTime ($rangeStart, $rangeEnd, $match) {
+    	if (is_null($rangeStart))
+    		throw new osid_NullArgumentException('$rangeStart cannot be null');
+    	if (is_null($rangeEnd))
+    		throw new osid_NullArgumentException('$rangeEnd start cannot be null');
+    	if (!is_numeric($rangeStart))
+    		throw new osid_InvalidArgumentException('$rangeStart must be an integer between 0 and 86399');
+    	if (!is_numeric($rangeEnd))
+    		throw new osid_InvalidArgumentException('$rangeEnd must be an integer between 1 and 86400');
+    		
+    	$rangeStart = intval($rangeStart);
+    	$rangeEnd = intval($rangeEnd);
+    	if ($rangeStart < 0 || $rangeStart > 86399)
+    		throw new osid_InvalidArgumentException('$rangeStart must be an integer between 0 and 86399');
+    	if ($rangeEnd < 1 || $rangeEnd > 86400)
+    		throw new osid_InvalidArgumentException('$rangeEnd must be an integer between 1 and 86400');
+    	
+    	$this->addClause('meeting_time', "(SSRMEET_BEGIN_TIME >= ? AND SSRMEET_END_TIME <= ?)", array($this->getTimeString($rangeStart), $this->getTimeString($rangeEnd)), $match);
+    }
+    
+    /**
+     * Answer a 24-hour time string from an integer number of seconds.
+     * 
+     * @param integer $seconds
+     * @return string
+     * @access protected
+     * @since 6/10/09
+     */
+    protected function getTimeString ($seconds) {
+    	$hour = floor($seconds/3600);
+    	$minute = floor(($seconds - ($hour * 3600))/60);
+    	return str_pad($hour, 2, '0', STR_PAD_LEFT).str_pad($minute, 2, '0', STR_PAD_LEFT);
+    }
 }
