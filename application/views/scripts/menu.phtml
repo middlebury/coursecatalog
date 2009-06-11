@@ -20,7 +20,7 @@
 							</li>
 							
 							<li class="AspNet-Menu-Leaf<?php if ($this->menuIsOfferings) { print " AspNet-Menu-Selected"; } ?>">
-								<a href="<?php echo $this->url(array('offerings' => 'terms', 'action' => 'list', 'catalog' => $this->catalogIdString, 'term' => $this->termIdString), null, true) ?>" class="AspNet-Menu-Link">Sections</a>
+								<a href="<?php echo $this->url(array('controller' => 'offerings', 'action' => 'list', 'catalog' => $this->catalogIdString, 'term' => $this->termIdString), null, true) ?>" class="AspNet-Menu-Link">Sections</a>
 							</li>
 						
 <?php } ?>

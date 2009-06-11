@@ -52,19 +52,40 @@ class OfferingsController
 		if ($this->_getParam('catalog')) {
 			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
 			$lookupSession = self::getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
-			$this->view->title = 'Courses in '.$lookupSession->getCourseCatalog()->getDisplayName();
+			$this->view->title = $lookupSession->getCourseCatalog()->getDisplayName();
 		} else {
 			$lookupSession = self::getCourseManager()->getCourseOfferingLookupSession();
-			$this->view->title = 'Courses in All Catalogs';
+			$this->view->title = 'All Catalogs';
 		}
 		$lookupSession->useFederatedCourseCatalogView();
 		
-		$this->view->offerings = $lookupSession->getCourseOfferings();
+		// Add our parameters to the search query
+		if ($this->_getParam('term')) {
+			$termId = self::getOsidIdFromString($this->_getParam('term'));
+			
+			$termLookupSession = self::getCourseManager()->getTermLookupSession();
+			$termLookupSession->useFederatedCourseCatalogView();
+			
+			$this->view->term = $termLookupSession->getTerm($termId);
+			
+			$this->view->offerings = $lookupSession->getCourseOfferingsByTerm($this->view->term->getId());
+		} else {
+			$this->view->offerings = $lookupSession->getCourseOfferings();
+		}
 		
 		$this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
 		$this->view->headTitle($this->view->title);
 		
 		$this->view->menuIsOfferings = true;
+		
+		$this->view->offeringsTitle = "Sections";
+		
+		// Don't do the work to display instructors if we have a very large number of
+		// offerings.
+		if ($this->view->offerings->available() > 200)
+			$this->view->hideOfferingInstructors = true;
+		
+		$this->render('offerings', null, true);
 	}
 	
 	/**
