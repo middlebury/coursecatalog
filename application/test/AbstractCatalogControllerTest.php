@@ -16,7 +16,13 @@ class AbstractCatalogControllerTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
+        $this->spring2009TermId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200920');
+        $this->fall2009TermId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200990');
+        $this->fall2008TermId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200890');
         
+        $this->termLookup = AbstractCatalogController::getCourseManager()->getTermLookupSessionForCatalog($this->mcugId);
+        $this->topicLookup = AbstractCatalogController::getCourseManager()->getTopicLookupSessionForCatalog($this->mcugId);
     }
 
     /**
@@ -27,17 +33,6 @@ class AbstractCatalogControllerTest extends PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
-    }
-
-    /**
-     * 
-     */
-    public function testInit()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
     }
 
     /**
@@ -87,10 +82,12 @@ class AbstractCatalogControllerTest extends PHPUnit_Framework_TestCase
      */
     public function testTopicListAsArray()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $topics = $this->topicLookup->getTopics();
+        $numTopics = $topics->available();
+        $topicArray = AbstractCatalogController::topicListAsArray($topics);
+        $this->assertType('array', $topicArray);
+        $this->assertEquals($numTopics, count($topicArray));
+        $this->assertType('osid_course_Topic', $topicArray[0]);
     }
 
     /**
@@ -98,10 +95,17 @@ class AbstractCatalogControllerTest extends PHPUnit_Framework_TestCase
      */
     public function testFilterTopicsByType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $topics = $this->topicLookup->getTopics();
+        $numTopics = $topics->available();
+        $topicArray = AbstractCatalogController::topicListAsArray($topics);
+        
+        $subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
+
+        $filteredTopics = AbstractCatalogController::filterTopicsByType($topicArray, $subjectType);
+        $this->assertType('array', $filteredTopics);
+        $this->assertLessThan($numTopics, count($filteredTopics));
+        $this->assertEquals(3, count($filteredTopics));
+        $this->assertType('osid_course_Topic', $filteredTopics[0]);
     }
 
     /**
@@ -120,10 +124,7 @@ class AbstractCatalogControllerTest extends PHPUnit_Framework_TestCase
      */
     public function testGetCurrentTermId()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_id_Id', AbstractCatalogController::getCurrentTermId($this->mcugId));
     }
 
     /**
@@ -131,31 +132,47 @@ class AbstractCatalogControllerTest extends PHPUnit_Framework_TestCase
      */
     public function testGetClosestTermId()
     {
-    	
         $testDate = new DateTime('2009-09-30');
+        $terms = $this->termLookup->getTerms();
+        $closestTermId = AbstractCatalogController::getClosestTermId($terms, $testDate);
+        $this->assertTrue($closestTermId->isEqual($this->fall2009TermId));
         
     }
-
+    
     /**
      * 
      */
-    public function testPreDispatch()
+    public function testGetClosestNonOverlappingTermIdA()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $testDate = new DateTime('2009-08-15');
+        $terms = $this->termLookup->getTerms();
+        $closestTermId = AbstractCatalogController::getClosestTermId($terms, $testDate);
+        $this->assertTrue($closestTermId->isEqual($this->fall2009TermId));
+        
     }
-
+    
     /**
      * 
      */
-    public function testPostDispatch()
+    public function testGetClosestNonOverlappingTermIdB()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $testDate = new DateTime('2009-06-15');
+        $terms = $this->termLookup->getTerms();
+        $closestTermId = AbstractCatalogController::getClosestTermId($terms, $testDate);
+        $this->assertTrue($closestTermId->isEqual($this->spring2009TermId));
+        
+    }
+    
+    /**
+     * 
+     */
+    public function testGetClosestTermIdBeyondRange()
+    {
+        $testDate = new DateTime('2020-01-01');
+        $terms = $this->termLookup->getTerms();
+        $closestTermId = AbstractCatalogController::getClosestTermId($terms, $testDate);
+        $this->assertTrue($closestTermId->isEqual($this->fall2009TermId));
+        
     }
 }
 ?>

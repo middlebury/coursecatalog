@@ -222,6 +222,73 @@ abstract class AbstractCatalogController
     	$minute = floor(($seconds - ($hour * 3600))/60);
     	return str_pad($hour, 2, '0', STR_PAD_LEFT).':'.str_pad($minute, 2, '0', STR_PAD_LEFT);
     }
+    
+    /**
+     * Answer the "current" termId for the catalog passed. If multiple terms overlap
+     * to be 'current', only one will be returned.
+     * 
+     * @param osid_id_Id $catalogId
+     * @return osid_id_Id The current term id.
+     * @throws osid_NotFoundException
+     * @access public
+     * @since 6/11/09
+     * @static
+     */
+    public static function getCurrentTermId (osid_id_Id $catalogId) {
+    	if (!isset($_SESSION['current_terms']))
+    		$_SESSION['current_terms'] = array();
+    	$catalogIdString = self::getStringFromOsidId($catalogId);
+    	if (!isset($_SESSION['current_terms'][$catalogIdString])) {
+    		$manager = self::getCourseManager();
+    		if (!$manager->supportsTermLookup())
+    			throw new osid_NotFoundException('Could not determine a current term id. The manager does not support term lookup.');
+    		$termLookup = $manager->getTermLookupSessionForCatalog($catalogId);
+	    	$_SESSION['current_terms'][$catalogIdString] = self::getClosestTermId($termLookup->getTerms());
+    	}
+    	if (!isset($_SESSION['current_terms'][$catalogIdString]))
+    		throw new osid_NotFoundException('Could not determine a current term id for the catalog passed.');
+    	
+    	return $_SESSION['current_terms'][$catalogIdString];
+    }
+    
+    /**
+     * Answer the term id whose timespan is closest to now. 
+     * 
+     * @param osid_course_TermList $terms
+     * @param optional DateTime $date The date to reference the terms to.
+     * @return osid_id_Id
+     * @access public
+     * @since 6/11/09
+     * @static
+     */
+    public static function getClosestTermId (osid_course_TermList $terms, DateTime $date = null) {
+    	$ids = array();
+    	$diffs = array();
+    	
+    	if (is_null($date))
+	    	$date = time();
+	    else
+	    	$date = intval($date->format('U'));
+	    
+    	if (!$terms->hasNext())
+    		throw new osid_NotFoundException('Could not determine a current term id. No terms found.');
+		
+		while ($terms->hasNext()) {
+			$term = $terms->getNextTerm();
+			$start = intval($term->getStartTime()->format('U'));
+			$end = intval($term->getEndTime()->format('U'));
+			
+			// If our current time is within the term timespan, return that term's id.
+			if ($date >= $start && $date <= $end)
+				return $term->getId();
+			
+			$ids[] = $term->getId();
+			$diffs[] = abs($date - $start) + abs($date - $end);
+		}
+		
+		array_multisort($diffs, SORT_NUMERIC, SORT_ASC, $ids);
+		return $ids[0];
+    }
 	
 	private $startTime;
 	
