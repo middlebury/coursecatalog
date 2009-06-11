@@ -10,10 +10,12 @@ class TestSuite extends PHPUnit_Framework_TestSuite
 {
 	public static function suite()
     {
-        $suite = new banner_TestSuite('banner');
+        $suite = new banner_TestSuite('AllTests');
         
         $suite->addTestSuite('banner_TestSuite');
         
+        $suite->addTestSuite('ApplicationTestSuite');
+                
         return $suite;
     }
     
