@@ -99,7 +99,7 @@ class banner_course_CourseOffering_Search_QueryTest
     {
         $types = $this->object->getStringMatchTypes();
         $this->assertType('osid_type_TypeList', $types);
-        $this->assertEquals(1, $types->available());
+        $this->assertEquals(2, $types->available());
         $this->assertTrue($this->wildcardStringMatchType->isEqual($types->getNextType()));
     }
 
@@ -123,7 +123,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->assertEquals('Quantum', $params[':co_relevence_param']);
         $this->assertEquals(2, count($params));
         
-         $this->assertEquals('MATCH (SSBSECT_fulltext) AGAINST (:co_keyword_param IN BOOLEAN MODE)', $this->object->getWhereClause());
+         $this->assertEquals('(MATCH (SSBSECT_fulltext) AGAINST (:co_keyword_param IN BOOLEAN MODE))', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 		$this->assertEquals(8, $courseOfferings->available());
@@ -141,7 +141,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->assertEquals('Quantum Environments', $params[':co_relevence_param']);
         $this->assertEquals(2, count($params));
         
-        $this->assertEquals('MATCH (SSBSECT_fulltext) AGAINST (:co_keyword_param IN BOOLEAN MODE)', $this->object->getWhereClause());
+        $this->assertEquals('(MATCH (SSBSECT_fulltext) AGAINST (:co_keyword_param IN BOOLEAN MODE))', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 		$this->assertEquals(22, $courseOfferings->available());
@@ -161,7 +161,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->assertEquals('Quantum Environment*', $params[':co_relevence_param']);
         $this->assertEquals(2, count($params));
         
-         $this->assertEquals('MATCH (SSBSECT_fulltext) AGAINST (:co_keyword_param IN BOOLEAN MODE)', $this->object->getWhereClause());
+         $this->assertEquals('(MATCH (SSBSECT_fulltext) AGAINST (:co_keyword_param IN BOOLEAN MODE))', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 		$this->assertEquals(22, $courseOfferings->available());
