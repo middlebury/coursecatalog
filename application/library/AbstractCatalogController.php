@@ -23,6 +23,38 @@ abstract class AbstractCatalogController
 	
 	private static $runtimeManager;
 	private static $courseManager;
+	private static $configPath;
+	
+	/**
+	 * Answer the configuration path
+	 * 
+	 * @return string
+	 * @access public
+	 * @since 6/11/09
+	 * @static
+	 */
+	public static function getConfigPath () {
+		if (!isset(self::$configPath))
+			self::$configPath = BASE_PATH.'/configuration.plist';
+		
+		return self::$configPath;
+	}
+	
+	/**
+	 * Set the configuration path
+	 * 
+	 * @param string $path
+	 * @access public
+	 * @since 6/11/09
+	 * @throws osid_InvalidStateException The config path has already been set.
+	 * @static
+	 */
+	public static function setConfigPath ($path) {
+		if (isset(self::$configPath))
+			throw new osid_InvalidStateException('the config path has already been set');
+		
+		self::$configPath = $path;
+	}
 	
 	/**
 	 * Initialize our view with common properties
@@ -88,7 +120,7 @@ abstract class AbstractCatalogController
 	 */
 	public static function getRuntimeManager () {
 		if (!isset(self::$runtimeManager)) {
-			self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(BASE_PATH.'/configuration.plist');
+			self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(self::getConfigPath());
 		}
 		
 		return self::$runtimeManager;
