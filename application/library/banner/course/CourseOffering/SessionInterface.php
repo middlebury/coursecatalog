@@ -17,7 +17,9 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-interface banner_course_CourseOffering_SessionInterface {
+interface banner_course_CourseOffering_SessionInterface 
+	extends banner_course_SessionInterface
+{
 		
 	/**
 	 * Answer the term code from an id object
@@ -92,25 +94,6 @@ interface banner_course_CourseOffering_SessionInterface {
 	 * @since 4/17/09
 	 */
 	public function getTermCodeFromTermId (osid_id_Id $id);
-	
-	/**
-	 * Answer a catalog database id string.
-	 * 
-	 * @param osid_id_Id $id
-	 * @return string
-	 * @access public
-	 * @since 4/20/09
-	 */
-	public function getCatalogDatabaseId (osid_id_Id $id);
-	
-	/**
-	 * Answer the Id of the 'All'/'Combined' catalog.
-	 * 
-	 * @return osid_id_Id
-	 * @access public
-	 * @since 4/20/09
-	 */
-	public function getCombinedCatalogId ();
 	
 	/**
 	 * Answer the id authority for this session

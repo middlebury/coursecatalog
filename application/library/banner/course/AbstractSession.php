@@ -19,6 +19,7 @@
  */
 abstract class banner_course_AbstractSession
 	extends banner_AbstractSession
+	implements banner_course_SessionInterface
 {
 	
 	/**
