@@ -836,9 +836,9 @@ INSERT INTO `stvschd` (`STVSCHD_CODE`, `STVSCHD_DESC`, `STVSCHD_ACTIVITY_DATE`, 
 --
 
 INSERT INTO `stvsubj` (`STVSUBJ_CODE`, `STVSUBJ_DESC`, `STVSUBJ_ACTIVITY_DATE`, `STVSUBJ_VR_MSG_NO`, `STVSUBJ_DISP_WEB_IND`) VALUES
-('CHEM', 'Chem', '2004-04-01', NULL, 'Y'),
-('GEOL', 'Geol', '2002-10-18', NULL, 'Y'),
-('PHYS', 'Phys', '2002-10-18', NULL, 'Y');
+('CHEM', 'Chemistry', '2004-04-01', NULL, 'Y'),
+('GEOL', 'Geology', '2002-10-18', NULL, 'Y'),
+('PHYS', 'Physics', '2002-10-18', NULL, 'Y');
 
 --
 -- Dumping data for table `stvterm`
