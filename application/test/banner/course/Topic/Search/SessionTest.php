@@ -21,8 +21,23 @@ class banner_course_Topic_Search_SessionTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-//         $this->object = new banner_course_Topic_Search_Session;
-    }
+		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
+        
+    	$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
+        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
+
+	 	$this->manager = $this->sharedFixture['CourseManager'];
+        $this->session = $this->manager->getTopicSearchSessionForCatalog($this->mcugId);
+        
+        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200820');
+
+		$this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
+
+        $this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
+        $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
+        $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
+        $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
+	}
 
     /**
      * Tears down the fixture, for example, closes a network connection.
@@ -35,40 +50,33 @@ class banner_course_Topic_Search_SessionTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testGetCourseCatalogId().
+     * 
      */
     public function testGetCourseCatalogId()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_id_Id', $this->session->getCourseCatalogId());
+        $this->assertTrue($this->mcugId->isEqual($this->session->getCourseCatalogId()));
     }
 
     /**
-     * @todo Implement testGetCourseCatalog().
+     * 
      */
     public function testGetCourseCatalog()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_CourseCatalog', $this->session->getCourseCatalog());
+        $this->assertTrue($this->mcugId->isEqual($this->session->getCourseCatalog()->getId()));
     }
 
     /**
-     * @todo Implement testCanSearchTopics().
+     * 
      */
     public function testCanSearchTopics()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertTrue($this->session->canSearchTopics());
     }
 
     /**
-     * @todo Implement testUseFederatedCourseCatalogView().
+     * 
      */
     public function testUseFederatedCourseCatalogView()
     {
@@ -79,7 +87,7 @@ class banner_course_Topic_Search_SessionTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testUseIsolatedCourseCatalogView().
+     * 
      */
     public function testUseIsolatedCourseCatalogView()
     {
@@ -90,58 +98,43 @@ class banner_course_Topic_Search_SessionTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testGetTopicQuery().
+     * 
      */
     public function testGetTopicQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TopicQuery', $this->session->getTopicQuery());
     }
 
     /**
-     * @todo Implement testGetTopicsByQuery().
+     * 
      */
     public function testGetTopicsByQuery()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TopicList', $this->session->getTopicsByQuery($this->session->getTopicQuery()));
     }
 
     /**
-     * @todo Implement testGetTopicSearch().
+     * 
      */
     public function testGetTopicSearch()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TopicSearch', $this->session->getTopicSearch());
     }
 
     /**
-     * @todo Implement testGetTopicSearchOrder().
+     * 
      */
     public function testGetTopicSearchOrder()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TopicSearchOrder', $this->session->getTopicSearchOrder());
     }
 
     /**
-     * @todo Implement testGetTopicsBySearch().
+     * 
      */
     public function testGetTopicsBySearch()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertType('osid_course_TopicSearchResults', $this->session->getTopicsBySearch($this->session->getTopicQuery(), $this->session->getTopicSearch()));
     }
 }
 ?>

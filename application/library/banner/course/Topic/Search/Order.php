@@ -31,7 +31,7 @@ class banner_course_Topic_Search_Order
      *  @compliance mandatory This method must be implemented. 
      */
     public function ascend() {
-    	throw new osid_UnimplementedException;	
+    	
     }
 
 
@@ -42,7 +42,7 @@ class banner_course_Topic_Search_Order
      *  @compliance mandatory This method must be implemented. 
      */
     public function descend() {
-    	throw new osid_UnimplementedException;	
+    	
     }
 
 
@@ -53,7 +53,7 @@ class banner_course_Topic_Search_Order
      *  @compliance mandatory This method must be implemented. 
      */
     public function orderByDisplayName() {
-    	throw new osid_UnimplementedException;	
+    	
     }
 
 
@@ -63,7 +63,7 @@ class banner_course_Topic_Search_Order
      *  @compliance mandatory This method must be implemented. 
      */
     public function orderByGenusType() {
-    	throw new osid_UnimplementedException;	
+    	
     }
 
 
@@ -82,7 +82,7 @@ class banner_course_Topic_Search_Order
      *  @compliance mandatory This method must be implemented. 
      */
     public function hasRecordType(osid_type_Type $recordType) {
-    	throw new osid_UnimplementedException;	
+    	return false;
     }
 
 /*********************************************************
@@ -106,7 +106,7 @@ class banner_course_Topic_Search_Order
      *  @compliance mandatory This method must be implemented. 
      */
     public function getTopicSearchOrderRecord(osid_type_Type $topicRecordType) {
-    	throw new osid_UnimplementedException;	
+    	throw new osid_UnsupportedException('The type passed is not supported');	
     }
 	
 }

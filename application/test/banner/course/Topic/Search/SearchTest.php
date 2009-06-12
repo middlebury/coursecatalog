@@ -21,7 +21,23 @@ class banner_course_Topic_Search_SearchTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-//         $this->object = new banner_course_Topic_Search_Search;
+		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
+        
+    	$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
+        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
+
+	 	$this->manager = $this->sharedFixture['CourseManager'];
+        $this->session = $this->manager->getTopicSearchSessionForCatalog($this->mcugId);
+        $this->object = $this->session->getTopicSearch();
+        
+        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200820');
+
+		$this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
+
+        $this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
+        $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
+        $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
+        $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
     }
 
     /**
@@ -35,69 +51,59 @@ class banner_course_Topic_Search_SearchTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testLimitResultSet().
+     * 
      */
     public function testLimitResultSet()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->limitResultSet(1, 10);
     }
 
     /**
-     * @todo Implement testHasSearchRecordType().
+     * 
      */
     public function testHasSearchRecordType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->object->hasSearchRecordType($this->termType));
     }
 
     /**
-     * @todo Implement testSearchWithinTopicResults().
+     * 
      */
     public function testSearchWithinTopicResults()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $results = $this->session->getTopicsBySearch($this->session->getTopicQuery(), $this->session->getTopicSearch());
+        $this->object->searchWithinTopicResults($results);
     }
 
     /**
-     * @todo Implement testSearchAmongTopics().
+     * 
      */
     public function testSearchAmongTopics()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $topicList = new phpkit_id_ArrayIdList(array(
+        	new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/DED'),
+        	new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/SCI')
+        ));
+        
+        $this->object->searchAmongTopics($topicList);
     }
 
     /**
-     * @todo Implement testOrderTopicResults().
+     * 
      */
     public function testOrderTopicResults()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $order = $this->session->getTopicSearchOrder();
+        $order->orderByDisplayName();
+        $this->object->orderTopicResults($order);
     }
 
     /**
-     * @todo Implement testGetTopicSearchRecord().
+     * @expectedException osid_UnsupportedException
      */
     public function testGetTopicSearchRecord()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->getTopicSearchRecord($this->termType);
     }
 }
 ?>

@@ -42,7 +42,7 @@ class banner_course_Topic_Search_Search
      *  @compliance mandatory This method must be implemented. 
      */
     public function limitResultSet($start, $end) {
-    	throw new osid_UnimplementedException;	
+    	
     }
 
 
@@ -61,7 +61,7 @@ class banner_course_Topic_Search_Search
      *  @compliance mandatory This method must be implemented. 
      */
     public function hasSearchRecordType(osid_type_Type $searchRecordType) {
-    	throw new osid_UnimplementedException;	
+    	return false;
     }
 
 /*********************************************************
@@ -80,7 +80,7 @@ class banner_course_Topic_Search_Search
      *  @compliance mandatory This method must be implemented. 
      */
     public function searchWithinTopicResults(osid_course_TopicSearchResults $results) {
-    	throw new osid_UnimplementedException;	
+    	
     }
 
 
@@ -93,7 +93,7 @@ class banner_course_Topic_Search_Search
      *  @compliance mandatory This method must be implemented. 
      */
     public function searchAmongTopics(osid_id_IdList $topicIds) {
-    	throw new osid_UnimplementedException;	
+    	
     }
 
 
@@ -109,7 +109,7 @@ class banner_course_Topic_Search_Search
      *  @compliance mandatory This method must be implemented. 
      */
     public function orderTopicResults(osid_course_TopicSearchOrder $topicSearchOrder) {
-    	throw new osid_UnimplementedException;	
+    	
     }
 
 
@@ -133,7 +133,7 @@ class banner_course_Topic_Search_Search
      *  @compliance mandatory This method must be implemented. 
      */
     public function getTopicSearchRecord(osid_type_Type $topicSearchRecordType) {
-    	throw new osid_UnimplementedException;	
+    	throw new osid_UnsupportedException;	
     }
 	
 }

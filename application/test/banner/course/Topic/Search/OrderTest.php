@@ -21,7 +21,23 @@ class banner_course_Topic_Search_OrderTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-//         $this->object = new banner_course_Topic_Search_Order;
+		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
+        
+    	$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
+        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
+
+	 	$this->manager = $this->sharedFixture['CourseManager'];
+        $this->session = $this->manager->getTopicSearchSessionForCatalog($this->mcugId);
+        $this->object = $this->session->getTopicSearchOrder();
+        
+        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200820');
+
+		$this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
+
+        $this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
+        $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
+        $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
+        $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
     }
 
     /**
@@ -35,69 +51,51 @@ class banner_course_Topic_Search_OrderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @todo Implement testAscend().
+     * 
      */
     public function testAscend()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->ascend();
     }
 
     /**
-     * @todo Implement testDescend().
+     * 
      */
     public function testDescend()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->descend();
     }
 
     /**
-     * @todo Implement testOrderByDisplayName().
+     * 
      */
     public function testOrderByDisplayName()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->orderByDisplayName();
     }
 
     /**
-     * @todo Implement testOrderByGenusType().
+     * 
      */
     public function testOrderByGenusType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->orderByGenusType();
     }
 
     /**
-     * @todo Implement testHasRecordType().
+     * 
      */
     public function testHasRecordType()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertFalse($this->object->hasRecordType($this->termType));
     }
 
     /**
-     * @todo Implement testGetTopicSearchOrderRecord().
+     * @expectedException osid_UnsupportedException
      */
     public function testGetTopicSearchOrderRecord()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->getTopicSearchOrderRecord($this->termType);
     }
 }
 ?>

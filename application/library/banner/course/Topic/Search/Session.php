@@ -210,6 +210,6 @@ class banner_course_Topic_Search_Session
      */
     public function getTopicsBySearch(osid_course_TopicQuery $topicQuery, 
                                       osid_course_TopicSearch $topicSearch) {
-		
+		return new banner_course_Topic_Search_List($this->manager->getDB(), $this, $this->getCourseCatalogId(), $topicQuery, $topicSearch);
 	}
 }
