@@ -315,7 +315,64 @@ try {
 	$mysql->rollBack();
 }
 
+// SATURN.SSBXLST
+ 
+try {
+	$mysql->beginTransaction();
+	$tSSBXLST = $mysql->prepare("TRUNCATE TABLE SSBXLST");
+	$tSSBXLST->execute();
+	
+	$SSBXLST = $banner->prepare("SELECT * FROM SATURN.SSBXLST");
+	$SSBXLST->execute();
+	
+	$insert = $mysql->prepare("INSERT INTO SSBXLST (SSBXLST_TERM_CODE, SSBXLST_XLST_GROUP, SSBXLST_DESC, SSBXLST_MAX_ENRL, SSBXLST_ENRL, SSBXLST_SEATS_AVAIL, SSBXLST_ACTIVITY_DATE) VALUES (:SSBXLST_TERM_CODE, :SSBXLST_XLST_GROUP, :SSBXLST_DESC, :SSBXLST_MAX_ENRL, :SSBXLST_ENRL, :SSBXLST_SEATS_AVAIL, :SSBXLST_ACTIVITY_DATE)");
+	while($row = $SSBXLST->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
+		$insert->bindValue(":SSBXLST_TERM_CODE", $row->SSBXLST_TERM_CODE);
+		$insert->bindValue(":SSBXLST_XLST_GROUP", $row->SSBXLST_XLST_GROUP);
+		$insert->bindValue(":SSBXLST_DESC", $row->SSBXLST_DESC);
+		$insert->bindValue(":SSBXLST_MAX_ENRL", $row->SSBXLST_MAX_ENRL);
+		$insert->bindValue(":SSBXLST_ENRL", $row->SSBXLST_ENRL);
+		$insert->bindValue(":SSBXLST_SEATS_AVAIL", $row->SSBXLST_SEATS_AVAIL);
+		$insert->bindValue(":SSBXLST_ACTIVITY_DATE", toMySQLDate($row->SSBXLST_ACTIVITY_DATE));
+		$insert->execute();
+	}
+	
+	$mysql->commit();
+	$SSBXLST->closeCursor();
+	print "Updated SSBXLST\n";
+} catch(Exception $e) {
+	print $e->__toString()."\n";
+	$exceptions[] = $e->__toString();
+	$mysql->rollBack();
+}
 
+// SATURN.SSRXLST
+ 
+try {
+	$mysql->beginTransaction();
+	$tSSRXLST = $mysql->prepare("TRUNCATE TABLE SSRXLST");
+	$tSSRXLST->execute();
+	
+	$SSRXLST = $banner->prepare("SELECT * FROM SATURN.SSRXLST");
+	$SSRXLST->execute();
+	
+	$insert = $mysql->prepare("INSERT INTO SSRXLST (SSRXLST_TERM_CODE, SSRXLST_CRN, SSRXLST_XLST_GROUP, SSRXLST_ACTIVITY_DATE) VALUES (:SSRXLST_TERM_CODE, :SSRXLST_CRN, :SSRXLST_XLST_GROUP, :SSRXLST_ACTIVITY_DATE)");
+	while($row = $SSRXLST->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
+		$insert->bindValue(":SSRXLST_TERM_CODE", $row->SSRXLST_TERM_CODE);
+		$insert->bindValue(":SSRXLST_CRN", $row->SSRXLST_CRN);
+		$insert->bindValue(":SSRXLST_XLST_GROUP", $row->SSRXLST_XLST_GROUP);
+		$insert->bindValue(":SSRXLST_ACTIVITY_DATE", toMySQLDate($row->SSRXLST_ACTIVITY_DATE));
+		$insert->execute();
+	}
+	
+	$mysql->commit();
+	$SSRXLST->closeCursor();
+	print "Updated SSRXLST\n";
+} catch(Exception $e) {
+	$exceptions[] = $e->__toString();
+	$mysql->rollBack();
+}
+	
 // SATURN.SIRASGN
  
 try {
@@ -442,7 +499,7 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN.SSRATTR
  

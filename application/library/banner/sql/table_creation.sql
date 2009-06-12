@@ -390,6 +390,42 @@ CREATE TABLE IF NOT EXISTS `SSBSECT` (
 --       `STVTERM` -> `STVTERM_CODE`
 --
 
+--
+-- Database: `afranco_courses_banner`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `SSBXLST`
+--
+
+CREATE TABLE IF NOT EXISTS `SSBXLST` (
+  `SSBXLST_TERM_CODE` varchar(6) NOT NULL COMMENT 'Cross List Section Term Code.',
+  `SSBXLST_XLST_GROUP` varchar(2) NOT NULL COMMENT 'Cross List Group Identifier.',
+  `SSBXLST_DESC` varchar(30) default NULL COMMENT 'Cross List Group Identifier.',
+  `SSBXLST_MAX_ENRL` int(4) NOT NULL COMMENT 'Maxmum Cross List Enrollment.',
+  `SSBXLST_ENRL` int(4) NOT NULL COMMENT 'Corss List Section Enrollment.',
+  `SSBXLST_SEATS_AVAIL` int(4) NOT NULL COMMENT 'Cross List Section Available Seats.',
+  `SSBXLST_ACTIVITY_DATE` date NOT NULL COMMENT 'This field identifies the most recent date a record was created or updated.',
+  PRIMARY KEY  (`SSBXLST_TERM_CODE`,`SSBXLST_XLST_GROUP`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Cross List Enrollment Information Base Table';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `SSRXLST`
+--
+
+CREATE TABLE IF NOT EXISTS `SSRXLST` (
+  `SSRXLST_TERM_CODE` varchar(6) NOT NULL COMMENT 'Cross List Section Term.',
+  `SSRXLST_XLST_GROUP` varchar(2) NOT NULL COMMENT 'Cross List Group Identifier Number.',
+  `SSRXLST_CRN` varchar(5) NOT NULL COMMENT 'Corss List Section CRN.',
+  `SSRXLST_ACTIVITY_DATE` date NOT NULL COMMENT 'This field identifies the most recent date a record was created or updated.',
+  PRIMARY KEY  (`SSRXLST_TERM_CODE`,`SSRXLST_XLST_GROUP`,`SSRXLST_CRN`),
+  KEY `SSRXLST_TERM_CODE` (`SSRXLST_TERM_CODE`,`SSRXLST_CRN`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Cross List Section Repeating Table';
+
 -- --------------------------------------------------------
 
 --
