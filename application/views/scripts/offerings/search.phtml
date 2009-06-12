@@ -2,10 +2,15 @@
 	$formParams = array(
 							'controller'	=> 'offerings',
 							'action'		=> 'search',
+							'term'			=> null,
 							'department'	=> null,
 							'subject'		=> null,
 							'division'		=> null,
 							'requirement'	=> null,
+							'days'			=> null,
+							'time_start'	=> null,
+							'time_end'		=> null,
+							'keywords'		=> null,
 							'page'			=> null,
 							'submit'		=> null
 						);
@@ -13,6 +18,26 @@
 
 <form action="<?php print $this->url($formParams); ?>" method="get">
 	<table class='search_options'>
+
+		<tr>
+			<th>By Term:</th>
+			<td>
+				<select name="term">
+					<option value=''>Any Term</option>
+<?php
+while ($this->terms->hasNext()) {
+	$term = $this->terms->getNextTerm();
+	print "\n\t\t\t\t\t<option value='";
+	print AbstractCatalogController::getStringFromOsidId($term->getId());
+	print "'";
+	if (isset($this->selectedTermId) && $term->getId()->isEqual($this->selectedTermId))
+		print " selected='selected'";
+	print ">".$term->getDisplayName()."</option>";
+}
+?>
+				</select>
+			</td>
+		</tr>
 
 		<tr>
 			<th>By Department:</th>
@@ -77,7 +102,7 @@ while ($this->divisions->hasNext()) {
 		<tr>
 			<th>Satisfies Requirements:</th>
 			<td>
-				(Leave all blank for no preference)
+				<div class='help_text'>(Leave all blank for no preference)</div>
 				<div class='requirement_group'>
 <?php
 $i = 0;
@@ -105,6 +130,64 @@ while ($this->requirements->hasNext()) {
 		</tr>
 		
 		<tr>
+			<th>Keywords:</th>
+			<td>
+				<input class='text_input' type='text' name='keywords' value='<?php print $this->keywords; ?>' />
+				<div class='help_text'>By default results only have to match one of the supplied keywords. Use a plus (+) before a word to require it or a minus (-) to exclude it. Use an asterisk (*) as a wildcard.</div>
+			</td>
+		</tr>
+		
+<?php if (isset($this->searchParams['days'])) { ?>
+		<tr>
+			<th>Days of the week:</th>
+			<td>
+				<label><input type='checkbox' name='days[]' value='sunday' <?php if (in_array('sunday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Sunday</label> 
+				<label><input type='checkbox' name='days[]' value='monday' <?php if (in_array('monday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Monday</label> 
+				<label><input type='checkbox' name='days[]' value='tuesday' <?php if (in_array('tuesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Tuesday</label> 
+				<label><input type='checkbox' name='days[]' value='wednesday' <?php if (in_array('wednesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Wednesday</label> 
+				<label><input type='checkbox' name='days[]' value='thursday' <?php if (in_array('thursday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Thursday</label> 
+				<label><input type='checkbox' name='days[]' value='friday' <?php if (in_array('friday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Friday</label> 
+				<label><input type='checkbox' name='days[]' value='saturday' <?php if (in_array('saturday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Saturday</label> 
+				<div class='help_text'>Leave all unchecked if no preference.</div>
+			</td>
+		</tr>
+		
+		<tr>
+			<th>Time:</th>
+			<td>
+				<label>From 
+				<select name='time_start' class='time_select'>
+					<option value='0'<?php if (!$this->timeStart) { print  " selected='selected'"; } ?>>Any Time</option>
+<?php
+	for ($i = 1800; $i < 86400; $i = $i + 1800) {
+		print "\n\t\t\t\t\t<option value='$i'";
+		if ($this->timeStart == $i)
+			print " selected='selected'";
+		print ">".AbstractCatalogController::getTimeString($i)."</option>";
+	}
+?>
+				</select> 
+				</label>
+				
+				<label>To 
+				<select name='time_end' class='time_select'>
+<?php
+	for ($i = 1800; $i < 86400; $i = $i + 1800) {
+		print "\n\t\t\t\t\t<option value='$i'";
+		if ($this->timeEnd == $i)
+			print " selected='selected'";
+		print ">".AbstractCatalogController::getTimeString($i)."</option>";
+	}
+?>
+				<option value='86400'<?php if ($this->timeEnd == 86400) { print  " selected='selected'"; } ?>>Any Time</option>
+				</select> 
+				</label>
+			</td>
+		</tr>
+
+<?php } ?>
+
+		<tr>
 			<td colspan='2'><input type='submit' name='submit' value='Search'/>
 		</tr>
 
@@ -131,34 +214,39 @@ print $this->paginationControl($this->paginator, 'Sliding', 'ItemPaginationContr
 	<tbody>
 <?php 
 	foreach ($this->paginator as $section) { 
-?>
-		<tr>
-			<th><?php print $section->getDisplayName(); ?></th>
-			<td>
-				<div class='title'><?php print $section->getTitle(); ?></div>
-				<div class='description'><?php print $section->getDescription(); ?></div>				
-<?php
-
-$resourceParams = array(
+		$offeringParams = array(
+							'controller'	=> 'offerings',
+							'action'		=> 'view',
+							'offering'		=> AbstractCatalogController::getStringFromOsidId($section->getId())
+						);
+		$resourceParams = array(
 							'controller'	=> 'resources',
 							'action'		=> 'view',
 							'offering'		=> null
 						);
 
-$term = $section->getTerm();
-$termUrl = $this->url(array(
+		$term = $section->getTerm();
+		$termUrl = $this->url(array(
 						'controller'	=> 'terms',
 						'action'		=> 'view',
 						'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId()),
 						'offering'		=> null
 					));
-$topicParams = array(
+		$topicParams = array(
 						'controller'	=> 'topics',
 						'action'		=> 'view',
 						'offering'		=> null,
 						'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId())
 					);
-
+?>
+		<tr>
+			<th>
+				<a href='<?php print $this->url($offeringParams); ?>'><?php print $section->getDisplayName(); ?></a>
+			</th>
+			<td>
+				<div class='title'><?php print $section->getTitle(); ?></div>
+				<div class='description'><?php print $section->getDescription(); ?></div>				
+<?php
 print "\n\t<dl>";
 print "\n\t\t<dt>Location:</dt>";
 if ($section->hasLocation()) {
@@ -179,7 +267,7 @@ if ($section->hasLocation()) {
 	print "\n\t\t<dd>".$this->escape($section->getLocationInfo())."</dd>";
 }
 print "\n\t\t<dt>Schedule:</dt>";
-print "\n\t\t<dd>".$this->escape($section->getScheduleInfo())."</dd>";
+print "\n\t\t<dd>".nl2br($this->escape($section->getScheduleInfo()))."</dd>";
 
 $instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 if ($section->hasRecordType($instructorsType)) {

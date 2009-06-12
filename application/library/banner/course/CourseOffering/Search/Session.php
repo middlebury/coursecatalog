@@ -58,6 +58,10 @@ class banner_course_CourseOffering_Search_Session
 		
 		$this->catalogId = $catalogId;
 	}
+	
+/*********************************************************
+ * Methods from osid_course_CourseOfferingSearchSession
+ *********************************************************/
 
     /**
      *  Gets the <code> CourseCatalog </code> <code> Id </code> associated 
@@ -220,5 +224,73 @@ class banner_course_CourseOffering_Search_Session
                                                osid_course_CourseOfferingSearch $courseOfferingSearch) {
     	return new banner_course_CourseOffering_Search_List($this->manager->getDB(), $this, $this->getCourseCatalogId(), $courseOfferingQuery, $courseOfferingSearch);
     }
+    
+    
+/*********************************************************
+ * Support for building full-text indices
+ *********************************************************/
+
+	/**
+	 * Build or rebuild the full-text course-offering index.
+	 * 
+	 * @param optional boolean $displayStatus If true, status output will be printed.
+	 * @return boolean true on success
+	 * @access public
+	 * @since 6/4/09
+	 */
+	public function buildIndex ($displayStatus = false) {
+		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_drop_index_structure.sql', $this->manager->getDB());
+		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_create_index_structure.sql', $this->manager->getDB());
+		
+		$lookupSession = $this->manager->getCourseOfferingLookupSession();
+		$lookupSession->useFederatedCourseCatalogView();
+		$lookupSession->useComparativeCourseOfferingView();
+		$offerings = $lookupSession->getCourseOfferings();
+		
+		// Known topic types
+		$this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
+        $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
+        $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
+        $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
+        // Known record types
+        $this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		
+		if ($displayStatus) {
+			$total = $offerings->available();
+			$numLength = strlen(strval($total));
+			print "\nBuilding Index of $total offerings:\n";
+		}
+		
+		$insertStmt = $this->manager->getDB()->prepare('UPDATE ssbsect SET SSBSECT_fulltext=:text WHERE SSBSECT_TERM_CODE = :term_code AND SSBSECT_CRN = :crn');
+		
+		$i = 0;
+		while ($offerings->hasNext()) {
+			$offering = $offerings->getNextCourseOffering();
+			$termCode = $this->getTermCodeFromOfferingId($offering->getId());
+			$crn = $this->getCrnFromOfferingId($offering->getId());
+			
+			if (!$insertStmt->execute(array(':term_code' => $termCode, ':crn' => $crn, ':text' => $offering->getFulltextStringForIndex())))
+				throw new osid_OperationFailedException('FullText update failed');
+			
+			$i++;
+			if ($displayStatus) {
+				if (!($i % 100))
+					print ".";
+				if (!($i % 10000)) {
+					print " ";
+					print str_pad($i, $numLength, ' ', STR_PAD_LEFT);
+					print " / $total\n";
+				}
+			}
+		}
+		
+		if ($displayStatus)
+			print "\nData Populated, adding index to columns...";
+		
+		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_add_index.sql', $this->manager->getDB());
+		
+		if ($displayStatus)
+			print "\nIndex Built\n";
+	}
 
 }

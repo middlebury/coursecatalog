@@ -23,45 +23,58 @@
  *     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  *     DEALINGS IN THE SOFTWARE.
  * 
- * @package phpkit.course
+ * @package middlebury.course
  */
 
 /**
- * <p>A record for accessing the instructors of a <code> CourseOffering. </code>
+ * <p>A record for matching the terms of a <code> Topic. </code>
  * The methods specified by the record type are available through the 
  * underlying object. </p>
  * 
  *  The type for this record is:
  *		id namespace:	urn
  *		authority:		middlebury.edu
- *		identifier:		record:instructors
+ *		identifier:		record:terms
  *
- * @package phpkit.course
+ * @package middlebury.course
  */
-interface types_course_CourseOfferingInstructorsRecord
-    extends osid_course_CourseOfferingRecord
+interface middlebury_course_Topic_Search_TermQueryRecord
+    extends osid_course_TopicQueryRecord
 {
 
+	/**
+     *  Sets the term <code> Id </code> for this query to match topics in that term
+     *
+     *  @param object osid_id_Id $termId an term <code> Id </code> 
+     *  @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     *  @throws osid_NullArgumentException <code> termId </code> is <code> 
+     *          null </code> 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function matchTermId(osid_id_Id $termId, $match);
+
 
     /**
-     *  Gets the Ids of the instructors associated with this course offering
+     *  Tests if an <code> TermQuery </code> is available. 
      *
-     *  @return object osid_id_IdList the list of instructor ids.
+     *  @return boolean <code> true </code> if a term query interface is 
+     *          available, <code> false </code> otherwise 
      *  @compliance mandatory This method must be implemented. 
-     *  @throws osid_OperationFailedException unable to complete request 
-     *  @throws osid_PermissionDeniedException authorization failure 
      */
-    public function getInstructorIds();
-    
+    public function supportsTermQuery();
+
+
     /**
-     *  Gets the <code> Resources </code> representing the instructors associated
-     *  with this course offering.
+     *  Gets the query interface for an term. Multiple retrievals produce a 
+     *  nested <code> OR </code> term. 
      *
-     *  @return object osid_resource_ResourceList the list of instructors.
-     *  @compliance mandatory This method must be implemented. 
-     *  @throws osid_OperationFailedException unable to complete request 
-     *  @throws osid_PermissionDeniedException authorization failure 
+     *  @return object types_course_TermQuery the term query 
+     *  @throws osid_UnimplementedException <code> supportsTermQuery() 
+     *          </code> is <code> false </code> 
+     *  @compliance optional This method must be implemented if <code> 
+     *              supportsTermQuery() </code> is <code> true. </code> 
      */
-    public function getInstructors();
+    public function getTermQuery();
 
 }

@@ -396,5 +396,90 @@ class banner_course_CourseOffering_Search_OrderTest
         $this->assertEquals('ORDER BY SYVINST_LAST_NAME DESC, SYVINST_FIRST_NAME DESC', $this->object->getOrderByClause());
         $this->assertEquals(1, count($this->object->getAdditionalTableJoins()));
     }
+    
+/*********************************************************
+ * Methods from middlebury_course_CourseOffering_Search_InstructorsSearchOrderRecord
+ *********************************************************/
+
+	/**
+     * 
+     */
+    public function testOrderByMeetsSunday() {
+    	$this->object->orderByMeetsSunday();
+    	$this->object->ascend();
+        $this->assertEquals('ORDER BY SSRMEET_SUN_DAY DESC', $this->object->getOrderByClause());
+        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+    }
+
+	/**
+     * 
+     */
+    public function testOrderByMeetsMonday() {
+    	$this->object->orderByMeetsMonday();
+    	$this->object->ascend();
+        $this->assertEquals('ORDER BY SSRMEET_MON_DAY DESC', $this->object->getOrderByClause());
+        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+    }
+    
+	/**
+     * 
+     */
+    public function testOrderByMeetsTuesday() {
+    	$this->object->orderByMeetsTuesday();
+    	$this->object->ascend();
+        $this->assertEquals('ORDER BY SSRMEET_TUE_DAY DESC', $this->object->getOrderByClause());
+        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+    }
+	
+	/**
+     * 
+     */
+    public function testOrderByMeetsWednesday() {
+    	$this->object->orderByMeetsWednesday();
+    	$this->object->ascend();
+        $this->assertEquals('ORDER BY SSRMEET_WED_DAY DESC', $this->object->getOrderByClause());
+        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+    }
+    
+    /**
+     * 
+     */
+    public function testOrderByMeetsThursday() {
+    	$this->object->orderByMeetsThursday();
+    	$this->object->ascend();
+        $this->assertEquals('ORDER BY SSRMEET_THU_DAY DESC', $this->object->getOrderByClause());
+        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+    }
+    
+    /**
+     * 
+     */
+    public function testOrderByMeetsFriday() {
+    	$this->object->orderByMeetsFriday();
+    	$this->object->ascend();
+        $this->assertEquals('ORDER BY SSRMEET_FRI_DAY DESC', $this->object->getOrderByClause());
+        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+    }
+    
+    /**
+     * 
+     */
+    public function testOrderByMeetsSaturday() {
+    	$this->object->orderByMeetsSaturday();
+    	$this->object->ascend();
+        $this->assertEquals('ORDER BY SSRMEET_SAT_DAY DESC', $this->object->getOrderByClause());
+        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+    }
+    
+    /**
+     * 
+     */
+    public function testOrderByMeetingTime () {
+    	$this->object->orderByMeetingTime();
+    	$this->object->ascend();
+        $this->assertEquals('ORDER BY SSRMEET_BEGIN_TIME ASC', $this->object->getOrderByClause());
+        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+    }
+    
 }
 ?>

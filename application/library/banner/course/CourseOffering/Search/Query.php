@@ -15,9 +15,11 @@
  * @package org.osid.course
  */
 class banner_course_CourseOffering_Search_Query
+	extends banner_course_AbstractQuery
     implements osid_course_CourseOfferingQuery,
     osid_course_CourseOfferingQueryRecord,
-    types_course_CourseOfferingInstructorsQueryRecord
+    middlebury_course_CourseOffering_Search_InstructorsQueryRecord,
+    middlebury_course_CourseOffering_Search_WeeklyScheduleQueryRecord
 {
 	
 	/**
@@ -29,80 +31,32 @@ class banner_course_CourseOffering_Search_Query
 	 * @since 5/20/09
 	 */
 	public function __construct (banner_course_CourseOffering_AbstractSession $session) {
-		$this->session = $session;
+		parent::__construct($session);
 		
 		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
+		$this->booleanStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:boolean");
 		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 
-		$this->stringMatchTypes = array(
-			$this->wildcardStringMatchType
-		);
+		$this->addStringMatchType($this->wildcardStringMatchType);
+		$this->addStringMatchType($this->booleanStringMatchType);
 		
-		$this->clauseSets = array();
-		$this->parameters = array();
-		$this->additionalTableJoins = array();
+		$this->keywordString = '';
 	}
 	
 	/**
-	 * Add a clause. All clauses in the same set will be OR'ed, sets will be AND'ed.
+	 * Answer the clause sets
 	 * 
-	 * @param string $set 
-	 * @param string $where A where clause with parameters in '?' form.
-	 * @param array $parameters An indexed array of parameters
-     * @param boolean $match <code> true </code> for a positive match, <code> 
-     *          false </code> for a negative match 
-	 * @return void
+	 * @return array
 	 * @access protected
-	 * @since 5/20/09
+	 * @since 6/11/09
 	 */
-	protected function addClause ($set, $where, array $parameters, $match) {
-		$numParams = preg_match_all('/\?/', $where, $matches);
-		if ($numParams === false)
-			throw new osid_OperationFailedException('An error occured in matching.');
-		if ($numParams != count($parameters))
-			throw new osid_InvalidArgumentException('The number of \'?\'s must match the number of parameters.');
-		if (!is_bool($match))
-    		throw new osid_InvalidArgumentException("\$match '$match' must be a boolean.");
-		
-		if (!isset($this->clauseSets[$set]))
-			$this->clauseSets[$set] = array();
-		if (!isset($this->parameters[$set]))
-			$this->parameters[$set] = array();
-		
-		if ($match)
-			$this->clauseSets[$set][] = $where;
-		else
-			$this->clauseSets[$set][] = 'NOT '.$where;
-		$this->parameters[$set][] = $parameters;
-	}
-	
-	/**
-	 * Add a table join
-	 * 
-	 * @param string $joinClause
-	 * @return void
-	 * @access protected
-	 * @since 5/27/09
-	 */
-	protected function addTableJoin ($joinClause) {
-		if (!in_array($joinClause, $this->additionalTableJoins))
-			$this->additionalTableJoins[] = $joinClause;
-	}
-	
-	/**
-	 * Answer the SQL WHERE clause that reflects our current state
-	 * 
-	 * @return string
-	 * @access public
-	 * @since 5/20/09
-	 */
-	public function getWhereClause () {
-		$sets = array();
-		foreach ($this->clauseSets as $set) {
-			$sets[] = '('.implode("\n\t\tOR ", $set).')';
+	protected function getClauseSets () {
+		$clauseSets = parent::getClauseSets();
+		if (strlen($this->keywordString)) {
+			$clauseSets[] = array('MATCH (SSBSECT_fulltext) AGAINST (:co_keyword_param IN BOOLEAN MODE)');
 		}
-		
-		return implode("\n\tAND ", $sets);
+		return $clauseSets;
 	}
 	
 	/**
@@ -113,63 +67,50 @@ class banner_course_CourseOffering_Search_Query
 	 * @since 5/20/09
 	 */
 	public function getParameters () {
-		$params = array();
-		foreach ($this->parameters as $set) {
-			foreach ($set as $clauseParams) {
-				$params = array_merge($params, $clauseParams);
-			}
+		$params = parent::getParameters();
+		
+		if (strlen($this->keywordString)) {
+			$params[':co_keyword_param'] = trim($this->keywordString);
+			$params[':co_relevence_param'] = trim($this->keywordString);
 		}
+		
 		return $params;
 	}
 	
 	/**
-	 * Answer any additional table join clauses to use
+	 * Answer an array of additional columns to return.
 	 * 
-	 * @return string
+	 * @return array
 	 * @access public
-	 * @since 4/29/09
+	 * @since 6/10/09
 	 */
-	public function getAdditionalTableJoins () {
-		return $this->additionalTableJoins;
+	public function getAdditionalColumns () {
+		$columns = parent::getAdditionalColumns();
+		if (strlen($this->keywordString)) {
+			$columns[] = 'MATCH (SSBSECT_fulltext) AGAINST (:co_relevence_param IN BOOLEAN MODE) AS relevence';
+		}
+		return $columns;
+	}
+	
+	/**
+	 * Answer an array column/direction terms for a SQL ORDER BY clause
+	 * 
+	 * @return array
+	 * @access public
+	 * @since 5/28/09
+	 */
+	public function getOrderByTerms () {
+		$parts = parent::getOrderByTerms();
+		if (strlen($this->keywordString)) {
+			$parts[] = 'relevence DESC';
+		}
+		return $parts;
 	}
 	
 /*********************************************************
  * Methods from osid_OsidQuery
  *********************************************************/
-
-	/**
-     *  Gets the string matching types supported. A string match type 
-     *  specifies the syntax of the string query, such as matching a word or 
-     *  including a wildcard or regular expression. 
-     *
-     *  @return object osid_type_TypeList a list containing the supported 
-     *          string match types 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function getStringMatchTypes() {
-    	return new phpkit_type_ArrayTypeList($this->stringMatchTypes);
-    }
-
-
-    /**
-     *  Tests if the given string matching type is supported. 
-     *
-     *  @param object osid_type_Type $searchType a <code> Type </code> 
-     *          indicating a string match type 
-     *  @return boolean <code> true </code> if the given Type is supported, 
-     *          <code> false </code> otherwise 
-     *  @throws osid_NullArgumentException null argument provided 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function supportsStringMatchType(osid_type_Type $searchType) {
-    	foreach ($this->stringMatchTypes as $type) {
-    		if ($searchType->isEqual($type))
-    			return true;
-    	}
-    	return false;
-    }
-
-
+ 	
     /**
      *  Adds a keyword to match. Multiple keywords can be added to perform a 
      *  boolean <code> OR </code> among them. A keyword may be applied to any 
@@ -191,7 +132,21 @@ class banner_course_CourseOffering_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchKeyword($keyword, osid_type_Type $stringMatchType, $match) {
-    	throw new osid_UnimplementedException();
+    	if (!is_string($keyword))
+    		throw new osid_InvalidArgumentException("\$keyword '$keyword' must be a string.");
+    	
+        if ($stringMatchType->isEqual($this->booleanStringMatchType)
+        		|| $stringMatchType->isEqual($this->wildcardStringMatchType)) 
+        {
+        	foreach (explode(' ', $keyword) as $param) {
+        		if ($match)
+	        		$this->keywordString .= $param.' ';
+	        	else
+	        		$this->keywordString .= '-'.preg_replace('/^[+-]*(.+)$/i', '\1', $param).' ';
+        	}
+        } else {
+	    	throw new osid_UnsupportedException("The stringMatchType passed is not supported.");
+	    }
     }
 
 
@@ -387,7 +342,7 @@ class banner_course_CourseOffering_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function implementsRecordType(osid_type_Type $recordType) {
-    	return $recordType->isEqual($this->instructorsType);
+    	return ($recordType->isEqual($this->instructorsType) || $recordType->isEqual($this->weeklyScheduleType));
     }
 
 /*********************************************************
@@ -1160,7 +1115,7 @@ class banner_course_CourseOffering_Search_Query
 
 
 /*********************************************************
- * Methods from types_course_CourseOfferingInstructorsQueryRecord
+ * Methods from middlebury_course_CourseOffering_Search_InstructorsQueryRecord
  *********************************************************/
 
 	/**
@@ -1204,5 +1159,129 @@ class banner_course_CourseOffering_Search_Query
     	throw new osid_UnimplementedException();
     }
     
+/*********************************************************
+ * Methods from middlebury_course_CourseOffering_Search_WeeklyScheduleQueryRecord
+ *********************************************************/
+	
+	/**
+     * Matches a meeting on Sunday.
+     *
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function matchMeetsSunday($match) {
+    	$this->addClause('meets_sunday', "SSRMEET_SUN_DAY IS NOT NULL", array(), $match);
+    }
 
+	/**
+     * Matches a meeting on Monday.
+     *
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function matchMeetsMonday($match) {
+    	$this->addClause('meets_monday', "SSRMEET_MON_DAY IS NOT NULL", array(), $match);
+    }
+    
+	/**
+     * Matches a meeting on Tuesday.
+     *
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function matchMeetsTuesday($match) {
+    	$this->addClause('meets_tuesday', "SSRMEET_TUE_DAY IS NOT NULL", array(), $match);
+    }
+	
+	/**
+     * Matches a meeting on Wednesday.
+     *
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function matchMeetsWednesday($match) {
+    	$this->addClause('meets_wednesday', "SSRMEET_WED_DAY IS NOT NULL", array(), $match);
+    }
+    
+    /**
+     * Matches a meeting on Thursday.
+     *
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function matchMeetsThursday($match) {
+    	$this->addClause('meets_thursday', "SSRMEET_THU_DAY IS NOT NULL", array(), $match);
+    }
+    
+    /**
+     * Matches a meeting on Friday.
+     *
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function matchMeetsFriday($match) {
+    	$this->addClause('meets_friday', "SSRMEET_FRI_DAY IS NOT NULL", array(), $match);
+    }
+    
+    /**
+     * Matches a meeting on Saturday.
+     *
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     * @compliance mandatory This method must be implemented. 
+     */
+    public function matchMeetsSaturday($match) {
+    	$this->addClause('meets_saturday', "SSRMEET_SAT_DAY IS NOT NULL", array(), $match);
+    }
+    
+    /**
+     * Matches meeting times that fall within the range given.
+     * 
+     * @param integer $rangeStart The lower bound of the start time in seconds since midnight. 0-86399
+     * @param integer $rangeEnd The upper bound of the end time in seconds since midnight. 1-86400
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     * @compliance mandatory This method must be implemented. 
+     * @throws osid_NullArgumentException rangeStart or rangeEnd are null.
+     * @throws osid_InvalidArgumentException rangeStart or rangeEnd are out of range.
+     */
+    public function matchMeetingTime ($rangeStart, $rangeEnd, $match) {
+    	if (is_null($rangeStart))
+    		throw new osid_NullArgumentException('$rangeStart cannot be null');
+    	if (is_null($rangeEnd))
+    		throw new osid_NullArgumentException('$rangeEnd start cannot be null');
+    	if (!is_numeric($rangeStart))
+    		throw new osid_InvalidArgumentException('$rangeStart must be an integer between 0 and 86399');
+    	if (!is_numeric($rangeEnd))
+    		throw new osid_InvalidArgumentException('$rangeEnd must be an integer between 1 and 86400');
+    		
+    	$rangeStart = intval($rangeStart);
+    	$rangeEnd = intval($rangeEnd);
+    	if ($rangeStart < 0 || $rangeStart > 86399)
+    		throw new osid_InvalidArgumentException('$rangeStart must be an integer between 0 and 86399');
+    	if ($rangeEnd < 1 || $rangeEnd > 86400)
+    		throw new osid_InvalidArgumentException('$rangeEnd must be an integer between 1 and 86400');
+    	
+    	$this->addClause('meeting_time', "(SSRMEET_BEGIN_TIME >= ? AND SSRMEET_END_TIME <= ?)", array($this->getTimeString($rangeStart), $this->getTimeString($rangeEnd)), $match);
+    }
+    
+    /**
+     * Answer a 24-hour time string from an integer number of seconds.
+     * 
+     * @param integer $seconds
+     * @return string
+     * @access protected
+     * @since 6/10/09
+     */
+    protected function getTimeString ($seconds) {
+    	$hour = floor($seconds/3600);
+    	$minute = floor(($seconds - ($hour * 3600))/60);
+    	return str_pad($hour, 2, '0', STR_PAD_LEFT).str_pad($minute, 2, '0', STR_PAD_LEFT);
+    }
 }

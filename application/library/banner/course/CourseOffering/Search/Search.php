@@ -74,17 +74,32 @@ class banner_course_CourseOffering_Search_Search
 	}
 	
 	/**
-	 * Answer the ORDER BY clause
+	 * Answer th SQL ORDER BY clause
 	 * 
 	 * @return string
 	 * @access public
 	 * @since 5/28/09
 	 */
 	public function getOrderByClause () {
-		if (is_null($this->order))
-			return '';
+		$orderTerms = $this->getOrderByTerms();
+		if (count($orderTerms))
+			return 'ORDER BY '.(implode(', ', $orderTerms));
 		else
-			return $this->order->getOrderByClause();
+			return '';
+	}
+
+	/**
+	 * Answer an array column/direction terms for a SQL ORDER BY clause
+	 * 
+	 * @return array
+	 * @access public
+	 * @since 5/28/09
+	 */
+	public function getOrderByTerms () {
+		if (is_null($this->order))
+			return array();
+		else
+			return $this->order->getOrderByTerms();
 	}
 	
 	/**

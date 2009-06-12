@@ -963,7 +963,7 @@ class banner_course_CourseManager
      *              supportsTopicSearch() </code> is <code> true. </code> 
      */
     public function getTopicSearchSession() {
-    	throw new osid_UnimplementedException();
+    	return new banner_course_Topic_Search_Session($this, $this->getCombinedCatalogId());
 	}
 
 
@@ -990,7 +990,7 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getTopicSearchSessionForCatalog(osid_id_Id $courseCatalogId) {
-    	throw new osid_UnimplementedException();
+    	return new banner_course_Topic_Search_Session($this, $courseCatalogId);
 	}
 
 
@@ -1670,7 +1670,7 @@ class banner_course_CourseManager
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsTopicSearch() {
-    	return false;
+    	return true;
     }
 
 

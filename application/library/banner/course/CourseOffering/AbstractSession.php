@@ -324,6 +324,49 @@ WHERE
     	self::$requirementTopics_stmt->closeCursor();
     	return $topicIds;
     }
+    
+    private static $meetingRows_stmt;
+    /**
+     * Answer all meeting rows for a course offering.
+     * 
+     * @param string osid_id_Id $courseOfferingId
+     * @return array
+     * @access public
+     * @since 6/10/09
+     */
+    public function getCourseOfferingMeetingRows (osid_id_Id $courseOfferingId) {
+    	if (!isset(self::$meetingRows_stmt)) {
+    		$query = "
+SELECT 
+	SSRMEET_BLDG_CODE,
+	SSRMEET_ROOM_CODE,
+	SSRMEET_BEGIN_TIME,
+	SSRMEET_END_TIME,
+	SSRMEET_SUN_DAY,
+	SSRMEET_MON_DAY,
+	SSRMEET_TUE_DAY,
+	SSRMEET_WED_DAY,
+	SSRMEET_THU_DAY,
+	SSRMEET_FRI_DAY,
+	SSRMEET_SAT_DAY,
+	STVBLDG_DESC
+FROM
+	ssrmeet
+	LEFT JOIN stvbldg ON SSRMEET_BLDG_CODE = STVBLDG_CODE
+WHERE
+	SSRMEET_TERM_CODE = :term_code
+	AND SSRMEET_CRN = :crn
+";
+			self::$meetingRows_stmt = $this->manager->getDB()->prepare($query);
+		}
+		
+		$parameters = array(
+				':term_code' => $this->getTermCodeFromOfferingId($courseOfferingId),
+				':crn' => $this->getCrnFromOfferingId($courseOfferingId)
+			);
+		self::$meetingRows_stmt->execute($parameters);
+		return self::$meetingRows_stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 	
 }
 

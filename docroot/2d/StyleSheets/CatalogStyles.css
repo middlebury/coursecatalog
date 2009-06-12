@@ -29,6 +29,22 @@ table.search_options th {
 }
 
 table.search_options td {
+	padding-bottom: 5px;
+}
+
+table.search_options select {
+	width: 300px;
+}
+
+table.search_options select.time_select {
+	width: 100px;
+}
+
+table.search_options input.text_input {
+	width: 300px;
+}
+
+table.search_options td {
 	vertical-align: top;
 }
 
@@ -55,5 +71,9 @@ div.search_results_item_pagination {
 div.search_results_search_pagination {
 	width: 800px;
 	text-align: center;
+}
+
+div.help_text {
+	font-size: smaller;
 }
 

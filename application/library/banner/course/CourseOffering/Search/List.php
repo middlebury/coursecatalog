@@ -43,20 +43,32 @@ class banner_course_CourseOffering_Search_List
 		if (strlen($searchWhere))
 			$this->where .= "\n\tAND ".$searchWhere;
 		
+		$this->additionalColumns = $courseQuery->getAdditionalColumns();
 		
 		$this->additionalTableJoins = array_unique(array_merge(
 			$courseQuery->getAdditionalTableJoins(), 
 			$courseOfferingSearch->getAdditionalTableJoins()));
 		
-		$this->orderBy = $courseOfferingSearch->getOrderByClause();
+		$orderTerms = $courseOfferingSearch->getOrderByTerms();
+		$orderTerms = array_merge($orderTerms, $courseQuery->getOrderByTerms());
+		if (count($orderTerms))
+			$this->orderBy = 'ORDER BY '.(implode(', ', $orderTerms));
+		else
+			$this->orderBy = '';
 		$this->limit = $courseOfferingSearch->getLimitClause();
 		
 		$this->parameters = array();
 		$parameters = array_merge($courseQuery->getParameters(), $courseOfferingSearch->getParameters());
 		foreach ($parameters as $i => $val) {
-			$name = ':co_search_'.$i;
-			$this->parameters[$name] = $val;
-			$this->where = preg_replace('/\?/', $name, $this->where, 1);
+			if (is_int($i)) {
+				$name = ':co_search_'.$i;
+				$this->parameters[$name] = $val;
+				$this->where = preg_replace('/\?/', $name, $this->where, 1);
+			} else if (preg_match('/^:[a-z0-9_]+$/i', $i)) {
+				$this->parameters[$i] = $val;
+			} else {
+				throw new osid_OperationFailedException("Invalid parameter name '$i'. Must be an integer or of the ':param_name' form.");
+			}
 		}
 		
 		parent::__construct($db, $session, $catalogId);
@@ -71,6 +83,22 @@ class banner_course_CourseOffering_Search_List
 	 */
 	protected function getAdditionalTableJoins () {
 		return implode("\n\t", $this->additionalTableJoins);
+	}
+	
+	/**
+	 * Answer an array of additional columns to return.
+	 *
+	 * Override this method in child classes to add functionality.
+	 * 
+	 * @return array
+	 * @access protected
+	 * @since 6/10/09
+	 */
+	protected function getAdditionalColumns () {
+		if (isset($this->additionalColumns))
+			return $this->additionalColumns;
+		else
+			return parent::getAdditionalColumns();
 	}
 	
 	/**

@@ -237,5 +237,58 @@ class banner_course_CourseOffering_Search_SessionTest
        		$this->assertEquals($val, $secondTitles[$key]);
        	}
     }
+    
+    /**
+     * @todo Implement testGetCourseOfferingsBySearch().
+     */
+    public function testGetCourseOfferingsBySearchWithKeywordAndOrder()
+    {
+        $query = $this->session->getCourseOfferingQuery();
+    	
+    	$query->matchKeyword('Chem*', $this->wildcardStringMatchType, true);
+    	$query->matchTermId($this->termId, true);
+    	
+    	$search = $this->session->getCourseOfferingSearch();
+    	
+    	$order = $this->session->getCourseOfferingSearchOrder();
+    	$order->orderByTitle();
+    	$order->ascend();
+    	$search->orderCourseOfferingResults($order);
+    	
+    	// Set up our first result set.
+        $results = $this->session->getCourseOfferingsBySearch($query, $search);
+       	$this->assertType('osid_course_CourseOfferingSearchResults', $results);
+//        	print $results->debug();
+       	$this->assertEquals(5, $results->getResultSize());
+       	
+       	$offerings = $results->getCourseOfferings();
+       	$this->assertEquals(5, $offerings->available());
+       	$firstTitles = array();
+       	while ($offerings->hasNext()) {
+       		$firstTitles[] = $offerings->getNextCourseOffering()->getTitle();
+       	}
+       	
+       	// Set up our second result-set.
+       	$order->descend();
+       	$search->orderCourseOfferingResults($order);
+       	
+       	$results = $this->session->getCourseOfferingsBySearch($query, $search);
+       	$this->assertType('osid_course_CourseOfferingSearchResults', $results);
+//        	print $results->debug();
+       	$this->assertEquals(5, $results->getResultSize());
+       	
+       	$offerings = $results->getCourseOfferings();
+       	$this->assertEquals(5, $offerings->available());
+       	$secondTitles = array();
+       	while ($offerings->hasNext()) {
+       		$secondTitles[] = $offerings->getNextCourseOffering()->getTitle();
+       	}
+       	$secondTitles = array_reverse($secondTitles);
+       	
+       	// Check that the titles match
+       	foreach ($firstTitles as $key => $val) {
+       		$this->assertEquals($val, $secondTitles[$key]);
+       	}
+    }
 }
 ?>

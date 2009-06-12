@@ -23,6 +23,38 @@ abstract class AbstractCatalogController
 	
 	private static $runtimeManager;
 	private static $courseManager;
+	private static $configPath;
+	
+	/**
+	 * Answer the configuration path
+	 * 
+	 * @return string
+	 * @access public
+	 * @since 6/11/09
+	 * @static
+	 */
+	public static function getConfigPath () {
+		if (!isset(self::$configPath))
+			self::$configPath = BASE_PATH.'/configuration.plist';
+		
+		return self::$configPath;
+	}
+	
+	/**
+	 * Set the configuration path
+	 * 
+	 * @param string $path
+	 * @access public
+	 * @since 6/11/09
+	 * @throws osid_InvalidStateException The config path has already been set.
+	 * @static
+	 */
+	public static function setConfigPath ($path) {
+		if (isset(self::$configPath))
+			throw new osid_InvalidStateException('the config path has already been set');
+		
+		self::$configPath = $path;
+	}
 	
 	/**
 	 * Initialize our view with common properties
@@ -88,7 +120,7 @@ abstract class AbstractCatalogController
 	 */
 	public static function getRuntimeManager () {
 		if (!isset(self::$runtimeManager)) {
-			self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(BASE_PATH.'/configuration.plist');
+			self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(self::getConfigPath());
 		}
 		
 		return self::$runtimeManager;
@@ -175,6 +207,88 @@ abstract class AbstractCatalogController
 		}
 		return $matching;
 	}
+	
+	/**
+     * Answer a 24-hour time string from an integer number of seconds.
+     * 
+     * @param integer $seconds
+     * @return string
+     * @access protected
+     * @since 6/10/09
+     * @static
+     */
+    public static function getTimeString ($seconds) {
+    	$hour = floor($seconds/3600);
+    	$minute = floor(($seconds - ($hour * 3600))/60);
+    	return str_pad($hour, 2, '0', STR_PAD_LEFT).':'.str_pad($minute, 2, '0', STR_PAD_LEFT);
+    }
+    
+    /**
+     * Answer the "current" termId for the catalog passed. If multiple terms overlap
+     * to be 'current', only one will be returned.
+     * 
+     * @param osid_id_Id $catalogId
+     * @return osid_id_Id The current term id.
+     * @throws osid_NotFoundException
+     * @access public
+     * @since 6/11/09
+     * @static
+     */
+    public static function getCurrentTermId (osid_id_Id $catalogId) {
+    	if (!isset($_SESSION['current_terms']))
+    		$_SESSION['current_terms'] = array();
+    	$catalogIdString = self::getStringFromOsidId($catalogId);
+    	if (!isset($_SESSION['current_terms'][$catalogIdString])) {
+    		$manager = self::getCourseManager();
+    		if (!$manager->supportsTermLookup())
+    			throw new osid_NotFoundException('Could not determine a current term id. The manager does not support term lookup.');
+    		$termLookup = $manager->getTermLookupSessionForCatalog($catalogId);
+	    	$_SESSION['current_terms'][$catalogIdString] = self::getClosestTermId($termLookup->getTerms());
+    	}
+    	if (!isset($_SESSION['current_terms'][$catalogIdString]))
+    		throw new osid_NotFoundException('Could not determine a current term id for the catalog passed.');
+    	
+    	return $_SESSION['current_terms'][$catalogIdString];
+    }
+    
+    /**
+     * Answer the term id whose timespan is closest to now. 
+     * 
+     * @param osid_course_TermList $terms
+     * @param optional DateTime $date The date to reference the terms to.
+     * @return osid_id_Id
+     * @access public
+     * @since 6/11/09
+     * @static
+     */
+    public static function getClosestTermId (osid_course_TermList $terms, DateTime $date = null) {
+    	$ids = array();
+    	$diffs = array();
+    	
+    	if (is_null($date))
+	    	$date = time();
+	    else
+	    	$date = intval($date->format('U'));
+	    
+    	if (!$terms->hasNext())
+    		throw new osid_NotFoundException('Could not determine a current term id. No terms found.');
+		
+		while ($terms->hasNext()) {
+			$term = $terms->getNextTerm();
+			$start = intval($term->getStartTime()->format('U'));
+			$end = intval($term->getEndTime()->format('U'));
+			
+			// If our current time is within the term timespan, return that term's id.
+			if ($date >= $start && $date <= $end)
+				return $term->getId();
+			
+			$ids[] = $term->getId();
+			$diffs[] = abs($date - $start) + abs($date - $end);
+		}
+		
+		array_multisort($diffs, SORT_NUMERIC, SORT_ASC, $ids);
+		return $ids[0];
+    }
 	
 	private $startTime;
 	

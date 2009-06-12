@@ -25,7 +25,7 @@
 class banner_resource_Resource_Person
     extends phpkit_AbstractOsidObject
     implements osid_resource_Resource,
-    types_resource_PersonNamesResourceRecord
+    middlebury_resource_Resource_PersonNamesRecord
 {
 	/**
 	 * Constructor
