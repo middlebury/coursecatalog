@@ -30,6 +30,10 @@ class banner_course_Topic_Search_QueryTest extends PHPUnit_Framework_TestCase
         $this->session = $this->manager->getTopicSearchSessionForCatalog($this->mcugId);
         $this->object = $this->session->getTopicQuery();
         
+        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200820');
+
+		$this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
+
         $this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
         $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
         $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
@@ -282,10 +286,21 @@ class banner_course_Topic_Search_QueryTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTopicQueryRecord()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $termRecord = $this->object->getTopicQueryRecord($this->termType);
+        $this->assertType('middlebury_course_Topic_Search_TermQueryRecord', $termRecord);
     }
+    
+    /**
+     * 
+     */
+    public function testMatchTerm()
+    {
+        $termRecord = $this->object->getTopicQueryRecord($this->termType);
+        $termRecord->matchTermId($this->termId, true);
+        $topics = $this->session->getTopicsByQuery($this->object);
+		$this->assertEquals(5, $topics->available());
+    }
+    
+    
 }
 ?>

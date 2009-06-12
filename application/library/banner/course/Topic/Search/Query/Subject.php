@@ -337,6 +337,20 @@ class banner_course_Topic_Search_Query_Subject
     public function getTopicQueryRecord(osid_type_Type $topicRecordType) {
     	throw new osid_UnimplementedException;	
     }
+    
+    /**
+     *  Sets the term <code> Id </code> for this query to match topics in that term
+     *
+     *  @param object osid_id_Id $termId an term <code> Id </code> 
+     *  @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     *  @throws osid_NullArgumentException <code> termId </code> is <code> 
+     *          null </code> 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function matchTermId(osid_id_Id $termId, $match) {
+    	$this->addClause('term', 'SSBSECT_TERM_CODE = ?', array($this->session->getDatabaseIdString($termId, 'term/')), $match);
+    }
 	
 }
 

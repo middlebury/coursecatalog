@@ -19,7 +19,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 class banner_course_Topic_Search_Query
-	implements osid_course_TopicQuery
+	implements osid_course_TopicQuery,
+	middlebury_course_Topic_Search_TermQueryRecord
 {
 
 	/**
@@ -37,6 +38,8 @@ class banner_course_Topic_Search_Query
 		$this->subjectQuery = new banner_course_Topic_Search_Query_Subject($session);
 		
 		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
+		
+		$this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
 		
 		$this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
         $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
@@ -407,7 +410,7 @@ class banner_course_Topic_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function hasRecordType(osid_type_Type $recordType) {
-    	return false;
+    	return $this->termType->isEqual($recordType);
     }
     
 /*********************************************************
@@ -536,7 +539,87 @@ class banner_course_Topic_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function getTopicQueryRecord(osid_type_Type $topicRecordType) {
-    	throw new osid_UnsupportedException;	
+    	if ($this->hasRecordType($topicRecordType))
+    		return $this;
+    	else
+	    	throw new osid_UnsupportedException ('The topic type passed is not supported.');	
+    }
+    
+    /*********************************************************
+     * methods from middlebury_course_Topic_Search_TermQueryRecord
+     *********************************************************/
+     
+    /**
+     *  Tests if the given type is implemented by this record. Other types 
+     *  than that directly indicated by <code> getType() </code> may be 
+     *  supported through an inheritance scheme where the given type specifies 
+     *  a record that is a parent interface of the interface specified by 
+     *  <code> getType(). </code> 
+     *
+     *  @param object osid_type_Type $recordType a type 
+     *  @return boolean <code> true </code> if the given record <code> Type 
+     *          </code> is implemented by this record, <code> false </code> 
+     *          otherwise 
+     *  @throws osid_NullArgumentException <code> recordType </code> is <code> 
+     *          null </code> 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function implementsRecordType(osid_type_Type $recordType) {
+    	return $this->hasRecordType($recordType);
+    }
+    
+    /**
+     *  Gets the <code> TopicQuery </code> from which this record originated. 
+     *
+     *  @return object osid_course_TopicQuery the topic query 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function getTopicQuery() {
+    	return $this;
+    }
+    
+    /**
+     *  Sets the term <code> Id </code> for this query to match topics in that term
+     *
+     *  @param object osid_id_Id $termId an term <code> Id </code> 
+     *  @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     *  @throws osid_NullArgumentException <code> termId </code> is <code> 
+     *          null </code> 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function matchTermId(osid_id_Id $termId, $match) {
+    	$this->requirementQuery->matchTermId($termId, $match);
+    	$this->divisionQuery->matchTermId($termId, $match);
+    	$this->departmentQuery->matchTermId($termId, $match);
+    	$this->subjectQuery->matchTermId($termId, $match);
+    }
+
+
+    /**
+     *  Tests if an <code> TermQuery </code> is available. 
+     *
+     *  @return boolean <code> true </code> if a term query interface is 
+     *          available, <code> false </code> otherwise 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function supportsTermQuery() {
+    	return false;
+    }
+
+
+    /**
+     *  Gets the query interface for an term. Multiple retrievals produce a 
+     *  nested <code> OR </code> term. 
+     *
+     *  @return object types_course_TermQuery the term query 
+     *  @throws osid_UnimplementedException <code> supportsTermQuery() 
+     *          </code> is <code> false </code> 
+     *  @compliance optional This method must be implemented if <code> 
+     *              supportsTermQuery() </code> is <code> true. </code> 
+     */
+    public function getTermQuery() {
+    	throw new osid_UnimplementedException;
     }
 	
 }
