@@ -39,6 +39,7 @@ abstract class banner_course_AbstractQuery {
 		$this->clauseSets = array();
 		$this->parameters = array();
 		$this->additionalTableJoins = array();
+		$this->stringMatchTypes = array();
 		
 	}
 	
