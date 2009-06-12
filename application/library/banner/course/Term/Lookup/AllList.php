@@ -40,7 +40,7 @@ class banner_course_Term_Lookup_AllList
 	STVTERM_START_DATE,
 	STVTERM_END_DATE
 FROM 
-	stvterm
+	STVTERM
 	
 WHERE 
 	STVTERM_CODE IN (

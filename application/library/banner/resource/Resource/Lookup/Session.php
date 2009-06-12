@@ -237,7 +237,7 @@ class banner_resource_Resource_Lookup_Session
 	SYVINST_LAST_NAME,
 	SYVINST_FIRST_NAME
 FROM 
-	syvinst
+	SYVINST
 WHERE
 	SYVINST_PIDM = :pidm
 ";
@@ -277,7 +277,7 @@ WHERE
 	SYVINST_LAST_NAME,
 	SYVINST_FIRST_NAME
 FROM 
-	syvinst
+	SYVINST
 ";
 			self::$getPersonResources_stmt = $this->manager->getDB()->prepare($query);
 		}
@@ -312,7 +312,7 @@ FROM
     STVBLDG_CODE,
 	STVBLDG_DESC
 FROM 
-	stvbldg
+	STVBLDG
 WHERE
 	STVBLDG_CODE = :code
 ";
@@ -352,7 +352,7 @@ WHERE
     STVBLDG_CODE,
 	STVBLDG_DESC
 FROM 
-	stvbldg
+	STVBLDG
 ";
 			self::$getBuildingResources_stmt = $this->manager->getDB()->prepare($query);
 		}
@@ -389,8 +389,8 @@ FROM
     STVBLDG_CODE,
 	STVBLDG_DESC
 FROM 
-	ssrmeet
-	LEFT JOIN stvbldg ON SSRMEET_BLDG_CODE = STVBLDG_CODE
+	SSRMEET
+	LEFT JOIN STVBLDG ON SSRMEET_BLDG_CODE = STVBLDG_CODE
 WHERE
 	SSRMEET_BLDG_CODE = :bldg_code
 	AND SSRMEET_ROOM_CODE = :room_code
@@ -439,8 +439,8 @@ GROUP BY
     STVBLDG_CODE,
 	STVBLDG_DESC
 FROM 
-	ssrmeet
-	LEFT JOIN stvbldg ON SSRMEET_BLDG_CODE = STVBLDG_CODE
+	SSRMEET
+	LEFT JOIN STVBLDG ON SSRMEET_BLDG_CODE = STVBLDG_CODE
 WHERE
 	SSRMEET_BLDG_CODE IS NOT NULL
 GROUP BY
@@ -480,7 +480,7 @@ GROUP BY
     STVCAMP_CODE,
 	STVCAMP_DESC
 FROM 
-	stvcamp
+	STVCAMP
 WHERE
 	STVCAMP_CODE = :code
 ";
@@ -520,7 +520,7 @@ WHERE
     STVCAMP_CODE,
 	STVCAMP_DESC
 FROM 
-	stvcamp
+	STVCAMP
 ";
 			self::$getCampusResources_stmt = $this->manager->getDB()->prepare($query);
 		}

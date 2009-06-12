@@ -261,7 +261,7 @@ class banner_course_CourseOffering_Search_Session
 			print "\nBuilding Index of $total offerings:\n";
 		}
 		
-		$insertStmt = $this->manager->getDB()->prepare('UPDATE ssbsect SET SSBSECT_fulltext=:text WHERE SSBSECT_TERM_CODE = :term_code AND SSBSECT_CRN = :crn');
+		$insertStmt = $this->manager->getDB()->prepare('UPDATE SSBSECT SET SSBSECT_fulltext=:text WHERE SSBSECT_TERM_CODE = :term_code AND SSBSECT_CRN = :crn');
 		
 		$i = 0;
 		while ($offerings->hasNext()) {

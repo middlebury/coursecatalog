@@ -288,7 +288,7 @@ class banner_course_Course_Catalog_Session
 	course_catalog.catalog_id,
 	catalog_title
 FROM
-	scbcrse
+	SCBCRSE
 	LEFT JOIN course_catalog_college ON SCBCRSE_COLL_CODE = coll_code
 	LEFT JOIN course_catalog ON course_catalog_college.catalog_id = course_catalog.catalog_id
 WHERE
