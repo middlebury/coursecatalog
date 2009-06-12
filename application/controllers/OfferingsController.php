@@ -39,6 +39,8 @@ class OfferingsController
         $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
         $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
         $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
+        
+		$this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
 	}
 	
 	/**
@@ -99,16 +101,15 @@ class OfferingsController
 		if ($this->_getParam('catalog')) {
 			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
 			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
-			$topicLookupSession = self::getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+			$topicSearchSession = self::getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
 			$termLookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 			$this->view->title = 'Search in '.$offeringSearchSession->getCourseCatalog()->getDisplayName();
 		} else {
 			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSession();
-			$topicLookupSession = self::getCourseManager()->getTopicLookupSession();
+			$topicSearchSession = self::getCourseManager()->getTopicSearchSession();
 			$termLookupSession = self::getCourseManager()->getTermLookupSession();
 			$this->view->title = 'Search in All Catalogs';
 		}
-		$topicLookupSession->useFederatedCourseCatalogView();
 		$termLookupSession->useFederatedCourseCatalogView();
 		$offeringSearchSession->useFederatedCourseCatalogView();
 		
@@ -117,10 +118,45 @@ class OfferingsController
 	 * Build option lists for the search form
 	 *********************************************************/
 	 	$this->view->terms = $termLookupSession->getTerms();
-		$this->view->departments = $topicLookupSession->getTopicsByGenusType($this->departmentType);
-		$this->view->subjects = $topicLookupSession->getTopicsByGenusType($this->subjectType);
-		$this->view->divisions = $topicLookupSession->getTopicsByGenusType($this->divisionType);
-		$this->view->requirements = $topicLookupSession->getTopicsByGenusType($this->requirementType);
+	 			
+		// Term
+		if ($this->_getParam('term')) {
+			$termId = self::getOsidIdFromString($this->_getParam('term'));
+		}
+		
+	 	
+		// Topics
+	 	$topicQuery = $topicSearchSession->getTopicQuery();
+	 	$topicQuery->matchGenusType($this->departmentType, true);
+	 	if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+	 		$record = $topicQuery->getTopicQueryRecord($this->termType);
+	 		$record->matchTermId($termId, true);
+	 	}
+		$this->view->departments = $topicSearchSession->getTopicsByQuery($topicQuery);
+		
+		$topicQuery = $topicSearchSession->getTopicQuery();
+	 	$topicQuery->matchGenusType($this->subjectType, true);
+	 	if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+	 		$record = $topicQuery->getTopicQueryRecord($this->termType);
+	 		$record->matchTermId($termId, true);
+	 	}
+		$this->view->subjects = $topicSearchSession->getTopicsByQuery($topicQuery);
+		
+		$topicQuery = $topicSearchSession->getTopicQuery();
+	 	$topicQuery->matchGenusType($this->divisionType, true);
+	 	if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+	 		$record = $topicQuery->getTopicQueryRecord($this->termType);
+	 		$record->matchTermId($termId, true);
+	 	}
+		$this->view->divisions = $topicSearchSession->getTopicsByQuery($topicQuery);
+		
+		$topicQuery = $topicSearchSession->getTopicQuery();
+	 	$topicQuery->matchGenusType($this->requirementType, true);
+	 	if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+	 		$record = $topicQuery->getTopicQueryRecord($this->termType);
+	 		$record->matchTermId($termId, true);
+	 	}
+		$this->view->requirements = $topicSearchSession->getTopicsByQuery($topicQuery);
 		
 		
 	/*********************************************************
