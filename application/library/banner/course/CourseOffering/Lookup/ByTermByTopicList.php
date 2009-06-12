@@ -101,7 +101,7 @@ class banner_course_CourseOffering_Lookup_ByTermByTopicList
 	 */
 	protected function getAdditionalTableJoins () {
 		if ('requirement' == $this->session->getTopicLookupSession()->getTopicType($this->topicId))
-			return 'LEFT JOIN ssrattr ON (SSBSECT_TERM_CODE = SSRATTR_TERM_CODE AND SSBSECT_CRN = SSRATTR_CRN)';
+			return 'LEFT JOIN SSRATTR ON (SSBSECT_TERM_CODE = SSRATTR_TERM_CODE AND SSBSECT_CRN = SSRATTR_CRN)';
 		else
 			return '';
 	}

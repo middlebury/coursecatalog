@@ -742,7 +742,7 @@ class banner_course_CourseOffering_Search_Query
    				return;
    			case 'requirement':
    				$this->addClause('requirement_topic_id', 'SSRATTR_ATTR_CODE = ?', array($value), $match);
-   				$this->addTableJoin('LEFT JOIN ssrattr ON (SSRATTR_TERM_CODE = SSBSECT_TERM_CODE AND SSRATTR_CRN = SSBSECT_CRN)');
+   				$this->addTableJoin('LEFT JOIN SSRATTR ON (SSRATTR_TERM_CODE = SSBSECT_TERM_CODE AND SSRATTR_CRN = SSBSECT_CRN)');
    				return;
    			default:
    				$this->addClause('topic_id', 'FALSE', array(), $match);
@@ -1131,7 +1131,7 @@ class banner_course_CourseOffering_Search_Query
      */
     public function matchInstructorId(osid_id_Id $instructorId, $match) {
 		$this->addClause('instructor_id', 'SYVINST_PIDM = ?', array($this->session->getDatabaseIdString($instructorId, 'resource/person/')), $match);
-		$this->addTableJoin('LEFT JOIN syvinst ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)');
+		$this->addTableJoin('LEFT JOIN SYVINST ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)');
     }
 
     /**

@@ -200,7 +200,7 @@ class banner_course_Course_Lookup_Session
 	SCBCRSE_TITLE ,
 	SCBCRSE_CREDIT_HR_HIGH
 FROM 
-	scbcrse
+	SCBCRSE
 WHERE
 	SCBCRSE_SUBJ_CODE = :subject_code
 	AND SCBCRSE_CRSE_NUMB = :course_number

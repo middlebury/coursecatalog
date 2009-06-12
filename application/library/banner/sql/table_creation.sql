@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `course_catalog_college` (
   `coll_code` char(2) NOT NULL COMMENT 'The college code from STVCOLL_CODE',
   KEY `catalog_id` (`catalog_id`),
   KEY `coll_code` (`coll_code`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='A join-table that maps colleges from stvcoll to catalogs in ';
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='A join-table that maps colleges from STVCOLL to catalogs in ';
 
 --
 -- RELATIONS FOR TABLE `course_catalog_college`:
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `course_catalog_college` (
 
 CREATE TABLE IF NOT EXISTS `catalog_term` (
   `catalog_id` varchar(10) NOT NULL,
-  `term_code` varchar(6) NOT NULL COMMENT 'Maps to stvterm.STVTERM_CODE',
+  `term_code` varchar(6) NOT NULL COMMENT 'Maps to STVTERM.STVTERM_CODE',
   `term_display_label` varchar(4) NOT NULL COMMENT 'The label such as ''F'', ''S'', ''W'', ''L'', etc used to build a section display name.',
   PRIMARY KEY  (`catalog_id`,`term_code`),
   KEY `catalog_id` (`catalog_id`)
@@ -91,10 +91,10 @@ ALTER TABLE `catalog_term_match`
 
 
 --
--- Table structure for table `gorintg`
+-- Table structure for table `GORINTG`
 --
 
-CREATE TABLE IF NOT EXISTS `gorintg` (
+CREATE TABLE IF NOT EXISTS `GORINTG` (
   `GORINTG_CODE` varchar(5) NOT NULL default '' COMMENT 'INTEGRATION CODE: User Defined Integration Code that is used with external partner.',
   `GORINTG_DESC` varchar(30) NOT NULL default '' COMMENT 'Description: User Description of the Integration Code.',
   `GORINTG_INTP_CODE` varchar(5) NOT NULL default '' COMMENT 'INTEGRATION PARTNER SYSTEM CODE: Code defined on GTVINTP that associates with the User Integration Code.',
@@ -105,18 +105,18 @@ CREATE TABLE IF NOT EXISTS `gorintg` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Integration Partner System Rule Table.';
 
 --
--- RELATIONS FOR TABLE `gorintg`:
+-- RELATIONS FOR TABLE `GORINTG`:
 --   `GORINTG_INTP_CODE`
---       `gorintg` -> `GORINTG_CODE`
+--       `GORINTG` -> `GORINTG_CODE`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `gtvdunt`
+-- Table structure for table `GTVDUNT`
 --
 
-CREATE TABLE IF NOT EXISTS `gtvdunt` (
+CREATE TABLE IF NOT EXISTS `GTVDUNT` (
   `GTVDUNT_CODE` varchar(4) NOT NULL default '' COMMENT 'Duration Unit Code: The Duration Unit Code',
   `GTVDUNT_DESC` varchar(30) NOT NULL default '' COMMENT 'Description: Description of the duration unit code',
   `GTVDUNT_NUMBER_OF_DAYS` decimal(7,2) NOT NULL default '0.00' COMMENT 'Number of Days per duration unit: Represents the number of days that one duration unit would equate to (ie 1 week equals 7 days)',
@@ -129,10 +129,10 @@ CREATE TABLE IF NOT EXISTS `gtvdunt` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `gtvinsm`
+-- Table structure for table `GTVINSM`
 --
 
-CREATE TABLE IF NOT EXISTS `gtvinsm` (
+CREATE TABLE IF NOT EXISTS `GTVINSM` (
   `GTVINSM_CODE` varchar(5) NOT NULL default '' COMMENT 'Instructional Method Code: The Instructional Method Code',
   `GTVINSM_DESC` varchar(30) NOT NULL default '' COMMENT 'Description: Description of the instructional method code',
   `GTVINSM_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'Activity Date: Date this record entered or last updated',
@@ -144,10 +144,10 @@ CREATE TABLE IF NOT EXISTS `gtvinsm` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `gtvintp`
+-- Table structure for table `GTVINTP`
 --
 
-CREATE TABLE IF NOT EXISTS `gtvintp` (
+CREATE TABLE IF NOT EXISTS `GTVINTP` (
   `GTVINTP_CODE` varchar(5) NOT NULL default '' COMMENT 'PARTNER SYSTEM CODE: Used to define an external Integration Partner System. Valid Codes are ''WEBCT'' for WebCT Integration or ''BB'' for Blackboard Integration.',
   `GTVINTP_DESC` varchar(30) NOT NULL default '' COMMENT 'DESCRIPTION: Description of external Integration Partner System Code. For example ''WebCT Campus Edition / Vista'' or ''Blackboard''.',
   `GTVINTP_USER_ID` varchar(30) NOT NULL default '' COMMENT 'USER ID: The unique identification of the user.',
@@ -159,10 +159,10 @@ CREATE TABLE IF NOT EXISTS `gtvintp` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `gtvmtyp`
+-- Table structure for table `GTVMTYP`
 --
 
-CREATE TABLE IF NOT EXISTS `gtvmtyp` (
+CREATE TABLE IF NOT EXISTS `GTVMTYP` (
   `GTVMTYP_CODE` varchar(4) NOT NULL default '' COMMENT 'Meeting Type Code: The Meeting Type Code',
   `GTVMTYP_DESC` varchar(30) NOT NULL default '' COMMENT 'Description: Description of the Meeting Type code',
   `GTVMTYP_SYS_REQ_IND` char(1) NOT NULL default '' COMMENT 'System Required Indicator: Indicates whether or not this record is required to exist on the database',
@@ -175,10 +175,10 @@ CREATE TABLE IF NOT EXISTS `gtvmtyp` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `gtvschs`
+-- Table structure for table `GTVSCHS`
 --
 
-CREATE TABLE IF NOT EXISTS `gtvschs` (
+CREATE TABLE IF NOT EXISTS `GTVSCHS` (
   `GTVSCHS_CODE` char(3) NOT NULL default '' COMMENT 'Code for Schedule Status.',
   `GTVSCHS_DESC` varchar(30) NOT NULL default '' COMMENT 'Description of Schedule Status code.',
   `GTVSCHS_SYSTEM_REQ_IND` char(1) NOT NULL default '' COMMENT 'A Y in this column indicates that the row is delivered by SCT and required for the system.',
@@ -189,10 +189,10 @@ CREATE TABLE IF NOT EXISTS `gtvschs` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `scbcrse`
+-- Table structure for table `SCBCRSE`
 --
 
-CREATE TABLE IF NOT EXISTS `scbcrse` (
+CREATE TABLE IF NOT EXISTS `SCBCRSE` (
   `SCBCRSE_SUBJ_CODE` varchar(4) NOT NULL default '' COMMENT 'This field defines the subject area of the course.',
   `SCBCRSE_CRSE_NUMB` varchar(5) NOT NULL default '' COMMENT 'This field defines the course number associated with the subject for the        course.',
   `SCBCRSE_EFF_TERM` varchar(6) default NULL COMMENT 'This field identifies the term this version of the course becomes effective.',
@@ -239,38 +239,38 @@ CREATE TABLE IF NOT EXISTS `scbcrse` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Course General Information Base Table';
 
 --
--- RELATIONS FOR TABLE `scbcrse`:
+-- RELATIONS FOR TABLE `SCBCRSE`:
 --   `SCBCRSE_APRV_CODE`
---       `stvaprv` -> `STVAPRV_CODE`
+--       `STVAPRV` -> `STVAPRV_CODE`
 --   `SCBCRSE_CIPC_CODE`
---       `stvcipc` -> `STVCIPC_CODE`
+--       `STVCIPC` -> `STVCIPC_CODE`
 --   `SCBCRSE_COLL_CODE`
---       `stvcoll` -> `STVCOLL_CODE`
+--       `STVCOLL` -> `STVCOLL_CODE`
 --   `SCBCRSE_CSTA_CODE`
---       `stvcsta` -> `STVCSTA_CODE`
+--       `STVCSTA` -> `STVCSTA_CODE`
 --   `SCBCRSE_DEPT_CODE`
---       `stvdept` -> `STVDEPT_CODE`
+--       `STVDEPT` -> `STVDEPT_CODE`
 --   `SCBCRSE_DIVS_CODE`
---       `stvdivs` -> `STVDIVS_CODE`
+--       `STVDIVS` -> `STVDIVS_CODE`
 --   `SCBCRSE_DUNT_CODE`
---       `gtvdunt` -> `GTVDUNT_CODE`
+--       `GTVDUNT` -> `GTVDUNT_CODE`
 --   `SCBCRSE_EFF_TERM`
---       `stvterm` -> `STVTERM_CODE`
+--       `STVTERM` -> `STVTERM_CODE`
 --   `SCBCRSE_PWAV_CODE`
---       `stvpwav` -> `STVPWAV_CODE`
+--       `STVPWAV` -> `STVPWAV_CODE`
 --   `SCBCRSE_REPS_CODE`
---       `stvreps` -> `STVREPS_CODE`
+--       `STVREPS` -> `STVREPS_CODE`
 --   `SCBCRSE_SUBJ_CODE`
---       `stvsubj` -> `STVSUBJ_CODE`
+--       `STVSUBJ` -> `STVSUBJ_CODE`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sirasgn`
+-- Table structure for table `SIRASGN`
 --
 
-CREATE TABLE IF NOT EXISTS `sirasgn` (
+CREATE TABLE IF NOT EXISTS `SIRASGN` (
   `SIRASGN_TERM_CODE` varchar(6) NOT NULL default '' COMMENT 'Term of the faculty member assignment',
   `SIRASGN_CRN` varchar(5) NOT NULL default '' COMMENT 'The course reference of the course that the instructor was assigned to',
   `SIRASGN_PIDM` decimal(8,0) NOT NULL default '0' COMMENT 'The Pidm of the faculty member',
@@ -294,20 +294,20 @@ CREATE TABLE IF NOT EXISTS `sirasgn` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Faculty Member Instructional Assignment  Repeating Table';
 
 --
--- RELATIONS FOR TABLE `sirasgn`:
+-- RELATIONS FOR TABLE `SIRASGN`:
 --   `SIRASGN_FCNT_CODE`
---       `stvfcnt` -> `STVFCNT_CODE`
+--       `STVFCNT` -> `STVFCNT_CODE`
 --   `SIRASGN_TERM_CODE`
---       `stvterm` -> `STVTERM_CODE`
+--       `STVTERM` -> `STVTERM_CODE`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ssbsect`
+-- Table structure for table `SSBSECT`
 --
 
-CREATE TABLE IF NOT EXISTS `ssbsect` (
+CREATE TABLE IF NOT EXISTS `SSBSECT` (
   `SSBSECT_TERM_CODE` varchar(6) NOT NULL default '' COMMENT 'This field is not displayed on the form (page 0).  It defines the Term code for the course section information.  It is derived from the Key Block Term.',
   `SSBSECT_CRN` varchar(5) NOT NULL default '' COMMENT 'This field is not displayed on the form (page 0).  It will display the Course Reference Number (CRN) assigned to this course section when it was initially added.',
   `SSBSECT_PTRM_CODE` char(3) default NULL COMMENT 'This field is used to specify the part-of-term in which the section is offered.  The value entered here must be valid as defined for the term on the Term Control Form - SOATERM.  The default is "1".',
@@ -379,24 +379,60 @@ CREATE TABLE IF NOT EXISTS `ssbsect` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Section General Information Base Table';
 
 --
--- RELATIONS FOR TABLE `ssbsect`:
+-- RELATIONS FOR TABLE `SSBSECT`:
 --   `SSBSECT_DUNT_CODE`
---       `gtvdunt` -> `GTVDUNT_CODE`
+--       `GTVDUNT` -> `GTVDUNT_CODE`
 --   `SSBSECT_INSM_CODE`
---       `gtvinsm` -> `GTVINSM_CODE`
+--       `GTVINSM` -> `GTVINSM_CODE`
 --   `SSBSECT_SUBJ_CODE`
---       `stvsubj` -> `STVSUBJ_CODE`
+--       `STVSUBJ` -> `STVSUBJ_CODE`
 --   `SSBSECT_TERM_CODE`
---       `stvterm` -> `STVTERM_CODE`
+--       `STVTERM` -> `STVTERM_CODE`
+--
+
+--
+-- Database: `afranco_courses_banner`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ssrattr`
+-- Table structure for table `SSBXLST`
 --
 
-CREATE TABLE IF NOT EXISTS `ssrattr` (
+CREATE TABLE IF NOT EXISTS `SSBXLST` (
+  `SSBXLST_TERM_CODE` varchar(6) NOT NULL COMMENT 'Cross List Section Term Code.',
+  `SSBXLST_XLST_GROUP` varchar(2) NOT NULL COMMENT 'Cross List Group Identifier.',
+  `SSBXLST_DESC` varchar(30) default NULL COMMENT 'Cross List Group Identifier.',
+  `SSBXLST_MAX_ENRL` int(4) NOT NULL COMMENT 'Maxmum Cross List Enrollment.',
+  `SSBXLST_ENRL` int(4) NOT NULL COMMENT 'Corss List Section Enrollment.',
+  `SSBXLST_SEATS_AVAIL` int(4) NOT NULL COMMENT 'Cross List Section Available Seats.',
+  `SSBXLST_ACTIVITY_DATE` date NOT NULL COMMENT 'This field identifies the most recent date a record was created or updated.',
+  PRIMARY KEY  (`SSBXLST_TERM_CODE`,`SSBXLST_XLST_GROUP`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Cross List Enrollment Information Base Table';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `SSRXLST`
+--
+
+CREATE TABLE IF NOT EXISTS `SSRXLST` (
+  `SSRXLST_TERM_CODE` varchar(6) NOT NULL COMMENT 'Cross List Section Term.',
+  `SSRXLST_XLST_GROUP` varchar(2) NOT NULL COMMENT 'Cross List Group Identifier Number.',
+  `SSRXLST_CRN` varchar(5) NOT NULL COMMENT 'Corss List Section CRN.',
+  `SSRXLST_ACTIVITY_DATE` date NOT NULL COMMENT 'This field identifies the most recent date a record was created or updated.',
+  PRIMARY KEY  (`SSRXLST_TERM_CODE`,`SSRXLST_XLST_GROUP`,`SSRXLST_CRN`),
+  KEY `SSRXLST_TERM_CODE` (`SSRXLST_TERM_CODE`,`SSRXLST_CRN`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Cross List Section Repeating Table';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `SSRATTR`
+--
+
+CREATE TABLE IF NOT EXISTS `SSRATTR` (
   `SSRATTR_TERM_CODE` varchar(6) NOT NULL default '' COMMENT 'This field defines the term for which you are creating a section attribute code.',
   `SSRATTR_CRN` varchar(5) NOT NULL default '' COMMENT 'This field defines the course reference number for which you are creating a section attribute code.',
   `SSRATTR_ATTR_CODE` varchar(4) NOT NULL default '' COMMENT 'This field defines the attribute code of the section.',
@@ -405,20 +441,20 @@ CREATE TABLE IF NOT EXISTS `ssrattr` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Degree Program Attribute Repeating Table';
 
 --
--- RELATIONS FOR TABLE `ssrattr`:
+-- RELATIONS FOR TABLE `SSRATTR`:
 --   `SSRATTR_ATTR_CODE`
---       `stvattr` -> `STVATTR_CODE`
+--       `STVATTR` -> `STVATTR_CODE`
 --   `SSRATTR_TERM_CODE`
---       `stvterm` -> `STVTERM_CODE`
+--       `STVTERM` -> `STVTERM_CODE`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ssrmeet`
+-- Table structure for table `SSRMEET`
 --
 
-CREATE TABLE IF NOT EXISTS `ssrmeet` (
+CREATE TABLE IF NOT EXISTS `SSRMEET` (
   `SSRMEET_TERM_CODE` varchar(6) NOT NULL default '' COMMENT 'This field is not displayed on the form (page 0).  It defines the term for which you are creating meeting times for the course section.  It is based on the Key Block Term.',
   `SSRMEET_CRN` varchar(5) NOT NULL default '' COMMENT 'This field is not displayed on the form (page 0).  It defines the Course Reference Number for the course section for which you are creating meeting times',
   `SSRMEET_DAYS_CODE` char(1) default NULL COMMENT 'This field defines the Day code for which the Key Block section will be scheduled.  It is a required field to enter a meeting time record.',
@@ -454,24 +490,24 @@ CREATE TABLE IF NOT EXISTS `ssrmeet` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Section Meeting Times Repeating Table';
 
 --
--- RELATIONS FOR TABLE `ssrmeet`:
+-- RELATIONS FOR TABLE `SSRMEET`:
 --   `SSRMEET_BLDG_CODE`
---       `stvbldg` -> `STVBLDG_CODE`
+--       `STVBLDG` -> `STVBLDG_CODE`
 --   `SSRMEET_MTYP_CODE`
---       `gtvmtyp` -> `GTVMTYP_CODE`
+--       `GTVMTYP` -> `GTVMTYP_CODE`
 --   `SSRMEET_SCHD_CODE`
---       `stvschd` -> `STVSCHD_CODE`
+--       `STVSCHD` -> `STVSCHD_CODE`
 --   `SSRMEET_TERM_CODE`
---       `stvterm` -> `STVTERM_CODE`
+--       `STVTERM` -> `STVTERM_CODE`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvacyr`
+-- Table structure for table `STVACYR`
 --
 
-CREATE TABLE IF NOT EXISTS `stvacyr` (
+CREATE TABLE IF NOT EXISTS `STVACYR` (
   `STVACYR_CODE` varchar(4) NOT NULL default '' COMMENT 'Identifies the abbreviation for the beginning/ ending periods for academic year referenced in the General Student, Academic History, Degree Audit Modules. Format CCYY (e.g. 1995-1996 coded 1996).',
   `STVACYR_DESC` varchar(30) default NULL COMMENT 'This field specifies the academic year associated with the academic year code.',
   `STVACYR_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most current date a record was created or updated.',
@@ -482,10 +518,10 @@ CREATE TABLE IF NOT EXISTS `stvacyr` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvaprv`
+-- Table structure for table `STVAPRV`
 --
 
-CREATE TABLE IF NOT EXISTS `stvaprv` (
+CREATE TABLE IF NOT EXISTS `STVAPRV` (
   `STVAPRV_CODE` char(1) NOT NULL default '' COMMENT 'This field indicates the catalog approval code referenced on the Basic Course Information Form (SCACRSE).',
   `STVAPRV_DESC` varchar(30) NOT NULL default '' COMMENT 'This field specifies the type of approval (e.g. dean"s, departmental, etc.)     associated with the approval code.',
   `STVAPRV_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most current date a record was created or updated.',
@@ -495,10 +531,10 @@ CREATE TABLE IF NOT EXISTS `stvaprv` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvasty`
+-- Table structure for table `STVASTY`
 --
 
-CREATE TABLE IF NOT EXISTS `stvasty` (
+CREATE TABLE IF NOT EXISTS `STVASTY` (
   `STVASTY_CODE` varchar(4) NOT NULL default '' COMMENT 'Assignment Type Code',
   `STVASTY_DESC` varchar(30) NOT NULL default '' COMMENT 'Description of Code',
   `STVASTY_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'The Activity Date',
@@ -508,10 +544,10 @@ CREATE TABLE IF NOT EXISTS `stvasty` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvattr`
+-- Table structure for table `STVATTR`
 --
 
-CREATE TABLE IF NOT EXISTS `stvattr` (
+CREATE TABLE IF NOT EXISTS `STVATTR` (
   `STVATTR_CODE` varchar(4) NOT NULL default '' COMMENT 'Attribute code which defines degree requirements that may be either required by a degree program or satisfied by passing a course',
   `STVATTR_DESC` varchar(30) NOT NULL default '' COMMENT 'Description for the attribute code',
   `STVATTR_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'Description for the attribute code',
@@ -521,10 +557,10 @@ CREATE TABLE IF NOT EXISTS `stvattr` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvbldg`
+-- Table structure for table `STVBLDG`
 --
 
-CREATE TABLE IF NOT EXISTS `stvbldg` (
+CREATE TABLE IF NOT EXISTS `STVBLDG` (
   `STVBLDG_CODE` varchar(6) NOT NULL default '' COMMENT 'This field identifies the building code referenced in the Class Schedule and Registration Modules.',
   `STVBLDG_DESC` varchar(30) NOT NULL default '' COMMENT 'This field specifies the building associated with the building code.',
   `STVBLDG_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most recent date a record was created or updated .',
@@ -535,10 +571,10 @@ CREATE TABLE IF NOT EXISTS `stvbldg` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvcamp`
+-- Table structure for table `STVCAMP`
 --
 
-CREATE TABLE IF NOT EXISTS `stvcamp` (
+CREATE TABLE IF NOT EXISTS `STVCAMP` (
   `STVCAMP_CODE` char(3) NOT NULL default '' COMMENT 'STVCAMP_DICD_CODE: District Identifier Code validated by form GTVDICD.',
   `STVCAMP_DESC` varchar(30) default NULL COMMENT 'This field defines the institution"s campus associated with the campus code.',
   `STVCAMP_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most recent date a record was created or updated.',
@@ -549,10 +585,10 @@ CREATE TABLE IF NOT EXISTS `stvcamp` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvcipc`
+-- Table structure for table `STVCIPC`
 --
 
-CREATE TABLE IF NOT EXISTS `stvcipc` (
+CREATE TABLE IF NOT EXISTS `STVCIPC` (
   `STVCIPC_CODE` varchar(6) NOT NULL default '' COMMENT 'This field identifies the Classification of Instructional Programs (CIP) code   assigned an area of study as referenced in the Degree Program Code (SDAPROG)    and the Basic Course Info. Form (SCACRSE) and by STVMAJR.',
   `STVCIPC_DESC` varchar(30) NOT NULL default '' COMMENT 'This field specifies the area of study associated with the CIP code.  CIP       codes are used in Integrated Postsecondary Education Data System (IPEDS)        reporting.',
   `STVCIPC_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most recent date a record was created or updated.',
@@ -566,10 +602,10 @@ CREATE TABLE IF NOT EXISTS `stvcipc` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvcoll`
+-- Table structure for table `STVCOLL`
 --
 
-CREATE TABLE IF NOT EXISTS `stvcoll` (
+CREATE TABLE IF NOT EXISTS `STVCOLL` (
   `STVCOLL_CODE` char(2) NOT NULL default '' COMMENT 'This field identifies the college code referenced in the Catalog, Class Schedule, Recruiting, Admissions, General Student, Registration, Academic History and Degree Audit Modules. Reqd value: 00 - No College Designated.',
   `STVCOLL_DESC` varchar(30) NOT NULL default '' COMMENT 'This field specifies the college or school (i.e. **Banner"s** highest administrative unit) associated with the college code.',
   `STVCOLL_ADDR_STREET_LINE1` varchar(30) default NULL COMMENT 'This field is not currently in use.',
@@ -590,10 +626,10 @@ CREATE TABLE IF NOT EXISTS `stvcoll` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvcomt`
+-- Table structure for table `STVCOMT`
 --
 
-CREATE TABLE IF NOT EXISTS `stvcomt` (
+CREATE TABLE IF NOT EXISTS `STVCOMT` (
   `STVCOMT_CODE` varchar(6) NOT NULL default '' COMMENT 'Committee type code.',
   `STVCOMT_DESC` varchar(30) NOT NULL default '' COMMENT 'Committee type description.',
   `STVCOMT_TRANS_PRINT` char(1) default NULL COMMENT 'This field indicates whether the committee type will appear on transcript.',
@@ -604,10 +640,10 @@ CREATE TABLE IF NOT EXISTS `stvcomt` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvcsta`
+-- Table structure for table `STVCSTA`
 --
 
-CREATE TABLE IF NOT EXISTS `stvcsta` (
+CREATE TABLE IF NOT EXISTS `STVCSTA` (
   `STVCSTA_CODE` char(1) NOT NULL default '' COMMENT 'This field identifies the course status code referenced on the Basic Course Information Form (SCACRSE).',
   `STVCSTA_DESC` varchar(30) NOT NULL default '' COMMENT 'This field specifies the free-format course status associated with the status code.',
   `STVCSTA_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most recent date a record was created or updated.',
@@ -618,10 +654,10 @@ CREATE TABLE IF NOT EXISTS `stvcsta` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvdept`
+-- Table structure for table `STVDEPT`
 --
 
-CREATE TABLE IF NOT EXISTS `stvdept` (
+CREATE TABLE IF NOT EXISTS `STVDEPT` (
   `STVDEPT_CODE` varchar(4) NOT NULL default '' COMMENT 'This field identifies the department code referenced in the Catalog, Recruiting, Admissions, and Acad.  Hist.  Modules.  Required value: 0000 - Dept.  Not Declared.',
   `STVDEPT_DESC` varchar(30) NOT NULL default '' COMMENT 'This field specifies the department associated with the department code.',
   `STVDEPT_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most recent date a record was created or updated.',
@@ -633,10 +669,10 @@ CREATE TABLE IF NOT EXISTS `stvdept` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvdivs`
+-- Table structure for table `STVDIVS`
 --
 
-CREATE TABLE IF NOT EXISTS `stvdivs` (
+CREATE TABLE IF NOT EXISTS `STVDIVS` (
   `STVDIVS_CODE` varchar(4) NOT NULL default '' COMMENT 'This field identifies the division code referenced on the Basic Course Info.    Form (SCACRSE).  Reqd value:  0000 - Division Not Declared.',
   `STVDIVS_DESC` varchar(30) NOT NULL default '' COMMENT 'This field specifies the division associated with the division code.',
   `STVDIVS_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most recent date a record was created or updated.',
@@ -646,10 +682,10 @@ CREATE TABLE IF NOT EXISTS `stvdivs` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvfcnt`
+-- Table structure for table `STVFCNT`
 --
 
-CREATE TABLE IF NOT EXISTS `stvfcnt` (
+CREATE TABLE IF NOT EXISTS `STVFCNT` (
   `STVFCNT_CODE` char(2) NOT NULL default '' COMMENT 'Faculty member contract type code',
   `STVFCNT_DESC` varchar(30) NOT NULL default '' COMMENT 'Description of faculty member contract type code',
   `STVFCNT_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'The activity date',
@@ -659,10 +695,10 @@ CREATE TABLE IF NOT EXISTS `stvfcnt` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvpwav`
+-- Table structure for table `STVPWAV`
 --
 
-CREATE TABLE IF NOT EXISTS `stvpwav` (
+CREATE TABLE IF NOT EXISTS `STVPWAV` (
   `STVPWAV_CODE` char(1) NOT NULL default '' COMMENT 'This field identifies the prerequisite waiver code referenced on the Basic      Course Information Form (SCACRSE).',
   `STVPWAV_DESC` varchar(30) NOT NULL default '' COMMENT 'This field specifies the prerequisite waiver requirement/approval source        associated with the pre-req waiver code.',
   `STVPWAV_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most recent date a record was created or updated.',
@@ -672,10 +708,10 @@ CREATE TABLE IF NOT EXISTS `stvpwav` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvreps`
+-- Table structure for table `STVREPS`
 --
 
-CREATE TABLE IF NOT EXISTS `stvreps` (
+CREATE TABLE IF NOT EXISTS `STVREPS` (
   `STVREPS_CODE` char(2) NOT NULL default '' COMMENT 'Repeat status code used for reporting purposes.',
   `STVREPS_DESC` varchar(30) NOT NULL default '' COMMENT 'Description of repeat status.',
   `STVREPS_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most recent date a record was created or updated.',
@@ -685,10 +721,10 @@ CREATE TABLE IF NOT EXISTS `stvreps` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvschd`
+-- Table structure for table `STVSCHD`
 --
 
-CREATE TABLE IF NOT EXISTS `stvschd` (
+CREATE TABLE IF NOT EXISTS `STVSCHD` (
   `STVSCHD_CODE` char(3) NOT NULL default '' COMMENT 'This field identifies the schedule type code referenced in the Catalog, Class   Schedule and Registration Modules.',
   `STVSCHD_DESC` varchar(30) NOT NULL default '' COMMENT 'This field specifies the schedule type (e.g. lecture, lab, self-paced)          associated with the schedule type code.',
   `STVSCHD_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most recent date a record was created or updated.',
@@ -703,10 +739,10 @@ CREATE TABLE IF NOT EXISTS `stvschd` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvsubj`
+-- Table structure for table `STVSUBJ`
 --
 
-CREATE TABLE IF NOT EXISTS `stvsubj` (
+CREATE TABLE IF NOT EXISTS `STVSUBJ` (
   `STVSUBJ_CODE` varchar(4) NOT NULL default '' COMMENT 'This field identifies the subject code referenced in the Catalog, Registration and Acad.  Hist.  Modules.',
   `STVSUBJ_DESC` varchar(30) default NULL COMMENT 'This field specifies the subject associated with the subject code.',
   `STVSUBJ_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most recent date a record was created or updated.  ',
@@ -718,10 +754,10 @@ CREATE TABLE IF NOT EXISTS `stvsubj` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvterm`
+-- Table structure for table `STVTERM`
 --
 
-CREATE TABLE IF NOT EXISTS `stvterm` (
+CREATE TABLE IF NOT EXISTS `STVTERM` (
   `STVTERM_CODE` varchar(6) NOT NULL default '' COMMENT 'This field identifies the term code referenced in the Catalog, Recruiting, Admissions, Gen. Student, Registration, Student Billing and Acad. Hist. Modules. Reqd. value: 999999 - End of Time.',
   `STVTERM_DESC` varchar(30) NOT NULL default '' COMMENT 'This field specifies the term associated with the term code. The term is identified by the academic year and term number and is formatted YYYYTT.',
   `STVTERM_START_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the term start date and is formatted DD-MON-YY.',
@@ -744,20 +780,20 @@ CREATE TABLE IF NOT EXISTS `stvterm` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Term Code Validation Table';
 
 --
--- RELATIONS FOR TABLE `stvterm`:
+-- RELATIONS FOR TABLE `STVTERM`:
 --   `STVTERM_ACYR_CODE`
---       `stvacyr` -> `STVACYR_CODE`
+--       `STVACYR` -> `STVACYR_CODE`
 --   `STVTERM_TRMT_CODE`
---       `stvtrmt` -> `STVTRMT_CODE`
+--       `STVTRMT` -> `STVTRMT_CODE`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `stvtrmt`
+-- Table structure for table `STVTRMT`
 --
 
-CREATE TABLE IF NOT EXISTS `stvtrmt` (
+CREATE TABLE IF NOT EXISTS `STVTRMT` (
   `STVTRMT_CODE` char(1) NOT NULL default '' COMMENT 'Type of term, eg.  2 - semester, 4 - quarter.',
   `STVTRMT_DESC` varchar(30) NOT NULL default '' COMMENT 'Specifies the type of term associated with term type code.',
   `STVTRMT_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'Most recent date record was created or updated.',
@@ -767,10 +803,10 @@ CREATE TABLE IF NOT EXISTS `stvtrmt` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `syvinst`
+-- Table structure for table `SYVINST`
 --
 
-CREATE TABLE IF NOT EXISTS `syvinst` (
+CREATE TABLE IF NOT EXISTS `SYVINST` (
   `SYVINST_TERM_CODE` varchar(6) NOT NULL default '' COMMENT 'Term of the faculty member assignment',
   `SYVINST_CRN` varchar(5) NOT NULL default '' COMMENT 'The course reference of the course that the instructor was assigned to',
   `SYVINST_PIDM` decimal(8,0) NOT NULL default '0' COMMENT 'The Pidm of the faculty member',

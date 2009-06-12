@@ -271,8 +271,8 @@ class banner_course_CourseOffering_Search_Order
 			SSBSECT_CRN as sectitle_crn,
 			SSBSECT_CRSE_TITLE as sectitle_title
 		FROM 
-			`ssbsect`
-			LEFT JOIN scbcrse ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
+			`SSBSECT`
+			LEFT JOIN SCBCRSE ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
 		WHERE
 			SSBSECT_CRSE_TITLE IS NOT NULL
 		
@@ -283,8 +283,8 @@ class banner_course_CourseOffering_Search_Order
 			SSBSECT_CRN as sectitle_crn,
 			SCBCRSE_TITLE as sectitle_title
 		FROM 
-			`ssbsect`
-			LEFT JOIN scbcrse ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
+			`SSBSECT`
+			LEFT JOIN SCBCRSE ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
 		WHERE
 			SSBSECT_CRSE_TITLE IS NULL) as sectitle ON (SSBSECT_TERM_CODE = sectitle_term_code AND SSBSECT_CRN = sectitle_crn)');
     }
@@ -562,7 +562,7 @@ class banner_course_CourseOffering_Search_Order
      */
     public function orderByInstructor() {
     	$this->addOrderColumns(array('SYVINST_LAST_NAME', 'SYVINST_FIRST_NAME'));
-		$this->addTableJoin('LEFT JOIN syvinst ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)');
+		$this->addTableJoin('LEFT JOIN SYVINST ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)');
     }
     
 /*********************************************************

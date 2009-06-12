@@ -193,7 +193,7 @@ class banner_course_Term_Lookup_Session
 	STVTERM_START_DATE,
 	STVTERM_END_DATE
 FROM 
-	stvterm
+	STVTERM
 	LEFT JOIN catalog_term ON STVTERM_CODE = term_code
 WHERE 
 	STVTERM_CODE = :term_code
