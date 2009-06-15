@@ -321,11 +321,15 @@ class banner_course_CourseOffering
     public function getLocationInfo() {
     	$parts = array();
     	foreach ($this->getMeetingRows() as $row) {
-	    	$parts[] = $row['SSRMEET_BLDG_CODE'].' ' .$row['SSRMEET_ROOM_CODE']
+    		if ($this->row['SSRMEET_ROOM_CODE'] || $row['SSRMEET_ROOM_CODE'] || $row['STVBLDG_DESC'])
+		    	$parts[] = $row['SSRMEET_BLDG_CODE'].' ' .$row['SSRMEET_ROOM_CODE']
     		.' ('.$row['STVBLDG_DESC'].')';
     	}
     	
-    	return implode(", ", $parts);
+    	if (count($parts))
+	    	return implode(", ", $parts);
+	    else
+	    	return "Unknown";
     }
 
 
@@ -337,7 +341,7 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function hasLocation() {
-    	return true;
+    	return ($this->row['SSRMEET_BLDG_CODE'] && $this->row['SSRMEET_ROOM_CODE']);
     }
 
 
@@ -403,6 +407,9 @@ class banner_course_CourseOffering
 			if ($row['SSRMEET_SAT_DAY'])	
 				$days[] = 'Saturday';
 			
+			if (!count($days))
+				continue;
+			
 			$info = $this->as12HourTime($row['SSRMEET_BEGIN_TIME'])
 				.'-'.$this->as12HourTime($row['SSRMEET_END_TIME'])
 				.' on '.implode(', ', $days);
@@ -411,7 +418,10 @@ class banner_course_CourseOffering
 			$parts[] = $info;
 		}
 		
-		return implode("\n", $parts);
+		if (count($parts))
+	    	return implode("\n", $parts);
+	    else
+	    	return "Unknown";	
     }
     
     /**
