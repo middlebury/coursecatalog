@@ -112,7 +112,11 @@ class banner_course_Topic_Search_QueryTest extends PHPUnit_Framework_TestCase
     
     public function testMatchAll() {
     	$topics = $this->session->getTopicsByQuery($this->object);
-		$this->assertEquals(9, $topics->available());
+		$this->assertEquals(12, $topics->available());
+// 		print "\n";
+// 		while ($topics->hasNext())
+// 			print "\n".$topics->getNextTopic()->getId()->getIdentifier();
+// 		print "\n";
     }
 
     /**
@@ -144,7 +148,7 @@ class banner_course_Topic_Search_QueryTest extends PHPUnit_Framework_TestCase
     {
     	$this->object->matchGenusType($this->departmentType, true);
         $topics = $this->session->getTopicsByQuery($this->object);
-		$this->assertEquals(3, $topics->available());
+		$this->assertEquals(4, $topics->available());
     }
     
     /**
@@ -154,7 +158,7 @@ class banner_course_Topic_Search_QueryTest extends PHPUnit_Framework_TestCase
     {
     	$this->object->matchGenusType($this->divisionType, true);
         $topics = $this->session->getTopicsByQuery($this->object);
-		$this->assertEquals(1, $topics->available());
+		$this->assertEquals(2, $topics->available());
     }
     
     /**
@@ -164,7 +168,7 @@ class banner_course_Topic_Search_QueryTest extends PHPUnit_Framework_TestCase
     {
     	$this->object->matchGenusType($this->subjectType, true);
         $topics = $this->session->getTopicsByQuery($this->object);
-		$this->assertEquals(3, $topics->available());
+		$this->assertEquals(4, $topics->available());
     }
     
     /**
@@ -185,7 +189,7 @@ class banner_course_Topic_Search_QueryTest extends PHPUnit_Framework_TestCase
     	$this->object->matchGenusType($this->requirementType, true);
     	$this->object->matchGenusType($this->departmentType, true);
         $topics = $this->session->getTopicsByQuery($this->object);
-		$this->assertEquals(5, $topics->available());
+		$this->assertEquals(6, $topics->available());
     }
 
     /**

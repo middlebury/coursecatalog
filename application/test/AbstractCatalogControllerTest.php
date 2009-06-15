@@ -104,7 +104,7 @@ class AbstractCatalogControllerTest extends PHPUnit_Framework_TestCase
         $filteredTopics = AbstractCatalogController::filterTopicsByType($topicArray, $subjectType);
         $this->assertType('array', $filteredTopics);
         $this->assertLessThan($numTopics, count($filteredTopics));
-        $this->assertEquals(3, count($filteredTopics));
+        $this->assertEquals(4, count($filteredTopics));
         $this->assertType('osid_course_Topic', $filteredTopics[0]);
     }
 

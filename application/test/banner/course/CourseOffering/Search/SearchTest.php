@@ -105,13 +105,13 @@ class banner_course_CourseOffering_Search_SearchTest
     public function testLimitResultSet()
     {
     	$results = $this->session->getCourseOfferingsBySearch($this->query, $this->object);
-        $this->assertEquals(12, $results->getResultSize());
+        $this->assertEquals(15, $results->getResultSize());
         
         $this->object->limitResultSet(1, 10);
         $this->assertEquals('LIMIT 0, 10', $this->object->getLimitClause());
         
         $results = $this->session->getCourseOfferingsBySearch($this->query, $this->object);
-        $this->assertEquals(12, $results->getResultSize());
+        $this->assertEquals(15, $results->getResultSize());
         
         $this->assertEquals(10, $results->getCourseOfferings()->available());
 
@@ -123,13 +123,13 @@ class banner_course_CourseOffering_Search_SearchTest
     public function testLimitResultSet2()
     {
     	$results = $this->session->getCourseOfferingsBySearch($this->query, $this->object);
-        $this->assertEquals(12, $results->getResultSize());
+        $this->assertEquals(15, $results->getResultSize());
         
         $this->object->limitResultSet(6, 10);
         $this->assertEquals('LIMIT 5, 5', $this->object->getLimitClause());
         
         $results = $this->session->getCourseOfferingsBySearch($this->query, $this->object);
-        $this->assertEquals(12, $results->getResultSize());
+        $this->assertEquals(15, $results->getResultSize());
         
         $this->assertEquals(5, $results->getCourseOfferings()->available());
 
@@ -209,7 +209,7 @@ class banner_course_CourseOffering_Search_SearchTest
     public function testSearchAmongCourseOfferings()
     {
     	$results = $this->session->getCourseOfferingsBySearch($this->query, $this->object);
-        $this->assertEquals(12, $results->getResultSize());
+        $this->assertEquals(15, $results->getResultSize());
         
         $offerings = new phpkit_id_ArrayIdList(array(
         	$this->physOfferingId,
@@ -246,7 +246,7 @@ class banner_course_CourseOffering_Search_SearchTest
         $this->object->orderCourseOfferingResults($order);
         
         $results = $this->session->getCourseOfferingsBySearch($this->query, $this->object);
-        $this->assertEquals(12, $results->getResultSize());
+        $this->assertEquals(15, $results->getResultSize());
     }
 
     /**

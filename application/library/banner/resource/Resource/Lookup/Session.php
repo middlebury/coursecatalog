@@ -278,6 +278,7 @@ WHERE
 	SYVINST_FIRST_NAME
 FROM 
 	SYVINST
+GROUP BY SYVINST_PIDM
 ";
 			self::$getPersonResources_stmt = $this->manager->getDB()->prepare($query);
 		}
