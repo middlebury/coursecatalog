@@ -212,7 +212,9 @@ print $this->paginationControl($this->paginator, 'Sliding', 'ItemPaginationContr
 
 <table class='search_results'>
 	<tbody>
-<?php 
+<?php
+	$alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
+	
 	foreach ($this->paginator as $section) { 
 		$offeringParams = array(
 							'controller'	=> 'offerings',
@@ -242,6 +244,25 @@ print $this->paginationControl($this->paginator, 'Sliding', 'ItemPaginationContr
 		<tr>
 			<th>
 				<a href='<?php print $this->url($offeringParams); ?>'><?php print $section->getDisplayName(); ?></a>
+<?php
+
+if ($section->hasRecordType($alternateType)) {
+	$record = $section->getCourseOfferingRecord($alternateType);
+	if ($record->hasAlternates()) {
+		$alternates = $record->getAlternates();
+		print "\n\t\t\t\t<br/><br/>Cross-Listed As:";
+		while ($alternates->hasNext()) {
+			print "\n\t\t\t\t<br/>";
+			$alternate = $alternates->getNextCourseOffering();
+			$offeringParams['offering'] = AbstractCatalogController::getStringFromOsidId($alternate->getId());
+			print "<a href=\"".$this->url($offeringParams)."\">";
+			print $this->escape($alternate->getDisplayName());
+			print "</a> ";
+		}
+	}
+}
+
+?>
 			</th>
 			<td>
 				<div class='title'><?php print $section->getTitle(); ?></div>

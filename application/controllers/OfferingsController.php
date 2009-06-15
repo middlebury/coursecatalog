@@ -31,6 +31,7 @@ class OfferingsController
     	$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
 		$this->booleanStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:boolean");
 		$this->instructorType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		$this->alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
 		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 
 		parent::init();
@@ -332,8 +333,6 @@ class OfferingsController
 		$this->view->title = $this->view->offering->getDisplayName();
 		$this->view->headTitle($this->view->title);
 		
-		$this->render();
-		
 		// Term
 		$this->view->term = $this->view->offering->getTerm();
 		
@@ -343,6 +342,18 @@ class OfferingsController
  			$this->view->offering->getTermId(),
  			$this->view->offering->getCourseId()
  		);
+ 		
+ 		// Alternates
+ 		if ($this->view->offering->hasRecordType($this->alternateType)) {
+ 			
+ 			$record = $this->view->offering->getCourseOfferingRecord($this->alternateType);
+ 			if ($record->hasAlternates()) {
+ 				$this->view->alternates = $record->getAlternates();
+ 			}
+ 		}
+ 		
+ 		$this->render();
+ 		
  		$this->render('offerings', null, true);
  		
  		$this->view->menuIsOfferings = true;
