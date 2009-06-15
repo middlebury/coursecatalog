@@ -59,7 +59,9 @@ class banner_course_CourseOffering
 			
 			'SCBCRSE_TITLE',
 			'SCBCRSE_DEPT_CODE',
-			'SCBCRSE_DIVS_CODE'
+			'SCBCRSE_DIVS_CODE',
+			
+			'SSRXLST_XLST_GROUP'
 		);
 	
 	private $row;
@@ -652,7 +654,7 @@ class banner_course_CourseOffering
      * @compliance mandatory This method must be implemented. 
 	 */
 	public function hasAlternates () {
-		return $this->getAlternateIds()->hasNext();
+		return (strlen($this->row['SSRXLST_XLST_GROUP']) > 0);
 	}
 	
 	/**
@@ -664,6 +666,9 @@ class banner_course_CourseOffering
      *  @throws osid_PermissionDeniedException authorization failure 
      */
     public function getAlternateIds() {
+    	if (!$this->hasAlternates())
+    		return new phpkit_EmptyList('osid_id_IdList');
+    	
     	return $this->session->getAlternateIdsForOffering($this->getId());
     }
     
