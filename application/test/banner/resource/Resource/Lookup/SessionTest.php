@@ -173,7 +173,7 @@ class banner_resource_Resource_Lookup_SessionTest
         $resources = $this->session->getResourcesByGenusType($this->personType);
         $this->assertType('osid_resource_ResourceList', $resources);
         $this->assertTrue($resources->hasNext());
-        $this->assertEquals(251, $resources->available());
+        $this->assertEquals(14, $resources->available());
         $this->assertType('osid_resource_Resource', $resources->getNextResource());
         $resourceGenusType = $resources->getNextResource()->getGenusType();
         $this->assertEquals('genera:resource/person', $resourceGenusType->getIdentifier());
@@ -240,7 +240,7 @@ class banner_resource_Resource_Lookup_SessionTest
         $resources = $this->session->getResourcesByParentGenusType($this->personType);
         $this->assertType('osid_resource_ResourceList', $resources);
         $this->assertTrue($resources->hasNext());
-        $this->assertEquals(251, $resources->available());
+        $this->assertEquals(14, $resources->available());
         $this->assertType('osid_resource_Resource', $resources->getNextResource());
         $resourceGenusType = $resources->getNextResource()->getGenusType();
         $this->assertEquals('genera:resource/person', $resourceGenusType->getIdentifier());
@@ -265,7 +265,7 @@ class banner_resource_Resource_Lookup_SessionTest
         $resources = $this->session->getResources();
         $this->assertType('osid_resource_ResourceList', $resources);
         $this->assertTrue($resources->hasNext());
-        $this->assertEquals(263, $resources->available());
+        $this->assertEquals(26, $resources->available());
         $this->assertType('osid_resource_Resource', $resources->getNextResource());
     }
 }
