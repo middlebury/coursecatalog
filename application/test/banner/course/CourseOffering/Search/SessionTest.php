@@ -206,10 +206,10 @@ class banner_course_CourseOffering_Search_SessionTest
         $results = $this->session->getCourseOfferingsBySearch($query, $search);
        	$this->assertType('osid_course_CourseOfferingSearchResults', $results);
 //        	print $results->debug();
-       	$this->assertEquals(8, $results->getResultSize());
+       	$this->assertEquals(10, $results->getResultSize());
        	
        	$offerings = $results->getCourseOfferings();
-       	$this->assertEquals(8, $offerings->available());
+       	$this->assertEquals(10, $offerings->available());
        	$firstTitles = array();
        	while ($offerings->hasNext()) {
        		$firstTitles[] = $offerings->getNextCourseOffering()->getTitle();
@@ -222,10 +222,10 @@ class banner_course_CourseOffering_Search_SessionTest
        	$results = $this->session->getCourseOfferingsBySearch($query, $search);
        	$this->assertType('osid_course_CourseOfferingSearchResults', $results);
 //        	print $results->debug();
-       	$this->assertEquals(8, $results->getResultSize());
+       	$this->assertEquals(10, $results->getResultSize());
        	
        	$offerings = $results->getCourseOfferings();
-       	$this->assertEquals(8, $offerings->available());
+       	$this->assertEquals(10, $offerings->available());
        	$secondTitles = array();
        	while ($offerings->hasNext()) {
        		$secondTitles[] = $offerings->getNextCourseOffering()->getTitle();
