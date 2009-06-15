@@ -18,7 +18,8 @@
 class banner_course_CourseOffering
     extends phpkit_AbstractOsidObject
     implements osid_course_CourseOffering,
-    middlebury_course_CourseOffering_InstructorsRecord
+    middlebury_course_CourseOffering_InstructorsRecord,
+    middlebury_course_CourseOffering_AlternatesRecord
 {
 	/**
 	 * @var array $requiredFields;
@@ -77,6 +78,7 @@ class banner_course_CourseOffering
 	public function __construct (array $row, banner_course_CourseOffering_SessionInterface $session) {
 		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
+		$this->alternatesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
 		
 		parent::__construct();
 		$this->checkRow($row);
@@ -102,6 +104,7 @@ class banner_course_CourseOffering
 		
 		$this->addRecordType($this->instructorsType);
 		$this->addRecordType($this->weeklyScheduleType);
+		$this->addRecordType($this->alternatesType);
 	}
 	
 	/**
@@ -635,6 +638,46 @@ class banner_course_CourseOffering
      */
     public function getInstructors() {
     	return $this->session->getInstructorsForOffering($this->getId());
+    }
+    
+/*********************************************************
+ * AlternatesRecord support
+ *********************************************************/
+ 	/**
+	 * Tests if this course offering has any alternate course offerings.
+	 * 
+	 * @return boolean <code> true </code> if this course offering has any
+     *          alternates, <code> false </code> otherwise 
+	 * @access public
+     * @compliance mandatory This method must be implemented. 
+	 */
+	public function hasAlternates () {
+		return $this->getAlternateIds()->hasNext();
+	}
+	
+	/**
+     *  Gets the Ids of any alternate course offerings
+     *
+     *  @return object osid_id_IdList the list of alternate ids.
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     */
+    public function getAlternateIds() {
+    	return $this->session->getAlternateIdsForOffering($this->getId());
+    }
+    
+    /**
+     *  Gets the alternate <code> CourseOfferings </code>.
+     *
+     *  @return object osid_course_CourseOfferingList The list of alternates.
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     */
+    public function getAlternates() {
+    	$lookupSession = $this->session->getCourseOfferingLookupSession();
+    	return $lookupSession->getCourseOfferingsByIds($this->getAlternateIds());
     }
     
 /*********************************************************
