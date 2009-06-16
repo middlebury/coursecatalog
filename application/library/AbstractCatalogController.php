@@ -25,6 +25,8 @@ abstract class AbstractCatalogController
 	private static $courseManager;
 	private static $configPath;
 	
+	private static $idAuthorityToShorten;
+		
 	/**
 	 * Answer the configuration path
 	 * 
@@ -136,7 +138,14 @@ abstract class AbstractCatalogController
 	 * @static
 	 */
 	public static function getOsidIdFromString ($idString) {
-		return new phpkit_id_URNInetId($idString);
+		try {
+			return new phpkit_id_URNInetId($idString);
+		} catch (osid_InvalidArgumentException $e) {
+			if (self::getIdAuthorityToShorten())
+				return new phpkit_id_Id(self::getIdAuthorityToShorten(), 'urn', $idString);
+			else
+				throw $e;
+		}
 	}
 	
 	/**
@@ -149,7 +158,40 @@ abstract class AbstractCatalogController
 	 * @static
 	 */
 	public static function getStringFromOsidId (osid_id_Id $id) {
-		return phpkit_id_URNInetId::getInetURNString($id);
+		if (self::getIdAuthorityToShorten() 
+				&& strtolower($id->getIdentifierNamespace()) == 'urn' 
+				&& strtolower($id->getAuthority()) == self::getIdAuthorityToShorten())
+			return $id->getIdentifier();
+		else
+			return phpkit_id_URNInetId::getInetURNString($id);
+	}
+	
+	/**
+	 * Answer the id-authority for whom ids should be shortened.
+	 * 
+	 * @return mixed string or false if none should be shortened.
+	 * @access protected
+	 * @since 6/16/09
+	 * @static
+	 */
+	protected static function getIdAuthorityToShorten () {
+		if (!isset(self::$idAuthorityToShorten)) {
+			try {
+				$authority = phpkit_configuration_ConfigUtil::getSingleValuedValue(
+    								self::getRuntimeManager()->getConfiguration(), 
+    								new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:catalog/shorten_ids_for_authority'),
+    								new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
+    			if (strlen($authority))
+	    			self::$idAuthorityToShorten = $authority;
+	    		else
+	    			self::$idAuthorityToShorten = false;
+    		} catch (osid_NotFoundException $e) {
+    			self::$idAuthorityToShorten = false;
+    		} catch (osid_ConfigurationErrorException $e) {
+    			self::$idAuthorityToShorten = false;
+    		}
+		}
+		return self::$idAuthorityToShorten;
 	}
 	
 	/**
