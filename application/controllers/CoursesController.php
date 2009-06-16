@@ -106,6 +106,119 @@ class CoursesController
  		$this->render('offerings', null, true);
 	}
 	
+	/**
+	 * Search for courses
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 6/15/09
+	 */
+	public function searchxmlAction () {
+		$this->_helper->viewRenderer->setNoRender();
+		
+		if (!$this->_getParam('catalog')) {
+			header('HTTP/1.1 400 Bad Request');
+			print "A catalog must be specified.";
+			exit;
+		}
+		try {
+			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
+			$searchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
+		} catch (osid_InvalidArgumentException $e) {
+			header('HTTP/1.1 400 Bad Request');
+			print "The catalog id specified was not of the correct format.";
+			exit;
+		} catch (osid_NotFoundException $e) {
+			header('HTTP/1.1 404 Not Found');
+			print "The catalog id specified was not found.";
+			exit;
+		}
+		
+		$keywords = trim($this->_getParam('keywords'));
+		$searchUrl = $this->getAsAbsolute($this->_helper->url('search', 'offerings', null, array('catalog' => $this->_getParam('catalog'), 'keywords' => $keywords, 'submit' => 'Search')));
+		
+		header('Content-Type: text/xml');
+		print '<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0">
+	<channel>
+		<title>Course Search: "'.$keywords.'"</title>
+		<link>'.$searchUrl.'</link>
+		<description></description>
+		<lastBuildDate>'.date('r').'</lastBuildDate>
+		<generator>Course Catalog</generator>
+		<docs>http://blogs.law.harvard.edu/tech/rss</docs>
+		
+';
+		$courses = array();
+		// Fetch courses
+		if (strlen($keywords)) {
+			// For now we will do an offering search and return courses
+			// only from it. If a course search session is available, it would
+			// be preferable to use that.
+			$query = $searchSession->getCourseOfferingQuery();
+			$query->matchKeyword(
+				$keywords,
+				new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard"),
+				true);
+			$offerings = $searchSession->getCourseOfferingsByQuery($query);
+			
+			while ($offerings->hasNext() && count($courses) <= 20) {
+				$offering = $offerings->getNextCourseOffering();
+				$courseIdString = self::getStringFromOsidId($offering->getCourseId());
+				if (!isset($courses[$courseIdString])) {
+					try {
+						$courses[$courseIdString] = $offering->getCourse();
+					} catch (osid_OperationFailedException $e) {
+// 						print "\n<item><title>Failure on ".$offering->getDisplayName()."</title><description><![CDATA[<pre>OfferingId:\n".print_r($offering->getId(), true)."\n\nCourseId:\n".print_r($offering->getCourseId(), true)."</pre>]]></description></item>";
+					}
+				}
+			}
+		}
+		
+		// Print out courses as items.
+		foreach ($courses as $courseIdString => $course) {
+			print "\n\t\t<item>";
+			
+			print "\n\t\t\t<title>";
+			print $course->getDisplayName().' - '.$course->getTitle();
+			print "</title>";
+			
+			print "\n\t\t\t<link>";
+			print $this->getAsAbsolute($this->_helper->url('view', 'courses', null, array('catalog' => $this->_getParam('catalog'), 'course' => $courseIdString)));
+			print "</link>";
+			
+			print "\n\t\t\t<guid isPermaLink='true'>";
+			print $this->getAsAbsolute($this->_helper->url('view', 'courses', null, array('catalog' => $this->_getParam('catalog'), 'course' => $courseIdString)));
+			print "</guid>";
+			
+			print "\n\t\t\t<description><![CDATA[";
+			print $course->getDescription();
+			print "]]></description>";
+			
+			print "\n\t\t</item>";
+		}
+		
+		print '
+	</channel>
+</rss>';
+
+		exit;
+	}
+	
+	/**
+	 * Answer an absolute URL from a relative string.
+	 * 
+	 * @param string $url
+	 * @return string
+	 * @access private
+	 * @since 6/15/09
+	 */
+	private function getAsAbsolute ($url) {
+		$parts = split('/', $_SERVER['SERVER_PROTOCOL']);
+		return strtolower(trim(array_shift($parts)))
+			. '://' . $_SERVER['HTTP_HOST'] . $url;
+	}
+	
 }
 
 ?>
