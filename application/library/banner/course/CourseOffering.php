@@ -238,8 +238,13 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourse() {
-    	if (!isset($this->course))
-    		$this->course = $this->session->getCourseLookupSession()->getCourse($this->getCourseId());
+    	if (!isset($this->course)) {
+    		try {
+	    		$this->course = $this->session->getCourseLookupSession()->getCourse($this->getCourseId());
+	    	} catch (osid_NotFoundException $e) {
+	    		throw new osid_OperationFailedException($e->getMessage(), $e->getCode());
+	    	}
+    	}
     	return $this->course;
     }
 	
