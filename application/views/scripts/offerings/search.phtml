@@ -242,8 +242,8 @@ print $this->paginationControl($this->paginator, 'Sliding', 'ItemPaginationContr
 					);
 ?>
 		<tr>
-			<th>
-				<a href='<?php print $this->url($offeringParams); ?>'><?php print $section->getDisplayName(); ?></a>
+			<td>
+				<a class='title' href='<?php print $this->url($offeringParams); ?>'><?php print $section->getDisplayName(); ?></a>
 <?php
 
 if ($section->hasRecordType($alternateType)) {
@@ -255,15 +255,27 @@ if ($section->hasRecordType($alternateType)) {
 			print "\n\t\t\t\t<br/>";
 			$alternate = $alternates->getNextCourseOffering();
 			$offeringParams['offering'] = AbstractCatalogController::getStringFromOsidId($alternate->getId());
-			print "<a href=\"".$this->url($offeringParams)."\">";
+			print "<a class='title' href=\"".$this->url($offeringParams)."\">";
 			print $this->escape($alternate->getDisplayName());
 			print "</a> ";
 		}
 	}
 }
 
+print "\n\t<dl>";
+
+print "\n\t\t<dt>Type:</dt>";
+print "\n\t\t<dd>".$this->escape($section->getGenusType()->getDisplayName())."</dd>";
+
+print "\n\t\t<dt>Term:</dt>";
+print "\n\t\t<dd><a href='".$termUrl."'>".$this->escape($term->getDisplayName())."</a></dd>";
+
+print "\n\t</dl>";
+
 ?>
-			</th>
+
+
+			</td>
 			<td>
 				<div class='title'><?php print $section->getTitle(); ?></div>
 				<div class='description'><?php print $section->getDescription(); ?></div>				
@@ -357,17 +369,6 @@ foreach ($topics as $topic) {
 print "</dd>";
 
 print "\n\t</dl>";
-print "\n\t</td>\n\t<td>";
-print "\n\t<dl>";
-
-print "\n\t\t<dt>Type:</dt>";
-print "\n\t\t<dd>".$this->escape($section->getGenusType()->getDisplayName())."</dd>";
-
-print "\n\t\t<dt>Term:</dt>";
-print "\n\t\t<dd><a href='".$termUrl."'>".$this->escape($term->getDisplayName())."</a></dd>";
-
-print "\n\t</dl>";
-
 
 
 ?>

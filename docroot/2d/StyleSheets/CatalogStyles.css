@@ -48,6 +48,10 @@ table.search_options td {
 	vertical-align: top;
 }
 
+table.search_results a.title {
+	font-weight: bold;
+}
+
 table.search_results {
 	width: 800px;
 }
