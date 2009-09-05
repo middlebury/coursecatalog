@@ -48,7 +48,7 @@ table.search_options td {
 	vertical-align: top;
 }
 
-table.search_results a.title {
+table.search_results .title {
 	font-weight: bold;
 }
 

@@ -163,7 +163,7 @@ class banner_course_CourseOffering
     	$title = '';
     	
     	if (isset($this->row['SCBCRSE_TITLE']) && strlen($this->row['SCBCRSE_TITLE']))
-    		$title .= $this->row['SCBCRSE_TITLE'].' ';
+    		$title .= $this->row['SCBCRSE_TITLE']."\n";
     	
     	if (isset($this->row['SSBSECT_CRSE_TITLE']) && strlen($this->row['SSBSECT_CRSE_TITLE']))
     		$title .= $this->row['SSBSECT_CRSE_TITLE'];

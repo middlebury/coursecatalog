@@ -1,6 +1,6 @@
 <?php
 // print "\n\t<div>".$this->escape($this->offering->getDisplayName())."</div>";
-print "\n\t<h2>\"".$this->escape($this->offering->getTitle())."\"</h2>";
+print "\n\t<h2>".nl2br($this->escape($this->offering->getTitle()))."</h2>";
 if ($this->offering->getDescription())
 	print "\n\t<div>".$this->escape($this->offering->getDescription())."</div>";
 
