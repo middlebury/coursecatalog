@@ -167,6 +167,44 @@ abstract class AbstractCatalogController
 	}
 	
 	/**
+	 * Get and OSID type object from a string.
+	 * 
+	 * @param string $idString
+	 * @return osid_type_Type
+	 * @access public
+	 * @since 4/21/09
+	 * @static
+	 */
+	public static function getOsidTypeFromString ($idString) {
+		try {
+			return new phpkit_type_URNInetType($idString);
+		} catch (osid_InvalidArgumentException $e) {
+			if (self::getIdAuthorityToShorten())
+				return new phpkit_type_Type('urn', self::getIdAuthorityToShorten(), $idString);
+			else
+				throw $e;
+		}
+	}
+	
+	/**
+	 * Answer a string representation of an OSID type object
+	 * 
+	 * @param osid_type_Type $type
+	 * @return string
+	 * @access public
+	 * @since 4/21/09
+	 * @static
+	 */
+	public static function getStringFromOsidType (osid_type_Type $type) {
+		if (self::getIdAuthorityToShorten() 
+				&& strtolower($type->getIdentifierNamespace()) == 'urn' 
+				&& strtolower($type->getAuthority()) == self::getIdAuthorityToShorten())
+			return $type->getIdentifier();
+		else
+			return phpkit_id_URNInetType::getInetURNString($type);
+	}
+	
+	/**
 	 * Answer the id-authority for whom ids should be shortened.
 	 * 
 	 * @return mixed string or false if none should be shortened.

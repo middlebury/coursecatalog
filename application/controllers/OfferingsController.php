@@ -102,11 +102,13 @@ class OfferingsController
 		if ($this->_getParam('catalog')) {
 			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
 			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
+			$offeringLookupSession = self::getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
 			$topicSearchSession = self::getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
 			$termLookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 			$this->view->title = 'Search in '.$offeringSearchSession->getCourseCatalog()->getDisplayName();
 		} else {
 			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSession();
+			$offeringLookupSession = self::getCourseManager()->getCourseOfferingLookupSession();
 			$topicSearchSession = self::getCourseManager()->getTopicSearchSession();
 			$termLookupSession = self::getCourseManager()->getTermLookupSession();
 			$this->view->title = 'Search in All Catalogs';
@@ -159,6 +161,7 @@ class OfferingsController
 	 	}
 		$this->view->requirements = $topicSearchSession->getTopicsByQuery($topicQuery);
 		
+		$this->view->genusTypes = $offeringLookupSession->getCourseOfferingGenusTypes();
 		
 	/*********************************************************
 	 * Set up and run our search query.
@@ -215,6 +218,29 @@ class OfferingsController
 			}
 			
 			$this->view->searchParams['requirement'] = $requirements;
+		}
+		
+		$this->view->selectedGenusTypes = array();
+		if ($this->_getParam('type') && count($this->_getParam('type'))) {
+			if (is_array($this->_getParam('type')))
+				$genusTypes = $this->_getParam('type');
+			else
+				$genusTypes = array($this->_getParam('type'));
+			
+			foreach ($genusTypes as $typeString) {
+				$genusType = self::getOsidTypeFromString($typeString);
+				$query->matchGenusType($genusType, true);
+				$this->view->selectedGenusTypes[] = $genusType;
+			}
+			
+			$this->view->searchParams['type'] = $genusTypes;
+		}
+		// Set the default selection to lecture/seminar if the is a new search
+		if (!$this->_getParam('submit') && !count($this->view->selectedGenusTypes)) {
+			$this->view->selectedGenusTypes = array(
+				self::getOsidTypeFromString('genera:offering/LCT'),
+				self::getOsidTypeFromString('genera:offering/SEM'),
+			);
 		}
 		
 		if ($query->hasRecordType($this->weeklyScheduleType)) {
