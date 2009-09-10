@@ -237,10 +237,7 @@ class OfferingsController
 		}
 		// Set the default selection to lecture/seminar if the is a new search
 		if (!$this->_getParam('submit') && !count($this->view->selectedGenusTypes)) {
-			$this->view->selectedGenusTypes = array(
-				self::getOsidTypeFromString('genera:offering/LCT'),
-				self::getOsidTypeFromString('genera:offering/SEM'),
-			);
+			$this->view->selectedGenusTypes = self::getDefaultGenusTypes();
 		}
 		
 		if ($query->hasRecordType($this->weeklyScheduleType)) {
