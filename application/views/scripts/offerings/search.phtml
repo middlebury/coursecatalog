@@ -320,6 +320,23 @@ print "\n\t</dl>";
 				<div class='description'><?php print $section->getDescription(); ?></div>				
 <?php
 print "\n\t<dl>";
+
+$instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+if ($section->hasRecordType($instructorsType)) {
+	$instructorsRecord = $section->getCourseOfferingRecord($instructorsType);
+	print "\n\t\t<dt>Instructors:</dt>";
+	print "\n\t\t<dd>";
+	$instructors = $instructorsRecord->getInstructors();
+	while ($instructors->hasNext()) {
+		$instructor = $instructors->getNextResource();
+		$resourceParams['resource'] = AbstractCatalogController::getStringFromOsidId($instructor->getId());
+		print "<a href=\"".$this->url($resourceParams)."\">";
+		print $this->escape($instructor->getDisplayName());
+		print "</a> ";
+	}
+	print "</dd>";
+}
+
 print "\n\t\t<dt>Location:</dt>";
 if ($section->hasLocation()) {
 	try {
@@ -340,22 +357,6 @@ if ($section->hasLocation()) {
 }
 print "\n\t\t<dt>Schedule:</dt>";
 print "\n\t\t<dd>".nl2br($this->escape($section->getScheduleInfo()))."</dd>";
-
-$instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
-if ($section->hasRecordType($instructorsType)) {
-	$instructorsRecord = $section->getCourseOfferingRecord($instructorsType);
-	print "\n\t\t<dt>Instructors:</dt>";
-	print "\n\t\t<dd>";
-	$instructors = $instructorsRecord->getInstructors();
-	while ($instructors->hasNext()) {
-		$instructor = $instructors->getNextResource();
-		$resourceParams['resource'] = AbstractCatalogController::getStringFromOsidId($instructor->getId());
-		print "<a href=\"".$this->url($resourceParams)."\">";
-		print $this->escape($instructor->getDisplayName());
-		print "</a> ";
-	}
-	print "</dd>";
-}
 
 // print "\n\t<dt>Subject:</dt>";
 // print "\n\t\t<dd>";
