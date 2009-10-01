@@ -234,7 +234,7 @@ abstract class banner_course_CourseOffering_AbstractSession
 	public function getInstructorIdsForOffering (osid_id_Id $offeringId) {
 		$ids = array();
 		foreach ($this->getInstructorDataForOffering($offeringId) as $row) {
-			$ids[] = $this->getOsidIdFromString($row['SYVINST_PIDM'], 'resource/person/');
+			$ids[] = $this->getOsidIdFromString($row['WEB_ID'], 'resource/person/');
 		}
 		return new phpkit_id_ArrayIdList($ids);
 	}
@@ -251,7 +251,7 @@ abstract class banner_course_CourseOffering_AbstractSession
 		$people = array();
 		foreach ($this->getInstructorDataForOffering($offeringId) as $row) {
 			$people[] = new banner_resource_Resource_Person(
-								$this->getOsidIdFromString($row['SYVINST_PIDM'], 'resource/person/'),
+								$this->getOsidIdFromString($row['WEB_ID'], 'resource/person/'),
 								$row['SYVINST_LAST_NAME'],
 								$row['SYVINST_FIRST_NAME']
 							);
@@ -288,7 +288,7 @@ abstract class banner_course_CourseOffering_AbstractSession
 		if (!isset(self::$instructorsForOffering_stmt)) {
 			$query = "
 SELECT
-	SYVINST_PIDM,
+	WEB_ID,
 	SYVINST_LAST_NAME,
 	SYVINST_FIRST_NAME
 FROM

@@ -233,29 +233,29 @@ class banner_resource_Resource_Lookup_Session
     	if (!isset(self::$getPersonResource_stmt)) {
 	    	$query =
 "SELECT 
-    SYVINST_PIDM,
+    WEB_ID,
 	SYVINST_LAST_NAME,
 	SYVINST_FIRST_NAME
 FROM 
 	SYVINST
 WHERE
-	SYVINST_PIDM = :pidm
+	WEB_ID = :webid
 ";
 			self::$getPersonResource_stmt = $this->manager->getDB()->prepare($query);
 		}
 		
 		$parameters = array(
-				':pidm' => $this->getDatabaseIdString($resourceId, 'resource/person/')
+				':webid' => $this->getDatabaseIdString($resourceId, 'resource/person/')
 			);
 		self::$getPersonResource_stmt->execute($parameters);
 		$row = self::$getPersonResource_stmt->fetch(PDO::FETCH_ASSOC);
 		self::$getPersonResource_stmt->closeCursor();
 		
-		if (!$row['SYVINST_PIDM'])
+		if (!$row['WEB_ID'])
 			throw new osid_NotFoundException("Could not find a resource  matching the person code ".$this->getDatabaseIdString($resourceId, 'resource/person/').".");
 		
 		return new banner_resource_Resource_Person(
-					$this->getOsidIdFromString($row['SYVINST_PIDM'], 'resource/person/'),
+					$this->getOsidIdFromString($row['WEB_ID'], 'resource/person/'),
 					$row['SYVINST_LAST_NAME'],
 					$row['SYVINST_FIRST_NAME']
 			);
@@ -273,12 +273,12 @@ WHERE
     	if (!isset(self::$getPersonResources_stmt)) {
 	    	$query =
 "SELECT 
-    SYVINST_PIDM,
+    WEB_ID,
 	SYVINST_LAST_NAME,
 	SYVINST_FIRST_NAME
 FROM 
 	SYVINST
-GROUP BY SYVINST_PIDM
+GROUP BY WEB_ID
 ";
 			self::$getPersonResources_stmt = $this->manager->getDB()->prepare($query);
 		}
@@ -288,7 +288,7 @@ GROUP BY SYVINST_PIDM
 		$resources = array();
 		while ($row = self::$getPersonResources_stmt->fetch(PDO::FETCH_ASSOC)) {
 			$resources[] = new banner_resource_Resource_Person(
-					$this->getOsidIdFromString($row['SYVINST_PIDM'], 'resource/person/'),
+					$this->getOsidIdFromString($row['WEB_ID'], 'resource/person/'),
 					$row['SYVINST_LAST_NAME'],
 					$row['SYVINST_FIRST_NAME']
 				);
