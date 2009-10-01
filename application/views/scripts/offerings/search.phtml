@@ -113,36 +113,6 @@ while ($this->requirements->hasNext()) {
 		</tr>
 		
 		<tr>
-			<th>Type:</th>
-			<td>
-				<div class='help_text'>(Leave all blank for no preference)</div>
-				<div class='requirement_group'>
-<?php
-$i = 0;
-while ($this->genusTypes->hasNext()) {
-	if (!($i % 5))
-		print "\n\t\t\t</div>\n\t\t\t<div class='requirement_group'>";
-	
-	$type = $this->genusTypes->getNextType();
-	print "\n\t\t\t\t<input type='checkbox' name='type[]' value='";
-	print AbstractCatalogController::getStringFromOsidType($type);
-	print "'";
-	foreach ($this->selectedGenusTypes as $selectedType) {
-		if ($type->isEqual($selectedType)) {
-			print " checked='checked'";
-			break;
-		}
-	}
-	print "/><label>".$type->getDisplayName()."</label><br/>";
-	
-	$i++;
-}
-?>
-				</div>
-			</td>
-		</tr>
-		
-		<tr>
 			<th>Time:</th>
 			<td>
 				<label>From 
@@ -174,6 +144,37 @@ while ($this->genusTypes->hasNext()) {
 				</label>
 			</td>
 		</tr>
+		
+		<tr>
+			<th>Type:</th>
+			<td>
+				<div class='help_text'>(Leave all blank for no preference)</div>
+				<div class='requirement_group'>
+<?php
+$i = 0;
+while ($this->genusTypes->hasNext()) {
+	if (!($i % 5))
+		print "\n\t\t\t</div>\n\t\t\t<div class='requirement_group'>";
+	
+	$type = $this->genusTypes->getNextType();
+	print "\n\t\t\t\t<input type='checkbox' name='type[]' value='";
+	print AbstractCatalogController::getStringFromOsidType($type);
+	print "'";
+	foreach ($this->selectedGenusTypes as $selectedType) {
+		if ($type->isEqual($selectedType)) {
+			print " checked='checked'";
+			break;
+		}
+	}
+	print "/><label>".$type->getDisplayName()."</label><br/>";
+	
+	$i++;
+}
+?>
+				</div>
+			</td>
+		</tr>
+
 
 <?php } ?>
 
