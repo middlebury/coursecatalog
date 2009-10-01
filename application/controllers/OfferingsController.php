@@ -31,6 +31,7 @@ class OfferingsController
     	$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
 		$this->booleanStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:boolean");
 		$this->instructorType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		$this->alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
 		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 
 		parent::init();
@@ -101,11 +102,13 @@ class OfferingsController
 		if ($this->_getParam('catalog')) {
 			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
 			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
+			$offeringLookupSession = self::getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
 			$topicSearchSession = self::getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
 			$termLookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 			$this->view->title = 'Search in '.$offeringSearchSession->getCourseCatalog()->getDisplayName();
 		} else {
 			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSession();
+			$offeringLookupSession = self::getCourseManager()->getCourseOfferingLookupSession();
 			$topicSearchSession = self::getCourseManager()->getTopicSearchSession();
 			$termLookupSession = self::getCourseManager()->getTermLookupSession();
 			$this->view->title = 'Search in All Catalogs';
@@ -158,6 +161,7 @@ class OfferingsController
 	 	}
 		$this->view->requirements = $topicSearchSession->getTopicsByQuery($topicQuery);
 		
+		$this->view->genusTypes = $offeringLookupSession->getCourseOfferingGenusTypes();
 		
 	/*********************************************************
 	 * Set up and run our search query.
@@ -214,6 +218,26 @@ class OfferingsController
 			}
 			
 			$this->view->searchParams['requirement'] = $requirements;
+		}
+		
+		$this->view->selectedGenusTypes = array();
+		if ($this->_getParam('type') && count($this->_getParam('type'))) {
+			if (is_array($this->_getParam('type')))
+				$genusTypes = $this->_getParam('type');
+			else
+				$genusTypes = array($this->_getParam('type'));
+			
+			foreach ($genusTypes as $typeString) {
+				$genusType = self::getOsidTypeFromString($typeString);
+				$query->matchGenusType($genusType, true);
+				$this->view->selectedGenusTypes[] = $genusType;
+			}
+			
+			$this->view->searchParams['type'] = $genusTypes;
+		}
+		// Set the default selection to lecture/seminar if the is a new search
+		if (!$this->_getParam('submit') && !count($this->view->selectedGenusTypes)) {
+			$this->view->selectedGenusTypes = self::getDefaultGenusTypes();
 		}
 		
 		if ($query->hasRecordType($this->weeklyScheduleType)) {
@@ -332,8 +356,6 @@ class OfferingsController
 		$this->view->title = $this->view->offering->getDisplayName();
 		$this->view->headTitle($this->view->title);
 		
-		$this->render();
-		
 		// Term
 		$this->view->term = $this->view->offering->getTerm();
 		
@@ -343,6 +365,18 @@ class OfferingsController
  			$this->view->offering->getTermId(),
  			$this->view->offering->getCourseId()
  		);
+ 		
+ 		// Alternates
+ 		if ($this->view->offering->hasRecordType($this->alternateType)) {
+ 			
+ 			$record = $this->view->offering->getCourseOfferingRecord($this->alternateType);
+ 			if ($record->hasAlternates()) {
+ 				$this->view->alternates = $record->getAlternates();
+ 			}
+ 		}
+ 		
+ 		$this->render();
+ 		
  		$this->render('offerings', null, true);
  		
  		$this->view->menuIsOfferings = true;

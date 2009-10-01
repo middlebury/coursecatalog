@@ -178,6 +178,21 @@ abstract class banner_course_CourseOffering_AbstractSession
 	}
 	
 	/**
+	 * Answer the courseoffering lookup session
+	 * 
+	 * @return osid_course_CourseOfferingLookupSession
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getCourseOfferingLookupSession () {
+		if (!isset($this->courseOfferingLookupSession)) {
+			$this->courseOfferingLookupSession = $this->manager->getCourseOfferingLookupSessionForCatalog($this->getCourseCatalogId());
+			$this->courseOfferingLookupSession->useFederatedCourseCatalogView();
+		}
+		return $this->courseOfferingLookupSession;
+	}
+	
+	/**
 	 * Answer a term lookup session
 	 * 
 	 * @return osid_course_TermLookupSession
@@ -219,7 +234,7 @@ abstract class banner_course_CourseOffering_AbstractSession
 	public function getInstructorIdsForOffering (osid_id_Id $offeringId) {
 		$ids = array();
 		foreach ($this->getInstructorDataForOffering($offeringId) as $row) {
-			$ids[] = $this->getOsidIdFromString($row['SYVINST_PIDM'], 'resource/person/');
+			$ids[] = $this->getOsidIdFromString($row['WEB_ID'], 'resource/person/');
 		}
 		return new phpkit_id_ArrayIdList($ids);
 	}
@@ -236,7 +251,7 @@ abstract class banner_course_CourseOffering_AbstractSession
 		$people = array();
 		foreach ($this->getInstructorDataForOffering($offeringId) as $row) {
 			$people[] = new banner_resource_Resource_Person(
-								$this->getOsidIdFromString($row['SYVINST_PIDM'], 'resource/person/'),
+								$this->getOsidIdFromString($row['WEB_ID'], 'resource/person/'),
 								$row['SYVINST_LAST_NAME'],
 								$row['SYVINST_FIRST_NAME']
 							);
@@ -273,7 +288,7 @@ abstract class banner_course_CourseOffering_AbstractSession
 		if (!isset(self::$instructorsForOffering_stmt)) {
 			$query = "
 SELECT
-	SYVINST_PIDM,
+	WEB_ID,
 	SYVINST_LAST_NAME,
 	SYVINST_FIRST_NAME
 FROM
@@ -287,6 +302,52 @@ ORDER BY
 			self::$instructorsForOffering_stmt = $this->manager->getDB()->prepare($query);
 		}
 		return self::$instructorsForOffering_stmt;
+	}
+	
+	private static $alternatesForOffering_stmt;
+	/**
+	 * Answer the alternate course-offering ids
+	 * 
+	 * @param osid_id_Id $offeringId
+	 * @return PDOStatement
+	 * @access public
+	 * @since 5/1/09
+	 */
+	public function getAlternateIdsForOffering (osid_id_Id $offeringId) {
+		if (!isset(self::$alternatesForOffering_stmt)) {
+			$query = "
+SELECT
+	*
+FROM
+	SSRXLST
+WHERE
+	SSRXLST_XLST_GROUP IN 
+		(SELECT 
+			SSRXLST_XLST_GROUP 
+		FROM 
+			SSRXLST 
+		WHERE 
+			SSRXLST_TERM_CODE = :term_code 
+			AND SSRXLST_CRN = :crn
+		)
+	AND SSRXLST_TERM_CODE = :term_code
+	AND SSRXLST_CRN != :crn
+";
+			self::$alternatesForOffering_stmt = $this->manager->getDB()->prepare($query);
+		}
+		self::$alternatesForOffering_stmt->execute(array(
+			':term_code' => $this->getTermCodeFromOfferingId($offeringId),
+			':crn' => $this->getCrnFromOfferingId($offeringId)
+		));
+		$rows = self::$alternatesForOffering_stmt->fetchAll(PDO::FETCH_ASSOC);
+		self::$alternatesForOffering_stmt->closeCursor();
+		
+		$ids = array();
+		foreach ($rows as $row) {
+			$ids[] = $this->getOfferingIdFromTermCodeAndCrn($row['SSRXLST_TERM_CODE'], $row['SSRXLST_CRN']);
+		}
+		
+		return new phpkit_id_ArrayIdList($ids);
 	}
 	
 	private static $requirementTopics_stmt;

@@ -41,7 +41,8 @@
  */
 class banner_course_CourseOffering_Lookup_Session
     extends banner_course_CourseOffering_AbstractSession
-    implements osid_course_CourseOfferingLookupSession
+    implements osid_course_CourseOfferingLookupSession,
+    middlebury_course_CourseOffering_Lookup_SessionInterface
 {
 	/**
 	 * Constructor
@@ -212,7 +213,8 @@ class banner_course_CourseOffering_Lookup_Session
 	STVBLDG_DESC,
 	MAX( SCBCRSE_EFF_TERM ) AS SCBCRSE_EFF_TERM , 
 	SCBCRSE_DEPT_CODE,
-	SCBCRSE_DIVS_CODE
+	SCBCRSE_DIVS_CODE,
+	SSRXLST_XLST_GROUP
 FROM 
 	catalog_term
 	LEFT JOIN SSBSECT ON term_code = SSBSECT_TERM_CODE
@@ -221,6 +223,7 @@ FROM
 	LEFT JOIN STVBLDG ON SSRMEET_BLDG_CODE = STVBLDG_CODE
 	LEFT JOIN STVSCHD ON SSBSECT_SCHD_CODE = STVSCHD_CODE
 	LEFT JOIN SCBCRSE ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
+	LEFT JOIN SSRXLST ON (SSBSECT_TERM_CODE = SSRXLST_TERM_CODE AND SSBSECT_CRN = SSRXLST_CRN)
 WHERE
 	".$this->getCatalogWhereTerms()."
 	AND term_code = :section_term_code
@@ -561,5 +564,20 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
     		$this,
     		$this->getCourseCatalogId());
     }
-
+	
+	/*********************************************************
+	 * Custom extensions from middlebury_course_CourseOffering_Lookup_SessionInterface
+	 *********************************************************/
+	
+	/**
+     *  Gets a list of the genus types for course offerings
+     *
+     *  @return object osid_id_TypeList the list of course offering genus types.
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     */
+    public function getCourseOfferingGenusTypes() {
+    	return new banner_course_CourseOffering_GenusTypeList($this->manager->getDB(), $this);
+    }
 }

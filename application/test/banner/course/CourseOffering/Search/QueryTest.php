@@ -53,8 +53,8 @@ class banner_course_CourseOffering_Search_QueryTest
 		$this->labType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/LAB');
 		$this->discussionType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/DSC');
 		
-    	$this->barryId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/1000002');
-    	$this->calvinId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/1000003');
+    	$this->barryId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/WEBID1000002');
+    	$this->calvinId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/WEBID1000003');
 
     }
 
@@ -1597,10 +1597,10 @@ class banner_course_CourseOffering_Search_QueryTest
         $record->matchInstructorId($this->barryId, true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals('1000002', $params[0]);
+        $this->assertEquals('WEBID1000002', $params[0]);
         $this->assertFalse(isset($params[1]));
         
-        $this->assertEquals('(SYVINST_PIDM = ?)', $this->object->getWhereClause());
+        $this->assertEquals('(WEB_ID = ?)', $this->object->getWhereClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
@@ -1616,10 +1616,10 @@ class banner_course_CourseOffering_Search_QueryTest
         $record->matchInstructorId($this->calvinId, true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals('1000003', $params[0]);
+        $this->assertEquals('WEBID1000003', $params[0]);
         $this->assertFalse(isset($params[1]));
         
-        $this->assertEquals('(SYVINST_PIDM = ?)', $this->object->getWhereClause());
+        $this->assertEquals('(WEB_ID = ?)', $this->object->getWhereClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
@@ -1636,11 +1636,11 @@ class banner_course_CourseOffering_Search_QueryTest
         $record->matchInstructorId($this->calvinId, true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals('1000002', $params[0]);
-        $this->assertEquals('1000003', $params[1]);
+        $this->assertEquals('WEBID1000002', $params[0]);
+        $this->assertEquals('WEBID1000003', $params[1]);
         $this->assertFalse(isset($params[2]));
         
-        $this->assertEquals("(SYVINST_PIDM = ?\n\t\tOR SYVINST_PIDM = ?)", $this->object->getWhereClause());
+        $this->assertEquals("(WEB_ID = ?\n\t\tOR WEB_ID = ?)", $this->object->getWhereClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();

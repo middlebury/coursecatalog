@@ -36,6 +36,7 @@ class banner_course_CourseOfferingTest
         $this->mcugCatalogId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
     	$this->physCourseId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
     	$this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/90143');
+    	$this->geolOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/92418');
     	$this->chemOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200520/20022');
     	$this->manager = $this->sharedFixture['CourseManager'];
         $this->session = $this->manager->getCourseOfferingLookupSessionForCatalog($this->mcugCatalogId);
@@ -43,6 +44,9 @@ class banner_course_CourseOfferingTest
         
         $this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
+		$this->alternatesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
+		
+		
         $this->namesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:person_names');
     }
 
@@ -445,7 +449,66 @@ class banner_course_CourseOfferingTest
         $this->assertEquals('Georges', $names->getGivenName());
         $this->assertEquals('Gleuseau', $names->getSurname());
     }
+
+/*********************************************************
+ * Tests for AlternatesRecord.
+ *********************************************************/
+ 	/**
+     * 
+     */
+    public function testHasAlternates () {
+    	$record = $this->object->getCourseOfferingRecord($this->alternatesType);
+    	$this->assertFalse($record->hasAlternates());
+    }
     
+ 	/**
+     * 
+     */
+    public function testGetAlternateIds () {
+    	$record = $this->object->getCourseOfferingRecord($this->alternatesType);
+    	$ids = $record->getAlternateIds();
+    	$this->assertType('osid_id_IdList', $ids);
+    }
+    
+    /**
+     * 
+     */
+    public function testGetAlternates () {
+    	$record = $this->object->getCourseOfferingRecord($this->alternatesType);
+    	$alternates = $record->getAlternates();
+    	$this->assertType('osid_course_CourseOfferingList', $alternates);
+    }
+    
+    /**
+     * 
+     */
+    public function testHasGeolAlternates () {
+    	$offering = $this->session->getCourseOffering($this->geolOfferingId);
+    	$record = $offering->getCourseOfferingRecord($this->alternatesType);
+    	$this->assertTrue($record->hasAlternates());
+    }
+ 	
+ 	/**
+     * 
+     */
+    public function testGetGeolAlternateIds () {
+    	$offering = $this->session->getCourseOffering($this->geolOfferingId);
+    	$record = $offering->getCourseOfferingRecord($this->alternatesType);
+    	$ids = $record->getAlternateIds();
+    	$this->assertType('osid_id_IdList', $ids);
+    	$this->assertEquals(1, $ids->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testGetGeolAlternates () {
+    	$offering = $this->session->getCourseOffering($this->geolOfferingId);
+    	$record = $offering->getCourseOfferingRecord($this->alternatesType);
+    	$alternates = $record->getAlternates();
+    	$this->assertType('osid_course_CourseOfferingList', $alternates);
+    	$this->assertEquals(1, $alternates->available());
+    }
 
 /*********************************************************
  * Tests for weeklySchedule record.

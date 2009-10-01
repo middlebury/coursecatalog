@@ -18,7 +18,8 @@
 class banner_course_CourseOffering
     extends phpkit_AbstractOsidObject
     implements osid_course_CourseOffering,
-    middlebury_course_CourseOffering_InstructorsRecord
+    middlebury_course_CourseOffering_InstructorsRecord,
+    middlebury_course_CourseOffering_AlternatesRecord
 {
 	/**
 	 * @var array $requiredFields;
@@ -58,7 +59,9 @@ class banner_course_CourseOffering
 			
 			'SCBCRSE_TITLE',
 			'SCBCRSE_DEPT_CODE',
-			'SCBCRSE_DIVS_CODE'
+			'SCBCRSE_DIVS_CODE',
+			
+			'SSRXLST_XLST_GROUP'
 		);
 	
 	private $row;
@@ -77,6 +80,7 @@ class banner_course_CourseOffering
 	public function __construct (array $row, banner_course_CourseOffering_SessionInterface $session) {
 		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
+		$this->alternatesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
 		
 		parent::__construct();
 		$this->checkRow($row);
@@ -102,6 +106,7 @@ class banner_course_CourseOffering
 		
 		$this->addRecordType($this->instructorsType);
 		$this->addRecordType($this->weeklyScheduleType);
+		$this->addRecordType($this->alternatesType);
 	}
 	
 	/**
@@ -158,7 +163,7 @@ class banner_course_CourseOffering
     	$title = '';
     	
     	if (isset($this->row['SCBCRSE_TITLE']) && strlen($this->row['SCBCRSE_TITLE']))
-    		$title .= $this->row['SCBCRSE_TITLE'].' ';
+    		$title .= $this->row['SCBCRSE_TITLE']."\n";
     	
     	if (isset($this->row['SSBSECT_CRSE_TITLE']) && strlen($this->row['SSBSECT_CRSE_TITLE']))
     		$title .= $this->row['SSBSECT_CRSE_TITLE'];
@@ -233,8 +238,13 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourse() {
-    	if (!isset($this->course))
-    		$this->course = $this->session->getCourseLookupSession()->getCourse($this->getCourseId());
+    	if (!isset($this->course)) {
+    		try {
+	    		$this->course = $this->session->getCourseLookupSession()->getCourse($this->getCourseId());
+	    	} catch (osid_NotFoundException $e) {
+	    		throw new osid_OperationFailedException($e->getMessage(), $e->getCode());
+	    	}
+    	}
     	return $this->course;
     }
 	
@@ -316,11 +326,15 @@ class banner_course_CourseOffering
     public function getLocationInfo() {
     	$parts = array();
     	foreach ($this->getMeetingRows() as $row) {
-	    	$parts[] = $row['SSRMEET_BLDG_CODE'].' ' .$row['SSRMEET_ROOM_CODE']
+    		if ($this->row['SSRMEET_ROOM_CODE'] || $row['SSRMEET_ROOM_CODE'] || $row['STVBLDG_DESC'])
+		    	$parts[] = $row['SSRMEET_BLDG_CODE'].' ' .$row['SSRMEET_ROOM_CODE']
     		.' ('.$row['STVBLDG_DESC'].')';
     	}
     	
-    	return implode(", ", $parts);
+    	if (count($parts))
+	    	return implode(", ", $parts);
+	    else
+	    	return "Unknown";
     }
 
 
@@ -332,7 +346,7 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function hasLocation() {
-    	return true;
+    	return ($this->row['SSRMEET_BLDG_CODE'] && $this->row['SSRMEET_ROOM_CODE']);
     }
 
 
@@ -398,6 +412,9 @@ class banner_course_CourseOffering
 			if ($row['SSRMEET_SAT_DAY'])	
 				$days[] = 'Saturday';
 			
+			if (!count($days))
+				continue;
+			
 			$info = $this->as12HourTime($row['SSRMEET_BEGIN_TIME'])
 				.'-'.$this->as12HourTime($row['SSRMEET_END_TIME'])
 				.' on '.implode(', ', $days);
@@ -406,7 +423,10 @@ class banner_course_CourseOffering
 			$parts[] = $info;
 		}
 		
-		return implode("\n", $parts);
+		if (count($parts))
+	    	return implode("\n", $parts);
+	    else
+	    	return "Unknown";	
     }
     
     /**
@@ -635,6 +655,49 @@ class banner_course_CourseOffering
      */
     public function getInstructors() {
     	return $this->session->getInstructorsForOffering($this->getId());
+    }
+    
+/*********************************************************
+ * AlternatesRecord support
+ *********************************************************/
+ 	/**
+	 * Tests if this course offering has any alternate course offerings.
+	 * 
+	 * @return boolean <code> true </code> if this course offering has any
+     *          alternates, <code> false </code> otherwise 
+	 * @access public
+     * @compliance mandatory This method must be implemented. 
+	 */
+	public function hasAlternates () {
+		return (strlen($this->row['SSRXLST_XLST_GROUP']) > 0);
+	}
+	
+	/**
+     *  Gets the Ids of any alternate course offerings
+     *
+     *  @return object osid_id_IdList the list of alternate ids.
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     */
+    public function getAlternateIds() {
+    	if (!$this->hasAlternates())
+    		return new phpkit_EmptyList('osid_id_IdList');
+    	
+    	return $this->session->getAlternateIdsForOffering($this->getId());
+    }
+    
+    /**
+     *  Gets the alternate <code> CourseOfferings </code>.
+     *
+     *  @return object osid_course_CourseOfferingList The list of alternates.
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     */
+    public function getAlternates() {
+    	$lookupSession = $this->session->getCourseOfferingLookupSession();
+    	return $lookupSession->getCourseOfferingsByIds($this->getAlternateIds());
     }
     
 /*********************************************************

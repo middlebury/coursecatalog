@@ -25,6 +25,8 @@ abstract class AbstractCatalogController
 	private static $courseManager;
 	private static $configPath;
 	
+	private static $idAuthorityToShorten;
+		
 	/**
 	 * Answer the configuration path
 	 * 
@@ -136,7 +138,14 @@ abstract class AbstractCatalogController
 	 * @static
 	 */
 	public static function getOsidIdFromString ($idString) {
-		return new phpkit_id_URNInetId($idString);
+		try {
+			return new phpkit_id_URNInetId($idString);
+		} catch (osid_InvalidArgumentException $e) {
+			if (self::getIdAuthorityToShorten())
+				return new phpkit_id_Id(self::getIdAuthorityToShorten(), 'urn', $idString);
+			else
+				throw $e;
+		}
 	}
 	
 	/**
@@ -149,8 +158,108 @@ abstract class AbstractCatalogController
 	 * @static
 	 */
 	public static function getStringFromOsidId (osid_id_Id $id) {
-		return phpkit_id_URNInetId::getInetURNString($id);
+		if (self::getIdAuthorityToShorten() 
+				&& strtolower($id->getIdentifierNamespace()) == 'urn' 
+				&& strtolower($id->getAuthority()) == self::getIdAuthorityToShorten())
+			return $id->getIdentifier();
+		else
+			return phpkit_id_URNInetId::getInetURNString($id);
 	}
+	
+	/**
+	 * Get and OSID type object from a string.
+	 * 
+	 * @param string $idString
+	 * @return osid_type_Type
+	 * @access public
+	 * @since 4/21/09
+	 * @static
+	 */
+	public static function getOsidTypeFromString ($idString) {
+		try {
+			return new phpkit_type_URNInetType($idString);
+		} catch (osid_InvalidArgumentException $e) {
+			if (self::getIdAuthorityToShorten())
+				return new phpkit_type_Type('urn', self::getIdAuthorityToShorten(), $idString);
+			else
+				throw $e;
+		}
+	}
+	
+	/**
+	 * Answer a string representation of an OSID type object
+	 * 
+	 * @param osid_type_Type $type
+	 * @return string
+	 * @access public
+	 * @since 4/21/09
+	 * @static
+	 */
+	public static function getStringFromOsidType (osid_type_Type $type) {
+		if (self::getIdAuthorityToShorten() 
+				&& strtolower($type->getIdentifierNamespace()) == 'urn' 
+				&& strtolower($type->getAuthority()) == self::getIdAuthorityToShorten())
+			return $type->getIdentifier();
+		else
+			return phpkit_id_URNInetType::getInetURNString($type);
+	}
+	
+	/**
+	 * Answer the id-authority for whom ids should be shortened.
+	 * 
+	 * @return mixed string or false if none should be shortened.
+	 * @access protected
+	 * @since 6/16/09
+	 * @static
+	 */
+	protected static function getIdAuthorityToShorten () {
+		if (!isset(self::$idAuthorityToShorten)) {
+			try {
+				$authority = phpkit_configuration_ConfigUtil::getSingleValuedValue(
+    								self::getRuntimeManager()->getConfiguration(), 
+    								new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:catalog/shorten_ids_for_authority'),
+    								new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
+    			if (strlen($authority))
+	    			self::$idAuthorityToShorten = $authority;
+	    		else
+	    			self::$idAuthorityToShorten = false;
+    		} catch (osid_NotFoundException $e) {
+    			self::$idAuthorityToShorten = false;
+    		} catch (osid_ConfigurationErrorException $e) {
+    			self::$idAuthorityToShorten = false;
+    		}
+		}
+		return self::$idAuthorityToShorten;
+	}
+	
+	/**
+	 * Answer the course offering genus types that should be searched by default
+	 * for a catalog
+	 * 
+	 * @return array of osid_type_Types
+	 * @access protected
+	 * @since 6/16/09
+	 * @static
+	 */
+	protected static function getDefaultGenusTypes () {
+		try {
+			$types = array();
+			$typeStrings = phpkit_configuration_ConfigUtil::getMultiValuedValue(
+								self::getRuntimeManager()->getConfiguration(), 
+								new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:catalog/default_offering_genus_types_to_search'),
+								new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
+			foreach ($typeStrings as $typeString) {
+				$types[] = new phpkit_type_URNInetType($typeString);
+			}
+			return $types;
+		} catch (osid_NotFoundException $e) {
+		} catch (osid_ConfigurationErrorException $e) {
+		}
+		
+		return array();
+	}
+	
+	
 	
 	/**
 	 * Load topics into our view

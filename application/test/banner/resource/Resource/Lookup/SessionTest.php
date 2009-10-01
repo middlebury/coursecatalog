@@ -44,8 +44,8 @@ class banner_resource_Resource_Lookup_SessionTest
         $this->campusType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/campus");
         $this->placeType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place");
         
-        $this->person1Id = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/1000002');
-        $this->person2Id = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/1000007');
+        $this->person1Id = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/WEBID1000002');
+        $this->person2Id = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/WEBID1000007');
         $this->campusId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/place/campus/M');
         $this->buildingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/place/building/MBH');
         $this->roomId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/place/room/MBH/538');

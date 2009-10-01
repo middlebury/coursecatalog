@@ -1130,7 +1130,7 @@ class banner_course_CourseOffering_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchInstructorId(osid_id_Id $instructorId, $match) {
-		$this->addClause('instructor_id', 'SYVINST_PIDM = ?', array($this->session->getDatabaseIdString($instructorId, 'resource/person/')), $match);
+		$this->addClause('instructor_id', 'WEB_ID = ?', array($this->session->getDatabaseIdString($instructorId, 'resource/person/')), $match);
 		$this->addTableJoin('LEFT JOIN SYVINST ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)');
     }
 

@@ -12,5 +12,12 @@
 	<string>testpassword</string>
 	<key>urn:inet:middlebury.edu:config:banner_course/pdo_username</key>
 	<string>testuser</string>
+	<key>urn:inet:middlebury.edu:config:catalog/default_offering_genus_types_to_search</key>
+	<array>
+		<string>urn:inet:middlebury.edu:genera:offering/LCT</string>
+		<string>urn:inet:middlebury.edu:genera:offering/SEM</string>
+	</array>
+	<key>urn:inet:middlebury.edu:config:catalog/shorten_ids_for_authority</key>
+	<string>middlebury.edu</string>
 </dict>
 </plist>
