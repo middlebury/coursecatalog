@@ -78,6 +78,7 @@ try {
 // GENERAL.GORINTG
  
 try {
+	print "Updating GORINTG\t";
 	$mysql->beginTransaction();
 	$tgorintg = $mysql->prepare("TRUNCATE TABLE GORINTG");
 	$tgorintg->execute();
@@ -98,7 +99,7 @@ try {
 	
 	$mysql->commit();
 	$gorintg->closeCursor();
-	print "Updated GORINTG\n";
+	print "...\tUpdated GORINTG\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -108,6 +109,7 @@ try {
 // GENERAL.GTVDUNT
  
 try {
+	print "Updating GTVDUNT\t";
 	$mysql->beginTransaction();
 	$tgtvdunt = $mysql->prepare("TRUNCATE TABLE GTVDUNT");
 	$tgtvdunt->execute();
@@ -128,7 +130,7 @@ try {
 	
 	$mysql->commit();
 	$gtvdunt->closeCursor();
-	print "Updated GTVDUNT\n";
+	print "...\tUpdated GTVDUNT\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -138,6 +140,7 @@ try {
 // GENERAL.GTVINSM
  
 try {
+	print "Updating GTVINSM\t";
 	$mysql->beginTransaction();
 	$tgtvinsm = $mysql->prepare("TRUNCATE TABLE GTVINSM");
 	$tgtvinsm->execute();
@@ -157,7 +160,7 @@ try {
 	
 	$mysql->commit();
 	$gtvinsm->closeCursor();
-	print "Updated GTVINSM\n";
+	print "...\tUpdated GTVINSM\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -167,6 +170,7 @@ try {
 // GENERAL.GTVINTP
  
 try {
+	print "Updating GTVINTP\t";
 	$mysql->beginTransaction();
 	$tgtvintp = $mysql->prepare("TRUNCATE TABLE GTVINTP");
 	$tgtvintp->execute();
@@ -186,7 +190,7 @@ try {
 	
 	$mysql->commit();
 	$gtvintp->closeCursor();
-	print "Updated GTVINTP\n";
+	print "...\tUpdated GTVINTP\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -196,6 +200,7 @@ try {
 // GENERAL.GTVMTYP
  
 try {
+	print "Updating GTVMTYP\t";
 	$mysql->beginTransaction();
 	$tgtvmtyp = $mysql->prepare("TRUNCATE TABLE GTVMTYP");
 	$tgtvmtyp->execute();
@@ -216,7 +221,7 @@ try {
 	
 	$mysql->commit();
 	$gtvmtyp->closeCursor();
-	print "Updated GTVMTYP\n";
+	print "...\tUpdated GTVMTYP\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -226,6 +231,7 @@ try {
 // GENERAL.GTVSCHS
  
 try {
+	print "Updating GTVSCHS\t";
 	$mysql->beginTransaction();
 	$tgtvschs = $mysql->prepare("TRUNCATE TABLE GTVSCHS");
 	$tgtvschs->execute();
@@ -244,7 +250,7 @@ try {
 	
 	$mysql->commit();
 	$gtvschs->closeCursor();
-	print "Updated GTVSCHS\n";
+	print "...\tUpdated GTVSCHS\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -254,6 +260,7 @@ try {
 // SATURN.SCBCRSE
  
 try {
+	print "Updating SCBCRSE\t";
 	$mysql->beginTransaction();
 	$tscbcrse = $mysql->prepare("TRUNCATE TABLE SCBCRSE");
 	$tscbcrse->execute();
@@ -309,7 +316,7 @@ try {
 	
 	$mysql->commit();
 	$scbcrse->closeCursor();
-	print "Updated SCBCRSE\n";
+	print "...\tUpdated SCBCRSE\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -318,6 +325,7 @@ try {
 // SATURN.SSBXLST
  
 try {
+	print "Updating SSBXLST\t";
 	$mysql->beginTransaction();
 	$tSSBXLST = $mysql->prepare("TRUNCATE TABLE SSBXLST");
 	$tSSBXLST->execute();
@@ -339,7 +347,7 @@ try {
 	
 	$mysql->commit();
 	$SSBXLST->closeCursor();
-	print "Updated SSBXLST\n";
+	print "...\tUpdated SSBXLST\n";
 } catch(Exception $e) {
 	print $e->__toString()."\n";
 	$exceptions[] = $e->__toString();
@@ -349,6 +357,7 @@ try {
 // SATURN.SSRXLST
  
 try {
+	print "Updating SSRXLST\t";
 	$mysql->beginTransaction();
 	$tSSRXLST = $mysql->prepare("TRUNCATE TABLE SSRXLST");
 	$tSSRXLST->execute();
@@ -367,7 +376,7 @@ try {
 	
 	$mysql->commit();
 	$SSRXLST->closeCursor();
-	print "Updated SSRXLST\n";
+	print "...\tUpdated SSRXLST\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -376,6 +385,7 @@ try {
 // SATURN.SIRASGN
  
 try {
+	print "Updating SIRASGN\t";
 	$mysql->beginTransaction();
 	$tsirasgn = $mysql->prepare("TRUNCATE TABLE SIRASGN");
 	$tsirasgn->execute();
@@ -407,7 +417,7 @@ try {
 	
 	$mysql->commit();
 	$sirasgn->closeCursor();
-	print "Updated SIRASGN\n";
+	print "...\tUpdated SIRASGN\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -417,6 +427,7 @@ try {
 // SATURN.SSBSECT
  
 try {
+	print "Updating SSBSECT\t";
 	$mysql->beginTransaction();
 	$tssbsect = $mysql->prepare("TRUNCATE TABLE SSBSECT");
 	$tssbsect->execute();
@@ -494,7 +505,7 @@ try {
 	
 	$mysql->commit();
 	$ssbsect->closeCursor();
-	print "Updated SSBSECT\n";
+	print "...\tUpdated SSBSECT\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -504,6 +515,7 @@ try {
 // SATURN.SSRATTR
  
 try {
+	print "Updating SSRATTR\t";
 	$mysql->beginTransaction();
 	$tssrattr = $mysql->prepare("TRUNCATE TABLE SSRATTR");
 	$tssrattr->execute();
@@ -522,7 +534,7 @@ try {
 	
 	$mysql->commit();
 	$ssrattr->closeCursor();
-	print "Updated SSRATTR\n";
+	print "...\tUpdated SSRATTR\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -532,6 +544,7 @@ try {
 // SATURN.SSRMEET
 
 try {
+	print "Updating SSRMEET\t";
 	$mysql->beginTransaction();
 	$tssrmeet = $mysql->prepare("TRUNCATE TABLE SSRMEET");
 	$tssrmeet->execute();
@@ -576,7 +589,7 @@ try {
 	
 	$mysql->commit();
 	$ssrmeet->closeCursor();
-	print "Updated SSRMEET\n";
+	print "...\tUpdated SSRMEET\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -586,6 +599,7 @@ try {
 // SATURN.STVACYR
  
 try {
+	print "Updating STVACYR\t";
 	$mysql->beginTransaction();
 	$tstvacyr = $mysql->prepare("TRUNCATE TABLE STVACYR");
 	$tstvacyr->execute();
@@ -604,7 +618,7 @@ try {
 	
 	$mysql->commit();
 	$stvacyr->closeCursor();
-	print "Updated STVACYR\n";
+	print "...\tUpdated STVACYR\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -614,6 +628,7 @@ try {
 // SATURN.STVAPRV
  
 try {
+	print "Updating STVAPRV\t";
 	$mysql->beginTransaction();
 	$tstvaprv = $mysql->prepare("TRUNCATE TABLE STVAPRV");
 	$tstvaprv->execute();
@@ -631,7 +646,7 @@ try {
 	
 	$mysql->commit();
 	$stvaprv->closeCursor();
-	print "Updated STVAPRV\n";
+	print "...\tUpdated STVAPRV\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -641,6 +656,7 @@ try {
 // SATURN.STVASTY
  
 try {
+	print "Updating STVASTY\t";
 	$mysql->beginTransaction();
 	$tstvasty = $mysql->prepare("TRUNCATE TABLE STVASTY");
 	$tstvasty->execute();
@@ -658,7 +674,7 @@ try {
 	
 	$mysql->commit();
 	$stvasty->closeCursor();
-	print "Updated STVASTY\n";
+	print "...\tUpdated STVASTY\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -668,6 +684,7 @@ try {
 // SATURN.STVATTR
  
 try {
+	print "Updating STVATTR\t";
 	$mysql->beginTransaction();
 	$tstvattr = $mysql->prepare("TRUNCATE TABLE STVATTR");
 	$tstvattr->execute();
@@ -685,7 +702,7 @@ try {
 	
 	$mysql->commit();
 	$stvattr->closeCursor();
-	print "Updated STVATTR\n";
+	print "...\tUpdated STVATTR\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -695,6 +712,7 @@ try {
 // SATURN.STVBLDG
  
 try {
+	print "Updating STVBLDG\t";
 	$mysql->beginTransaction();
 	$tstvbldg = $mysql->prepare("TRUNCATE TABLE STVBLDG");
 	$tstvbldg->execute();
@@ -713,7 +731,7 @@ try {
 	
 	$mysql->commit();
 	$stvbldg->closeCursor();
-	print "Updated STVBLDG\n";
+	print "...\tUpdated STVBLDG\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -723,6 +741,7 @@ try {
 // SATURN.STVCAMP
  
 try {
+	print "Updating STVCAMP\t";
 	$mysql->beginTransaction();
 	$tstvcamp = $mysql->prepare("TRUNCATE TABLE STVCAMP");
 	$tstvcamp->execute();
@@ -741,7 +760,7 @@ try {
 	
 	$mysql->commit();
 	$stvcamp->closeCursor();
-	print "Updated STVCAMP\n";
+	print "...\tUpdated STVCAMP\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -751,6 +770,7 @@ try {
 // SATURN.STVCIPC
  
 try {
+	print "Updating STVCIPC\t";
 	$mysql->beginTransaction();
 	$tstvcipc = $mysql->prepare("TRUNCATE TABLE STVCIPC");
 	$tstvcipc->execute();
@@ -772,7 +792,7 @@ try {
 	
 	$mysql->commit();
 	$stvcipc->closeCursor();
-	print "Updated STVCIPC\n";
+	print "...\tUpdated STVCIPC\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -782,6 +802,7 @@ try {
 // SATURN.STVCOLL
  
 try {
+	print "Updating STVCOLL\t";
 	$mysql->beginTransaction();
 	$tstvcoll = $mysql->prepare("TRUNCATE TABLE STVCOLL");
 	$tstvcoll->execute();
@@ -810,7 +831,7 @@ try {
 	
 	$mysql->commit();
 	$stvcoll->closeCursor();
-	print "Updated STVCOLL\n";
+	print "...\tUpdated STVCOLL\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -820,6 +841,7 @@ try {
 // SATURN.STVCOMT
  
 try {
+	print "Updating STVCOMT\t";
 	$mysql->beginTransaction();
 	$tstvcomt = $mysql->prepare("TRUNCATE TABLE STVCOMT");
 	$tstvcomt->execute();
@@ -838,7 +860,7 @@ try {
 	
 	$mysql->commit();
 	$stvcomt->closeCursor();
-	print "Updated STVCOMT\n";
+	print "...\tUpdated STVCOMT\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -848,6 +870,7 @@ try {
 // SATURN.STVCSTA
  
 try {
+	print "Updating STVCSTA\t";
 	$mysql->beginTransaction();
 	$tstvcsta = $mysql->prepare("TRUNCATE TABLE STVCSTA");
 	$tstvcsta->execute();
@@ -866,7 +889,7 @@ try {
 	
 	$mysql->commit();
 	$stvcsta->closeCursor();
-	print "Updated STVCSTA\n";
+	print "...\tUpdated STVCSTA\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -876,6 +899,7 @@ try {
 // SATURN.STVDEPT
  
 try {
+	print "Updating STVDEPT\t";
 	$mysql->beginTransaction();
 	$tstvdept = $mysql->prepare("TRUNCATE TABLE STVDEPT");
 	$tstvdept->execute();
@@ -895,7 +919,7 @@ try {
 	
 	$mysql->commit();
 	$stvdept->closeCursor();
-	print "Updated STVDEPT\n";
+	print "...\tUpdated STVDEPT\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->toString();
 	$mysql->rollBack();
@@ -905,6 +929,7 @@ try {
 // SATURN.STVDIVS
 
 try {
+	print "Updating STVDIVS\t";
 	$mysql->beginTransaction();
 	$tstvdivs = $mysql->prepare("TRUNCATE TABLE STVDIVS");
 	$tstvdivs->execute();
@@ -922,7 +947,7 @@ try {
 
 	$mysql->commit();
 	$stvdivs->closeCursor();
-	print "Updated STVDIVS\n";
+	print "...\tUpdated STVDIVS\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -933,6 +958,7 @@ try {
 // SATURN.STVFCNT
  
 try {
+	print "Updating STVFCNT\t";
 	$mysql->beginTransaction();
 	$tstvfcnt = $mysql->prepare("TRUNCATE TABLE STVFCNT");
 	$tstvfcnt->execute();
@@ -950,7 +976,7 @@ try {
 	
 	$mysql->commit();
 	$stvfcnt->closeCursor();
-	print "Updated STVFCNT\n";
+	print "...\tUpdated STVFCNT\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -960,6 +986,7 @@ try {
 // SATURN.STVPWAV
  
 try {
+	print "Updating STVPWAV\t";
 	$mysql->beginTransaction();
 	$tstvpwav = $mysql->prepare("TRUNCATE TABLE STVPWAV");
 	$tstvpwav->execute();
@@ -977,7 +1004,7 @@ try {
 	
 	$mysql->commit();
 	$stvpwav->closeCursor();
-	print "Updated STVPWAV\n";
+	print "...\tUpdated STVPWAV\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -987,6 +1014,7 @@ try {
 // SATURN.STVREPS
  
 try {
+	print "Updating STVREPS\t";
 	$mysql->beginTransaction();
 	$tstvreps = $mysql->prepare("TRUNCATE TABLE STVREPS");
 	$tstvreps->execute();
@@ -1004,7 +1032,7 @@ try {
 	
 	$mysql->commit();
 	$stvreps->closeCursor();
-	print "Updated STVREPS\n";
+	print "...\tUpdated STVREPS\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -1014,6 +1042,7 @@ try {
 // SATURN.STVSCHD
  
 try {
+	print "Updating STVSCHD\t";
 	$mysql->beginTransaction();
 	$tstvschd = $mysql->prepare("TRUNCATE TABLE STVSCHD");
 	$tstvschd->execute();
@@ -1036,7 +1065,7 @@ try {
 	
 	$mysql->commit();
 	$stvschd->closeCursor();
-	print "Updated STVSCHD\n";
+	print "...\tUpdated STVSCHD\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -1046,6 +1075,7 @@ try {
 // SATURN.STVSUBJ
  
 try {
+	print "Updating STVSUBJ\t";
 	$mysql->beginTransaction();
 	$tstvsubj = $mysql->prepare("TRUNCATE TABLE STVSUBJ");
 	$tstvsubj->execute();
@@ -1065,7 +1095,7 @@ try {
 	
 	$mysql->commit();
 	$stvsubj->closeCursor();
-	print "Updated STVSUBJ\n";
+	print "...\tUpdated STVSUBJ\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -1075,6 +1105,7 @@ try {
 // SATURN.STVTERM
  
 try {
+	print "Updating STVTERM\t";
 	$mysql->beginTransaction();
 	$tstvterm = $mysql->prepare("TRUNCATE TABLE STVTERM");
 	$tstvterm->execute();
@@ -1103,7 +1134,7 @@ try {
 	
 	$mysql->commit();
 	$stvterm->closeCursor();
-	print "Updated STVTERM\n";
+	print "...\tUpdated STVTERM\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -1113,6 +1144,7 @@ try {
 // SATURN.STVTRMT
  
 try {
+	print "Updating STVTRMT\t";
 	$mysql->beginTransaction();
 	$tstvtrmt = $mysql->prepare("TRUNCATE TABLE STVTRMT");
 	$tstvtrmt->execute();
@@ -1130,7 +1162,7 @@ try {
 	
 	$mysql->commit();
 	$stvtrmt->closeCursor();
-	print "Updated STVTRMT\n";
+	print "...\tUpdated STVTRMT\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -1140,6 +1172,7 @@ try {
 // SATURN_MIDD.SYVINST
  
 try {
+	print "Updating SYVINST\t";
 	$mysql->beginTransaction();
 	$tsyvinst = $mysql->prepare("TRUNCATE TABLE SYVINST");
 	$tsyvinst->execute();
@@ -1160,7 +1193,7 @@ try {
 	
 	$mysql->commit();
 	$syvinst->closeCursor();
-	print "Updated SYVINST\n";
+	print "...\tUpdated SYVINST\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
@@ -1168,6 +1201,7 @@ try {
 
 // Build derived table for easier term-catalog lookups
 try {
+	print "Updating derived tables\t";
 	$mysql->beginTransaction();
 	$ttermcat = $mysql->prepare("TRUNCATE TABLE catalog_term");
 	$ttermcat->execute();
@@ -1198,7 +1232,7 @@ WHERE
 
 	$mysql->commit();
 	
-	print "Updated derived table: catalog_term\n";
+	print "...\tUpdated derived table: catalog_term\n";
 
 } catch (Exception $e) {
 	$exceptions[] = $e->__toString();
