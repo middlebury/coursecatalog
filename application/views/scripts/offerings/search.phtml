@@ -60,46 +60,6 @@ while ($this->departments->hasNext()) {
 		</tr>
 
 		<tr>
-			<th>By Subject:</th>
-			<td>
-				<select name="subject">
-					<option value=''>Any Subject</option>
-<?php
-while ($this->subjects->hasNext()) {
-	$topic = $this->subjects->getNextTopic();
-	print "\n\t\t\t\t\t<option value='";
-	print AbstractCatalogController::getStringFromOsidId($topic->getId());
-	print "'";
-	if (isset($this->selectedSubjectId) && $topic->getId()->isEqual($this->selectedSubjectId))
-		print " selected='selected'";
-	print ">".$topic->getDisplayName()."</option>";
-}
-?>
-				</select>
-			</td>
-		</tr>
-
-		<tr>
-			<th>By Division:</th>
-			<td>
-				<select name="division">
-					<option value=''>Any Division</option>
-<?php
-while ($this->divisions->hasNext()) {
-	$topic = $this->divisions->getNextTopic();
-	print "\n\t\t\t\t\t<option value='";
-	print AbstractCatalogController::getStringFromOsidId($topic->getId());
-	print "'";
-	if (isset($this->selectedDivisionId) && $topic->getId()->isEqual($this->selectedDivisionId))
-		print " selected='selected'";
-	print ">".$topic->getDisplayName()."</option>";
-}
-?>
-				</select>
-			</td>
-		</tr>
-
-		<tr>
 			<th>Satisfies Requirements:</th>
 			<td>
 				<div class='help_text'>(Leave all blank for no preference)</div>
