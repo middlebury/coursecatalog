@@ -270,6 +270,9 @@ print $this->paginationControl($this->paginator, 'Sliding', 'ItemPaginationContr
 						'offering'		=> null,
 						'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId())
 					);
+		
+		// Topics
+		$allTopics = AbstractCatalogController::topicListAsArray($section->getTopics());
 ?>
 		<tr>
 			<td>
@@ -280,7 +283,7 @@ if ($section->hasRecordType($alternateType)) {
 	$record = $section->getCourseOfferingRecord($alternateType);
 	if ($record->hasAlternates()) {
 		$alternates = $record->getAlternates();
-		print "\n\t\t\t\t<br/><br/>Cross-Listed As:";
+		print "\n\t\t\t\t<br/>Cross-Listed As:";
 		while ($alternates->hasNext()) {
 			print "\n\t\t\t\t<br/>";
 			$alternate = $alternates->getNextCourseOffering();
@@ -299,6 +302,28 @@ print "\n\t\t<dd>".$this->escape($section->getGenusType()->getDisplayName())."</
 
 print "\n\t\t<dt>Term:</dt>";
 print "\n\t\t<dd><a href='".$termUrl."'>".$this->escape($term->getDisplayName())."</a></dd>";
+
+print "\n\t\t<dt>Department:</dt>";
+print "\n\t\t<dd>";
+$topics = AbstractCatalogController::filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department"));
+foreach ($topics as $topic) {
+	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+	print "<a href=\"".$this->url($topicParams)."\">";
+	print $this->escape($topic->getDisplayName());
+	print "</a> ";
+}
+print "</dd>";
+
+print "\n\t\t<dt>Requirements Fulfilled:</dt>";
+print "\n\t\t<dd>";
+$topics = AbstractCatalogController::filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement"));
+foreach ($topics as $topic) {
+	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+	print "<a href=\"".$this->url($topicParams)."\">";
+	print $this->escape($topic->getDisplayName());
+	print "</a> ";
+}
+print "</dd>";
 
 print "\n\t</dl>";
 
@@ -348,55 +373,27 @@ if ($section->hasRecordType($instructorsType)) {
 	print "</dd>";
 }
 
-print "\n\t</dl>";
-print "\n\t</td>\n\t<td>";
-print "\n\t<dl>";
-// Topics
-$allTopics = AbstractCatalogController::topicListAsArray($section->getTopics());
+// print "\n\t<dt>Subject:</dt>";
+// print "\n\t\t<dd>";
+// $topics = AbstractCatalogController::filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject"));
+// foreach ($topics as $topic) {
+// 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+// 	print "<a href=\"".$this->url($topicParams)."\">";
+// 	print $this->escape($topic->getDisplayName());
+// 	print "</a> ";
+// }
+// print "</dd>";
 
-print "\n\t<dt>Subject:</dt>";
-print "\n\t\t<dd>";
-$topics = AbstractCatalogController::filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject"));
-foreach ($topics as $topic) {
-	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
-	print "<a href=\"".$this->url($topicParams)."\">";
-	print $this->escape($topic->getDisplayName());
-	print "</a> ";
-}
-print "</dd>";
-
-print "\n\t\t<dt>Department:</dt>";
-print "\n\t\t<dd>";
-$topics = AbstractCatalogController::filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department"));
-foreach ($topics as $topic) {
-	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
-	print "<a href=\"".$this->url($topicParams)."\">";
-	print $this->escape($topic->getDisplayName());
-	print "</a> ";
-}
-print "</dd>";
-
-print "\n\t\t<dt>Division:</dt>";
-print "\n\t\t<dd>";
-$topics = AbstractCatalogController::filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division"));
-foreach ($topics as $topic) {
-	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
-	print "<a href=\"".$this->url($topicParams)."\">";
-	print $this->escape($topic->getDisplayName());
-	print "</a> ";
-}
-print "</dd>";
-
-print "\n\t\t<dt>Requirements Fulfilled:</dt>";
-print "\n\t\t<dd>";
-$topics = AbstractCatalogController::filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement"));
-foreach ($topics as $topic) {
-	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
-	print "<a href=\"".$this->url($topicParams)."\">";
-	print $this->escape($topic->getDisplayName());
-	print "</a> ";
-}
-print "</dd>";
+// print "\n\t\t<dt>Division:</dt>";
+// print "\n\t\t<dd>";
+// $topics = AbstractCatalogController::filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division"));
+// foreach ($topics as $topic) {
+// 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+// 	print "<a href=\"".$this->url($topicParams)."\">";
+// 	print $this->escape($topic->getDisplayName());
+// 	print "</a> ";
+// }
+// print "</dd>";
 
 print "\n\t</dl>";
 
