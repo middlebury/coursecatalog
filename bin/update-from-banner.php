@@ -1147,14 +1147,14 @@ try {
 	$syvinst = $banner->prepare("SELECT * FROM SATURN_MIDD.SYVINST");
 	$syvinst->execute();
 	
-	$insert = $mysql->prepare("INSERT INTO SYVINST (SYVINST_TERM_CODE, SYVINST_CRN, SYVINST_PIDM, SYVINST_LAST_NAME, SYVINST_FIRST_NAME) VALUES (:SYVINST_TERM_CODE, :SYVINST_CRN, :SYVINST_PIDM, :SYVINST_LAST_NAME, :SYVINST_FIRST_NAME, :WEB_ID)");
+	$insert = $mysql->prepare("INSERT INTO SYVINST (SYVINST_TERM_CODE, SYVINST_CRN, SYVINST_PIDM, SYVINST_LAST_NAME, SYVINST_FIRST_NAME, WEB_ID) VALUES (:SYVINST_TERM_CODE, :SYVINST_CRN, :SYVINST_PIDM, :SYVINST_LAST_NAME, :SYVINST_FIRST_NAME, :WEB_ID)");
 	while($row = $syvinst->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":SYVINST_TERM_CODE", $row->SYVINST_TERM_CODE);
 		$insert->bindValue(":SYVINST_CRN", $row->SYVINST_CRN);
 		$insert->bindValue(":SYVINST_PIDM", $row->SYVINST_PIDM);
 		$insert->bindValue(":SYVINST_LAST_NAME", $row->SYVINST_LAST_NAME);
 		$insert->bindValue(":SYVINST_FIRST_NAME", $row->SYVINST_FIRST_NAME);
-		$insert->bindValue(":WEB_ID", $row->SYVINST_FIRST_NAME);
+		$insert->bindValue(":WEB_ID", $row->WEB_ID);
 		$insert->execute();
 	}
 	
