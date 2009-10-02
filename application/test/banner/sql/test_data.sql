@@ -114,6 +114,16 @@ INSERT INTO `SCBCRSE` (`SCBCRSE_SUBJ_CODE`, `SCBCRSE_CRSE_NUMB`, `SCBCRSE_EFF_TE
 ('CHEM', '0104', '200490', 'UG', 'NSCI', 'CHEM', 'B', 'Fundamentals of Chemistry II', NULL, 'OR', '0.000', '1.000', 'OR', '0.000', '1.000', NULL, NULL, NULL, NULL, NULL, NULL, 'OR', '0.000', '1.000', 'A', '0', NULL, NULL, NULL, '2004-01-22', '0.000', 'OR', '1.000', NULL, NULL, NULL, 'N', NULL, NULL, NULL, NULL),
 ('CHEM', '0104', '200520', 'UG', 'NSCI', 'CHEM', 'B', 'General Chemistry II', NULL, 'OR', '0.000', '1.000', 'OR', '0.000', '1.000', NULL, NULL, NULL, NULL, NULL, NULL, 'OR', '0.000', '1.000', 'A', '0', NULL, NULL, NULL, '2004-11-02', '0.000', 'OR', '1.000', NULL, NULL, NULL, 'N', NULL, NULL, NULL, NULL);
 
+
+--
+-- Dumping data for table `SCBDESC`
+--
+
+INSERT INTO `SCBDESC` (`SCBDESC_SUBJ_CODE`, `SCBDESC_CRSE_NUMB`, `SCBDESC_TERM_CODE_EFF`, `SCBDESC_ACTIVITY_DATE`, `SCBDESC_USER_ID`, `SCBDESC_TEXT_NARRATIVE`, `SCBDESC_TERM_CODE_END`) VALUES
+('CHEM', '0104', '200490', '2009-08-27', 'JAUDET', 'Major topics include chemical kinetics, chemical equilibrium, acid-base equilibria, chemical thermodynamics, electrochemistry, descriptive inorganic chemistry, and coordination chemistry. Lab work includes inorganic synthesis, qualitative analysis, and quantitative analysis in kinetics, acid-base and redox chemistry. (CHEM 0103 or by waiver) 3 hrs. lect., 3 hrs. lab, 1 hr. disc.', NULL),
+('PHYS', '0201', '200490', '2009-09-09', 'JAUDET', 'This course probes a number of areas for which classical physics has provided no adequate explanations. Topics covered include Einstein\'s special relativity, quantization of atomic energy levels and photons, the atomic models of Rutherford and Bohr, and wave-particle duality. (PHYS 0109, MATH 0122, PHYS 0110 concurrent or prior) 3 hrs. lect.', NULL);
+
+
 --
 -- Dumping data for table `SSRXLST`
 --
