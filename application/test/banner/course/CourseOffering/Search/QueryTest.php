@@ -1238,7 +1238,7 @@ class banner_course_CourseOffering_Search_QueryTest
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
-		$this->assertEquals(26, $courseOfferings->available());
+		$this->assertEquals(27, $courseOfferings->available());
     }
     
     /**
