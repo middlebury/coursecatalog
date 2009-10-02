@@ -12,7 +12,7 @@ $this->headScript()->appendScript(
 	"
 	$('document').ready(function() {
 		$('div.description').expander({
-			slicePoint:       100,  // default is 100
+			slicePoint:       90,  // default is 100
 			expandPrefix:     ' ', // text to come before the expand link  
 			expandText:         '[...]', // default is 'read more...'
 			userCollapseText: '[^]'  // default is '[collapse expanded text]'
@@ -259,7 +259,7 @@ print $this->paginationControl($this->paginator, 'Sliding', 'ItemPaginationContr
 		$allTopics = AbstractCatalogController::topicListAsArray($section->getTopics());
 ?>
 		<tr>
-			<td>
+			<td class='column1'>
 				<a class='title' href='<?php print $this->url($offeringParams); ?>'><?php print $section->getDisplayName(); ?></a>
 <?php
 
@@ -315,7 +315,7 @@ print "\n\t</dl>";
 
 
 			</td>
-			<td>
+			<td class='column2'>
 				<div class='title'><?php print nl2br($section->getTitle()); ?></div>
 				<div class='description'><?php print $section->getDescription(); ?></div>				
 <?php

@@ -67,6 +67,10 @@ table.search_results td {
 	vertical-align: top;
 }
 
+table.search_results td.column1 {
+	width: 200px;
+}
+
 div.search_results_item_pagination {
 	width: 800px;
 	text-align: right;
