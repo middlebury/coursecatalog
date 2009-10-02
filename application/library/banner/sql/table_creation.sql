@@ -267,6 +267,25 @@ CREATE TABLE IF NOT EXISTS `SCBCRSE` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `SCBDESC`
+--
+
+CREATE TABLE IF NOT EXISTS `SCBDESC` (
+  `SCBDESC_SUBJ_CODE` varchar(4) NOT NULL COMMENT 'Subject code.  This field indicates the subject code of the course.',
+  `SCBDESC_CRSE_NUMB` varchar(5) NOT NULL COMMENT 'Course number.  This field indicatesd the course number of the course.',
+  `SCBDESC_TERM_CODE_EFF` varchar(6) NOT NULL COMMENT 'Effective Term.  This field identifies the term this version of the course becomes effective.',
+  `SCBDESC_ACTIVITY_DATE` date NOT NULL COMMENT 'ACTIVITY DATE: The date that the information for the row was inserted or updated in the SCBDESC table.',
+  `SCBDESC_USER_ID` varchar(30) NOT NULL COMMENT 'USER IDENTIFICATION: The unique identification of the user who changed the record.',
+  `SCBDESC_TEXT_NARRATIVE` mediumtext COMMENT 'Course descriptive text is maintained here.',
+  `SCBDESC_TERM_CODE_END` varchar(6) default NULL COMMENT 'End Term.  Identifies the term that the course description effective term ends',
+  PRIMARY KEY  (`SCBDESC_SUBJ_CODE`,`SCBDESC_CRSE_NUMB`,`SCBDESC_TERM_CODE_EFF`),
+  FULLTEXT KEY `SCBDESC_TEXT_NARRATIVE` (`SCBDESC_TEXT_NARRATIVE`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Course Catalog Description Narrative Text Table';
+
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `SIRASGN`
 --
 

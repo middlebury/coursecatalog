@@ -189,34 +189,40 @@ class banner_course_Course_Lookup_Session
     	$catalogWhere = $this->getCatalogWhereTerms();
     	if (!isset(self::$getCourse_stmts[$catalogWhere])) {
 	    	$query =
-"SELECT 
-	SCBCRSE_SUBJ_CODE , 
-	SCBCRSE_CRSE_NUMB , 
-	MAX( SCBCRSE_EFF_TERM ) AS SCBCRSE_EFF_TERM , 
-	SCBCRSE_COLL_CODE , 
-	SCBCRSE_DIVS_CODE , 
-	SCBCRSE_DEPT_CODE , 
-	SCBCRSE_CSTA_CODE , 
-	SCBCRSE_TITLE ,
-	SCBCRSE_CREDIT_HR_HIGH
-FROM 
-	SCBCRSE
-WHERE
-	SCBCRSE_SUBJ_CODE = :subject_code
-	AND SCBCRSE_CRSE_NUMB = :course_number
-	AND SCBCRSE_CSTA_CODE NOT IN (
-		'C', 'I', 'P', 'T', 'X'
-	)
-	AND SCBCRSE_COLL_CODE IN (
-		SELECT
-			coll_code
-		FROM
-			course_catalog_college
-		WHERE
-			".$this->getCatalogWhereTerms()."
-	)
-GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
-ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC	
+"SELECT
+	crse.*,
+	SCBDESC_TEXT_NARRATIVE
+FROM
+	(SELECT 
+		SCBCRSE_SUBJ_CODE , 
+		SCBCRSE_CRSE_NUMB , 
+		MAX( SCBCRSE_EFF_TERM ) AS SCBCRSE_EFF_TERM , 
+		SCBCRSE_COLL_CODE , 
+		SCBCRSE_DIVS_CODE , 
+		SCBCRSE_DEPT_CODE , 
+		SCBCRSE_CSTA_CODE , 
+		SCBCRSE_TITLE ,
+		SCBCRSE_CREDIT_HR_HIGH
+	FROM 
+		SCBCRSE
+	WHERE
+		SCBCRSE_SUBJ_CODE = :subject_code
+		AND SCBCRSE_CRSE_NUMB = :course_number
+		AND SCBCRSE_CSTA_CODE NOT IN (
+			'C', 'I', 'P', 'T', 'X'
+		)
+		AND SCBCRSE_COLL_CODE IN (
+			SELECT
+				coll_code
+			FROM
+				course_catalog_college
+			WHERE
+				".$this->getCatalogWhereTerms()."
+		)
+	GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
+	ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
+	) as crse
+	LEFT JOIN SCBDESC ON (SCBCRSE_SUBJ_CODE = SCBDESC_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SCBDESC_CRSE_NUMB AND SCBCRSE_EFF_TERM >= SCBDESC_TERM_CODE_EFF AND (SCBDESC_TERM_CODE_END IS NULL OR SCBCRSE_EFF_TERM <= SCBDESC_TERM_CODE_END))
 ";
 			self::$getCourse_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
 		}
@@ -231,7 +237,6 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 				':course_number' => $matches[2]
 			),
 			$this->getCatalogParameters());
-		
 		self::$getCourse_stmts[$catalogWhere]->execute($parameters);
 		$row = self::$getCourse_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
 		self::$getCourse_stmts[$catalogWhere]->closeCursor();
@@ -242,7 +247,7 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 		return new banner_course_Course(
 					$this->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'], 'course/'),
 					$row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'],
-					'',	// Description
+					((is_null($row['SCBDESC_TEXT_NARRATIVE']))?'':$row['SCBDESC_TEXT_NARRATIVE']),	// Description
 					$row['SCBCRSE_TITLE'], 
 					$row['SCBCRSE_CREDIT_HR_HIGH'],
 					array(

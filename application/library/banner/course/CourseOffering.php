@@ -61,6 +61,8 @@ class banner_course_CourseOffering
 			'SCBCRSE_DEPT_CODE',
 			'SCBCRSE_DIVS_CODE',
 			
+			'SCBDESC_TEXT_NARRATIVE',
+			
 			'SSRXLST_XLST_GROUP'
 		);
 	
@@ -93,7 +95,10 @@ class banner_course_CourseOffering
 			.$row['SSBSECT_SEQ_NUMB']
 			.'-'.$row['term_display_label']
 			.substr($row['STVTERM_START_DATE'], 2, 2));
-		$this->setDescription('');
+		if (is_null($row['SCBDESC_TEXT_NARRATIVE']))
+			$this->setDescription('');
+		else
+			$this->setDescription($row['SCBDESC_TEXT_NARRATIVE']);
 		
 		$this->setGenusType(new phpkit_type_Type(
 			'urn', 										// namespace

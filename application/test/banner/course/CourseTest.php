@@ -58,6 +58,11 @@ class banner_course_CourseTest
     {
         $this->assertType('string', $this->object->getTitle());
     }
+    
+    public function testGetPhysDescription()
+    {
+    	$this->assertEquals("This course probes a number of areas for which classical physics has provided no adequate explanations. Topics covered include Einstein's special relativity, quantization of atomic energy levels and photons, the atomic models of Rutherford and Bohr, and wave-particle duality. (PHYS 0109, MATH 0122, PHYS 0110 concurrent or prior) 3 hrs. lect.", $this->object->getDescription());
+    }
 
     /**
      * @todo Implement testGetNumber().

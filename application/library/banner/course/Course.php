@@ -38,7 +38,10 @@ class banner_course_Course
 		parent::__construct();
 		$this->setId($id);
 		$this->setDisplayName($displayName);
-		$this->setDescription($description);
+		if (is_null($description))
+			$this->setDescription('');
+		else
+			$this->setDescription($description);
 		$this->title = $title;
 		$this->credits = floatval($credits);
 		$this->topicIds = $topicIds;

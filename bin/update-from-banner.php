@@ -322,6 +322,41 @@ try {
 	$mysql->rollBack();
 }
 
+// SATURN.SCBDESC
+ 
+try {
+	print "Updating SCBDESC\t";
+	$mysql->beginTransaction();
+	$tSCBDESC = $mysql->prepare("TRUNCATE TABLE SCBDESC");
+	$tSCBDESC->execute();
+	
+	$SCBDESC = $banner->prepare("SELECT SCBDESC_SUBJ_CODE, SCBDESC_CRSE_NUMB, SCBDESC_TERM_CODE_EFF, SCBDESC_ACTIVITY_DATE, SCBDESC_USER_ID, SCBDESC_TEXT_NARRATIVE, SCBDESC_TERM_CODE_END FROM SATURN.SCBDESC");
+	$SCBDESC->execute();
+	
+	$insert = $mysql->prepare("INSERT INTO SCBDESC (SCBDESC_SUBJ_CODE, SCBDESC_CRSE_NUMB, SCBDESC_TERM_CODE_EFF, SCBDESC_ACTIVITY_DATE, SCBDESC_USER_ID, SCBDESC_TEXT_NARRATIVE, SCBDESC_TERM_CODE_END) VALUES (:SCBDESC_SUBJ_CODE, :SCBDESC_CRSE_NUMB, :SCBDESC_TERM_CODE_EFF, :SCBDESC_ACTIVITY_DATE, :SCBDESC_USER_ID, :SCBDESC_TEXT_NARRATIVE, :SCBDESC_TERM_CODE_END)");
+	while($row = $SCBDESC->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
+		$insert->bindValue(":SCBDESC_SUBJ_CODE", $row->SCBDESC_SUBJ_CODE);
+		$insert->bindValue(":SCBDESC_CRSE_NUMB", $row->SCBDESC_CRSE_NUMB);
+		$insert->bindValue(":SCBDESC_TERM_CODE_EFF", $row->SCBDESC_TERM_CODE_EFF);
+		$insert->bindValue(":SCBDESC_ACTIVITY_DATE", toMySQLDate($row->SCBDESC_ACTIVITY_DATE));
+		$insert->bindValue(":SCBDESC_USER_ID", $row->SCBDESC_USER_ID);
+		if (is_null($row->SCBDESC_TEXT_NARRATIVE))
+			$insert->bindValue(":SCBDESC_TEXT_NARRATIVE", null);
+		else
+			$insert->bindValue(":SCBDESC_TEXT_NARRATIVE", stream_get_contents($row->SCBDESC_TEXT_NARRATIVE));
+		$insert->bindValue(":SCBDESC_TERM_CODE_END", $row->SCBDESC_TERM_CODE_END);
+		$insert->execute();
+	}
+	
+	$mysql->commit();
+	$SCBDESC->closeCursor();
+	print "...\tUpdated SCBDESC\n";
+} catch(Exception $e) {
+	print $e->__toString()."\n";
+	$exceptions[] = $e->__toString();
+	$mysql->rollBack();
+}
+
 // SATURN.SSBXLST
  
 try {
