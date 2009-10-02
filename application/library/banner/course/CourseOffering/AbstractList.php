@@ -113,6 +113,7 @@ WHERE
 		WHERE
 			".$this->getCatalogWhereTerms()."
 	)
+	AND SSBSECT_SSTS_CODE = 'A'
 
 GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 ".$this->getOrderByClause()."
