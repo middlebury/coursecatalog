@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 class banner_course_Course_Lookup_ByTopicList
-	extends banner_course_Course_Lookup_AbstractList
+	extends banner_course_Course_AbstractList
 	implements osid_course_CourseList
 {
 
