@@ -56,7 +56,7 @@ class banner_course_CourseOffering_Search_OrderTest
     {
     	$this->search->orderCourseOfferingResults($this->object);
     	$results = $this->session->getCourseOfferingsBySearch($this->query, $this->search);
-        $this->assertEquals(15, $results->getResultSize());
+        $this->assertEquals(8, $results->getResultSize());
     }
 
     /**
