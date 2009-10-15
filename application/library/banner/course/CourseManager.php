@@ -230,7 +230,8 @@ class banner_course_CourseManager
      *              supportsCourseSearch() </code> is <code> true. </code> 
      */
     public function getCourseSearchSession() {
-    	throw new osid_UnimplementedException();
+    	return new banner_course_Course_Search_Session($this, 
+    		new phpkit_id_URNInetId('urn:inet:'.$this->idAuthority.':catalog/all'));
 	}
 
 
@@ -257,7 +258,11 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseSearchSessionForCatalog(osid_id_Id $courseCatalogId) {
-    	throw new osid_UnimplementedException();
+    	try {
+	    	return new banner_course_Course_Search_Session($this, $courseCatalogId);
+	    } catch (osid_NotFoundException $e) {
+			throw new osid_NotFoundException('Can not get a CourseSearchSession for an unknown catalog id.');
+		}
 	}
 
 

@@ -42,13 +42,24 @@ abstract class banner_course_Course_AbstractList
 	}
 	
 	/**
+	 * Answer a debugging string.
+	 * 
+	 * @return string
+	 * @access public
+	 * @since 5/27/09
+	 */
+	public function debug () {
+		return "\n\n".get_class($this)."\nQuery:\n".$this->getQuery()."\nParameters:\n".print_r($this->getAllInputParameters(), true);
+	}
+	
+	/**
 	 * Answer the query
 	 * 
 	 * @return string
-	 * @access private
+	 * @access protected
 	 * @since 4/17/09
 	 */
-	private function getQuery () {
+	protected function getQuery () {
 		return "
 SELECT
 	crse.*,
@@ -64,8 +75,10 @@ FROM
 		SCBCRSE_CSTA_CODE , 
 		SCBCRSE_TITLE ,
 		SCBCRSE_CREDIT_HR_HIGH
+		".$this->getAdditionalColumnsString()."
 	FROM 
 		SCBCRSE
+		".$this->getAdditionalTableJoins()."
 	WHERE
 		".$this->getAllWhereTerms()."
 		AND SCBCRSE_CSTA_CODE NOT IN (
@@ -81,20 +94,38 @@ FROM
 		)
 	
 	GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
-	ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 	) as crse
 	LEFT JOIN SCBDESC ON (SCBCRSE_SUBJ_CODE = SCBDESC_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SCBDESC_CRSE_NUMB AND SCBCRSE_EFF_TERM >= SCBDESC_TERM_CODE_EFF AND (SCBDESC_TERM_CODE_END IS NULL OR SCBCRSE_EFF_TERM <= SCBDESC_TERM_CODE_END))
+	GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
+	".$this->getOrderByClause()."
+	".$this->getLimitClause()."
 ";
+	}
+	
+	/**
+	 * Answer a string to append to the column list of additional columns.
+	 * 
+	 * @return string
+	 * @access protected
+	 * @since 6/10/09
+	 */
+	protected function getAdditionalColumnsString () {
+		$columns = $this->getAdditionalColumns();
+		if (count($columns)) {
+			return ",\n\t".implode(",\n\t", $columns);
+		} else {
+			return '';
+		}
 	}
 	
 	/**
 	 * Answer the input parameters
 	 * 
 	 * @return array
-	 * @access private
+	 * @access protected
 	 * @since 4/17/09
 	 */
-	private function getAllInputParameters () {
+	protected function getAllInputParameters () {
 		$params = $this->getInputParameters();
 		if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->session->getCombinedCatalogId()))
 			$params[':catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
@@ -105,10 +136,10 @@ FROM
 	 * Answer a where clause
 	 * 
 	 * @return string
-	 * @access private
+	 * @access protected
 	 * @since 4/20/09
 	 */
-	private function getAllWhereTerms () {
+	protected function getAllWhereTerms () {
 		$terms = $this->getWhereTerms();
 		if (strlen(trim($terms)))
 			return $terms;
@@ -128,6 +159,54 @@ FROM
 			return 'TRUE';
 		else
 			return 'catalog_id = :catalog_id';
+	}
+	
+	/**
+	 * Answer any additional table join clauses to use
+	 * 
+	 * @return string
+	 * @access protected
+	 * @since 4/29/09
+	 */
+	protected function getAdditionalTableJoins () {
+		return '';
+	}
+	
+	/**
+	 * Answer the ORDER BY clause to use
+	 * 
+	 * @return string
+	 * @access protected
+	 * @since 5/28/09
+	 */
+	protected function getOrderByClause () {
+		return 'ORDER BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB';
+	}
+	
+	/**
+	 * Answer the LIMIT clause to use
+	 * 
+	 * Override this method in child classes to add functionality.
+	 * 
+	 * @return string
+	 * @access protected
+	 * @since 5/28/09
+	 */
+	protected function getLimitClause () {
+		return '';
+	}
+	
+	/**
+	 * Answer an array of additional columns to return.
+	 *
+	 * Override this method in child classes to add functionality.
+	 * 
+	 * @return array
+	 * @access protected
+	 * @since 6/10/09
+	 */
+	protected function getAdditionalColumns () {
+		return array();
 	}
 	
 	/**
