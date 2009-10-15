@@ -134,7 +134,7 @@ class banner_course_Course_Search_Order
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseSearchOrderRecord(osid_type_Type $courseRecordType) {
-    	throw new osid_UnimplementedException();
+    	throw new osid_UnsupportedException();
     }
 
 }
