@@ -87,36 +87,6 @@ abstract class banner_course_CourseOffering_AbstractSession
 	}
 	
 	/**
-	 * Answer a course subject code from an id.
-	 * 
-	 * @param osid_id_Id $id
-	 * @return string
-	 * @access public
-	 * @since 4/17/09
-	 */
-	public function getSubjectFromCourseId (osid_id_Id $id) {
-		$string = $this->getDatabaseIdString($id, 'course/');
-		if (!preg_match('#^([A-Z]{3,4})([0-9]{4})$#', $string, $matches))
-			throw new osid_NotFoundException("String '$string' cannot be broken into a subject-code and Number.");
-		return $matches[1];
-	}
-	
-	/**
-	 * Answer a course number from an id.
-	 * 
-	 * @param osid_id_Id $id
-	 * @return string
-	 * @access public
-	 * @since 4/17/09
-	 */
-	public function getNumberFromCourseId (osid_id_Id $id) {
-		$string = $this->getDatabaseIdString($id, 'course/');
-		if (!preg_match('#^([A-Z]{3,4})([0-9]{4})$#', $string, $matches))
-			throw new osid_NotFoundException("String '$string' cannot be broken into a subject-code and Number.");
-		return $matches[2];
-	}
-	
-	/**
 	 * Answer a term code from an id.
 	 * 
 	 * @param osid_id_Id $id
