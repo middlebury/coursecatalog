@@ -16,7 +16,7 @@
  */
 class banner_course_Course_Search_Query
 	extends banner_course_AbstractQuery
-    implements osid_course_CourseQuery
+    implements osid_course_CourseQuery, middlebury_course_Course_Search_TopicQueryRecord
 {
 	
 	/**
@@ -30,7 +30,8 @@ class banner_course_Course_Search_Query
 	public function __construct (banner_course_AbstractSession $session) {
 		parent::__construct($session);
 		
-		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors'));
+		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:topic'));
+// 		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors'));
 		
 		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
 		$this->booleanStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:boolean");
@@ -560,7 +561,83 @@ class banner_course_Course_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseQueryRecord(osid_type_Type $courseRecordType) {
-    	throw new osid_UnimplementedException();
+    	if (!$this->implementsRecordType($courseRecordType))
+    		throw new osid_UnsupportedException('The record type passed is not supported.');
+    	
+    	return $this;
+    }
+    
+/*********************************************************
+ * Methods from osid_course_CourseQueryRecord
+ *********************************************************/
+    
+    /**
+     *  Gets the <code> CourseQuery </code> from which this record originated. 
+     *
+     *  @return object osid_course_CourseQuery the course query 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function getCourseQuery() {
+    	return $this;
+    }
+    
+/*********************************************************
+ * Methods from middlebury_course_Course_Search_TopicQueryRecord
+ *********************************************************/
+
+	/**
+     *  Sets the topic <code> Id </code> for this query to match 
+     *  courses that have a related topic. 
+     *
+     *  @param object osid_id_Id $topicId a topic <code> Id </code> 
+     *  @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     *  @throws osid_NullArgumentException <code> topicId </code> is <code> 
+     *          null </code> 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function matchTopicId(osid_id_Id $topicId, $match) {
+    	$type = $this->session->getTopicLookupSession()->getTopicType($topicId);
+		$value = $this->session->getTopicLookupSession()->getTopicValue($topicId);
+		switch ($type) {
+			case 'subject':
+				$this->addClause('subject_topic_id', 'SCBCRSE_SUBJ_CODE = ?', array($value), $match);
+				return;
+   			case 'department':
+   				$this->addClause('department_topic_id', 'SCBCRSE_DEPT_CODE = ?', array($value), $match);
+   				return;
+   			case 'division':
+   				$this->addClause('division_topic_id', 'SCBCRSE_DIVS_CODE = ?', array($value), $match);
+   				return;
+   			default:
+   				$this->addClause('topic_id', 'FALSE', array(), $match);
+		}
     }
 
+
+    /**
+     *  Tests if an <code> TopicQuery </code> is available. 
+     *
+     *  @return boolean <code> true </code> if a topic query interface is 
+     *          available, <code> false </code> otherwise 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function supportsTopicQuery() {
+    	return false;
+    }
+
+
+    /**
+     *  Gets the query interface for an topic. Multiple retrievals produce a 
+     *  nested <code> OR </code> term. 
+     *
+     *  @return object osid_course_TopicQuery the topic query 
+     *  @throws osid_UnimplementedException <code> supportsTopicQuery() 
+     *          </code> is <code> false </code> 
+     *  @compliance optional This method must be implemented if <code> 
+     *              supportsTopicQuery() </code> is <code> true. </code> 
+     */
+    public function getTopicQuery() {
+    	throw new osid_UnimplementedException();
+    }
 }

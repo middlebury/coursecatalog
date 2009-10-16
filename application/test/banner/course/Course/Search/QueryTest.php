@@ -54,6 +54,7 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
         $this->undergraduateType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:undergraduate");
         
         $this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+        $this->topicQueryRecordType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:topic');
 		$this->otherType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:other');
     }
 
@@ -261,7 +262,7 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
      */
     public function testMatchRecordType()
     {
-        $this->object->matchRecordType($this->instructorsType, true);
+        $this->object->matchRecordType($this->topicQueryRecordType, true);
 
         $params = $this->object->getParameters();
         $this->assertFalse(isset($params[0]));
@@ -293,7 +294,7 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
      */
     public function testHasRecordType()
     {
-        $this->assertTrue($this->object->hasRecordType($this->instructorsType));
+        $this->assertTrue($this->object->hasRecordType($this->topicQueryRecordType));
         $this->assertFalse($this->object->hasRecordType(new phpkit_type_URNInetType("urn:inet:osid.org:record:other")));
     }
 
@@ -762,13 +763,83 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException osid_UnimplementedException
+     * @expectedException osid_UnsupportedException
      */
     public function testGetCourseQueryRecord()
     {
         $record = $this->object->getCourseQueryRecord($this->instructorsType);
 //         $this->assertType('osid_course_CourseQueryRecord', $record);
 //         $this->assertType('middlebury_course_Course_Search_InstructorsQueryRecord', $record);
+    }
+    
+    
+    /**
+     *
+     */
+    public function testGetTopicCourseQueryRecord() {
+    	$record = $this->object->getCourseQueryRecord($this->topicQueryRecordType);
+        $this->assertType('osid_course_CourseQueryRecord', $record);
+        $this->assertType('middlebury_course_Course_Search_TopicQueryRecord', $record);
+    }
+    
+    /**
+     *
+     */
+    public function testMatchDepartmentTopicId() {
+    	$record = $this->object->getCourseQueryRecord($this->topicQueryRecordType);
+        $record->matchTopicId($this->deptTopicId, true);
+        
+        $courses = $this->session->getCoursesByQuery($this->object);
+// 		print $courses->debug();
+		$this->assertEquals(1, $courses->available());
+    }
+    
+    /**
+     *
+     */
+    public function testMatchSubjectTopicId() {
+    	$record = $this->object->getCourseQueryRecord($this->topicQueryRecordType);
+        $record->matchTopicId($this->subjTopicId, true);
+        
+        $courses = $this->session->getCoursesByQuery($this->object);
+// 		print $courses->debug();
+		$this->assertEquals(1, $courses->available());
+    }
+    
+    /**
+     *
+     */
+    public function testMatchDivTopicId() {
+    	$record = $this->object->getCourseQueryRecord($this->topicQueryRecordType);
+        $record->matchTopicId($this->divTopicId, true);
+        
+        $courses = $this->session->getCoursesByQuery($this->object);
+// 		print $courses->debug();
+		$this->assertEquals(3, $courses->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testSupportsTopicQuery() {
+    	$record = $this->object->getCourseQueryRecord($this->topicQueryRecordType);
+    	$this->assertFalse($record->supportsTopicQuery());
+    }
+    
+    /**
+     * @expectedException osid_UnimplementedException
+     */
+    public function testGetTopicQuery() {
+    	$record = $this->object->getCourseQueryRecord($this->topicQueryRecordType);
+    	$topicQuery = $record->getTopicQuery();
+    }
+    
+    /**
+     *
+     */
+    public function testGetQueryFromRecord() {
+    	$record = $this->object->getCourseQueryRecord($this->topicQueryRecordType);
+        $this->assertType('osid_course_CourseQuery', $record->getCourseQuery());
     }
 }
 ?>
