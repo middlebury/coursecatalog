@@ -205,6 +205,127 @@ class CoursesController
 		exit;
 	}
 	
+	
+	/**
+	 * Search for courses
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 6/15/09
+	 */
+	public function departmentxmlAction () {
+		$this->_helper->viewRenderer->setNoRender();
+		
+		if (!$this->_getParam('catalog')) {
+			header('HTTP/1.1 400 Bad Request');
+			print "A catalog must be specified.";
+			exit;
+		}
+		try {
+			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
+			$searchSession = self::getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
+		} catch (osid_InvalidArgumentException $e) {
+			header('HTTP/1.1 400 Bad Request');
+			print "The catalog id specified was not of the correct format.";
+			exit;
+		} catch (osid_NotFoundException $e) {
+			header('HTTP/1.1 404 Not Found');
+			print "The catalog id specified was not found.";
+			exit;
+		}
+		
+		$department = trim($this->_getParam('department'));
+		
+		if (!$department || !strlen($department)) {
+			header('HTTP/1.1 400 Bad Request');
+			print "A department must be specified.";
+			exit;
+		}
+		
+		$departmentId = self::getOsidIdFromString('topic/department/'.$department);
+		$searchUrl = $this->getAsAbsolute($this->_helper->url('search', 'offerings', null, array('catalog' => $this->_getParam('catalog'), 'topic' => 'topic/department/'.$department, 'submit' => 'Search')));
+		
+		header('Content-Type: text/xml');
+		print '<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0">
+	<channel>
+		<title>Courses in  '.$department.'</title>
+		<link>'.$searchUrl.'</link>
+		<description></description>
+		<lastBuildDate>'.date('r').'</lastBuildDate>
+		<generator>Course Catalog</generator>
+		<docs>http://blogs.law.harvard.edu/tech/rss</docs>
+		
+';
+		$courses = array();
+		// Fetch courses
+		$query = $searchSession->getCourseQuery();
+		
+		$topicRecord = $query->getCourseQueryRecord(new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:topic"));
+		$topicRecord->matchTopicId($departmentId, true);
+		
+		$courses = $searchSession->getCoursesByQuery($query);
+		
+		$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
+		
+		while ($courses->hasNext() && count($courses) <= 20) {
+			$course = $courses->getNextCourse();
+			$courseIdString = self::getStringFromOsidId($course->getId());
+			
+			$recentTerms = array();
+			$now = new DateTime;
+			$cutOff = $this->DateTime_getTimestamp($now) - (60 * 60 * 24 * 365 * 5);
+			if ($course->hasRecordType($termsType)) {
+				$termsRecord = $course->getCourseRecord($termsType);
+				$terms = $termsRecord->getTerms();
+				while ($terms->hasNext()) {
+					$term = $terms->getNextTerm();
+					if ($this->DateTime_getTimestamp($term->getEndTime()) > $cutOff) {
+						$recentTerms[] = $term;
+					}
+				}
+			}
+			
+			if (count($recentTerms) || !$course->hasRecordType($termsType)) {
+			
+				print "\n\t\t<item>";
+				
+				print "\n\t\t\t<title>";
+				print htmlspecialchars($course->getDisplayName().' - '.$course->getTitle());
+				print "</title>";
+				
+				print "\n\t\t\t<link>";
+				print $this->getAsAbsolute($this->_helper->url('view', 'courses', null, array('catalog' => $this->_getParam('catalog'), 'course' => $courseIdString)));
+				print "</link>";
+				
+				print "\n\t\t\t<guid isPermaLink='true'>";
+				print $this->getAsAbsolute($this->_helper->url('view', 'courses', null, array('catalog' => $this->_getParam('catalog'), 'course' => $courseIdString)));
+				print "</guid>";
+				
+				print "\n\t\t\t<description><![CDATA[";
+				print $course->getDescription();
+				
+				if (count($recentTerms)) {
+					$termStrings = array();
+					foreach ($recentTerms as $term) {
+						$termStrings[] = $term->getDisplayName();
+					}
+					print "<p class='terms_taught'>".implode(', ', $termStrings)."</p>";
+				}
+				
+				print "]]></description>";
+				
+				print "\n\t\t</item>";
+			}
+		}
+		
+		print '
+	</channel>
+</rss>';
+
+		exit;
+	}
+	
 	/**
 	 * Answer an absolute URL from a relative string.
 	 * 
@@ -217,6 +338,20 @@ class CoursesController
 		$parts = split('/', $_SERVER['SERVER_PROTOCOL']);
 		return strtolower(trim(array_shift($parts)))
 			. '://' . $_SERVER['HTTP_HOST'] . $url;
+	}
+	
+	function DateTime_getTimestamp($dt) {
+		$dtz_original = $dt -> getTimezone();
+		$dtz_utc = new DateTimeZone("UTC");
+		$dt -> setTimezone($dtz_utc);
+		$year = intval($dt -> format("Y"));
+		$month = intval($dt -> format("n"));
+		$day = intval($dt -> format("j"));
+		$hour = intval($dt -> format("G"));
+		$minute = intval($dt -> format("i"));
+		$second = intval($dt -> format("s"));
+		$dt -> setTimezone($dtz_original);
+		return gmmktime($hour,$minute,$second,$month,$day,$year);
 	}
 	
 }
