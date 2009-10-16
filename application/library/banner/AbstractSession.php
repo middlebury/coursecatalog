@@ -174,6 +174,38 @@ abstract class banner_AbstractSession
 	}
 	
 	/**
+	 * Answer the term code from an id object
+	 * 
+	 * @param osid_id_Id $id
+	 * @return string
+	 * @throws an osid_NotFoundException if the id cannot match.
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getTermCodeFromOfferingId (osid_id_Id $id) {
+		$string = $this->getDatabaseIdString($id, 'section/');
+		if (!preg_match('#^([0-9]{6})/([0-9]{1,5})$#', $string, $matches))
+			throw new osid_NotFoundException("String '$string' cannot be broken into a term-code and CRN.");
+		return $matches[1];
+	}
+	
+	/**
+	 * Answer the CRN from an id object
+	 * 
+	 * @param osid_id_Id $id
+	 * @return string
+	 * @throws an osid_NotFoundException if the id cannot match.
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getCrnFromOfferingId (osid_id_Id $id) {
+		$string = $this->getDatabaseIdString($id, 'section/');
+		if (!preg_match('#^([0-9]{6})/([0-9]{1,5})$#', $string, $matches))
+			throw new osid_NotFoundException("String '$string' cannot be broken into a term-code and CRN.");
+		return $matches[2];
+	}
+	
+	/**
 	 * Answer a course subject code from an id.
 	 * 
 	 * @param osid_id_Id $id

@@ -158,36 +158,10 @@ class banner_course_Course_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchGenusType(osid_type_Type $genusType, $match) {
-    	throw new osid_UnimplementedException();
-    	
-    	try {
-	    	$schdCode = $this->session->getScheduleCodeFromGenusType($genusType);
-	    	$this->addClause('genus_type', 'SSBSECT_SCHD_CODE = ?', array($schdCode), $match);
-    	} catch (osid_NotFoundException $e) {
+    	if ($genusType->isEqual(new phpkit_type_URNInetType("urn:inet:osid.org:genera:none")))
+    		$this->addClause('genus_type', 'TRUE', array(), $match);
+    	else
     		$this->addClause('genus_type', 'FALSE', array(), $match);
-    	}
-    }
-    
-    /**
-     * Answer the schedule code from a genus type
-     * 
-     * @param osid_type_Type $genusType
-     * @return mixed string or null
-     * @access private
-     * @since 5/27/09
-     */
-    private function getGenusTypeCode (osid_type_Type $genusType) {
-    	throw new osid_UnimplementedException();
-    	
-    	if (strtolower($genusType->getIdentifierNamespace()) != 'urn')
-    		return null;
-    	else if (strtolower($genusType->getAuthority()) != strtolower($this->session->getIdAuthority()))
-    		return null;
-    		
-    	if (!preg_match('/^genera:offering\/([a-z]+)$/i', $genusType->getIdentifier(), $matches))
-    		return null;
-    	
-    	return $matches[1];	
     }
 
     /**
@@ -230,25 +204,6 @@ class banner_course_Course_Search_Query
     	else
     		$this->addClause('record_type', 'FALSE', array(), $match);
     }
-
-
-    /**
-     *  Tests if this query supports the given record <code> Type. </code> The 
-     *  given record type may be supported by the object through 
-     *  interface/type inheritence. This method should be checked before 
-     *  retrieving the record interface. 
-     *
-     *  @param object osid_type_Type $recordType a type 
-     *  @return boolean <code> true </code> if a record query of the given 
-     *          record <code> Type </code> is available, <code> false </code> 
-     *          otherwise 
-     *  @throws osid_NullArgumentException <code> recordType </code> is <code> 
-     *          null </code> 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function hasRecordType(osid_type_Type $recordType) {
-    	return $this->implementsRecordType($recordType);
-    }
  
  
  
@@ -274,7 +229,15 @@ class banner_course_Course_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchTitle($title, osid_type_Type $stringMatchType, $match) {
-    	throw new osid_UnimplementedException();
+    	if (!is_string($title))
+    		throw new osid_InvalidArgumentException("\$title '$title' must be a string.");
+    	
+        if ($stringMatchType->isEqual($this->wildcardStringMatchType)) {
+        	$param = str_replace('*', '%', $title);
+        	$this->addClause('title', 'SCBCRSE_TITLE LIKE(?)', array($param), $match);
+        } else {
+	    	throw new osid_UnsupportedException("The stringMatchType passed is not supported.");
+	    }
     }
 
 
@@ -287,7 +250,7 @@ class banner_course_Course_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchAnyTitle($match) {
-    	throw new osid_UnimplementedException();
+    	$this->addClause('title', 'SCBCRSE_TITLE IS NOT NULL', array(), $match);
     }
 
 
@@ -380,7 +343,7 @@ class banner_course_Course_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchAnyNumber($match) {
-    	throw new osid_UnimplementedException();
+    	$this->addClause('number', 'TRUE', array(), $match);
     }
 
 
@@ -397,7 +360,18 @@ class banner_course_Course_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchCredits($min, $max, $match) {
-    	throw new osid_UnimplementedException();
+    	if (!is_numeric($min))
+    		throw new osid_InvalidArgumentException("\$min must be a float. '$min' given.");
+    	if (!is_numeric($max))
+    		throw new osid_InvalidArgumentException("\$max must be a float. '$max' given.");
+    	$min = floatval($min);
+    	$max = floatval($max);
+    	if ($min < 0)
+    		throw new osid_InvalidArgumentException("\$min must be a float greater than or equal to zero.");
+    	if ($min > $max)
+    		throw new osid_InvalidArgumentException("\$min must be less than or equal to \$max.");
+    		
+    	$this->addClause('credits', '(SCBCRSE_BILL_HR_HIGH >= ? AND SCBCRSE_BILL_HR_HIGH <= ?)', array($min, $max), $match);
     }
 
 
@@ -410,7 +384,7 @@ class banner_course_Course_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchAnyCredits($match) {
-    	throw new osid_UnimplementedException();
+    	$this->addClause('credits', 'SCBCRSE_BILL_HR_HIGH > 0', array(), $match);
     }
 
 
@@ -463,8 +437,8 @@ class banner_course_Course_Search_Query
      */
     public function matchCourseOfferingId(osid_id_Id $courseOfferingId, $match) {
     	$this->addClause('course_offering_id', '(SSBSECT_TERM_CODE = ? AND SSBSECT_CRN = ?)', 
-    		array($this->session->getTermCodeFromCourseOfferingId($courseId),
-    			$this->session->getCrnCourseOfferingId($courseId)),
+    		array($this->session->getTermCodeFromOfferingId($courseOfferingId),
+    			$this->session->getCrnFromOfferingId($courseOfferingId)),
     		$match);
     	$this->addTableJoin('LEFT JOIN SSBSECT ON (SCBCRSE_SUBJ_CODE = SSBSECT_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SSBSECT_CRSE_NUMB)');
     }
@@ -510,8 +484,7 @@ class banner_course_Course_Search_Query
      */
     public function matchAnyCourseOffering($match) {
     	$this->addClause('course_offering_exists', 'SSBSECT_TERM_CODE IS NOT NULL', 
-    		array($this->session->getTermCodeFromCourseOfferingId($courseId),
-    			$this->session->getCrnCourseOfferingId($courseId)),
+    		array(),
     		$match);
     	$this->addTableJoin('LEFT JOIN SSBSECT ON (SCBCRSE_SUBJ_CODE = SSBSECT_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SSBSECT_CRSE_NUMB)');
     }
@@ -530,7 +503,15 @@ class banner_course_Course_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchCourseCatalogId(osid_id_Id $courseCatalogId, $match) {
-    	throw new osid_UnimplementedException();
+    	$this->addClause('course_catalog_id', 'SCBCRSE_COLL_CODE IN (
+			SELECT
+				coll_code
+			FROM
+				course_catalog_college
+			WHERE
+				catalog_id = ?)', 
+    		array($this->session->getDatabaseIdString($courseCatalogId, 'catalog/')),
+    		$match);
     }
 
 
@@ -542,7 +523,7 @@ class banner_course_Course_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsCourseCatalogQuery() {
-    	throw new osid_UnimplementedException();
+    	return false;
     }
 
 
