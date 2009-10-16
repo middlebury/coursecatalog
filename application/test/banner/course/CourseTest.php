@@ -35,9 +35,12 @@ class banner_course_CourseTest
     {
     	$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
     	$this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
+    	$this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHEM0104');
     	$this->manager = $this->sharedFixture['CourseManager'];
         $this->session = $this->manager->getCourseLookupSessionForCatalog($this->mcugId);
         $this->object = $this->session->getCourse($this->physId);
+        
+        $this->termRecordType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
     }
 
     /**
@@ -141,5 +144,57 @@ class banner_course_CourseTest
 	        $this->assertType('osid_course_CourseRecord', $this->object->getCourseRecord($types->getNextType()));
 	    }
     }
+    
+/*********************************************************
+ * Tests for the TermsRecord
+ *********************************************************/
+ 	public function testSupportsTermRecord() {
+		$this->assertTrue($this->object->hasRecordType($this->termRecordType));
+	}
+	
+	public function testGetTermRecord() {
+		$record = $this->object->getCourseRecord($this->termRecordType);
+		$this->assertType('middlebury_course_Course_TermsRecord', $record);
+		$this->assertType('osid_course_CourseRecord', $record);
+	}
+	
+	public function testTermRecordImplementsRecordType() {
+		$record = $this->object->getCourseRecord($this->termRecordType);
+		$this->assertTrue($record->implementsRecordType($this->termRecordType));
+	}
+	
+	public function testGetTermRecordCourse() {
+		$record = $this->object->getCourseRecord($this->termRecordType);
+		$course = $record->getCourse();
+		$this->assertType('osid_course_Course', $course);
+	}
+	
+	public function testGetTermIds() {
+		$record = $this->object->getCourseRecord($this->termRecordType);
+		$ids = $record->getTermIds();
+		$this->assertEquals(8, $ids->available());
+		$this->assertType('osid_id_Id', $ids->getNextId());
+		
+		$next4 = $ids->getNextIds(4);
+		$this->assertEquals(4, count($next4));
+		foreach ($next4 as $id)
+			$this->assertType('osid_id_Id', $id);
+	}
+	
+	public function testGetTerms() {
+		$record = $this->object->getCourseRecord($this->termRecordType);
+		$terms = $record->getTerms();
+		$this->assertEquals(8, $terms->available());
+		$this->assertType('osid_course_Term', $terms->getNextTerm());
+	}
+	
+	public function testGetChemTerms() {
+		$object = $this->session->getCourse($this->chemId);
+		$record = $object->getCourseRecord($this->termRecordType);
+		$terms = $record->getTerms();
+		$this->assertEquals(13, $terms->available());
+		$this->assertType('osid_course_Term', $terms->getNextTerm());
+	}
+	
 }
 ?>

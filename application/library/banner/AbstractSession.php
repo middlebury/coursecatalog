@@ -234,6 +234,17 @@ abstract class banner_AbstractSession
 			throw new osid_NotFoundException("String '$string' cannot be broken into a subject-code and Number.");
 		return $matches[2];
 	}
+	
+	/**
+	 * Answer the manager for this session.
+	 * 
+	 * @return osid_course_CourseManager
+	 * @access public
+	 * @since 10/16/09
+	 */
+	public function getManager () {
+		return $this->manager;
+	}
 }
 
 ?>

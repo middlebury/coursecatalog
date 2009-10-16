@@ -20,7 +20,7 @@
  */
 class banner_course_Course 
     extends phpkit_AbstractOsidObject
-    implements osid_course_Course
+    implements osid_course_Course, middlebury_course_Course_TermsRecord
 {
 
 
@@ -46,6 +46,8 @@ class banner_course_Course
 		$this->credits = floatval($credits);
 		$this->topicIds = $topicIds;
 		$this->session = $session;
+		
+		$this->addRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms'));
 	}
 	
     /**
@@ -148,8 +150,75 @@ class banner_course_Course
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourseRecord(osid_type_Type $courseRecordType) {
+    	if ($this->hasRecordType($courseRecordType));
+    		return $this;
     	throw new osid_UnsupportedException('Course record type is not supported.');
     }
+    
+/*********************************************************
+ * Methods from osid_course_CourseRecord
+ *********************************************************/
 
-	
+	/**
+     *  Gets the <code> Course </code> from which this record originated. 
+     *
+     *  @return object osid_course_Course the course 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function getCourse() {
+    	return $this;
+    }
+
+/*********************************************************
+ * Methods from osid_OsidRecord
+ *********************************************************/
+
+	/**
+     *  Tests if the given type is implemented by this record. Other types 
+     *  than that directly indicated by <code> getType() </code> may be 
+     *  supported through an inheritance scheme where the given type specifies 
+     *  a record that is a parent interface of the interface specified by 
+     *  <code> getType(). </code> 
+     *
+     *  @param object osid_type_Type $recordType a type 
+     *  @return boolean <code> true </code> if the given record <code> Type 
+     *          </code> is implemented by this record, <code> false </code> 
+     *          otherwise 
+     *  @throws osid_NullArgumentException <code> recordType </code> is <code> 
+     *          null </code> 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function implementsRecordType(osid_type_Type $recordType) {
+    	return $this->hasRecordType($recordType);
+    }
+
+/*********************************************************
+ * Methods from middlebury_course_Course_TermsRecord
+ *********************************************************/
+
+	/**
+     * Gets the Ids of the Terms in which a <code>Course Offering</code> has been 
+     * taught for a <code> Course. </code>
+     *
+     *  @return object osid_id_IdList the list of term ids.
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     */
+    public function getTermIds() {
+    	return $this->getTerms();
+    }
+    
+    /**
+     * Gets the <code> Terms </code> in which a <code>Course Offering</code> has 
+     * been taught for a <code> Course. </code>
+     *
+     *  @return object osid_course_TermList the list of terms.
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     */
+    public function getTerms() {
+    	return new banner_course_Term_ForCourseList($this->session->getManager()->getDB(), $this->session, $this->getId());
+    }
 }
