@@ -16,7 +16,9 @@
  */
 class banner_course_Course_Search_Query
 	extends banner_course_AbstractQuery
-    implements osid_course_CourseQuery, middlebury_course_Course_Search_TopicQueryRecord
+    implements osid_course_CourseQuery, 
+    	middlebury_course_Course_Search_TopicQueryRecord,
+    	middlebury_course_Course_Search_InstructorsQueryRecord
 {
 	
 	/**
@@ -31,7 +33,7 @@ class banner_course_Course_Search_Query
 		parent::__construct($session);
 		
 		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:topic'));
-// 		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors'));
+		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors'));
 		
 		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
 		$this->booleanStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:boolean");
@@ -638,6 +640,52 @@ class banner_course_Course_Search_Query
      *              supportsTopicQuery() </code> is <code> true. </code> 
      */
     public function getTopicQuery() {
+    	throw new osid_UnimplementedException();
+    }
+    
+/*********************************************************
+ * Methods from middlebury_course_Course_Search_InstructorsQueryRecord
+ *********************************************************/
+
+	/**
+     *  Sets the instructor <code> Id </code> for this query to match courses 
+     *  that have a related instructor. 
+     *
+     *  @param object osid_id_Id $instructorId an instructor <code> Id </code> 
+     *  @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     *  @throws osid_NullArgumentException <code> instructorId </code> is <code> 
+     *          null </code> 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function matchInstructorId(osid_id_Id $instructorId, $match) {
+		$this->addClause('instructor_id', 'WEB_ID = ?', array($this->session->getDatabaseIdString($instructorId, 'resource/person/')), $match);
+    	$this->addTableJoin('LEFT JOIN SSBSECT ON (SCBCRSE_SUBJ_CODE = SSBSECT_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SSBSECT_CRSE_NUMB)');
+		$this->addTableJoin('LEFT JOIN SYVINST ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)');
+    }
+
+    /**
+     *  Tests if an <code> InstructorQuery </code> is available. 
+     *
+     *  @return boolean <code> true </code> if a instructor query interface is 
+     *          available, <code> false </code> otherwise 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function supportsInstructorQuery() {
+    	return false;
+    }
+
+    /**
+     *  Gets the query interface for an instructor. Multiple retrievals produce a 
+     *  nested <code> OR </code> term. 
+     *
+     *  @return object osid_resource_ResourceQuery the instructor query 
+     *  @throws osid_UnimplementedException <code> supportsInstructorQuery() 
+     *          </code> is <code> false </code> 
+     *  @compliance optional This method must be implemented if <code> 
+     *              supportsInstructorQuery() </code> is <code> true. </code> 
+     */
+    public function getInstructorQuery() {
     	throw new osid_UnimplementedException();
     }
 }

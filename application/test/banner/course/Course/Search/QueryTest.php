@@ -56,6 +56,10 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
         $this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
         $this->topicQueryRecordType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:topic');
 		$this->otherType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:other');
+		
+		$this->barryId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/WEBID1000002');
+		$this->dudleyId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/WEBID1000004');
+    	$this->calvinId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/WEBID1000003');
     }
 
     /**
@@ -767,7 +771,7 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
      */
     public function testGetCourseQueryRecord()
     {
-        $record = $this->object->getCourseQueryRecord($this->instructorsType);
+        $record = $this->object->getCourseQueryRecord($this->otherType);
 //         $this->assertType('osid_course_CourseQueryRecord', $record);
 //         $this->assertType('middlebury_course_Course_Search_InstructorsQueryRecord', $record);
     }
@@ -840,6 +844,116 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
     public function testGetQueryFromRecord() {
     	$record = $this->object->getCourseQueryRecord($this->topicQueryRecordType);
         $this->assertType('osid_course_CourseQuery', $record->getCourseQuery());
+    }
+    
+/*********************************************************
+ * Tests for the instructors query record
+ *********************************************************/
+
+	/**
+     * 
+     */
+    public function testGetInstructorCourseQueryRecord()
+    {
+        $record = $this->object->getCourseQueryRecord($this->instructorsType);
+        $this->assertType('osid_course_CourseQueryRecord', $record);
+        $this->assertType('middlebury_course_Course_Search_InstructorsQueryRecord', $record);
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchInstructorId()
+    {
+    	$record = $this->object->getCourseQueryRecord($this->instructorsType);
+        $record->matchInstructorId($this->barryId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('WEBID1000002', $params[0]);
+        $this->assertFalse(isset($params[1]));
+        
+        $this->assertEquals('(WEB_ID = ?)', $this->object->getWhereClause());
+
+		$courses = $this->session->getCoursesByQuery($this->object);
+// 		print $courses->debug();
+		$this->assertEquals(1, $courses->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchSecondInstructorId()
+    {
+    	$record = $this->object->getCourseQueryRecord($this->instructorsType);
+        $record->matchInstructorId($this->calvinId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('WEBID1000003', $params[0]);
+        $this->assertFalse(isset($params[1]));
+        
+        $this->assertEquals('(WEB_ID = ?)', $this->object->getWhereClause());
+
+		$courses = $this->session->getCoursesByQuery($this->object);
+// 		print $courses->debug();
+		$this->assertEquals(1, $courses->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatch2InstructorIds()
+    {
+        $record = $this->object->getCourseQueryRecord($this->instructorsType);
+        $record->matchInstructorId($this->barryId, true);
+        $record->matchInstructorId($this->calvinId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('WEBID1000002', $params[0]);
+        $this->assertEquals('WEBID1000003', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals("(WEB_ID = ?\n\t\tOR WEB_ID = ?)", $this->object->getWhereClause());
+
+		$courses = $this->session->getCoursesByQuery($this->object);
+// 		print $courses->debug();
+		$this->assertEquals(2, $courses->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchInstructorWith2CoursesId()
+    {
+    	$record = $this->object->getCourseQueryRecord($this->instructorsType);
+        $record->matchInstructorId($this->dudleyId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('WEBID1000004', $params[0]);
+        $this->assertFalse(isset($params[1]));
+        
+        $this->assertEquals('(WEB_ID = ?)', $this->object->getWhereClause());
+
+		$courses = $this->session->getCoursesByQuery($this->object);
+// 		print $courses->debug();
+		$this->assertEquals(2, $courses->available());
+    }
+
+    /**
+     * 
+     */
+    public function testSupportsInstructorQuery()
+    {
+    	$record = $this->object->getCourseQueryRecord($this->instructorsType);
+        $this->assertFalse($record->supportsInstructorQuery());
+    }
+
+    /**
+     * @expectedException osid_UnimplementedException
+     */
+    public function testGetInstructorQuery()
+    {
+    	$record = $this->object->getCourseQueryRecord($this->instructorsType);
+        $record->getInstructorQuery();
     }
 }
 ?>
