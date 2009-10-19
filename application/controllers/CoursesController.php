@@ -245,9 +245,9 @@ class CoursesController
 		$departmentId = self::getOsidIdFromString('topic/department/'.$department);
 		$searchUrl = $this->getAsAbsolute($this->_helper->url('search', 'offerings', null, array('catalog' => $this->_getParam('catalog'), 'topic' => 'topic/department/'.$department, 'submit' => 'Search')));
 		
-		header('Content-Type: text/xml');
+		ob_start();
 		print '<?xml version="1.0" encoding="utf-8" ?>
-<rss version="2.0">
+<rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
 	<channel>
 		<title>Courses in  '.$department.'</title>
 		<link>'.$searchUrl.'</link>
@@ -265,6 +265,10 @@ class CoursesController
 		$topicRecord->matchTopicId($departmentId, true);
 		
 		$courses = $searchSession->getCoursesByQuery($query);
+// 		print "<description><![CDATA[";
+// 		print ($courses->debug());
+// 		print "]]></description>";
+		
 		
 		$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
 		
@@ -277,12 +281,15 @@ class CoursesController
 			$cutOff = $this->DateTime_getTimestamp($now) - (60 * 60 * 24 * 365 * 5);
 			if ($course->hasRecordType($termsType)) {
 				$termsRecord = $course->getCourseRecord($termsType);
-				$terms = $termsRecord->getTerms();
-				while ($terms->hasNext()) {
-					$term = $terms->getNextTerm();
-					if ($this->DateTime_getTimestamp($term->getEndTime()) > $cutOff) {
-						$recentTerms[] = $term;
+				try {
+					$terms = $termsRecord->getTerms();
+					while ($terms->hasNext()) {
+						$term = $terms->getNextTerm();
+						if ($this->DateTime_getTimestamp($term->getEndTime()) > $cutOff) {
+							$recentTerms[] = $term;
+						}
 					}
+				} catch (osid_OperationFailedException $e) {
 				}
 			}
 			
@@ -305,15 +312,22 @@ class CoursesController
 				print "\n\t\t\t<description><![CDATA[";
 				print $course->getDescription();
 				
+// 				if (count($recentTerms)) {
+// 					$termStrings = array();
+// 					foreach ($recentTerms as $term) {
+// 						$termStrings[] = $term->getDisplayName();
+// 					}
+// 					print "<p class='terms_taught'>".implode(', ', $termStrings)."</p>";
+// 				}
+				
+				print "]]></description>";
+				
 				if (count($recentTerms)) {
 					$termStrings = array();
 					foreach ($recentTerms as $term) {
-						$termStrings[] = $term->getDisplayName();
+						print "\n\t\t\t<catalog:term id=\"".self::getStringFromOsidId($term->getId())."\" >".$term->getDisplayName()."</catalog:term>";
 					}
-					print "<p class='terms_taught'>".implode(', ', $termStrings)."</p>";
 				}
-				
-				print "]]></description>";
 				
 				print "\n\t\t</item>";
 			}
@@ -322,7 +336,9 @@ class CoursesController
 		print '
 	</channel>
 </rss>';
-
+		
+		header('Content-Type: text/xml');
+		ob_end_flush();
 		exit;
 	}
 	
