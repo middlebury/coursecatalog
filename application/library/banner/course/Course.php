@@ -219,6 +219,10 @@ class banner_course_Course
      *  @throws osid_PermissionDeniedException authorization failure 
      */
     public function getTerms() {
-    	return new banner_course_Term_ForCourseList($this->session->getManager()->getDB(), $this->session, $this->getId());
+    	try {
+	    	return new banner_course_Term_ForCourseList($this->session->getManager()->getDB(), $this->session, $this->getId());
+	    } catch (osid_NotFoundException $e) {
+	    	throw new osid_OperationFailedException($e->getMessage(), $e->getCode(), $e);
+	    }
     }
 }
