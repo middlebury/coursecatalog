@@ -245,19 +245,6 @@ class CoursesController
 		$departmentId = self::getOsidIdFromString('topic/department/'.$department);
 		$searchUrl = $this->getAsAbsolute($this->_helper->url('search', 'offerings', null, array('catalog' => $this->_getParam('catalog'), 'topic' => 'topic/department/'.$department, 'submit' => 'Search')));
 		
-		ob_start();
-		print '<?xml version="1.0" encoding="utf-8" ?>
-<rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
-	<channel>
-		<title>Courses in  '.$department.'</title>
-		<link>'.$searchUrl.'</link>
-		<description></description>
-		<lastBuildDate>'.date('r').'</lastBuildDate>
-		<generator>Course Catalog</generator>
-		<docs>http://blogs.law.harvard.edu/tech/rss</docs>
-		
-';
-		$courses = array();
 		// Fetch courses
 		$query = $searchSession->getCourseQuery();
 		
@@ -265,6 +252,89 @@ class CoursesController
 		$topicRecord->matchTopicId($departmentId, true);
 		
 		$courses = $searchSession->getCoursesByQuery($query);
+		
+		$this->outputCourseFeed($courses, 'Courses in  '.$department, $searchUrl);
+		
+	}
+	
+	/**
+	 * Search for courses
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 6/15/09
+	 */
+	public function instructorxmlAction () {
+		$this->_helper->viewRenderer->setNoRender();
+		
+		if (!$this->_getParam('catalog')) {
+			header('HTTP/1.1 400 Bad Request');
+			print "A catalog must be specified.";
+			exit;
+		}
+		try {
+			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
+			$searchSession = self::getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
+		} catch (osid_InvalidArgumentException $e) {
+			header('HTTP/1.1 400 Bad Request');
+			print "The catalog id specified was not of the correct format.";
+			exit;
+		} catch (osid_NotFoundException $e) {
+			header('HTTP/1.1 404 Not Found');
+			print "The catalog id specified was not found.";
+			exit;
+		}
+		
+		$instructor = trim($this->_getParam('instructor'));
+		
+		if (!$instructor || !strlen($instructor)) {
+			header('HTTP/1.1 400 Bad Request');
+			print "An instructor must be specified.";
+			exit;
+		}
+		
+		$instructorId = self::getOsidIdFromString('resource/person/'.$instructor);
+		$searchUrl = $this->getAsAbsolute($this->_helper->url('view', 'resources', null, array('catalog' => $this->_getParam('catalog'), 'resource' => 'resouce/person/'.$instructor)));
+		
+		// Fetch courses
+		$query = $searchSession->getCourseQuery();
+		
+		$instrctorRecord = $query->getCourseQueryRecord(new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:instructors"));
+		$instrctorRecord->matchInstructorId($instructorId, true);
+		
+		$courses = $searchSession->getCoursesByQuery($query);
+		
+		$resourceLookup = self::getCourseManager()->getResourceManager()->getResourceLookupSession();
+		$instructorResource = $resourceLookup->getResource($instructorId);
+		
+		$this->outputCourseFeed($courses, 'Courses taught by '.$instructorResource->getDisplayName(), $searchUrl);
+		
+	}
+	
+	/**
+	 * Output an RSS feed of courses from results
+	 * 
+	 * @param osid_course_CourseSearchResults $courses
+	 * @param string $title
+	 * @param string $url
+	 * @return void
+	 * @access protected
+	 * @since 10/19/09
+	 */
+	protected function outputCourseFeed (osid_course_CourseSearchResults $courses, $title, $url) {
+		ob_start();
+		print '<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
+	<channel>
+		<title>'.$title.'</title>
+		<link>'.$url.'</link>
+		<description></description>
+		<lastBuildDate>'.date('r').'</lastBuildDate>
+		<generator>Course Catalog</generator>
+		<docs>http://blogs.law.harvard.edu/tech/rss</docs>
+		
+';
+		
 // 		print "<description><![CDATA[";
 // 		print ($courses->debug());
 // 		print "]]></description>";
@@ -276,9 +346,12 @@ class CoursesController
 			$course = $courses->getNextCourse();
 			$courseIdString = self::getStringFromOsidId($course->getId());
 			
-			$recentTerms = array();
+			// Define a cutoff date after which courses will be included in the feed.
+			// Currently set to 4 years. Would be good to have as a configurable time.
 			$now = new DateTime;
-			$cutOff = $this->DateTime_getTimestamp($now) - (60 * 60 * 24 * 365 * 5);
+			$cutOff = $this->DateTime_getTimestamp($now) - (60 * 60 * 24 * 365 * 4);
+			
+			$recentTerms = array();
 			if ($course->hasRecordType($termsType)) {
 				$termsRecord = $course->getCourseRecord($termsType);
 				try {
