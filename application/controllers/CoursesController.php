@@ -253,7 +253,7 @@ class CoursesController
 		
 		$courses = $searchSession->getCoursesByQuery($query);
 		
-		$this->outputCourseFeed($courses, 'Courses in  '.$department, $searchUrl);
+		$this->outputCourseFeed($courses, 'Courses in  '.$department, $searchUrl, array($this, 'getAllCourseTerms'));
 		
 	}
 	
@@ -307,7 +307,7 @@ class CoursesController
 		$resourceLookup = self::getCourseManager()->getResourceManager()->getResourceLookupSession();
 		$instructorResource = $resourceLookup->getResource($instructorId);
 		
-		$this->outputCourseFeed($courses, 'Courses taught by '.$instructorResource->getDisplayName(), $searchUrl);
+		$this->outputCourseFeed($courses, 'Courses taught by '.$instructorResource->getDisplayName(), $searchUrl, array($this, 'getInstructorCourseTerms'), array(self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId), $instructorId));
 		
 	}
 	
@@ -321,7 +321,7 @@ class CoursesController
 	 * @access protected
 	 * @since 10/19/09
 	 */
-	protected function outputCourseFeed (osid_course_CourseSearchResults $courses, $title, $url) {
+	protected function outputCourseFeed (osid_course_CourseSearchResults $courses, $title, $url, $termsCallback, $additionalCallbackParams = array()) {
 		ob_start();
 		print '<?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
@@ -352,17 +352,13 @@ class CoursesController
 			$cutOff = $this->DateTime_getTimestamp($now) - (60 * 60 * 24 * 365 * 4);
 			
 			$recentTerms = array();
-			if ($course->hasRecordType($termsType)) {
-				$termsRecord = $course->getCourseRecord($termsType);
-				try {
-					$terms = $termsRecord->getTerms();
-					while ($terms->hasNext()) {
-						$term = $terms->getNextTerm();
-						if ($this->DateTime_getTimestamp($term->getEndTime()) > $cutOff) {
-							$recentTerms[] = $term;
-						}
-					}
-				} catch (osid_OperationFailedException $e) {
+			$params = array();
+			$params[] = $course;
+			$params = array_merge($params, $additionalCallbackParams);
+			$allTerms = call_user_func_array($termsCallback, $params);
+			foreach ($allTerms as $term) {
+				if ($this->DateTime_getTimestamp($term->getEndTime()) > $cutOff) {
+					$recentTerms[] = $term;
 				}
 			}
 			
@@ -413,6 +409,70 @@ class CoursesController
 		header('Content-Type: text/xml');
 		ob_end_flush();
 		exit;
+	}
+	
+	/**
+	 * Answer all terms for a course
+	 * 
+	 * @param osid_course_Course $course
+	 * @return array
+	 * @access private
+	 * @since 10/20/09
+	 */
+	private function getAllCourseTerms (osid_course_Course $course) {
+		$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
+		$allTerms = array();
+		if ($course->hasRecordType($termsType)) {
+			$termsRecord = $course->getCourseRecord($termsType);
+			try {
+				$terms = $termsRecord->getTerms();
+				while ($terms->hasNext()) {
+					$allTerms[] = $terms->getNextTerm();
+				}
+			} catch (osid_OperationFailedException $e) {
+			}
+		}
+		return $allTerms;
+	}
+	
+	/**
+	 * Answer the terms in which an instructor taught a course
+	 * 
+	 * @param osid_course_Course $course
+	 * @return array
+	 * @access private
+	 * @since 10/20/09
+	 */
+	private function getInstructorCourseTerms (osid_course_Course $course, osid_course_CourseOfferingSearchSession $session, osid_id_Id $instructorId) {
+		$instructorsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:instructors");
+		$allTerms = array();
+		
+		$query = $session->getCourseOfferingQuery();
+		$query->matchCourseId($course->getId(), true);
+		$instructorsRecord = $query->getCourseOfferingQueryRecord($instructorsType);
+		$instructorsRecord->matchInstructorId($instructorId, true);
+		
+		$search = $session->getCourseOfferingSearch();
+		$order = $session->getCourseOfferingSearchOrder();
+		$order->orderByTerm();
+		$order->ascend();
+		$search->orderCourseOfferingResults($order);
+		
+		$offerings = $session->getCourseOfferingsBySearch($query, $search);
+		
+// 		print $offerings->debug();
+		
+		$seen = array();
+		while ($offerings->hasNext()) {
+			$term = $offerings->getNextCourseOffering()->getTerm();
+			$termIdString = self::getStringFromOsidId($term->getId());
+// 			print $termIdString."\n";
+			if (!in_array($termIdString, $seen)) {
+				$allTerms[] = $term;
+				$seen[] = $termIdString;
+			}
+		}
+		return $allTerms;
 	}
 	
 	/**
