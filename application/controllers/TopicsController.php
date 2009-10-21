@@ -95,6 +95,36 @@ class TopicsController
  		$this->render('offerings', null, true);
 	}
 	
+	/**
+	 * List all department topics as a text file with each line being Id|DisplayName
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 10/20/09
+	 */
+	public function listdepartmentstxtAction () {
+		header('Content-Type: text/plain');
+		
+		if ($this->_getParam('catalog')) {
+			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
+			$lookupSession = self::getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+			$this->view->title = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
+		} else {
+			$lookupSession = self::getCourseManager()->getTopicLookupSession();
+			$this->view->title = 'Topics in All Catalogs';
+		}
+		$lookupSession->useFederatedCourseCatalogView();
+		
+		$topics = $lookupSession->getTopicsByGenusType(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department"));
+		
+		while ($topics->hasNext()) {
+			$topic = $topics->getNextTopic();
+			print self::getStringFromOsidId($topic->getId())."|".self::getStringFromOsidId($topic->getId())." - ".$topic->getDisplayName()."\n";
+		}
+		
+		exit;
+	}
+	
 }
 
 ?>

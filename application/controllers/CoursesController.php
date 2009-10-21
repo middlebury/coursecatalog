@@ -213,7 +213,7 @@ class CoursesController
 	 * @access public
 	 * @since 6/15/09
 	 */
-	public function departmentxmlAction () {
+	public function topicxmlAction () {
 		$this->_helper->viewRenderer->setNoRender();
 		
 		if (!$this->_getParam('catalog')) {
@@ -234,26 +234,29 @@ class CoursesController
 			exit;
 		}
 		
-		$department = trim($this->_getParam('department'));
-		
-		if (!$department || !strlen($department)) {
+		if (!$this->_getParam('topic') || !strlen($this->_getParam('topic'))) {
 			header('HTTP/1.1 400 Bad Request');
-			print "A department must be specified.";
+			print "A topic must be specified.";
 			exit;
 		}
 		
-		$departmentId = self::getOsidIdFromString('topic/department/'.$department);
-		$searchUrl = $this->getAsAbsolute($this->_helper->url('search', 'offerings', null, array('catalog' => $this->_getParam('catalog'), 'topic' => 'topic/department/'.$department, 'submit' => 'Search')));
+		$topicId = self::getOsidIdFromString($this->_getParam('topic'));
+		
+		$searchUrl = $this->getAsAbsolute($this->_helper->url('search', 'offerings', null, array('catalog' => $this->_getParam('catalog'), 'topic' => $this->_getParam('topic'), 'submit' => 'Search')));
 		
 		// Fetch courses
 		$query = $searchSession->getCourseQuery();
 		
 		$topicRecord = $query->getCourseQueryRecord(new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:topic"));
-		$topicRecord->matchTopicId($departmentId, true);
+		$topicRecord->matchTopicId($topicId, true);
 		
 		$courses = $searchSession->getCoursesByQuery($query);
 		
-		$this->outputCourseFeed($courses, 'Courses in  '.$department, $searchUrl, array($this, 'getAllCourseTerms'));
+		$topicLookup = self::getCourseManager()->getTopicLookupSession();
+		$topicLookup->useFederatedView();
+		$topic = $topicLookup->getTopic($topicId);
+		
+		$this->outputCourseFeed($courses, htmlentities('Courses in  '.$topic->getDisplayName()), $searchUrl, array($this, 'getAllCourseTerms'));
 		
 	}
 	
