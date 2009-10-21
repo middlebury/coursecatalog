@@ -92,6 +92,25 @@ class OfferingsController
 	}
 	
 	/**
+	 * Answer search results as an xml feed.
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 10/21/09
+	 */
+	public function searchxmlAction () {
+		$this->searchAction();
+		$this->view->sections = $this->searchSession->getCourseOfferingsByQuery($this->query);
+		
+		$this->view->feedTitle = 'Course Offering Results';
+		
+		$output = $this->view->render('offerings/searchxml.phtml');
+// 		header('Content-Type: text/plain');
+		print $output;
+		exit;
+	}
+	
+	/**
 	 * Display a search form and search results
 	 * 
 	 * @return void
@@ -309,6 +328,10 @@ class OfferingsController
 			}
 			$this->view->searchParams['instructor'] = $this->_getParam('instructor');
 		}
+		
+		// Make our session and query available to the XML version of this action.
+		$this->searchSession = $offeringSearchSession;
+		$this->query = $query;
 		
 		// Run the query if submitted.
 		if ($this->_getParam('submit')) {
