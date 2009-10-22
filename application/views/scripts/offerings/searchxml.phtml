@@ -62,6 +62,7 @@ print '<?xml version="1.0" encoding="utf-8" ?>
 			<title><?php print $this->escape($section->getDisplayName()); ?></title>
 			<link><?php print getAsAbsolute($this->url($offeringParams)); ?></link>
 			<description><![CDATA[<?php print $section->getDescription(); ?>]]></description>
+			<catalog:title><?php print $this->escape($section->getTitle()); ?></catalog:title>
 <?php
 
 if ($section->hasRecordType($alternateType)) {
@@ -144,4 +145,5 @@ print "\n\t\t\t<catalog:schedule>".$this->escape($section->getScheduleInfo())."<
 
 		</item>
 <?php } ?>
-
+	</channel>
+</rss>
