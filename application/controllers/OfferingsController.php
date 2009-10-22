@@ -121,6 +121,14 @@ class OfferingsController
 				$lastTerm = $term;
 			}
 		}
+		// Reset the terms list as due to caching, we will have just wiped out the statement above.
+		// 
+		// It would be better to fix this in the banner_course_CachingPdoQueryList, but
+		// I haven't yet figured out how to determine if a result cursor
+		// has been closed or not. See:
+		// 
+		// http://stackoverflow.com/questions/1608427/how-can-i-determine-if-a-pdo-statement-cursor-is-closed
+		$this->view->terms = $this->termLookupSession->getTerms();
 		
 		$this->view->feedTitle = 'Course Offering Results';
 		
