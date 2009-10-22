@@ -64,7 +64,11 @@ class OfferingsController
 		
 		// Add our parameters to the search query
 		if ($this->_getParam('term')) {
-			$termId = self::getOsidIdFromString($this->_getParam('term'));
+			if ($this->_getParam('term') == 'CURRENT') {
+				$termId = self::getCurrentTermId();
+			} else {
+				$termId = self::getOsidIdFromString($this->_getParam('term'));
+			}
 			
 			$termLookupSession = self::getCourseManager()->getTermLookupSession();
 			$termLookupSession->useFederatedCourseCatalogView();
@@ -139,11 +143,14 @@ class OfferingsController
 	/*********************************************************
 	 * Build option lists for the search form
 	 *********************************************************/
-	 	$this->view->terms = $termLookupSession->getTerms();
 	 			
 		// Term
 		if ($this->_getParam('term')) {
-			$termId = self::getOsidIdFromString($this->_getParam('term'));
+			if ($this->_getParam('term') == 'CURRENT') {
+				$termId = self::getCurrentTermId($offeringSearchSession->getCourseCatalogId());
+			} else {
+				$termId = self::getOsidIdFromString($this->_getParam('term'));
+			}
 		}
 		
 	 	
@@ -190,9 +197,10 @@ class OfferingsController
 		$search = $offeringSearchSession->getCourseOfferingSearch();
 		$this->view->searchParams = array();
 		
+		$this->view->terms = $termLookupSession->getTerms();
+		
 		// Add our parameters to the search query
-		if ($this->_getParam('term')) {
-			$termId = self::getOsidIdFromString($this->_getParam('term'));
+		if (isset($termId)) {
 			$this->view->searchParams['term'] = $this->_getParam('term');
 			
 			$query->matchTermId($termId, true);
