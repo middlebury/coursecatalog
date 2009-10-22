@@ -14,6 +14,18 @@ function getAsAbsolute ($url) {
 		. '://' . $_SERVER['HTTP_HOST'] . $url;
 }
 
+function printTerm(Zend_View $view, osid_course_Term $term, $label = 'term', $tabs = "\t\t\t") {
+	$termUrl = getAsAbsolute($view->url(array(
+					'controller'	=> 'terms',
+					'action'		=> 'view',
+					'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId()),
+					'offering'		=> null
+				)));
+	print "\n".$tabs."<catalog:".$label." id=\"".AbstractCatalogController::getStringFromOsidId($term->getId())."\" href=\"".$termUrl."\">";
+	print $view->escape($term->getDisplayName());
+	print "</catalog:".$label."> ";
+}
+
 print '<?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
 	<channel>
@@ -25,39 +37,52 @@ print '<?xml version="1.0" encoding="utf-8" ?>
 		<docs>http://blogs.law.harvard.edu/tech/rss</docs>
 ';
 
-	$alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
-	
-	while ($this->sections->hasNext()) { 
-		$section = $this->sections->getNextCourseOffering();
-		
-		$offeringParams = array(
-							'controller'	=> 'offerings',
-							'action'		=> 'view',
-							'offering'		=> AbstractCatalogController::getStringFromOsidId($section->getId())
-						);
-		$resourceParams = array(
-							'controller'	=> 'resources',
-							'action'		=> 'view',
-							'offering'		=> null
-						);
+if (isset($this->previousTerm))
+	printTerm($this, $this->previousTerm, 'previous_term', "\t\t");
+if (isset($this->term))
+	printTerm($this, $this->term, 'chosen_term', "\t\t");
+if (isset($this->nextTerm))
+	printTerm($this, $this->nextTerm, 'next_term', "\t\t");
 
-		$term = $section->getTerm();
-		$termUrl = getAsAbsolute($this->url(array(
-						'controller'	=> 'terms',
+	
+if (isset($this->terms)) {
+	print "\n\t\t<catalog:all_terms>";
+	while ($this->terms->hasNext()) {
+		printTerm($this, $this->terms->getNextTerm());
+	}
+	print "\n\t\t</catalog:all_terms>";
+}
+	
+print "\n";
+
+$alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
+
+while ($this->sections->hasNext()) { 
+	$section = $this->sections->getNextCourseOffering();
+	
+	$offeringParams = array(
+						'controller'	=> 'offerings',
 						'action'		=> 'view',
-						'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId()),
-						'offering'		=> null
-					)));
-		$topicParams = array(
-						'controller'	=> 'topics',
-						'action'		=> 'view',
-						'offering'		=> null,
-						'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId())
+						'offering'		=> AbstractCatalogController::getStringFromOsidId($section->getId())
 					);
-		
-		// Topics
-		$allTopics = AbstractCatalogController::topicListAsArray($section->getTopics());
+	$resourceParams = array(
+						'controller'	=> 'resources',
+						'action'		=> 'view',
+						'offering'		=> null
+					);
+
+	$term = $section->getTerm();
+	$topicParams = array(
+					'controller'	=> 'topics',
+					'action'		=> 'view',
+					'offering'		=> null,
+					'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId())
+				);
+	
+	// Topics
+	$allTopics = AbstractCatalogController::topicListAsArray($section->getTopics());
 ?>
+
 		<item>
 			<title><?php print $this->escape($section->getDisplayName()); ?></title>
 			<link><?php print getAsAbsolute($this->url($offeringParams)); ?></link>
@@ -83,9 +108,7 @@ print "\n\t\t\t<catalog:genustype href=\"".getAsAbsolute($this->url($offeringPar
 print $this->escape($section->getGenusType()->getDisplayName());
 print "</catalog:genustype> ";
 
-print "\n\t\t\t<catalog:term id=\"".AbstractCatalogController::getStringFromOsidId($term->getId())."\" href=\"".$termUrl."\">";
-print $this->escape($term->getDisplayName());
-print "</catalog:term> ";
+printTerm($this, $term);
 
 
 $topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
@@ -144,6 +167,6 @@ print "\n\t\t\t<catalog:schedule>".$this->escape($section->getScheduleInfo())."<
 ?>
 
 		</item>
-<?php } ?>
+	<?php } ?>
 	</channel>
 </rss>

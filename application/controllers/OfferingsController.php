@@ -106,6 +106,22 @@ class OfferingsController
 		$this->searchAction();
 		$this->view->sections = $this->searchSession->getCourseOfferingsByQuery($this->query);
 		
+		// Set the next and previous terms
+		if (isset($this->view->term)) {
+			$terms = $this->termLookupSession->getTerms();
+			while ($terms->hasNext()) {
+				$term = $terms->getNextTerm();
+				if ($term->getId()->isEqual($this->view->term->getId())) {
+					if (isset($lastTerm))
+						$this->view->nextTerm = $lastTerm;
+					if ($terms->hasNext())
+						$this->view->previousTerm = $terms->getNextTerm();
+					break;
+				}
+				$lastTerm = $term;
+			}
+		}
+		
 		$this->view->feedTitle = 'Course Offering Results';
 		
 		$output = $this->view->render('offerings/searchxml.phtml');
@@ -197,6 +213,8 @@ class OfferingsController
 		$search = $offeringSearchSession->getCourseOfferingSearch();
 		$this->view->searchParams = array();
 		
+		// Make our session and query available to the XML version of this action.
+		$this->termLookupSession = $termLookupSession;
 		$this->view->terms = $termLookupSession->getTerms();
 		
 		// Add our parameters to the search query
