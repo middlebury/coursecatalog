@@ -1,0 +1,64 @@
+FSM Parser
+==========
+
+What is it?
+~~~~~~~~~~~
+A PHP class for creating parsers and preprocessors using Finite State Machine.
+
+How to use?
+~~~~~~~~~~~
+First, include the class file.
+Then you must define language constructs (as regular expressions), actions
+to take when each of them are found, and optional machine states: the default
+target state (can be changed inside action; can be NULL if no change) and
+required state (NULL if no state check is needed).
+
+Example: xmlparser.php - a very simple XML parser.
+
+It is also possible to load FSM definition from file or another source using
+LoadFSM() and LoadFSMFile() methods.
+
+Example: xmlparser_loadfsm.php - the same XML parser loaded from .fsm file.
+
+FSM definition syntax.
+~~~~~~~~~~~~~~~~~~~~~~
+It is just like Makefile syntax:
+
+Line beginning with "#" is a comment.
+Empty line is an end of state definiton (it is required even at EOF).
+Line starting with an alphanumeric symbol is a state definition:
+<Required state or *> <regular expression> [Default state]
+Any following line starting with tab character is an action string.
+
+
+Method description.
+~~~~~~~~~~~~~~~~~~~
+
+void FSM( string Expect, string Do [, string Target [, string Require] ] )
+ Add a state definition.
+  Expect: regex to match closest to current position.
+  Do: PHP code to execute on best match. Inside this code, $STRING is that portion of parsed text that matches "Expect", $STATE is current state.
+  Target: state to take if "Do" code did not specify it explicitly.
+  Require: search for "Expect" only if macine is in this state.
+
+ "Do" code may return:
+   string: state to take.
+   array("STOP"=> stop ,"NEWSTATE"=> state):
+    if "stop" is nonzero, the FSM will stop with FSMSTOP_STOP return code.
+    if "state" is nonempty string, the machine will take this state.
+
+void LoadFSM( string data )
+ Load state definitions from string in syntax described above.
+
+void LoadFSMFile( string filename )
+ Load state definitions from specified file (wrapper for LoadFSM() ).
+
+int Parse( string data , string StartState)
+ Runs a FSM on specified data.
+ Return codes:
+  FSMSTOP_OK		Stopped at data end.
+  FSMSTOP_STOP		Stopped by action handler.
+  FSMSTOP_UNHANDLED	No matches found.
+
+int ParseFile( string filename , string StartState )
+ Runs a FSM on specified file (wrapper for Parse() ).

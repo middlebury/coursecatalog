@@ -1,0 +1,19 @@
+CDATA /</ TAG_OPEN
+
+CDATA /<\/\w+\s*>/
+	return ClosingTag($STRING);
+
+CDATA /./s
+	echo $STRING;
+
+TAG_OPEN /[\w_]+/ IN_TAG
+	return BeginTag($STRING);
+
+IN_TAG /[\w_]+/
+	return GetSimpleAttr($STRING);
+
+IN_TAG /[\w_]+=[\'"][^\'"]*[\'"]/
+	return GetValueAttr($STRING);
+
+IN_TAG /\/?>/ CDATA
+	return EndTag($STRING);

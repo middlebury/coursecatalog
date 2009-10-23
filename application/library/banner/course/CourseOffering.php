@@ -98,7 +98,7 @@ class banner_course_CourseOffering
 		if (is_null($row['SCBDESC_TEXT_NARRATIVE']))
 			$this->setDescription('');
 		else
-			$this->setDescription($row['SCBDESC_TEXT_NARRATIVE']);
+			$this->setDescription(banner_course_Course::convertDescription($row['SCBDESC_TEXT_NARRATIVE']));
 		
 		$this->setGenusType(new phpkit_type_Type(
 			'urn', 										// namespace

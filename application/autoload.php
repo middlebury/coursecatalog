@@ -14,6 +14,7 @@ if (!defined('BASE_PATH')) {
 		APPLICATION_PATH . '/library'
 		. PATH_SEPARATOR . BASE_PATH . '/library/osid-phpkit'
 		. PATH_SEPARATOR . BASE_PATH . '/library/ZendFramework/library'
+		. PATH_SEPARATOR . BASE_PATH . '/library/fsmparser'
 		. PATH_SEPARATOR . get_include_path()
 	);
 }

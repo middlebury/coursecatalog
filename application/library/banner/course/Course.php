@@ -7,6 +7,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */ 
 
+include_once("fsmparserclass.inc.php");
+
 /**
  *  <p>A <code> Course </code> represents a canonical learning unit. A <code> 
  *  Course </code> is instantiated at a time and place through the creation of 
@@ -22,7 +24,153 @@ class banner_course_Course
     extends phpkit_AbstractOsidObject
     implements osid_course_Course, middlebury_course_Course_TermsRecord
 {
+	
+	/**
+	 * Translate any markup or encoding in the description into UTF-8 XHTML.
+	 * 
+	 * @param string $description
+	 * @return string
+	 * @access public
+	 * @since 10/23/09
+	 * @static
+	 */
+	public static function convertDescription ($description) {
+		$tmp = error_reporting();
+		error_reporting(E_WARNING);
+		
+		$parser = self::getFsmParser();
+		ob_start();
+		$parser->Parse($description,"UNKNOWN");
+		
+		error_reporting($tmp);
+		return nl2br(ob_get_clean());
+	}
+	
+	/**
+	 * Answer an FMS Parser configured to convert markdown into XHTML text
+	 * 
+	 * @return FSMParser
+	 * @access private
+	 * @since 10/23/09
+	 * @static
+	 */
+	private static function getFsmParser () {
+		if (!isset(self::$fsmParser)) {			
+			self::$fsmParser = new FSMParser();
 
+			//---------Programming the FSM:
+			
+			/*********************************************************
+			 * Normal state
+			 *********************************************************/
+			
+			// Enter from unknown into normal state if the first character is not a slash or bold.
+			self::$fsmParser->FSM('/[^\/\*]/s','echo $STRING;','CDATA','UNKNOWN');
+			
+			//In normal state, catch all other data
+			self::$fsmParser->FSM('/./s','echo $STRING;','CDATA','CDATA');
+			
+			/*********************************************************
+			 * Italic
+			 *********************************************************/
+			// Enter into Italic if at the begining of the line.
+			self::$fsmParser->FSM(
+				'/^\/\w/',
+				'preg_match("/^\/(\w)/", $STRING, $m); echo "<em>".$m[1];',
+				'ITALIC',
+				'UNKNOWN');
+			
+			//In normal state, catch italic start
+			self::$fsmParser->FSM(
+				'/\W\/\w/',
+				'preg_match("/(\W)\/(\w)/", $STRING, $m); echo $m[1]."<em>".$m[2];',
+				'ITALIC',
+				'CDATA');
+			
+			// Close out of italic state back to normal
+			self::$fsmParser->FSM(
+				'/\w\/\W/',
+				'preg_match("/(\w)\/(\W)/", $STRING, $m); echo $m[1]."</em>".$m[2];',
+				'CDATA',
+				'ITALIC');
+			
+			//In normal state, catch italic start for whitespace+non-word
+			self::$fsmParser->FSM(
+				'/\s\/[^\s]/',
+				'preg_match("/(\s)\/([^\s])/", $STRING, $m); echo $m[1]."<em>".$m[2];',
+				'ITALIC',
+				'CDATA');
+			
+			// Close out of italic state back to normal for whitespace+non-word
+			self::$fsmParser->FSM(
+				'/[^\s]\/\s/',
+				'preg_match("/([^\s])\/(\s)/", $STRING, $m); echo $m[1]."</em>".$m[2];',
+				'CDATA',
+				'ITALIC');
+			
+			// Close out of bold state back to normal if bold at the very end
+			self::$fsmParser->FSM(
+				'/\w\/$/',
+				'preg_match("/(\w)\/$/", $STRING, $m); echo $m[1]."</em>";',
+				'CDATA',
+				'ITALIC');
+			
+			//In italic state, catch all other data
+			self::$fsmParser->FSM('/./s','echo $STRING;','ITALIC','ITALIC');
+			
+			
+			/*********************************************************
+			 * Bold
+			 *********************************************************/
+			
+			// Enter into Bold if at the begining of the line.
+			self::$fsmParser->FSM(
+				'/^\*\w/',
+				'preg_match("/^\*(\w)/", $STRING, $m); echo "<strong>".$m[1];',
+				'BOLD',
+				'UNKNOWN');
+			
+			//In normal state, catch bold start
+			self::$fsmParser->FSM(
+				'/\W\*\w/',
+				'preg_match("/(\W)\*(\w)/", $STRING, $m); echo $m[1]."<strong>".$m[2];',
+				'BOLD',
+				'CDATA');
+				
+			// Close out of bold state back to normal
+			self::$fsmParser->FSM(
+				'/\w\*\W/',
+				'preg_match("/(\w)\*(\W)/", $STRING, $m); echo $m[1]."</strong>".$m[2];',
+				'CDATA',
+				'BOLD');
+			
+			//In normal state, catch bold start for whitespace+non-word
+			self::$fsmParser->FSM(
+				'/\s\/[^\s]/',
+				'preg_match("/(\s)\/([^\s])/", $STRING, $m); echo $m[1]."<strong>".$m[2];',
+				'BOLD',
+				'CDATA');
+			
+			// Close out of bold state back to normal for whitespace+non-word
+			self::$fsmParser->FSM(
+				'/[^\s]\/\s/',
+				'preg_match("/([^\s])\/(\s)/", $STRING, $m); echo $m[1]."</strong>".$m[2];',
+				'CDATA',
+				'BOLD');
+				
+			// Close out of bold state back to normal if bold at the very end
+			self::$fsmParser->FSM(
+				'/\w\*$/',
+				'preg_match("/(\w)\*$/", $STRING, $m); echo $m[1]."</strong>";',
+				'CDATA',
+				'BOLD');
+				
+			//In bold state, catch all other data
+			self::$fsmParser->FSM('/./s','echo $STRING;','BOLD','BOLD');			
+		}
+		return self::$fsmParser;
+	}
+	private static $fsmParser;
 
 	/**
 	 * Constructor
@@ -41,7 +189,7 @@ class banner_course_Course
 		if (is_null($description))
 			$this->setDescription('');
 		else
-			$this->setDescription($description);
+			$this->setDescription(self::convertDescription($description));
 		$this->title = $title;
 		$this->credits = floatval($credits);
 		$this->topicIds = $topicIds;
