@@ -82,7 +82,7 @@ class banner_course_Course
 			
 			//In normal state, catch italic start
 			self::$fsmParser->FSM(
-				'/\W\/\w/',
+				'/[^\w.]\/\w/',
 				'preg_match("/(\W)\/(\w)/", $STRING, $m); echo $m[1]."<em>".$m[2];',
 				'ITALIC',
 				'CDATA');
@@ -108,10 +108,17 @@ class banner_course_Course
 				'CDATA',
 				'ITALIC');
 			
-			// Close out of bold state back to normal if bold at the very end
+			// Close out of italic state back to normal if bold at the very end
 			self::$fsmParser->FSM(
 				'/\w\/$/',
 				'preg_match("/(\w)\/$/", $STRING, $m); echo $m[1]."</em>";',
+				'CDATA',
+				'ITALIC');
+			
+			// Close out of italic state back to normal if there is no closing mark.
+			$parser->FSM(
+				'/\w$/',
+				'preg_match("/(\w)$/", $STRING, $m); echo $m[1]."</em>";',
 				'CDATA',
 				'ITALIC');
 			
@@ -132,7 +139,7 @@ class banner_course_Course
 			
 			//In normal state, catch bold start
 			self::$fsmParser->FSM(
-				'/\W\*\w/',
+				'/[^\w.]\*\w/',
 				'preg_match("/(\W)\*(\w)/", $STRING, $m); echo $m[1]."<strong>".$m[2];',
 				'BOLD',
 				'CDATA');
@@ -162,6 +169,13 @@ class banner_course_Course
 			self::$fsmParser->FSM(
 				'/\w\*$/',
 				'preg_match("/(\w)\*$/", $STRING, $m); echo $m[1]."</strong>";',
+				'CDATA',
+				'BOLD');
+			
+			// Close out of bold state back to normal if bold if there is no closing mark.
+			$parser->FSM(
+				'/\w$/',
+				'preg_match("/(\w)$/", $STRING, $m); echo $m[1]."</strong>";',
 				'CDATA',
 				'BOLD');
 				
