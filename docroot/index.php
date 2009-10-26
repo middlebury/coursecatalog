@@ -8,6 +8,7 @@ try {
 
 	$front = Zend_Controller_Front::getInstance();
 	$front->throwExceptions(true);
+	$front->registerPlugin(new CatalogExternalRedirector());
 	Zend_Layout::startMvc();
 	Zend_Controller_Front::run(APPLICATION_PATH.'/controllers');
 
