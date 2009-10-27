@@ -130,7 +130,7 @@ class banner_course_CourseManager
     								new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/pdo_password'),
     								new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
 		} catch (osid_NotFoundException $e) {
-			throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode());
+			throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode(), $e);
 		}
 		
 		try {
@@ -148,7 +148,7 @@ class banner_course_CourseManager
 			else
 				$this->db = new PDO($dsn, $username, $password);
 		} catch (PDOException $e) {
-			throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode());
+			throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode(), $e);
 		}
 		
 		try {
@@ -159,7 +159,7 @@ class banner_course_CourseManager
     		if (!strlen($this->idAuthority))
     			throw new osid_ConfigurationErrorException('urn:inet:middlebury.edu:config:banner_course/id_authority must be specified.');
 		} catch (osid_NotFoundException $e) {
-			throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode());
+			throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode(), $e);
 		}
     }
 
