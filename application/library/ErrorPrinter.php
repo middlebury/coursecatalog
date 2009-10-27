@@ -325,4 +325,68 @@ END;
 	
 }
 
-?>
+/**
+ * For systems that don't have gettext installed, we want to define a "_" function
+ * so that harmoni will still operate, if only in English
+ */
+if (!function_exists("gettext")) {
+	/**
+	 * Returns the passed string to emulate untranslated language support for
+	 * systems on which gettext isn't availible
+	 *
+	 * @param string $string
+	 * @return string
+	 * @access public
+	 * @since 11/16/04
+	 *
+	 */
+	function _ ( $string ) {
+		return $string;
+	}
+
+	/**
+	 * Returns the passed string to emulate untranslated language support for
+	 * systems on which gettext isn't availible
+	 *
+	 * @param string $string
+	 * @return string
+	 * @access public
+	 * @since 11/16/04
+	 *
+	 */
+	function gettext ( $string ) {
+		return $string;
+	}
+
+	/**
+	 * Returns the passed string unchanged.
+	 * @param string $domain
+	 * @param string $string
+	 * @access public
+	 * @return string
+	 */
+	function dgettext ($domain, $string) {
+		return $string;
+	}
+
+	/**
+	 * Does nothing. Here to emulate untranslated language support for
+	 * systems on which gettext isn't availible
+	 *
+	 * @param string $string
+	 * @return string
+	 * @access public
+	 * @since 11/16/04
+	 *
+	 */
+	function textdomain ( $string ) {
+		if ($string) {
+			$_SESSION['__fake_text_domain'] = $string;
+		}
+
+		if (isset($_SESSION['__fake_text_domain']))
+			return $_SESSION['__fake_text_domain'];
+		else
+			return "en_US";
+	}
+}
