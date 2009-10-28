@@ -265,12 +265,17 @@ class banner_course_CourseOffering_Search_Session
 		
 		$i = 0;
 		while ($offerings->hasNext()) {
-			$offering = $offerings->getNextCourseOffering();
-			$termCode = $this->getTermCodeFromOfferingId($offering->getId());
-			$crn = $this->getCrnFromOfferingId($offering->getId());
-			
-			if (!$insertStmt->execute(array(':term_code' => $termCode, ':crn' => $crn, ':text' => $offering->getFulltextStringForIndex())))
-				throw new osid_OperationFailedException('FullText update failed');
+			try {
+				$offering = $offerings->getNextCourseOffering();
+				$termCode = $this->getTermCodeFromOfferingId($offering->getId());
+				$crn = $this->getCrnFromOfferingId($offering->getId());
+				$text = $offering->getFulltextStringForIndex();
+				
+				if (!$insertStmt->execute(array(':term_code' => $termCode, ':crn' => $crn, ':text' => $text)))
+					throw new osid_OperationFailedException('FullText update failed');
+			} catch (Exception $e) {
+				print "\nError of type:\n\t".get_class($e)."\nwith message:\n\t".$e->getMessage()."\n";
+			}
 			
 			$i++;
 			if ($displayStatus) {
