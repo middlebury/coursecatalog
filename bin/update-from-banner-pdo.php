@@ -35,6 +35,7 @@ function toMySQLDate($date) {
 }
 
 function sendExceptions($exceptions) {
+	global $sendMailOnError, $errorMailFrom, $errorMailTo;	
 	if(count($exceptions) > 0) {
 		$to = implode(", ", $errorMailTo);
 		$subject = "COURSE CATALOG: Yo dawg I heard you like errors!";
