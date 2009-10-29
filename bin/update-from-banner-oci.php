@@ -63,7 +63,7 @@ function sendExceptions($exceptions) {
 $banner; $mysql; $exceptions = array();
 
 try {
-	$banner = oci_connect($bannerUser, $bannerPassword, $bannerTNS, "WE8MSWIN1252");
+	$banner = oci_connect($bannerUser, $bannerPassword, $bannerTNS, "UTF8");
 	if (!$banner) {
 		$error = oci_error();
 		throw new Exception('Oracle connect failed with message: '.$error['message'], $error['code']);
@@ -347,7 +347,6 @@ try {
 			$insert->bindValue(":SCBDESC_TEXT_NARRATIVE", null);
 		} else {
 			$desc = $row->SCBDESC_TEXT_NARRATIVE->load();
-			$desc = iconv("Windows-1252", "UTF-8", $desc);
 			$insert->bindValue(":SCBDESC_TEXT_NARRATIVE", $desc);
 		}
 		$insert->bindValue(":SCBDESC_TERM_CODE_END", $row->SCBDESC_TERM_CODE_END);
