@@ -1227,7 +1227,7 @@ try {
 		$insert->bindValue(":SYVINST_PIDM", $row->SYVINST_PIDM);
 		$insert->bindValue(":SYVINST_LAST_NAME", $row->SYVINST_LAST_NAME);
 		$insert->bindValue(":SYVINST_FIRST_NAME", $row->SYVINST_FIRST_NAME);
-		$insert->bindValue(":WEB_ID", $row->WEB_ID);
+		$insert->bindValue(":WEB_ID", bin2hex($row->WEB_ID));
 		$insert->execute();
 	}
 	
