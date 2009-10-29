@@ -35,6 +35,7 @@ class banner_course_CourseOffering
 			'SSBSECT_SEQ_NUMB',
 			'SSBSECT_CAMP_CODE',
 			'SSBSECT_CRSE_TITLE',
+			'SSBSECT_MAX_ENRL',
 			
 			'term_display_label',
 			'STVTERM_START_DATE',
@@ -704,6 +705,19 @@ class banner_course_CourseOffering
     	$lookupSession = $this->session->getCourseOfferingLookupSession();
     	return $lookupSession->getCourseOfferingsByIds($this->getAlternateIds());
     }
+    
+    /**
+	 * Answer <code> true </code> if this course is the primary version in a group of
+	 * alternates.
+	 * 
+	 *  @return boolean
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+	 */
+	public function isPrimary () {
+		return (intval($this->row['SSBSECT_MAX_ENRL']) > 0);
+	}
     
 /*********************************************************
  * WeeklyScheduleRecord support

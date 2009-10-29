@@ -37,6 +37,7 @@ class banner_course_CourseOfferingTest
     	$this->physCourseId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
     	$this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/90143');
     	$this->geolOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/92418');
+    	$this->geogOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/92443');
     	$this->chemOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200520/20022');
     	$this->manager = $this->sharedFixture['CourseManager'];
         $this->session = $this->manager->getCourseOfferingLookupSessionForCatalog($this->mcugCatalogId);
@@ -513,6 +514,24 @@ class banner_course_CourseOfferingTest
     	$alternates = $record->getAlternates();
     	$this->assertType('osid_course_CourseOfferingList', $alternates);
     	$this->assertEquals(1, $alternates->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testGeogIsPrimary () {
+    	$offering = $this->session->getCourseOffering($this->geogOfferingId);
+    	$record = $offering->getCourseOfferingRecord($this->alternatesType);
+    	$this->assertFalse($record->isPrimary());
+    }
+    
+    /**
+     * 
+     */
+    public function testGeolIsPrimary () {
+    	$offering = $this->session->getCourseOffering($this->geolOfferingId);
+    	$record = $offering->getCourseOfferingRecord($this->alternatesType);
+    	$this->assertTrue($record->isPrimary());
     }
 
 /*********************************************************
