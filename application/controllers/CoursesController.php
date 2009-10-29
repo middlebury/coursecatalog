@@ -271,21 +271,24 @@ class CoursesController
 		$this->_helper->viewRenderer->setNoRender();
 		
 		if (!$this->_getParam('catalog')) {
-			header('HTTP/1.1 400 Bad Request');
-			print "A catalog must be specified.";
-			exit;
-		}
-		try {
-			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
-			$searchSession = self::getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
-		} catch (osid_InvalidArgumentException $e) {
-			header('HTTP/1.1 400 Bad Request');
-			print "The catalog id specified was not of the correct format.";
-			exit;
-		} catch (osid_NotFoundException $e) {
-			header('HTTP/1.1 404 Not Found');
-			print "The catalog id specified was not found.";
-			exit;
+			$searchSession = self::getCourseManager()->getCourseSearchSession();
+			$searchSession->useFederatedView();
+			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSession();
+			$offeringSearchSession->useFederatedView();
+		} else {
+			try {
+				$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
+				$searchSession = self::getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
+				$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
+			} catch (osid_InvalidArgumentException $e) {
+				header('HTTP/1.1 400 Bad Request');
+				print "The catalog id specified was not of the correct format.";
+				exit;
+			} catch (osid_NotFoundException $e) {
+				header('HTTP/1.1 404 Not Found');
+				print "The catalog id specified was not found.";
+				exit;
+			}
 		}
 		
 		$instructor = trim($this->_getParam('instructor'));
@@ -310,7 +313,7 @@ class CoursesController
 		$resourceLookup = self::getCourseManager()->getResourceManager()->getResourceLookupSession();
 		$instructorResource = $resourceLookup->getResource($instructorId);
 		
-		$this->outputCourseFeed($courses, 'Courses taught by '.$instructorResource->getDisplayName(), $searchUrl, array($this, 'getInstructorCourseTerms'), array(self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId), $instructorId));
+		$this->outputCourseFeed($courses, 'Courses taught by '.$instructorResource->getDisplayName(), $searchUrl, array($this, 'getInstructorCourseTerms'), array($offeringSearchSession, $instructorId));
 		
 	}
 	
@@ -342,7 +345,7 @@ class CoursesController
 // 		print ($courses->debug());
 // 		print "]]></description>";
 		
-		
+		$catalogSession = self::getCourseManager()->getCourseCatalogSession();
 		$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
 		
 		while ($courses->hasNext() && count($courses) <= 20) {
@@ -374,11 +377,16 @@ class CoursesController
 				print "</title>";
 				
 				print "\n\t\t\t<link>";
-				print $this->getAsAbsolute($this->_helper->url('view', 'courses', null, array('catalog' => $this->_getParam('catalog'), 'course' => $courseIdString)));
+				$catalog = $catalogSession->getCatalogIdsByCourse($course->getId());
+				if ($catalog->hasNext())
+					$catalogIdString = self::getStringFromOsidId($catalog->getNextId());
+				else
+					$catalogIdString = null;
+				print $this->getAsAbsolute($this->_helper->url('view', 'courses', null, array('catalog' => $catalogIdString, 'course' => $courseIdString)));
 				print "</link>";
 				
 				print "\n\t\t\t<guid isPermaLink='true'>";
-				print $this->getAsAbsolute($this->_helper->url('view', 'courses', null, array('catalog' => $this->_getParam('catalog'), 'course' => $courseIdString)));
+				print $this->getAsAbsolute($this->_helper->url('view', 'courses', null, array('catalog' => $catalogIdString, 'course' => $courseIdString)));
 				print "</guid>";
 				
 				print "\n\t\t\t<description><![CDATA[";
