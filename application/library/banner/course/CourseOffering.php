@@ -1145,19 +1145,19 @@ class banner_course_CourseOffering
 // 				$text .= ' '.$objective->getDisplayName();
 // 			} catch (osid_OperationFailedException $e) {}
 // 		}
-// 					
-// 		if ($this->hasRecordType($this->instructorsType)) {
-// 			try {
-// 				$record = $this->getCourseOfferingRecord($this->instructorsType);
-// 				$instructors = $record->getInstructors();
-// 				while ($instructors->hasNext()) {
-// 					$instructor = $instructors->getNextResource();
-// 					$text .= ' '.$instructor->getDisplayName();
-// 				}
-// 			} catch (osid_OperationFailedException $e) {
-// 			} catch (osid_PermissionDeniedException $e) {
-// 			}
-// 		}
+					
+		if ($this->hasRecordType($this->instructorsType)) {
+			try {
+				$record = $this->getCourseOfferingRecord($this->instructorsType);
+				$instructors = $record->getInstructors();
+				while ($instructors->hasNext()) {
+					$instructor = $instructors->getNextResource();
+					$text .= ' '.$instructor->getDisplayName();
+				}
+			} catch (osid_OperationFailedException $e) {
+			} catch (osid_PermissionDeniedException $e) {
+			}
+		}
 
 		return $text;
 	}
