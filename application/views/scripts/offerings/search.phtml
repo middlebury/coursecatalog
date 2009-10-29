@@ -264,8 +264,12 @@ print $this->paginationControl($this->paginator, 'Sliding', 'ItemPaginationContr
 <?php
 
 if ($section->hasRecordType($alternateType)) {
-	$record = $section->getCourseOfferingRecord($alternateType);
+	$record = $section->getCourseOfferingRecord($alternateType);	
 	if ($record->hasAlternates()) {
+		if ($record->isPrimary()) {
+			print " * ";
+		}
+
 		$alternates = $record->getAlternates();
 		print "\n\t\t\t\t<br/>Cross-Listed As:";
 		while ($alternates->hasNext()) {
@@ -275,6 +279,12 @@ if ($section->hasRecordType($alternateType)) {
 			print "<a class='title' href=\"".$this->url($offeringParams)."\">";
 			print $this->escape($alternate->getDisplayName());
 			print "</a> ";
+			if ($alternate->hasRecordType($alternateType)) {
+				$alternateRecord = $alternate->getCourseOfferingRecord($alternateType);
+				if ($alternateRecord->isPrimary()) {
+					print " * ";
+				}
+			}
 		}
 	}
 }

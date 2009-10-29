@@ -108,6 +108,8 @@ foreach ($this->requirementTopics as $topic) {
 print "</dd>";
 
 if (isset($this->alternates)) {
+	$alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
+	
 	print "\n\t\t<dt>Cross-Listed As:</dt>";
 	print "\n\t\t<dd>";
 	while ($this->alternates->hasNext()) {
@@ -115,7 +117,14 @@ if (isset($this->alternates)) {
 		$offeringParams['offering'] = AbstractCatalogController::getStringFromOsidId($alternate->getId());
 		print "<a href=\"".$this->url($offeringParams)."\">";
 		print $this->escape($alternate->getDisplayName());
-		print "</a> ";
+		print "</a>";
+		if ($alternate->hasRecordType($alternateType)) {
+			$alternateRecord = $alternate->getCourseOfferingRecord($alternateType);
+			if ($alternateRecord->isPrimary()) {
+				print " * ";
+			}
+		}
+		print "<br/>\n\t\t";
 	}
 	print "</dd>";
 }
