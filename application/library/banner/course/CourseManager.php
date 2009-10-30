@@ -143,10 +143,26 @@ class banner_course_CourseManager
 		}
 		
 		try {
+			$driverOptions = array();
+			$options = phpkit_configuration_ConfigUtil::getMultiValuedValueOfAnyType(
+    								$runtime->getConfiguration(), 
+    								new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/pdo_driver_options'));
+    		foreach ($options as $key => $value) {
+    			$option = constant($key);
+    			if (is_null($option))
+    				throw new osid_ConfigurationErrorException("'$key' is not a valid constant.");
+    			$driverOptions[$option] = $value;
+    		}
+    		
+		} catch (osid_NotFoundException $e) {
+			$driverOptions = array();
+		}
+		
+		try {
 			if ($debug)
-				$this->db = new PDODebug_PDO($dsn, $username, $password);
+				$this->db = new PDODebug_PDO($dsn, $username, $password, $driverOptions);
 			else
-				$this->db = new PDO($dsn, $username, $password);
+				$this->db = new PDO($dsn, $username, $password, $driverOptions);
 		} catch (PDOException $e) {
 			throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode(), $e);
 		}
