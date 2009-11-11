@@ -362,6 +362,71 @@ try {
 	$mysql->rollBack();
 }
 
+
+// SATURN.SCRATTR
+ 
+try {
+	print "Updating SCRATTR\t";
+	$mysql->beginTransaction();
+	$tSCRATTR = $mysql->prepare("TRUNCATE TABLE SCRATTR");
+	$tSCRATTR->execute();
+	
+	$SCRATTR = oci_parse($banner, "SELECT SCRATTR_SUBJ_CODE, SCRATTR_CRSE_NUMB, SCRATTR_EFF_TERM, SCRATTR_ATTR_CODE, SCRATTR_ACTIVITY_DATE FROM SATURN.SCRATTR");
+	oci_execute($SCRATTR);
+	
+	$insert = $mysql->prepare("INSERT INTO SCRATTR (SCRATTR_SUBJ_CODE, SCRATTR_CRSE_NUMB, SCRATTR_EFF_TERM, SCRATTR_ATTR_CODE, SCRATTR_ACTIVITY_DATE) VALUES (:SCRATTR_SUBJ_CODE, :SCRATTR_CRSE_NUMB, :SCRATTR_EFF_TERM, :SCRATTR_ATTR_CODE, :SCRATTR_ACTIVITY_DATE)");
+	while($row = oci_fetch_object($SCRATTR)) {
+		$insert->bindValue(":SCRATTR_SUBJ_CODE", $row->SCRATTR_SUBJ_CODE);
+		$insert->bindValue(":SCRATTR_CRSE_NUMB", $row->SCRATTR_CRSE_NUMB);
+		$insert->bindValue(":SCRATTR_EFF_TERM", $row->SCRATTR_EFF_TERM);
+		$insert->bindValue(":SCRATTR_ATTR_CODE", $row->SCRATTR_ATTR_CODE);
+		$insert->bindValue(":SCRATTR_ACTIVITY_DATE", toMySQLDate($row->SCRATTR_ACTIVITY_DATE));
+		$insert->execute();
+	}
+	
+	$mysql->commit();
+	oci_free_statement($SCRATTR);
+	print "...\tUpdated SCRATTR\n";
+} catch(Exception $e) {
+	print $e->__toString()."\n";
+	$exceptions[] = $e->__toString();
+	$mysql->rollBack();
+}
+
+
+// SATURN.SCREQIV
+ 
+try {
+	print "Updating SCREQIV\t";
+	$mysql->beginTransaction();
+	$tSCREQIV = $mysql->prepare("TRUNCATE TABLE SCREQIV");
+	$tSCREQIV->execute();
+	
+	$SCREQIV = oci_parse($banner, "SELECT SCREQIV_SUBJ_CODE, SCREQIV_CRSE_NUMB, SCREQIV_EFF_TERM, SCREQIV_SUBJ_CODE_EQIV, SCREQIV_CRSE_NUMB_EQIV, SCREQIV_START_TERM, SCREQIV_END_TERM, SCREQIV_ACTIVITY_DATE FROM SATURN.SCREQIV");
+	oci_execute($SCREQIV);
+	
+	$insert = $mysql->prepare("INSERT INTO SCREQIV (SCREQIV_SUBJ_CODE, SCREQIV_CRSE_NUMB, SCREQIV_EFF_TERM, SCREQIV_SUBJ_CODE_EQIV, SCREQIV_CRSE_NUMB_EQIV, SCREQIV_START_TERM, SCREQIV_END_TERM, SCREQIV_ACTIVITY_DATE) VALUES (:SCREQIV_SUBJ_CODE, :SCREQIV_CRSE_NUMB, :SCREQIV_EFF_TERM, :SCREQIV_SUBJ_CODE_EQIV, :SCREQIV_CRSE_NUMB_EQIV, :SCREQIV_START_TERM, :SCREQIV_END_TERM, :SCREQIV_ACTIVITY_DATE)");
+	while($row = oci_fetch_object($SCREQIV)) {
+		$insert->bindValue(":SCREQIV_SUBJ_CODE", $row->SCREQIV_SUBJ_CODE);
+		$insert->bindValue(":SCREQIV_CRSE_NUMB", $row->SCREQIV_CRSE_NUMB);
+		$insert->bindValue(":SCREQIV_EFF_TERM", $row->SCREQIV_EFF_TERM);
+		$insert->bindValue(":SCREQIV_SUBJ_CODE_EQIV", $row->SCREQIV_SUBJ_CODE_EQIV);
+		$insert->bindValue(":SCREQIV_CRSE_NUMB_EQIV", $row->SCREQIV_CRSE_NUMB_EQIV);
+		$insert->bindValue(":SCREQIV_START_TERM", $row->SCREQIV_START_TERM);
+		$insert->bindValue(":SCREQIV_END_TERM", $row->SCREQIV_END_TERM);
+		$insert->bindValue(":SCREQIV_ACTIVITY_DATE", toMySQLDate($row->SCREQIV_ACTIVITY_DATE));
+		$insert->execute();
+	}
+	
+	$mysql->commit();
+	oci_free_statement($SCREQIV);
+	print "...\tUpdated SCREQIV\n";
+} catch(Exception $e) {
+	print $e->__toString()."\n";
+	$exceptions[] = $e->__toString();
+	$mysql->rollBack();
+}
+
 // SATURN.SSBXLST
  
 try {
@@ -459,6 +524,41 @@ try {
 	oci_free_statement($sirasgn);
 	print "...\tUpdated SIRASGN\n";
 } catch(Exception $e) {
+	$exceptions[] = $e->__toString();
+	$mysql->rollBack();
+}
+
+// SATURN.SSBDESC
+ 
+try {
+	print "Updating SSBDESC\t";
+	$mysql->beginTransaction();
+	$tSSBDESC = $mysql->prepare("TRUNCATE TABLE SSBDESC");
+	$tSSBDESC->execute();
+	
+	$SSBDESC = oci_parse($banner, "SELECT SSBDESC_TERM_CODE, SSBDESC_CRN, SSBDESC_TEXT_NARRATIVE, SSBDESC_ACTIVITY_DATE, SSBDESC_USER_ID FROM SATURN.SSBDESC");
+	oci_execute($SSBDESC);
+	
+	$insert = $mysql->prepare("INSERT INTO SSBDESC (SSBDESC_TERM_CODE, SSBDESC_CRN, SSBDESC_TEXT_NARRATIVE, SSBDESC_ACTIVITY_DATE, SSBDESC_USER_ID) VALUES (:SSBDESC_TERM_CODE, :SSBDESC_CRN, :SSBDESC_TEXT_NARRATIVE, :SSBDESC_ACTIVITY_DATE, :SSBDESC_USER_ID)");
+	while($row = oci_fetch_object($SSBDESC)) {
+		$insert->bindValue(":SSBDESC_TERM_CODE", $row->SSBDESC_TERM_CODE);
+		$insert->bindValue(":SSBDESC_CRN", $row->SSBDESC_CRN);
+		if (is_null($row->SSBDESC_TEXT_NARRATIVE)) {
+			$insert->bindValue(":SSBDESC_TEXT_NARRATIVE", null);
+		} else {
+			$desc = $row->SSBDESC_TEXT_NARRATIVE->load();
+			$insert->bindValue(":SSBDESC_TEXT_NARRATIVE", $desc);
+		}
+		$insert->bindValue(":SSBDESC_ACTIVITY_DATE", toMySQLDate($row->SSBDESC_ACTIVITY_DATE));
+		$insert->bindValue(":SSBDESC_USER_ID", $row->SSBDESC_USER_ID);
+		$insert->execute();
+	}
+	
+	$mysql->commit();
+	oci_free_statement($SSBDESC);
+	print "...\tUpdated SSBDESC\n";
+} catch(Exception $e) {
+	print $e->__toString()."\n";
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
@@ -1017,6 +1117,41 @@ try {
 	$mysql->commit();
 	oci_free_statement($stvfcnt);
 	print "...\tUpdated STVFCNT\n";
+} catch(Exception $e) {
+	$exceptions[] = $e->__toString();
+	$mysql->rollBack();
+}
+
+// SATURN.STVMEET
+ 
+try {
+	print "Updating STVMEET\t";
+	$mysql->beginTransaction();
+	$tSTVMEET = $mysql->prepare("TRUNCATE TABLE STVMEET");
+	$tSTVMEET->execute();
+	
+	$STVMEET = oci_parse($banner, "SELECT * FROM SATURN.STVMEET");
+	oci_execute($STVMEET);
+	
+	$insert = $mysql->prepare("INSERT INTO STVMEET (STVMEET_CODE, STVMEET_MON_DAY, STVMEET_TUE_DAY, STVMEET_WED_DAY, STVMEET_THU_DAY, STVMEET_FRI_DAY, STVMEET_SAT_DAY, STVMEET_SUN_DAY, STVMEET_BEGIN_TIME, STVMEET_END_TIME, STVMEET_ACTIVITY_DATE) VALUES (:STVMEET_CODE, :STVMEET_MON_DAY, :STVMEET_TUE_DAY, :STVMEET_WED_DAY, :STVMEET_THU_DAY, :STVMEET_FRI_DAY, :STVMEET_SAT_DAY, :STVMEET_SUN_DAY, :STVMEET_BEGIN_TIME, :STVMEET_END_TIME, :STVMEET_ACTIVITY_DATE)");
+	while($row = oci_fetch_object($STVMEET)) {
+		$insert->bindValue(":STVMEET_CODE", $row->STVMEET_CODE);
+		$insert->bindValue(":STVMEET_MON_DAY", $row->STVMEET_MON_DAY);
+		$insert->bindValue(":STVMEET_TUE_DAY", $row->STVMEET_TUE_DAY);
+		$insert->bindValue(":STVMEET_WED_DAY", $row->STVMEET_WED_DAY);
+		$insert->bindValue(":STVMEET_THU_DAY", $row->STVMEET_THU_DAY);
+		$insert->bindValue(":STVMEET_FRI_DAY", $row->STVMEET_FRI_DAY);
+		$insert->bindValue(":STVMEET_SAT_DAY", $row->STVMEET_SAT_DAY);
+		$insert->bindValue(":STVMEET_SUN_DAY", $row->STVMEET_SUN_DAY);
+		$insert->bindValue(":STVMEET_BEGIN_TIME", $row->STVMEET_BEGIN_TIME);
+		$insert->bindValue(":STVMEET_END_TIME", $row->STVMEET_END_TIME);
+		$insert->bindValue(":STVMEET_ACTIVITY_DATE", toMySQLDate($row->STVMEET_ACTIVITY_DATE));
+		$insert->execute();
+	}
+	
+	$mysql->commit();
+	oci_free_statement($STVMEET);
+	print "...\tUpdated STVMEET\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
