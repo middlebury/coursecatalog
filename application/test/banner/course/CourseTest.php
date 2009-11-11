@@ -172,7 +172,7 @@ class banner_course_CourseTest
 	public function testGetTermIds() {
 		$record = $this->object->getCourseRecord($this->termRecordType);
 		$ids = $record->getTermIds();
-		$this->assertEquals(8, $ids->available());
+		$this->assertEquals(7, $ids->available());
 		$this->assertType('osid_id_Id', $ids->getNextId());
 		
 		$next4 = $ids->getNextIds(4);
@@ -184,7 +184,7 @@ class banner_course_CourseTest
 	public function testGetTerms() {
 		$record = $this->object->getCourseRecord($this->termRecordType);
 		$terms = $record->getTerms();
-		$this->assertEquals(8, $terms->available());
+		$this->assertEquals(7, $terms->available());
 		$this->assertType('osid_course_Term', $terms->getNextTerm());
 	}
 	
