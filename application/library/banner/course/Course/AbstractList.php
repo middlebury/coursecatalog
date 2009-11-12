@@ -74,37 +74,21 @@ SELECT
 	SCBDESC_TEXT_NARRATIVE
 	".$this->getAdditionalColumnsString()."
 FROM
-	(SELECT 
-		crse1.*
-	FROM 
-		SCBCRSE AS crse1
-		
-		-- 'Outer self exclusion join' to fetch only the most recent SCBCRSE row.
-		LEFT JOIN SCBCRSE AS crse2 ON (crse1.SCBCRSE_SUBJ_CODE = crse2.SCBCRSE_SUBJ_CODE AND crse1.SCBCRSE_CRSE_NUMB = crse2.SCBCRSE_CRSE_NUMB AND crse1.SCBCRSE_EFF_TERM < crse2.SCBCRSE_EFF_TERM)
-		
-	WHERE
-		
-		-- Clause for the 'outer self exclusion join'
-		crse2.SCBCRSE_SUBJ_CODE IS NULL
-		
-		AND crse1.SCBCRSE_CSTA_CODE NOT IN (
-			'C', 'I', 'P', 'T', 'X'
-		)
-		AND crse1.SCBCRSE_COLL_CODE IN (
-			SELECT
-				coll_code
-			FROM
-				course_catalog_college
-			WHERE
-				".$this->getCatalogWhereTerms()."
-		)
-	
-	GROUP BY crse1.SCBCRSE_SUBJ_CODE , crse1.SCBCRSE_CRSE_NUMB
-	) as crse
-	LEFT JOIN SCBDESC ON (SCBCRSE_SUBJ_CODE = SCBDESC_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SCBDESC_CRSE_NUMB AND SCBCRSE_EFF_TERM >= SCBDESC_TERM_CODE_EFF AND (SCBDESC_TERM_CODE_END IS NULL OR SCBCRSE_EFF_TERM <= SCBDESC_TERM_CODE_END))
+	scbcrse_scbdesc_recent
 	".$this->getAdditionalTableJoins()."
 WHERE
 	".$this->getAllWhereTerms()."
+	AND SCBCRSE_CSTA_CODE NOT IN (
+		'C', 'I', 'P', 'T', 'X'
+	)
+	AND SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms()."
+	)
 GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 ".$this->getOrderByClause()."
 ".$this->getLimitClause()."
