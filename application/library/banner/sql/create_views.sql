@@ -4,7 +4,7 @@
 -- A view for the most recent version of each course
 --
 
-CREATE OR REPLACE VIEW `scbcrse_recent`  AS 
+CREATE OR REPLACE ALGORITHM=TEMPTABLE VIEW `scbcrse_recent`  AS 
 SELECT 
 	crse1.*
 FROM 
@@ -35,7 +35,7 @@ ORDER BY crse1.SCBCRSE_SUBJ_CODE , crse1.SCBCRSE_CRSE_NUMB;
 -- A view for the most recent version of each course, with descriptions
 --
 
-CREATE OR REPLACE VIEW `scbcrse_scbdesc_recent`  AS 
+CREATE OR REPLACE ALGORITHM=TEMPTABLE VIEW `scbcrse_scbdesc_recent`  AS 
 SELECT 
 	scbcrse_recent.*,
 	desc1.SCBDESC_TERM_CODE_EFF,
@@ -68,7 +68,7 @@ WHERE
 -- A view joining the sections and courses tables together.
 --
 
-CREATE OR REPLACE VIEW `ssbsect_scbcrse`  AS 
+CREATE OR REPLACE ALGORITHM=TEMPTABLE VIEW `ssbsect_scbcrse`  AS 
 SELECT
 	SSBSECT.*,
 	CONCAT(crse.SCBCRSE_TITLE, IF(SSBSECT_CRSE_TITLE IS NOT NULL, CONCAT('\n', SSBSECT_CRSE_TITLE), '')) AS section_title,
@@ -99,7 +99,7 @@ WHERE
 -- A view joining the sections, courses, and course-description tables together.
 --
 
-CREATE OR REPLACE VIEW `ssbsect_scbcrse_scbdesc`  AS 
+CREATE OR REPLACE ALGORITHM=TEMPTABLE VIEW `ssbsect_scbcrse_scbdesc`  AS 
 SELECT 
 	ssbsect_scbcrse.*,
 	desc1.SCBDESC_TERM_CODE_EFF,
