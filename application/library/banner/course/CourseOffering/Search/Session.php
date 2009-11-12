@@ -241,6 +241,8 @@ class banner_course_CourseOffering_Search_Session
 	public function buildIndex ($displayStatus = false) {
 		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_drop_index_structure.sql', $this->manager->getDB());
 		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_create_index_structure.sql', $this->manager->getDB());
+		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/../../../sql/create_views.sql', $this->manager->getDB());
+
 		
 		$lookupSession = $this->manager->getCourseOfferingLookupSession();
 		$lookupSession->useFederatedCourseCatalogView();

@@ -62,29 +62,35 @@ abstract class banner_course_Course_AbstractList
 	protected function getQuery () {
 		return "
 SELECT
-	crse.*,
+	SCBCRSE_SUBJ_CODE , 
+	SCBCRSE_CRSE_NUMB , 
+	SCBCRSE_EFF_TERM , 
+	SCBCRSE_COLL_CODE , 
+	SCBCRSE_DIVS_CODE , 
+	SCBCRSE_DEPT_CODE , 
+	SCBCRSE_CSTA_CODE , 
+	SCBCRSE_TITLE ,
+	SCBCRSE_CREDIT_HR_HIGH,
 	SCBDESC_TEXT_NARRATIVE
+	".$this->getAdditionalColumnsString()."
 FROM
 	(SELECT 
-		SCBCRSE_SUBJ_CODE , 
-		SCBCRSE_CRSE_NUMB , 
-		MAX( SCBCRSE_EFF_TERM ) AS SCBCRSE_EFF_TERM , 
-		SCBCRSE_COLL_CODE , 
-		SCBCRSE_DIVS_CODE , 
-		SCBCRSE_DEPT_CODE , 
-		SCBCRSE_CSTA_CODE , 
-		SCBCRSE_TITLE ,
-		SCBCRSE_CREDIT_HR_HIGH
-		".$this->getAdditionalColumnsString()."
+		crse1.*
 	FROM 
-		SCBCRSE
-		".$this->getAdditionalTableJoins()."
+		SCBCRSE AS crse1
+		
+		-- 'Outer self exclusion join' to fetch only the most recent SCBCRSE row.
+		LEFT JOIN SCBCRSE AS crse2 ON (crse1.SCBCRSE_SUBJ_CODE = crse2.SCBCRSE_SUBJ_CODE AND crse1.SCBCRSE_CRSE_NUMB = crse2.SCBCRSE_CRSE_NUMB AND crse1.SCBCRSE_EFF_TERM < crse2.SCBCRSE_EFF_TERM)
+		
 	WHERE
-		".$this->getAllWhereTerms()."
-		AND SCBCRSE_CSTA_CODE NOT IN (
+		
+		-- Clause for the 'outer self exclusion join'
+		crse2.SCBCRSE_SUBJ_CODE IS NULL
+		
+		AND crse1.SCBCRSE_CSTA_CODE NOT IN (
 			'C', 'I', 'P', 'T', 'X'
 		)
-		AND SCBCRSE_COLL_CODE IN (
+		AND crse1.SCBCRSE_COLL_CODE IN (
 			SELECT
 				coll_code
 			FROM
@@ -93,9 +99,12 @@ FROM
 				".$this->getCatalogWhereTerms()."
 		)
 	
-	GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
+	GROUP BY crse1.SCBCRSE_SUBJ_CODE , crse1.SCBCRSE_CRSE_NUMB
 	) as crse
 	LEFT JOIN SCBDESC ON (SCBCRSE_SUBJ_CODE = SCBDESC_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SCBDESC_CRSE_NUMB AND SCBCRSE_EFF_TERM >= SCBDESC_TERM_CODE_EFF AND (SCBDESC_TERM_CODE_END IS NULL OR SCBCRSE_EFF_TERM <= SCBDESC_TERM_CODE_END))
+	".$this->getAdditionalTableJoins()."
+WHERE
+	".$this->getAllWhereTerms()."
 GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 ".$this->getOrderByClause()."
 ".$this->getLimitClause()."

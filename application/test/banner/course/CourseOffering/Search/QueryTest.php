@@ -407,10 +407,9 @@ class banner_course_CourseOffering_Search_QueryTest
 
         $params = $this->object->getParameters();
         $this->assertEquals('Relativity And Quantum Physics', $params[0]);
-        $this->assertEquals('Relativity And Quantum Physics', $params[1]);
-        $this->assertFalse(isset($params[2]));
+        $this->assertFalse(isset($params[1]));
         
-        $this->assertEquals('((SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?)))', $this->object->getWhereClause());
+        $this->assertEquals('(section_title LIKE(?))', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 		$this->assertEquals(7, $courseOfferings->available());
@@ -425,10 +424,9 @@ class banner_course_CourseOffering_Search_QueryTest
 
         $params = $this->object->getParameters();
         $this->assertEquals('%Quantum%', $params[0]);
-        $this->assertEquals('%Quantum%', $params[1]);
-        $this->assertFalse(isset($params[2]));
+        $this->assertFalse(isset($params[1]));
         
-        $this->assertEquals('((SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?)))', $this->object->getWhereClause());
+        $this->assertEquals('(section_title LIKE(?))', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 		$this->assertEquals(7, $courseOfferings->available());
@@ -443,10 +441,9 @@ class banner_course_CourseOffering_Search_QueryTest
 
         $params = $this->object->getParameters();
         $this->assertEquals('%qUAntum%', $params[0]);
-        $this->assertEquals('%qUAntum%', $params[1]);
-        $this->assertFalse(isset($params[2]));
+        $this->assertFalse(isset($params[1]));
         
-        $this->assertEquals('((SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?)))', $this->object->getWhereClause());
+        $this->assertEquals('(section_title LIKE(?))', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 		$this->assertEquals(7, $courseOfferings->available());
@@ -461,10 +458,9 @@ class banner_course_CourseOffering_Search_QueryTest
 
         $params = $this->object->getParameters();
         $this->assertEquals('%and%', $params[0]);
-        $this->assertEquals('%and%', $params[1]);
-        $this->assertFalse(isset($params[2]));
+        $this->assertFalse(isset($params[1]));
         
-        $this->assertEquals('((SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?)))', $this->object->getWhereClause());
+        $this->assertEquals('(section_title LIKE(?))', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 		$this->assertEquals(17, $courseOfferings->available());
@@ -479,10 +475,9 @@ class banner_course_CourseOffering_Search_QueryTest
 
         $params = $this->object->getParameters();
         $this->assertEquals('%lab%', $params[0]);
-        $this->assertEquals('%lab%', $params[1]);
-        $this->assertFalse(isset($params[2]));
+        $this->assertFalse(isset($params[1]));
         
-        $this->assertEquals('((SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?)))', $this->object->getWhereClause());
+        $this->assertEquals('(section_title LIKE(?))', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
@@ -498,10 +493,9 @@ class banner_course_CourseOffering_Search_QueryTest
 
         $params = $this->object->getParameters();
         $this->assertEquals('%Lab%', $params[0]);
-        $this->assertEquals('%Lab%', $params[1]);
-        $this->assertFalse(isset($params[2]));
+        $this->assertFalse(isset($params[1]));
         
-        $this->assertEquals('((SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?)))', $this->object->getWhereClause());
+        $this->assertEquals('(section_title LIKE(?))', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 		$this->assertEquals(44, $courseOfferings->available());
@@ -521,7 +515,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $params = $this->object->getParameters();
         $this->assertFalse(isset($params[0]));
         
-        $this->assertEquals('((SSBSECT_CRSE_TITLE IS NOT NULL OR SCBCRSE_TITLE IS NOT NULL))', $this->object->getWhereClause());
+        $this->assertEquals('(section_title IS NOT NULL)', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
@@ -538,7 +532,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $params = $this->object->getParameters();
         $this->assertFalse(isset($params[0]));
         
-        $this->assertEquals('(NOT (SSBSECT_CRSE_TITLE IS NOT NULL OR SCBCRSE_TITLE IS NOT NULL))', $this->object->getWhereClause());
+        $this->assertEquals('(NOT section_title IS NOT NULL)', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 		$this->assertEquals(0, $courseOfferings->available());

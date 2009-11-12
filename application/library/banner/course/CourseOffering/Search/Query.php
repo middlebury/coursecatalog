@@ -363,7 +363,7 @@ class banner_course_CourseOffering_Search_Query
     	
         if ($stringMatchType->isEqual($this->wildcardStringMatchType)) {
         	$param = str_replace('*', '%', $title);
-        	$this->addClause('title', '(SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?))', array($param, $param), $match);
+        	$this->addClause('title', 'section_title LIKE(?)', array($param), $match);
         } else {
 	    	throw new osid_UnsupportedException("The stringMatchType passed is not supported.");
 	    }
@@ -380,7 +380,7 @@ class banner_course_CourseOffering_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchAnyTitle($match) {
-    	$this->addClause('title', '(SSBSECT_CRSE_TITLE IS NOT NULL OR SCBCRSE_TITLE IS NOT NULL)', array(), $match);
+    	$this->addClause('title', 'section_title IS NOT NULL', array(), $match);
     }
 
 

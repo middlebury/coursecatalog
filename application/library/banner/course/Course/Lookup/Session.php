@@ -190,28 +190,36 @@ class banner_course_Course_Lookup_Session
     	if (!isset(self::$getCourse_stmts[$catalogWhere])) {
 	    	$query =
 "SELECT
-	crse.*,
+	SCBCRSE_SUBJ_CODE , 
+	SCBCRSE_CRSE_NUMB , 
+	SCBCRSE_EFF_TERM , 
+	SCBCRSE_COLL_CODE , 
+	SCBCRSE_DIVS_CODE , 
+	SCBCRSE_DEPT_CODE , 
+	SCBCRSE_CSTA_CODE , 
+	SCBCRSE_TITLE ,
+	SCBCRSE_CREDIT_HR_HIGH,
 	SCBDESC_TEXT_NARRATIVE
 FROM
 	(SELECT 
-		SCBCRSE_SUBJ_CODE , 
-		SCBCRSE_CRSE_NUMB , 
-		MAX( SCBCRSE_EFF_TERM ) AS SCBCRSE_EFF_TERM , 
-		SCBCRSE_COLL_CODE , 
-		SCBCRSE_DIVS_CODE , 
-		SCBCRSE_DEPT_CODE , 
-		SCBCRSE_CSTA_CODE , 
-		SCBCRSE_TITLE ,
-		SCBCRSE_CREDIT_HR_HIGH
+		crse1.*
 	FROM 
-		SCBCRSE
+		SCBCRSE AS crse1
+		
+		-- 'Outer self exclusion join' to fetch only the most recent SCBCRSE row.
+		LEFT JOIN SCBCRSE AS crse2 ON (crse1.SCBCRSE_SUBJ_CODE = crse2.SCBCRSE_SUBJ_CODE AND crse1.SCBCRSE_CRSE_NUMB = crse2.SCBCRSE_CRSE_NUMB AND crse1.SCBCRSE_EFF_TERM < crse2.SCBCRSE_EFF_TERM)
+		
 	WHERE
-		SCBCRSE_SUBJ_CODE = :subject_code
-		AND SCBCRSE_CRSE_NUMB = :course_number
-		AND SCBCRSE_CSTA_CODE NOT IN (
+		crse1.SCBCRSE_SUBJ_CODE = :subject_code
+		AND crse1.SCBCRSE_CRSE_NUMB = :course_number
+		
+		-- Clause for the 'outer self exclusion join'
+		AND crse2.SCBCRSE_SUBJ_CODE IS NULL
+		
+		AND crse1.SCBCRSE_CSTA_CODE NOT IN (
 			'C', 'I', 'P', 'T', 'X'
 		)
-		AND SCBCRSE_COLL_CODE IN (
+		AND crse1.SCBCRSE_COLL_CODE IN (
 			SELECT
 				coll_code
 			FROM
@@ -219,10 +227,9 @@ FROM
 			WHERE
 				".$this->getCatalogWhereTerms()."
 		)
-	GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
-	ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 	) as crse
 	LEFT JOIN SCBDESC ON (SCBCRSE_SUBJ_CODE = SCBDESC_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SCBDESC_CRSE_NUMB AND SCBCRSE_EFF_TERM >= SCBDESC_TERM_CODE_EFF AND (SCBDESC_TERM_CODE_END IS NULL OR SCBCRSE_EFF_TERM <= SCBDESC_TERM_CODE_END))
+ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 ";
 			self::$getCourse_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
 		}

@@ -62,6 +62,18 @@ class banner_course_CourseTest
         $this->assertType('string', $this->object->getTitle());
     }
     
+    
+    /**
+     * Test that the title of the chemistry Course has the more recent version of the title.
+     * Effective 200390 and 200490, the title is "Fundamentals of Chemistry II", however
+     * effective 200520, the title changed to "General Chemistry II"
+     */
+    public function testEffectiveDateTitle()
+    {
+    	$object = $this->session->getCourse($this->chemId);
+        $this->assertEquals('General Chemistry II', $object->getTitle());
+    }
+    
     public function testGetPhysDescription()
     {
     	$this->assertEquals("This course probes a number of areas for which classical physics has provided no adequate explanations. Topics covered include Einstein's special relativity, quantization of atomic energy levels and photons, the atomic models of Rutherford and Bohr, and wave-particle duality. (PHYS 0109, MATH 0122, PHYS 0110 concurrent or prior) 3 hrs. lect.", $this->object->getDescription());

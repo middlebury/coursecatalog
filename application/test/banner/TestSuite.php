@@ -20,6 +20,7 @@ class banner_TestSuite extends PHPUnit_Framework_TestSuite
     
     protected function setUp()
     {
+    	$this->setMemoryLimit();
     	$this->sharedFixture = self::loadBannerDbAndGetSharedArray();
     }
  
@@ -27,6 +28,7 @@ class banner_TestSuite extends PHPUnit_Framework_TestSuite
     {
         self::emptyBannerDbAndCloseSharedArray($this->sharedFixture);
         $this->sharedFixture = NULL;
+        $this->resetMemoryLimit();
     }
     
     /**
@@ -131,5 +133,46 @@ class banner_TestSuite extends PHPUnit_Framework_TestSuite
         	}
         }
     }
+    
+    private $minMemory = '330M';
+    private $currentMemory = null;
+    
+    private function setMemoryLimit() {
+    	$minBytes = $this->asBytes($this->minMemory);
+    	$currentBytes = $this->asBytes(ini_get('memory_limit'));
+    	if ($currentBytes < $minBytes) {
+    		$this->currentMemory = ini_get('memory_limit');
+    		ini_set('memory_limit', $this->minMemory);
+    	}
+    }
+    
+    /**
+     * return the memory limit to its previous value
+     * 
+     * @return void
+     * @access private
+     * @since 11/12/09
+     */
+    private function resetMemoryLimit () {
+    	if (!is_null($this->currentMemory)) {
+    		ini_set('memory_limit', $this->currentMemory);
+    	}
+    }
+    
+    private function asBytes($val) {
+		$val = trim($val);
+		$last = strtolower($val[strlen($val)-1]);
+		switch($last) {
+			// The 'G' modifier is available since PHP 5.1.0
+			case 'g':
+				$val *= 1024;
+			case 'm':
+				$val *= 1024;
+			case 'k':
+				$val *= 1024;
+		}
+	
+		return $val;
+	}
 }
 ?>

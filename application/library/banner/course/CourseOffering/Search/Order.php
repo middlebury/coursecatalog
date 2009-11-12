@@ -142,29 +142,7 @@ class banner_course_CourseOffering_Search_Order
      *  @compliance mandatory This method must be implemented. 
      */
     public function orderByTitle() {
-    	$this->addOrderColumns(array('sectitle_title'));
-    	$this->addTableJoin(
-    'INNER JOIN (SELECT 
-			SSBSECT_TERM_CODE as sectitle_term_code,
-			SSBSECT_CRN as sectitle_crn,
-			SSBSECT_CRSE_TITLE as sectitle_title
-		FROM 
-			`SSBSECT`
-			LEFT JOIN SCBCRSE ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
-		WHERE
-			SSBSECT_CRSE_TITLE IS NOT NULL
-		
-		UNION
-		
-		SELECT 
-			SSBSECT_TERM_CODE as sectitle_term_code,
-			SSBSECT_CRN as sectitle_crn,
-			SCBCRSE_TITLE as sectitle_title
-		FROM 
-			`SSBSECT`
-			LEFT JOIN SCBCRSE ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
-		WHERE
-			SSBSECT_CRSE_TITLE IS NULL) as sectitle ON (SSBSECT_TERM_CODE = sectitle_term_code AND SSBSECT_CRN = sectitle_crn)');
+    	$this->addOrderColumns(array('section_title'));
     }
 
 
