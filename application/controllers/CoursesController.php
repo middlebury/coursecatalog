@@ -19,7 +19,20 @@
 class CoursesController
 	extends AbstractCatalogController
 {
-		
+	
+	/**
+     * Initialize object
+     *
+     * Called from {@link __construct()} as final step of object instantiation.
+     *
+     * @return void
+     */
+    public function init() {
+		$this->alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
+
+		parent::init();
+	}
+	
 	/**
 	 * Print out a list of all courses
 	 * 
@@ -74,6 +87,14 @@ class CoursesController
 		$this->view->headTitle($this->view->title);
 		
 		$this->view->menuIsCourses = true;
+		
+		// Alternates
+ 		if ($this->view->course->hasRecordType($this->alternateType)) {
+ 			$record = $this->view->course->getCourseRecord($this->alternateType);
+ 			if ($record->hasAlternates()) {
+ 				$this->view->alternates = $record->getAlternates();
+ 			}
+ 		}
 		
 		$this->render();
 		

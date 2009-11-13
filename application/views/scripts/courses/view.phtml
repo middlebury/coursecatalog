@@ -40,4 +40,29 @@ foreach ($this->divisionTopics as $topic) {
 }
 print "</dd>";
 
+if (isset($this->alternates)) {
+	$alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
+	
+	print "\n\t\t<dt>Equivalent Courses:</dt>";
+	print "\n\t\t<dd>";
+	while ($this->alternates->hasNext()) {
+		try {
+			$alternate = $this->alternates->getNextCourse();
+			$altParams['course'] = AbstractCatalogController::getStringFromOsidId($alternate->getId());
+			print "<a href=\"".$this->url($altParams)."\">";
+			print $this->escape($alternate->getDisplayName());
+			print "</a>";
+			if ($alternate->hasRecordType($alternateType)) {
+				$alternateRecord = $alternate->getCourseRecord($alternateType);
+				if ($alternateRecord->isPrimary()) {
+					print " * ";
+				}
+			}
+			print "<br/>\n\t\t";
+		} catch(osid_NotFoundException $e) {
+		}
+	}
+	print "</dd>";
+}
+
 print "\n\t</dl>";
