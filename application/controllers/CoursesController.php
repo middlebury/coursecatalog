@@ -339,6 +339,46 @@ class CoursesController
 	}
 	
 	/**
+	 * Group alternate courses
+	 * 
+	 * @param osid_course_CourseSearchResults $courses
+	 * @return array A two-dimensional array of course objects array(array($course, $equivCourse), array($course), array($course, $equivCourse));
+	 * @access protected
+	 * @since 11/13/09
+	 */
+	protected function groupAlternates (osid_course_CourseSearchResults $courses) {
+		$groups = array();
+		while ($courses->hasNext()) {
+			$groupId = null;
+			
+			$course = $courses->getNextCourse();
+			$courseIdString = self::getStringFromOsidId($course->getId());
+			
+			if ($course->hasRecordType($this->alternateType)) {
+				$record = $course->getCourseRecord($this->alternateType);
+				if ($record->hasAlternates()) {
+					$altIds = $record->getAlternateIds();
+					while ($altIds->hasNext()) {
+						$altId = $altIds->getNextId();
+						$altIdString = self::getStringFromOsidId($altId);
+						if (isset($groups[$altIdString]))
+							$groupId = $altIdString;
+					}
+				}
+			}
+			
+			if (!$groupId)
+				$groupId = $courseIdString;
+			
+			if (!isset($groups[$groupId]))
+				$groups[$groupId] = array();
+			
+			$groups[$groupId][] = $course;
+		}
+		return $groups;
+	}
+	
+	/**
 	 * Output an RSS feed of courses from results
 	 * 
 	 * @param osid_course_CourseSearchResults $courses
@@ -349,6 +389,8 @@ class CoursesController
 	 * @since 10/19/09
 	 */
 	protected function outputCourseFeed (osid_course_CourseSearchResults $courses, $title, $url, $termsCallback, $additionalCallbackParams = array()) {
+		$groups = $this->groupAlternates($courses);
+		
 		ob_start();
 		print '<?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
@@ -369,8 +411,8 @@ class CoursesController
 		$catalogSession = self::getCourseManager()->getCourseCatalogSession();
 		$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
 		
-		while ($courses->hasNext() && count($courses) <= 20) {
-			$course = $courses->getNextCourse();
+		foreach ($groups as $group) {
+			$course = $group[0];
 			$courseIdString = self::getStringFromOsidId($course->getId());
 			
 			// Define a cutoff date after which courses will be included in the feed.
@@ -394,7 +436,11 @@ class CoursesController
 				print "\n\t\t<item>";
 				
 				print "\n\t\t\t<title>";
-				print htmlspecialchars($course->getDisplayName().' - '.$course->getTitle());
+				$name = $course->getDisplayName();
+				for ($i = 1; $i < count($group); $i++) {
+					$name .= ' / '. $group[$i]->getDisplayName();
+				}
+				print htmlspecialchars($name.' - '.$course->getTitle());
 				print "</title>";
 				
 				print "\n\t\t\t<link>";
