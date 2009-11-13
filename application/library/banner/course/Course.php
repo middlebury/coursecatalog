@@ -22,7 +22,9 @@ include_once("fsmparserclass.inc.php");
  */
 class banner_course_Course 
     extends phpkit_AbstractOsidObject
-    implements osid_course_Course, middlebury_course_Course_TermsRecord
+    implements osid_course_Course, 
+    middlebury_course_Course_TermsRecord,
+    middlebury_course_Course_AlternatesRecord
 {
 	
 	/**
@@ -196,7 +198,7 @@ class banner_course_Course
 	 * @access public
 	 * @since 4/13/09
 	 */
-	public function __construct (osid_id_Id $id, $displayName, $description, $title, $credits, array $topicIds, banner_course_AbstractSession $session) {
+	public function __construct (osid_id_Id $id, $displayName, $description, $title, $credits, array $topicIds, $hasAlternates, banner_course_AbstractSession $session) {
 		parent::__construct();
 		$this->setId($id);
 		$this->setDisplayName($displayName);
@@ -207,9 +209,11 @@ class banner_course_Course
 		$this->title = $title;
 		$this->credits = floatval($credits);
 		$this->topicIds = $topicIds;
+		$this->hasAlternates = $hasAlternates;
 		$this->session = $session;
 		
 		$this->addRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms'));
+		$this->addRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates'));
 	}
 	
     /**
@@ -387,4 +391,63 @@ class banner_course_Course
 	    	throw new osid_OperationFailedException($e->getMessage(), $e->getCode(), $e);
 	    }
     }
+    
+/*********************************************************
+ * Methods from middlebury_course_Course_AlternatesRecord
+ *********************************************************/
+
+    
+    /**
+	 * Tests if this course has any alternate courses.
+	 * 
+	 * @return boolean <code> true </code> if this course has any
+     *          alternates, <code> false </code> otherwise 
+	 * @access public
+     * @compliance mandatory This method must be implemented. 
+	 */
+	public function hasAlternates () {
+		return (intval($this->hasAlternates) > 0);
+	}
+
+    /**
+     *  Gets the Ids of any alternate courses
+     *
+     *  @return object osid_id_IdList the list of alternate ids.
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     */
+    public function getAlternateIds() {
+		if (!$this->hasAlternates())
+    		return new phpkit_EmptyList('osid_id_IdList');
+    	
+    	return $this->session->getCourseLookupSession()->getAlternateIdsForCourse($this->getId());
+	}
+    
+    /**
+     *  Gets the alternate <code> Courses </code>.
+     *
+     *  @return object osid_course_CourseList The list of alternates.
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     */
+    public function getAlternates() {
+		$lookupSession = $this->session->getCourseLookupSession();
+		$lookupSession->useComparativeView();
+    	return $lookupSession->getCoursesByIds($this->getAlternateIds());
+	}
+	
+	/**
+	 * Answer <code> true </code> if this course is the primary version in a group of
+	 * alternates.
+	 * 
+	 *  @return boolean
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+	 */
+	public function isPrimary () {
+		return false; // Currently no way of determining the 'primary'
+	}
 }

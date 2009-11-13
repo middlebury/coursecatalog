@@ -71,7 +71,8 @@ SELECT
 	SCBCRSE_CSTA_CODE , 
 	SCBCRSE_TITLE ,
 	SCBCRSE_CREDIT_HR_HIGH,
-	SCBDESC_TEXT_NARRATIVE
+	SCBDESC_TEXT_NARRATIVE,
+	has_alternates
 	".$this->getAdditionalColumnsString()."
 FROM
 	scbcrse_scbdesc_recent
@@ -240,6 +241,7 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 						$this->session->getOsidIdFromString($row['SCBCRSE_DEPT_CODE'], 'topic/department/'),
 						$this->session->getOsidIdFromString($row['SCBCRSE_DIVS_CODE'], 'topic/division/')
 					),
+					$row['has_alternates'],
 					$this->session);
 	}
 	

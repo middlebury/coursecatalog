@@ -199,7 +199,8 @@ class banner_course_Course_Lookup_Session
 	SCBCRSE_CSTA_CODE , 
 	SCBCRSE_TITLE ,
 	SCBCRSE_CREDIT_HR_HIGH,
-	SCBDESC_TEXT_NARRATIVE
+	SCBDESC_TEXT_NARRATIVE,
+	has_alternates
 FROM
 	scbcrse_scbdesc_recent
 	
@@ -207,10 +208,6 @@ WHERE
 	SCBCRSE_SUBJ_CODE = :subject_code
 	AND SCBCRSE_CRSE_NUMB = :course_number
 	
-	
-	AND SCBCRSE_CSTA_CODE NOT IN (
-		'C', 'I', 'P', 'T', 'X'
-	)
 	AND SCBCRSE_COLL_CODE IN (
 		SELECT
 			coll_code
@@ -252,6 +249,7 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 						$this->getOsidIdFromString($row['SCBCRSE_DEPT_CODE'], 'topic/department/'),
 						$this->getOsidIdFromString($row['SCBCRSE_DIVS_CODE'], 'topic/division/')
 					),
+					$row['has_alternates'],
 					$this);
     }
 
@@ -445,5 +443,48 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
     		$this->getCourseCatalogId()
     	);
     }
+    
+    /*********************************************************
+     * Support for fetching course alternates.
+     *********************************************************/
+    
+    
+    private static $alternatesForCourse_stmt;
+	/**
+	 * Answer the alternate course ids
+	 * 
+	 * @param osid_id_Id $courseId
+	 * @return PDOStatement
+	 * @access public
+	 * @since 5/1/09
+	 */
+	public function getAlternateIdsForCourse (osid_id_Id $courseId) {
+		if (!isset(self::$alternatesForCourse_stmt)) {
+			$query = "
+SELECT
+	*
+FROM
+	SCREQIV
+WHERE
+	SCREQIV_SUBJ_CODE = :subject
+	AND SCREQIV_CRSE_NUMB = :number
+";
+			self::$alternatesForCourse_stmt = $this->manager->getDB()->prepare($query);
+		}
+		self::$alternatesForCourse_stmt->execute(array(
+			':subject' => $this->getSubjectFromCourseId($courseId),
+			':number' => $this->getNumberFromCourseId($courseId)
+		));
+		$rows = self::$alternatesForCourse_stmt->fetchAll(PDO::FETCH_ASSOC);
+		self::$alternatesForCourse_stmt->closeCursor();
+// 		var_dump($rows);
+		
+		$ids = array();
+		foreach ($rows as $row) {
+			$ids[] = $this->getCourseIdFromSubjectAndNumber($row['SCREQIV_SUBJ_CODE_EQIV'], $row['SCREQIV_CRSE_NUMB_EQIV']);
+		}
+		
+		return new phpkit_id_ArrayIdList($ids);
+	}
 
 }

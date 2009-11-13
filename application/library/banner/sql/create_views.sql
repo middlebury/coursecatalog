@@ -6,7 +6,8 @@
 
 CREATE OR REPLACE VIEW `scbcrse_recent`  AS
 SELECT 
-	crse1.*
+	crse1.*,
+	IF (SCREQIV_SUBJ_CODE_EQIV IS NULL, 0, 1) AS has_alternates
 FROM 
 	SCBCRSE AS crse1
 	
@@ -17,6 +18,9 @@ FROM
 			-- If crse2 is effective after crse1, a join will be successfull and crse2 non-null.
 			-- On the latest crse1, crse2 will be null.
 			AND crse1.SCBCRSE_EFF_TERM < crse2.SCBCRSE_EFF_TERM)
+	LEFT JOIN SCREQIV 
+		ON (crse1.SCBCRSE_SUBJ_CODE = SCREQIV_SUBJ_CODE 
+			AND crse1.SCBCRSE_CRSE_NUMB = SCREQIV_CRSE_NUMB) 
 	
 WHERE
 	
@@ -27,6 +31,7 @@ WHERE
 	AND crse1.SCBCRSE_CSTA_CODE NOT IN (
 		'C', 'I', 'P', 'T', 'X'
 	)
+GROUP BY crse1.SCBCRSE_SUBJ_CODE , crse1.SCBCRSE_CRSE_NUMB
 ORDER BY crse1.SCBCRSE_SUBJ_CODE , crse1.SCBCRSE_CRSE_NUMB;
 
 -- ---------------------------------------------------------
