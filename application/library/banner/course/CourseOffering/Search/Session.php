@@ -273,8 +273,10 @@ class banner_course_CourseOffering_Search_Session
 				$crn = $this->getCrnFromOfferingId($offering->getId());
 				$text = $offering->getFulltextStringForIndex();
 				
-				if (!$insertStmt->execute(array(':term_code' => $termCode, ':crn' => $crn, ':text' => $text)))
-					throw new osid_OperationFailedException('FullText update failed');
+				if (!$insertStmt->execute(array(':term_code' => $termCode, ':crn' => $crn, ':text' => $text))) {
+					$info = $insertStmt->errorInfo();
+					throw new osid_OperationFailedException('FullText update failed with code '.$info[0].'/'.$info[1].' - '.$info[2]);
+				}
 			} catch (Exception $e) {
 				print "\nError of type:\n\t".get_class($e)."\nwith message:\n\t".$e->getMessage()."\n";
 			}

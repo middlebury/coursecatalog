@@ -134,7 +134,7 @@ class banner_TestSuite extends PHPUnit_Framework_TestSuite
         }
     }
     
-    private $minMemory = '330M';
+    private $minMemory = '300M';
     private $currentMemory = null;
     
     private function setMemoryLimit() {
