@@ -65,9 +65,9 @@ abstract class Helper_RecentCourses_Abstract {
 			$primary = current($group);
 			if ($primary->getId()->isEqual($course->getId())) {
 				$alternates = array();
-				foreach ($group as $course) {
-					if (!$course->getId()->isEqual($course->getId()))
-						$alternates[] = $course;
+				foreach ($group as $courseInGroup) {
+					if (!$courseInGroup->getId()->isEqual($course->getId()))
+						$alternates[] = $courseInGroup;
 				}
 				return $alternates;
 			}
