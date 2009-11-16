@@ -461,19 +461,72 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 	public function getAlternateIdsForCourse (osid_id_Id $courseId) {
 		if (!isset(self::$alternatesForCourse_stmt)) {
 			$query = "
-SELECT
+SELECT 
 	*
-FROM
-	SCREQIV
+FROM (
+	SELECT
+		SCREQIV_SUBJ_CODE,
+		SCREQIV_CRSE_NUMB,
+		SCREQIV_EFF_TERM,
+		SCREQIV_SUBJ_CODE_EQIV,
+		SCREQIV_CRSE_NUMB_EQIV
+	FROM
+		SCREQIV
+	WHERE 
+		(SCREQIV_SUBJ_CODE = :subj_code_0
+			AND SCREQIV_CRSE_NUMB = :crse_numb_0)
+	
+	UNION
+		
+	SELECT
+		SCREQIV_SUBJ_CODE,
+		SCREQIV_CRSE_NUMB,
+		equiv2_eff_term AS SCREQIV_EFF_TERM,
+		equiv2_subj_code AS SCREQIV_SUBJ_CODE_EQIV,
+		equiv2_crse_numb AS SCREQIV_CRSE_NUMB_EQIV
+	FROM
+		screqiv_2way
+	WHERE 
+		(SCREQIV_SUBJ_CODE = :subj_code_1
+			AND SCREQIV_CRSE_NUMB = :crse_numb_1)
+	
+	UNION
+	
+	SELECT
+		SCREQIV_SUBJ_CODE,
+		SCREQIV_CRSE_NUMB,
+		equiv2_eff_term AS SCREQIV_EFF_TERM,
+		equiv2_subj_code_equiv AS SCREQIV_SUBJ_CODE_EQIV,
+		equiv2_crse_numb_equiv AS SCREQIV_CRSE_NUMB_EQIV
+	FROM
+		screqiv_2way
+	WHERE 
+		(SCREQIV_SUBJ_CODE = :subj_code_2
+			AND SCREQIV_CRSE_NUMB = :crse_numb_2)
+	
+	) as screquiv_combined
+	
 WHERE
-	SCREQIV_SUBJ_CODE = :subject
-	AND SCREQIV_CRSE_NUMB = :number
+	SCREQIV_SUBJ_CODE_EQIV != :subj_code_3
+	OR SCREQIV_CRSE_NUMB_EQIV != :crse_numb_3
+GROUP BY 
+	SCREQIV_SUBJ_CODE, 
+	SCREQIV_CRSE_NUMB,
+	SCREQIV_SUBJ_CODE_EQIV,
+	SCREQIV_CRSE_NUMB_EQIV
+ORDER BY SCREQIV_EFF_TERM DESC
 ";
 			self::$alternatesForCourse_stmt = $this->manager->getDB()->prepare($query);
 		}
 		self::$alternatesForCourse_stmt->execute(array(
-			':subject' => $this->getSubjectFromCourseId($courseId),
-			':number' => $this->getNumberFromCourseId($courseId)
+			':subj_code_0' => $this->getSubjectFromCourseId($courseId),
+			':crse_numb_0' => $this->getNumberFromCourseId($courseId),
+			':subj_code_1' => $this->getSubjectFromCourseId($courseId),
+			':crse_numb_1' => $this->getNumberFromCourseId($courseId),
+			':subj_code_2' => $this->getSubjectFromCourseId($courseId),
+			':crse_numb_2' => $this->getNumberFromCourseId($courseId),
+			':subj_code_3' => $this->getSubjectFromCourseId($courseId),
+			':crse_numb_3' => $this->getNumberFromCourseId($courseId)
 		));
 		$rows = self::$alternatesForCourse_stmt->fetchAll(PDO::FETCH_ASSOC);
 		self::$alternatesForCourse_stmt->closeCursor();

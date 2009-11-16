@@ -130,3 +130,30 @@ FROM
 WHERE
 	-- Clause for the 'outer self exclusion join'
 	desc2.SCBDESC_SUBJ_CODE IS NULL;
+	
+-- ---------------------------------------------------------
+
+--
+-- This view allows matching of courses that are equivalent to a course that is 
+-- in turn equivalent to another course.
+--	
+
+CREATE OR REPLACE VIEW screqiv_2way AS
+SELECT
+	equiv1.`SCREQIV_SUBJ_CODE`,
+	equiv1.`SCREQIV_CRSE_NUMB`,
+	equiv1.`SCREQIV_EFF_TERM`,
+	equiv1.`SCREQIV_SUBJ_CODE_EQIV`,
+	equiv1.`SCREQIV_CRSE_NUMB_EQIV`,
+	equiv2.`SCREQIV_SUBJ_CODE` AS equiv2_subj_code,
+	equiv2.`SCREQIV_CRSE_NUMB` AS equiv2_crse_numb,
+	equiv2.`SCREQIV_EFF_TERM` AS equiv2_eff_term,
+	equiv2.`SCREQIV_SUBJ_CODE_EQIV` AS equiv2_subj_code_equiv,
+	equiv2.`SCREQIV_CRSE_NUMB_EQIV` AS equiv2_crse_numb_equiv
+FROM 
+	SCREQIV as equiv1
+	LEFT JOIN SCREQIV AS equiv2 
+		ON ((equiv1.SCREQIV_SUBJ_CODE_EQIV = equiv2.SCREQIV_SUBJ_CODE
+				AND equiv1.SCREQIV_CRSE_NUMB_EQIV = equiv2.SCREQIV_CRSE_NUMB)
+			OR (equiv1.SCREQIV_SUBJ_CODE_EQIV = equiv2.SCREQIV_SUBJ_CODE_EQIV
+				AND equiv1.SCREQIV_CRSE_NUMB_EQIV = equiv2.SCREQIV_CRSE_NUMB_EQIV))
