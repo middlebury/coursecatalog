@@ -277,7 +277,8 @@ class CoursesController
 		$topicLookup->useFederatedView();
 		$topic = $topicLookup->getTopic($topicId);
 		
-		$this->outputCourseFeed($courses, htmlentities('Courses in  '.$topic->getDisplayName()), $searchUrl, array($this, 'getAllCourseTerms'));
+		$recentCourses = new Helper_RecentCourses_All($courses);
+		$this->outputCourseFeed($recentCourses, htmlentities('Courses in  '.$topic->getDisplayName()), $searchUrl);
 		
 	}
 	
@@ -334,23 +335,22 @@ class CoursesController
 		$resourceLookup = self::getCourseManager()->getResourceManager()->getResourceLookupSession();
 		$instructorResource = $resourceLookup->getResource($instructorId);
 		
-		$this->outputCourseFeed($courses, 'Courses taught by '.$instructorResource->getDisplayName(), $searchUrl, array($this, 'getInstructorCourseTerms'), array($offeringSearchSession, $instructorId));
+		$recentCourses = new Helper_RecentCourses_Instructor($courses, $offeringSearchSession, $instructorId);
+		$this->outputCourseFeed($recentCourses, 'Courses taught by '.$instructorResource->getDisplayName(), $searchUrl);
 		
 	}
 	
 	/**
 	 * Output an RSS feed of courses from results
 	 * 
-	 * @param osid_course_CourseSearchResults $courses
+	 * @param Helper_RecentCourses_Abstract $recentCourses
 	 * @param string $title
 	 * @param string $url
 	 * @return void
 	 * @access protected
 	 * @since 10/19/09
 	 */
-	protected function outputCourseFeed (osid_course_CourseSearchResults $courses, $title, $url, $termsCallback, $additionalCallbackParams = array()) {
-		$groups = $this->groupAlternates($courses, $termsCallback, $additionalCallbackParams);
-		
+	protected function outputCourseFeed (Helper_RecentCourses_Abstract $recentCourses, $title, $url) {		
 		ob_start();
 		print '<?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
@@ -378,59 +378,47 @@ class CoursesController
 // 			}
 // 		}
 		
-		foreach ($groups as $group) {
-			$course = current($group);
+		foreach ($recentCourses->getPrimaryCourses() as $course) {
 			$courseIdString = self::getStringFromOsidId($course->getId());
+						
+			print "\n\t\t<item>";
 			
-			$recentTerms = $this->getRecentTermsForCourse($course, $termsCallback, $additionalCallbackParams);
-			
-			if (count($recentTerms) || !$course->hasRecordType($termsType)) {
-			
-				print "\n\t\t<item>";
-				
-				print "\n\t\t\t<title>";
-				$name = $course->getDisplayName();
-				while ($alt = next($group)) {
-					$name .= ' / '. $alt->getDisplayName();
-				}
-				print htmlspecialchars($name.' - '.$course->getTitle());
-				print "</title>";
-				
-				print "\n\t\t\t<link>";
-				$catalog = $catalogSession->getCatalogIdsByCourse($course->getId());
-				if ($catalog->hasNext())
-					$catalogIdString = self::getStringFromOsidId($catalog->getNextId());
-				else
-					$catalogIdString = null;
-				print $this->getAsAbsolute($this->_helper->url('view', 'courses', null, array('catalog' => $catalogIdString, 'course' => $courseIdString)));
-				print "</link>";
-				
-				print "\n\t\t\t<guid isPermaLink='true'>";
-				print $this->getAsAbsolute($this->_helper->url('view', 'courses', null, array('catalog' => $catalogIdString, 'course' => $courseIdString)));
-				print "</guid>";
-				
-				print "\n\t\t\t<description><![CDATA[";
-				print $course->getDescription();
-				
-// 				if (count($recentTerms)) {
-// 					$termStrings = array();
-// 					foreach ($recentTerms as $term) {
-// 						$termStrings[] = $term->getDisplayName();
-// 					}
-// 					print "<p class='terms_taught'>".implode(', ', $termStrings)."</p>";
-// 				}
-				
-				print "]]></description>";
-				
-				if (count($recentTerms)) {
-					$termStrings = array();
-					foreach ($recentTerms as $term) {
-						print "\n\t\t\t<catalog:term id=\"".self::getStringFromOsidId($term->getId())."\" >".$term->getDisplayName()."</catalog:term>";
-					}
-				}
-				
-				print "\n\t\t</item>";
+			print "\n\t\t\t<title>";
+			$alternates = $recentCourses->getAlternatesForCourse($course);
+			$name = $course->getDisplayName();
+			foreach ($alternates as $alt) {
+				$name .= ' / '. $alt->getDisplayName();
 			}
+			print htmlspecialchars($name.' - '.$course->getTitle());
+			print "</title>";
+			
+			print "\n\t\t\t<link>";
+			$catalog = $catalogSession->getCatalogIdsByCourse($course->getId());
+			if ($catalog->hasNext())
+				$catalogIdString = self::getStringFromOsidId($catalog->getNextId());
+			else
+				$catalogIdString = null;
+			print $this->getAsAbsolute($this->_helper->url('view', 'courses', null, array('catalog' => $catalogIdString, 'course' => $courseIdString)));
+			print "</link>";
+			
+			print "\n\t\t\t<guid isPermaLink='true'>";
+			print $this->getAsAbsolute($this->_helper->url('view', 'courses', null, array('catalog' => $catalogIdString, 'course' => $courseIdString)));
+			print "</guid>";
+			
+			print "\n\t\t\t<description><![CDATA[";
+			print $course->getDescription();
+			
+			print "]]></description>";
+			
+			$recentTerms = $recentCourses->getTermsForCourse($course);
+			if (count($recentTerms)) {
+				$termStrings = array();
+				foreach ($recentTerms as $term) {
+					print "\n\t\t\t<catalog:term id=\"".self::getStringFromOsidId($term->getId())."\" >".$term->getDisplayName()."</catalog:term>";
+				}
+			}
+			
+			print "\n\t\t</item>";
 		}
 		
 		print '
@@ -440,227 +428,6 @@ class CoursesController
 		header('Content-Type: text/xml');
 		ob_end_flush();
 		exit;
-	}
-	
-	/**
-	 * Group alternate courses
-	 * 
-	 * @param osid_course_CourseSearchResults $courses
-	 * @return array A two-dimensional array of course objects array(array($course, $equivCourse), array($course), array($course, $equivCourse));
-	 * @access protected
-	 * @since 11/13/09
-	 */
-	protected function groupAlternates (osid_course_CourseSearchResults $courses, $termsCallback, array $additionalCallbackParams) {
-		$groups = array();
-		while ($courses->hasNext()) {
-			$groupId = false;
-			
-			$course = $courses->getNextCourse();
-			$courseIdString = self::getStringFromOsidId($course->getId());
-			
-// 			print "\n<h2>Grouping $courseIdString</h2>\n";
-// 			print "\n<h3>Current Groups:</h3>\n";
-// 			var_dump($groups);
-			
-			if ($course->hasRecordType($this->alternateType)) {
-				$record = $course->getCourseRecord($this->alternateType);
-				if ($record->hasAlternates()) {
-					$groupId = $this->findGroupIdMatchingAlternates($groups, $record->getAlternateIds());
-				}
-			}
-			
-// 			print "\n<h3>Group Id found:</h3>\n";
-// 			var_dump($groupId);
-			
-			if (!$groupId)
-				$groupId = $courseIdString;
-			
-// 			print "\n<h3>Using Group Id:</h3>\n";
-// 			var_dump($groupId);
-			
-			if (!isset($groups[$groupId]))
-				$groups[$groupId] = array();
-			
-			$groups[$groupId][$courseIdString] = $course;
-		}
-		
-		// Sort all of the groups by effective date.
-		foreach ($groups as $groupKey => &$group) {
-			$dates = array();
-			$names = array();
-			foreach ($group as $key => $course) {
-				try {
-					$term = $this->getMostRecentTermForCourse($course, $termsCallback, $additionalCallbackParams);
-					$dates[] = $this->DateTime_getTimestamp($term->getEndTime());
-					$names[] = $course->getDisplayName();
-				} catch (osid_NotFoundException $e) {
-					unset($group[$key]);
-				}
-			}
-// 			var_dump(array_keys($group));
-// 			var_dump($dates);
-// 			var_dump($names);
-			array_multisort($dates, SORT_NUMERIC, SORT_DESC, $names, SORT_ASC, $group);
-			
-			// Filter out any groups that don't have courses with recent terms.
-			if (!count($group))
-				unset($groups[$groupKey]);
-		}
-		
-		return $groups;
-	}
-	
-	/**
-	 * return the id of a group that matches or false
-	 * 
-	 * @param osid_id_IdList $altIds
-	 * @return mixed
-	 * @access protected
-	 * @since 11/13/09
-	 */
-	protected function findGroupIdMatchingAlternates (array $groups, osid_id_IdList $altIds) {
-// 		print "\n<h3>Alternates:</h3>\n";
-		while ($altIds->hasNext()) {
-			$altId = $altIds->getNextId();
-			$altIdString = self::getStringFromOsidId($altId);
-// 			var_dump($altIdString);
-			
-			foreach ($groups as $groupId => $group) {
-				foreach ($group as $otherIdString => $otherCourse) {
-					if ($otherIdString == $altIdString) {
-						return $groupId;
-					}
-				}
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * Answer an array of the recent terms for a course.
-	 * 
-	 * @param osid_course_Course $course
-	 * @param mixed $termsCallback
-	 * @param array $additionalCallbackParams
-	 * @return array
-	 * @access private
-	 * @since 11/16/09
-	 */
-	private function getRecentTermsForCourse (osid_course_Course $course, array $termsCallback, array $additionalCallbackParams) {
-		if (!count($termsCallback))
-			throw new InvalidArgumentException('Invalid callback');
-		
-		// Define a cutoff date after which courses will be included in the feed.
-		// Currently set to 4 years. Would be good to have as a configurable time.
-		$now = new DateTime;
-		$cutOff = $this->DateTime_getTimestamp($now) - (60 * 60 * 24 * 365 * 4);
-		
-		$recentTerms = array();
-		$params = array();
-		$params[] = $course;
-		$params = array_merge($params, $additionalCallbackParams);
-		$allTerms = call_user_func_array($termsCallback, $params);
-		foreach ($allTerms as $term) {
-			if ($this->DateTime_getTimestamp($term->getEndTime()) > $cutOff) {
-				$recentTerms[] = $term;
-			}
-		}
-		
-		return $recentTerms;
-	}
-	
-	/**
-	 * Answer the most recent term for a course
-	 * 
-	 * @param osid_course_Course $course
-	 * @param mixed $termsCallback
-	 * @param array $additionalCallbackParams
-	 * @return osid_course_Term
-	 * @access private
-	 * @since 11/16/09
-	 */
-	private function getMostRecentTermForCourse (osid_course_Course $course, $termsCallback, array $additionalCallbackParams) {
-		$terms = $this->getRecentTermsForCourse($course, $termsCallback, $additionalCallbackParams);
-		
-		if (!count($terms))
-			throw new osid_NotFoundException('No terms available.');
-		
-		foreach ($terms as $term) {
-			if (!isset($mostRecent))
-				$mostRecent = $term;
-			else if ($this->DateTime_getTimestamp($term->getEndTime()) > $this->DateTime_getTimestamp($mostRecent->getEndTime()))
-				$mostRecent = $term;
-		}
-		
-// 		print "\nRecent term for ".$course->getDisplayName().": ";
-// 		var_dump($mostRecent);
-		
-		return $mostRecent;
-	}
-	
-	/**
-	 * Answer all terms for a course
-	 * 
-	 * @param osid_course_Course $course
-	 * @return array
-	 * @access private
-	 * @since 10/20/09
-	 */
-	private function getAllCourseTerms (osid_course_Course $course) {
-		$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
-		$allTerms = array();
-		if ($course->hasRecordType($termsType)) {
-			$termsRecord = $course->getCourseRecord($termsType);
-			try {
-				$terms = $termsRecord->getTerms();
-				while ($terms->hasNext()) {
-					$allTerms[] = $terms->getNextTerm();
-				}
-			} catch (osid_OperationFailedException $e) {
-			}
-		}
-		return $allTerms;
-	}
-	
-	/**
-	 * Answer the terms in which an instructor taught a course
-	 * 
-	 * @param osid_course_Course $course
-	 * @return array
-	 * @access private
-	 * @since 10/20/09
-	 */
-	private function getInstructorCourseTerms (osid_course_Course $course, osid_course_CourseOfferingSearchSession $session, osid_id_Id $instructorId) {
-		$instructorsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:instructors");
-		$allTerms = array();
-		
-		$query = $session->getCourseOfferingQuery();
-		$query->matchCourseId($course->getId(), true);
-		
-		$instructorsRecord = $query->getCourseOfferingQueryRecord($instructorsType);
-		$instructorsRecord->matchInstructorId($instructorId, true);
-		
-		$search = $session->getCourseOfferingSearch();
-		$order = $session->getCourseOfferingSearchOrder();
-		$order->orderByTerm();
-		$order->ascend();
-		$search->orderCourseOfferingResults($order);
-		
-		$offerings = $session->getCourseOfferingsBySearch($query, $search);
-		
-// 		print $offerings->debug();
-		
-		$seen = array();
-		while ($offerings->hasNext()) {
-			$term = $offerings->getNextCourseOffering()->getTerm();
-			$termIdString = self::getStringFromOsidId($term->getId());
-// 			print $termIdString."\n";
-			if (!in_array($termIdString, $seen)) {
-				$allTerms[] = $term;
-				$seen[] = $termIdString;
-			}
-		}
-		return $allTerms;
 	}
 	
 	/**
@@ -676,21 +443,6 @@ class CoursesController
 		return strtolower(trim(array_shift($parts)))
 			. '://' . $_SERVER['HTTP_HOST'] . $url;
 	}
-	
-	function DateTime_getTimestamp($dt) {
-		$dtz_original = $dt -> getTimezone();
-		$dtz_utc = new DateTimeZone("UTC");
-		$dt -> setTimezone($dtz_utc);
-		$year = intval($dt -> format("Y"));
-		$month = intval($dt -> format("n"));
-		$day = intval($dt -> format("j"));
-		$hour = intval($dt -> format("G"));
-		$minute = intval($dt -> format("i"));
-		$second = intval($dt -> format("s"));
-		$dt -> setTimezone($dtz_original);
-		return gmmktime($hour,$minute,$second,$month,$day,$year);
-	}
-	
 }
 
 ?>
