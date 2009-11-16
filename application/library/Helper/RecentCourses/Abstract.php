@@ -212,16 +212,10 @@ abstract class Helper_RecentCourses_Abstract {
 		$recentTerms = $this->filterRecentTerms($this->fetchCourseTerms($course));
 		
 		if ($includeAlternates) {
-			if ($course->hasRecordType($this->alternateType)) {
-				$record = $course->getCourseRecord($this->alternateType);
-				if ($record->hasAlternates()) {
-					$alternates = $record->getAlternates();
-					while ($alternates->hasNext()) {
-						$altTerms = $this->filterRecentTerms($this->fetchCourseTerms($alternates->getNextCourse()));
-						
-						$recentTerms = array_merge($recentTerms, $altTerms);
-					}
-				}
+			foreach ($this->getAlternatesForCourse($course) as $alternate) {
+				$altTerms = $this->filterRecentTerms($this->fetchCourseTerms($alternate));
+				
+				$recentTerms = array_merge($recentTerms, $altTerms);
 			}
 		}
 		
