@@ -19,7 +19,20 @@
 class Helper_RecentCourses_All
 	extends Helper_RecentCourses_Abstract
 {
+	private $termsCache;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param osid_course_CourseSearchResults $courses
+	 * @return void
+	 * @access public
+	 * @since 11/16/09
+	 */
+	public function __construct (osid_course_CourseSearchResults $courses) {
+		$this->termsCache = array();
+		parent::__construct($courses);
+	}
 	
 	/**
 	 * Answer the terms for a course. These may be all terms or terms taught
@@ -30,19 +43,24 @@ class Helper_RecentCourses_All
 	 * @since 11/16/09
 	 */
 	protected function fetchCourseTerms (osid_course_Course $course) {
-		$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
-		$allTerms = array();
-		if ($course->hasRecordType($termsType)) {
-			$termsRecord = $course->getCourseRecord($termsType);
-			try {
-				$terms = $termsRecord->getTerms();
-				while ($terms->hasNext()) {
-					$allTerms[] = $terms->getNextTerm();
+		$cacheKey = AbstractCatalogController::getStringFromOsidId($course->getId());
+		
+		if (!isset($this->termsCache[$cacheKey])) {
+			$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
+			$allTerms = array();
+			if ($course->hasRecordType($termsType)) {
+				$termsRecord = $course->getCourseRecord($termsType);
+				try {
+					$terms = $termsRecord->getTerms();
+					while ($terms->hasNext()) {
+						$allTerms[] = $terms->getNextTerm();
+					}
+				} catch (osid_OperationFailedException $e) {
 				}
-			} catch (osid_OperationFailedException $e) {
 			}
+			$this->termsCache[$cacheKey] = $allTerms;	
 		}
-		return $allTerms;
+		return $this->termsCache[$cacheKey];
 	}
 }
 

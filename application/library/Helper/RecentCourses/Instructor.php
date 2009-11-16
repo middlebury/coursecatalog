@@ -19,7 +19,9 @@
 class Helper_RecentCourses_Instructor 
 	extends Helper_RecentCourses_Abstract
 {
-		
+	
+	private $termsCache;
+	
 	/**
 	 * Constructor
 	 * 
@@ -31,6 +33,7 @@ class Helper_RecentCourses_Instructor
 	 * @since 11/16/09
 	 */
 	public function __construct (osid_course_CourseSearchResults $courses, osid_course_CourseOfferingSearchSession $searchSession, osid_id_Id $instructorId) {
+		$this->termsCache = array();
 		$this->searchSession = $searchSession;
 		$this->instructorId = $instructorId;
 		parent::__construct($courses);
@@ -46,36 +49,42 @@ class Helper_RecentCourses_Instructor
 	 * @since 11/16/09
 	 */
 	protected function fetchCourseTerms (osid_course_Course $course) {
-		$instructorsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:instructors");
-		$allTerms = array();
+		$cacheKey = AbstractCatalogController::getStringFromOsidId($course->getId())
+			."_".AbstractCatalogController::getStringFromOsidId($this->instructorId);
 		
-		$query = $this->searchSession->getCourseOfferingQuery();
-		$query->matchCourseId($course->getId(), true);
-		
-		$instructorsRecord = $query->getCourseOfferingQueryRecord($instructorsType);
-		$instructorsRecord->matchInstructorId($this->instructorId, true);
-		
-		$search = $this->searchSession->getCourseOfferingSearch();
-		$order = $this->searchSession->getCourseOfferingSearchOrder();
-		$order->orderByTerm();
-		$order->ascend();
-		$search->orderCourseOfferingResults($order);
-		
-		$offerings = $this->searchSession->getCourseOfferingsBySearch($query, $search);
-		
-// 		print $offerings->debug();
-		
-		$seen = array();
-		while ($offerings->hasNext()) {
-			$term = $offerings->getNextCourseOffering()->getTerm();
-			$termIdString = AbstractCatalogController::getStringFromOsidId($term->getId());
-// 			print $termIdString."\n";
-			if (!in_array($termIdString, $seen)) {
-				$allTerms[] = $term;
-				$seen[] = $termIdString;
+		if (!isset($this->termsCache[$cacheKey])) {
+			$instructorsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:instructors");
+			$allTerms = array();
+			
+			$query = $this->searchSession->getCourseOfferingQuery();
+			$query->matchCourseId($course->getId(), true);
+			
+			$instructorsRecord = $query->getCourseOfferingQueryRecord($instructorsType);
+			$instructorsRecord->matchInstructorId($this->instructorId, true);
+			
+			$search = $this->searchSession->getCourseOfferingSearch();
+			$order = $this->searchSession->getCourseOfferingSearchOrder();
+			$order->orderByTerm();
+			$order->ascend();
+			$search->orderCourseOfferingResults($order);
+			
+			$offerings = $this->searchSession->getCourseOfferingsBySearch($query, $search);
+			
+	// 		print $offerings->debug();
+			
+			$seen = array();
+			while ($offerings->hasNext()) {
+				$term = $offerings->getNextCourseOffering()->getTerm();
+				$termIdString = AbstractCatalogController::getStringFromOsidId($term->getId());
+	// 			print $termIdString."\n";
+				if (!in_array($termIdString, $seen)) {
+					$allTerms[] = $term;
+					$seen[] = $termIdString;
+				}
 			}
+			$this->termsCache[$cacheKey] = $allTerms;	
 		}
-		return $allTerms;
+		return $this->termsCache[$cacheKey];
 	}
 }
 
