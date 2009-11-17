@@ -102,7 +102,41 @@ class TopicsController
 	 * @access public
 	 * @since 10/20/09
 	 */
+	public function listsubjectstxtAction () {
+		$this->renderTextList(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject"));
+	}
+	
+	/**
+	 * List all department topics as a text file with each line being Id|DisplayName
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 10/20/09
+	 */
+	public function listrequirementstxtAction () {
+		$this->renderTextList(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement"));
+	}
+	
+	/**
+	 * List all department topics as a text file with each line being Id|DisplayName
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 10/20/09
+	 */
 	public function listdepartmentstxtAction () {
+		$this->renderTextList(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department"));
+	}
+	
+	/**
+	 * Render a text feed for a given topic type.
+	 * 
+	 * @param osid_type_Type $genusType
+	 * @return void
+	 * @access private
+	 * @since 11/17/09
+	 */
+	private function renderTextList (osid_type_Type $genusType) {
 		header('Content-Type: text/plain');
 		
 		if ($this->_getParam('catalog')) {
@@ -115,7 +149,7 @@ class TopicsController
 		}
 		$lookupSession->useFederatedCourseCatalogView();
 		
-		$topics = $lookupSession->getTopicsByGenusType(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department"));
+		$topics = $lookupSession->getTopicsByGenusType($genusType);
 		
 		while ($topics->hasNext()) {
 			$topic = $topics->getNextTopic();
