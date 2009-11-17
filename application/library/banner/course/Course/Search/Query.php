@@ -611,6 +611,10 @@ class banner_course_Course_Search_Query
    			case 'division':
    				$this->addClause('division_topic_id', 'SCBCRSE_DIVS_CODE = ?', array($value), $match);
    				return;
+   			case 'requirement':
+   				$this->addClause('requirement_topic_id', 'SCRATTR_ATTR_CODE = ?', array($value), $match);
+   				$this->addTableJoin('LEFT JOIN scrattr_recent ON (SCBCRSE_SUBJ_CODE = SCRATTR_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SCRATTR_CRSE_NUMB)');
+   				return;
    			default:
    				$this->addClause('topic_id', 'FALSE', array(), $match);
 		}

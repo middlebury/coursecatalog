@@ -154,4 +154,35 @@ FROM
 		ON ((equiv1.SCREQIV_SUBJ_CODE_EQIV = equiv2.SCREQIV_SUBJ_CODE
 				AND equiv1.SCREQIV_CRSE_NUMB_EQIV = equiv2.SCREQIV_CRSE_NUMB)
 			OR (equiv1.SCREQIV_SUBJ_CODE_EQIV = equiv2.SCREQIV_SUBJ_CODE_EQIV
-				AND equiv1.SCREQIV_CRSE_NUMB_EQIV = equiv2.SCREQIV_CRSE_NUMB_EQIV))
+				AND equiv1.SCREQIV_CRSE_NUMB_EQIV = equiv2.SCREQIV_CRSE_NUMB_EQIV));
+				
+
+-- ---------------------------------------------------------
+
+--
+-- This view allows fetching of the most recent attributes available for a course
+--	
+CREATE OR REPLACE VIEW scrattr_recent AS
+SELECT 
+	attr1.*
+FROM 
+	SCRATTR AS attr1
+	
+	-- 'Outer self exclusion join' to fetch only the most recent SCRATTR row.
+	LEFT JOIN SCRATTR AS attr2 
+		ON (attr1.SCRATTR_SUBJ_CODE = attr2.SCRATTR_SUBJ_CODE 
+			AND attr1.SCRATTR_CRSE_NUMB = attr2.SCRATTR_CRSE_NUMB 
+			-- If attr2 is effective after attr1, a join will be successfull and attr2 non-null.
+			-- On the latest attr1, attr2 will be null.
+			AND attr1.SCRATTR_EFF_TERM < attr2.SCRATTR_EFF_TERM)
+	
+WHERE
+	
+	-- Clause for the 'outer self exclusion join'
+	attr2.SCRATTR_SUBJ_CODE IS NULL
+	
+	-- Exclude null entries that are just for overriding attributes
+	AND attr1.SCRATTR_ATTR_CODE IS NOT NULL
+
+GROUP BY attr1.SCRATTR_SUBJ_CODE , attr1.SCRATTR_CRSE_NUMB, attr1.SCRATTR_ATTR_CODE 
+ORDER BY attr1.SCRATTR_SUBJ_CODE , attr1.SCRATTR_CRSE_NUMB, attr1.SCRATTR_ATTR_CODE;
