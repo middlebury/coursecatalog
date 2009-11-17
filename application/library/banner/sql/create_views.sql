@@ -51,14 +51,12 @@ FROM
 	LEFT JOIN SCBDESC AS desc1 
 		ON (SCBCRSE_SUBJ_CODE = desc1.SCBDESC_SUBJ_CODE 
 			AND SCBCRSE_CRSE_NUMB = desc1.SCBDESC_CRSE_NUMB 
-			AND SCBCRSE_EFF_TERM >= desc1.SCBDESC_TERM_CODE_EFF 
 			AND (desc1.SCBDESC_TERM_CODE_END IS NULL OR SCBCRSE_EFF_TERM < desc1.SCBDESC_TERM_CODE_END))
 	
 	-- 'Outer self exclusion join' to fetch only the most recent SCBDESC row if multiple match.
 	LEFT JOIN SCBDESC AS desc2 
 		ON (SCBCRSE_SUBJ_CODE = desc2.SCBDESC_SUBJ_CODE 
 			AND SCBCRSE_CRSE_NUMB = desc2.SCBDESC_CRSE_NUMB 
-			AND SCBCRSE_EFF_TERM >= desc2.SCBDESC_TERM_CODE_EFF 
 			AND (desc2.SCBDESC_TERM_CODE_END IS NULL OR SCBCRSE_EFF_TERM < desc2.SCBDESC_TERM_CODE_END)
 			-- If desc2 is effective after desc1, a join will be successfull and desc2 non-null.
 			-- On the latest desc1, desc2 will be null.
