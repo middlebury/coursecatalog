@@ -300,8 +300,16 @@ class CoursesController
 			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSession();
 			$offeringSearchSession->useFederatedView();
 			
-			$this->termLookupSession = self::getCourseManager()->getTermLookupSession();
-			$this->termLookupSession->useFederatedView();
+			// Allow term current/past to be limited to a certain catalog while courses are fetched from many
+			if ($this->_getParam('term_catalog')) {
+				$catalogId = self::getOsidIdFromString($this->_getParam('term_catalog'));
+				$this->termLookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+			} 
+			// fall back to terms from any catalog.
+			else {
+				$this->termLookupSession = self::getCourseManager()->getTermLookupSession();
+				$this->termLookupSession->useFederatedView();
+			}
 		} else {
 			try {
 				$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
