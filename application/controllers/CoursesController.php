@@ -257,21 +257,30 @@ class CoursesController
 			exit;
 		}
 		
-		if (!$this->_getParam('topic') || !strlen($this->_getParam('topic'))) {
+		if (!$this->_getParam('topic') || !is_array($this->_getParam('topic')) || (is_string($this->_getParam('topic')) && !strlen($this->_getParam('topic')))) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A topic must be specified.";
 			exit;
 		}
 		
-		$topicId = self::getOsidIdFromString($this->_getParam('topic'));
+		$topicsIds = array();
+		if (is_array($this->_getParam('topic'))) {
+			foreach ($this->_getParam('topic') as $idString) {
+				$topicIds[] = self::getOsidIdFromString($idString);
+			}
+		} else {
+			$topicIds[] = self::getOsidIdFromString($this->_getParam('topic'));
+		}
 		
-		$searchUrl = $this->getAsAbsolute($this->_helper->url('search', 'offerings', null, array('catalog' => $this->_getParam('catalog'), 'topic' => $this->_getParam('topic'), 'submit' => 'Search')));
+		$searchUrl = $this->getAsAbsolute($this->_helper->url('search', 'offerings', null, array()));
 		
 		// Fetch courses
 		$query = $searchSession->getCourseQuery();
 		
 		$topicRecord = $query->getCourseQueryRecord(new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:topic"));
-		$topicRecord->matchTopicId($topicId, true);
+		foreach ($topicIds as $topicId) {
+			$topicRecord->matchTopicId($topicId, true);
+		}
 		
 		$courses = $searchSession->getCoursesByQuery($query);
 		
