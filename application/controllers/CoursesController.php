@@ -245,6 +245,8 @@ class CoursesController
 		try {
 			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
 			$searchSession = self::getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
+			
+			$this->termLookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 		} catch (osid_InvalidArgumentException $e) {
 			header('HTTP/1.1 400 Bad Request');
 			print "The catalog id specified was not of the correct format.";
@@ -297,11 +299,16 @@ class CoursesController
 			$searchSession->useFederatedView();
 			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSession();
 			$offeringSearchSession->useFederatedView();
+			
+			$this->termLookupSession = self::getCourseManager()->getTermLookupSession();
+			$this->termLookupSession->useFederatedView();
 		} else {
 			try {
 				$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
 				$searchSession = self::getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
 				$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
+				
+				$this->termLookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 			} catch (osid_InvalidArgumentException $e) {
 				header('HTTP/1.1 400 Bad Request');
 				print "The catalog id specified was not of the correct format.";
@@ -363,6 +370,11 @@ class CoursesController
 		<docs>http://blogs.law.harvard.edu/tech/rss</docs>
 		
 ';
+
+		// Set the next and previous terms
+		$currentTermId = self::getCurrentTermId($this->termLookupSession->getCourseCatalogId());
+		$currentTerm = $this->termLookupSession->getTerm($currentTermId);
+		$currentEndTime = $this->DateTime_getTimestamp($currentTerm->getEndTime());
 		
 // 		print "<description><![CDATA[";
 // 		print ($courses->debug());
@@ -414,7 +426,15 @@ class CoursesController
 			if (count($recentTerms)) {
 				$termStrings = array();
 				foreach ($recentTerms as $term) {
-					print "\n\t\t\t<catalog:term id=\"".self::getStringFromOsidId($term->getId())."\" >".$term->getDisplayName()."</catalog:term>";
+					print "\n\t\t\t<catalog:term id=\"".self::getStringFromOsidId($term->getId())."\"";
+					if ($term->getId()->isEqual($currentTermId)) {
+						print ' type="current"';
+					} else if ($currentEndTime < $this->DateTime_getTimestamp($term->getEndTime())) {
+						print ' type="future"';
+					} else {
+						print ' type="past"';
+					}
+					print ">".$term->getDisplayName()."</catalog:term>";
 				}
 			}
 			
@@ -428,6 +448,20 @@ class CoursesController
 		header('Content-Type: text/xml');
 		ob_end_flush();
 		exit;
+	}
+	
+	function DateTime_getTimestamp($dt) {
+		$dtz_original = $dt -> getTimezone();
+		$dtz_utc = new DateTimeZone("UTC");
+		$dt -> setTimezone($dtz_utc);
+		$year = intval($dt -> format("Y"));
+		$month = intval($dt -> format("n"));
+		$day = intval($dt -> format("j"));
+		$hour = intval($dt -> format("G"));
+		$minute = intval($dt -> format("i"));
+		$second = intval($dt -> format("s"));
+		$dt -> setTimezone($dtz_original);
+		return gmmktime($hour,$minute,$second,$month,$day,$year);
 	}
 	
 	/**
