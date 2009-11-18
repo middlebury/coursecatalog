@@ -40,6 +40,16 @@ foreach ($this->divisionTopics as $topic) {
 }
 print "</dd>";
 
+print "\n\t\t<dt>Requirements Fulfilled:</dt>";
+print "\n\t\t<dd>";
+foreach ($this->requirementTopics as $topic) {
+	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+	print "<a href=\"".$this->url($topicParams)."\">";
+	print $this->escape($topic->getDisplayName());
+	print "</a> ";
+}
+print "</dd>";
+
 if (isset($this->alternates)) {
 	$alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
 	

@@ -455,6 +455,27 @@ class CoursesController
 				}
 			}
 			
+			$allTopics = AbstractCatalogController::topicListAsArray($course->getTopics());
+			$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
+			$topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
+			$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
+			foreach ($topics as $topic) {
+				$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+				print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".AbstractCatalogController::getStringFromOsidId($topic->getId())."\" href=\"".$this->getAsAbsolute($this->view->url($topicParams))."\">";
+				print $this->view->escape($topic->getDisplayName());
+				print "</catalog:topic> ";
+			}
+			
+			$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
+			$topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
+			$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
+			foreach ($topics as $topic) {
+				$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+				print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".AbstractCatalogController::getStringFromOsidId($topic->getId())."\" href=\"".$this->getAsAbsolute($this->view->url($topicParams))."\">";
+				print $this->view->escape($topic->getDisplayName());
+				print "</catalog:topic> ";
+			}
+			
 			print "\n\t\t</item>";
 		}
 		

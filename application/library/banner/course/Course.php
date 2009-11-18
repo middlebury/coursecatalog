@@ -275,7 +275,10 @@ class banner_course_Course
      *  @compliance mandatory This method must be implemented. 
      */
     public function getTopicIds() {
-    	return new phpkit_id_ArrayIdList($this->topicIds);
+    	if (!isset($this->allTopicIds)) {
+    		$this->allTopicIds = array_merge($this->topicIds, $this->session->getRequirementTopicIdsForCourse($this->getId()));
+    	}
+    	return new phpkit_id_ArrayIdList($this->allTopicIds);
     }
 
 
