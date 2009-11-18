@@ -257,7 +257,7 @@ class CoursesController
 			exit;
 		}
 		
-		if (!$this->_getParam('topic') || !is_array($this->_getParam('topic')) || (is_string($this->_getParam('topic')) && !strlen($this->_getParam('topic')))) {
+		if (!$this->_getParam('topic')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A topic must be specified.";
 			exit;
