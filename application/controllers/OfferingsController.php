@@ -240,21 +240,54 @@ class OfferingsController
 		}
 		
 		if ($this->_getParam('department')) {
-			$query->matchTopicId(self::getOsidIdFromString($this->_getParam('department')), true);
-			$this->view->selectedDepartmentId = self::getOsidIdFromString($this->_getParam('department'));
-			$this->view->searchParams['department'] = $this->_getParam('department');
+			if (is_array($this->_getParam('department')))
+				$departments = $this->_getParam('department');
+			else
+				$departments = array($this->_getParam('department'));
+			
+			foreach ($departments as $idString) {
+				$id = self::getOsidIdFromString($idString);
+				$query->matchTopicId($id, true);
+				// set the first as the selected one if multiple.
+				if (!isset($this->view->selectedDepartmentId))
+					$this->view->selectedDepartmentId = $id;
+			}
+			
+			$this->view->searchParams['department'] = $departments;
 		}
 		
 		if ($this->_getParam('subject')) {
-			$query->matchTopicId(self::getOsidIdFromString($this->_getParam('subject')), true);
-			$this->view->selectedSubjectId = self::getOsidIdFromString($this->_getParam('subject'));
-			$this->view->searchParams['subject'] = $this->_getParam('subject');
+			if (is_array($this->_getParam('subject')))
+				$subjects = $this->_getParam('subject');
+			else
+				$subjects = array($this->_getParam('subject'));
+			
+			foreach ($subjects as $idString) {
+				$id = self::getOsidIdFromString($idString);
+				$query->matchTopicId($id, true);
+				// set the first as the selected one if multiple.
+				if (!isset($this->view->selectedSubjectId))
+					$this->view->selectedSubjectId = $id;
+			}
+			
+			$this->view->searchParams['subject'] = $subjects;
 		}
 		
 		if ($this->_getParam('division')) {
-			$query->matchTopicId(self::getOsidIdFromString($this->_getParam('division')), true);
-			$this->view->selectedDivisionId = self::getOsidIdFromString($this->_getParam('division'));
-			$this->view->searchParams['division'] = $this->_getParam('division');
+			if (is_array($this->_getParam('division')))
+				$divisions = $this->_getParam('division');
+			else
+				$divisions = array($this->_getParam('division'));
+			
+			foreach ($divisions as $idString) {
+				$id = self::getOsidIdFromString($idString);
+				$query->matchTopicId($id, true);
+				// set the first as the selected one if multiple.
+				if (!isset($this->view->selectedDivisionId))
+					$this->view->selectedDivisionId = $id;
+			}
+			
+			$this->view->searchParams['division'] = $divisions;
 		}
 			
 		$this->view->selectedRequirementIds = array();
@@ -264,10 +297,10 @@ class OfferingsController
 			else
 				$requirements = array($this->_getParam('requirement'));
 			
-			foreach ($requirements as $reqIdString) {
-				$reqId = self::getOsidIdFromString($reqIdString);
-				$query->matchTopicId($reqId, true);
-				$this->view->selectedRequirementIds[] = $reqId;
+			foreach ($requirements as $idString) {
+				$id = self::getOsidIdFromString($idString);
+				$query->matchTopicId($id, true);
+				$this->view->selectedRequirementIds[] = $id;
 			}
 			
 			$this->view->searchParams['requirement'] = $requirements;
