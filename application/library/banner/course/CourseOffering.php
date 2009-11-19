@@ -425,7 +425,7 @@ class banner_course_CourseOffering
 				.'-'.$this->as12HourTime($row['SSRMEET_END_TIME'])
 				.' on '.implode(', ', $days);
 			if (count($rows) > 1)
-				$info .= ' at '.$this->row['SSRMEET_BLDG_CODE'].' ' .$this->row['SSRMEET_ROOM_CODE'];
+				$info .= ' at '.$row['SSRMEET_BLDG_CODE'].' ' .$row['SSRMEET_ROOM_CODE'];
 			$parts[] = $info;
 		}
 		
