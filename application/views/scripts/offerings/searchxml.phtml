@@ -163,7 +163,16 @@ if ($section->hasLocation()) {
 }
 print "\n\t\t\t<catalog:schedule>".$this->escape($section->getScheduleInfo())."</catalog:schedule>";
 
-
+$properties = $section->getProperties();
+while ($properties->hasNext()) {
+	$property = $properties->getNextProperty();
+	print "\n\t\t\t<catalog:property>";
+	print "\n\t\t\t\t<catalog:display_name>".$property->getDisplayName()."</catalog:display_name>";
+	print "\n\t\t\t\t<catalog:display_label>".$property->getDisplayLabel()."</catalog:display_label>";
+	print "\n\t\t\t\t<catalog:description><![CDATA[".$property->getDescription()."]]></catalog:description>";
+	print "\n\t\t\t\t<catalog:value><![CDATA[".$property->getValue()."]]></catalog:value>";
+	print "\n\t\t\t</catalog:property>";
+}
 ?>
 
 		</item>
