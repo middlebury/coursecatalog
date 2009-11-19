@@ -114,7 +114,7 @@ class banner_course_CourseOffering
 		$this->addRecordType($this->weeklyScheduleType);
 		$this->addRecordType($this->alternatesType);
 		
-		$this->identifiersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:identifiers');
+		$this->identifiersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
 		$properties = array();
 		$properties[] = new phpkit_Property('Course Reference Number', 'CRN', 'An number that uniquely identifies a section within a term.', $row['SSBSECT_CRN']);
 		$properties[] = new phpkit_Property('Term Code', 'Term Code', 'An code that identifies the term a section is associated with.', $row['SSBSECT_TERM_CODE']);

@@ -23,7 +23,7 @@ $offeringParams = array(
 						'course'		=> null
 					);
 
-print "\n\t<dl>";
+print "\n\t<dl class='section_info'>";
 print "\n\t\t<dt>Term:</dt>";
 print "\n\t\t<dd><a href='".$termUrl."'>".$this->escape($term->getDisplayName())."</a></dd>";
 print "\n\t\t<dt>Location:</dt>";
@@ -130,6 +130,21 @@ if (isset($this->alternates)) {
 }
 
 print "\n\t</dl>";
+
+print "\n\t<dl class='section_properties'>";
+$properties = $this->offering->getProperties();
+while ($properties->hasNext()) {
+	$property = $properties->getNextProperty();
+	print "\n\t\t<dt>";
+	print $property->getDisplayName();
+	if ($property->getDisplayName() != $property->getDisplayLabel())
+		print " (".$property->getDisplayLabel().")";
+	print ":</dt>";
+	print "\n\t\t<dd>".$property->getValue()."</dd>";
+}
+print "\n\t</dl>";
+
+print "\n<div class='clear'></div>";
 
 $course = $this->offering->getCourse();
 $courseParams = array(

@@ -19,6 +19,15 @@
 	float: left;
 }
 
+.section_info {
+	float: left;
+	margin-right: 40px;
+}
+
+.section_properties {
+	float: left;
+}
+
 /*********************************************************
  * Search
  *********************************************************/
