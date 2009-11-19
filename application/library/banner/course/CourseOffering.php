@@ -37,6 +37,8 @@ class banner_course_CourseOffering
 			'SSBSECT_CRSE_TITLE',
 			'SSBSECT_MAX_ENRL',
 			
+			'SSBDESC_TEXT_NARRATIVE',
+			
 			'term_display_label',
 			'STVTERM_START_DATE',
 			
@@ -96,10 +98,16 @@ class banner_course_CourseOffering
 			.$row['SSBSECT_SEQ_NUMB']
 			.'-'.$row['term_display_label']
 			.substr($row['STVTERM_START_DATE'], 2, 2));
-		if (is_null($row['SCBDESC_TEXT_NARRATIVE']))
-			$this->setDescription('');
-		else
-			$this->setDescription(banner_course_Course::convertDescription($row['SCBDESC_TEXT_NARRATIVE']));
+		
+		$description = '';
+		if (!is_null($row['SCBDESC_TEXT_NARRATIVE']))
+			$description = banner_course_Course::convertDescription($row['SCBDESC_TEXT_NARRATIVE']);
+		if (!is_null($row['SSBDESC_TEXT_NARRATIVE'])) {
+			if (strlen($description))
+				$description .= "\n<br/><br/>\n";
+			$description .= banner_course_Course::convertDescription($row['SSBDESC_TEXT_NARRATIVE']);
+		}
+		$this->setDescription($description);
 		
 		$this->setGenusType(new phpkit_type_Type(
 			'urn', 										// namespace
