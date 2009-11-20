@@ -43,9 +43,48 @@ class banner_course_Course
 		$parser = self::getFsmParser();
 		ob_start();
 		$parser->Parse($description,"UNKNOWN");
-		
 		error_reporting($tmp);
-		return nl2br(ob_get_clean());
+		
+		$output = ob_get_clean();
+		$urlRegex = '{
+  \\b
+  # Match the leading part (proto://hostname, or just hostname)
+  (
+    # http://, or https:// leading part
+    (https?)://[-\\w]+(\\.\\w[-\\w]*)+
+  |
+    # or, try to find a hostname with more specific sub-expression
+    (?i: [a-z0-9] (?:[-a-z0-9]*[a-z0-9])? \\. )+ # sub domains
+    # Now ending .com, etc. For these, require lowercase
+    (?-i: com\\b
+        | edu\\b
+        | biz\\b
+        | gov\\b
+        | in(?:t|fo)\\b # .int or .info
+        | mil\\b
+        | net\\b
+        | org\\b
+        | [a-z][a-z]\\.[a-z][a-z]\\b # two-letter country code
+    )
+  )
+
+  # Allow an optional port number
+  ( : \\d+ )?
+
+  # The rest of the URL is optional, and begins with /
+  (
+    /
+    # The rest are heuristics for what seems to work well
+    [^.!,?;"\\\'<>()\[\]\{\}\s\x7F-\\xFF]*
+    (
+      [.!,?]+ [^.!,?;"\\\'<>()\\[\\]\{\\}\s\\x7F-\\xFF]+
+    )*
+  )?
+}ix
+';
+		$output = preg_replace($urlRegex, '<a href="$0">$0</a>', $output);
+		
+		return nl2br($output);
 	}
 	
 	/**
