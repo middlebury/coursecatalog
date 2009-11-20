@@ -84,7 +84,7 @@ class banner_course_Course
 			
 			//In normal state, catch italic start
 			self::$fsmParser->FSM(
-				'/[^\w.]\/\w/',
+				'/[^\w.:\/]\/\w/',
 				'preg_match("/(\W)\/(\w)/", $STRING, $m); echo $m[1]."<em>".$m[2];',
 				'ITALIC',
 				'CDATA');
