@@ -194,15 +194,15 @@ class banner_course_Course
 			
 			//In normal state, catch bold start for whitespace+non-word
 			self::$fsmParser->FSM(
-				'/\s\/[^\s]/',
-				'preg_match("/(\s)\/([^\s])/", $STRING, $m); echo $m[1]."<strong>".$m[2];',
+				'/\s\*[^\s]/',
+				'preg_match("/(\s)\*([^\s])/", $STRING, $m); echo $m[1]."<strong>".$m[2];',
 				'BOLD',
 				'CDATA');
 			
 			// Close out of bold state back to normal for whitespace+non-word
 			self::$fsmParser->FSM(
-				'/[^\s]\/\s/',
-				'preg_match("/([^\s])\/(\s)/", $STRING, $m); echo $m[1]."</strong>".$m[2];',
+				'/[^\s]\*\s/',
+				'preg_match("/([^\s])\*(\s)/", $STRING, $m); echo $m[1]."</strong>".$m[2];',
 				'CDATA',
 				'BOLD');
 				
