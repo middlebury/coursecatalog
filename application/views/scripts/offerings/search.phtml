@@ -197,6 +197,36 @@ while ($this->genusTypes->hasNext()) {
 				</div>
 			</td>
 		</tr>
+		
+		<tr>
+			<th>Level:</th>
+			<td>
+				<div class='help_text'>(Leave all blank for no preference)</div>
+				<div class='requirement_group'>
+<?php
+$i = 0;
+while ($this->levels->hasNext()) {
+	if (!($i % 5))
+		print "\n\t\t\t</div>\n\t\t\t<div class='requirement_group'>";
+	
+	$topic = $this->levels->getNextTopic();
+	print "\n\t\t\t\t<input type='checkbox' name='level[]' value='";
+	print AbstractCatalogController::getStringFromOsidId($topic->getId());
+	print "'";
+	foreach ($this->selectedLevelIds as $selectedId) {
+		if ($topic->getId()->isEqual($selectedId)) {
+			print " checked='checked'";
+			break;
+		}
+	}
+	print "/><label>".$topic->getDisplayName()."</label><br/>";
+	
+	$i++;
+}
+?>
+				</div>
+			</td>
+		</tr>
 
 
 <?php } ?>

@@ -118,6 +118,17 @@ class TopicsController
 	}
 	
 	/**
+	 * List all level topics as a text file with each line being Id|DisplayName
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 1/15/10
+	 */
+	public function listlevelstxtAction () {
+		$this->renderTextList(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level"));
+	}
+	
+	/**
 	 * List all department topics as a text file with each line being Id|DisplayName
 	 * 
 	 * @return void

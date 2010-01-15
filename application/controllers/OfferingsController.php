@@ -40,6 +40,7 @@ class OfferingsController
         $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
         $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
         $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
+        $this->levelType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
         
 		$this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
 	}
@@ -211,6 +212,14 @@ class OfferingsController
 	 	}
 		$this->view->requirements = $topicSearchSession->getTopicsByQuery($topicQuery);
 		
+		$topicQuery = $topicSearchSession->getTopicQuery();
+	 	$topicQuery->matchGenusType($this->levelType, true);
+	 	if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+	 		$record = $topicQuery->getTopicQueryRecord($this->termType);
+	 		$record->matchTermId($termId, true);
+	 	}
+		$this->view->levels = $topicSearchSession->getTopicsByQuery($topicQuery);
+		
 		$this->view->genusTypes = $offeringLookupSession->getCourseOfferingGenusTypes();
 		
 	/*********************************************************
@@ -304,6 +313,22 @@ class OfferingsController
 			}
 			
 			$this->view->searchParams['requirement'] = $requirements;
+		}
+		
+		$this->view->selectedLevelIds = array();
+		if ($this->_getParam('level') && count($this->_getParam('level'))) {
+			if (is_array($this->_getParam('level')))
+				$levels = $this->_getParam('level');
+			else
+				$levels = array($this->_getParam('level'));
+			
+			foreach ($levels as $idString) {
+				$id = self::getOsidIdFromString($idString);
+				$query->matchTopicId($id, true);
+				$this->view->selectedLevelIds[] = $id;
+			}
+			
+			$this->view->searchParams['level'] = $levels;
 		}
 		
 		$this->view->selectedGenusTypes = array();
