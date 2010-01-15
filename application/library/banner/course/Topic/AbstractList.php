@@ -79,6 +79,24 @@ GROUP BY STVATTR_CODE)
 ";
 		}
 		
+		if ($this->includeLevels()) {
+			$subqueries[] = "
+(SELECT 
+	'level' AS type,
+	STVLEVL_CODE AS id,
+	STVLEVL_DESC AS display_name
+FROM 
+	catalog_term
+	INNER JOIN SSBSECT ON term_code = SSBSECT_TERM_CODE 
+	INNER JOIN scrlevl_recent ON (SSBSECT_SUBJ_CODE = SCRLEVL_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCRLEVL_CRSE_NUMB)
+	INNER JOIN STVLEVL ON SCRLEVL_LEVL_CODE = STVLEVL_CODE
+WHERE
+	".$this->getAllLevelWhereTerms()."
+	AND ".$this->getCatalogWhereTerms('level')."
+GROUP BY STVLEVL_CODE)
+";
+		}
+		
 		if ($this->includeDivisions()) {
 			$subqueries[] = "
 (SELECT 
@@ -152,6 +170,8 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 		if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
 			if ($this->includeRequirements())
 				$params[':req_catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
+			if ($this->includeLevels())
+				$params[':level_catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
 			if ($this->includeDepartments())
 				$params[':dep_catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
 			if ($this->includeDivisions())
@@ -171,6 +191,21 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 	 */
 	private function getAllRequirementWhereTerms () {
 		$terms = $this->getRequirementWhereTerms();
+		if (strlen(trim($terms)))
+			return $terms;
+		else
+			return 'TRUE';
+	}
+	
+	/**
+	 * Answer a where clause
+	 * 
+	 * @return string
+	 * @access private
+	 * @since 4/20/09
+	 */
+	private function getAllLevelWhereTerms () {
+		$terms = $this->getLevelWhereTerms();
 		if (strlen(trim($terms)))
 			return $terms;
 		else
@@ -299,6 +334,15 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 	 * @access protected
 	 * @since 4/17/09
 	 */
+	abstract protected function getLevelWhereTerms();
+	
+	/**
+	 * Answer additional where terms. E.g. 'SSRMEET_MON_DAY = true AND SSRMEET_TUE_DAY = false'
+	 * 
+	 * @return array
+	 * @access protected
+	 * @since 4/17/09
+	 */
 	abstract protected function getDivisionWhereTerms();
 	
 	/**
@@ -327,6 +371,15 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 	 * @since 6/12/09
 	 */
 	abstract protected function includeRequirements ();
+	
+	/**
+	 * Answer true if level topics should be included
+	 * 
+	 * @return boolean
+	 * @access protected
+	 * @since 6/12/09
+	 */
+	abstract protected function includeLevels ();
 	
 	/**
 	 * Answer true if division topics should be included

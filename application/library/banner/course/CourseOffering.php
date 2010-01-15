@@ -314,7 +314,8 @@ class banner_course_CourseOffering
 	    	if ($this->row['SCBCRSE_DIVS_CODE'])
 	    		$this->topicIds[] = $this->getOsidIdFromString($this->row['SCBCRSE_DIVS_CODE'], 'topic/division/');
 	    	
-	    	$this->topicIds = array_merge($this->topicIds, $this->session->getRequirementTopicIdsForCourseOffering($this->getId()));
+	    	$this->topicIds = array_merge($this->topicIds, $this->session->getRequirementTopicIdsForCourseOffering($this->getId()),
+	    	$this->session->getLevelTopicIdsForCourseOffering($this->getId()));
 	    }
 	    return new phpkit_id_ArrayIdList($this->topicIds);
     }

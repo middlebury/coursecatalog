@@ -185,6 +185,43 @@ WHERE
     	return $topicIds;
     }
     
+    private static $levelTopics_stmt;
+    /**
+     * Answer the level topic ids for a given course offering id.
+     * 
+     * @param string osid_id_Id $courseOfferingId
+     * @return array of osid_id_Id objects
+     * @access public
+     * @since 4/27/09
+     */
+    public function getLevelTopicIdsForCourseOffering (osid_id_Id $courseOfferingId) {
+    	if (!isset(self::$levelTopics_stmt)) {
+    		$query = "
+SELECT 
+	SCRLEVL_LEVL_CODE
+FROM
+	SSBSECT
+	INNER JOIN scrlevl_recent ON (SSBSECT_SUBJ_CODE = SCRLEVL_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCRLEVL_CRSE_NUMB)
+WHERE
+	SSBSECT_TERM_CODE = :term_code
+	AND SSBSECT_CRN = :crn
+";
+			self::$levelTopics_stmt = $this->manager->getDB()->prepare($query);
+		}
+		
+		$parameters = array(
+				':term_code' => $this->getTermCodeFromOfferingId($courseOfferingId),
+				':crn' => $this->getCrnFromOfferingId($courseOfferingId)
+			);
+		self::$levelTopics_stmt->execute($parameters);
+		$topicIds = array();
+		while ($row = self::$levelTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
+			$topicIds[] = $this->getOsidIdFromString($row['SCRLEVL_LEVL_CODE'], 'topic/level/');
+    	}
+    	self::$levelTopics_stmt->closeCursor();
+    	return $topicIds;
+    }
+    
     private static $meetingRows_stmt;
     /**
      * Answer all meeting rows for a course offering.

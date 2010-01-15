@@ -56,6 +56,7 @@ class banner_course_CourseOffering_Lookup_SessionTest
         $this->chemSubjTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/CHEM');
         $this->dedReqTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/DED');
         $this->sciReqTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/SCI');
+        $this->ugLevelTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/level/UG');
         
         $this->unknownType = new phpkit_type_URNInetType("urn:inet:osid.org:unknown_type");
     	
@@ -437,6 +438,28 @@ class banner_course_CourseOffering_Lookup_SessionTest
         $offerings = $this->session->getCourseOfferingsByTermByTopic($this->termId, $this->dedReqTopicId);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
        	$this->assertEquals(4, $offerings->available());
+       	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
+    }
+    
+    /**
+     * 
+     */
+    public function testLevelGetCourseOfferingsByTopic()
+    {
+        $offerings = $this->session->getCourseOfferingsByTopic($this->ugLevelTopicId);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertEquals(95, $offerings->available());
+       	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
+    }
+
+    /**
+     * 
+     */
+    public function testLevelGetCourseOfferingsByTermByTopic()
+    {
+        $offerings = $this->session->getCourseOfferingsByTermByTopic($this->termId, $this->ugLevelTopicId);
+       	$this->assertType('osid_course_CourseOfferingList', $offerings);
+       	$this->assertEquals(9, $offerings->available());
        	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
     }
 

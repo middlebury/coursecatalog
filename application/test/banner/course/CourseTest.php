@@ -110,7 +110,7 @@ class banner_course_CourseTest
     {
     	$list = $this->object->getTopicIds();
         $this->assertType('osid_id_IdList', $list);
-        $this->assertEquals(3, $list->available());
+        $this->assertEquals(4, $list->available());
         $this->assertType('osid_id_Id', $list->getNextId());
     }
 
@@ -121,7 +121,7 @@ class banner_course_CourseTest
     {
         $list = $this->object->getTopics();
         $this->assertType('osid_course_TopicList', $list);
-        $this->assertEquals(3, $list->available());
+        $this->assertEquals(4, $list->available());
         $this->assertType('osid_course_Topic', $list->getNextTopic());
     }
     
@@ -134,7 +134,8 @@ class banner_course_CourseTest
         $identifiers = array(
         					'topic/subject/PHYS', 
         					'topic/department/PHYS', 
-        					'topic/division/NSCI'
+        					'topic/division/NSCI',
+        					'topic/level/UG'
         				);
         $found = array();
         while ($list->hasNext()) {

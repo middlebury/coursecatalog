@@ -42,6 +42,7 @@ class banner_course_Topic_Search_List
 		$this->divisionWhere = $topicQuery->getDivisionWhereClause();
 		$this->departmentWhere = $topicQuery->getDepartmentWhereClause();
 		$this->subjectWhere = $topicQuery->getSubjectWhereClause();
+		$this->levelWhere = $topicQuery->getLevelWhereClause();
 		
 // 		$searchWhere = $topicSearch->getWhereClause();
 // 		if (strlen($searchWhere)) {
@@ -69,6 +70,20 @@ class banner_course_Topic_Search_List
 					$name = ':req_search_'.$i;
 					$this->parameters[$name] = $val;
 					$this->requirementWhere = preg_replace('/\?/', $name, $this->requirementWhere, 1);
+				} else if (preg_match('/^:[a-z0-9_]+$/i', $i)) {
+					$this->parameters[$i] = $val;
+				} else {
+					throw new osid_OperationFailedException("Invalid parameter name '$i'. Must be an integer or of the ':param_name' form.");
+				}
+			}
+		}
+		
+		if ($this->includeLevels()) {
+			foreach ($topicQuery->getLevelParameters() as $i => $val) {
+				if (is_int($i)) {
+					$name = ':level_search_'.$i;
+					$this->parameters[$name] = $val;
+					$this->levelWhere = preg_replace('/\?/', $name, $this->levelWhere, 1);
 				} else if (preg_match('/^:[a-z0-9_]+$/i', $i)) {
 					$this->parameters[$i] = $val;
 				} else {
@@ -196,6 +211,17 @@ class banner_course_Topic_Search_List
 	 * @access protected
 	 * @since 4/17/09
 	 */
+	protected function getLevelWhereTerms() {
+		return $this->levelWhere;
+	}
+	
+	/**
+	 * Answer additional where terms. E.g. 'SSRMEET_MON_DAY = true AND SSRMEET_TUE_DAY = false'
+	 * 
+	 * @return array
+	 * @access protected
+	 * @since 4/17/09
+	 */
 	protected function getDivisionWhereTerms() {
 		return $this->divisionWhere;
 	}
@@ -231,6 +257,17 @@ class banner_course_Topic_Search_List
 	 */
 	protected function includeRequirements () {
 		return $this->topicQuery->includeRequirements();
+	}
+	
+	/**
+	 * Answer true if level topics should be included
+	 * 
+	 * @return boolean
+	 * @access protected
+	 * @since 6/12/09
+	 */
+	protected function includeLevels () {
+		return $this->topicQuery->includeLevels();
 	}
 	
 	/**

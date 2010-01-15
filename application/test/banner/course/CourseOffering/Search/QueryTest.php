@@ -44,6 +44,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->dedReqTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/DED');
         $this->sciReqTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/SCI');
         $this->natsciDivTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/division/NSCI');
+        $this->ugLevelTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/level/UG');
 		
 		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
@@ -1251,6 +1252,24 @@ class banner_course_CourseOffering_Search_QueryTest
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
 		$this->assertEquals(5, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchLevelTopicId()
+    {
+        $this->object->matchTopicId($this->ugLevelTopicId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('UG', $params[0]);
+        $this->assertFalse(isset($params[1]));
+        
+        $this->assertEquals('(SCRLEVL_LEVL_CODE = ?)', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(95, $courseOfferings->available());
     }
     
     /**

@@ -186,3 +186,33 @@ WHERE
 
 GROUP BY attr1.SCRATTR_SUBJ_CODE , attr1.SCRATTR_CRSE_NUMB, attr1.SCRATTR_ATTR_CODE 
 ORDER BY attr1.SCRATTR_SUBJ_CODE , attr1.SCRATTR_CRSE_NUMB, attr1.SCRATTR_ATTR_CODE;
+
+-- ---------------------------------------------------------
+
+--
+-- This view allows fetching of the most recent level available for a course
+--	
+CREATE OR REPLACE VIEW scrlevl_recent AS
+SELECT 
+	levl1.*
+FROM 
+	SCRLEVL AS levl1
+	
+	-- 'Outer self exclusion join' to fetch only the most recent SCRLEVL row.
+	LEFT JOIN SCRLEVL AS levl2 
+		ON (levl1.SCRLEVL_SUBJ_CODE = levl2.SCRLEVL_SUBJ_CODE 
+			AND levl1.SCRLEVL_CRSE_NUMB = levl2.SCRLEVL_CRSE_NUMB 
+			-- If levl2 is effective after levl1, a join will be successfull and levl2 non-null.
+			-- On the latest levl1, levl2 will be null.
+			AND levl1.SCRLEVL_EFF_TERM < levl2.SCRLEVL_EFF_TERM)
+	
+WHERE
+	
+	-- Clause for the 'outer self exclusion join'
+	levl2.SCRLEVL_SUBJ_CODE IS NULL
+	
+	-- Exclude null entries that are just for overriding levels
+	AND levl1.SCRLEVL_LEVL_CODE IS NOT NULL
+
+GROUP BY levl1.SCRLEVL_SUBJ_CODE , levl1.SCRLEVL_CRSE_NUMB, levl1.SCRLEVL_LEVL_CODE 
+ORDER BY levl1.SCRLEVL_SUBJ_CODE , levl1.SCRLEVL_CRSE_NUMB, levl1.SCRLEVL_LEVL_CODE;

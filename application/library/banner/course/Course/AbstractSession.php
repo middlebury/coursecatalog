@@ -56,6 +56,41 @@ WHERE
     	return $topicIds;
     }
 	
+	private static $levelTopics_stmt;
+    /**
+     * Answer the level topic ids for a given course id.
+     * 
+     * @param string osid_id_Id $courseId
+     * @return array of osid_id_Id objects
+     * @access public
+     * @since 4/27/09
+     */
+    public function getLevelTopicIdsForCourse (osid_id_Id $courseId) {
+    	if (!isset(self::$levelTopics_stmt)) {
+    		$query = "
+SELECT 
+	SCRLEVL_LEVL_CODE
+FROM
+	scrlevl_recent
+WHERE
+	SCRLEVL_SUBJ_CODE = :subj_code
+	AND SCRLEVL_CRSE_NUMB = :crse_numb
+";
+			self::$levelTopics_stmt = $this->manager->getDB()->prepare($query);
+		}
+		
+		$parameters = array(
+				':subj_code' => $this->getSubjectFromCourseId($courseId),
+				':crse_numb' => $this->getNumberFromCourseId($courseId)
+			);
+		self::$levelTopics_stmt->execute($parameters);
+		$topicIds = array();
+		while ($row = self::$levelTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
+			$topicIds[] = $this->getOsidIdFromString($row['SCRLEVL_LEVL_CODE'], 'topic/level/');
+    	}
+    	self::$levelTopics_stmt->closeCursor();
+    	return $topicIds;
+    }
 }
 
 ?>

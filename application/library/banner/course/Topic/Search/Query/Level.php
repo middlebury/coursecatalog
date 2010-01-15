@@ -18,9 +18,9 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class banner_course_Topic_Search_Query
-	implements osid_course_TopicQuery,
-	middlebury_course_Topic_Search_TermQueryRecord
+class banner_course_Topic_Search_Query_Level
+	extends banner_course_AbstractQuery
+	implements osid_course_TopicQuery
 {
 
 	/**
@@ -32,236 +32,16 @@ class banner_course_Topic_Search_Query
 	 * @since 5/20/09
 	 */
 	public function __construct (banner_course_SessionInterface $session) {
-		$this->requirementQuery = new banner_course_Topic_Search_Query_Requirement($session);
-		$this->levelQuery = new banner_course_Topic_Search_Query_Level($session);
-		$this->divisionQuery = new banner_course_Topic_Search_Query_Division($session);
-		$this->departmentQuery = new banner_course_Topic_Search_Query_Department($session);
-		$this->subjectQuery = new banner_course_Topic_Search_Query_Subject($session);
+		parent::__construct($session);
 		
 		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
-		
-		$this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
-		
-		$this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
-        $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
-        $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
-        $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
-        $this->levelType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
-		
-		$this->toInclude = array();
-	}
-	
-	/**
-	 * Answer true if requirement topics should be included
-	 * 
-	 * @return boolean
-	 * @access public
-	 * @since 6/12/09
-	 */
-	public function includeRequirements () {
-		if (!count($this->toInclude))
-			return true;
-		else
-			return in_array('requirement', $this->toInclude);
-	}
-	
-	/**
-	 * Answer true if level topics should be included
-	 * 
-	 * @return boolean
-	 * @access public
-	 * @since 6/12/09
-	 */
-	public function includeLevels () {
-		if (!count($this->toInclude))
-			return true;
-		else
-			return in_array('level', $this->toInclude);
-	}
-	
-	/**
-	 * Answer true if division topics should be included
-	 * 
-	 * @return boolean
-	 * @access public
-	 * @since 6/12/09
-	 */
-	public function includeDivisions () {
-		if (!count($this->toInclude))
-			return true;
-		else
-			return in_array('division', $this->toInclude);
-	}
-	
-	/**
-	 * Answer true if department topics should be included
-	 * 
-	 * @return boolean
-	 * @access public
-	 * @since 6/12/09
-	 */
-	public function includeDepartments () {
-		if (!count($this->toInclude))
-			return true;
-		else
-			return in_array('department', $this->toInclude);
-	}
-	
-	/**
-	 * Answer true if subject topics should be included
-	 * 
-	 * @return boolean
-	 * @access public
-	 * @since 6/12/09
-	 */
-	public function includeSubjects () {
-		if (!count($this->toInclude))
-			return true;
-		else
-			return in_array('subject', $this->toInclude);
-	}
-	
-	/**
-	 * Answer the Where clause for requirements
-	 * 
-	 * @return string
-	 * @access public
-	 * @since 6/12/09
-	 */
-	public function getRequirementWhereClause () {
-		return $this->requirementQuery->getWhereClause();
-	}
-	
-	/**
-	 * Answer the input parameters for requirements
-	 * 
-	 * @return string
-	 * @access public
-	 * @since 6/12/09
-	 */
-	public function getRequirementParameters () {
-		return $this->requirementQuery->getParameters();
-	}
-	
-	/**
-	 * Answer the Where clause for levels
-	 * 
-	 * @return string
-	 * @access public
-	 * @since 6/12/09
-	 */
-	public function getLevelWhereClause () {
-		return $this->levelQuery->getWhereClause();
-	}
-	
-	/**
-	 * Answer the input parameters for levels
-	 * 
-	 * @return string
-	 * @access public
-	 * @since 6/12/09
-	 */
-	public function getLevelParameters () {
-		return $this->levelQuery->getParameters();
-	}
-	
-	/**
-	 * Answer the Where clause for divisions
-	 * 
-	 * @return string
-	 * @access public
-	 * @since 6/12/09
-	 */
-	public function getDivisionWhereClause () {
-		return $this->divisionQuery->getWhereClause();
-	}
-	
-	/**
-	 * Answer the input parameters for divisions
-	 * 
-	 * @return string
-	 * @access public
-	 * @since 6/12/09
-	 */
-	public function getDivisionParameters () {
-		return $this->divisionQuery->getParameters();
-	}
-	
-	/**
-	 * Answer the Where clause for departments
-	 * 
-	 * @return string
-	 * @access public
-	 * @since 6/12/09
-	 */
-	public function getDepartmentWhereClause () {
-		return $this->departmentQuery->getWhereClause();
-	}
-	
-	/**
-	 * Answer the input parameters for departments
-	 * 
-	 * @return string
-	 * @access public
-	 * @since 6/12/09
-	 */
-	public function getDepartmentParameters () {
-		return $this->departmentQuery->getParameters();
-	}
-	
-	/**
-	 * Answer the Where clause for subjects
-	 * 
-	 * @return string
-	 * @access public
-	 * @since 6/12/09
-	 */
-	public function getSubjectWhereClause () {
-		return $this->subjectQuery->getWhereClause();
-	}
-	
-	/**
-	 * Answer the input parameters for subjects
-	 * 
-	 * @return string
-	 * @access public
-	 * @since 6/12/09
-	 */
-	public function getSubjectParameters () {
-		return $this->subjectQuery->getParameters();
+
+		$this->addStringMatchType($this->wildcardStringMatchType);
 	}
 
 /*********************************************************
  * Methods from osid_OsidQuery
  *********************************************************/
- 
- 	/**
-     *  Gets the string matching types supported. A string match type 
-     *  specifies the syntax of the string query, such as matching a word or 
-     *  including a wildcard or regular expression. 
-     *
-     *  @return object osid_type_TypeList a list containing the supported 
-     *          string match types 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function getStringMatchTypes() {
-    	return new phpkit_type_ArrayTypeList(array($this->wildcardStringMatchType));
-    }
-
-
-    /**
-     *  Tests if the given string matching type is supported. 
-     *
-     *  @param object osid_type_Type $searchType a <code> Type </code> 
-     *          indicating a string match type 
-     *  @return boolean <code> true </code> if the given Type is supported, 
-     *          <code> false </code> otherwise 
-     *  @throws osid_NullArgumentException null argument provided 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function supportsStringMatchType(osid_type_Type $searchType) {
-    	return $this->wildcardStringMatchType->isEqual($searchType);
-    }
 
 
     /**
@@ -286,11 +66,7 @@ class banner_course_Topic_Search_Query
      */
     public function matchKeyword($keyword, osid_type_Type $stringMatchType, 
                                  $match) {
-    	$this->requirementQuery->matchKeyword($keyword, $stringMatchType, $match);
-    	$this->levelQuery->matchKeyword($keyword, $stringMatchType, $match);
-    	$this->divisionQuery->matchKeyword($keyword, $stringMatchType, $match);
-    	$this->departmentQuery->matchKeyword($keyword, $stringMatchType, $match);
-    	$this->subjectQuery->matchKeyword($keyword, $stringMatchType, $match);
+    	$this->matchDisplayName($keyword, $stringMatchType, $match);
     }
 
 
@@ -313,13 +89,16 @@ class banner_course_Topic_Search_Query
      *          false </code> 
      *  @compliance mandatory This method must be implemented. 
      */
-    public function matchDisplayName($displayName, 
-                                     osid_type_Type $stringMatchType, $match) {
-    	$this->requirementQuery->matchDisplayName($displayName, $stringMatchType, $match);
-    	$this->levelQuery->matchDisplayName($displayName, $stringMatchType, $match);
-    	$this->divisionQuery->matchDisplayName($displayName, $stringMatchType, $match);
-    	$this->departmentQuery->matchDisplayName($displayName, $stringMatchType, $match);
-    	$this->subjectQuery->matchDisplayName($displayName, $stringMatchType, $match);
+    public function matchDisplayName($displayName, osid_type_Type $stringMatchType, $match) {
+    	if (!is_string($displayName))
+    		throw new osid_InvalidArgumentException("\$displayName '$displayName' must be a string.");
+    	
+        if ($stringMatchType->isEqual($this->wildcardStringMatchType)) {
+        	$displayName = str_replace('*', '%', $displayName);
+        	$this->addClause('displayName', 'STVLEVL_DESC LIKE(?)', array($displayName), $match);
+        } else {
+	    	throw new osid_UnsupportedException("The stringMatchType passed is not supported.");
+	    }
     }
 
 
@@ -342,7 +121,7 @@ class banner_course_Topic_Search_Query
      */
     public function matchDescription($description, 
                                      osid_type_Type $stringMatchType, $match) {
-    	
+    	throw new osid_UnimplementedException;	
     }
 
 
@@ -355,7 +134,7 @@ class banner_course_Topic_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchAnyDescription($match) {
-    	
+    	throw new osid_UnimplementedException;	
     }
 
 
@@ -372,33 +151,7 @@ class banner_course_Topic_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchGenusType(osid_type_Type $genusType, $match) {
-    	if ($this->requirementType->isEqual($genusType))
-			$type = 'requirement';
-    	if ($this->levelType->isEqual($genusType))
-			$type = 'level';
-		if ($this->divisionType->isEqual($genusType))
-			$type = 'division';
-		if ($this->departmentType->isEqual($genusType))
-			$type = 'department';
-		if ($this->subjectType->isEqual($genusType))
-			$type = 'subject';
-		
-		if (!isset($type))
-			return;
-		
-    	if ($match) {
-			$this->toInclude[] = $type;
-    	} else {
-    		if (!count($this->toInclude)) {
-    			$this->toInclude[] = 'requirement';
-    			$this->toInclude[] = 'level';
-    			$this->toInclude[] = 'division';
-    			$this->toInclude[] = 'department';
-    			$this->toInclude[] = 'subject';
-    		}
-    		unset($this->toInclude[array_search($type, $this->toInclude)]);
-    		$this->toInclude = array_values($this->toInclude);
-    	}
+    	throw new osid_UnimplementedException;	
     }
 
 
@@ -416,7 +169,7 @@ class banner_course_Topic_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchParentGenusType(osid_type_Type $genusType, $match) {
-    	$this->matchGenusType($genusType, $match);
+    	throw new osid_UnimplementedException;	
     }
 
 
@@ -434,7 +187,7 @@ class banner_course_Topic_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchRecordType(osid_type_Type $recordType, $match) {
-    	
+    	throw new osid_UnimplementedException;	
     }
 
 
@@ -453,7 +206,7 @@ class banner_course_Topic_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function hasRecordType(osid_type_Type $recordType) {
-    	return $this->termType->isEqual($recordType);
+    	throw new osid_UnimplementedException;	
     }
     
 /*********************************************************
@@ -474,7 +227,7 @@ class banner_course_Topic_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchCourseOfferingId(osid_id_Id $courseOfferingId, $match) {
-    	
+    	throw new osid_UnimplementedException;	
     }
 
 
@@ -486,7 +239,7 @@ class banner_course_Topic_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsCourseOfferingQuery() {
-    	return false;
+    	throw new osid_UnimplementedException;	
     }
 
 
@@ -517,7 +270,7 @@ class banner_course_Topic_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchAnyCourseOffering($match) {
-    	
+    	throw new osid_UnimplementedException;	
     }
 
 
@@ -534,7 +287,7 @@ class banner_course_Topic_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchCourseCatalogId(osid_id_Id $courseCatalogId, $match) {
-    	
+    	throw new osid_UnimplementedException;	
     }
 
 
@@ -546,7 +299,7 @@ class banner_course_Topic_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsCourseCatalogQuery() {
-    	return false;
+    	throw new osid_UnimplementedException;	
     }
 
 
@@ -582,46 +335,10 @@ class banner_course_Topic_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function getTopicQueryRecord(osid_type_Type $topicRecordType) {
-    	if ($this->hasRecordType($topicRecordType))
-    		return $this;
-    	else
-	    	throw new osid_UnsupportedException ('The topic type passed is not supported.');	
+    	throw new osid_UnimplementedException;	
     }
-    
-    /*********************************************************
-     * methods from middlebury_course_Topic_Search_TermQueryRecord
-     *********************************************************/
-     
-    /**
-     *  Tests if the given type is implemented by this record. Other types 
-     *  than that directly indicated by <code> getType() </code> may be 
-     *  supported through an inheritance scheme where the given type specifies 
-     *  a record that is a parent interface of the interface specified by 
-     *  <code> getType(). </code> 
-     *
-     *  @param object osid_type_Type $recordType a type 
-     *  @return boolean <code> true </code> if the given record <code> Type 
-     *          </code> is implemented by this record, <code> false </code> 
-     *          otherwise 
-     *  @throws osid_NullArgumentException <code> recordType </code> is <code> 
-     *          null </code> 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function implementsRecordType(osid_type_Type $recordType) {
-    	return $this->hasRecordType($recordType);
-    }
-    
-    /**
-     *  Gets the <code> TopicQuery </code> from which this record originated. 
-     *
-     *  @return object osid_course_TopicQuery the topic query 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function getTopicQuery() {
-    	return $this;
-    }
-    
-    /**
+	
+	/**
      *  Sets the term <code> Id </code> for this query to match topics in that term
      *
      *  @param object osid_id_Id $termId an term <code> Id </code> 
@@ -632,40 +349,8 @@ class banner_course_Topic_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchTermId(osid_id_Id $termId, $match) {
-    	$this->requirementQuery->matchTermId($termId, $match);
-    	$this->levelQuery->matchTermId($termId, $match);
-    	$this->divisionQuery->matchTermId($termId, $match);
-    	$this->departmentQuery->matchTermId($termId, $match);
-    	$this->subjectQuery->matchTermId($termId, $match);
+    	$this->addClause('term', 'SSBSECT_TERM_CODE = ?', array($this->session->getDatabaseIdString($termId, 'term/')), $match);
     }
-
-
-    /**
-     *  Tests if an <code> TermQuery </code> is available. 
-     *
-     *  @return boolean <code> true </code> if a term query interface is 
-     *          available, <code> false </code> otherwise 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function supportsTermQuery() {
-    	return false;
-    }
-
-
-    /**
-     *  Gets the query interface for an term. Multiple retrievals produce a 
-     *  nested <code> OR </code> term. 
-     *
-     *  @return object types_course_TermQuery the term query 
-     *  @throws osid_UnimplementedException <code> supportsTermQuery() 
-     *          </code> is <code> false </code> 
-     *  @compliance optional This method must be implemented if <code> 
-     *              supportsTermQuery() </code> is <code> true. </code> 
-     */
-    public function getTermQuery() {
-    	throw new osid_UnimplementedException;
-    }
-	
 }
 
 ?>

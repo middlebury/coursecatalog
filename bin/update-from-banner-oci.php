@@ -427,6 +427,36 @@ try {
 	$mysql->rollBack();
 }
 
+// SATURN.SCRLEVL
+ 
+try {
+	print "Updating SCRLEVL\t";
+	$mysql->beginTransaction();
+	$tSCRLEVL = $mysql->prepare("TRUNCATE TABLE SCRLEVL");
+	$tSCRLEVL->execute();
+	
+	$SCRLEVL = oci_parse($banner, "SELECT SCRLEVL_SUBJ_CODE, SCRLEVL_CRSE_NUMB, SCRLEVL_EFF_TERM, SCRLEVL_LEVL_CODE, SCRLEVL_ACTIVITY_DATE FROM SATURN.SCRLEVL");
+	oci_execute($SCRLEVL);
+	
+	$insert = $mysql->prepare("INSERT INTO SCRLEVL (SCRLEVL_SUBJ_CODE, SCRLEVL_CRSE_NUMB, SCRLEVL_EFF_TERM, SCRLEVL_LEVL_CODE, SCRLEVL_ACTIVITY_DATE) VALUES (:SCRLEVL_SUBJ_CODE, :SCRLEVL_CRSE_NUMB, :SCRLEVL_EFF_TERM, :SCRLEVL_LEVL_CODE, :SCRLEVL_ACTIVITY_DATE)");
+	while($row = oci_fetch_object($SCRLEVL)) {
+		$insert->bindValue(":SCRLEVL_SUBJ_CODE", $row->SCRLEVL_SUBJ_CODE);
+		$insert->bindValue(":SCRLEVL_CRSE_NUMB", $row->SCRLEVL_CRSE_NUMB);
+		$insert->bindValue(":SCRLEVL_EFF_TERM", $row->SCRLEVL_EFF_TERM);
+		$insert->bindValue(":SCRLEVL_LEVL_CODE", $row->SCRLEVL_LEVL_CODE);
+		$insert->bindValue(":SCRLEVL_ACTIVITY_DATE", toMySQLDate($row->SCRLEVL_ACTIVITY_DATE));
+		$insert->execute();
+	}
+	
+	$mysql->commit();
+	oci_free_statement($SCRLEVL);
+	print "...\tUpdated SCRLEVL\n";
+} catch(Exception $e) {
+	print $e->__toString()."\n";
+	$exceptions[] = $e->__toString();
+	$mysql->rollBack();
+}
+
 // SATURN.SSBXLST
  
 try {
@@ -1117,6 +1147,38 @@ try {
 	$mysql->commit();
 	oci_free_statement($stvfcnt);
 	print "...\tUpdated STVFCNT\n";
+} catch(Exception $e) {
+	$exceptions[] = $e->__toString();
+	$mysql->rollBack();
+}
+
+// SATURN.STVLEVL
+ 
+try {
+	print "Updating STVLEVL\t";
+	$mysql->beginTransaction();
+	$tstvlevl = $mysql->prepare("TRUNCATE TABLE STVLEVL");
+	$tstvlevl->execute();
+	
+	$stvlevl = oci_parse($banner, "SELECT * FROM SATURN.STVLEVL");
+	oci_execute($stvlevl);
+	
+	$insert = $mysql->prepare("INSERT INTO STVLEVL (STVLEVL_CODE, STVLEVL_DESC, STVLEVL_ACTIVITY_DATE, STVLEVL_ACAD_IND, STVLEVL_CEU_IND, STVLEVL_SYSTEM_REQ_IND, STVLEVL_VR_MSG_NO, STVLEVL_EDI_EQUIV) VALUES (:STVLEVL_CODE, :STVLEVL_DESC, :STVLEVL_ACTIVITY_DATE, :STVLEVL_ACAD_IND, :STVLEVL_CEU_IND, :STVLEVL_SYSTEM_REQ_IND, :STVLEVL_VR_MSG_NO, :STVLEVL_EDI_EQUIV)");
+	while($row = oci_fetch_object($stvlevl)) {
+		$insert->bindValue(":STVLEVL_CODE", $row->STVLEVL_CODE);
+		$insert->bindValue(":STVLEVL_DESC", $row->STVLEVL_DESC);
+		$insert->bindValue(":STVLEVL_ACTIVITY_DATE", toMySQLDate($row->STVLEVL_ACTIVITY_DATE));
+		$insert->bindValue(":STVLEVL_ACAD_IND", $row->STVLEVL_ACAD_IND);
+		$insert->bindValue(":STVLEVL_CEU_IND", $row->STVLEVL_CEU_IND);
+		$insert->bindValue(":STVLEVL_SYSTEM_REQ_IND", $row->STVLEVL_SYSTEM_REQ_IND);
+		$insert->bindValue(":STVLEVL_VR_MSG_NO", $row->STVLEVL_VR_MSG_NO);
+		$insert->bindValue(":STVLEVL_EDI_EQUIV", $row->STVLEVL_EDI_EQUIV);
+		$insert->execute();
+	}
+	
+	$mysql->commit();
+	oci_free_statement($stvlevl);
+	print "...\tUpdated STVLEVL\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();

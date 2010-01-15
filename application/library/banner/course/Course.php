@@ -315,7 +315,7 @@ class banner_course_Course
      */
     public function getTopicIds() {
     	if (!isset($this->allTopicIds)) {
-    		$this->allTopicIds = array_merge($this->topicIds, $this->session->getRequirementTopicIdsForCourse($this->getId()));
+    		$this->allTopicIds = array_merge($this->topicIds, $this->session->getRequirementTopicIdsForCourse($this->getId()), $this->session->getLevelTopicIdsForCourse($this->getId()));
     	}
     	return new phpkit_id_ArrayIdList($this->allTopicIds);
     }

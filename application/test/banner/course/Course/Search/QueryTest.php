@@ -46,6 +46,7 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
         $this->deptTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/PHYS');
         $this->subjTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/CHEM');
         $this->divTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/division/NSCI');
+        $this->levelTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/level/UG');
         
         $this->unknownType = new phpkit_type_URNInetType("urn:inet:osid.org:unknown_type");
     	
@@ -820,6 +821,18 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
         $courses = $this->session->getCoursesByQuery($this->object);
 // 		print $courses->debug();
 		$this->assertEquals(3, $courses->available());
+    }
+    
+    /**
+     *
+     */
+    public function testMatchLevelTopicId() {
+    	$record = $this->object->getCourseQueryRecord($this->topicQueryRecordType);
+        $record->matchTopicId($this->levelTopicId, true);
+        
+        $courses = $this->session->getCoursesByQuery($this->object);
+// 		print $courses->debug();
+		$this->assertEquals(4, $courses->available());
     }
     
     /**

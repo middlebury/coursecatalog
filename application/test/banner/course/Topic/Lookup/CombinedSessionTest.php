@@ -385,7 +385,7 @@ class banner_course_Topic_Lookup_CombinedSessionTest
         $topics = $this->session->getTopics();
         $this->assertType('osid_course_TopicList', $topics);
         $this->assertTrue($topics->hasNext());
-        $this->assertEquals(12, $topics->available());
+        $this->assertEquals(13, $topics->available());
         $this->assertType('osid_course_Topic', $topics->getNextTopic());
         $this->assertType('osid_course_Topic', $topics->getNextTopic());
     }

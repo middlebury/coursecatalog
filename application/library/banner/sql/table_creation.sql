@@ -264,6 +264,22 @@ CREATE TABLE IF NOT EXISTS `SCREQIV` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `SCRLEVL`
+--
+
+CREATE TABLE IF NOT EXISTS `SCRLEVL` (
+  `SCRLEVL_SUBJ_CODE` varchar(4) NOT NULL COMMENT 'This field defines the subject area of the course.',
+  `SCRLEVL_CRSE_NUMB` varchar(5) NOT NULL COMMENT 'This field defines the course number associated with the subject for the course.',
+  `SCRLEVL_EFF_TERM` varchar(6) NOT NULL COMMENT 'This field identifies the term this version of the course level becomes effective.',
+  `SCRLEVL_LEVL_CODE` varchar(2) NOT NULL COMMENT 'This field is used to authorize the level for which a course may be offered.    Each course must be authorized to be offered for at least one level.  A         course can be authorized for an unlimited number of levels.',
+  `SCRLEVL_ACTIVITY_DATE` date NOT NULL COMMENT 'This field specifies the most current date record was created or updated.',
+  PRIMARY KEY  (`SCRLEVL_SUBJ_CODE`,`SCRLEVL_CRSE_NUMB`,`SCRLEVL_EFF_TERM`,`SCRLEVL_LEVL_CODE`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Course Level Repeating Table';
+
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `SIRASGN`
 --
 
@@ -659,6 +675,26 @@ CREATE TABLE IF NOT EXISTS `STVFCNT` (
   `STVFCNT_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'The activity date',
   PRIMARY KEY  (`STVFCNT_CODE`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Faculty Contract Code Validation Table';
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `STVLEVL`
+--
+
+CREATE TABLE IF NOT EXISTS `STVLEVL` (
+  `STVLEVL_CODE` varchar(2) NOT NULL COMMENT 'This field identifies the student level code referenced in the Catalog, Recruiting, Admissions, Gen Student, Registration, and Acad Hist Modules. Required value: 00 - Level Not Declared.',
+  `STVLEVL_DESC` varchar(30) NOT NULL COMMENT 'This field specifies the student level (e.g. undergraduate, graduate, professional) associated with the student level code.',
+  `STVLEVL_ACTIVITY_DATE` date NOT NULL COMMENT 'This field identifies the most recent date a record was created or updated.',
+  `STVLEVL_ACAD_IND` varchar(1) default NULL COMMENT 'This field is not currently in use.',
+  `STVLEVL_CEU_IND` varchar(1) NOT NULL COMMENT 'Continuing Education Indicator.',
+  `STVLEVL_SYSTEM_REQ_IND` varchar(1) default NULL COMMENT 'System Required Indicator',
+  `STVLEVL_VR_MSG_NO` int(6) default NULL COMMENT 'The Voice Response message number assigned to the recorded message that describes the student level.',
+  `STVLEVL_EDI_EQUIV` varchar(2) default NULL COMMENT 'EDI Level Code',
+  PRIMARY KEY  (`STVLEVL_CODE`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Student Level Validation Table';
+
 
 -- --------------------------------------------------------
 

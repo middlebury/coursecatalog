@@ -190,6 +190,8 @@ class banner_course_Topic_Lookup_Session
    				return $this->getDivisionTopic($topicId);
    			case 'requirement':
    				return $this->getRequirementTopic($topicId);
+   			case 'level':
+   				return $this->getLevelTopic($topicId);
    			default:
    				throw new osid_NotFoundException('No topic found with category '.$type);
    		}
@@ -205,7 +207,7 @@ class banner_course_Topic_Lookup_Session
      */
     public function getTopicType (osid_id_Id $topicId) {
     	$string = $this->getDatabaseIdString($topicId, 'topic/');
-    	if (!preg_match('#(subject|department|division|requirement)/.+#', $string, $matches))
+    	if (!preg_match('#(subject|department|division|requirement|level)/.+#', $string, $matches))
     		throw new osid_NotFoundException('Could not turn "'.$string.'" into a topic type.');
     	
     	return $matches[1];
@@ -221,7 +223,7 @@ class banner_course_Topic_Lookup_Session
      */
     public function getTopicValue (osid_id_Id $topicId) {
     	$string = $this->getDatabaseIdString($topicId, 'topic/');
-    	if (!preg_match('#(subject|department|division|requirement)/(.+)#', $string, $matches))
+    	if (!preg_match('#(subject|department|division|requirement|level)/(.+)#', $string, $matches))
     		throw new osid_NotFoundException('Could not turn "'.$string.'" into a topic type.');
     	
     	return $matches[2];
@@ -632,6 +634,112 @@ GROUP BY STVATTR_CODE
 		return new phpkit_course_ArrayTopicList($topics);
     }
     
+    private static $getLevelTopic_stmts = array();
+    /**
+     * Answer a level topic by id
+     * 
+     * @param osid_id_Id $topicId
+     * @return osid_course_Topic
+     * @access private
+     * @since 4/24/09
+     */
+    private function getLevelTopic (osid_id_Id $topicId) {
+    	$catalogWhere = $this->getCatalogWhereTerms();
+    	if (!isset(self::$getLevelTopic_stmts[$catalogWhere])) {
+	    	$query =
+"SELECT 
+    STVLEVL_CODE,
+	STVLEVL_DESC
+FROM 
+	SCBCRSE
+	INNER JOIN scrlevl_recent ON (SCBCRSE_SUBJ_CODE = SCRLEVL_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SCRLEVL_CRSE_NUMB)
+	INNER JOIN STVLEVL ON SCRLEVL_LEVL_CODE = STVLEVL_CODE
+WHERE
+	SCRLEVL_LEVL_CODE = :level_code
+	AND SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms()."
+	)
+
+GROUP BY STVLEVL_CODE
+";
+			self::$getLevelTopic_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
+		}
+		
+		$parameters = array_merge(
+			array(
+				':level_code' => $this->getDatabaseIdString($topicId, 'topic/level/')
+			),
+			$this->getCatalogParameters());
+		self::$getLevelTopic_stmts[$catalogWhere]->execute($parameters);
+		$row = self::$getLevelTopic_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
+		self::$getLevelTopic_stmts[$catalogWhere]->closeCursor();
+		
+		if (!$row['STVLEVL_CODE'])
+			throw new osid_NotFoundException("Could not find a topic matching the level code ".$this->getDatabaseIdString($topicId, 'topic/level/').".");
+		
+		return new banner_course_Topic(
+					$this->getOsidIdFromString($row['STVLEVL_CODE'], 'topic/level/'),
+					$row['STVLEVL_DESC'],
+					'',
+					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level")
+			);
+    }
+    
+    private static $getLevelTopics_stmts = array();
+    /**
+     * Answer all of the level topics
+     * 
+     * @return osid_course_TopicList
+     * @access private
+     * @since 4/24/09
+     */
+    private function getLevelTopics () {
+    	$catalogWhere = $this->getCatalogWhereTerms();
+    	if (!isset(self::$getLevelTopics_stmts[$catalogWhere])) {
+	    	$query =
+"SELECT 
+    STVLEVL_CODE,
+	STVLEVL_DESC
+FROM 
+	SCBCRSE
+	INNER JOIN scrlevl_recent ON (SCBCRSE_SUBJ_CODE = SCRLEVL_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SCRLEVL_CRSE_NUMB)
+	INNER JOIN STVLEVL ON SCRLEVL_LEVL_CODE = STVLEVL_CODE
+WHERE
+	SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms()."
+	)
+
+GROUP BY STVLEVL_CODE
+";
+			self::$getLevelTopics_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
+		}
+		
+		$parameters = $this->getCatalogParameters();
+		self::$getLevelTopics_stmts[$catalogWhere]->execute($parameters);
+				
+		$topics = array();
+		while ($row = self::$getLevelTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
+			$topics[] = new banner_course_Topic(
+						$this->getOsidIdFromString($row['STVLEVL_CODE'], 'topic/level/'),
+						$row['STVLEVL_DESC'],
+						'',
+						new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level")
+				);
+		}
+		self::$getLevelTopics_stmts[$catalogWhere]->closeCursor();
+		return new phpkit_course_ArrayTopicList($topics);
+    }
+    
     /**
 	 * Answer the catalog where terms
 	 * 
@@ -736,6 +844,8 @@ GROUP BY STVATTR_CODE
    				return $this->getDivisionTopics();
    			case 'genera:topic/requirement':
    				return $this->getRequirementTopics();
+   			case 'genera:topic/level':
+   				return $this->getLevelTopics();
    			default:
    				return new phpkit_EmptyList('osid_course_TopicList');
    		}
@@ -806,6 +916,7 @@ GROUP BY STVATTR_CODE
     	$topicList->addList($this->getDepartmentTopics());
     	$topicList->addList($this->getDivisionTopics());
     	$topicList->addList($this->getRequirementTopics());
+    	$topicList->addList($this->getLevelTopics());
     	return $topicList;
     }
 

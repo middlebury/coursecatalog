@@ -57,6 +57,8 @@ class banner_course_CourseOffering_Lookup_ByTopicList
    				return array(':division_code' => $value);
    			case 'requirement':
    				return array(':requirement_code' => $value);
+   			case 'level':
+   				return array(':level_code' => $value);
    			default:
    				throw new osid_NotFoundException('No topic found with category '.$type);
 		}
@@ -80,6 +82,8 @@ class banner_course_CourseOffering_Lookup_ByTopicList
    				return 'SCBCRSE_DIVS_CODE = :division_code';
    			case 'requirement':
    				return 'SSRATTR_ATTR_CODE = :requirement_code';
+   			case 'level':
+   				return 'SCRLEVL_LEVL_CODE = :level_code';
    			default:
    				throw new osid_NotFoundException('No topic found with category '.$type);
 		}
@@ -95,6 +99,8 @@ class banner_course_CourseOffering_Lookup_ByTopicList
 	protected function getAdditionalTableJoins () {
 		if ('requirement' == $this->session->getTopicLookupSession()->getTopicType($this->topicId))
 			return 'LEFT JOIN SSRATTR ON (SSBSECT_TERM_CODE = SSRATTR_TERM_CODE AND SSBSECT_CRN = SSRATTR_CRN)';
+		else if ('level' == $this->session->getTopicLookupSession()->getTopicType($this->topicId))
+			return 'LEFT JOIN scrlevl_recent ON (SSBSECT_SUBJ_CODE = SCRLEVL_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCRLEVL_CRSE_NUMB)';
 		else
 			return '';
 	}

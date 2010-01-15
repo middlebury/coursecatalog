@@ -615,6 +615,10 @@ class banner_course_Course_Search_Query
    				$this->addClause('requirement_topic_id', 'SCRATTR_ATTR_CODE = ?', array($value), $match);
    				$this->addTableJoin('LEFT JOIN scrattr_recent ON (SCBCRSE_SUBJ_CODE = SCRATTR_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SCRATTR_CRSE_NUMB)');
    				return;
+   			case 'level':
+   				$this->addClause('level_topic_id', 'SCRLEVL_LEVL_CODE = ?', array($value), $match);
+   				$this->addTableJoin('LEFT JOIN scrlevl_recent ON (SCBCRSE_SUBJ_CODE = SCRLEVL_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SCRLEVL_CRSE_NUMB)');
+   				return;
    			default:
    				$this->addClause('topic_id', 'FALSE', array(), $match);
 		}
