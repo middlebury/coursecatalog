@@ -162,7 +162,7 @@ class CoursesController
 		print '<?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0">
 	<channel>
-		<title>Course Search: "'.$keywords.'"</title>
+		<title>Course Search: "'.htmlspecialchars($keywords).'"</title>
 		<link>'.$searchUrl.'</link>
 		<description></description>
 		<lastBuildDate>'.date('r').'</lastBuildDate>
@@ -201,7 +201,7 @@ class CoursesController
 			print "\n\t\t<item>";
 			
 			print "\n\t\t\t<title>";
-			print $course->getDisplayName().' - '.$course->getTitle();
+			print htmlspecialchars($course->getDisplayName().' - '.$course->getTitle());
 			print "</title>";
 			
 			print "\n\t\t\t<link>";
@@ -379,7 +379,7 @@ class CoursesController
 		print '<?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
 	<channel>
-		<title>'.$title.'</title>
+		<title>'.htmlspecialchars($title).'</title>
 		<link>'.$url.'</link>
 		<description></description>
 		<lastBuildDate>'.date('r').'</lastBuildDate>
