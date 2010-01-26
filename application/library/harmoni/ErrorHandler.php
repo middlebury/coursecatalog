@@ -239,7 +239,7 @@ class harmoni_ErrorHandler {
 		
 		// Only print Exceptions to the screen if the display_errors directive instructs
 		// us to do so.
-		if (ini_get('display_errors') === true || ini_get('display_errors') === 'On' 
+		if (ini_get('display_errors') === true || strtolower(ini_get('display_errors')) === 'on' 
 			|| ini_get('display_errors') === 'stdout' || ini_get('display_errors') === '1')
 		{
 			self::printException($exception);
