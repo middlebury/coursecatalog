@@ -32,8 +32,8 @@ print "\n\t\t<dd>";
 print $this->escape($term->getDisplayName());
 // print "</a>";
 print "\n\t\t</dd>";
-print "\n\t\t<dt>Location:</dt>";
 if ($this->offering->hasLocation()) {
+	print "\n\t\t<dt>Location:</dt>";
 	print "\n\t\t<dd>";
 	$locationResource = $this->offering->getLocation();
 	$resourceParams['resource'] = AbstractCatalogController::getStringFromOsidId($locationResource->getId());
@@ -43,7 +43,8 @@ if ($this->offering->hasLocation()) {
 	if ($locationResource->getDescription())
 		print "<span class='location_description'>(".$this->escape($locationResource->getDescription()).")</span>";
 	print "\n\t\t</dd>";
-} else {
+} else if ($this->offering->getLocationInfo()) {
+	print "\n\t\t<dt>Location:</dt>";
 	print "\n\t\t<dd>".$this->escape($this->offering->getLocationInfo())."</dd>";
 }
 print "\n\t\t<dt>Schedule:</dt>";

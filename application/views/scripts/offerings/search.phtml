@@ -381,8 +381,8 @@ if ($section->hasRecordType($instructorsType)) {
 	print "</dd>";
 }
 
-print "\n\t\t<dt>Location:</dt>";
 if ($section->hasLocation()) {
+	print "\n\t\t<dt>Location:</dt>";
 	try {
 		$locationResource = $section->getLocation();
 		print "\n\t\t<dd>";
@@ -396,9 +396,11 @@ if ($section->hasLocation()) {
 	} catch (osid_OperationFailedException $e) {
 		print "\n\t\t<dd>".$this->escape($section->getLocationInfo())."</dd>";
 	}
-} else {
+} else if ($section->getLocationInfo()) {
+	print "\n\t\t<dt>Location:</dt>";
 	print "\n\t\t<dd>".$this->escape($section->getLocationInfo())."</dd>";
 }
+
 print "\n\t\t<dt>Schedule:</dt>";
 print "\n\t\t<dd>".nl2br($this->escape($section->getScheduleInfo()))."</dd>";
 

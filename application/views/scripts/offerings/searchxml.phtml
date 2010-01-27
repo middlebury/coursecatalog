@@ -158,7 +158,7 @@ if ($section->hasLocation()) {
 	} catch (osid_OperationFailedException $e) {
 		print "\n\t\t\t<catalog:location>".$this->escape($section->getLocationInfo())."</catalog:location>";
 	}
-} else {
+} else if ($section->getLocationInfo()) {
 	print "\n\t\t\t<catalog:location>".$this->escape($section->getLocationInfo())."</catalog:location>";
 }
 print "\n\t\t\t<catalog:schedule>".$this->escape($section->getScheduleInfo())."</catalog:schedule>";

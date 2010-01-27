@@ -355,7 +355,7 @@ class banner_course_CourseOffering
     	if (count($parts))
 	    	return implode(", ", $parts);
 	    else
-	    	return "Unknown";
+	    	return "";
     }
 
 
