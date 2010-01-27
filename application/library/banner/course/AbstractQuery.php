@@ -23,6 +23,7 @@ abstract class banner_course_AbstractQuery {
 	private $additionalTableJoins;
 	private $stringMatchTypes;
 	protected $session;
+	private $recordTypes;
 	
 	
 	/**
@@ -40,7 +41,7 @@ abstract class banner_course_AbstractQuery {
 		$this->parameters = array();
 		$this->additionalTableJoins = array();
 		$this->stringMatchTypes = array();
-		
+		$this->recordTypes = array();		
 	}
 	
 	/**
@@ -215,6 +216,63 @@ abstract class banner_course_AbstractQuery {
     	return false;
     }
 	
+	
+	/**
+	 * Add a record type to our supported list
+	 * 
+	 * @param osid_type_Type $recordType
+	 * @return void
+	 * @access protected
+	 * @since 10/14/09
+	 */
+	protected function addSupportedRecordType (osid_type_Type $recordType) {
+		$this->recordTypes[] = $recordType;
+	}
+	
+	/**
+     *  Tests if this search order supports the given record <code> Type. 
+     *  </code> The given record type may be supported by the object through 
+     *  interface/type inheritence. This method should be checked before 
+     *  retrieving the record interface. 
+     *
+     *  @param object osid_type_Type $recordType a type 
+     *  @return boolean <code> true </code> if an order record of the given 
+     *          record <code> Type </code> is available, <code> false </code> 
+     *          otherwise 
+     *  @throws osid_NullArgumentException <code> recordType </code> is <code> 
+     *          null </code> 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function hasRecordType(osid_type_Type $recordType) {
+    	foreach ($this->recordTypes as $type) {
+    		if ($type->isEqual($recordType))
+    			return true;
+    	}
+    	return false;
+    }
+    
+/*********************************************************
+ * Methods From osid_course_*QueryRecord
+ *********************************************************/
+    
+    /**
+     *  Tests if the given type is implemented by this record. Other types 
+     *  than that directly indicated by <code> getType() </code> may be 
+     *  supported through an inheritance scheme where the given type specifies 
+     *  a record that is a parent interface of the interface specified by 
+     *  <code> getType(). </code> 
+     *
+     *  @param object osid_type_Type $recordType a type 
+     *  @return boolean <code> true </code> if the given record <code> Type 
+     *          </code> is implemented by this record, <code> false </code> 
+     *          otherwise 
+     *  @throws osid_NullArgumentException <code> recordType </code> is <code> 
+     *          null </code> 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function implementsRecordType(osid_type_Type $recordType) {
+    	return $this->hasRecordType($recordType);
+    }
 }
 
 ?>

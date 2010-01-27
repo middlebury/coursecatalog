@@ -37,6 +37,7 @@ class banner_course_CourseOfferingTest
     	$this->physCourseId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
     	$this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/90143');
     	$this->geolOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/92418');
+    	$this->geogOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/92443');
     	$this->chemOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200520/20022');
     	$this->manager = $this->sharedFixture['CourseManager'];
         $this->session = $this->manager->getCourseOfferingLookupSessionForCatalog($this->mcugCatalogId);
@@ -78,6 +79,60 @@ class banner_course_CourseOfferingTest
     {
         $this->assertType('string', $this->object->getTitle());
         $this->assertEquals('Relativity And Quantum Physics', $this->object->getTitle());
+    }
+    
+    /**
+     * Test that the title of the chemistry Course has the more recent version of the title.
+     * Effective 200390 and 200490, the title is "Fundamentals of Chemistry II", however
+     * effective 200520, the title changed to "General Chemistry II"
+     */
+    public function testEffectiveDateTitle()
+    {
+    	$chem200390 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200390/90085');
+    	$chem200420 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200420/20073');
+    	$chem200490 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200490/90066');
+    	$chem200520 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200520/20019');
+    	$chem200590 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200590/90056');
+    	$chem200620 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200620/20017');
+    	$chem200890 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/90040');
+
+        $this->assertEquals('Fundamentals of Chemistry II', $this->session->getCourseOffering($chem200390)->getTitle());
+        $this->assertEquals('Fundamentals of Chemistry II', $this->session->getCourseOffering($chem200420)->getTitle());
+        $this->assertEquals('Fundamentals of Chemistry II', $this->session->getCourseOffering($chem200490)->getTitle());
+        $this->assertEquals('General Chemistry II', $this->session->getCourseOffering($chem200520)->getTitle());
+        $this->assertEquals('General Chemistry II', $this->session->getCourseOffering($chem200590)->getTitle());
+        $this->assertEquals('General Chemistry II', $this->session->getCourseOffering($chem200620)->getTitle());
+        $this->assertEquals('General Chemistry II', $this->session->getCourseOffering($chem200890)->getTitle());
+    }
+    
+	public function testGetPhysDescription()
+	{
+		$this->assertEquals("This course probes a number of areas for which classical physics has provided no adequate explanations. Topics covered include Einstein's special relativity, quantization of atomic energy levels and photons, the atomic models of Rutherford and Bohr, and wave-particle duality. (PHYS 0109, MATH 0122, PHYS 0110 concurrent or prior) 3 hrs. lect.", $this->object->getDescription());
+	}
+	
+	/**
+     * Test that the title of the chemistry Course has the more recent version of the description.
+     * Effective 200490, the a decription exists. Prior to that there is no description.
+     */
+    public function testEffectiveDateDescription()
+    {
+    	$chem200390 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200390/90085');
+    	$chem200420 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200420/20073');
+    	$chem200490 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200490/90066');
+    	$chem200520 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200520/20019');
+    	$chem200590 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200590/90056');
+    	$chem200620 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200620/20017');
+    	$chem200890 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/90040');
+    	
+    	$description = "Major topics include chemical kinetics, chemical equilibrium, acid-base equilibria, chemical thermodynamics, electrochemistry, descriptive inorganic chemistry, and coordination chemistry. Lab work includes inorganic synthesis, qualitative analysis, and quantitative analysis in kinetics, acid-base and redox chemistry. (CHEM 0103 or by waiver) 3 hrs. lect., 3 hrs. lab, 1 hr. disc.";
+
+        $this->assertEquals('', $this->session->getCourseOffering($chem200390)->getDescription());
+        $this->assertEquals('', $this->session->getCourseOffering($chem200420)->getDescription());
+        $this->assertEquals($description, $this->session->getCourseOffering($chem200490)->getDescription());
+        $this->assertEquals($description, $this->session->getCourseOffering($chem200520)->getDescription());
+        $this->assertEquals($description, $this->session->getCourseOffering($chem200590)->getDescription());
+        $this->assertEquals($description, $this->session->getCourseOffering($chem200620)->getDescription());
+        $this->assertEquals($description, $this->session->getCourseOffering($chem200890)->getDescription());
     }
     
     /**
@@ -155,7 +210,7 @@ class banner_course_CourseOfferingTest
     {
     	$list = $this->object->getTopicIds();
         $this->assertType('osid_id_IdList', $list);
-        $this->assertEquals(5, $list->available());
+        $this->assertEquals(6, $list->available());
         $this->assertType('osid_id_Id', $list->getNextId());
     }
 
@@ -166,7 +221,7 @@ class banner_course_CourseOfferingTest
     {
         $list = $this->object->getTopics();
         $this->assertType('osid_course_TopicList', $list);
-        $this->assertEquals(5, $list->available());
+        $this->assertEquals(6, $list->available());
         $this->assertType('osid_course_Topic', $list->getNextTopic());
     }
     
@@ -181,7 +236,8 @@ class banner_course_CourseOfferingTest
         					'topic/department/PHYS', 
         					'topic/division/NSCI',
         					'topic/requirement/DED',
-        					'topic/requirement/SCI'
+        					'topic/requirement/SCI',
+        					'topic/level/UG'
         				);
         $found = array();
         while ($list->hasNext()) {
@@ -508,6 +564,24 @@ class banner_course_CourseOfferingTest
     	$alternates = $record->getAlternates();
     	$this->assertType('osid_course_CourseOfferingList', $alternates);
     	$this->assertEquals(1, $alternates->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testGeogIsPrimary () {
+    	$offering = $this->session->getCourseOffering($this->geogOfferingId);
+    	$record = $offering->getCourseOfferingRecord($this->alternatesType);
+    	$this->assertFalse($record->isPrimary());
+    }
+    
+    /**
+     * 
+     */
+    public function testGeolIsPrimary () {
+    	$offering = $this->session->getCourseOffering($this->geolOfferingId);
+    	$record = $offering->getCourseOfferingRecord($this->alternatesType);
+    	$this->assertTrue($record->isPrimary());
     }
 
 /*********************************************************

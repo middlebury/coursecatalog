@@ -56,7 +56,8 @@ class banner_course_CourseOffering_Search_OrderTest
     {
     	$this->search->orderCourseOfferingResults($this->object);
     	$results = $this->session->getCourseOfferingsBySearch($this->query, $this->search);
-        $this->assertEquals(15, $results->getResultSize());
+//     	print_r($results->debug());
+        $this->assertEquals(8, $results->getResultSize());
     }
 
     /**
@@ -84,10 +85,10 @@ class banner_course_CourseOffering_Search_OrderTest
     {
         $this->object->orderByTitle();
         $this->object->ascend();
-        $this->assertEquals('ORDER BY sectitle_title ASC', $this->object->getOrderByClause());
+        $this->assertEquals('ORDER BY section_title ASC', $this->object->getOrderByClause());
         $this->object->descend();
         $this->object->ascend();
-        $this->assertEquals('ORDER BY sectitle_title ASC', $this->object->getOrderByClause());
+        $this->assertEquals('ORDER BY section_title ASC', $this->object->getOrderByClause());
         
     }
 
@@ -98,10 +99,10 @@ class banner_course_CourseOffering_Search_OrderTest
     {
         $this->object->orderByTitle();
         $this->object->descend();
-        $this->assertEquals('ORDER BY sectitle_title DESC', $this->object->getOrderByClause());
+        $this->assertEquals('ORDER BY section_title DESC', $this->object->getOrderByClause());
         $this->object->ascend();
         $this->object->descend();
-        $this->assertEquals('ORDER BY sectitle_title DESC', $this->object->getOrderByClause());
+        $this->assertEquals('ORDER BY section_title DESC', $this->object->getOrderByClause());
     }
 
     /**
@@ -180,8 +181,7 @@ class banner_course_CourseOffering_Search_OrderTest
     {
         $this->object->orderByTitle();
         $this->object->descend();
-        $this->assertEquals('ORDER BY sectitle_title DESC', $this->object->getOrderByClause());
-        $this->assertEquals(1, count($this->object->getAdditionalTableJoins()));
+        $this->assertEquals('ORDER BY section_title DESC', $this->object->getOrderByClause());
         
     }
 

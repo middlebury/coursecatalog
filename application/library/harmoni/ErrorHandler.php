@@ -239,7 +239,7 @@ class harmoni_ErrorHandler {
 		
 		// Only print Exceptions to the screen if the display_errors directive instructs
 		// us to do so.
-		if (ini_get('display_errors') === true || ini_get('display_errors') === 'On' 
+		if (ini_get('display_errors') === true || strtolower(ini_get('display_errors')) === 'on' 
 			|| ini_get('display_errors') === 'stdout' || ini_get('display_errors') === '1')
 		{
 			self::printException($exception);
@@ -258,9 +258,7 @@ class harmoni_ErrorHandler {
 	 * @since 1/27/09
 	 * @static
 	 */
-	public static function printException (Exception $exception) {
-		$priority = 'Uncaught Exception';
-		
+	public static function printException (Exception $exception, $priority = 'Uncaught Exception') {		
 		if (method_exists($exception, "getType") && $exception->getType())
 			$type = $exception->getType();
 		else
@@ -271,8 +269,13 @@ class harmoni_ErrorHandler {
 				self::printHtmlMessage($priority.' of type', $type, $exception->getHtmlMessage(), $exception->getTrace(), $exception->getCode());
 			else
 				self::printMessage($priority.' of type', $type, $exception->getMessage(), $exception->getTrace(), $exception->getCode());
-		} else
+		} else {
 			self::printPlainTextMessage($priority.' of type', $type, $exception->getMessage(), $exception->getTrace(), $exception->getCode());
+		}
+		
+		if (method_exists($exception, 'getPrevious') && is_object($exception->getPrevious())) {
+			self::printException($exception->getPrevious(), 'Caused by Exception');
+		}
 	}
 	
 	/**

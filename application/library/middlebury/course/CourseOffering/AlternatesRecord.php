@@ -72,5 +72,15 @@ interface middlebury_course_CourseOffering_AlternatesRecord
      *  @throws osid_PermissionDeniedException authorization failure 
      */
     public function getAlternates();
-
+	
+	/**
+	 * Answer <code> true </code> if this course is the primary version in a group of
+	 * alternates.
+	 * 
+	 *  @return boolean
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+	 */
+	public function isPrimary ();
 }

@@ -35,9 +35,12 @@ class banner_course_CourseTest
     {
     	$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
     	$this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
+    	$this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHEM0104');
     	$this->manager = $this->sharedFixture['CourseManager'];
         $this->session = $this->manager->getCourseLookupSessionForCatalog($this->mcugId);
         $this->object = $this->session->getCourse($this->physId);
+        
+        $this->termRecordType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
     }
 
     /**
@@ -57,6 +60,23 @@ class banner_course_CourseTest
     public function testGetTitle()
     {
         $this->assertType('string', $this->object->getTitle());
+    }
+    
+    
+    /**
+     * Test that the title of the chemistry Course has the more recent version of the title.
+     * Effective 200390 and 200490, the title is "Fundamentals of Chemistry II", however
+     * effective 200520, the title changed to "General Chemistry II"
+     */
+    public function testEffectiveDateTitle()
+    {
+    	$object = $this->session->getCourse($this->chemId);
+        $this->assertEquals('General Chemistry II', $object->getTitle());
+    }
+    
+    public function testGetPhysDescription()
+    {
+    	$this->assertEquals("This course probes a number of areas for which classical physics has provided no adequate explanations. Topics covered include Einstein's special relativity, quantization of atomic energy levels and photons, the atomic models of Rutherford and Bohr, and wave-particle duality. (PHYS 0109, MATH 0122, PHYS 0110 concurrent or prior) 3 hrs. lect.", $this->object->getDescription());
     }
 
     /**
@@ -90,7 +110,7 @@ class banner_course_CourseTest
     {
     	$list = $this->object->getTopicIds();
         $this->assertType('osid_id_IdList', $list);
-        $this->assertEquals(3, $list->available());
+        $this->assertEquals(4, $list->available());
         $this->assertType('osid_id_Id', $list->getNextId());
     }
 
@@ -101,7 +121,7 @@ class banner_course_CourseTest
     {
         $list = $this->object->getTopics();
         $this->assertType('osid_course_TopicList', $list);
-        $this->assertEquals(3, $list->available());
+        $this->assertEquals(4, $list->available());
         $this->assertType('osid_course_Topic', $list->getNextTopic());
     }
     
@@ -114,7 +134,8 @@ class banner_course_CourseTest
         $identifiers = array(
         					'topic/subject/PHYS', 
         					'topic/department/PHYS', 
-        					'topic/division/NSCI'
+        					'topic/division/NSCI',
+        					'topic/level/UG'
         				);
         $found = array();
         while ($list->hasNext()) {
@@ -136,5 +157,57 @@ class banner_course_CourseTest
 	        $this->assertType('osid_course_CourseRecord', $this->object->getCourseRecord($types->getNextType()));
 	    }
     }
+    
+/*********************************************************
+ * Tests for the TermsRecord
+ *********************************************************/
+ 	public function testSupportsTermRecord() {
+		$this->assertTrue($this->object->hasRecordType($this->termRecordType));
+	}
+	
+	public function testGetTermRecord() {
+		$record = $this->object->getCourseRecord($this->termRecordType);
+		$this->assertType('middlebury_course_Course_TermsRecord', $record);
+		$this->assertType('osid_course_CourseRecord', $record);
+	}
+	
+	public function testTermRecordImplementsRecordType() {
+		$record = $this->object->getCourseRecord($this->termRecordType);
+		$this->assertTrue($record->implementsRecordType($this->termRecordType));
+	}
+	
+	public function testGetTermRecordCourse() {
+		$record = $this->object->getCourseRecord($this->termRecordType);
+		$course = $record->getCourse();
+		$this->assertType('osid_course_Course', $course);
+	}
+	
+	public function testGetTermIds() {
+		$record = $this->object->getCourseRecord($this->termRecordType);
+		$ids = $record->getTermIds();
+		$this->assertEquals(7, $ids->available());
+		$this->assertType('osid_id_Id', $ids->getNextId());
+		
+		$next4 = $ids->getNextIds(4);
+		$this->assertEquals(4, count($next4));
+		foreach ($next4 as $id)
+			$this->assertType('osid_id_Id', $id);
+	}
+	
+	public function testGetTerms() {
+		$record = $this->object->getCourseRecord($this->termRecordType);
+		$terms = $record->getTerms();
+		$this->assertEquals(7, $terms->available());
+		$this->assertType('osid_course_Term', $terms->getNextTerm());
+	}
+	
+	public function testGetChemTerms() {
+		$object = $this->session->getCourse($this->chemId);
+		$record = $object->getCourseRecord($this->termRecordType);
+		$terms = $record->getTerms();
+		$this->assertEquals(13, $terms->available());
+		$this->assertType('osid_course_Term', $terms->getNextTerm());
+	}
+	
 }
 ?>

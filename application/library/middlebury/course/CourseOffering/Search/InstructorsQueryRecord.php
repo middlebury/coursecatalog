@@ -70,7 +70,7 @@ interface middlebury_course_CourseOffering_Search_InstructorsQueryRecord
      *  Gets the query interface for an instructor. Multiple retrievals produce a 
      *  nested <code> OR </code> term. 
      *
-     *  @return object types_course_CourseOfferingInstructorQuery the instructor query 
+     *  @return object osid_resource_ResourceQuery the instructor query 
      *  @throws osid_UnimplementedException <code> supportsInstructorQuery() 
      *          </code> is <code> false </code> 
      *  @compliance optional This method must be implemented if <code> 

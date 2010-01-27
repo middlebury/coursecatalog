@@ -236,17 +236,17 @@ class banner_course_CourseOffering_Lookup_CombinedSessionTest
        	$offerings = $this->session->getCourseOfferingsByGenusType($this->lectureType);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
        	$this->assertTrue($offerings->hasNext());
-       	$this->assertEquals(27, $offerings->available());
+       	$this->assertEquals(24, $offerings->available());
        	
        	$offerings = $this->session->getCourseOfferingsByGenusType($this->labType);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
        	$this->assertTrue($offerings->hasNext());
-       	$this->assertEquals(50, $offerings->available());
+       	$this->assertEquals(45, $offerings->available());
        	
        	$offerings = $this->session->getCourseOfferingsByGenusType($this->discussionType);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
        	$this->assertTrue($offerings->hasNext());
-       	$this->assertEquals(32, $offerings->available());
+       	$this->assertEquals(26, $offerings->available());
     }
 
     /**
@@ -265,17 +265,17 @@ class banner_course_CourseOffering_Lookup_CombinedSessionTest
        	$offerings = $this->session->getCourseOfferingsByParentGenusType($this->lectureType);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
        	$this->assertTrue($offerings->hasNext());
-       	$this->assertEquals(27, $offerings->available());
+       	$this->assertEquals(24, $offerings->available());
        	
        	$offerings = $this->session->getCourseOfferingsByParentGenusType($this->labType);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
        	$this->assertTrue($offerings->hasNext());
-       	$this->assertEquals(50, $offerings->available());
+       	$this->assertEquals(45, $offerings->available());
        	
        	$offerings = $this->session->getCourseOfferingsByParentGenusType($this->discussionType);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
        	$this->assertTrue($offerings->hasNext());
-       	$this->assertEquals(32, $offerings->available());
+       	$this->assertEquals(26, $offerings->available());
     }
 
     /**
@@ -295,7 +295,7 @@ class banner_course_CourseOffering_Lookup_CombinedSessionTest
     {
         $offerings = $this->session->getCourseOfferingsForCourse($this->physId);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertEquals(8, $offerings->available());
+       	$this->assertEquals(7, $offerings->available());
        	while ($offerings->hasNext()) {
        		$offering = $offerings->getNextCourseOffering();
        		$this->assertTrue($this->physId->isEqual($offering->getCourseId()));
@@ -309,7 +309,7 @@ class banner_course_CourseOffering_Lookup_CombinedSessionTest
     {
         $offerings = $this->session->getCourseOfferingsByTerm($this->termId);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertEquals(10, $offerings->available());
+       	$this->assertEquals(9, $offerings->available());
        	$i = 0;
        	while ($offerings->hasNext() && $i < 10) {
        		$offering = $offerings->getNextCourseOffering();
@@ -334,7 +334,7 @@ class banner_course_CourseOffering_Lookup_CombinedSessionTest
        	
        	$offerings = $this->session->getCourseOfferingsByTermForCourse($this->termId, $this->chemId);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertEquals(5, $offerings->available());
+       	$this->assertEquals(4, $offerings->available());
        	while ($offerings->hasNext()) {
        		$offering = $offerings->getNextCourseOffering();
        		$this->assertTrue($this->termId->isEqual($offering->getTermId()));
@@ -349,7 +349,7 @@ class banner_course_CourseOffering_Lookup_CombinedSessionTest
     {
         $offerings = $this->session->getCourseOfferingsByTopic($this->physDeptTopicId);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertEquals(8, $offerings->available());
+       	$this->assertEquals(7, $offerings->available());
        	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
     }
     
@@ -360,7 +360,7 @@ class banner_course_CourseOffering_Lookup_CombinedSessionTest
     {
         $offerings = $this->session->getCourseOfferingsByTopic($this->chemDeptTopicId);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertEquals(85, $offerings->available());
+       	$this->assertEquals(78, $offerings->available());
        	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
     }
 
@@ -382,7 +382,7 @@ class banner_course_CourseOffering_Lookup_CombinedSessionTest
     {
         $offerings = $this->session->getCourseOfferingsByTermByTopic($this->termId, $this->chemDeptTopicId);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertEquals(5, $offerings->available());
+       	$this->assertEquals(4, $offerings->available());
        	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
     }
     
@@ -393,7 +393,7 @@ class banner_course_CourseOffering_Lookup_CombinedSessionTest
     {
         $offerings = $this->session->getCourseOfferingsByTopic($this->physSubjTopicId);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertEquals(8, $offerings->available());
+       	$this->assertEquals(7, $offerings->available());
        	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
     }
     
@@ -404,7 +404,7 @@ class banner_course_CourseOffering_Lookup_CombinedSessionTest
     {
         $offerings = $this->session->getCourseOfferingsByTopic($this->chemSubjTopicId);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertEquals(85, $offerings->available());
+       	$this->assertEquals(78, $offerings->available());
        	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
     }
 
@@ -426,7 +426,7 @@ class banner_course_CourseOffering_Lookup_CombinedSessionTest
     {
         $offerings = $this->session->getCourseOfferingsByTermByTopic($this->termId, $this->chemSubjTopicId);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertEquals(5, $offerings->available());
+       	$this->assertEquals(4, $offerings->available());
        	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
     }
     
@@ -448,7 +448,7 @@ class banner_course_CourseOffering_Lookup_CombinedSessionTest
     {
         $offerings = $this->session->getCourseOfferingsByTermByTopic($this->termId, $this->dedReqTopicId);
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertEquals(3, $offerings->available());
+       	$this->assertEquals(4, $offerings->available());
        	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());
     }
 
@@ -460,7 +460,7 @@ class banner_course_CourseOffering_Lookup_CombinedSessionTest
         $offerings = $this->session->getCourseOfferings();
         
        	$this->assertType('osid_course_CourseOfferingList', $offerings);
-       	$this->assertEquals(109, $offerings->available());
+       	$this->assertEquals(95, $offerings->available());
        	
        	$this->assertTrue($offerings->hasNext());
        	$this->assertType('osid_course_CourseOffering', $offerings->getNextCourseOffering());

@@ -2,15 +2,17 @@
 // print "\n\t<div>".$this->escape($this->offering->getDisplayName())."</div>";
 print "\n\t<h2>".nl2br($this->escape($this->offering->getTitle()))."</h2>";
 if ($this->offering->getDescription())
-	print "\n\t<div>".$this->escape($this->offering->getDescription())."</div>";
+	print "\n\t<div>".$this->offering->getDescription()."</div>";
+
+$term = $this->offering->getTerm();
 
 $resourceParams = array(
 							'controller'	=> 'resources',
 							'action'		=> 'view',
-							'offering'		=> null
+							'offering'		=> null,
+							'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId()),
 						);
 
-$term = $this->offering->getTerm();
 $termUrl = $this->url(array(
 						'controller'	=> 'terms',
 						'action'		=> 'view',
@@ -23,21 +25,26 @@ $offeringParams = array(
 						'course'		=> null
 					);
 
-print "\n\t<dl>";
+print "\n\t<dl class='section_info'>";
 print "\n\t\t<dt>Term:</dt>";
-print "\n\t\t<dd><a href='".$termUrl."'>".$this->escape($term->getDisplayName())."</a></dd>";
-print "\n\t\t<dt>Location:</dt>";
+print "\n\t\t<dd>";
+// print "\n\t\t\t<a href='".$termUrl."'>";
+print $this->escape($term->getDisplayName());
+// print "</a>";
+print "\n\t\t</dd>";
 if ($this->offering->hasLocation()) {
+	print "\n\t\t<dt>Location:</dt>";
 	print "\n\t\t<dd>";
 	$locationResource = $this->offering->getLocation();
 	$resourceParams['resource'] = AbstractCatalogController::getStringFromOsidId($locationResource->getId());
-	print "<a href=\"".$this->url($resourceParams)."\">";
+// 	print "<a href=\"".$this->url($resourceParams)."\">";
 	print $this->escape($locationResource->getDisplayName());
-	print "</a> ";
+// 	print "</a> ";
 	if ($locationResource->getDescription())
 		print "<span class='location_description'>(".$this->escape($locationResource->getDescription()).")</span>";
 	print "\n\t\t</dd>";
-} else {
+} else if ($this->offering->getLocationInfo()) {
+	print "\n\t\t<dt>Location:</dt>";
 	print "\n\t\t<dd>".$this->escape($this->offering->getLocationInfo())."</dd>";
 }
 print "\n\t\t<dt>Schedule:</dt>";
@@ -90,10 +97,10 @@ print "</dd>";
 print "\n\t\t<dt>Division:</dt>";
 print "\n\t\t<dd>";
 foreach ($this->divisionTopics as $topic) {
-	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
-	print "<a href=\"".$this->url($topicParams)."\">";
+// 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+// 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
-	print "</a> ";
+// 	print "</a> ";
 }
 print "</dd>";
 
@@ -108,6 +115,8 @@ foreach ($this->requirementTopics as $topic) {
 print "</dd>";
 
 if (isset($this->alternates)) {
+	$alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
+	
 	print "\n\t\t<dt>Cross-Listed As:</dt>";
 	print "\n\t\t<dd>";
 	while ($this->alternates->hasNext()) {
@@ -115,12 +124,34 @@ if (isset($this->alternates)) {
 		$offeringParams['offering'] = AbstractCatalogController::getStringFromOsidId($alternate->getId());
 		print "<a href=\"".$this->url($offeringParams)."\">";
 		print $this->escape($alternate->getDisplayName());
-		print "</a> ";
+		print "</a>";
+		if ($alternate->hasRecordType($alternateType)) {
+			$alternateRecord = $alternate->getCourseOfferingRecord($alternateType);
+			if ($alternateRecord->isPrimary()) {
+				print " * ";
+			}
+		}
+		print "<br/>\n\t\t";
 	}
 	print "</dd>";
 }
 
 print "\n\t</dl>";
+
+print "\n\t<dl class='section_properties'>";
+$properties = $this->offering->getProperties();
+while ($properties->hasNext()) {
+	$property = $properties->getNextProperty();
+	print "\n\t\t<dt>";
+	print $property->getDisplayName();
+	if ($property->getDisplayName() != $property->getDisplayLabel())
+		print " (".$property->getDisplayLabel().")";
+	print ":</dt>";
+	print "\n\t\t<dd>".$property->getValue()."</dd>";
+}
+print "\n\t</dl>";
+
+print "\n<div class='clear'></div>";
 
 $course = $this->offering->getCourse();
 $courseParams = array(

@@ -105,15 +105,15 @@ class banner_course_CourseOffering_Search_SearchTest
     public function testLimitResultSet()
     {
     	$results = $this->session->getCourseOfferingsBySearch($this->query, $this->object);
-        $this->assertEquals(15, $results->getResultSize());
+        $this->assertEquals(8, $results->getResultSize());
         
-        $this->object->limitResultSet(1, 10);
-        $this->assertEquals('LIMIT 0, 10', $this->object->getLimitClause());
+        $this->object->limitResultSet(1, 5);
+        $this->assertEquals('LIMIT 0, 5', $this->object->getLimitClause());
         
         $results = $this->session->getCourseOfferingsBySearch($this->query, $this->object);
-        $this->assertEquals(15, $results->getResultSize());
+        $this->assertEquals(8, $results->getResultSize());
         
-        $this->assertEquals(10, $results->getCourseOfferings()->available());
+        $this->assertEquals(5, $results->getCourseOfferings()->available());
 
     }
     
@@ -123,15 +123,15 @@ class banner_course_CourseOffering_Search_SearchTest
     public function testLimitResultSet2()
     {
     	$results = $this->session->getCourseOfferingsBySearch($this->query, $this->object);
-        $this->assertEquals(15, $results->getResultSize());
+        $this->assertEquals(8, $results->getResultSize());
         
-        $this->object->limitResultSet(6, 10);
-        $this->assertEquals('LIMIT 5, 5', $this->object->getLimitClause());
+        $this->object->limitResultSet(3, 6);
+        $this->assertEquals('LIMIT 2, 4', $this->object->getLimitClause());
         
         $results = $this->session->getCourseOfferingsBySearch($this->query, $this->object);
-        $this->assertEquals(15, $results->getResultSize());
+        $this->assertEquals(8, $results->getResultSize());
         
-        $this->assertEquals(5, $results->getCourseOfferings()->available());
+        $this->assertEquals(4, $results->getCourseOfferings()->available());
 
     }
     
@@ -193,7 +193,7 @@ class banner_course_CourseOffering_Search_SearchTest
     	$query->matchDisplayName('CHEM*', $this->wildcardStringMatchType, true);
     	$allChemResults = $this->session->getCourseOfferingsBySearch($query, $this->object);
         $this->assertType('osid_course_CourseOfferingSearchResults', $allChemResults);
-  		$this->assertEquals(85, $allChemResults->getResultSize());
+  		$this->assertEquals(78, $allChemResults->getResultSize());
     	
     	$this->object->searchWithinCourseOfferingResults($allChemResults);
     	
@@ -209,7 +209,7 @@ class banner_course_CourseOffering_Search_SearchTest
     public function testSearchAmongCourseOfferings()
     {
     	$results = $this->session->getCourseOfferingsBySearch($this->query, $this->object);
-        $this->assertEquals(15, $results->getResultSize());
+        $this->assertEquals(8, $results->getResultSize());
         
         $offerings = new phpkit_id_ArrayIdList(array(
         	$this->physOfferingId,
@@ -232,7 +232,7 @@ class banner_course_CourseOffering_Search_SearchTest
         $this->assertEquals('20073', $params[5]);
         
         $results = $this->session->getCourseOfferingsBySearch($this->query, $this->object);
-        $this->assertEquals(2, $results->getResultSize());
+        $this->assertEquals(1, $results->getResultSize());
     }
 
     /**
@@ -246,7 +246,7 @@ class banner_course_CourseOffering_Search_SearchTest
         $this->object->orderCourseOfferingResults($order);
         
         $results = $this->session->getCourseOfferingsBySearch($this->query, $this->object);
-        $this->assertEquals(15, $results->getResultSize());
+        $this->assertEquals(8, $results->getResultSize());
     }
 
     /**

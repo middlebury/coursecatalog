@@ -2,7 +2,7 @@
 // print "\n\t<div>".$this->escape($this->course->getDisplayName())."</div>";
 print "\n\t<h2>\"".$this->escape($this->course->getTitle())."\"</h2>";
 if ($this->course->getDescription())
-	print "\n\t<div>".$this->escape($this->course->getDescription())."</div>";
+	print "\n\t<div>".$this->course->getDescription()."</div>";
 
 // Topics
 $topicParams = array(
@@ -10,6 +10,12 @@ $topicParams = array(
 						'action'		=> 'view',
 						'offering'		=> null
 					);
+if (isset($this->term)) {
+	$topicParams['term'] = AbstractCatalogController::getStringFromOsidId($this->term->getId());
+} else if (isset($this->linkTermId)) {
+	$topicParams['term'] = AbstractCatalogController::getStringFromOsidId($this->linkTermId);
+}
+
 print "\n\t<dt>Subject:</dt>";
 print "\n\t\t<dd>";
 foreach ($this->subjectTopics as $topic) {
@@ -33,11 +39,46 @@ print "</dd>";
 print "\n\t\t<dt>Division:</dt>";
 print "\n\t\t<dd>";
 foreach ($this->divisionTopics as $topic) {
+// 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+// 	print "<a href=\"".$this->url($topicParams)."\">";
+	print $this->escape($topic->getDisplayName());
+// 	print "</a> ";
+}
+print "</dd>";
+
+print "\n\t\t<dt>Requirements Fulfilled:</dt>";
+print "\n\t\t<dd>";
+foreach ($this->requirementTopics as $topic) {
 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
 	print "</a> ";
 }
 print "</dd>";
+
+if (isset($this->alternates)) {
+	$alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
+	
+	print "\n\t\t<dt>Equivalent Courses:</dt>";
+	print "\n\t\t<dd>";
+	while ($this->alternates->hasNext()) {
+		try {
+			$alternate = $this->alternates->getNextCourse();
+			$altParams['course'] = AbstractCatalogController::getStringFromOsidId($alternate->getId());
+			print "<a href=\"".$this->url($altParams)."\">";
+			print $this->escape($alternate->getDisplayName());
+			print "</a>";
+			if ($alternate->hasRecordType($alternateType)) {
+				$alternateRecord = $alternate->getCourseRecord($alternateType);
+				if ($alternateRecord->isPrimary()) {
+					print " * ";
+				}
+			}
+			print "<br/>\n\t\t";
+		} catch(osid_NotFoundException $e) {
+		}
+	}
+	print "</dd>";
+}
 
 print "\n\t</dl>";

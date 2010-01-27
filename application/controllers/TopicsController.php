@@ -95,6 +95,81 @@ class TopicsController
  		$this->render('offerings', null, true);
 	}
 	
+	/**
+	 * List all department topics as a text file with each line being Id|DisplayName
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 10/20/09
+	 */
+	public function listsubjectstxtAction () {
+		$this->renderTextList(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject"));
+	}
+	
+	/**
+	 * List all department topics as a text file with each line being Id|DisplayName
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 10/20/09
+	 */
+	public function listrequirementstxtAction () {
+		$this->renderTextList(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement"));
+	}
+	
+	/**
+	 * List all level topics as a text file with each line being Id|DisplayName
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 1/15/10
+	 */
+	public function listlevelstxtAction () {
+		$this->renderTextList(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level"));
+	}
+	
+	/**
+	 * List all department topics as a text file with each line being Id|DisplayName
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 10/20/09
+	 */
+	public function listdepartmentstxtAction () {
+		$this->renderTextList(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department"));
+	}
+	
+	/**
+	 * Render a text feed for a given topic type.
+	 * 
+	 * @param osid_type_Type $genusType
+	 * @return void
+	 * @access private
+	 * @since 11/17/09
+	 */
+	private function renderTextList (osid_type_Type $genusType) {
+		header('Content-Type: text/plain');
+		
+		if ($this->_getParam('catalog')) {
+			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
+			$lookupSession = self::getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+			$this->view->title = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
+		} else {
+			$lookupSession = self::getCourseManager()->getTopicLookupSession();
+			$this->view->title = 'Topics in All Catalogs';
+		}
+		$lookupSession->useFederatedCourseCatalogView();
+		
+		$topics = $lookupSession->getTopicsByGenusType($genusType);
+		
+		while ($topics->hasNext()) {
+			$topic = $topics->getNextTopic();
+			print self::getStringFromOsidId($topic->getId())."|".self::getStringFromOsidId($topic->getId())." - ".$topic->getDisplayName()."\n";
+		}
+		
+		exit;
+	}
+	
 }
 
 ?>

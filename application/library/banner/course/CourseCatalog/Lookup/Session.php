@@ -138,11 +138,11 @@ WHERE
     	
     	self::$getCatalogById_stmt->execute(array(':catalog_id' => $this->getDatabaseIdString($courseCatalogId)));
     	
- 		if (!self::$getCatalogById_stmt->rowCount())
- 			throw new osid_NotFoundException("Catalog id not found.");
-    	
     	$result = self::$getCatalogById_stmt->fetch(PDO::FETCH_ASSOC);
     	self::$getCatalogById_stmt->closeCursor();
+    	
+    	if (!$result)
+    		throw new osid_NotFoundException("Catalog id not found. ");
     	
     	return new banner_course_CourseCatalog(
     					$this->getOsidIdFromString($result['catalog_id']), 

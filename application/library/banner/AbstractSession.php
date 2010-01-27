@@ -172,6 +172,79 @@ abstract class banner_AbstractSession
 			$prefix = $this->idPrefix;
 		return new phpkit_id_Id($this->manager->getIdAuthority(), 'urn', $prefix.$databaseId);
 	}
+	
+	/**
+	 * Answer the term code from an id object
+	 * 
+	 * @param osid_id_Id $id
+	 * @return string
+	 * @throws an osid_NotFoundException if the id cannot match.
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getTermCodeFromOfferingId (osid_id_Id $id) {
+		$string = $this->getDatabaseIdString($id, 'section/');
+		if (!preg_match('#^([0-9]{6})/([0-9]{1,5})$#', $string, $matches))
+			throw new osid_NotFoundException("String '$string' cannot be broken into a term-code and CRN.");
+		return $matches[1];
+	}
+	
+	/**
+	 * Answer the CRN from an id object
+	 * 
+	 * @param osid_id_Id $id
+	 * @return string
+	 * @throws an osid_NotFoundException if the id cannot match.
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getCrnFromOfferingId (osid_id_Id $id) {
+		$string = $this->getDatabaseIdString($id, 'section/');
+		if (!preg_match('#^([0-9]{6})/([0-9]{1,5})$#', $string, $matches))
+			throw new osid_NotFoundException("String '$string' cannot be broken into a term-code and CRN.");
+		return $matches[2];
+	}
+	
+	/**
+	 * Answer a course subject code from an id.
+	 * 
+	 * @param osid_id_Id $id
+	 * @return string
+	 * @access public
+	 * @since 4/17/09
+	 */
+	public function getSubjectFromCourseId (osid_id_Id $id) {
+		$string = $this->getDatabaseIdString($id, 'course/');
+		if (!preg_match('#^([A-Z]{2,4})([0-9]{3,4})$#', $string, $matches))
+			throw new osid_NotFoundException("String '$string' cannot be broken into a subject-code and Number.");
+		return $matches[1];
+	}
+	
+	/**
+	 * Answer a course number from an id.
+	 * 
+	 * @param osid_id_Id $id
+	 * @return string
+	 * @access public
+	 * @since 4/17/09
+	 */
+	public function getNumberFromCourseId (osid_id_Id $id) {
+		$string = $this->getDatabaseIdString($id, 'course/');
+		if (!preg_match('#^([A-Z]{2,4})([0-9]{3,4})$#', $string, $matches))
+			throw new osid_NotFoundException("String '$string' cannot be broken into a subject-code and Number.");
+		return $matches[2];
+	}
+	
+	/**
+	 * Answer the manager for this session.
+	 * 
+	 * @return osid_course_CourseManager
+	 * @access public
+	 * @since 10/16/09
+	 */
+	public function getManager () {
+		return $this->manager;
+	}
 }
 
 ?>

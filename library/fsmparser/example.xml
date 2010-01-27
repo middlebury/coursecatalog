@@ -1,0 +1,7 @@
+<document title="Sample document" author="m0Ray" no_formatting>
+<title short="Sample" long="Sample XML file"/>
+<text>
+ This file is to be parsed by example XML parser, built with FSM Parser.
+ Just some text...
+</text>
+</document>

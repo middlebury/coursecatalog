@@ -22,6 +22,10 @@ $offeringParams = array(
 				);
 while ($this->offerings->hasNext()) {
 	$offering = $this->offerings->getNextCourseOffering();
+	if (!isset($currentTerm) || $currentTerm->getId() != $offering->getTermId()) {
+		$currentTerm = $offering->getTerm();
+		print "\n<h4>".$currentTerm->getDisplayName()."</h4>";
+	}
 	
 	$offeringParams['offering'] = AbstractCatalogController::getStringFromOsidId($offering->getId());
 	

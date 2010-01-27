@@ -3,15 +3,43 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 23, 2009 at 03:35 PM
--- Server version: 5.0.45
+-- Generation Time: Nov 11, 2009 at 09:34 AM
+-- Server version: 5.0.77
 -- PHP Version: 5.2.9
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 --
--- Database: `afranco_courses_banner`
+-- Database: `afranco_courses_test`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `catalog_term`
+--
+
+CREATE TABLE IF NOT EXISTS `catalog_term` (
+  `catalog_id` varchar(10) NOT NULL,
+  `term_code` varchar(6) NOT NULL COMMENT 'Maps to STVTERM.STVTERM_CODE',
+  `term_display_label` varchar(4) NOT NULL COMMENT 'The label such as ''F'', ''S'', ''W'', ''L'', etc used to build a section display name.',
+  PRIMARY KEY  (`catalog_id`,`term_code`),
+  KEY `catalog_id` (`catalog_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='This table maps term_code patterns to a given catalog.';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `catalog_term_match`
+--
+
+CREATE TABLE IF NOT EXISTS `catalog_term_match` (
+  `catalog_id` varchar(10) NOT NULL,
+  `term_code_match` varchar(10) NOT NULL,
+  `term_display_label` varchar(4) NOT NULL COMMENT 'The label such as ''F'', ''S'', ''W'', ''L'', etc used to build a section display name.',
+  PRIMARY KEY  (`catalog_id`,`term_code_match`),
+  KEY `catalog_id` (`catalog_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='This table maps term_code patterns to a given catalog.';
 
 -- --------------------------------------------------------
 
@@ -38,57 +66,7 @@ CREATE TABLE IF NOT EXISTS `course_catalog_college` (
   KEY `coll_code` (`coll_code`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='A join-table that maps colleges from STVCOLL to catalogs in ';
 
---
--- RELATIONS FOR TABLE `course_catalog_college`:
---   `catalog_id`
---       `course_catalog` -> `catalog_id`
---
-
-
 -- --------------------------------------------------------
-
---
--- Table structure for table `catalog_term`
---
-
-CREATE TABLE IF NOT EXISTS `catalog_term` (
-  `catalog_id` varchar(10) NOT NULL,
-  `term_code` varchar(6) NOT NULL COMMENT 'Maps to STVTERM.STVTERM_CODE',
-  `term_display_label` varchar(4) NOT NULL COMMENT 'The label such as ''F'', ''S'', ''W'', ''L'', etc used to build a section display name.',
-  PRIMARY KEY  (`catalog_id`,`term_code`),
-  KEY `catalog_id` (`catalog_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='This table maps term_code patterns to a given catalog.';
-
---
--- Constraints for table `catalog_term`
---
-ALTER TABLE `catalog_term`
-  ADD CONSTRAINT `catalog_term_ibfk_1` FOREIGN KEY (`catalog_id`) REFERENCES `course_catalog` (`catalog_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `catalog_term_match`
---
-
-CREATE TABLE IF NOT EXISTS `catalog_term_match` (
-  `catalog_id` varchar(10) NOT NULL,
-  `term_code_match` varchar(10) NOT NULL,
-  `term_display_label` varchar(4) NOT NULL COMMENT 'The label such as ''F'', ''S'', ''W'', ''L'', etc used to build a section display name.',
-  PRIMARY KEY  (`catalog_id`,`term_code_match`),
-  KEY `catalog_id` (`catalog_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='This table maps term_code patterns to a given catalog.';
-
---
--- Constraints for table `catalog_term_match`
---
-ALTER TABLE `catalog_term_match`
-  ADD CONSTRAINT `catalog_term_match_ibfk_1` FOREIGN KEY (`catalog_id`) REFERENCES `course_catalog` (`catalog_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
-
--- --------------------------------------------------------
-
 
 --
 -- Table structure for table `GORINTG`
@@ -103,12 +81,6 @@ CREATE TABLE IF NOT EXISTS `GORINTG` (
   `GORINTG_DATA_ORIGIN` varchar(30) default NULL COMMENT 'DATA ORIGIN: Source system that created or updated the row',
   PRIMARY KEY  (`GORINTG_CODE`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Integration Partner System Rule Table.';
-
---
--- RELATIONS FOR TABLE `GORINTG`:
---   `GORINTG_INTP_CODE`
---       `GORINTG` -> `GORINTG_CODE`
---
 
 -- --------------------------------------------------------
 
@@ -238,31 +210,72 @@ CREATE TABLE IF NOT EXISTS `SCBCRSE` (
   KEY `SCBCRSE_COLL_CODE` (`SCBCRSE_COLL_CODE`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Course General Information Base Table';
 
+-- --------------------------------------------------------
+
 --
--- RELATIONS FOR TABLE `SCBCRSE`:
---   `SCBCRSE_APRV_CODE`
---       `STVAPRV` -> `STVAPRV_CODE`
---   `SCBCRSE_CIPC_CODE`
---       `STVCIPC` -> `STVCIPC_CODE`
---   `SCBCRSE_COLL_CODE`
---       `STVCOLL` -> `STVCOLL_CODE`
---   `SCBCRSE_CSTA_CODE`
---       `STVCSTA` -> `STVCSTA_CODE`
---   `SCBCRSE_DEPT_CODE`
---       `STVDEPT` -> `STVDEPT_CODE`
---   `SCBCRSE_DIVS_CODE`
---       `STVDIVS` -> `STVDIVS_CODE`
---   `SCBCRSE_DUNT_CODE`
---       `GTVDUNT` -> `GTVDUNT_CODE`
---   `SCBCRSE_EFF_TERM`
---       `STVTERM` -> `STVTERM_CODE`
---   `SCBCRSE_PWAV_CODE`
---       `STVPWAV` -> `STVPWAV_CODE`
---   `SCBCRSE_REPS_CODE`
---       `STVREPS` -> `STVREPS_CODE`
---   `SCBCRSE_SUBJ_CODE`
---       `STVSUBJ` -> `STVSUBJ_CODE`
+-- Table structure for table `SCBDESC`
 --
+
+CREATE TABLE IF NOT EXISTS `SCBDESC` (
+  `SCBDESC_SUBJ_CODE` varchar(4) NOT NULL COMMENT 'Subject code.  This field indicates the subject code of the course.',
+  `SCBDESC_CRSE_NUMB` varchar(5) NOT NULL COMMENT 'Course number.  This field indicatesd the course number of the course.',
+  `SCBDESC_TERM_CODE_EFF` varchar(6) NOT NULL COMMENT 'Effective Term.  This field identifies the term this version of the course becomes effective.',
+  `SCBDESC_ACTIVITY_DATE` date NOT NULL COMMENT 'ACTIVITY DATE: The date that the information for the row was inserted or updated in the SCBDESC table.',
+  `SCBDESC_USER_ID` varchar(30) NOT NULL COMMENT 'USER IDENTIFICATION: The unique identification of the user who changed the record.',
+  `SCBDESC_TEXT_NARRATIVE` mediumtext COMMENT 'Course descriptive text is maintained here.',
+  `SCBDESC_TERM_CODE_END` varchar(6) default NULL COMMENT 'End Term.  Identifies the term that the course description effective term ends',
+  PRIMARY KEY  (`SCBDESC_SUBJ_CODE`,`SCBDESC_CRSE_NUMB`,`SCBDESC_TERM_CODE_EFF`),
+  FULLTEXT KEY `SCBDESC_TEXT_NARRATIVE` (`SCBDESC_TEXT_NARRATIVE`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Course Catalog Description Narrative Text Table';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `SCRATTR`
+--
+
+CREATE TABLE IF NOT EXISTS `SCRATTR` (
+  `SCRATTR_SUBJ_CODE` varchar(4) NOT NULL COMMENT 'This field defines the subject area of the course',
+  `SCRATTR_CRSE_NUMB` varchar(5) NOT NULL COMMENT 'This field defines the course number associated with the subject for the course',
+  `SCRATTR_EFF_TERM` varchar(6) NOT NULL COMMENT 'This field identifies the term this version of the course attributes become effective',
+  `SCRATTR_ATTR_CODE` varchar(4) default NULL COMMENT 'This field defines the attribute code of the course',
+  `SCRATTR_ACTIVITY_DATE` date NOT NULL COMMENT 'This field identifies the date the record was created or updated',
+  UNIQUE KEY `SCRATTR_SUBJ_CODE` (`SCRATTR_SUBJ_CODE`,`SCRATTR_CRSE_NUMB`,`SCRATTR_EFF_TERM`,`SCRATTR_ATTR_CODE`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Course Attribute Repeating Table';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `SCREQIV`
+--
+
+CREATE TABLE IF NOT EXISTS `SCREQIV` (
+  `SCREQIV_SUBJ_CODE` varchar(4) NOT NULL COMMENT 'This field defines the subject area of the course.',
+  `SCREQIV_CRSE_NUMB` varchar(5) NOT NULL COMMENT 'This field defines the course number associated with the subject for the        course.',
+  `SCREQIV_EFF_TERM` varchar(6) NOT NULL COMMENT 'This field identifies the term this version of the course equivalents becomes   effective.',
+  `SCREQIV_SUBJ_CODE_EQIV` varchar(4) default NULL COMMENT 'This field defines an equivalent course subject code for the master course.     Defining equivalents for a course is optional.  An unlimited number of          equivalents can be authorized for a course.',
+  `SCREQIV_CRSE_NUMB_EQIV` varchar(5) default NULL COMMENT 'This field defines the course number of the equivalent course.  Course          numbers are not validated against valid course versions.',
+  `SCREQIV_START_TERM` varchar(6) default NULL COMMENT 'This field specifies the start term of the course version which is              equivalent to the course entered in the Key Block.',
+  `SCREQIV_END_TERM` varchar(6) default NULL COMMENT 'This field is used to specify the end term of the course version which is       equivalent to the course entered in the Key Block.',
+  `SCREQIV_ACTIVITY_DATE` date NOT NULL COMMENT 'This field specifies the most current date record was created or updated.',
+  UNIQUE KEY `SCREQIV_SUBJ_CODE` (`SCREQIV_SUBJ_CODE`,`SCREQIV_CRSE_NUMB`,`SCREQIV_EFF_TERM`,`SCREQIV_SUBJ_CODE_EQIV`,`SCREQIV_CRSE_NUMB_EQIV`,`SCREQIV_START_TERM`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Equivalent Course Repeating Table';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `SCRLEVL`
+--
+
+CREATE TABLE IF NOT EXISTS `SCRLEVL` (
+  `SCRLEVL_SUBJ_CODE` varchar(4) NOT NULL COMMENT 'This field defines the subject area of the course.',
+  `SCRLEVL_CRSE_NUMB` varchar(5) NOT NULL COMMENT 'This field defines the course number associated with the subject for the course.',
+  `SCRLEVL_EFF_TERM` varchar(6) NOT NULL COMMENT 'This field identifies the term this version of the course level becomes effective.',
+  `SCRLEVL_LEVL_CODE` varchar(2) NOT NULL COMMENT 'This field is used to authorize the level for which a course may be offered.    Each course must be authorized to be offered for at least one level.  A         course can be authorized for an unlimited number of levels.',
+  `SCRLEVL_ACTIVITY_DATE` date NOT NULL COMMENT 'This field specifies the most current date record was created or updated.',
+  PRIMARY KEY  (`SCRLEVL_SUBJ_CODE`,`SCRLEVL_CRSE_NUMB`,`SCRLEVL_EFF_TERM`,`SCRLEVL_LEVL_CODE`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Course Level Repeating Table';
+
 
 -- --------------------------------------------------------
 
@@ -293,13 +306,20 @@ CREATE TABLE IF NOT EXISTS `SIRASGN` (
   KEY `SIRASGN_CRN` (`SIRASGN_CRN`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Faculty Member Instructional Assignment  Repeating Table';
 
+-- --------------------------------------------------------
+
 --
--- RELATIONS FOR TABLE `SIRASGN`:
---   `SIRASGN_FCNT_CODE`
---       `STVFCNT` -> `STVFCNT_CODE`
---   `SIRASGN_TERM_CODE`
---       `STVTERM` -> `STVTERM_CODE`
+-- Table structure for table `SSBDESC`
 --
+
+CREATE TABLE IF NOT EXISTS `SSBDESC` (
+  `SSBDESC_TERM_CODE` varchar(6) NOT NULL COMMENT 'Term Code.  This field identifies the term for which you are creating descriptive text for a course section.',
+  `SSBDESC_CRN` varchar(5) NOT NULL COMMENT 'This field identifies the course Reference Number for which you are creating descriptive text.',
+  `SSBDESC_TEXT_NARRATIVE` text NOT NULL COMMENT 'Course section descriptive text is maintained here.',
+  `SSBDESC_ACTIVITY_DATE` date NOT NULL COMMENT 'ACTIVITY DATE: The date that the information for the row was inserted or updated in the SSBDESC table.',
+  `SSBDESC_USER_ID` varchar(30) NOT NULL COMMENT 'USER IDENTIFICATION: The unique identification of the user who changed the record.',
+  PRIMARY KEY  (`SSBDESC_TERM_CODE`,`SSBDESC_CRN`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Section Description Table';
 
 -- --------------------------------------------------------
 
@@ -378,22 +398,6 @@ CREATE TABLE IF NOT EXISTS `SSBSECT` (
   KEY `SSBSECT_DATE_INDEX` (`SSBSECT_REG_FROM_DATE`,`SSBSECT_REG_TO_DATE`,`SSBSECT_TERM_CODE`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Section General Information Base Table';
 
---
--- RELATIONS FOR TABLE `SSBSECT`:
---   `SSBSECT_DUNT_CODE`
---       `GTVDUNT` -> `GTVDUNT_CODE`
---   `SSBSECT_INSM_CODE`
---       `GTVINSM` -> `GTVINSM_CODE`
---   `SSBSECT_SUBJ_CODE`
---       `STVSUBJ` -> `STVSUBJ_CODE`
---   `SSBSECT_TERM_CODE`
---       `STVTERM` -> `STVTERM_CODE`
---
-
---
--- Database: `afranco_courses_banner`
---
-
 -- --------------------------------------------------------
 
 --
@@ -414,21 +418,6 @@ CREATE TABLE IF NOT EXISTS `SSBXLST` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `SSRXLST`
---
-
-CREATE TABLE IF NOT EXISTS `SSRXLST` (
-  `SSRXLST_TERM_CODE` varchar(6) NOT NULL COMMENT 'Cross List Section Term.',
-  `SSRXLST_XLST_GROUP` varchar(2) NOT NULL COMMENT 'Cross List Group Identifier Number.',
-  `SSRXLST_CRN` varchar(5) NOT NULL COMMENT 'Corss List Section CRN.',
-  `SSRXLST_ACTIVITY_DATE` date NOT NULL COMMENT 'This field identifies the most recent date a record was created or updated.',
-  PRIMARY KEY  (`SSRXLST_TERM_CODE`,`SSRXLST_XLST_GROUP`,`SSRXLST_CRN`),
-  KEY `SSRXLST_TERM_CODE` (`SSRXLST_TERM_CODE`,`SSRXLST_CRN`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Cross List Section Repeating Table';
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `SSRATTR`
 --
 
@@ -439,14 +428,6 @@ CREATE TABLE IF NOT EXISTS `SSRATTR` (
   `SSRATTR_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field contains the most current date the record was added or changed.',
   PRIMARY KEY  (`SSRATTR_TERM_CODE`,`SSRATTR_CRN`,`SSRATTR_ATTR_CODE`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Degree Program Attribute Repeating Table';
-
---
--- RELATIONS FOR TABLE `SSRATTR`:
---   `SSRATTR_ATTR_CODE`
---       `STVATTR` -> `STVATTR_CODE`
---   `SSRATTR_TERM_CODE`
---       `STVTERM` -> `STVTERM_CODE`
---
 
 -- --------------------------------------------------------
 
@@ -489,17 +470,20 @@ CREATE TABLE IF NOT EXISTS `SSRMEET` (
   KEY `SSRMEET_KEY_INDEX2` (`SSRMEET_BLDG_CODE`,`SSRMEET_ROOM_CODE`,`SSRMEET_BEGIN_TIME`,`SSRMEET_END_TIME`,`SSRMEET_MON_DAY`,`SSRMEET_TUE_DAY`,`SSRMEET_WED_DAY`,`SSRMEET_THU_DAY`,`SSRMEET_FRI_DAY`,`SSRMEET_SAT_DAY`,`SSRMEET_SUN_DAY`,`SSRMEET_START_DATE`,`SSRMEET_END_DATE`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Section Meeting Times Repeating Table';
 
+-- --------------------------------------------------------
+
 --
--- RELATIONS FOR TABLE `SSRMEET`:
---   `SSRMEET_BLDG_CODE`
---       `STVBLDG` -> `STVBLDG_CODE`
---   `SSRMEET_MTYP_CODE`
---       `GTVMTYP` -> `GTVMTYP_CODE`
---   `SSRMEET_SCHD_CODE`
---       `STVSCHD` -> `STVSCHD_CODE`
---   `SSRMEET_TERM_CODE`
---       `STVTERM` -> `STVTERM_CODE`
+-- Table structure for table `SSRXLST`
 --
+
+CREATE TABLE IF NOT EXISTS `SSRXLST` (
+  `SSRXLST_TERM_CODE` varchar(6) NOT NULL COMMENT 'Cross List Section Term.',
+  `SSRXLST_XLST_GROUP` varchar(2) NOT NULL COMMENT 'Cross List Group Identifier Number.',
+  `SSRXLST_CRN` varchar(5) NOT NULL COMMENT 'Corss List Section CRN.',
+  `SSRXLST_ACTIVITY_DATE` date NOT NULL COMMENT 'This field identifies the most recent date a record was created or updated.',
+  PRIMARY KEY  (`SSRXLST_TERM_CODE`,`SSRXLST_XLST_GROUP`,`SSRXLST_CRN`),
+  KEY `SSRXLST_TERM_CODE` (`SSRXLST_TERM_CODE`,`SSRXLST_CRN`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Cross List Section Repeating Table';
 
 -- --------------------------------------------------------
 
@@ -692,6 +676,47 @@ CREATE TABLE IF NOT EXISTS `STVFCNT` (
   PRIMARY KEY  (`STVFCNT_CODE`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Faculty Contract Code Validation Table';
 
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `STVLEVL`
+--
+
+CREATE TABLE IF NOT EXISTS `STVLEVL` (
+  `STVLEVL_CODE` varchar(2) NOT NULL COMMENT 'This field identifies the student level code referenced in the Catalog, Recruiting, Admissions, Gen Student, Registration, and Acad Hist Modules. Required value: 00 - Level Not Declared.',
+  `STVLEVL_DESC` varchar(30) NOT NULL COMMENT 'This field specifies the student level (e.g. undergraduate, graduate, professional) associated with the student level code.',
+  `STVLEVL_ACTIVITY_DATE` date NOT NULL COMMENT 'This field identifies the most recent date a record was created or updated.',
+  `STVLEVL_ACAD_IND` varchar(1) default NULL COMMENT 'This field is not currently in use.',
+  `STVLEVL_CEU_IND` varchar(1) NOT NULL COMMENT 'Continuing Education Indicator.',
+  `STVLEVL_SYSTEM_REQ_IND` varchar(1) default NULL COMMENT 'System Required Indicator',
+  `STVLEVL_VR_MSG_NO` int(6) default NULL COMMENT 'The Voice Response message number assigned to the recorded message that describes the student level.',
+  `STVLEVL_EDI_EQUIV` varchar(2) default NULL COMMENT 'EDI Level Code',
+  PRIMARY KEY  (`STVLEVL_CODE`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Student Level Validation Table';
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `STVMEET`
+--
+
+CREATE TABLE IF NOT EXISTS `STVMEET` (
+  `STVMEET_CODE` varchar(2) NOT NULL COMMENT 'Meeting Time Code',
+  `STVMEET_MON_DAY` varchar(1) default NULL COMMENT 'Monday Indicator.',
+  `STVMEET_TUE_DAY` varchar(1) default NULL COMMENT 'Tuesday Indicator.',
+  `STVMEET_WED_DAY` varchar(1) default NULL COMMENT 'Wednesday Indicator.',
+  `STVMEET_THU_DAY` varchar(1) default NULL COMMENT 'Thrusday Indicator.',
+  `STVMEET_FRI_DAY` varchar(1) default NULL COMMENT 'Friday Indicator.',
+  `STVMEET_SAT_DAY` varchar(1) default NULL COMMENT 'Saturday Indicator.',
+  `STVMEET_SUN_DAY` varchar(1) default NULL COMMENT 'Sunday Indicator.',
+  `STVMEET_BEGIN_TIME` varchar(4) default NULL COMMENT 'Begin Time.',
+  `STVMEET_END_TIME` varchar(4) default NULL COMMENT 'End Time.',
+  `STVMEET_ACTIVITY_DATE` date NOT NULL COMMENT 'This field identifies the most recent date a record was created or updated.',
+  PRIMARY KEY  (`STVMEET_CODE`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Meeting Time Code Validation Table';
+
 -- --------------------------------------------------------
 
 --
@@ -779,14 +804,6 @@ CREATE TABLE IF NOT EXISTS `STVTERM` (
   KEY `STVTERM_START_DATE_INDEX` (`STVTERM_START_DATE`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Term Code Validation Table';
 
---
--- RELATIONS FOR TABLE `STVTERM`:
---   `STVTERM_ACYR_CODE`
---       `STVACYR` -> `STVACYR_CODE`
---   `STVTERM_TRMT_CODE`
---       `STVTRMT` -> `STVTRMT_CODE`
---
-
 -- --------------------------------------------------------
 
 --
@@ -816,13 +833,3 @@ CREATE TABLE IF NOT EXISTS `SYVINST` (
   PRIMARY KEY  (`SYVINST_TERM_CODE`,`SYVINST_CRN`,`SYVINST_PIDM`),
   KEY `SYVINST_PIDM` (`SYVINST_PIDM`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `course_catalog_college`
---
-ALTER TABLE `course_catalog_college`
-  ADD CONSTRAINT `course_catalog_college_ibfk_1` FOREIGN KEY (`catalog_id`) REFERENCES `course_catalog` (`catalog_id`) ON DELETE CASCADE ON UPDATE CASCADE;

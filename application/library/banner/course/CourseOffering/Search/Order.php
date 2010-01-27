@@ -14,6 +14,7 @@
  * @package org.osid.course
  */
 class banner_course_CourseOffering_Search_Order
+	extends banner_course_AbstractSearchOrder
     implements osid_course_CourseOfferingSearchOrder,
     osid_course_CourseOfferingSearchOrderRecord,
     middlebury_course_CourseOffering_Search_InstructorsSearchOrderRecord
@@ -27,90 +28,10 @@ class banner_course_CourseOffering_Search_Order
 	 * @since 5/28/09
 	 */
 	public function __construct () {
-		$this->terms = array();
-		$this->additionalTableJoins = array();
+		parent::__construct();
 		
-		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
-		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
-	}
-	
-	/**
-	 * Answer th SQL ORDER BY clause
-	 * 
-	 * @return string
-	 * @access public
-	 * @since 5/28/09
-	 */
-	public function getOrderByClause () {
-		$orderTerms = $this->getOrderByTerms();
-		if (count($orderTerms))
-			return 'ORDER BY '.(implode(', ', $orderTerms));
-		else
-			return '';
-	}
-	
-	/**
-	 * Answer an array column/direction terms for a SQL ORDER BY clause
-	 * 
-	 * @return array
-	 * @access public
-	 * @since 5/28/09
-	 */
-	public function getOrderByTerms () {
-		$parts = array();
-		foreach ($this->terms as $term) {
-			foreach ($term['columns'] as $column) {
-				$parts[] = $column.' '.$term['direction'];
-			}
-		}
-		return $parts;
-	}
-	
-	/**
-	 * Answer any additional table join clauses to use
-	 * 
-	 * @return array
-	 * @access public
-	 * @since 4/29/09
-	 */
-	public function getAdditionalTableJoins () {
-		return $this->additionalTableJoins;
-	}
-	
-	/**
-	 * Add a set of columns to order on.
-	 * 
-	 * @param array $columns An array of column strings
-	 * @return void
-	 * @access protected
-	 * @since 5/28/09
-	 */
-	protected function addOrderColumns (array $columns) {
-		// Check that this set hasn't been added yet.
-		$key = implode(',', $columns);
-		foreach ($this->terms as $term) {
-			if ($term['key'] == $key)
-				return;
-		}
-		
-		$this->terms[] = array(
-				'key'		=> $key,
-				'columns'	=> $columns,
-				'direction'	=> 'ASC'
-			);
-	}
-	
-	/**
-	 * Add a table join
-	 * 
-	 * @param string $joinClause
-	 * @return void
-	 * @access protected
-	 * @since 5/27/09
-	 */
-	protected function addTableJoin ($joinClause) {
-		if (!in_array($joinClause, $this->additionalTableJoins))
-			$this->additionalTableJoins[] = $joinClause;
+		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors'));
+		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule'));
 	}
 
 /*********************************************************
@@ -125,7 +46,6 @@ class banner_course_CourseOffering_Search_Order
      */
     public function ascend() {
     	if (count($this->terms)) {
-    		$last = count($this->terms) - 1;
     		$last = count($this->terms) - 1;
     		if (preg_match('/^SSRMEET_[A-Z]{3}_DAY$/', $this->terms[$last]['key']))
     			$this->terms[$last]['direction'] = 'DESC';
@@ -170,48 +90,6 @@ class banner_course_CourseOffering_Search_Order
      */
     public function orderByGenusType() {
     	$this->addOrderColumns(array('SSBSECT_SCHD_CODE'));
-    }
-
-
-    /**
-     *  Tests if this search order supports the given record <code> Type. 
-     *  </code> The given record type may be supported by the object through 
-     *  interface/type inheritence. This method should be checked before 
-     *  retrieving the record interface. 
-     *
-     *  @param object osid_type_Type $recordType a type 
-     *  @return boolean <code> true </code> if an order record of the given 
-     *          record <code> Type </code> is available, <code> false </code> 
-     *          otherwise 
-     *  @throws osid_NullArgumentException <code> recordType </code> is <code> 
-     *          null </code> 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function hasRecordType(osid_type_Type $recordType) {
-    	return $this->implementsRecordType($recordType);
-    }
-    
-/*********************************************************
- * Methods from osid_OsidSearchRecord
- *********************************************************/
-
-    /**
-     *  Tests if the given type is implemented by this record. Other types 
-     *  than that directly indicated by <code> getType() </code> may be 
-     *  supported through an inheritance scheme where the given type specifies 
-     *  a record that is a parent interface of the interface specified by 
-     *  <code> getType(). </code> 
-     *
-     *  @param object osid_type_Type $recordType a type 
-     *  @return boolean <code> true </code> if the given record <code> Type 
-     *          </code> is implemented by this record, <code> false </code> 
-     *          otherwise 
-     *  @throws osid_NullArgumentException <code> recordType </code> is <code> 
-     *          null </code> 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function implementsRecordType(osid_type_Type $recordType) {
-    	return ($recordType->isEqual($this->instructorsType) || $recordType->isEqual($this->weeklyScheduleType));
     }
     
 /*********************************************************
@@ -264,29 +142,7 @@ class banner_course_CourseOffering_Search_Order
      *  @compliance mandatory This method must be implemented. 
      */
     public function orderByTitle() {
-    	$this->addOrderColumns(array('sectitle_title'));
-    	$this->addTableJoin(
-    'INNER JOIN (SELECT 
-			SSBSECT_TERM_CODE as sectitle_term_code,
-			SSBSECT_CRN as sectitle_crn,
-			SSBSECT_CRSE_TITLE as sectitle_title
-		FROM 
-			`SSBSECT`
-			LEFT JOIN SCBCRSE ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
-		WHERE
-			SSBSECT_CRSE_TITLE IS NOT NULL
-		
-		UNION
-		
-		SELECT 
-			SSBSECT_TERM_CODE as sectitle_term_code,
-			SSBSECT_CRN as sectitle_crn,
-			SCBCRSE_TITLE as sectitle_title
-		FROM 
-			`SSBSECT`
-			LEFT JOIN SCBCRSE ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
-		WHERE
-			SSBSECT_CRSE_TITLE IS NULL) as sectitle ON (SSBSECT_TERM_CODE = sectitle_term_code AND SSBSECT_CRN = sectitle_crn)');
+    	$this->addOrderColumns(array('section_title'));
     }
 
 

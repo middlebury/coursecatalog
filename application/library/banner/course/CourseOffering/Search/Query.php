@@ -33,10 +33,11 @@ class banner_course_CourseOffering_Search_Query
 	public function __construct (banner_course_CourseOffering_AbstractSession $session) {
 		parent::__construct($session);
 		
+		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors'));
+		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule'));
+		
 		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
 		$this->booleanStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:boolean");
-		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
-		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 
 		$this->addStringMatchType($this->wildcardStringMatchType);
 		$this->addStringMatchType($this->booleanStringMatchType);
@@ -291,25 +292,6 @@ class banner_course_CourseOffering_Search_Query
     		$this->addClause('record_type', 'FALSE', array(), $match);
     }
 
-
-    /**
-     *  Tests if this query supports the given record <code> Type. </code> The 
-     *  given record type may be supported by the object through 
-     *  interface/type inheritence. This method should be checked before 
-     *  retrieving the record interface. 
-     *
-     *  @param object osid_type_Type $recordType a type 
-     *  @return boolean <code> true </code> if a record query of the given 
-     *          record <code> Type </code> is available, <code> false </code> 
-     *          otherwise 
-     *  @throws osid_NullArgumentException <code> recordType </code> is <code> 
-     *          null </code> 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function hasRecordType(osid_type_Type $recordType) {
-    	return $this->implementsRecordType($recordType);
-    }
-
 /*********************************************************
  * Methods From osid_course_CourseOfferingQueryRecord
  *********************************************************/
@@ -324,25 +306,6 @@ class banner_course_CourseOffering_Search_Query
      */
     public function getCourseOfferingQuery() {
     	return $this;
-    }
-    
-    /**
-     *  Tests if the given type is implemented by this record. Other types 
-     *  than that directly indicated by <code> getType() </code> may be 
-     *  supported through an inheritance scheme where the given type specifies 
-     *  a record that is a parent interface of the interface specified by 
-     *  <code> getType(). </code> 
-     *
-     *  @param object osid_type_Type $recordType a type 
-     *  @return boolean <code> true </code> if the given record <code> Type 
-     *          </code> is implemented by this record, <code> false </code> 
-     *          otherwise 
-     *  @throws osid_NullArgumentException <code> recordType </code> is <code> 
-     *          null </code> 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function implementsRecordType(osid_type_Type $recordType) {
-    	return ($recordType->isEqual($this->instructorsType) || $recordType->isEqual($this->weeklyScheduleType));
     }
 
 /*********************************************************
@@ -400,7 +363,7 @@ class banner_course_CourseOffering_Search_Query
     	
         if ($stringMatchType->isEqual($this->wildcardStringMatchType)) {
         	$param = str_replace('*', '%', $title);
-        	$this->addClause('title', '(SSBSECT_CRSE_TITLE LIKE(?) OR SCBCRSE_TITLE LIKE(?))', array($param, $param), $match);
+        	$this->addClause('title', 'section_title LIKE(?)', array($param), $match);
         } else {
 	    	throw new osid_UnsupportedException("The stringMatchType passed is not supported.");
 	    }
@@ -417,7 +380,7 @@ class banner_course_CourseOffering_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchAnyTitle($match) {
-    	$this->addClause('title', '(SSBSECT_CRSE_TITLE IS NOT NULL OR SCBCRSE_TITLE IS NOT NULL)', array(), $match);
+    	$this->addClause('title', 'section_title IS NOT NULL', array(), $match);
     }
 
 
@@ -743,6 +706,10 @@ class banner_course_CourseOffering_Search_Query
    			case 'requirement':
    				$this->addClause('requirement_topic_id', 'SSRATTR_ATTR_CODE = ?', array($value), $match);
    				$this->addTableJoin('LEFT JOIN SSRATTR ON (SSRATTR_TERM_CODE = SSBSECT_TERM_CODE AND SSRATTR_CRN = SSBSECT_CRN)');
+   				return;
+   			case 'level':
+   				$this->addClause('level_topic_id', 'SCRLEVL_LEVL_CODE = ?', array($value), $match);
+   				$this->addTableJoin('LEFT JOIN scrlevl_recent ON (SSBSECT_SUBJ_CODE = SCRLEVL_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCRLEVL_CRSE_NUMB)');
    				return;
    			default:
    				$this->addClause('topic_id', 'FALSE', array(), $match);
@@ -1149,7 +1116,7 @@ class banner_course_CourseOffering_Search_Query
      *  Gets the query interface for an instructor. Multiple retrievals produce a 
      *  nested <code> OR </code> term. 
      *
-     *  @return object types_course_CourseOfferingInstructorQuery the instructor query 
+     *  @return object osid_resource_ResourceQuery the instructor query 
      *  @throws osid_UnimplementedException <code> supportsInstructorQuery() 
      *          </code> is <code> false </code> 
      *  @compliance optional This method must be implemented if <code> 

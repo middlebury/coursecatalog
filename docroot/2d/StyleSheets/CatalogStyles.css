@@ -19,6 +19,15 @@
 	float: left;
 }
 
+.section_info {
+	float: left;
+	margin-right: 40px;
+}
+
+.section_properties {
+	float: left;
+}
+
 /*********************************************************
  * Search
  *********************************************************/
@@ -65,6 +74,10 @@ table.search_results th {
 table.search_results td {
 	border: 1px solid #000;
 	vertical-align: top;
+}
+
+table.search_results td.column1 {
+	width: 200px;
 }
 
 div.search_results_item_pagination {

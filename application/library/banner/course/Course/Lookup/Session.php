@@ -44,7 +44,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 class banner_course_Course_Lookup_Session
-    extends banner_course_AbstractSession
+    extends banner_course_Course_AbstractSession
     implements osid_course_CourseLookupSession
 {
 	
@@ -189,24 +189,25 @@ class banner_course_Course_Lookup_Session
     	$catalogWhere = $this->getCatalogWhereTerms();
     	if (!isset(self::$getCourse_stmts[$catalogWhere])) {
 	    	$query =
-"SELECT 
+"SELECT
 	SCBCRSE_SUBJ_CODE , 
 	SCBCRSE_CRSE_NUMB , 
-	MAX( SCBCRSE_EFF_TERM ) AS SCBCRSE_EFF_TERM , 
+	SCBCRSE_EFF_TERM , 
 	SCBCRSE_COLL_CODE , 
 	SCBCRSE_DIVS_CODE , 
 	SCBCRSE_DEPT_CODE , 
 	SCBCRSE_CSTA_CODE , 
 	SCBCRSE_TITLE ,
-	SCBCRSE_CREDIT_HR_HIGH
-FROM 
-	SCBCRSE
+	SCBCRSE_CREDIT_HR_HIGH,
+	SCBDESC_TEXT_NARRATIVE,
+	has_alternates
+FROM
+	scbcrse_scbdesc_recent
+	
 WHERE
 	SCBCRSE_SUBJ_CODE = :subject_code
 	AND SCBCRSE_CRSE_NUMB = :course_number
-	AND SCBCRSE_CSTA_CODE NOT IN (
-		'C', 'I', 'P', 'T', 'X'
-	)
+	
 	AND SCBCRSE_COLL_CODE IN (
 		SELECT
 			coll_code
@@ -215,8 +216,7 @@ WHERE
 		WHERE
 			".$this->getCatalogWhereTerms()."
 	)
-GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
-ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC	
+ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 ";
 			self::$getCourse_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
 		}
@@ -231,7 +231,6 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 				':course_number' => $matches[2]
 			),
 			$this->getCatalogParameters());
-		
 		self::$getCourse_stmts[$catalogWhere]->execute($parameters);
 		$row = self::$getCourse_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
 		self::$getCourse_stmts[$catalogWhere]->closeCursor();
@@ -242,7 +241,7 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 		return new banner_course_Course(
 					$this->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'], 'course/'),
 					$row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'],
-					'',	// Description
+					((is_null($row['SCBDESC_TEXT_NARRATIVE']))?'':$row['SCBDESC_TEXT_NARRATIVE']),	// Description
 					$row['SCBCRSE_TITLE'], 
 					$row['SCBCRSE_CREDIT_HR_HIGH'],
 					array(
@@ -250,6 +249,7 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 						$this->getOsidIdFromString($row['SCBCRSE_DEPT_CODE'], 'topic/department/'),
 						$this->getOsidIdFromString($row['SCBCRSE_DIVS_CODE'], 'topic/division/')
 					),
+					$row['has_alternates'],
 					$this);
     }
 
@@ -443,5 +443,101 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
     		$this->getCourseCatalogId()
     	);
     }
+    
+    /*********************************************************
+     * Support for fetching course alternates.
+     *********************************************************/
+    
+    
+    private static $alternatesForCourse_stmt;
+	/**
+	 * Answer the alternate course ids
+	 * 
+	 * @param osid_id_Id $courseId
+	 * @return PDOStatement
+	 * @access public
+	 * @since 5/1/09
+	 */
+	public function getAlternateIdsForCourse (osid_id_Id $courseId) {
+		if (!isset(self::$alternatesForCourse_stmt)) {
+			$query = "
+SELECT 
+	*
+FROM (
+	SELECT
+		SCREQIV_SUBJ_CODE,
+		SCREQIV_CRSE_NUMB,
+		SCREQIV_EFF_TERM,
+		SCREQIV_SUBJ_CODE_EQIV,
+		SCREQIV_CRSE_NUMB_EQIV
+	FROM
+		SCREQIV
+	WHERE 
+		(SCREQIV_SUBJ_CODE = :subj_code_0
+			AND SCREQIV_CRSE_NUMB = :crse_numb_0)
+	
+	UNION
+		
+	SELECT
+		SCREQIV_SUBJ_CODE,
+		SCREQIV_CRSE_NUMB,
+		equiv2_eff_term AS SCREQIV_EFF_TERM,
+		equiv2_subj_code AS SCREQIV_SUBJ_CODE_EQIV,
+		equiv2_crse_numb AS SCREQIV_CRSE_NUMB_EQIV
+	FROM
+		screqiv_2way
+	WHERE 
+		(SCREQIV_SUBJ_CODE = :subj_code_1
+			AND SCREQIV_CRSE_NUMB = :crse_numb_1)
+	
+	UNION
+	
+	SELECT
+		SCREQIV_SUBJ_CODE,
+		SCREQIV_CRSE_NUMB,
+		equiv2_eff_term AS SCREQIV_EFF_TERM,
+		equiv2_subj_code_equiv AS SCREQIV_SUBJ_CODE_EQIV,
+		equiv2_crse_numb_equiv AS SCREQIV_CRSE_NUMB_EQIV
+	FROM
+		screqiv_2way
+	WHERE 
+		(SCREQIV_SUBJ_CODE = :subj_code_2
+			AND SCREQIV_CRSE_NUMB = :crse_numb_2)
+	
+	) as screquiv_combined
+	
+WHERE
+	SCREQIV_SUBJ_CODE_EQIV != :subj_code_3
+	OR SCREQIV_CRSE_NUMB_EQIV != :crse_numb_3
+GROUP BY 
+	SCREQIV_SUBJ_CODE, 
+	SCREQIV_CRSE_NUMB,
+	SCREQIV_SUBJ_CODE_EQIV,
+	SCREQIV_CRSE_NUMB_EQIV
+ORDER BY SCREQIV_EFF_TERM DESC
+";
+			self::$alternatesForCourse_stmt = $this->manager->getDB()->prepare($query);
+		}
+		self::$alternatesForCourse_stmt->execute(array(
+			':subj_code_0' => $this->getSubjectFromCourseId($courseId),
+			':crse_numb_0' => $this->getNumberFromCourseId($courseId),
+			':subj_code_1' => $this->getSubjectFromCourseId($courseId),
+			':crse_numb_1' => $this->getNumberFromCourseId($courseId),
+			':subj_code_2' => $this->getSubjectFromCourseId($courseId),
+			':crse_numb_2' => $this->getNumberFromCourseId($courseId),
+			':subj_code_3' => $this->getSubjectFromCourseId($courseId),
+			':crse_numb_3' => $this->getNumberFromCourseId($courseId)
+		));
+		$rows = self::$alternatesForCourse_stmt->fetchAll(PDO::FETCH_ASSOC);
+		self::$alternatesForCourse_stmt->closeCursor();
+// 		var_dump($rows);
+		
+		$ids = array();
+		foreach ($rows as $row) {
+			$ids[] = $this->getCourseIdFromSubjectAndNumber($row['SCREQIV_SUBJ_CODE_EQIV'], $row['SCREQIV_CRSE_NUMB_EQIV']);
+		}
+		
+		return new phpkit_id_ArrayIdList($ids);
+	}
 
 }

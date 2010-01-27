@@ -241,6 +241,8 @@ class banner_course_CourseOffering_Search_Session
 	public function buildIndex ($displayStatus = false) {
 		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_drop_index_structure.sql', $this->manager->getDB());
 		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_create_index_structure.sql', $this->manager->getDB());
+		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/../../../sql/create_views.sql', $this->manager->getDB());
+
 		
 		$lookupSession = $this->manager->getCourseOfferingLookupSession();
 		$lookupSession->useFederatedCourseCatalogView();
@@ -265,12 +267,19 @@ class banner_course_CourseOffering_Search_Session
 		
 		$i = 0;
 		while ($offerings->hasNext()) {
-			$offering = $offerings->getNextCourseOffering();
-			$termCode = $this->getTermCodeFromOfferingId($offering->getId());
-			$crn = $this->getCrnFromOfferingId($offering->getId());
-			
-			if (!$insertStmt->execute(array(':term_code' => $termCode, ':crn' => $crn, ':text' => $offering->getFulltextStringForIndex())))
-				throw new osid_OperationFailedException('FullText update failed');
+			try {
+				$offering = $offerings->getNextCourseOffering();
+				$termCode = $this->getTermCodeFromOfferingId($offering->getId());
+				$crn = $this->getCrnFromOfferingId($offering->getId());
+				$text = $offering->getFulltextStringForIndex();
+				
+				if (!$insertStmt->execute(array(':term_code' => $termCode, ':crn' => $crn, ':text' => $text))) {
+					$info = $insertStmt->errorInfo();
+					throw new osid_OperationFailedException('FullText update failed with code '.$info[0].'/'.$info[1].' - '.$info[2]);
+				}
+			} catch (Exception $e) {
+				print "\nError of type:\n\t".get_class($e)."\nwith message:\n\t".$e->getMessage()."\n";
+			}
 			
 			$i++;
 			if ($displayStatus) {

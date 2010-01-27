@@ -35,6 +35,9 @@ class banner_course_CourseOffering
 			'SSBSECT_SEQ_NUMB',
 			'SSBSECT_CAMP_CODE',
 			'SSBSECT_CRSE_TITLE',
+			'SSBSECT_MAX_ENRL',
+			
+			'SSBDESC_TEXT_NARRATIVE',
 			
 			'term_display_label',
 			'STVTERM_START_DATE',
@@ -60,6 +63,8 @@ class banner_course_CourseOffering
 			'SCBCRSE_TITLE',
 			'SCBCRSE_DEPT_CODE',
 			'SCBCRSE_DIVS_CODE',
+			
+			'SCBDESC_TEXT_NARRATIVE',
 			
 			'SSRXLST_XLST_GROUP'
 		);
@@ -93,7 +98,16 @@ class banner_course_CourseOffering
 			.$row['SSBSECT_SEQ_NUMB']
 			.'-'.$row['term_display_label']
 			.substr($row['STVTERM_START_DATE'], 2, 2));
-		$this->setDescription('');
+		
+		$description = '';
+		if (!is_null($row['SCBDESC_TEXT_NARRATIVE']))
+			$description = banner_course_Course::convertDescription($row['SCBDESC_TEXT_NARRATIVE']);
+		if (!is_null($row['SSBDESC_TEXT_NARRATIVE'])) {
+			if (strlen($description))
+				$description .= "\n<br/><br/>\n";
+			$description .= banner_course_Course::convertDescription($row['SSBDESC_TEXT_NARRATIVE']);
+		}
+		$this->setDescription($description);
 		
 		$this->setGenusType(new phpkit_type_Type(
 			'urn', 										// namespace
@@ -107,6 +121,12 @@ class banner_course_CourseOffering
 		$this->addRecordType($this->instructorsType);
 		$this->addRecordType($this->weeklyScheduleType);
 		$this->addRecordType($this->alternatesType);
+		
+		$this->identifiersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
+		$properties = array();
+		$properties[] = new phpkit_Property('Course Reference Number', 'CRN', 'An number that uniquely identifies a section within a term.', $row['SSBSECT_CRN']);
+		$properties[] = new phpkit_Property('Term Code', 'Term Code', 'An code that identifies the term a section is associated with.', $row['SSBSECT_TERM_CODE']);
+		$this->addProperties($properties, $this->identifiersType);
 	}
 	
 	/**
@@ -294,7 +314,8 @@ class banner_course_CourseOffering
 	    	if ($this->row['SCBCRSE_DIVS_CODE'])
 	    		$this->topicIds[] = $this->getOsidIdFromString($this->row['SCBCRSE_DIVS_CODE'], 'topic/division/');
 	    	
-	    	$this->topicIds = array_merge($this->topicIds, $this->session->getRequirementTopicIdsForCourseOffering($this->getId()));
+	    	$this->topicIds = array_merge($this->topicIds, $this->session->getRequirementTopicIdsForCourseOffering($this->getId()),
+	    	$this->session->getLevelTopicIdsForCourseOffering($this->getId()));
 	    }
 	    return new phpkit_id_ArrayIdList($this->topicIds);
     }
@@ -334,7 +355,7 @@ class banner_course_CourseOffering
     	if (count($parts))
 	    	return implode(", ", $parts);
 	    else
-	    	return "Unknown";
+	    	return "";
     }
 
 
@@ -419,7 +440,7 @@ class banner_course_CourseOffering
 				.'-'.$this->as12HourTime($row['SSRMEET_END_TIME'])
 				.' on '.implode(', ', $days);
 			if (count($rows) > 1)
-				$info .= ' at '.$this->row['SSRMEET_BLDG_CODE'].' ' .$this->row['SSRMEET_ROOM_CODE'];
+				$info .= ' at '.$row['SSRMEET_BLDG_CODE'].' ' .$row['SSRMEET_ROOM_CODE'];
 			$parts[] = $info;
 		}
 		
@@ -699,6 +720,19 @@ class banner_course_CourseOffering
     	$lookupSession = $this->session->getCourseOfferingLookupSession();
     	return $lookupSession->getCourseOfferingsByIds($this->getAlternateIds());
     }
+    
+    /**
+	 * Answer <code> true </code> if this course is the primary version in a group of
+	 * alternates.
+	 * 
+	 *  @return boolean
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+	 */
+	public function isPrimary () {
+		return (intval($this->row['SSBSECT_MAX_ENRL']) > 0);
+	}
     
 /*********************************************************
  * WeeklyScheduleRecord support
@@ -1140,19 +1174,19 @@ class banner_course_CourseOffering
 // 				$text .= ' '.$objective->getDisplayName();
 // 			} catch (osid_OperationFailedException $e) {}
 // 		}
-// 					
-// 		if ($this->hasRecordType($this->instructorsType)) {
-// 			try {
-// 				$record = $this->getCourseOfferingRecord($this->instructorsType);
-// 				$instructors = $record->getInstructors();
-// 				while ($instructors->hasNext()) {
-// 					$instructor = $instructors->getNextResource();
-// 					$text .= ' '.$instructor->getDisplayName();
-// 				}
-// 			} catch (osid_OperationFailedException $e) {
-// 			} catch (osid_PermissionDeniedException $e) {
-// 			}
-// 		}
+					
+		if ($this->hasRecordType($this->instructorsType)) {
+			try {
+				$record = $this->getCourseOfferingRecord($this->instructorsType);
+				$instructors = $record->getInstructors();
+				while ($instructors->hasNext()) {
+					$instructor = $instructors->getNextResource();
+					$text .= ' '.$instructor->getDisplayName();
+				}
+			} catch (osid_OperationFailedException $e) {
+			} catch (osid_PermissionDeniedException $e) {
+			}
+		}
 
 		return $text;
 	}

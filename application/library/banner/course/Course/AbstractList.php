@@ -16,7 +16,7 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-abstract class banner_course_Course_Lookup_AbstractList
+abstract class banner_course_Course_AbstractList
 	extends banner_course_CachingPdoQueryList
 	implements osid_course_CourseList
 {
@@ -42,26 +42,41 @@ abstract class banner_course_Course_Lookup_AbstractList
 	}
 	
 	/**
+	 * Answer a debugging string.
+	 * 
+	 * @return string
+	 * @access public
+	 * @since 5/27/09
+	 */
+	public function debug () {
+		return "\n\n".get_class($this)."\nQuery:\n".$this->getQuery()."\nParameters:\n".print_r($this->getAllInputParameters(), true);
+	}
+	
+	/**
 	 * Answer the query
 	 * 
 	 * @return string
-	 * @access private
+	 * @access protected
 	 * @since 4/17/09
 	 */
-	private function getQuery () {
+	protected function getQuery () {
 		return "
-SELECT 
+SELECT
 	SCBCRSE_SUBJ_CODE , 
 	SCBCRSE_CRSE_NUMB , 
-	MAX( SCBCRSE_EFF_TERM ) AS SCBCRSE_EFF_TERM , 
+	SCBCRSE_EFF_TERM , 
 	SCBCRSE_COLL_CODE , 
 	SCBCRSE_DIVS_CODE , 
 	SCBCRSE_DEPT_CODE , 
 	SCBCRSE_CSTA_CODE , 
 	SCBCRSE_TITLE ,
-	SCBCRSE_CREDIT_HR_HIGH
-FROM 
-	SCBCRSE
+	SCBCRSE_CREDIT_HR_HIGH,
+	SCBDESC_TEXT_NARRATIVE,
+	has_alternates
+	".$this->getAdditionalColumnsString()."
+FROM
+	scbcrse_scbdesc_recent
+	".$this->getAdditionalTableJoins()."
 WHERE
 	".$this->getAllWhereTerms()."
 	AND SCBCRSE_CSTA_CODE NOT IN (
@@ -75,20 +90,36 @@ WHERE
 		WHERE
 			".$this->getCatalogWhereTerms()."
 	)
-
 GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
-ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC	
+".$this->getOrderByClause()."
+".$this->getLimitClause()."
 ";
+	}
+	
+	/**
+	 * Answer a string to append to the column list of additional columns.
+	 * 
+	 * @return string
+	 * @access protected
+	 * @since 6/10/09
+	 */
+	protected function getAdditionalColumnsString () {
+		$columns = $this->getAdditionalColumns();
+		if (count($columns)) {
+			return ",\n\t".implode(",\n\t", $columns);
+		} else {
+			return '';
+		}
 	}
 	
 	/**
 	 * Answer the input parameters
 	 * 
 	 * @return array
-	 * @access private
+	 * @access protected
 	 * @since 4/17/09
 	 */
-	private function getAllInputParameters () {
+	protected function getAllInputParameters () {
 		$params = $this->getInputParameters();
 		if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->session->getCombinedCatalogId()))
 			$params[':catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
@@ -99,10 +130,10 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 	 * Answer a where clause
 	 * 
 	 * @return string
-	 * @access private
+	 * @access protected
 	 * @since 4/20/09
 	 */
-	private function getAllWhereTerms () {
+	protected function getAllWhereTerms () {
 		$terms = $this->getWhereTerms();
 		if (strlen(trim($terms)))
 			return $terms;
@@ -122,6 +153,54 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 			return 'TRUE';
 		else
 			return 'catalog_id = :catalog_id';
+	}
+	
+	/**
+	 * Answer any additional table join clauses to use
+	 * 
+	 * @return string
+	 * @access protected
+	 * @since 4/29/09
+	 */
+	protected function getAdditionalTableJoins () {
+		return '';
+	}
+	
+	/**
+	 * Answer the ORDER BY clause to use
+	 * 
+	 * @return string
+	 * @access protected
+	 * @since 5/28/09
+	 */
+	protected function getOrderByClause () {
+		return 'ORDER BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB';
+	}
+	
+	/**
+	 * Answer the LIMIT clause to use
+	 * 
+	 * Override this method in child classes to add functionality.
+	 * 
+	 * @return string
+	 * @access protected
+	 * @since 5/28/09
+	 */
+	protected function getLimitClause () {
+		return '';
+	}
+	
+	/**
+	 * Answer an array of additional columns to return.
+	 *
+	 * Override this method in child classes to add functionality.
+	 * 
+	 * @return array
+	 * @access protected
+	 * @since 6/10/09
+	 */
+	protected function getAdditionalColumns () {
+		return array();
 	}
 	
 	/**
@@ -153,8 +232,8 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 	final protected function getObjectFromRow (array $row) {
 		return new banner_course_Course(
 					$this->session->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'], 'course/'),
-					$row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'],
-					'',	// Description
+					$row['SCBCRSE_SUBJ_CODE'].' '.$row['SCBCRSE_CRSE_NUMB'],
+					((is_null($row['SCBDESC_TEXT_NARRATIVE']))?'':$row['SCBDESC_TEXT_NARRATIVE']),	// Description
 					$row['SCBCRSE_TITLE'], 
 					$row['SCBCRSE_CREDIT_HR_HIGH'],
 					array(
@@ -162,6 +241,7 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 						$this->session->getOsidIdFromString($row['SCBCRSE_DEPT_CODE'], 'topic/department/'),
 						$this->session->getOsidIdFromString($row['SCBCRSE_DIVS_CODE'], 'topic/division/')
 					),
+					$row['has_alternates'],
 					$this->session);
 	}
 	

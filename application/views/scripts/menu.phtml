@@ -11,18 +11,26 @@
 								<a href="<?php echo $this->url(array('controller' => 'offerings', 'action' => 'search', 'catalog' => $this->catalogIdString, 'term' => $this->termIdString), null, true) ?>" class="AspNet-Menu-Link">Search</a>
 							</li>
 							
+<!-- 
 							<li class="AspNet-Menu-Leaf<?php if ($this->menuIsTerms) { print " AspNet-Menu-Selected"; } ?>">
 								<a href="<?php echo $this->url(array('controller' => 'terms', 'action' => 'list', 'catalog' => $this->catalogIdString, 'term' => $this->termIdString), null, true) ?>" class="AspNet-Menu-Link">Terms</a>
 							</li>
-							
+ -->
+	<?php if ($this->term) { ?>
+				
+<!-- 
 							<li class="AspNet-Menu-Leaf<?php if ($this->menuIsCourses) { print " AspNet-Menu-Selected"; } ?>">
 								<a href="<?php echo $this->url(array('controller' => 'courses', 'action' => 'list', 'catalog' => $this->catalogIdString, 'term' => $this->termIdString), null, true) ?>" class="AspNet-Menu-Link">Courses</a>
 							</li>
-							
+ -->
+		
+<!-- 
 							<li class="AspNet-Menu-Leaf<?php if ($this->menuIsOfferings) { print " AspNet-Menu-Selected"; } ?>">
-								<a href="<?php echo $this->url(array('controller' => 'offerings', 'action' => 'list', 'catalog' => $this->catalogIdString, 'term' => $this->termIdString), null, true) ?>" class="AspNet-Menu-Link">Sections</a>
+								<a href="<?php echo $this->url(array('controller' => 'offerings', 'action' => 'list', 'catalog' => $this->catalogIdString, 'term' => $this->termIdString), null, true) ?>" class="AspNet-Menu-Link">All Sections in <?php print $this->term->getDisplayName(); ?></a>
 							</li>
-						
+ -->
+	<?php } ?>
+
 <?php } ?>
 						</ul>
 

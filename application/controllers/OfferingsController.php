@@ -40,6 +40,7 @@ class OfferingsController
         $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
         $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
         $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
+        $this->levelType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
         
 		$this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
 	}
@@ -64,7 +65,11 @@ class OfferingsController
 		
 		// Add our parameters to the search query
 		if ($this->_getParam('term')) {
-			$termId = self::getOsidIdFromString($this->_getParam('term'));
+			if ($this->_getParam('term') == 'CURRENT') {
+				$termId = self::getCurrentTermId();
+			} else {
+				$termId = self::getOsidIdFromString($this->_getParam('term'));
+			}
 			
 			$termLookupSession = self::getCourseManager()->getTermLookupSession();
 			$termLookupSession->useFederatedCourseCatalogView();
@@ -89,6 +94,49 @@ class OfferingsController
 			$this->view->hideOfferingInstructors = true;
 		
 		$this->render('offerings', null, true);
+	}
+	
+	/**
+	 * Answer search results as an xml feed.
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 10/21/09
+	 */
+	public function searchxmlAction () {
+		$this->searchAction();
+		$this->view->sections = $this->searchSession->getCourseOfferingsByQuery($this->query);
+		
+		// Set the next and previous terms
+		if (isset($this->view->term)) {
+			$terms = $this->termLookupSession->getTerms();
+			while ($terms->hasNext()) {
+				$term = $terms->getNextTerm();
+				if ($term->getId()->isEqual($this->view->term->getId())) {
+					if (isset($lastTerm))
+						$this->view->nextTerm = $lastTerm;
+					if ($terms->hasNext())
+						$this->view->previousTerm = $terms->getNextTerm();
+					break;
+				}
+				$lastTerm = $term;
+			}
+		}
+		// Reset the terms list as due to caching, we will have just wiped out the statement above.
+		// 
+		// It would be better to fix this in the banner_course_CachingPdoQueryList, but
+		// I haven't yet figured out how to determine if a result cursor
+		// has been closed or not. See:
+		// 
+		// http://stackoverflow.com/questions/1608427/how-can-i-determine-if-a-pdo-statement-cursor-is-closed
+		$this->view->terms = $this->termLookupSession->getTerms();
+		
+		$this->view->feedTitle = 'Course Offering Results';
+		
+		$output = $this->view->render('offerings/searchxml.phtml');
+// 		header('Content-Type: text/plain');
+		print $output;
+		exit;
 	}
 	
 	/**
@@ -120,11 +168,14 @@ class OfferingsController
 	/*********************************************************
 	 * Build option lists for the search form
 	 *********************************************************/
-	 	$this->view->terms = $termLookupSession->getTerms();
 	 			
 		// Term
 		if ($this->_getParam('term')) {
-			$termId = self::getOsidIdFromString($this->_getParam('term'));
+			if ($this->_getParam('term') == 'CURRENT') {
+				$termId = self::getCurrentTermId($offeringSearchSession->getCourseCatalogId());
+			} else {
+				$termId = self::getOsidIdFromString($this->_getParam('term'));
+			}
 		}
 		
 	 	
@@ -161,6 +212,14 @@ class OfferingsController
 	 	}
 		$this->view->requirements = $topicSearchSession->getTopicsByQuery($topicQuery);
 		
+		$topicQuery = $topicSearchSession->getTopicQuery();
+	 	$topicQuery->matchGenusType($this->levelType, true);
+	 	if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+	 		$record = $topicQuery->getTopicQueryRecord($this->termType);
+	 		$record->matchTermId($termId, true);
+	 	}
+		$this->view->levels = $topicSearchSession->getTopicsByQuery($topicQuery);
+		
 		$this->view->genusTypes = $offeringLookupSession->getCourseOfferingGenusTypes();
 		
 	/*********************************************************
@@ -171,9 +230,12 @@ class OfferingsController
 		$search = $offeringSearchSession->getCourseOfferingSearch();
 		$this->view->searchParams = array();
 		
+		// Make our session and query available to the XML version of this action.
+		$this->termLookupSession = $termLookupSession;
+		$this->view->terms = $termLookupSession->getTerms();
+		
 		// Add our parameters to the search query
-		if ($this->_getParam('term')) {
-			$termId = self::getOsidIdFromString($this->_getParam('term'));
+		if (isset($termId)) {
 			$this->view->searchParams['term'] = $this->_getParam('term');
 			
 			$query->matchTermId($termId, true);
@@ -187,21 +249,54 @@ class OfferingsController
 		}
 		
 		if ($this->_getParam('department')) {
-			$query->matchTopicId(self::getOsidIdFromString($this->_getParam('department')), true);
-			$this->view->selectedDepartmentId = self::getOsidIdFromString($this->_getParam('department'));
-			$this->view->searchParams['department'] = $this->_getParam('department');
+			if (is_array($this->_getParam('department')))
+				$departments = $this->_getParam('department');
+			else
+				$departments = array($this->_getParam('department'));
+			
+			foreach ($departments as $idString) {
+				$id = self::getOsidIdFromString($idString);
+				$query->matchTopicId($id, true);
+				// set the first as the selected one if multiple.
+				if (!isset($this->view->selectedDepartmentId))
+					$this->view->selectedDepartmentId = $id;
+			}
+			
+			$this->view->searchParams['department'] = $departments;
 		}
 		
 		if ($this->_getParam('subject')) {
-			$query->matchTopicId(self::getOsidIdFromString($this->_getParam('subject')), true);
-			$this->view->selectedSubjectId = self::getOsidIdFromString($this->_getParam('subject'));
-			$this->view->searchParams['subject'] = $this->_getParam('subject');
+			if (is_array($this->_getParam('subject')))
+				$subjects = $this->_getParam('subject');
+			else
+				$subjects = array($this->_getParam('subject'));
+			
+			foreach ($subjects as $idString) {
+				$id = self::getOsidIdFromString($idString);
+				$query->matchTopicId($id, true);
+				// set the first as the selected one if multiple.
+				if (!isset($this->view->selectedSubjectId))
+					$this->view->selectedSubjectId = $id;
+			}
+			
+			$this->view->searchParams['subject'] = $subjects;
 		}
 		
 		if ($this->_getParam('division')) {
-			$query->matchTopicId(self::getOsidIdFromString($this->_getParam('division')), true);
-			$this->view->selectedDivisionId = self::getOsidIdFromString($this->_getParam('division'));
-			$this->view->searchParams['division'] = $this->_getParam('division');
+			if (is_array($this->_getParam('division')))
+				$divisions = $this->_getParam('division');
+			else
+				$divisions = array($this->_getParam('division'));
+			
+			foreach ($divisions as $idString) {
+				$id = self::getOsidIdFromString($idString);
+				$query->matchTopicId($id, true);
+				// set the first as the selected one if multiple.
+				if (!isset($this->view->selectedDivisionId))
+					$this->view->selectedDivisionId = $id;
+			}
+			
+			$this->view->searchParams['division'] = $divisions;
 		}
 			
 		$this->view->selectedRequirementIds = array();
@@ -211,13 +306,29 @@ class OfferingsController
 			else
 				$requirements = array($this->_getParam('requirement'));
 			
-			foreach ($requirements as $reqIdString) {
-				$reqId = self::getOsidIdFromString($reqIdString);
-				$query->matchTopicId($reqId, true);
-				$this->view->selectedRequirementIds[] = $reqId;
+			foreach ($requirements as $idString) {
+				$id = self::getOsidIdFromString($idString);
+				$query->matchTopicId($id, true);
+				$this->view->selectedRequirementIds[] = $id;
 			}
 			
 			$this->view->searchParams['requirement'] = $requirements;
+		}
+		
+		$this->view->selectedLevelIds = array();
+		if ($this->_getParam('level') && count($this->_getParam('level'))) {
+			if (is_array($this->_getParam('level')))
+				$levels = $this->_getParam('level');
+			else
+				$levels = array($this->_getParam('level'));
+			
+			foreach ($levels as $idString) {
+				$id = self::getOsidIdFromString($idString);
+				$query->matchTopicId($id, true);
+				$this->view->selectedLevelIds[] = $id;
+			}
+			
+			$this->view->searchParams['level'] = $levels;
 		}
 		
 		$this->view->selectedGenusTypes = array();
@@ -309,6 +420,10 @@ class OfferingsController
 			}
 			$this->view->searchParams['instructor'] = $this->_getParam('instructor');
 		}
+		
+		// Make our session and query available to the XML version of this action.
+		$this->searchSession = $offeringSearchSession;
+		$this->query = $query;
 		
 		// Run the query if submitted.
 		if ($this->_getParam('submit')) {

@@ -18,6 +18,13 @@ try {
 		exit(2);
 	}
 	
+	$minMemory = '300M';
+	$minBytes = asBytes($minMemory);
+	$currentBytes = asBytes(ini_get('memory_limit'));
+	if ($currentBytes < $minBytes) {
+		ini_set('memory_limit', $minMemory);
+	}
+	
 	$searchSession->buildIndex(true);
 
 // Handle certain types of uncaught exceptions specially. In particular,
@@ -37,4 +44,20 @@ try {
 // Default 
 catch (Exception $e) {
 	ErrorPrinter::handleException($e, 500);
+}
+
+function asBytes($val) {
+	$val = trim($val);
+	$last = strtolower($val[strlen($val)-1]);
+	switch($last) {
+		// The 'G' modifier is available since PHP 5.1.0
+		case 'g':
+			$val *= 1024;
+		case 'm':
+			$val *= 1024;
+		case 'k':
+			$val *= 1024;
+	}
+
+	return $val;
 }

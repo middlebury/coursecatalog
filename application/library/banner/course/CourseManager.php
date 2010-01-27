@@ -130,7 +130,7 @@ class banner_course_CourseManager
     								new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/pdo_password'),
     								new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
 		} catch (osid_NotFoundException $e) {
-			throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode());
+			throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode(), $e);
 		}
 		
 		try {
@@ -143,12 +143,28 @@ class banner_course_CourseManager
 		}
 		
 		try {
+			$driverOptions = array();
+			$options = phpkit_configuration_ConfigUtil::getMultiValuedValueOfAnyType(
+    								$runtime->getConfiguration(), 
+    								new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/pdo_driver_options'));
+    		foreach ($options as $key => $value) {
+    			$option = constant($key);
+    			if (is_null($option))
+    				throw new osid_ConfigurationErrorException("'$key' is not a valid constant.");
+    			$driverOptions[$option] = $value;
+    		}
+    		
+		} catch (osid_NotFoundException $e) {
+			$driverOptions = array();
+		}
+		
+		try {
 			if ($debug)
-				$this->db = new PDODebug_PDO($dsn, $username, $password);
+				$this->db = new PDODebug_PDO($dsn, $username, $password, $driverOptions);
 			else
-				$this->db = new PDO($dsn, $username, $password);
+				$this->db = new PDO($dsn, $username, $password, $driverOptions);
 		} catch (PDOException $e) {
-			throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode());
+			throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode(), $e);
 		}
 		
 		try {
@@ -159,7 +175,7 @@ class banner_course_CourseManager
     		if (!strlen($this->idAuthority))
     			throw new osid_ConfigurationErrorException('urn:inet:middlebury.edu:config:banner_course/id_authority must be specified.');
 		} catch (osid_NotFoundException $e) {
-			throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode());
+			throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode(), $e);
 		}
     }
 
@@ -230,7 +246,8 @@ class banner_course_CourseManager
      *              supportsCourseSearch() </code> is <code> true. </code> 
      */
     public function getCourseSearchSession() {
-    	throw new osid_UnimplementedException();
+    	return new banner_course_Course_Search_Session($this, 
+    		new phpkit_id_URNInetId('urn:inet:'.$this->idAuthority.':catalog/all'));
 	}
 
 
@@ -257,7 +274,11 @@ class banner_course_CourseManager
      *              </code> 
      */
     public function getCourseSearchSessionForCatalog(osid_id_Id $courseCatalogId) {
-    	throw new osid_UnimplementedException();
+    	try {
+	    	return new banner_course_Course_Search_Session($this, $courseCatalogId);
+	    } catch (osid_NotFoundException $e) {
+			throw new osid_NotFoundException('Can not get a CourseSearchSession for an unknown catalog id.');
+		}
 	}
 
 
