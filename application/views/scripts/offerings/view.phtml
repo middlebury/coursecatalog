@@ -4,13 +4,15 @@ print "\n\t<h2>".nl2br($this->escape($this->offering->getTitle()))."</h2>";
 if ($this->offering->getDescription())
 	print "\n\t<div>".$this->offering->getDescription()."</div>";
 
+$term = $this->offering->getTerm();
+
 $resourceParams = array(
 							'controller'	=> 'resources',
 							'action'		=> 'view',
-							'offering'		=> null
+							'offering'		=> null,
+							'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId()),
 						);
 
-$term = $this->offering->getTerm();
 $termUrl = $this->url(array(
 						'controller'	=> 'terms',
 						'action'		=> 'view',
