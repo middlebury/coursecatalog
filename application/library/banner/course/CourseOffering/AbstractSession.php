@@ -129,14 +129,16 @@ WHERE
 			SSRXLST_TERM_CODE = :term_code 
 			AND SSRXLST_CRN = :crn
 		)
-	AND SSRXLST_TERM_CODE = :term_code
-	AND SSRXLST_CRN != :crn
+	AND SSRXLST_TERM_CODE = :term_code_2
+	AND SSRXLST_CRN != :crn_2
 ";
 			self::$alternatesForOffering_stmt = $this->manager->getDB()->prepare($query);
 		}
 		self::$alternatesForOffering_stmt->execute(array(
 			':term_code' => $this->getTermCodeFromOfferingId($offeringId),
-			':crn' => $this->getCrnFromOfferingId($offeringId)
+			':crn' => $this->getCrnFromOfferingId($offeringId),
+			':term_code_2' => $this->getTermCodeFromOfferingId($offeringId),
+			':crn_2' => $this->getCrnFromOfferingId($offeringId)
 		));
 		$rows = self::$alternatesForOffering_stmt->fetchAll(PDO::FETCH_ASSOC);
 		self::$alternatesForOffering_stmt->closeCursor();
