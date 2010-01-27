@@ -10,6 +10,12 @@ $topicParams = array(
 						'action'		=> 'view',
 						'offering'		=> null
 					);
+if (isset($this->term)) {
+	$topicParams['term'] = AbstractCatalogController::getStringFromOsidId($this->term->getId());
+} else if (isset($this->linkTermId)) {
+	$topicParams['term'] = AbstractCatalogController::getStringFromOsidId($this->linkTermId);
+}
+
 print "\n\t<dt>Subject:</dt>";
 print "\n\t\t<dd>";
 foreach ($this->subjectTopics as $topic) {

@@ -95,9 +95,7 @@ class CoursesController
  				$this->view->alternates = $record->getAlternates();
  			}
  		}
-		
-		$this->render();
-		
+				
 		// Term
 		if ($this->_getParam('term')) {
 			$termId = self::getOsidIdFromString($this->_getParam('term'));
@@ -110,7 +108,11 @@ class CoursesController
 			if ($this->getSelectedCatalogId())
 				$allParams['catalog'] = self::getStringFromOsidId($this->getSelectedCatalogId());
 			$this->view->offeringsForAllTermsUrl = $this->_helper->url('view', 'courses', null, $allParams);
+		} else {
+			$this->view->linkTermId = self::getCurrentTermId($this->getSelectedCatalogId());
 		}
+		
+		$this->render();
 		
 		// offerings
 		$this->view->offeringsTitle = "Sections";
