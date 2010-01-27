@@ -27,15 +27,19 @@ $offeringParams = array(
 
 print "\n\t<dl class='section_info'>";
 print "\n\t\t<dt>Term:</dt>";
-print "\n\t\t<dd><a href='".$termUrl."'>".$this->escape($term->getDisplayName())."</a></dd>";
+print "\n\t\t<dd>";
+// print "\n\t\t\t<a href='".$termUrl."'>";
+print $this->escape($term->getDisplayName());
+// print "</a>";
+print "\n\t\t</dd>";
 print "\n\t\t<dt>Location:</dt>";
 if ($this->offering->hasLocation()) {
 	print "\n\t\t<dd>";
 	$locationResource = $this->offering->getLocation();
 	$resourceParams['resource'] = AbstractCatalogController::getStringFromOsidId($locationResource->getId());
-	print "<a href=\"".$this->url($resourceParams)."\">";
+// 	print "<a href=\"".$this->url($resourceParams)."\">";
 	print $this->escape($locationResource->getDisplayName());
-	print "</a> ";
+// 	print "</a> ";
 	if ($locationResource->getDescription())
 		print "<span class='location_description'>(".$this->escape($locationResource->getDescription()).")</span>";
 	print "\n\t\t</dd>";
@@ -92,10 +96,10 @@ print "</dd>";
 print "\n\t\t<dt>Division:</dt>";
 print "\n\t\t<dd>";
 foreach ($this->divisionTopics as $topic) {
-	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
-	print "<a href=\"".$this->url($topicParams)."\">";
+// 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+// 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
-	print "</a> ";
+// 	print "</a> ";
 }
 print "</dd>";
 

@@ -39,10 +39,10 @@ print "</dd>";
 print "\n\t\t<dt>Division:</dt>";
 print "\n\t\t<dd>";
 foreach ($this->divisionTopics as $topic) {
-	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
-	print "<a href=\"".$this->url($topicParams)."\">";
+// 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+// 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
-	print "</a> ";
+// 	print "</a> ";
 }
 print "</dd>";
 

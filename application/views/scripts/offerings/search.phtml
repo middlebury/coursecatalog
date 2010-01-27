@@ -325,8 +325,11 @@ print "\n\t\t<dt>Type:</dt>";
 print "\n\t\t<dd>".$this->escape($section->getGenusType()->getDisplayName())."</dd>";
 
 print "\n\t\t<dt>Term:</dt>";
-print "\n\t\t<dd><a href='".$termUrl."'>".$this->escape($term->getDisplayName())."</a></dd>";
-
++print "\n\t\t<dd>";
++// print "\n\t\t\t<a href='".$termUrl."'>";
++print $this->escape($term->getDisplayName());
++// print "</a>";
++print "\n\t\t</dd>";
 print "\n\t\t<dt>Department:</dt>";
 print "\n\t\t<dd>";
 $topics = AbstractCatalogController::filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department"));
@@ -382,10 +385,10 @@ if ($section->hasLocation()) {
 	try {
 		$locationResource = $section->getLocation();
 		print "\n\t\t<dd>";
-		$resourceParams['resource'] = AbstractCatalogController::getStringFromOsidId($locationResource->getId());
-		print "<a href=\"".$this->url($resourceParams)."\">";
+// 		$resourceParams['resource'] = AbstractCatalogController::getStringFromOsidId($locationResource->getId());
+// 		print "<a href=\"".$this->url($resourceParams)."\">";
 		print $this->escape($locationResource->getDisplayName());
-		print "</a> ";
+// 		print "</a> ";
 		if ($locationResource->getDescription())
 			print "<span class='location_description'>(".$this->escape($locationResource->getDescription()).")</span>";
 		print "\n\t\t</dd>";
