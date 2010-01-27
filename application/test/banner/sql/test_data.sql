@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 27, 2010 at 03:49 PM
+-- Generation Time: Jan 27, 2010 at 03:58 PM
 -- Server version: 5.0.77
 -- PHP Version: 5.2.12
 
@@ -150,6 +150,13 @@ INSERT INTO `SCBDESC` (`SCBDESC_SUBJ_CODE`, `SCBDESC_CRSE_NUMB`, `SCBDESC_TERM_C
 -- Dumping data for table `SCREQIV`
 --
 
+INSERT INTO `SCREQIV` (`SCREQIV_SUBJ_CODE`, `SCREQIV_CRSE_NUMB`, `SCREQIV_EFF_TERM`, `SCREQIV_SUBJ_CODE_EQIV`, `SCREQIV_CRSE_NUMB_EQIV`, `SCREQIV_START_TERM`, `SCREQIV_END_TERM`, `SCREQIV_ACTIVITY_DATE`) VALUES
+('GEOG', '0250', '200390', 'GEOL', '0250', '200390', '999999', '2003-02-24'),
+('GEOG', '0250', '200390', 'GG', '250', '000000', '200390', '2003-07-02'),
+('GEOG', '0250', '200390', 'GL', '250', '000000', '200390', '2003-07-02'),
+('GEOL', '0250', '200390', 'GEOG', '0250', '200390', '999999', '2003-07-02'),
+('GEOL', '0250', '200390', 'GG', '250', '000000', '200390', '2003-03-26'),
+('GEOL', '0250', '200390', 'GL', '250', '000000', '200390', '2003-03-26');
 
 --
 -- Dumping data for table `SCRLEVL`
