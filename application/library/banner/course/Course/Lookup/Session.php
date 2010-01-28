@@ -464,57 +464,99 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 SELECT 
 	*
 FROM (
+
+-- Give three courses, A, B, C, they may be marked equivalent in 4 columns as any of 
+--  1   2  3   4
+--  A = B, A = C
+--  A = B, B = C
+--  A = B, C = B
+--  A = B, C = A
+
+	-- Columns 1 => 2 as well as 3 => 4
 	SELECT
-		SCREQIV_SUBJ_CODE,
-		SCREQIV_CRSE_NUMB,
-		SCREQIV_EFF_TERM,
-		SCREQIV_SUBJ_CODE_EQIV,
-		SCREQIV_CRSE_NUMB_EQIV
+		SCREQIV_SUBJ_CODE_EQIV AS subj_code,
+		SCREQIV_CRSE_NUMB_EQIV AS crse_numb,
+		SCREQIV_EFF_TERM AS eff_term
 	FROM
-		SCREQIV
+		screqiv_current
 	WHERE 
-		(SCREQIV_SUBJ_CODE = :subj_code_0
-			AND SCREQIV_CRSE_NUMB = :crse_numb_0)
-	
-	UNION
-		
-	SELECT
-		SCREQIV_SUBJ_CODE,
-		SCREQIV_CRSE_NUMB,
-		equiv2_eff_term AS SCREQIV_EFF_TERM,
-		equiv2_subj_code AS SCREQIV_SUBJ_CODE_EQIV,
-		equiv2_crse_numb AS SCREQIV_CRSE_NUMB_EQIV
-	FROM
-		screqiv_2way
-	WHERE 
-		(SCREQIV_SUBJ_CODE = :subj_code_1
-			AND SCREQIV_CRSE_NUMB = :crse_numb_1)
+		SCREQIV_SUBJ_CODE = :subj_code_0
+		AND SCREQIV_CRSE_NUMB = :crse_numb_0
 	
 	UNION
 	
+	-- Columns 1 <= 2 as well as 3 <= 4
 	SELECT
-		SCREQIV_SUBJ_CODE,
-		SCREQIV_CRSE_NUMB,
-		equiv2_eff_term AS SCREQIV_EFF_TERM,
-		equiv2_subj_code_equiv AS SCREQIV_SUBJ_CODE_EQIV,
-		equiv2_crse_numb_equiv AS SCREQIV_CRSE_NUMB_EQIV
+		SCREQIV_SUBJ_CODE AS subj_code,
+		SCREQIV_CRSE_NUMB AS crse_numb,
+		SCREQIV_EFF_TERM  AS eff_term
+	FROM
+		screqiv_current
+	WHERE 
+		SCREQIV_SUBJ_CODE_EQIV = :subj_code_1
+		AND SCREQIV_CRSE_NUMB_EQIV = :crse_numb_1
+	
+	UNION
+	
+	-- Columns 1 => 3
+	SELECT
+		subj_code_3 AS subj_code,
+		crse_numb_3 AS crse_numb,
+		GREATEST(eff_term_a, eff_term_b) AS eff_term
 	FROM
 		screqiv_2way
-	WHERE 
-		(SCREQIV_SUBJ_CODE = :subj_code_2
-			AND SCREQIV_CRSE_NUMB = :crse_numb_2)
+	WHERE
+		subj_code_1 = :subj_code_2
+		AND crse_numb_1 = :crse_numb_2
 	
+	UNION
+	
+	-- Columns 1 => 4
+	SELECT
+		subj_code_4 AS subj_code,
+		crse_numb_4 AS crse_numb,
+		GREATEST(eff_term_a, eff_term_b) AS eff_term
+	FROM
+		screqiv_2way
+	WHERE
+		subj_code_1 = :subj_code_3
+		AND crse_numb_1 = :crse_numb_3
+	
+	UNION
+	
+	-- Columns 2 => 3
+	SELECT
+		subj_code_3 AS subj_code,
+		crse_numb_3 AS crse_numb,
+		GREATEST(eff_term_a, eff_term_b) AS eff_term
+	FROM
+		screqiv_2way
+	WHERE
+		subj_code_2 = :subj_code_4
+		AND crse_numb_2 = :crse_numb_4
+	
+	UNION
+	
+	-- Columns 2 => 4
+	SELECT
+		subj_code_4 AS subj_code,
+		crse_numb_4 AS crse_numb,
+		GREATEST(eff_term_a, eff_term_b) AS eff_term
+	FROM
+		screqiv_2way
+	WHERE
+		subj_code_2 = :subj_code_5
+		AND crse_numb_2 = :crse_numb_5
+
 	) as screquiv_combined
 	
 WHERE
-	SCREQIV_SUBJ_CODE_EQIV != :subj_code_3
-	OR SCREQIV_CRSE_NUMB_EQIV != :crse_numb_3
+	subj_code != :subj_code_6
+	OR crse_numb != :crse_numb_6
 GROUP BY 
-	SCREQIV_SUBJ_CODE, 
-	SCREQIV_CRSE_NUMB,
-	SCREQIV_SUBJ_CODE_EQIV,
-	SCREQIV_CRSE_NUMB_EQIV
-ORDER BY SCREQIV_EFF_TERM DESC
+	subj_code, 
+	crse_numb
+ORDER BY eff_term DESC
 ";
 			self::$alternatesForCourse_stmt = $this->manager->getDB()->prepare($query);
 		}
@@ -526,7 +568,13 @@ ORDER BY SCREQIV_EFF_TERM DESC
 			':subj_code_2' => $this->getSubjectFromCourseId($courseId),
 			':crse_numb_2' => $this->getNumberFromCourseId($courseId),
 			':subj_code_3' => $this->getSubjectFromCourseId($courseId),
-			':crse_numb_3' => $this->getNumberFromCourseId($courseId)
+			':crse_numb_3' => $this->getNumberFromCourseId($courseId),
+			':subj_code_4' => $this->getSubjectFromCourseId($courseId),
+			':crse_numb_4' => $this->getNumberFromCourseId($courseId),
+			':subj_code_5' => $this->getSubjectFromCourseId($courseId),
+			':crse_numb_5' => $this->getNumberFromCourseId($courseId),
+			':subj_code_6' => $this->getSubjectFromCourseId($courseId),
+			':crse_numb_6' => $this->getNumberFromCourseId($courseId)
 		));
 		$rows = self::$alternatesForCourse_stmt->fetchAll(PDO::FETCH_ASSOC);
 		self::$alternatesForCourse_stmt->closeCursor();
@@ -534,7 +582,7 @@ ORDER BY SCREQIV_EFF_TERM DESC
 		
 		$ids = array();
 		foreach ($rows as $row) {
-			$ids[] = $this->getCourseIdFromSubjectAndNumber($row['SCREQIV_SUBJ_CODE_EQIV'], $row['SCREQIV_CRSE_NUMB_EQIV']);
+			$ids[] = $this->getCourseIdFromSubjectAndNumber($row['subj_code'], $row['crse_numb']);
 		}
 		
 		return new phpkit_id_ArrayIdList($ids);

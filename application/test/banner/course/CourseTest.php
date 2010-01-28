@@ -35,12 +35,15 @@ class banner_course_CourseTest
     {
     	$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
     	$this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
+    	$this->geolId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/GEOL0250');
+    	$this->geogId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/GEOG0250');
     	$this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHEM0104');
     	$this->manager = $this->sharedFixture['CourseManager'];
         $this->session = $this->manager->getCourseLookupSessionForCatalog($this->mcugId);
         $this->object = $this->session->getCourse($this->physId);
         
         $this->termRecordType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
+        $this->alternatesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
     }
 
     /**
@@ -208,6 +211,85 @@ class banner_course_CourseTest
 		$this->assertEquals(13, $terms->available());
 		$this->assertType('osid_course_Term', $terms->getNextTerm());
 	}
+	
+/*********************************************************
+ * Tests for AlternatesRecord.
+ *********************************************************/
+ 	/**
+     * 
+     */
+    public function testHasAlternates () {
+    	$record = $this->object->getCourseRecord($this->alternatesType);
+    	$this->assertFalse($record->hasAlternates());
+    }
+    
+ 	/**
+     * 
+     */
+    public function testGetAlternateIds () {
+    	$record = $this->object->getCourseRecord($this->alternatesType);
+    	$ids = $record->getAlternateIds();
+    	$this->assertType('osid_id_IdList', $ids);
+    }
+    
+    /**
+     * 
+     */
+    public function testGetAlternates () {
+    	$record = $this->object->getCourseRecord($this->alternatesType);
+    	$alternates = $record->getAlternates();
+    	$this->assertType('osid_course_CourseList', $alternates);
+    }
+    
+    /**
+     * 
+     */
+    public function testHasGeolAlternates () {
+    	$course = $this->session->getCourse($this->geolId);
+    	$record = $course->getCourseRecord($this->alternatesType);
+    	$this->assertTrue($record->hasAlternates());
+    }
+ 	
+ 	/**
+     * 
+     */
+    public function testGetGeolAlternateIds () {
+    	$course = $this->session->getCourse($this->geolId);
+    	$record = $course->getCourseRecord($this->alternatesType);
+    	$ids = $record->getAlternateIds();
+    	$this->assertType('osid_id_IdList', $ids);
+    	$this->assertEquals(1, $ids->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testGetGeolAlternates () {
+    	$course = $this->session->getCourse($this->geolId);
+    	$record = $course->getCourseRecord($this->alternatesType);
+    	$alternates = $record->getAlternates();
+    	$this->assertType('osid_course_CourseList', $alternates);
+    	$this->assertEquals(1, $alternates->available());
+    }
+//     
+//     /**
+//      * 
+//      */
+//     public function testGeogIsPrimary () {
+//     	$course = $this->session->getCourse($this->geogId);
+//     	$record = $course->getCourseRecord($this->alternatesType);
+//     	$this->assertFalse($record->isPrimary());
+//     }
+//     
+//     /**
+//      * 
+//      */
+//     public function testGeolIsPrimary () {
+//     	$course = $this->session->getCourse($this->geolId);
+//     	$record = $course->getCourseRecord($this->alternatesType);
+//     	$this->assertTrue($record->isPrimary());
+//     }
+
 	
 }
 ?>

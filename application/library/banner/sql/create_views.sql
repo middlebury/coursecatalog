@@ -128,34 +128,98 @@ FROM
 WHERE
 	-- Clause for the 'outer self exclusion join'
 	desc2.SCBDESC_SUBJ_CODE IS NULL;
+
+				
+
+-- ---------------------------------------------------------
+
+--
+-- This view allows fetching of the most recent equivalencies available for a course
+--	
+CREATE OR REPLACE VIEW screqiv_recent AS
+SELECT 
+	equiv1.*
+FROM 
+	SCREQIV AS equiv1
 	
+	-- 'Outer self exclusion join' to fetch only the most recent SCREQIV row.
+	LEFT JOIN SCREQIV AS equiv2 
+		ON (equiv1.SCREQIV_SUBJ_CODE = equiv2.SCREQIV_SUBJ_CODE 
+			AND equiv1.SCREQIV_CRSE_NUMB = equiv2.SCREQIV_CRSE_NUMB 
+			AND equiv1.SCREQIV_SUBJ_CODE_EQIV = equiv2.SCREQIV_SUBJ_CODE_EQIV 
+			AND equiv1.SCREQIV_CRSE_NUMB_EQIV = equiv2.SCREQIV_CRSE_NUMB_EQIV 
+			AND equiv1.SCREQIV_START_TERM = equiv2.SCREQIV_START_TERM 
+			-- If equiv2 is effective after equiv1, a join will be successfull and equiv2 non-null.
+			-- On the latest equiv1, equiv2 will be null.
+			AND equiv1.SCREQIV_EFF_TERM < equiv2.SCREQIV_EFF_TERM)
+	
+WHERE
+	
+	-- Clause for the 'outer self exclusion join'
+	equiv2.SCREQIV_SUBJ_CODE IS NULL
+
+GROUP BY equiv1.SCREQIV_SUBJ_CODE , equiv1.SCREQIV_CRSE_NUMB, equiv1.SCREQIV_SUBJ_CODE_EQIV,  equiv1.SCREQIV_CRSE_NUMB_EQIV
+ORDER BY equiv1.SCREQIV_SUBJ_CODE , equiv1.SCREQIV_CRSE_NUMB, equiv1.SCREQIV_SUBJ_CODE_EQIV, equiv1.SCREQIV_CRSE_NUMB_EQIV;
+
+-- ---------------------------------------------------------
+
+--
+-- This view allows fetching current equivalencies for a course, excluding those that
+-- have expired.
+--
+-- In our Banner database the 'Beginning of Time' term (000000) and 'End of Time term (999999)
+-- have valid, but arbitrary start/end dates (~2000-01-01). The only way to distiguish
+-- them from real terms is to look for their null value in STVTERM_TRMT_CODE.
+--	
+CREATE OR REPLACE VIEW screqiv_current AS
+SELECT 
+	screqiv_recent.*
+FROM 
+	screqiv_recent
+	LEFT JOIN STVTERM as start_term ON (SCREQIV_START_TERM = start_term.STVTERM_CODE)
+	LEFT JOIN STVTERM as end_term ON (SCREQIV_END_TERM = end_term.STVTERM_CODE)
+WHERE
+	(start_term.STVTERM_TRMT_CODE IS NULL OR start_term.STVTERM_START_DATE < NOW())
+	AND (end_term.STVTERM_TRMT_CODE IS NULL OR end_term.STVTERM_END_DATE > NOW());
+
 -- ---------------------------------------------------------
 
 --
 -- This view allows matching of courses that are equivalent to a course that is 
 -- in turn equivalent to another course.
---	
+-- 
+-- Give three courses, A, B, C, they may be marked equivalent in 4 columns as any of 
+--  1   2  3   4
+--  A = B, A = C
+--  A = B, B = C
+--	A = B, C = B
+--  A = B, C = A
 
 CREATE OR REPLACE VIEW screqiv_2way AS
 SELECT
-	equiv1.`SCREQIV_SUBJ_CODE`,
-	equiv1.`SCREQIV_CRSE_NUMB`,
-	equiv1.`SCREQIV_EFF_TERM`,
-	equiv1.`SCREQIV_SUBJ_CODE_EQIV`,
-	equiv1.`SCREQIV_CRSE_NUMB_EQIV`,
-	equiv2.`SCREQIV_SUBJ_CODE` AS equiv2_subj_code,
-	equiv2.`SCREQIV_CRSE_NUMB` AS equiv2_crse_numb,
-	equiv2.`SCREQIV_EFF_TERM` AS equiv2_eff_term,
-	equiv2.`SCREQIV_SUBJ_CODE_EQIV` AS equiv2_subj_code_equiv,
-	equiv2.`SCREQIV_CRSE_NUMB_EQIV` AS equiv2_crse_numb_equiv
+	equiv1.`SCREQIV_SUBJ_CODE` AS subj_code_1,
+	equiv1.`SCREQIV_CRSE_NUMB` AS crse_numb_1,
+	equiv1.`SCREQIV_EFF_TERM` AS eff_term_a,
+	equiv1.`SCREQIV_SUBJ_CODE_EQIV` AS subj_code_2,
+	equiv1.`SCREQIV_CRSE_NUMB_EQIV` AS crse_numb_2,
+	equiv2.`SCREQIV_SUBJ_CODE` AS subj_code_3,
+	equiv2.`SCREQIV_CRSE_NUMB` AS crse_numb_3,
+	equiv2.`SCREQIV_EFF_TERM` AS eff_term_b,
+	equiv2.`SCREQIV_SUBJ_CODE_EQIV` AS subj_code_4,
+	equiv2.`SCREQIV_CRSE_NUMB_EQIV` AS crse_numb_4
 FROM 
-	SCREQIV as equiv1
-	LEFT JOIN SCREQIV AS equiv2 
-		ON ((equiv1.SCREQIV_SUBJ_CODE_EQIV = equiv2.SCREQIV_SUBJ_CODE
+	screqiv_current as equiv1
+	LEFT JOIN screqiv_current AS equiv2 
+		ON ((equiv1.SCREQIV_SUBJ_CODE = equiv2.SCREQIV_SUBJ_CODE
+				AND equiv1.SCREQIV_CRSE_NUMB = equiv2.SCREQIV_CRSE_NUMB)
+			OR (equiv1.SCREQIV_SUBJ_CODE = equiv2.SCREQIV_SUBJ_CODE_EQIV
+				AND equiv1.SCREQIV_CRSE_NUMB = equiv2.SCREQIV_CRSE_NUMB_EQIV)
+			OR (equiv1.SCREQIV_SUBJ_CODE_EQIV = equiv2.SCREQIV_SUBJ_CODE
 				AND equiv1.SCREQIV_CRSE_NUMB_EQIV = equiv2.SCREQIV_CRSE_NUMB)
 			OR (equiv1.SCREQIV_SUBJ_CODE_EQIV = equiv2.SCREQIV_SUBJ_CODE_EQIV
 				AND equiv1.SCREQIV_CRSE_NUMB_EQIV = equiv2.SCREQIV_CRSE_NUMB_EQIV));
 				
+
 
 -- ---------------------------------------------------------
 

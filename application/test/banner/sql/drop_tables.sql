@@ -1,5 +1,7 @@
 DROP VIEW IF EXISTS scrattr_recent;
 DROP VIEW IF EXISTS screqiv_2way;
+DROP VIEW IF EXISTS screqiv_current;
+DROP VIEW IF EXISTS screqiv_recent;
 DROP VIEW IF EXISTS scrlevl_recent;
 DROP VIEW IF EXISTS ssbsect_scbcrse_scbdesc;
 DROP VIEW IF EXISTS ssbsect_scbcrse;
