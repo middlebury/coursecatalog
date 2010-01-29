@@ -38,7 +38,7 @@ class harmoni_SQLUtils {
 		if ($queryString)
 			return self::parseSQLString($queryString);
 		else
-			throw new harmoni_DatabaseException("The file, '".$file."' was empty or doesn't exist.");
+			throw new Exception("The file, '".$file."' was empty or doesn't exist.");
 	}
 	
 	/**
@@ -58,10 +58,14 @@ class harmoni_SQLUtils {
 		$queryString = ereg_replace("\n|\r", " ", $queryString);
 		
 		// Remove multiple spaces
-		$queryString = ereg_replace("\ +", " ", $queryString);
+		$queryString = ereg_replace("[\ \t]+", " ", $queryString);
 		
 		// Remove backticks included by MySQL since they aren't needed anyway.
 		$queryString = ereg_replace("`", "", $queryString);
+		
+		// Add new lines after the end of each query.
+		$queryString = ereg_replace(";", ";\n", $queryString);
+		
 		return $queryString;
 	}
 	

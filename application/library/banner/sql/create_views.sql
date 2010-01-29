@@ -171,7 +171,9 @@ ORDER BY equiv1.SCREQIV_SUBJ_CODE , equiv1.SCREQIV_CRSE_NUMB, equiv1.SCREQIV_SUB
 -- have valid, but arbitrary start/end dates (~2000-01-01). The only way to distiguish
 -- them from real terms is to look for their null value in STVTERM_TRMT_CODE.
 --	
-CREATE OR REPLACE VIEW screqiv_current AS
+DROP VIEW IF EXISTS screqiv_current;
+DROP TABLE IF EXISTS screqiv_current;
+CREATE TABLE screqiv_current
 SELECT 
 	screqiv_recent.*
 FROM 

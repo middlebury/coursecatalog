@@ -1470,6 +1470,13 @@ WHERE
 	$mysql->commit();
 	
 	print "...\tUpdated derived table: catalog_term\n";
+	
+	
+	// Rebuild our "materialized views"
+	require_once(dirname(__FILE__).'/../application/library/harmoni/SQLUtils.php');
+	$mysql->beginTransaction();
+	harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/../application/library/banner/sql/create_views.sql', $mysql);
+	$mysql->commit();
 
 } catch (Exception $e) {
 	$exceptions[] = $e->__toString();
