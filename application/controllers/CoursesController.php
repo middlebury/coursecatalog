@@ -489,9 +489,6 @@ class CoursesController
 		print '
 	</channel>
 </rss>';
-		
-		header('Content-Type: text/xml');
-		ob_end_flush();
 		exit;
 	}
 	
