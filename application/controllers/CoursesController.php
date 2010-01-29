@@ -377,7 +377,7 @@ class CoursesController
 	 * @since 10/19/09
 	 */
 	protected function outputCourseFeed (Helper_RecentCourses_Abstract $recentCourses, $title, $url) {		
-		ob_start();
+		header('Content-Type: text/xml');
 		print '<?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
 	<channel>
@@ -389,6 +389,10 @@ class CoursesController
 		<docs>http://blogs.law.harvard.edu/tech/rss</docs>
 		
 ';
+		while (ob_get_level()) {
+			ob_end_flush();
+		}
+		flush();
 
 		// Set the next and previous terms
 		$currentTermId = self::getCurrentTermId($this->termLookupSession->getCourseCatalogId());
@@ -479,6 +483,7 @@ class CoursesController
 			}
 			
 			print "\n\t\t</item>";
+			flush();
 		}
 		
 		print '
