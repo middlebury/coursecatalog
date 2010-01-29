@@ -31,10 +31,14 @@
 /*********************************************************
  * Search
  *********************************************************/
+table.search_options {
+	width: 800px;
+}
 
 table.search_options th {
 	vertical-align: top;
 	text-align: left;
+	white-space: nowrap;
 }
 
 table.search_options td {
