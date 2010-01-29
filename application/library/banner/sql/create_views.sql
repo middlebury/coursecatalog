@@ -146,9 +146,12 @@ FROM
 	LEFT JOIN SCREQIV AS equiv2 
 		ON (equiv1.SCREQIV_SUBJ_CODE = equiv2.SCREQIV_SUBJ_CODE 
 			AND equiv1.SCREQIV_CRSE_NUMB = equiv2.SCREQIV_CRSE_NUMB 
-			AND equiv1.SCREQIV_SUBJ_CODE_EQIV = equiv2.SCREQIV_SUBJ_CODE_EQIV 
-			AND equiv1.SCREQIV_CRSE_NUMB_EQIV = equiv2.SCREQIV_CRSE_NUMB_EQIV 
-			AND equiv1.SCREQIV_START_TERM = equiv2.SCREQIV_START_TERM 
+			-- Check for matching equivalents OR NULL equivalents which may be used to clear out old values.
+			AND ((equiv1.SCREQIV_SUBJ_CODE_EQIV = equiv2.SCREQIV_SUBJ_CODE_EQIV 
+					AND equiv1.SCREQIV_CRSE_NUMB_EQIV = equiv2.SCREQIV_CRSE_NUMB_EQIV)
+				OR (equiv2.SCREQIV_SUBJ_CODE_EQIV IS NULL))
+			AND (equiv1.SCREQIV_START_TERM = equiv2.SCREQIV_START_TERM 
+				OR equiv2.SCREQIV_START_TERM IS NULL)
 			-- If equiv2 is effective after equiv1, a join will be successfull and equiv2 non-null.
 			-- On the latest equiv1, equiv2 will be null.
 			AND equiv1.SCREQIV_EFF_TERM < equiv2.SCREQIV_EFF_TERM)
@@ -157,6 +160,9 @@ WHERE
 	
 	-- Clause for the 'outer self exclusion join'
 	equiv2.SCREQIV_SUBJ_CODE IS NULL
+	
+	-- Ignore rows just used to clear out old values.
+	AND equiv1.SCREQIV_SUBJ_CODE_EQIV IS NOT NULL
 
 GROUP BY equiv1.SCREQIV_SUBJ_CODE , equiv1.SCREQIV_CRSE_NUMB, equiv1.SCREQIV_SUBJ_CODE_EQIV,  equiv1.SCREQIV_CRSE_NUMB_EQIV
 ORDER BY equiv1.SCREQIV_SUBJ_CODE , equiv1.SCREQIV_CRSE_NUMB, equiv1.SCREQIV_SUBJ_CODE_EQIV, equiv1.SCREQIV_CRSE_NUMB_EQIV;
