@@ -63,14 +63,14 @@ while ($this->terms->hasNext()) {
 		</tr>
 
 		<tr>
-			<th>By Department/Subject:</th>
+			<th>By Subject/Department:</th>
 			<td>
 				<select name="department">
 					<option value=''>Any Department or Subject</option>
-					<optgroup label='Departments'>
+					<optgroup label='Subjects'>
 <?php
-while ($this->departments->hasNext()) {
-	$topic = $this->departments->getNextTopic();
+while ($this->subjects->hasNext()) {
+	$topic = $this->subjects->getNextTopic();
 	print "\n\t\t\t\t\t<option value='";
 	print AbstractCatalogController::getStringFromOsidId($topic->getId());
 	print "'";
@@ -80,10 +80,10 @@ while ($this->departments->hasNext()) {
 }
 ?>
 					</optgroup>
-					<optgroup label='Subjects'>
+					<optgroup label='Departments'>
 <?php
-while ($this->subjects->hasNext()) {
-	$topic = $this->subjects->getNextTopic();
+while ($this->departments->hasNext()) {
+	$topic = $this->departments->getNextTopic();
 	print "\n\t\t\t\t\t<option value='";
 	print AbstractCatalogController::getStringFromOsidId($topic->getId());
 	print "'";
