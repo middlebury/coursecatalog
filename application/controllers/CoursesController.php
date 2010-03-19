@@ -492,6 +492,278 @@ class CoursesController
 		exit;
 	}
 	
+	/**
+	 * Answer a list of all recent courses
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 6/15/09
+	 */
+	public function allrecentcoursesAction () {
+		$this->_helper->viewRenderer->setNoRender();
+		
+		if (!$this->_getParam('catalog')) {
+			header('HTTP/1.1 400 Bad Request');
+			print "A catalog must be specified.";
+			exit;
+		}
+		try {
+			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
+			$searchSession = self::getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
+			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
+			
+			$this->termLookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+		} catch (osid_InvalidArgumentException $e) {
+			header('HTTP/1.1 400 Bad Request');
+			print "The catalog id specified was not of the correct format.";
+			exit;
+		} catch (osid_NotFoundException $e) {
+			header('HTTP/1.1 404 Not Found');
+			print "The catalog id specified was not found.";
+			exit;
+		}
+		
+		try {
+			$selectedTerms = array();
+			// Get all offerings in the terms
+			$offeringQuery = $offeringSearchSession->getCourseOfferingQuery();
+			foreach ($this->_getParam('term') as $termIdString) {
+				$termId = self::getOsidIdFromString($termIdString);
+				$selectedTerms[] = $termId;
+				$offeringQuery->matchTermId($termId, true);
+			}
+			$offerings = $offeringSearchSession->getCourseOfferingsByQuery($offeringQuery);
+		} catch (osid_InvalidArgumentException $e) {
+			header('HTTP/1.1 400 Bad Request');
+			print "The term id specified was not of the correct format.";
+			exit;
+		} catch (osid_NotFoundException $e) {
+			header('HTTP/1.1 404 Not Found');
+			print "The term ids specified were not found.";
+			exit;
+		}
+		
+		// Limit Courses to those offerings in the terms
+		$query = $searchSession->getCourseQuery();		
+		while ($offerings->hasNext()) {
+			$query->matchCourseOfferingId($offerings->getNextCourseOffering()->getId(), true);
+		}
+// $query->matchNumber('AMST*', new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard"), true);
+
+		$search = $searchSession->getCourseSearch();
+		$order = $searchSession->getCourseSearchOrder();
+		$order->orderByDisplayName();
+		$order->ascend();
+		$search->orderCourseResults($order);
+		$courses = $searchSession->getCoursesBySearch($query, $search);		
+		
+		header('Content-Type: text/html');
+		header('Content-Disposition: filename="AllCourses.html"');
+		print 
+'<html>
+<head>
+	<title>All Recent Courses</title>
+	<style>
+		br { mso-data-placement:same-cell; }
+	</style>
+</head>
+<body>
+<table>
+	<thead>
+		<tr>
+			<th>Number</th>
+			<th>Subject</th>
+			<th>Department</th>
+			<th>Division</th>
+			<th>Title</th>
+			<th>Description</th>
+			<th>Link</th>
+			<th>Terms</th>
+			<th>Cross-lists</th>
+			<th>Requirements Fullfilled</th>
+';
+// 		$recentTerms = $recentCourses->getTermsForCourse($course);
+// 		foreach ($recentTerms as $term) {
+// 			print "\n\t\t\t<th>Taught in ".$term->getDisplayName()."</th>";
+// 		}
+		
+		print '
+		</tr>
+	</thead>
+	<tbody>
+';
+
+		while (ob_get_level()) {
+			ob_end_flush();
+		}
+		flush();
+
+		// Set the next and previous terms
+		$currentTermId = self::getCurrentTermId($this->termLookupSession->getCourseCatalogId());
+		$currentTerm = $this->termLookupSession->getTerm($currentTermId);
+		$currentEndTime = $this->DateTime_getTimestamp($currentTerm->getEndTime());
+		
+		
+		$catalogSession = self::getCourseManager()->getCourseCatalogSession();
+		$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
+		
+		$i = 0;
+		while ($courses->hasNext()) {
+			$course = $courses->getNextCourse();
+			$i++;
+			
+			$courseIdString = self::getStringFromOsidId($course->getId());
+						
+			print "\n\t\t\t<tr>";
+			
+			print "\n\t\t\t\t<td>";
+			print htmlspecialchars($course->getDisplayName());
+			print "</td>";
+			
+			$allTopics = AbstractCatalogController::topicListAsArray($course->getTopics());
+			
+			print "\n\t\t\t\t<td>";
+			$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
+			$topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
+			$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
+			foreach ($topics as $topic) {
+				print $this->view->escape($topic->getDisplayName());
+			}
+			print "</td>";
+			
+			print "\n\t\t\t\t<td>";
+			$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
+			$topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
+			$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
+			foreach ($topics as $topic) {
+				print $this->view->escape($topic->getDisplayName());
+			}
+			print "</td>";
+			
+			print "\n\t\t\t\t<td>";
+			$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
+			$topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
+			$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
+			foreach ($topics as $topic) {
+				print $this->view->escape($topic->getDisplayName());
+			}
+			print "</td>";
+
+			$description = $course->getDescription();
+			if (preg_match('#^<strong>([^\n\r]+)</strong>(?:\s*<br />(.*)|\s*)$#sm', $description, $matches)) {
+				$title = $matches[1];
+				if (isset($matches[2]))
+					$description = trim($matches[2]);
+				else
+					$description = '';
+			} else {
+				$title = htmlspecialchars($course->getTitle());
+			}
+			print "\n\t\t\t\t<td>";
+			print $title;
+			print "</td>";
+			
+			print "\n\t\t\t\t<td>";
+			print $description;
+			print "</td>";
+			
+			print "\n\t\t\t\t<td>";
+			$catalog = $catalogSession->getCatalogIdsByCourse($course->getId());
+			if ($catalog->hasNext())
+				$catalogIdString = self::getStringFromOsidId($catalog->getNextId());
+			else
+				$catalogIdString = null;
+			print $this->getAsAbsolute($this->_helper->url('view', 'courses', null, array('catalog' => $catalogIdString, 'course' => $courseIdString)));
+			print "</td>";
+			
+			$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
+			$termStrings = array();
+			if ($course->hasRecordType($termsType)) {
+				$termsRecord = $course->getCourseRecord($termsType);
+				try {
+					$terms = $termsRecord->getTerms();
+					while ($terms->hasNext()) {
+						$term = $terms->getNextTerm();
+						// See if the term is in one of our chosen terms
+						foreach ($selectedTerms as $selectedTermId) {
+							if ($selectedTermId->isEqual($term->getId())) {
+								$termStrings[] = $term->getDisplayName();
+							}
+						}
+					}
+				} catch (osid_OperationFailedException $e) {
+				}
+			}
+			print "\n\t\t\t\t<td>";
+			print implode(", ", $termStrings);
+			print "</td>";
+			
+			$altNames = array();
+			$alternateType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
+			print "\n\t\t\t\t<td>";
+			try {
+				if ($course->hasRecordType($this->alternateType)) {
+					$record = $course->getCourseRecord($this->alternateType);
+					if ($record->hasAlternates()) {
+						$alternates = $record->getAlternates();
+						while ($alternates->hasNext()) {
+							$alternate = $alternates->getNextCourse();
+							
+							$altInSelectedTerms = false;
+							if ($alternate->hasRecordType($termsType)) {
+								$termsRecord = $alternate->getCourseRecord($termsType);
+								try {
+									$terms = $termsRecord->getTerms();
+									while ($terms->hasNext() && !$altInSelectedTerms) {
+										$term = $terms->getNextTerm();
+										// See if the term is in one of our chosen terms
+										foreach ($selectedTerms as $selectedTermId) {
+											if ($selectedTermId->isEqual($term->getId())) {
+												$altInSelectedTerms = true;
+												break;
+											}
+										}
+									}
+								} catch (osid_OperationFailedException $e) {
+								}
+							}
+							if ($altInSelectedTerms)
+								$altNames[] = $alternate->getDisplayName();
+						}
+					}
+				}
+				print implode(", ", $altNames);
+			} catch (osid_NotFoundException $e) {
+			}
+			print "</td>";
+			
+			print "\n\t\t\t\t<td>";
+			$reqs = array();
+			$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
+			$topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
+			$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
+			foreach ($topics as $topic) {
+				$reqs[] = $this->view->escape($topic->getDisplayName());
+			}
+			print implode (", ", $reqs);
+			print "</td>";
+			
+			print "\n\t\t\t</tr>";
+			flush();
+			
+// 			if ($i > 10)
+// 				break;
+		}
+		
+		print '
+		</tbody>
+	</table>
+</body>
+</html>';
+		exit;
+		
+	}
+	
 	function DateTime_getTimestamp($dt) {
 		$dtz_original = $dt -> getTimezone();
 		$dtz_utc = new DateTimeZone("UTC");
