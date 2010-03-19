@@ -213,14 +213,10 @@ class banner_course_Course_Catalog_Session
      *  @throws osid_IllegalStateException this session has been closed 
      *  @compliance mandatory This method must be implemented. 
      */
-    public function getCatalogIdsByCourse(osid_id_Id $courseId) {    	
-    	$courseIdString = $this->getDatabaseIdString($courseId, 'course/');
-		if (!preg_match('/^([A-Z]{2,4})([0-9]{3,4})$/', $courseIdString, $matches))
-			throw new osid_NotFoundException('Course id component \''.$courseIdString.'\' could not be converted to a subject code and number.');
-		
+    public function getCatalogIdsByCourse(osid_id_Id $courseId) {		
 		$parameters = array(
-				':subject_code' =>  $matches[1],
-				':course_number' => $matches[2]
+				':subject_code' =>  $this->getSubjectFromCourseId($courseId),
+				':course_number' => $this->getNumberFromCourseId($courseId)
 			);
 		$statement = $this->getGetCatalogsStatement();
 		$statement->execute($parameters);
@@ -251,13 +247,9 @@ class banner_course_Course_Catalog_Session
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCatalogsByCourse(osid_id_Id $courseId) {
-    	$courseIdString = $this->getDatabaseIdString($courseId, 'course/');
-		if (!preg_match('/^([A-Z]{2,4})([0-9]{3,4})$/', $courseIdString, $matches))
-			throw new osid_NotFoundException('Course id component \''.$courseIdString.'\' could not be converted to a subject code and number.');
-		
-		$parameters = array(
-				':subject_code' =>  $matches[1],
-				':course_number' => $matches[2]
+    	$parameters = array(
+				':subject_code' =>  $this->getSubjectFromCourseId($courseId),
+				':course_number' => $this->getNumberFromCourseId($courseId)
 			);
 		$statement = $this->getGetCatalogsStatement();
 		$statement->execute($parameters);

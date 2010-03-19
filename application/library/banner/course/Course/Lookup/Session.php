@@ -222,13 +222,11 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 		}
 		
 		$courseIdString = $this->getDatabaseIdString($courseId, 'course/');
-		if (!preg_match('/^([A-Z]{2,4})([0-9]{3,4})$/', $courseIdString, $matches))
-			throw new osid_NotFoundException('Course id component \''.$courseIdString.'\' could not be converted to a subject code and number.');
 		
 		$parameters = array_merge(
 			array(
-				':subject_code' =>  $matches[1],
-				':course_number' => $matches[2]
+				':subject_code' =>  $this->getSubjectFromCourseId($courseId),
+				':course_number' => $this->getNumberFromCourseId($courseId)
 			),
 			$this->getCatalogParameters());
 		self::$getCourse_stmts[$catalogWhere]->execute($parameters);
