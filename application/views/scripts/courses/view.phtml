@@ -1,9 +1,10 @@
 <?php
 // print "\n\t<div>".$this->escape($this->course->getDisplayName())."</div>";
-print "\n\t<h2>\"".$this->escape($this->course->getTitle())."\"</h2>";
+print "\n\t<h2>".$this->escape($this->course->getTitle())."</h2>";
 if ($this->course->getDescription())
 	print "\n\t<div>".$this->course->getDescription()."</div>";
 
+print "\n\t<dl class='course_info'>";
 // Topics
 $topicParams = array(
 						'controller'	=> 'topics',

@@ -1,31 +1,31 @@
 						
-						<ul class="AspNet-Menu">
-							<li class="AspNet-Menu-WithChildren">
-								<a href="<?php echo $this->url(array('controller' => 'catalogs', 'action' => 'list'), null, true) ?>" class="AspNet-Menu-Link">Catalogs</a>
+						<ul class="menu">
+							<li class="expanded">
+								<a href="<?php echo $this->url(array('controller' => 'catalogs', 'action' => 'list'), null, true) ?>" class="active">Catalogs</a>
 								<?php echo $this->render('cataloglist.phtml') ?> 
 							</li>
 
 <?php if ($this->catalogIdString) { ?>
 						
-							<li class="AspNet-Menu-Leaf<?php if ($this->menuIsSearch) { print " AspNet-Menu-Selected"; } ?>">
-								<a href="<?php echo $this->url(array('controller' => 'offerings', 'action' => 'search', 'catalog' => $this->catalogIdString, 'term' => $this->termIdString), null, true) ?>" class="AspNet-Menu-Link">Search</a>
+							<li class="leaf<?php if ($this->menuIsSearch) { print " here"; } ?>">
+								<a href="<?php echo $this->url(array('controller' => 'offerings', 'action' => 'search', 'catalog' => $this->catalogIdString, 'term' => $this->termIdString), null, true) ?>" class="<?php if ($this->menuIsSearch) { print " active"; } ?>">Search</a>
 							</li>
 							
 <!-- 
-							<li class="AspNet-Menu-Leaf<?php if ($this->menuIsTerms) { print " AspNet-Menu-Selected"; } ?>">
+							<li class="leaf<?php if ($this->menuIsTerms) { print " here"; } ?>">
 								<a href="<?php echo $this->url(array('controller' => 'terms', 'action' => 'list', 'catalog' => $this->catalogIdString, 'term' => $this->termIdString), null, true) ?>" class="AspNet-Menu-Link">Terms</a>
 							</li>
  -->
 	<?php if ($this->term) { ?>
 				
 <!-- 
-							<li class="AspNet-Menu-Leaf<?php if ($this->menuIsCourses) { print " AspNet-Menu-Selected"; } ?>">
+							<li class="leaf<?php if ($this->menuIsCourses) { print " here"; } ?>">
 								<a href="<?php echo $this->url(array('controller' => 'courses', 'action' => 'list', 'catalog' => $this->catalogIdString, 'term' => $this->termIdString), null, true) ?>" class="AspNet-Menu-Link">Courses</a>
 							</li>
  -->
 		
 <!-- 
-							<li class="AspNet-Menu-Leaf<?php if ($this->menuIsOfferings) { print " AspNet-Menu-Selected"; } ?>">
+							<li class="leaf<?php if ($this->menuIsOfferings) { print " here"; } ?>">
 								<a href="<?php echo $this->url(array('controller' => 'offerings', 'action' => 'list', 'catalog' => $this->catalogIdString, 'term' => $this->termIdString), null, true) ?>" class="AspNet-Menu-Link">All Sections in <?php print $this->term->getDisplayName(); ?></a>
 							</li>
  -->

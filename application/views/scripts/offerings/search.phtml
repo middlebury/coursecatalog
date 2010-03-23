@@ -139,13 +139,13 @@ while ($this->requirements->hasNext()) {
 		<tr>
 			<th>Days of the week:</th>
 			<td>
-				<label><input type='checkbox' name='days[]' value='sunday' <?php if (in_array('sunday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Sunday</label> 
-				<label><input type='checkbox' name='days[]' value='monday' <?php if (in_array('monday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Monday</label> 
-				<label><input type='checkbox' name='days[]' value='tuesday' <?php if (in_array('tuesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Tuesday</label> 
-				<label><input type='checkbox' name='days[]' value='wednesday' <?php if (in_array('wednesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Wednesday</label> 
-				<label><input type='checkbox' name='days[]' value='thursday' <?php if (in_array('thursday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Thursday</label> 
-				<label><input type='checkbox' name='days[]' value='friday' <?php if (in_array('friday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Friday</label> 
-				<label><input type='checkbox' name='days[]' value='saturday' <?php if (in_array('saturday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Saturday</label> 
+				<input type='checkbox' name='days[]' value='sunday' <?php if (in_array('sunday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /><label>Sunday</label> 
+				<label><input type='checkbox' name='days[]' value='monday' <?php if (in_array('monday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /><label>Monday</label> 
+				<input type='checkbox' name='days[]' value='tuesday' <?php if (in_array('tuesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /><label>Tuesday</label> 
+				<input type='checkbox' name='days[]' value='wednesday' <?php if (in_array('wednesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /><label>Wednesday</label> 
+				<input type='checkbox' name='days[]' value='thursday' <?php if (in_array('thursday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /><label>Thursday</label> 
+				<input type='checkbox' name='days[]' value='friday' <?php if (in_array('friday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /><label>Friday</label> 
+				<input type='checkbox' name='days[]' value='saturday' <?php if (in_array('saturday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /><label>Saturday</label> 
 				<div class='help_text'>Leave all unchecked if no preference.</div>
 			</td>
 		</tr>
@@ -247,7 +247,7 @@ while ($this->levels->hasNext()) {
 <?php } ?>
 
 		<tr>
-			<td colspan='2'><input type='submit' name='submit' value='Search'/>
+			<td colspan='2'><input type='submit' name='submit' value='Search'/></td>
 		</tr>
 
 	</table>

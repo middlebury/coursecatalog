@@ -32,7 +32,7 @@
  * Search
  *********************************************************/
 table.search_options {
-	width: 800px;
+	width: 725px;
 }
 
 table.search_options th {
@@ -61,12 +61,14 @@ table.search_options td {
 	vertical-align: top;
 }
 
+
+
 table.search_results .title {
 	font-weight: bold;
 }
 
 table.search_results {
-	width: 800px;
+	width: 725px;
 }
 
 table.search_results th {
@@ -85,16 +87,64 @@ table.search_results td.column1 {
 }
 
 div.search_results_item_pagination {
-	width: 800px;
+	width: 725px;
 	text-align: right;
 }
 
 div.search_results_search_pagination {
-	width: 800px;
+	width: 725px;
 	text-align: center;
 }
 
 div.help_text {
 	font-size: smaller;
+}
+
+
+/*********************************************************
+ * New 1D fixes
+ *********************************************************/
+
+#left {
+	width: 175px;
+}
+div.content > ul.menu {
+	width: 175px;	
+}
+
+
+.search_results .column1 dl {
+	width: 20em;
+}
+.search_results .column1 dt {
+	width: 7em;
+}
+.search_results .column1 dd {
+	width: 11em;
+}
+
+.search_results .column2 dl {
+	width: 32em;
+}
+.search_results .column2 dt {
+	width: 6em;
+}
+.search_results .column2 dd {
+	width: 24em;
+}
+
+label {
+	margin-left: .25em;
+	margin-right: .5em;
+}
+
+.offering_list {
+	clear: both;
+	padding-top: 1em;
+}
+
+.offering_list h4 {
+	margin-top: 1em;
+	margin-bottom: .2em;
 }
 
