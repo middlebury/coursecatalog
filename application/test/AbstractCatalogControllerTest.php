@@ -113,10 +113,10 @@ class AbstractCatalogControllerTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTimeString()
     {
-        $this->assertEquals('00:00', AbstractCatalogController::getTimeString(0));
-        $this->assertEquals('08:33', AbstractCatalogController::getTimeString(30780));
-        $this->assertEquals('18:21', AbstractCatalogController::getTimeString(66060));
-        $this->assertEquals('24:00', AbstractCatalogController::getTimeString(86400));   
+        $this->assertEquals('12:00 am', AbstractCatalogController::getTimeString(0));
+        $this->assertEquals('8:33 am', AbstractCatalogController::getTimeString(30780));
+        $this->assertEquals('6:21 pm', AbstractCatalogController::getTimeString(66060));
+        $this->assertEquals('12:00 am', AbstractCatalogController::getTimeString(86400));   
     }
 
     /**
