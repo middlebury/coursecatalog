@@ -42,7 +42,7 @@ $this->headScript()->appendScript(
 			<th>By Term:</th>
 			<td>
 				<select name="term">
-					<option value=''>Any Term</option>
+					<option value='ANY'>Any Term</option>
 <?php
 while ($this->terms->hasNext()) {
 	$term = $this->terms->getNextTerm();

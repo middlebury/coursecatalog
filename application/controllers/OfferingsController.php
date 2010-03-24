@@ -170,12 +170,12 @@ class OfferingsController
 	 *********************************************************/
 	 			
 		// Term
-		if ($this->_getParam('term')) {
-			if ($this->_getParam('term') == 'CURRENT') {
-				$termId = self::getCurrentTermId($offeringSearchSession->getCourseCatalogId());
-			} else {
-				$termId = self::getOsidIdFromString($this->_getParam('term'));
-			}
+		if ($this->_getParam('term') == 'ANY') {
+			// Don't set a term
+		} else if (!$this->_getParam('term') || $this->_getParam('term') == 'CURRENT') {
+			$termId = self::getCurrentTermId($offeringSearchSession->getCourseCatalogId());
+		} else {
+			$termId = self::getOsidIdFromString($this->_getParam('term'));
 		}
 		
 	 	
