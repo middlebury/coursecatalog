@@ -1006,14 +1006,26 @@ class banner_course_CourseOffering_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchCourseCatalogId(osid_id_Id $courseCatalogId, $match) {
-    	$this->addClause('course_catalog_id', 'SSBSECT_TERM_CODE IN (
-			SELECT
-				term_code
-			FROM
-				catalog_term
-			WHERE
-				catalog_id = ?)', 
-    		array($this->session->getDatabaseIdString($courseCatalogId, 'catalog/')),
+    	$this->addClause('course_catalog_id', 
+'(SSBSECT_TERM_CODE IN (
+	SELECT
+		term_code
+	FROM
+		catalog_term
+	WHERE
+		catalog_id = ?)
+AND SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			catalog_id = ?
+	))', 
+    		array(
+    			$this->session->getDatabaseIdString($courseCatalogId, 'catalog/'),
+    			$this->session->getDatabaseIdString($courseCatalogId, 'catalog/')
+    		),
     		$match);
     }
 

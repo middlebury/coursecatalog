@@ -1497,15 +1497,24 @@ class banner_course_CourseOffering_Search_QueryTest
 
         $params = $this->object->getParameters();
         $this->assertEquals('MCUG', $params[0]);
-        $this->assertFalse(isset($params[1]));
+        $this->assertEquals('MCUG', $params[1]);
+        $this->assertFalse(isset($params[2]));
         
-        $this->assertEquals('(SSBSECT_TERM_CODE IN (
-			SELECT
-				term_code
-			FROM
-				catalog_term
-			WHERE
-				catalog_id = ?))', $this->object->getWhereClause());
+        $this->assertEquals('((SSBSECT_TERM_CODE IN (
+	SELECT
+		term_code
+	FROM
+		catalog_term
+	WHERE
+		catalog_id = ?)
+AND SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			catalog_id = ?
+	)))', $this->object->getWhereClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
@@ -1522,23 +1531,41 @@ class banner_course_CourseOffering_Search_QueryTest
 
         $params = $this->object->getParameters();
         $this->assertEquals('MCUG', $params[0]);
-        $this->assertEquals('MIIS', $params[1]);
-        $this->assertFalse(isset($params[2]));
+        $this->assertEquals('MCUG', $params[1]);
+        $this->assertEquals('MIIS', $params[2]);
+        $this->assertEquals('MIIS', $params[3]);
+        $this->assertFalse(isset($params[4]));
         
-        $this->assertEquals('(SSBSECT_TERM_CODE IN (
-			SELECT
-				term_code
-			FROM
-				catalog_term
-			WHERE
-				catalog_id = ?)
-		OR SSBSECT_TERM_CODE IN (
-			SELECT
-				term_code
-			FROM
-				catalog_term
-			WHERE
-				catalog_id = ?))', $this->object->getWhereClause());
+        $this->assertEquals('((SSBSECT_TERM_CODE IN (
+	SELECT
+		term_code
+	FROM
+		catalog_term
+	WHERE
+		catalog_id = ?)
+AND SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			catalog_id = ?
+	))
+		OR (SSBSECT_TERM_CODE IN (
+	SELECT
+		term_code
+	FROM
+		catalog_term
+	WHERE
+		catalog_id = ?)
+AND SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			catalog_id = ?
+	)))', $this->object->getWhereClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();

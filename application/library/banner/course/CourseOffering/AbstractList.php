@@ -113,6 +113,14 @@ WHERE
 			catalog_term
 		WHERE
 			".$this->getCatalogWhereTerms()."
+	) 
+	AND SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms2()."
 	)
 	AND SSBSECT_SSTS_CODE = 'A'
 
@@ -147,8 +155,10 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 	 */
 	protected function getAllInputParameters () {
 		$params = $this->getInputParameters();
-		if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->session->getCombinedCatalogId()))
+		if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
 			$params[':catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
+			$params[':catalog_id2'] = $this->session->getCatalogDatabaseId($this->catalogId);
+		}
 		return $params;
 	}
 	
@@ -179,6 +189,20 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 			return 'TRUE';
 		else
 			return 'catalog_id = :catalog_id';
+	}
+	
+	/**
+	 * Answer the catalog where terms
+	 * 
+	 * @return string
+	 * @access private
+	 * @since 4/20/09
+	 */
+	private function getCatalogWhereTerms2 () {
+		if (is_null($this->catalogId) || $this->catalogId->isEqual($this->session->getCombinedCatalogId()))
+			return 'TRUE';
+		else
+			return 'catalog_id = :catalog_id2';
 	}
 	
 	/**

@@ -265,7 +265,16 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 		if (is_null($this->catalogId) || $this->catalogId->isEqual($this->getCombinedCatalogId()))
 			return 'TRUE';
 		else
-			return 'catalog_id = :catalog_id';
+			return '
+	catalog_id = :catalog_id 
+	AND SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			catalog_id = :catalog_id2
+	)	';
 	}
 	
 	/**
@@ -277,8 +286,10 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 	 */
 	private function getCatalogParameters () {
 		$params = array();
-		if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->getCombinedCatalogId()))
+		if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->getCombinedCatalogId())) {
 			$params[':catalog_id'] = $this->getCatalogDatabaseId($this->catalogId);
+			$params[':catalog_id2'] = $this->getCatalogDatabaseId($this->catalogId);
+		}
 		return $params;
 	}
 

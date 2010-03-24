@@ -38,7 +38,7 @@ class banner_course_CourseOffering_GenusTypeList
 	STVSCHD_CODE,
 	STVSCHD_DESC
 FROM 
-	SSBSECT
+	ssbsect_scbcrse
 	LEFT JOIN STVSCHD ON SSBSECT_SCHD_CODE = STVSCHD_CODE	
 WHERE 
 	SSBSECT_TERM_CODE IN (
@@ -48,6 +48,14 @@ WHERE
 			catalog_term
 		WHERE
 			".$this->getCatalogWhereTerms()."
+	)
+	AND SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms2()."
 	)
 GROUP BY STVSCHD_CODE
 ORDER BY STVSCHD_DESC ASC
@@ -71,6 +79,20 @@ ORDER BY STVSCHD_DESC ASC
 	}
 	
 	/**
+	 * Answer the catalog where terms
+	 * 
+	 * @return string
+	 * @access private
+	 * @since 4/20/09
+	 */
+	private function getCatalogWhereTerms2 () {
+		if ($this->session->getCourseCatalogId()->isEqual($this->session->getCombinedCatalogId()))
+			return 'TRUE';
+		else
+			return 'catalog_id = :catalog_id2';
+	}
+	
+	/**
 	 * Answer the input parameters
 	 * 
 	 * @return array
@@ -81,8 +103,10 @@ ORDER BY STVSCHD_DESC ASC
 // 		$params = $this->getInputParameters();
 		$params = array();
 		$catalogId = $this->session->getCourseCatalogId();
-		if (!$catalogId->isEqual($this->session->getCombinedCatalogId()))
+		if (!$catalogId->isEqual($this->session->getCombinedCatalogId())) {
 			$params[':catalog_id'] = $this->session->getCatalogDatabaseId($catalogId);
+			$params[':catalog_id2'] = $this->session->getCatalogDatabaseId($catalogId);
+		}
 		return $params;
 	}
 		
