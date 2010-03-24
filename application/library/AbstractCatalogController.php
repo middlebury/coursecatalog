@@ -329,7 +329,21 @@ abstract class AbstractCatalogController
     public static function getTimeString ($seconds) {
     	$hour = floor($seconds/3600);
     	$minute = floor(($seconds - ($hour * 3600))/60);
-    	return str_pad($hour, 2, '0', STR_PAD_LEFT).':'.str_pad($minute, 2, '0', STR_PAD_LEFT);
+    	if (!$hour)
+    		$string = 12;
+    	else if ($hour < 13)
+	    	$string = $hour;
+	    else
+	    	$string = $hour - 12;
+    	
+    	$string .= ':'.str_pad($minute, 2, '0', STR_PAD_LEFT);
+    	
+    	if ($hour < 13)
+    		$string .= ' am';
+    	else
+    		$string .= ' pm';
+    		
+    	return $string;
     }
     
     /**
