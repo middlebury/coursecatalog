@@ -290,7 +290,7 @@ class CoursesController
 		$topicLookup->useFederatedView();
 		$topic = $topicLookup->getTopic($topicId);
 		
-		$recentCourses = new Helper_RecentCourses_All($courses);
+		$recentCourses = new Helper_RecentCourses_Department($courses);
 		$this->outputCourseFeed($recentCourses, htmlentities('Courses in  '.$topic->getDisplayName()), $searchUrl);
 		
 	}

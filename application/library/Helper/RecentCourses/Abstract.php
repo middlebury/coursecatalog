@@ -18,7 +18,7 @@
  */
 abstract class Helper_RecentCourses_Abstract {
 
-	private $groups;
+	protected $groups;
 	private $terms;
 	protected $alternateType;
 	
@@ -114,7 +114,7 @@ abstract class Helper_RecentCourses_Abstract {
 	 * @access protected
 	 * @since 11/13/09
 	 */
-	private function groupAlternates (osid_course_CourseSearchResults $courses) {
+	protected function groupAlternates (osid_course_CourseSearchResults $courses) {
 		while ($courses->hasNext()) {
 			$groupId = false;
 			
@@ -237,7 +237,7 @@ abstract class Helper_RecentCourses_Abstract {
 	 * @access private
 	 * @since 11/16/09
 	 */
-	private function getMostRecentTermForCourse (osid_course_Course $course) {
+	protected function getMostRecentTermForCourse (osid_course_Course $course) {
 		$terms = $this->getRecentTermsForCourse($course);
 		
 		if (!count($terms))
