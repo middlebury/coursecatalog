@@ -297,7 +297,7 @@ FROM
     	self::$getCatalogs_stmt->execute();
     	
     	$catalogs = array();
-    	$catalogs[] = new banner_course_CourseCatalog_Combined($this->getCombinedCatalogId());
+//     	$catalogs[] = new banner_course_CourseCatalog_Combined($this->getCombinedCatalogId());
     	while ($result = self::$getCatalogs_stmt->fetch(PDO::FETCH_ASSOC)) {
     	
     		$catalogs[] = new banner_course_CourseCatalog(
