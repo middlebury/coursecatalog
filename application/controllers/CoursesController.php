@@ -956,15 +956,28 @@ class CoursesController
 		$search->orderCourseOfferingResults($order);
 		$offerings = $this->offeringSearchSession->getCourseOfferingsBySearch($offeringQuery, $search);
 		
-		ob_start();
+		$sectionTerms = array();
+		$sectionDescriptions = array();
 		while ($offerings->hasNext()) {
 			$offering = $offerings->getNextCourseOffering();
 			if ($offering->getDescription() && $offering->getDescription() != $course->getDescription()) {
-				print "\n\t<h3>".$offering->getTerm()->getDisplayName()."</h3>";
-				print "\n\t<p>".$offering->getDescription()."</p>";
+				$sectionTerms[] = $offering->getTerm()->getDisplayName();
+				$sectionDescriptions[] = $offering->getDescription();
 			}
 		}
-		$sectionDescriptions = ob_get_clean();
+		
+		$sectionDescriptionsText = '';
+		// Replace the description with the one from the section if there is only one section.
+		if (count($sectionDescriptions) == 1) {
+			$description = $sectionDescriptions[0];
+		}
+		// If there are multiple section descriptions, print them separately
+		else if (count($sectionDescriptions)) {
+			foreach ($sectionDescriptions as $i => $desc) {
+				$sectionDescriptionsText .= "\n\t<h3>".$sectionTerms[$i]."</h3>";
+				$sectionDescriptionsText .= "\n\t<p>".$desc."</p>";
+			}
+		}
 		
 		/*********************************************************
 		 * Output
@@ -992,7 +1005,7 @@ class CoursesController
 		
 		print "</p>";
 				
-		print $sectionDescriptions;
+		print $sectionDescriptionsText;
 		
 		/*********************************************************
 		 * Crosslists
