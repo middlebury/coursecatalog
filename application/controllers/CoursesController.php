@@ -940,6 +940,35 @@ class CoursesController
 			}
 		}
 		
+		/*********************************************************
+		 * Section descriptions
+		 *********************************************************/
+		// Look for different Section Descriptions
+		$offeringQuery = $this->offeringSearchSession->getCourseOfferingQuery();
+		$offeringQuery->matchCourseId($course->getId(), true);
+		foreach ($this->selectedTerms as $termId) {	
+			$offeringQuery->matchTermId($termId, true);
+		}
+		$order = $this->offeringSearchSession->getCourseOfferingSearchOrder();
+		$order->orderByTerm();
+		$order->ascend();
+		$search = $this->offeringSearchSession->getCourseOfferingSearch();
+		$search->orderCourseOfferingResults($order);
+		$offerings = $this->offeringSearchSession->getCourseOfferingsBySearch($offeringQuery, $search);
+		
+		ob_start();
+		while ($offerings->hasNext()) {
+			$offering = $offerings->getNextCourseOffering();
+			if ($offering->getDescription() && $offering->getDescription() != $course->getDescription()) {
+				print "\n\t<h3>".$offering->getTerm()->getDisplayName()."</h3>";
+				print "\n\t<p>".$offering->getDescription()."</p>";
+			}
+		}
+		$sectionDescriptions = ob_get_clean();
+		
+		/*********************************************************
+		 * Output
+		 *********************************************************/
 		print "\n\t<h2>";
 		print htmlspecialchars($course->getDisplayName());
 		print " ".$title;
@@ -962,8 +991,8 @@ class CoursesController
 		print " <strong>".implode (", ", $reqs)."</strong>";
 		
 		print "</p>";
-		
-		
+				
+		print $sectionDescriptions;
 		
 		/*********************************************************
 		 * Crosslists
