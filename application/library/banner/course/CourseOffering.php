@@ -102,11 +102,8 @@ class banner_course_CourseOffering
 		$description = '';
 		if (!is_null($row['SCBDESC_TEXT_NARRATIVE']))
 			$description = banner_course_Course::convertDescription($row['SCBDESC_TEXT_NARRATIVE']);
-		if (!is_null($row['SSBDESC_TEXT_NARRATIVE'])) {
-			if (strlen($description))
-				$description .= "\n<br/><br/>\n";
-			$description .= banner_course_Course::convertDescription($row['SSBDESC_TEXT_NARRATIVE']);
-		}
+		if (!is_null($row['SSBDESC_TEXT_NARRATIVE']))
+			$description = banner_course_Course::convertDescription($row['SSBDESC_TEXT_NARRATIVE']);
 		$this->setDescription($description);
 		
 		$this->setGenusType(new phpkit_type_Type(
