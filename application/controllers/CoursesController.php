@@ -739,7 +739,7 @@ class CoursesController
 <body>
 
 ';
-		
+		$this->printedCourseIds = array();
 		foreach ($sections as $section) {
 			switch ($section['type']) {
 				case 'h1':
@@ -766,6 +766,30 @@ class CoursesController
 				ob_end_flush();
 			}
 			flush();
+		}
+		
+		print "\n<hr/>";
+		print "<h1>Courses not included</h1>";
+		
+		// Get all Offerings for the selected terms
+		$offeringQuery = $offeringSearchSession->getCourseOfferingQuery();
+		foreach ($selectedTerms as $termId) {	
+			$offeringQuery->matchTermId($termId, true);
+		}
+		$offerings = $offeringSearchSession->getCourseOfferingsByQuery($offeringQuery);
+		// If the course Id wasn't printed, add it to a to-print array
+		$coursesNotPrinted = array();
+		while ($offerings->hasNext()) {
+			$offering = $offerings->getNextCourseOffering();
+			$courseIdString = self::getStringFromOsidId($offering->getCourseId());
+			if (!in_array($courseIdString, $this->printedCourseIds)) {
+				$coursesNotPrinted[$courseIdString] = $offering->getCourse();
+			}
+		}
+		// Print a list of courses not printed
+		ksort($coursesNotPrinted);
+		foreach ($coursesNotPrinted as $course) {
+			$this->printCourse($course, $selectedTerms);
 		}
 		
 		print '
@@ -875,6 +899,9 @@ class CoursesController
 			$course = $courses->getNextCourse();
 			$i++;
 			
+			$courseIdString = self::getStringFromOsidId($course->getId());
+			$this->printedCourseIds[] = $courseIdString;
+			
 			$this->printCourse($course, $selectedTerms);
 			
 // 			if ($i > 10)
@@ -892,9 +919,7 @@ class CoursesController
 	 * @access protected
 	 * @since 4/28/10
 	 */
-	protected function printCourse (osid_course_Course $course, array $selectedTerms) {
-		$courseIdString = self::getStringFromOsidId($course->getId());
-			
+	protected function printCourse (osid_course_Course $course, array $selectedTerms) {			
 		$description = $course->getDescription();
 		if (preg_match('#^<strong>([^\n\r]+)</strong>(?:\s*<br />(.*)|\s*)$#sm', $description, $matches)) {
 			$title = $matches[1];
