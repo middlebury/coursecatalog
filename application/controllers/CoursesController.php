@@ -537,13 +537,12 @@ class CoursesController
 		}
 		
 		$sections = array(
-			array(	'type' => 'h1',		'text' => 'Writing Program'),
-			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/writing/writingrequirement'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/WRPR')),
 			
-			array(	'type' => 'h1',		'text' => 'First Year Seminars'),
-			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/fys/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/FYSE')),
+			array(	'type' => 'h1',		'text' => 'African American Studies Minor'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/catalog/afamer'),
+			
+			array(	'type' => 'h1',		'text' => 'African Studies Minor'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/catalog/afminor'),
 			
 			array(	'type' => 'h1',		'text' => 'American Studies'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/amst/requirements'),
@@ -597,6 +596,10 @@ class CoursesController
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/fmmc/requirements'),
 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/FMMC')),
 			
+			array(	'type' => 'h1',		'text' => 'First Year Seminars'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/fys/mission'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/FYSE')),
+			
 			array(	'type' => 'h1',		'text' => 'French'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/french/requirements'),
 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/FREN')),
@@ -621,9 +624,16 @@ class CoursesController
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/haa/requirements'),
 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/HARC')),
 			
+			array(	'type' => 'h1',		'text' => 'Interdepartmental Courses'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/INTD')),
+			
 			array(	'type' => 'h1',		'text' => 'International Politics & Economics'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/ipe/requirements'),
 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/IPEC')),
+			
+			array(	'type' => 'h1',		'text' => 'International Studies'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/is/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/INTL')),
 			
 			array(	'type' => 'h1',		'text' => 'Italian'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/italian/requirements'),
@@ -633,7 +643,11 @@ class CoursesController
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/japanese/requirements'),
 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/JAPN')),
 			
-			array(	'type' => 'h1',		'text' => 'Jewish Studies'),
+			array(	'type' => 'h1',		'text' => 'Linguistics'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/catalog/linguistics'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/subject/LNGT')),
+			
+			array(	'type' => 'h1',		'text' => 'Jewish Studies Minor'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/jewish'),
 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/subject/HEBM')),
 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/subject/HEBR')),
@@ -690,6 +704,9 @@ class CoursesController
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/soan/requirements'),
 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/SOAN')),
 			
+			array(	'type' => 'h1',		'text' => 'South Asian Studies Minor'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/catalog/soasian'),
+			
 			array(	'type' => 'h1',		'text' => 'Spanish & Portuguese'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/span/requirements'),
 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/SPAN')),
@@ -706,23 +723,9 @@ class CoursesController
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/ws/requirements'),
 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/WAGS')),
 			
-// 			array(	'type' => 'h1',		'text' => 'American'),
-// 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/amst/requirements'),
-// 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/AMST')),
-// 			
-// 			array(	'type' => 'h1',		'text' => 'American'),
-// 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/amst/requirements'),
-// 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/AMST')),
-// 			
-// 			array(	'type' => 'h1',		'text' => 'American'),
-// 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/amst/requirements'),
-// 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/AMST')),
-// 			
-// 			array(	'type' => 'h1',		'text' => 'American'),
-// 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/amst/requirements'),
-// 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/AMST')),
-			
-			
+			array(	'type' => 'h1',		'text' => 'Writing Program'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/writing/writingrequirement'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/WRPR')),
 		);
 		
 		
