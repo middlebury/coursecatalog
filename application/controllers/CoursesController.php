@@ -509,10 +509,10 @@ class CoursesController
 		}
 		try {
 			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
-			$courseSearchSession = self::getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
-			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
+			$this->courseSearchSession = self::getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
+			$this->offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
 			
-			$termLookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+			$this->termLookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 		} catch (osid_InvalidArgumentException $e) {
 			header('HTTP/1.1 400 Bad Request');
 			print "The catalog id specified was not of the correct format.";
@@ -524,11 +524,11 @@ class CoursesController
 		}
 		
 		try {
-			$selectedTerms = array();
+			$this->selectedTerms = array();
 			// Get all offerings in the terms
 			foreach ($this->_getParam('term') as $termIdString) {
 				$termId = self::getOsidIdFromString($termIdString);
-				$selectedTerms[] = $termId;
+				$this->selectedTerms[] = $termId;
 			}
 		} catch (osid_InvalidArgumentException $e) {
 			header('HTTP/1.1 400 Bad Request');
@@ -759,7 +759,7 @@ class CoursesController
 					print $this->getRequirements($section['url']);
 					break;
 				case 'courses':
-					$this->printCourses($section['id'], $selectedTerms, $courseSearchSession, $offeringSearchSession, $termLookupSession);
+					$this->printCourses($section['id']);
 					break;
 				default:
 					throw new Exception("Unknown section type ".$section['type']);
@@ -851,22 +851,18 @@ class CoursesController
 	 * Print out the courses for a topic
 	 * 
 	 * @param osid_id_Id $topicId
-	 * @param array $selectedTerms
-	 * @param osid_course_CourseSearchSession $courseSearchSession
-	 * @param osid_course_CourseOfferingSearchSession $offeringSearchSession
-	 * @param osid_course_TermLookupSession $termLookupSession
 	 * @return void
 	 * @access protected
 	 * @since 4/26/10
 	 */
-	protected function printCourses (osid_id_Id $topicId, array $selectedTerms, osid_course_CourseSearchSession $courseSearchSession, osid_course_CourseOfferingSearchSession $offeringSearchSession, osid_course_TermLookupSession $termLookupSession) {
+	protected function printCourses (osid_id_Id $topicId) {
 		try {
-			$offeringQuery = $offeringSearchSession->getCourseOfferingQuery();
+			$offeringQuery = $this->offeringSearchSession->getCourseOfferingQuery();
 			$offeringQuery->matchTopicId($topicId, true);
-			foreach ($selectedTerms as $termId) {	
+			foreach ($this->selectedTerms as $termId) {	
 				$offeringQuery->matchTermId($termId, true);
 			}
-			$offerings = $offeringSearchSession->getCourseOfferingsByQuery($offeringQuery);
+			$offerings = $this->offeringSearchSession->getCourseOfferingsByQuery($offeringQuery);
 		} catch (osid_NotFoundException $e) {
 			header('HTTP/1.1 404 Not Found');
 			print "The term ids specified were not found.";
@@ -874,7 +870,7 @@ class CoursesController
 		}
 		
 		// Limit Courses to those offerings in the terms
-		$query = $courseSearchSession->getCourseQuery();
+		$query = $this->courseSearchSession->getCourseQuery();
 		if ($offerings->hasNext()) {
 			while ($offerings->hasNext()) {
 				$query->matchCourseOfferingId($offerings->getNextCourseOffering()->getId(), true);
@@ -882,20 +878,12 @@ class CoursesController
 		} else {
 			return;
 		}
-		$search = $courseSearchSession->getCourseSearch();
-		$order = $courseSearchSession->getCourseSearchOrder();
+		$search = $this->courseSearchSession->getCourseSearch();
+		$order = $this->courseSearchSession->getCourseSearchOrder();
 		$order->orderByDisplayName();
 		$order->ascend();
 		$search->orderCourseResults($order);
-		$courses = $courseSearchSession->getCoursesBySearch($query, $search);		
-		
-
-		
-
-		// Set the next and previous terms
-		$currentTermId = self::getCurrentTermId($termLookupSession->getCourseCatalogId());
-		$currentTerm = $termLookupSession->getTerm($currentTermId);
-		$currentEndTime = $this->DateTime_getTimestamp($currentTerm->getEndTime());
+		$courses = $this->courseSearchSession->getCoursesBySearch($query, $search);
 		
 		$i = 0;
 		while ($courses->hasNext()) {
@@ -905,7 +893,7 @@ class CoursesController
 			$courseIdString = self::getStringFromOsidId($course->getId());
 			$this->printedCourseIds[] = $courseIdString;
 			
-			$this->printCourse($course, $selectedTerms);
+			$this->printCourse($course);
 			
 // 			if ($i > 10)
 // 				break;
@@ -917,12 +905,11 @@ class CoursesController
 	 * Print out a single course
 	 * 
 	 * @param osid_course_Course $course
-	 * @param array $selectedTerms
 	 * @return void
 	 * @access protected
 	 * @since 4/28/10
 	 */
-	protected function printCourse (osid_course_Course $course, array $selectedTerms) {			
+	protected function printCourse (osid_course_Course $course) {			
 		$description = $course->getDescription();
 		if (preg_match('#^<strong>([^\n\r]+)</strong>(?:\s*<br />(.*)|\s*)$#sm', $description, $matches)) {
 			$title = $matches[1];
@@ -943,7 +930,7 @@ class CoursesController
 				while ($terms->hasNext()) {
 					$term = $terms->getNextTerm();
 					// See if the term is in one of our chosen terms
-					foreach ($selectedTerms as $selectedTermId) {
+					foreach ($this->selectedTerms as $selectedTermId) {
 						if ($selectedTermId->isEqual($term->getId())) {
 							$termStrings[] = $term->getDisplayName();
 						}
@@ -999,7 +986,7 @@ class CoursesController
 // 									while ($terms->hasNext() && !$altInSelectedTerms) {
 // 										$term = $terms->getNextTerm();
 // 										// See if the term is in one of our chosen terms
-// 										foreach ($selectedTerms as $selectedTermId) {
+// 										foreach ($this->selectedTerms as $selectedTermId) {
 // 											if ($selectedTermId->isEqual($term->getId())) {
 // 												$altInSelectedTerms = true;
 // 												break;
