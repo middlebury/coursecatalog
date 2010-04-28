@@ -509,10 +509,10 @@ class CoursesController
 		}
 		try {
 			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
-			$searchSession = self::getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
+			$courseSearchSession = self::getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
 			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
 			
-			$this->termLookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+			$termLookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 		} catch (osid_InvalidArgumentException $e) {
 			header('HTTP/1.1 400 Bad Request');
 			print "The catalog id specified was not of the correct format.";
@@ -526,17 +526,320 @@ class CoursesController
 		try {
 			$selectedTerms = array();
 			// Get all offerings in the terms
-			$offeringQuery = $offeringSearchSession->getCourseOfferingQuery();
 			foreach ($this->_getParam('term') as $termIdString) {
 				$termId = self::getOsidIdFromString($termIdString);
 				$selectedTerms[] = $termId;
-				$offeringQuery->matchTermId($termId, true);
 			}
-			$offerings = $offeringSearchSession->getCourseOfferingsByQuery($offeringQuery);
 		} catch (osid_InvalidArgumentException $e) {
 			header('HTTP/1.1 400 Bad Request');
 			print "The term id specified was not of the correct format.";
 			exit;
+		}
+		
+		$sections = array(
+			array(	'type' => 'h1',		'text' => 'Writing Program'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/writing/writingrequirement'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/WRPR')),
+			
+			array(	'type' => 'h1',		'text' => 'First Year Seminars'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/fys/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/FYSE')),
+			
+			array(	'type' => 'h1',		'text' => 'American Studies'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/amst/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/AMST')),
+			
+			array(	'type' => 'h1',		'text' => 'Arabic'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/arabic/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/ARBC')),
+			
+			array(	'type' => 'h1',		'text' => 'Biology'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/bio/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/BIOL')),
+			
+			array(	'type' => 'h1',		'text' => 'Chemistry & Biochemistry'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/chem/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/CHEM')),
+			
+			array(	'type' => 'h1',		'text' => 'Chinese'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/chinese/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/CHNS')),
+			
+			array(	'type' => 'h1',		'text' => 'Classics & Classical Studies'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/clas/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/CLAS')),
+			
+			array(	'type' => 'h1',		'text' => 'Computer Science'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/cs/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/CSCI')),
+			
+			array(	'type' => 'h1',		'text' => 'Dance'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/dance/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/DANC')),
+			
+			array(	'type' => 'h1',		'text' => 'Economics'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/econ/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/ECON')),
+			
+			array(	'type' => 'h1',		'text' => 'Education Studies'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/edst/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/EDST')),
+			
+			array(	'type' => 'h1',		'text' => 'English & American Literatures'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/enam/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/ENAM')),
+			
+			array(	'type' => 'h1',		'text' => 'Environmental Studies'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/es/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/ENVS')),
+			
+			array(	'type' => 'h1',		'text' => 'Film & Media Culture'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/fmmc/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/FMMC')),
+			
+			array(	'type' => 'h1',		'text' => 'French'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/french/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/FREN')),
+			
+			array(	'type' => 'h1',		'text' => 'Geography'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/geog/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/GEOG')),
+			
+			array(	'type' => 'h1',		'text' => 'Geology'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/geol/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/GEOL')),
+			
+			array(	'type' => 'h1',		'text' => 'German'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/german/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/GRMN')),
+			
+			array(	'type' => 'h1',		'text' => 'History'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/hist/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/HIST')),
+			
+			array(	'type' => 'h1',		'text' => 'History of Art & Architecture'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/haa/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/HARC')),
+			
+			array(	'type' => 'h1',		'text' => 'International Politics & Economics'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/ipe/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/IPEC')),
+			
+			array(	'type' => 'h1',		'text' => 'Italian'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/italian/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/ITAL')),
+			
+			array(	'type' => 'h1',		'text' => 'Japanese'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/japanese/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/JAPN')),
+			
+			array(	'type' => 'h1',		'text' => 'Jewish Studies'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/jewish'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/subject/HEBM')),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/subject/HEBR')),
+			
+			array(	'type' => 'h1',		'text' => 'Literary Studies'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/lit/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/LITS')),
+			
+			array(	'type' => 'h1',		'text' => 'Literature Program'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/litp/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/LITP')),
+			
+			array(	'type' => 'h1',		'text' => 'Mathematics'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/math/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/MATH')),
+			
+			array(	'type' => 'h1',		'text' => 'Molecular Biology & Biochemistry'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/mbb/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/MBBC')),
+			
+			array(	'type' => 'h1',		'text' => 'Music'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/music/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/MUSC')),
+			
+			array(	'type' => 'h1',		'text' => 'Neuroscience'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/neuro/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/NSCI')),
+			
+			array(	'type' => 'h1',		'text' => 'Philosophy'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/phil/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/PHIL')),
+			
+			array(	'type' => 'h1',		'text' => 'Physics'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/physics/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/PHYS')),
+			
+			array(	'type' => 'h1',		'text' => 'Political Science'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/ps/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/PSCI')),
+			
+			array(	'type' => 'h1',		'text' => 'Psychology'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/psych/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/PSYC')),
+			
+			array(	'type' => 'h1',		'text' => 'Religion'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/rel/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/RELI')),
+			
+			array(	'type' => 'h1',		'text' => 'Russian'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/russian/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/RUSS')),
+			
+			array(	'type' => 'h1',		'text' => 'Sociology & Anthropology'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/soan/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/SOAN')),
+			
+			array(	'type' => 'h1',		'text' => 'Spanish & Portuguese'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/span/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/SPAN')),
+			
+			array(	'type' => 'h1',		'text' => 'Studio Art'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/art/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/ART')),
+			
+			array(	'type' => 'h1',		'text' => 'Theatre'),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/thea/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/THEA')),
+			
+			array(	'type' => 'h1',		'text' => "Women's and Gender Studies"),
+			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/ws/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/WAGS')),
+			
+// 			array(	'type' => 'h1',		'text' => 'American'),
+// 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/amst/requirements'),
+// 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/AMST')),
+// 			
+// 			array(	'type' => 'h1',		'text' => 'American'),
+// 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/amst/requirements'),
+// 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/AMST')),
+// 			
+// 			array(	'type' => 'h1',		'text' => 'American'),
+// 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/amst/requirements'),
+// 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/AMST')),
+// 			
+// 			array(	'type' => 'h1',		'text' => 'American'),
+// 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/amst/requirements'),
+// 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/AMST')),
+			
+			
+		);
+		
+		
+		header('Content-Type: text/html');
+		header('Content-Disposition: filename="AllCourses.html"');
+		print 
+'<html>
+<head>
+	<title>Print Catalog</title>
+	<style>
+		br { mso-data-placement:same-cell; }
+	</style>
+</head>
+<body>
+
+';
+		
+		foreach ($sections as $section) {
+			switch ($section['type']) {
+				case 'h1':
+					print "\n<h1>".htmlspecialchars($section['text'])."</h1>";
+					break;
+				case 'h2':
+					print "\n<h2>".htmlspecialchars($section['text'])."</h2>";
+					break;
+				case 'text':
+					print "\n".$section['text']."";
+					break;
+				case 'page_content':
+					print "\n\t";
+					print $this->getRequirements($section['url']);
+					break;
+				case 'courses':
+					$this->printCourses($section['id'], $selectedTerms, $courseSearchSession, $offeringSearchSession, $termLookupSession);
+					break;
+				default:
+					throw new Exception("Unknown section type ".$section['type']);
+			}
+			
+			while (ob_get_level()) {
+				ob_end_flush();
+			}
+			flush();
+		}
+		
+		print '
+
+</body>
+</html>
+';
+		exit;
+	}
+	
+	/**
+	 * Answer requirements text
+	 * 
+	 * @param $url
+	 * @return string
+	 * @access protected
+	 * @since 4/26/10
+	 */
+	protected function getRequirements ($url) {
+		$feedUrl = $url.'/feed';
+		$feedDoc = new DOMDocument;
+		$feedDoc->load($feedUrl);
+		$xpath = new DOMXPath($feedDoc);
+		$links = $xpath->query('/rss/channel/item/link');
+		ob_start();
+		foreach ($links as $link) {
+			print $this->getNodeContent($link->nodeValue);
+		}
+		return ob_get_clean();
+	}
+	
+	/**
+	 * Answer the HTML data for a Drupal Node
+	 * 
+	 * @param string $url
+	 * @return string
+	 * @access protected
+	 * @since 4/26/10
+	 */
+	protected function getNodeContent ($url) {
+		preg_match('/[0-9]+$/', $url, $matches);
+		$nodeId = $matches[0];
+		
+		// This is a nasty hack, but I don't know how to get through Drupal webservices currently.
+		if (!isset($this->drupalStatement)) {
+			$pdo = new PDO('mysql:dbname=afranco_drupal_MIDD;host=localhost', 'testuser', 'testpassword');
+			$this->drupalStatement = $pdo->prepare('SELECT body FROM node_revisions WHERE nid = :nid1 and vid = (SELECT MAX(vid) AS vid FROM node_revisions WHERE nid = :nid2)');
+		}
+		
+		$this->drupalStatement->execute(array(':nid1' => $nodeId, ':nid2' => $nodeId));
+		$rows = $this->drupalStatement->fetchAll();
+		return preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $rows[0]['body']); // Strip out none-printable characters.
+	}
+	
+	/**
+	 * Print out the courses for a topic
+	 * 
+	 * @param osid_id_Id $topicId
+	 * @param array $selectedTerms
+	 * @param osid_course_CourseSearchSession $courseSearchSession
+	 * @param osid_course_CourseOfferingSearchSession $offeringSearchSession
+	 * @param osid_course_TermLookupSession $termLookupSession
+	 * @return void
+	 * @access protected
+	 * @since 4/26/10
+	 */
+	protected function printCourses (osid_id_Id $topicId, array $selectedTerms, osid_course_CourseSearchSession $courseSearchSession, osid_course_CourseOfferingSearchSession $offeringSearchSession, osid_course_TermLookupSession $termLookupSession) {
+		try {
+			$offeringQuery = $offeringSearchSession->getCourseOfferingQuery();
+			$offeringQuery->matchTopicId($topicId, true);
+			foreach ($selectedTerms as $termId) {	
+				$offeringQuery->matchTermId($termId, true);
+			}
+			$offerings = $offeringSearchSession->getCourseOfferingsByQuery($offeringQuery);
 		} catch (osid_NotFoundException $e) {
 			header('HTTP/1.1 404 Not Found');
 			print "The term ids specified were not found.";
@@ -544,224 +847,156 @@ class CoursesController
 		}
 		
 		// Limit Courses to those offerings in the terms
-		$query = $searchSession->getCourseQuery();		
-		while ($offerings->hasNext()) {
-			$query->matchCourseOfferingId($offerings->getNextCourseOffering()->getId(), true);
+		$query = $courseSearchSession->getCourseQuery();
+		if ($offerings->hasNext()) {
+			while ($offerings->hasNext()) {
+				$query->matchCourseOfferingId($offerings->getNextCourseOffering()->getId(), true);
+			}
+		} else {
+			return;
 		}
-// $query->matchNumber('AMST*', new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard"), true);
-
-		$search = $searchSession->getCourseSearch();
-		$order = $searchSession->getCourseSearchOrder();
+		$search = $courseSearchSession->getCourseSearch();
+		$order = $courseSearchSession->getCourseSearchOrder();
 		$order->orderByDisplayName();
 		$order->ascend();
 		$search->orderCourseResults($order);
-		$courses = $searchSession->getCoursesBySearch($query, $search);		
+		$courses = $courseSearchSession->getCoursesBySearch($query, $search);		
 		
-		header('Content-Type: text/html');
-		header('Content-Disposition: filename="AllCourses.html"');
-		print 
-'<html>
-<head>
-	<title>All Recent Courses</title>
-	<style>
-		br { mso-data-placement:same-cell; }
-	</style>
-</head>
-<body>
-<table>
-	<thead>
-		<tr>
-			<th>Number</th>
-			<th>Subject</th>
-			<th>Department</th>
-			<th>Division</th>
-			<th>Title</th>
-			<th>Description</th>
-			<th>Link</th>
-			<th>Terms</th>
-			<th>Cross-lists</th>
-			<th>Requirements Fullfilled</th>
-';
-// 		$recentTerms = $recentCourses->getTermsForCourse($course);
-// 		foreach ($recentTerms as $term) {
-// 			print "\n\t\t\t<th>Taught in ".$term->getDisplayName()."</th>";
-// 		}
-		
-		print '
-		</tr>
-	</thead>
-	<tbody>
-';
 
-		while (ob_get_level()) {
-			ob_end_flush();
-		}
-		flush();
+		
 
 		// Set the next and previous terms
-		$currentTermId = self::getCurrentTermId($this->termLookupSession->getCourseCatalogId());
-		$currentTerm = $this->termLookupSession->getTerm($currentTermId);
+		$currentTermId = self::getCurrentTermId($termLookupSession->getCourseCatalogId());
+		$currentTerm = $termLookupSession->getTerm($currentTermId);
 		$currentEndTime = $this->DateTime_getTimestamp($currentTerm->getEndTime());
-		
-		
-		$catalogSession = self::getCourseManager()->getCourseCatalogSession();
-		$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
 		
 		$i = 0;
 		while ($courses->hasNext()) {
 			$course = $courses->getNextCourse();
 			$i++;
 			
-			$courseIdString = self::getStringFromOsidId($course->getId());
-						
-			print "\n\t\t\t<tr>";
-			
-			print "\n\t\t\t\t<td>";
-			print htmlspecialchars($course->getDisplayName());
-			print "</td>";
-			
-			$allTopics = AbstractCatalogController::topicListAsArray($course->getTopics());
-			
-			print "\n\t\t\t\t<td>";
-			$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
-			$topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
-			$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
-			foreach ($topics as $topic) {
-				print $this->view->escape($topic->getDisplayName());
-			}
-			print "</td>";
-			
-			print "\n\t\t\t\t<td>";
-			$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
-			$topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
-			$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
-			foreach ($topics as $topic) {
-				print $this->view->escape($topic->getDisplayName());
-			}
-			print "</td>";
-			
-			print "\n\t\t\t\t<td>";
-			$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
-			$topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
-			$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
-			foreach ($topics as $topic) {
-				print $this->view->escape($topic->getDisplayName());
-			}
-			print "</td>";
-
-			$description = $course->getDescription();
-			if (preg_match('#^<strong>([^\n\r]+)</strong>(?:\s*<br />(.*)|\s*)$#sm', $description, $matches)) {
-				$title = $matches[1];
-				if (isset($matches[2]))
-					$description = trim($matches[2]);
-				else
-					$description = '';
-			} else {
-				$title = htmlspecialchars($course->getTitle());
-			}
-			print "\n\t\t\t\t<td>";
-			print $title;
-			print "</td>";
-			
-			print "\n\t\t\t\t<td>";
-			print $description;
-			print "</td>";
-			
-			print "\n\t\t\t\t<td>";
-			$catalog = $catalogSession->getCatalogIdsByCourse($course->getId());
-			if ($catalog->hasNext())
-				$catalogIdString = self::getStringFromOsidId($catalog->getNextId());
-			else
-				$catalogIdString = null;
-			print $this->getAsAbsolute($this->_helper->url('view', 'courses', null, array('catalog' => $catalogIdString, 'course' => $courseIdString)));
-			print "</td>";
-			
-			$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
-			$termStrings = array();
-			if ($course->hasRecordType($termsType)) {
-				$termsRecord = $course->getCourseRecord($termsType);
-				try {
-					$terms = $termsRecord->getTerms();
-					while ($terms->hasNext()) {
-						$term = $terms->getNextTerm();
-						// See if the term is in one of our chosen terms
-						foreach ($selectedTerms as $selectedTermId) {
-							if ($selectedTermId->isEqual($term->getId())) {
-								$termStrings[] = $term->getDisplayName();
-							}
-						}
-					}
-				} catch (osid_OperationFailedException $e) {
-				}
-			}
-			print "\n\t\t\t\t<td>";
-			print implode(", ", $termStrings);
-			print "</td>";
-			
-			$altNames = array();
-			$alternateType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
-			print "\n\t\t\t\t<td>";
-			try {
-				if ($course->hasRecordType($this->alternateType)) {
-					$record = $course->getCourseRecord($this->alternateType);
-					if ($record->hasAlternates()) {
-						$alternates = $record->getAlternates();
-						while ($alternates->hasNext()) {
-							$alternate = $alternates->getNextCourse();
-							
-							$altInSelectedTerms = false;
-							if ($alternate->hasRecordType($termsType)) {
-								$termsRecord = $alternate->getCourseRecord($termsType);
-								try {
-									$terms = $termsRecord->getTerms();
-									while ($terms->hasNext() && !$altInSelectedTerms) {
-										$term = $terms->getNextTerm();
-										// See if the term is in one of our chosen terms
-										foreach ($selectedTerms as $selectedTermId) {
-											if ($selectedTermId->isEqual($term->getId())) {
-												$altInSelectedTerms = true;
-												break;
-											}
-										}
-									}
-								} catch (osid_OperationFailedException $e) {
-								}
-							}
-							if ($altInSelectedTerms)
-								$altNames[] = $alternate->getDisplayName();
-						}
-					}
-				}
-				print implode(", ", $altNames);
-			} catch (osid_NotFoundException $e) {
-			}
-			print "</td>";
-			
-			print "\n\t\t\t\t<td>";
-			$reqs = array();
-			$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
-			$topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
-			$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
-			foreach ($topics as $topic) {
-				$reqs[] = $this->view->escape($topic->getDisplayName());
-			}
-			print implode (", ", $reqs);
-			print "</td>";
-			
-			print "\n\t\t\t</tr>";
-			flush();
+			$this->printCourse($course, $selectedTerms);
 			
 // 			if ($i > 10)
 // 				break;
 		}
 		
-		print '
-		</tbody>
-	</table>
-</body>
-</html>';
-		exit;
+	}
+	
+	/**
+	 * Print out a single course
+	 * 
+	 * @param osid_course_Course $course
+	 * @param array $selectedTerms
+	 * @return void
+	 * @access protected
+	 * @since 4/28/10
+	 */
+	protected function printCourse (osid_course_Course $course, array $selectedTerms) {
+		$courseIdString = self::getStringFromOsidId($course->getId());
+			
+		$description = $course->getDescription();
+		if (preg_match('#^<strong>([^\n\r]+)</strong>(?:\s*<br />(.*)|\s*)$#sm', $description, $matches)) {
+			$title = $matches[1];
+			if (isset($matches[2]))
+				$description = trim($matches[2]);
+			else
+				$description = '';
+		} else {
+			$title = htmlspecialchars($course->getTitle());
+		}
 		
+		$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
+		$termStrings = array();
+		if ($course->hasRecordType($termsType)) {
+			$termsRecord = $course->getCourseRecord($termsType);
+			try {
+				$terms = $termsRecord->getTerms();
+				while ($terms->hasNext()) {
+					$term = $terms->getNextTerm();
+					// See if the term is in one of our chosen terms
+					foreach ($selectedTerms as $selectedTermId) {
+						if ($selectedTermId->isEqual($term->getId())) {
+							$termStrings[] = $term->getDisplayName();
+						}
+					}
+				}
+			} catch (osid_OperationFailedException $e) {
+			}
+		}
+		
+		print "\n\t<h2>";
+		print htmlspecialchars($course->getDisplayName());
+		print " ".$title;
+		print " (".implode(", ", $termStrings).")";
+		print "</h2>";
+		
+		print "\n\t<p>";
+		print $description;
+		
+		
+		$allTopics = AbstractCatalogController::topicListAsArray($course->getTopics());
+
+		$reqs = array();
+		$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
+		$topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
+		$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
+		foreach ($topics as $topic) {
+			$reqs[] = $this->view->escape($topic->getDisplayName());
+		}
+		print " <strong>".implode (", ", $reqs)."</strong>";
+		
+		print "</p>";
+		
+		
+		
+		/*********************************************************
+		 * Crosslists
+		 *********************************************************/
+// 			$altNames = array();
+// 			$alternateType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
+// 			try {
+// 				if ($course->hasRecordType($this->alternateType)) {
+// 					$record = $course->getCourseRecord($this->alternateType);
+// 					if ($record->hasAlternates()) {
+// 						$alternates = $record->getAlternates();
+// 						while ($alternates->hasNext()) {
+// 							$alternate = $alternates->getNextCourse();
+// 							
+// 							$altInSelectedTerms = false;
+// 							if ($alternate->hasRecordType($termsType)) {
+// 								$termsRecord = $alternate->getCourseRecord($termsType);
+// 								try {
+// 									$terms = $termsRecord->getTerms();
+// 									while ($terms->hasNext() && !$altInSelectedTerms) {
+// 										$term = $terms->getNextTerm();
+// 										// See if the term is in one of our chosen terms
+// 										foreach ($selectedTerms as $selectedTermId) {
+// 											if ($selectedTermId->isEqual($term->getId())) {
+// 												$altInSelectedTerms = true;
+// 												break;
+// 											}
+// 										}
+// 									}
+// 								} catch (osid_OperationFailedException $e) {
+// 								}
+// 							}
+// 							if ($altInSelectedTerms)
+// 								$altNames[] = htmlspecialchars($alternate->getDisplayName());
+// 						}
+// 					}
+// 				}
+// 				if (count($altNames)) {
+// 					print "\n\t<p><strong>Crosslists:</strong> ";
+// 					print implode(", ", $altNames);
+// 					print "</p>";
+// 				}
+// 			} catch (osid_NotFoundException $e) {
+// 			}			
+
+
+		
+		flush();
 	}
 	
 	function DateTime_getTimestamp($dt) {
