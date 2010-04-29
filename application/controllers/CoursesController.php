@@ -574,6 +574,7 @@ class CoursesController
 			
 			array(	'type' => 'h1',		'text' => 'Dance'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/dance/requirements'),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/ARDV')),
 			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/DANC')),
 			
 			array(	'type' => 'h1',		'text' => 'Economics'),
@@ -775,11 +776,11 @@ class CoursesController
 		print "<h1>Courses not included</h1>";
 		
 		// Get all Offerings for the selected terms
-		$offeringQuery = $offeringSearchSession->getCourseOfferingQuery();
-		foreach ($selectedTerms as $termId) {	
+		$offeringQuery = $this->offeringSearchSession->getCourseOfferingQuery();
+		foreach ($this->selectedTerms as $termId) {	
 			$offeringQuery->matchTermId($termId, true);
 		}
-		$offerings = $offeringSearchSession->getCourseOfferingsByQuery($offeringQuery);
+		$offerings = $this->offeringSearchSession->getCourseOfferingsByQuery($offeringQuery);
 		// If the course Id wasn't printed, add it to a to-print array
 		$coursesNotPrinted = array();
 		while ($offerings->hasNext()) {
@@ -792,7 +793,7 @@ class CoursesController
 		// Print a list of courses not printed
 		ksort($coursesNotPrinted);
 		foreach ($coursesNotPrinted as $course) {
-			$this->printCourse($course, $selectedTerms);
+			$this->printCourse($course);
 		}
 		
 		print '
