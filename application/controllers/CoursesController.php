@@ -943,12 +943,24 @@ class CoursesController
 			}
 		}
 		
+		$allTopics = AbstractCatalogController::topicListAsArray($course->getTopics());
+
+		$reqs = array();
+		$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
+		$topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
+		$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
+		foreach ($topics as $topic) {
+			$reqs[] = $this->view->escape($topic->getDisplayName());
+		}
+		
 		/*********************************************************
 		 * Section descriptions
 		 *********************************************************/
 		// Look for different Section Descriptions
 		$offeringQuery = $this->offeringSearchSession->getCourseOfferingQuery();
 		$offeringQuery->matchCourseId($course->getId(), true);
+		$offeringQuery->matchGenusType(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:offering/LCT"), true);
+		$offeringQuery->matchGenusType(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:offering/SEM"), true);
 		foreach ($this->selectedTerms as $termId) {	
 			$offeringQuery->matchTermId($termId, true);
 		}
@@ -964,22 +976,33 @@ class CoursesController
 		while ($offerings->hasNext()) {
 			$offering = $offerings->getNextCourseOffering();
 			if ($offering->getDescription() && $offering->getDescription() != $course->getDescription()) {
-				$sectionTerms[] = $offering->getTerm()->getDisplayName();
-				$sectionDescriptions[] = $offering->getDescription();
+				$term = $offering->getTerm();
+				$termIdString = self::getStringFromOsidId($term->getId());
+				$sectionTerms[$termIdString] = $term->getDisplayName();
+				$sectionDescriptions[$termIdString] = $offering->getDescription();
 			}
 		}
 		
 		$sectionDescriptionsText = '';
 		// Replace the description with the one from the section if there is only one section.
-		if (count($sectionDescriptions) == 1) {
-			$description = $sectionDescriptions[0];
+		if (count($sectionDescriptions) == 1 && count($termStrings) == 1) {
+			reset($sectionDescriptions);
+			$description = current($sectionDescriptions);
+			$description .= " <strong>".implode (", ", $reqs)."</strong>";
 		}
 		// If there are multiple section descriptions, print them separately
 		else if (count($sectionDescriptions)) {
+			$description = '';
 			foreach ($sectionDescriptions as $i => $desc) {
-				$sectionDescriptionsText .= "\n\t<h3>".$sectionTerms[$i]."</h3>";
-				$sectionDescriptionsText .= "\n\t<p>".$desc."</p>";
+				$description .= "\n\t<h3>".$sectionTerms[$i]."</h3>";
+				$description .= "\n\t<p>".$desc;
+				$description .= " <strong>".implode (", ", $reqs)."</strong>";
+				$description .= "</p>";
 			}
+		} else {
+			$description = "\n\t<p>".$description;
+			$description .=  " <strong>".implode (", ", $reqs)."</strong>";
+			$description .= "</p>";
 		}
 		
 		/*********************************************************
@@ -991,24 +1014,7 @@ class CoursesController
 		print " (".implode(", ", $termStrings).")";
 		print "</h2>";
 		
-		print "\n\t<p>";
-		print $description;
-		
-		
-		$allTopics = AbstractCatalogController::topicListAsArray($course->getTopics());
-
-		$reqs = array();
-		$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
-		$topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
-		$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
-		foreach ($topics as $topic) {
-			$reqs[] = $this->view->escape($topic->getDisplayName());
-		}
-		print " <strong>".implode (", ", $reqs)."</strong>";
-		
-		print "</p>";
-				
-		print $sectionDescriptionsText;
+		print $description;		
 		
 		/*********************************************************
 		 * Crosslists
