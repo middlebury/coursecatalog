@@ -244,7 +244,7 @@ class banner_course_Course
 		if (is_null($description))
 			$this->setDescription('');
 		else
-			$this->setDescription(self::convertDescription($description));
+			$this->setDescription(self::convertDescription(trim($description)));
 		$this->title = $title;
 		$this->credits = floatval($credits);
 		$this->topicIds = $topicIds;
