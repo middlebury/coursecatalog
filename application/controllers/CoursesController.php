@@ -773,7 +773,9 @@ class CoursesController
 		}
 		
 		print "\n<hr/>";
-		print "<h1>Courses not included</h1>";
+		print "\n<h1>Courses not included</h1>";
+		
+		flush();
 		
 		// Get all Offerings for the selected terms
 		$offeringQuery = $this->offeringSearchSession->getCourseOfferingQuery();
