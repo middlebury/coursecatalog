@@ -193,7 +193,7 @@ class banner_course_CourseOffering_Search_SearchTest
     	$query->matchDisplayName('CHEM*', $this->wildcardStringMatchType, true);
     	$allChemResults = $this->session->getCourseOfferingsBySearch($query, $this->object);
         $this->assertType('osid_course_CourseOfferingSearchResults', $allChemResults);
-  		$this->assertEquals(78, $allChemResults->getResultSize());
+  		$this->assertEquals(77, $allChemResults->getResultSize());
     	
     	$this->object->searchWithinCourseOfferingResults($allChemResults);
     	

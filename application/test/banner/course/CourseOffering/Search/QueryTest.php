@@ -239,7 +239,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->assertEquals('(NOT FALSE)', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
-		$this->assertEquals(95, $courseOfferings->available());
+		$this->assertEquals(94, $courseOfferings->available());
     }
     
     /**
@@ -273,7 +273,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->assertEquals('(NOT SSBSECT_SCHD_CODE = ?)', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
-		$this->assertEquals((95 - 24), $courseOfferings->available());
+		$this->assertEquals((94 - 24), $courseOfferings->available());
     }
     
     /**
@@ -307,7 +307,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->assertEquals('(SSBSECT_SCHD_CODE = ?)', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
-		$this->assertEquals(26, $courseOfferings->available());
+		$this->assertEquals(25, $courseOfferings->available());
     }
     
     /**
@@ -339,7 +339,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->assertEquals('(NOT FALSE)', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
-		$this->assertEquals(95, $courseOfferings->available());
+		$this->assertEquals(94, $courseOfferings->available());
     }
 
     /**
@@ -355,7 +355,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->assertEquals('(TRUE)', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
-		$this->assertEquals(95, $courseOfferings->available());
+		$this->assertEquals(94, $courseOfferings->available());
     }
 
     /**
@@ -371,7 +371,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->assertEquals('(TRUE)', $this->object->getWhereClause());
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
-		$this->assertEquals(95, $courseOfferings->available());
+		$this->assertEquals(94, $courseOfferings->available());
     }
     
     /**
@@ -520,7 +520,7 @@ class banner_course_CourseOffering_Search_QueryTest
 		
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
-		$this->assertEquals(95, $courseOfferings->available());
+		$this->assertEquals(94, $courseOfferings->available());
     }
     
     /**
@@ -796,7 +796,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->assertEquals('((SSBSECT_SUBJ_CODE LIKE(?)))', $this->object->getWhereClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
-		$this->assertEquals(78, $courseOfferings->available());
+		$this->assertEquals(77, $courseOfferings->available());
     }
     
     /**
@@ -836,7 +836,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->assertEquals('((SSBSECT_SUBJ_CODE LIKE(?)))', $this->object->getWhereClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
-		$this->assertEquals(85, $courseOfferings->available());
+		$this->assertEquals(84, $courseOfferings->available());
     }
     
     /**
@@ -856,7 +856,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->assertEquals('((SSBSECT_CRSE_NUMB LIKE(?)))', $this->object->getWhereClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
-		$this->assertEquals(95, $courseOfferings->available());
+		$this->assertEquals(94, $courseOfferings->available());
     }
     
     /**
@@ -909,7 +909,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->assertEquals('(TRUE)', $this->object->getWhereClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
-		$this->assertEquals(95, $courseOfferings->available());
+		$this->assertEquals(94, $courseOfferings->available());
 	}
 
     /**
@@ -945,7 +945,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->assertEquals('((SSBSECT_CREDIT_HRS >= ? AND SSBSECT_CREDIT_HRS <= ?))', $this->object->getWhereClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
-		$this->assertEquals(95, $courseOfferings->available());
+		$this->assertEquals(94, $courseOfferings->available());
     }
     
     /**
@@ -981,7 +981,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->assertEquals('((SSBSECT_CREDIT_HRS >= ? AND SSBSECT_CREDIT_HRS <= ?))', $this->object->getWhereClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
-		$this->assertEquals(71, $courseOfferings->available());
+		$this->assertEquals(70, $courseOfferings->available());
     }
 
     /**
@@ -1013,7 +1013,7 @@ class banner_course_CourseOffering_Search_QueryTest
         $this->assertEquals('(NOT SSBSECT_CREDIT_HRS > 0)', $this->object->getWhereClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
-		$this->assertEquals(71, $courseOfferings->available());
+		$this->assertEquals(70, $courseOfferings->available());
     }
 
     /**
@@ -1054,7 +1054,7 @@ class banner_course_CourseOffering_Search_QueryTest
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
-		$this->assertEquals(78, $courseOfferings->available());
+		$this->assertEquals(77, $courseOfferings->available());
     }
 
     /**
@@ -1197,7 +1197,7 @@ class banner_course_CourseOffering_Search_QueryTest
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
-		$this->assertEquals(78, $courseOfferings->available());
+		$this->assertEquals(77, $courseOfferings->available());
     }
     
     /**
@@ -1215,7 +1215,7 @@ class banner_course_CourseOffering_Search_QueryTest
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
-		$this->assertEquals(90, $courseOfferings->available());
+		$this->assertEquals(89, $courseOfferings->available());
     }
     
     /**
@@ -1269,7 +1269,7 @@ class banner_course_CourseOffering_Search_QueryTest
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
-		$this->assertEquals(95, $courseOfferings->available());
+		$this->assertEquals(94, $courseOfferings->available());
     }
     
     /**
@@ -1518,7 +1518,7 @@ AND SCBCRSE_COLL_CODE IN (
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
-		$this->assertEquals(95, $courseOfferings->available());
+		$this->assertEquals(94, $courseOfferings->available());
     }
     
     /**
@@ -1569,7 +1569,7 @@ AND SCBCRSE_COLL_CODE IN (
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
-		$this->assertEquals(95, $courseOfferings->available());
+		$this->assertEquals(94, $courseOfferings->available());
     }
 
     /**
@@ -1644,7 +1644,7 @@ AND SCBCRSE_COLL_CODE IN (
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
-		$this->assertEquals(20, $courseOfferings->available());
+		$this->assertEquals(19, $courseOfferings->available());
     }
     
     /**
@@ -1684,7 +1684,7 @@ AND SCBCRSE_COLL_CODE IN (
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
-		$this->assertEquals(23, $courseOfferings->available());
+		$this->assertEquals(22, $courseOfferings->available());
     }
 
     /**
@@ -1812,7 +1812,7 @@ AND SCBCRSE_COLL_CODE IN (
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
-		$this->assertEquals(18, $courseOfferings->available());
+		$this->assertEquals(17, $courseOfferings->available());
     }
     
     /**
@@ -1850,7 +1850,7 @@ AND SCBCRSE_COLL_CODE IN (
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
-		$this->assertEquals(93, $courseOfferings->available()); // A few don't have meeting times.
+		$this->assertEquals(92, $courseOfferings->available()); // A few don't have meeting times.
     }
     
     /**
@@ -1930,7 +1930,7 @@ AND SCBCRSE_COLL_CODE IN (
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
-		$this->assertEquals(56, $courseOfferings->available());
+		$this->assertEquals(55, $courseOfferings->available());
     }
     
     /**
