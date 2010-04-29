@@ -634,7 +634,7 @@ class CoursesController
 			
 			array(	'type' => 'h1',		'text' => 'International Studies'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/is/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/INTL')),
+			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/subject/INTL')),
 			
 			array(	'type' => 'h1',		'text' => 'Italian'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/italian/requirements'),
