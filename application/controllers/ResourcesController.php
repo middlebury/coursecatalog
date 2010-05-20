@@ -120,6 +120,49 @@ class ResourcesController
 		
 	}
 	
+	/**
+	 * List all department topics as a text file with each line being Id|DisplayName
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 10/20/09
+	 */
+	public function listcampusestxtAction () {
+		$this->renderTextList(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/campus"));
+	}
+	
+	/**
+	 * Render a text feed for a given topic type.
+	 * 
+	 * @param osid_type_Type $genusType
+	 * @return void
+	 * @access private
+	 * @since 11/17/09
+	 */
+	private function renderTextList (osid_type_Type $genusType) {
+		header('Content-Type: text/plain');
+		
+		if ($this->_getParam('catalog')) {
+			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
+			$lookupSession = self::getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalogId);
+			$this->view->title = 'Resources in '.$lookupSession->getBin()->getDisplayName();
+		} else {
+			$lookupSession = self::getCourseManager()->getResourceManager()->getResourceLookupSession();
+			$this->view->title = 'Resources in All Bins';
+		}
+		$lookupSession->useFederatedBinView();
+		
+		$resources = $lookupSession->getResourcesByGenusType($genusType);
+		
+		while ($resources->hasNext()) {
+			$resource = $resources->getNextResource();
+			print self::getStringFromOsidId($resource->getId())."|".self::getStringFromOsidId($resource->getId())." - ".$resource->getDisplayName()."\n";
+		}
+// 		var_dump($lookupSession);
+// 		var_dump($resources);
+		exit;
+	}
+	
 }
 
 ?>
