@@ -56,6 +56,11 @@ class banner_course_CourseOffering_Search_QueryTest
 		
     	$this->barryId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/WEBID1000002');
     	$this->calvinId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/WEBID1000003');
+    	
+    	$this->mbh216Id = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/place/room/MBH/216');
+    	$this->mbh560Id = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/place/room/MBH/560');
+    	$this->mainCampusId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/place/campus/M');
+    	$this->breadloafCampusId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/place/campus/BL');
 
     }
 
@@ -1355,12 +1360,61 @@ class banner_course_CourseOffering_Search_QueryTest
     /**
      * 
      */
-    public function testMatchLocationId()
+    public function testMatchLocationIdRoom()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->matchLocationId($this->mbh216Id, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('MBH', $params[0]);
+        $this->assertEquals('216', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals('((SSRMEET_BLDG_CODE = ? AND SSRMEET_ROOM_CODE = ?))', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(11, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchLocationId2Rooms()
+    {
+        $this->object->matchLocationId($this->mbh216Id, true);
+        $this->object->matchLocationId($this->mbh560Id, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('MBH', $params[0]);
+        $this->assertEquals('216', $params[1]);
+        $this->assertEquals('MBH', $params[2]);
+        $this->assertEquals('560', $params[3]);
+        $this->assertFalse(isset($params[4]));
+        
+        $this->assertEquals('((SSRMEET_BLDG_CODE = ? AND SSRMEET_ROOM_CODE = ?)
+		OR (SSRMEET_BLDG_CODE = ? AND SSRMEET_ROOM_CODE = ?))', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(49, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchLocationIdCampus()
+    {
+        $this->object->matchLocationId($this->mainCampusId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('M', $params[0]);
+        $this->assertFalse(isset($params[1]));
+        
+        $this->assertEquals('(SSBSECT_CAMP_CODE = ?)', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(94, $courseOfferings->available());
     }
 
     /**

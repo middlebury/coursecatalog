@@ -792,7 +792,25 @@ class banner_course_CourseOffering_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchLocationId(osid_id_Id $resourceId, $match) {
-    	throw new osid_UnimplementedException();
+    	// Try room locations
+    	try {
+    		$locationString = $this->session->getDatabaseIdString($resourceId, 'resource/place/room/');
+    		$locationParts = explode('/', $locationString);
+    		$this->addClause(
+    			'location', 
+				'(SSRMEET_BLDG_CODE = ? AND SSRMEET_ROOM_CODE = ?)',
+				array($locationParts[0], $locationParts[1]),
+				$match);
+		} 
+		// Try campus locations
+		catch (osid_NotFoundException $e) {
+			$campus = $this->session->getDatabaseIdString($resourceId, 'resource/place/campus/');
+    		$this->addClause(
+    			'location', 
+				'SSBSECT_CAMP_CODE = ?',
+				array($campus),
+				$match);
+		}
     }
 
 
