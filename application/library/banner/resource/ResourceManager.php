@@ -401,7 +401,7 @@ class banner_resource_ResourceManager
      *              supportsBinLookup() </code> is <code> true. </code> 
      */
     public function getBinLookupSession() {
-    	throw new osid_UnimplementedException();
+    	return new banner_resource_Bin_Lookup_Session($this);
 	}
 
 
@@ -592,7 +592,7 @@ class banner_resource_ResourceManager
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsBinLookup() {
-    	return false;
+    	return true;
     }
 
 

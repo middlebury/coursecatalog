@@ -108,7 +108,7 @@ class banner_resource_Resource_Lookup_Session
      *
      *  @compliance mandatory This method is must be implemented. 
      */
-    public function useComparativeResourceView(){
+    public function useComparativeResourceView() {
     	$this->useComparativeView();
     }
 

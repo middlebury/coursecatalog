@@ -468,7 +468,7 @@ class banner_resource_ResourceManagerTest
      */
     public function testSupportsBinLookup()
     {
-        $this->assertFalse($this->manager->supportsBinLookup());
+        $this->assertTrue($this->manager->supportsBinLookup());
     }
 
     /**
