@@ -37,7 +37,7 @@
  * 
  * @package banner.resource
  */
-class banner_resource_Resource_Lookup_Session
+class banner_resource_Resource_Lookup_PerCatalogSession
     extends banner_AbstractSession
     implements osid_resource_ResourceLookupSession
 {
@@ -46,12 +46,46 @@ class banner_resource_Resource_Lookup_Session
 	 * Constructor
 	 * 
 	 * @param banner_ManagerInterface $manager
+	 * @param osid_id_Id $binId
 	 * @return void
 	 * @access public
 	 * @since 5/4/09
 	 */
-	public function __construct (banner_ManagerInterface $manager) {
+	public function __construct (banner_ManagerInterface $manager, osid_id_Id $binId) {
 		parent::__construct($manager, 'resource/');
+		
+		$this->binId = $binId;
+	}
+	
+	private $binId;
+	private $bin;
+	
+	/**
+	 * Answer the catalog where terms
+	 * 
+	 * @return string
+	 * @access private
+	 * @since 4/20/09
+	 */
+	private function getCatalogWhereTerms () {
+		if (is_null($this->binId) || $this->binId->isEqual($this->manager->getCombinedBinId()))
+			return 'TRUE';
+		else
+			return 'catalog_id = :catalog_id';
+	}
+	
+	/**
+	 * Answer the input parameters
+	 * 
+	 * @return array
+	 * @access private
+	 * @since 4/17/09
+	 */
+	private function getCatalogParameters () {
+		$params = array();
+		if (!is_null($this->binId) && !$this->binId->isEqual($this->manager->getCombinedBinId()))
+			$params[':catalog_id'] = $this->getDatabaseIdString($this->binId, 'catalog/');
+		return $params;
 	}
 
     /**
@@ -64,7 +98,7 @@ class banner_resource_Resource_Lookup_Session
      *  @compliance mandatory This method must be implemented. 
      */
     public function getBinId() {
-    	return $this->manager->getCombinedBinId();
+    	return $this->binId;
     }
 
 
@@ -79,7 +113,12 @@ class banner_resource_Resource_Lookup_Session
      *  @compliance mandatory This method must be implemented. 
      */
     public function getBin() {
-    	return new banner_resource_Bin_Combined($this->manager);
+    	if (!isset($this->bin)) {
+	    	$lookup = $this->manager->getBinLookupSession();
+			$lookup->usePlenaryView();
+			$this->bin = $lookup->getBin($this->getBinId());
+		}
+    	return $this->bin;
     }
 
 
@@ -238,15 +277,28 @@ class banner_resource_Resource_Lookup_Session
 	SYVINST_FIRST_NAME
 FROM 
 	SYVINST
+	INNER JOIN ssbsect_scbcrse ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)
+	
 WHERE
 	WEB_ID = :webid
+	
+	AND SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms()."
+	)
 ";
 			self::$getPersonResource_stmt = $this->manager->getDB()->prepare($query);
 		}
 		
-		$parameters = array(
+		$parameters = array_merge(
+			array(
 				':webid' => $this->getDatabaseIdString($resourceId, 'resource/person/')
-			);
+			),
+			$this->getCatalogParameters());
 		self::$getPersonResource_stmt->execute($parameters);
 		$row = self::$getPersonResource_stmt->fetch(PDO::FETCH_ASSOC);
 		self::$getPersonResource_stmt->closeCursor();
@@ -277,13 +329,24 @@ WHERE
 	SYVINST_LAST_NAME,
 	SYVINST_FIRST_NAME
 FROM 
-	SYVINST
+	ssbsect_scbcrse
+	INNER JOIN SYVINST ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)
+WHERE
+
+	SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms()."
+	)
 GROUP BY WEB_ID
 ";
 			self::$getPersonResources_stmt = $this->manager->getDB()->prepare($query);
 		}
 		
-		self::$getPersonResources_stmt->execute();
+		self::$getPersonResources_stmt->execute($this->getCatalogParameters());
 				
 		$resources = array();
 		while ($row = self::$getPersonResources_stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -313,16 +376,30 @@ GROUP BY WEB_ID
     STVBLDG_CODE,
 	STVBLDG_DESC
 FROM 
-	STVBLDG
+	ssbsect_scbcrse
+	INNER JOIN SSRMEET ON (SSRMEET_TERM_CODE = SSBSECT_TERM_CODE AND SSRMEET_CRN = SSBSECT_CRN)
+	INNER JOIN STVBLDG ON SSRMEET_BLDG_CODE = STVBLDG_CODE
 WHERE
 	STVBLDG_CODE = :code
+	
+	AND SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms()."
+	)
+GROUP BY STVBLDG_CODE
 ";
 			self::$getBuildingResource_stmt = $this->manager->getDB()->prepare($query);
 		}
 		
-		$parameters = array(
+		$parameters = array_merge(
+			array(
 				':code' => $this->getDatabaseIdString($resourceId, 'resource/place/building/')
-			);
+			),
+			$this->getCatalogParameters());
 		self::$getBuildingResource_stmt->execute($parameters);
 		$row = self::$getBuildingResource_stmt->fetch(PDO::FETCH_ASSOC);
 		self::$getBuildingResource_stmt->closeCursor();
@@ -353,12 +430,24 @@ WHERE
     STVBLDG_CODE,
 	STVBLDG_DESC
 FROM 
-	STVBLDG
+	ssbsect_scbcrse
+	INNER JOIN SSRMEET ON (SSRMEET_TERM_CODE = SSBSECT_TERM_CODE AND SSRMEET_CRN = SSBSECT_CRN)
+	INNER JOIN STVBLDG ON SSRMEET_BLDG_CODE = STVBLDG_CODE
+WHERE
+	SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms()."
+	)
+GROUP BY STVBLDG_CODE
 ";
 			self::$getBuildingResources_stmt = $this->manager->getDB()->prepare($query);
 		}
 		
-		self::$getBuildingResources_stmt->execute();
+		self::$getBuildingResources_stmt->execute($this->getCatalogParameters());
 				
 		$resources = array();
 		while ($row = self::$getBuildingResources_stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -390,11 +479,20 @@ FROM
     STVBLDG_CODE,
 	STVBLDG_DESC
 FROM 
-	SSRMEET
+	ssbsect_scbcrse
+	INNER JOIN SSRMEET ON (SSRMEET_TERM_CODE = SSBSECT_TERM_CODE AND SSRMEET_CRN = SSBSECT_CRN)
 	LEFT JOIN STVBLDG ON SSRMEET_BLDG_CODE = STVBLDG_CODE
 WHERE
 	SSRMEET_BLDG_CODE = :bldg_code
 	AND SSRMEET_ROOM_CODE = :room_code
+	AND SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms()."
+	)
 GROUP BY
 	STVBLDG_CODE, SSRMEET_ROOM_CODE
 ";
@@ -405,10 +503,12 @@ GROUP BY
 		if (!preg_match('#^([a-z0-9_-]+)/(.+)$#i', $roomString, $matches))
 			throw new osid_NotFoundException("Room string '$roomString' doesn't match.");
 		
-		$parameters = array(
+		$parameters = array_merge(
+			array(
 				':bldg_code' => $matches[1],
 				':room_code' => $matches[2]
-			);
+			),
+			$this->getCatalogParameters());
 		self::$getRoomResource_stmt->execute($parameters);
 		$row = self::$getRoomResource_stmt->fetch(PDO::FETCH_ASSOC);
 		self::$getRoomResource_stmt->closeCursor();
@@ -440,17 +540,26 @@ GROUP BY
     STVBLDG_CODE,
 	STVBLDG_DESC
 FROM 
-	SSRMEET
+	ssbsect_scbcrse
+	INNER JOIN SSRMEET ON (SSRMEET_TERM_CODE = SSBSECT_TERM_CODE AND SSRMEET_CRN = SSBSECT_CRN)
 	LEFT JOIN STVBLDG ON SSRMEET_BLDG_CODE = STVBLDG_CODE
 WHERE
 	SSRMEET_BLDG_CODE IS NOT NULL
+	AND SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms()."
+	)
 GROUP BY
 	STVBLDG_CODE, SSRMEET_ROOM_CODE
 ";
 			self::$getRoomResources_stmt = $this->manager->getDB()->prepare($query);
 		}
 		
-		self::$getRoomResources_stmt->execute();
+		self::$getRoomResources_stmt->execute($this->getCatalogParameters());
 				
 		$resources = array();
 		while ($row = self::$getRoomResources_stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -481,16 +590,28 @@ GROUP BY
     STVCAMP_CODE,
 	STVCAMP_DESC
 FROM 
-	STVCAMP
+	ssbsect_scbcrse
+	INNER JOIN STVCAMP ON SSBSECT_CAMP_CODE = STVCAMP_CODE
 WHERE
 	STVCAMP_CODE = :code
+	AND SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms()."
+	)
+GROUP BY STVCAMP_CODE
 ";
 			self::$getCampusResource_stmt = $this->manager->getDB()->prepare($query);
 		}
 		
-		$parameters = array(
+		$parameters = array_merge(
+			array(
 				':code' => $this->getDatabaseIdString($resourceId, 'resource/place/campus/')
-			);
+			),
+			$this->getCatalogParameters());
 		self::$getCampusResource_stmt->execute($parameters);
 		$row = self::$getCampusResource_stmt->fetch(PDO::FETCH_ASSOC);
 		self::$getCampusResource_stmt->closeCursor();
@@ -521,12 +642,22 @@ WHERE
     STVCAMP_CODE,
 	STVCAMP_DESC
 FROM 
-	STVCAMP
+	ssbsect_scbcrse
+	INNER JOIN STVCAMP ON SSBSECT_CAMP_CODE = STVCAMP_CODE
+WHERE
+	SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms()."
+	)
+GROUP BY STVCAMP_CODE
 ";
 			self::$getCampusResources_stmt = $this->manager->getDB()->prepare($query);
 		}
-		
-		self::$getCampusResources_stmt->execute();
+		self::$getCampusResources_stmt->execute($this->getCatalogParameters());
 				
 		$resources = array();
 		while ($row = self::$getCampusResources_stmt->fetch(PDO::FETCH_ASSOC)) {
