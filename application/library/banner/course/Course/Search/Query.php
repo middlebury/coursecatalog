@@ -18,7 +18,8 @@ class banner_course_Course_Search_Query
 	extends banner_course_AbstractQuery
     implements osid_course_CourseQuery, 
     	middlebury_course_Course_Search_TopicQueryRecord,
-    	middlebury_course_Course_Search_InstructorsQueryRecord
+    	middlebury_course_Course_Search_InstructorsQueryRecord,
+    	middlebury_course_Course_Search_LocationQueryRecord
 {
 	
 	/**
@@ -34,6 +35,7 @@ class banner_course_Course_Search_Query
 		
 		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:topic'));
 		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors'));
+		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:location'));
 		
 		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
 		$this->booleanStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:boolean");
@@ -694,6 +696,54 @@ class banner_course_Course_Search_Query
      *              supportsInstructorQuery() </code> is <code> true. </code> 
      */
     public function getInstructorQuery() {
+    	throw new osid_UnimplementedException();
+    }
+    
+/*********************************************************
+ * Methods from middlebury_course_Course_Search_LocationQueryRecord
+ *********************************************************/
+
+    
+    /**
+     *  Sets the location resource <code> Id </code> for this query to match courses 
+     *  that have a related location resource. 
+     *
+     *  @param object osid_id_Id $resourceId A location resource <code> Id </code> 
+     *  @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     *  @throws osid_NullArgumentException <code> resourceId </code> is <code> 
+     *          null </code> 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function matchLocationId(osid_id_Id $instructorId, $match) {
+    	$this->addClause('location_id', 'SSBSECT_CAMP_CODE = ?', array($this->session->getDatabaseIdString($instructorId, 'resource/place/campus/')), $match);
+    	$this->addTableJoin('LEFT JOIN SSBSECT ON (SCBCRSE_SUBJ_CODE = SSBSECT_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SSBSECT_CRSE_NUMB)');
+    }
+
+
+    /**
+     *  Tests if a <code> LocationQuery </code> is available. 
+     *
+     *  @return boolean <code> true </code> if a location query interface is 
+     *          available, <code> false </code> otherwise 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function supportsLocationQuery() {
+    	return false;
+    }
+
+
+    /**
+     *  Gets the query interface for a location. Multiple retrievals produce a 
+     *  nested <code> OR </code> term. 
+     *
+     *  @return object osid_resource_ResourceQuery the location query 
+     *  @throws osid_UnimplementedException <code> supportsLocationQuery() 
+     *          </code> is <code> false </code> 
+     *  @compliance optional This method must be implemented if <code> 
+     *              supportsLocationQuery() </code> is <code> true. </code> 
+     */
+    public function getLocationQuery() {
     	throw new osid_UnimplementedException();
     }
 }
