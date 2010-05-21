@@ -284,6 +284,21 @@ class CoursesController
 			$topicRecord->matchTopicId($topicId, true);
 		}
 		
+		// Limit by location
+		$locationIds = array();
+		if (is_array($this->_getParam('location'))) {
+			foreach ($this->_getParam('location') as $idString) {
+				$locationIds[] = self::getOsidIdFromString($idString);
+			}
+		} else if ($this->_getParam('location')) {
+			$locationIds[] = self::getOsidIdFromString($this->_getParam('location'));
+		}
+		$locationRecord = $query->getCourseQueryRecord(new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:location"));
+		foreach ($locationIds as $locationId) {
+			$locationRecord->matchLocationId($locationId, true);
+		}
+		
+		
 		$courses = $searchSession->getCoursesByQuery($query);
 		
 		$topicLookup = self::getCourseManager()->getTopicLookupSession();
