@@ -288,3 +288,21 @@ WHERE
 
 GROUP BY levl1.SCRLEVL_SUBJ_CODE , levl1.SCRLEVL_CRSE_NUMB, levl1.SCRLEVL_LEVL_CODE 
 ORDER BY levl1.SCRLEVL_SUBJ_CODE , levl1.SCRLEVL_CRSE_NUMB, levl1.SCRLEVL_LEVL_CODE;
+
+-- ---------------------------------------------------------
+
+--
+-- This view allows fetching the campuses at which the offerings in a catalog are held.
+--	
+DROP VIEW IF EXISTS catalog_campus;
+DROP TABLE IF EXISTS catalog_campus;
+CREATE TABLE catalog_campus
+SELECT 
+	catalog_id,
+	STVCAMP_CODE,
+	STVCAMP_DESC
+FROM 
+	ssbsect_scbcrse
+	INNER JOIN course_catalog_college ON SCBCRSE_COLL_CODE = coll_code
+	INNER JOIN STVCAMP ON SSBSECT_CAMP_CODE = STVCAMP_CODE
+GROUP BY catalog_id, STVCAMP_CODE;

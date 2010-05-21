@@ -590,19 +590,10 @@ GROUP BY
     STVCAMP_CODE,
 	STVCAMP_DESC
 FROM 
-	ssbsect_scbcrse
-	INNER JOIN STVCAMP ON SSBSECT_CAMP_CODE = STVCAMP_CODE
+	catalog_campus
 WHERE
 	STVCAMP_CODE = :code
-	AND SCBCRSE_COLL_CODE IN (
-		SELECT
-			coll_code
-		FROM
-			course_catalog_college
-		WHERE
-			".$this->getCatalogWhereTerms()."
-	)
-GROUP BY STVCAMP_CODE
+	AND ".$this->getCatalogWhereTerms()."
 ";
 			self::$getCampusResource_stmt = $this->manager->getDB()->prepare($query);
 		}
@@ -642,18 +633,9 @@ GROUP BY STVCAMP_CODE
     STVCAMP_CODE,
 	STVCAMP_DESC
 FROM 
-	ssbsect_scbcrse
-	INNER JOIN STVCAMP ON SSBSECT_CAMP_CODE = STVCAMP_CODE
+	catalog_campus
 WHERE
-	SCBCRSE_COLL_CODE IN (
-		SELECT
-			coll_code
-		FROM
-			course_catalog_college
-		WHERE
-			".$this->getCatalogWhereTerms()."
-	)
-GROUP BY STVCAMP_CODE
+	".$this->getCatalogWhereTerms()."
 ";
 			self::$getCampusResources_stmt = $this->manager->getDB()->prepare($query);
 		}
