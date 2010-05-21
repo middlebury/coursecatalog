@@ -254,7 +254,7 @@ while ($this->campuses->hasNext()) {
 		print "\n\t\t\t</div>\n\t\t\t<div class='requirement_group'>";
 	
 	$campus = $this->campuses->getNextResource();
-	print "\n\t\t\t\t<input type='checkbox' name='campus[]' value='";
+	print "\n\t\t\t\t<input type='checkbox' name='location[]' value='";
 	print AbstractCatalogController::getStringFromOsidId($campus->getId());
 	print "'";
 	

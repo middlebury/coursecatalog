@@ -360,11 +360,11 @@ class OfferingsController
 		
 		// Campuses
 		$this->view->selectedCampusIds = array();
-		if ($this->_getParam('campus') && count($this->_getParam('campus'))) {
-			if (is_array($this->_getParam('campus')))
-				$campuses = $this->_getParam('campus');
+		if ($this->_getParam('location') && count($this->_getParam('location'))) {
+			if (is_array($this->_getParam('location')))
+				$campuses = $this->_getParam('location');
 			else
-				$campuses = array($this->_getParam('campus'));
+				$campuses = array($this->_getParam('location'));
 			
 			foreach ($campuses as $idString) {
 				$id = self::getOsidIdFromString($idString);
@@ -372,7 +372,7 @@ class OfferingsController
 				$this->view->selectedCampusIds[] = $id;
 			}
 			
-			$this->view->searchParams['campus'] = $campuses;
+			$this->view->searchParams['location'] = $campuses;
 		}
 		
 		
