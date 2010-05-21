@@ -594,6 +594,7 @@ FROM
 WHERE
 	STVCAMP_CODE = :code
 	AND ".$this->getCatalogWhereTerms()."
+ORDER BY STVCAMP_DESC
 ";
 			self::$getCampusResource_stmt = $this->manager->getDB()->prepare($query);
 		}
@@ -636,6 +637,7 @@ FROM
 	catalog_campus
 WHERE
 	".$this->getCatalogWhereTerms()."
+ORDER BY STVCAMP_DESC
 ";
 			self::$getCampusResources_stmt = $this->manager->getDB()->prepare($query);
 		}

@@ -239,6 +239,40 @@ while ($this->levels->hasNext()) {
 			</td>
 		</tr>
 
+<?php
+if (isset($this->campuses) && $this->campuses->hasNext()) {
+?>
+		<tr>
+			<th>Campus:</th>
+			<td>
+				<div class='help_text'>(Leave all blank for no preference)</div>
+				<div class='requirement_group'>
+<?php
+$i = 0;
+while ($this->campuses->hasNext()) {
+	if (!($i % 5))
+		print "\n\t\t\t</div>\n\t\t\t<div class='requirement_group'>";
+	
+	$campus = $this->campuses->getNextResource();
+	print "\n\t\t\t\t<input type='checkbox' name='campus[]' value='";
+	print AbstractCatalogController::getStringFromOsidId($campus->getId());
+	print "'";
+	
+	foreach ($this->selectedCampusIds as $selectedId) {
+		if ($campus->getId()->isEqual($selectedId)) {
+			print " checked='checked'";
+			break;
+		}
+	}
+	print "/><label>".$campus->getDisplayName()."</label><br/>";
+	
+	$i++;
+}
+?>
+				</div>
+			</td>
+		</tr>
+<?php } ?>
 
 <?php } ?>
 

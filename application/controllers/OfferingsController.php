@@ -31,6 +31,7 @@ class OfferingsController
     	$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
 		$this->booleanStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:boolean");
 		$this->instructorType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		$this->locationType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:location');
 		$this->alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
 		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 
@@ -43,6 +44,8 @@ class OfferingsController
         $this->levelType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
         
 		$this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
+
+		$this->campusType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/campus");
 	}
 	
 	/**
@@ -153,12 +156,14 @@ class OfferingsController
 			$offeringLookupSession = self::getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
 			$topicSearchSession = self::getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
 			$termLookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+			$resourceLookupSession = self::getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalogId);
 			$this->view->title = 'Search in '.$offeringSearchSession->getCourseCatalog()->getDisplayName();
 		} else {
 			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSession();
 			$offeringLookupSession = self::getCourseManager()->getCourseOfferingLookupSession();
 			$topicSearchSession = self::getCourseManager()->getTopicSearchSession();
 			$termLookupSession = self::getCourseManager()->getTermLookupSession();
+			$resourceLookupSession = self::getCourseManager()->getResourceManager()->getResourceLookupSession();
 			$this->view->title = 'Search in All Catalogs';
 		}
 		$termLookupSession->useFederatedCourseCatalogView();
@@ -221,6 +226,12 @@ class OfferingsController
 		$this->view->levels = $topicSearchSession->getTopicsByQuery($topicQuery);
 		
 		$this->view->genusTypes = $offeringLookupSession->getCourseOfferingGenusTypes();
+		
+		// Campuses -- only include if we have more than one.
+		$campuses = $resourceLookupSession->getResourcesByGenusType($this->campusType);
+		if ($campuses->hasNext() && $campuses->getNextResource() && $campuses->hasNext()) {
+			$this->view->campuses = $resourceLookupSession->getResourcesByGenusType($this->campusType);
+		}
 		
 	/*********************************************************
 	 * Set up and run our search query.
@@ -346,6 +357,25 @@ class OfferingsController
 			
 			$this->view->searchParams['type'] = $genusTypes;
 		}
+		
+		// Campuses
+		$this->view->selectedCampusIds = array();
+		if ($this->_getParam('campus') && count($this->_getParam('campus'))) {
+			if (is_array($this->_getParam('campus')))
+				$campuses = $this->_getParam('campus');
+			else
+				$campuses = array($this->_getParam('campus'));
+			
+			foreach ($campuses as $idString) {
+				$id = self::getOsidIdFromString($idString);
+				$query->matchLocationId($id, true);
+				$this->view->selectedCampusIds[] = $id;
+			}
+			
+			$this->view->searchParams['campus'] = $campuses;
+		}
+		
+		
 		// Set the default selection to lecture/seminar if the is a new search
 		if (!$this->_getParam('submit') && !count($this->view->selectedGenusTypes)) {
 			$this->view->selectedGenusTypes = self::getDefaultGenusTypes();
