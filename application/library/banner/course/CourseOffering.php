@@ -60,6 +60,8 @@ class banner_course_CourseOffering
 			
 			'STVBLDG_DESC',
 			
+			'STVCAMP_DESC',
+			
 			'SCBCRSE_TITLE',
 			'SCBCRSE_DEPT_CODE',
 			'SCBCRSE_DIVS_CODE',
@@ -342,6 +344,8 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getLocationInfo() {
+    	$campus = $this->row['STVCAMP_DESC'];
+    	
     	$parts = array();
     	foreach ($this->getMeetingRows() as $row) {
     		if ($this->row['SSRMEET_ROOM_CODE'] || $row['SSRMEET_ROOM_CODE'] || $row['STVBLDG_DESC'])
@@ -349,10 +353,12 @@ class banner_course_CourseOffering
     		.' ('.$row['STVBLDG_DESC'].')';
     	}
     	
+    	
+    	
     	if (count($parts))
-	    	return implode(", ", $parts);
+	    	return $campus.": ".implode(", ", $parts);
 	    else
-	    	return "";
+	    	return $campus;
     }
 
 
