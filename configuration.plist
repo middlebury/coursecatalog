@@ -147,5 +147,7 @@
 		<key>topic/department/WRPR</key>
 		<string>http://go.middlebury.edu/WRPR</string>
 	</dict>
+	<key>urn:inet:middlebury.edu:config:catalog/max_age</key>
+	<integer>3600</integer>
 </dict>
 </plist>

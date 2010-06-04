@@ -473,14 +473,40 @@ abstract class AbstractCatalogController
      */
     public function postDispatch()
     {
+    	$this->setCacheControlHeaders();
+    			
     	$response = $this->getResponse();
     	$db = self::getCourseManager()->getDB();
     	if (method_exists($db, 'getCounters')) {
     		foreach ($db->getCounters() as $name => $num) {
 		    	$response->setHeader('X-'.$name, $num);
 		    }
-		}
+		}		
     	$response->setHeader('X-Runtime', $this->getExecTime());
+    }
+    
+    /**
+     * Set our cache control headers.
+     * 
+     * @return void
+     * @access private
+     * @since 6/4/10
+     */
+    private function setCacheControlHeaders () {
+    	try {
+			$maxAge = phpkit_configuration_ConfigUtil::getSingleValuedValue(
+								self::getRuntimeManager()->getConfiguration(), 
+								new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:catalog/max_age'),
+								new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/Integer'));
+			if ($maxAge > 0 && !$this->getResponse()->isException()) {
+				$this->getResponse()->setHeader('Expires', gmdate('D, d M Y H:i:s', time() + $maxAge).' GMT', true);
+				$this->getResponse()->setHeader('Cache-Control', 'public', true);
+				$this->getResponse()->setHeader('Cache-Control', 'max-age='.$maxAge);
+			}
+				
+		} catch (osid_NotFoundException $e) {
+		} catch (osid_ConfigurationErrorException $e) {
+		}
     }
 }
 
