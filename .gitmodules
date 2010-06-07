@@ -4,3 +4,6 @@
 [submodule "library/ZendFramework"]
 	path = library/ZendFramework
 	url = http://community.middlebury.edu/~afranco/git/external/ZendFramework.git/
+[submodule "library/phpcas"]
+	path = library/phpcas
+	url = git://github.com/adamfranco/phpcas.git
