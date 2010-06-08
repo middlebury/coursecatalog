@@ -508,6 +508,7 @@ abstract class AbstractCatalogController
 					$this->getResponse()->setHeader('Expires', gmdate('D, d M Y H:i:s', time() + $maxAge).' GMT', true);
 					$this->getResponse()->setHeader('Cache-Control', 'public', true);
 					$this->getResponse()->setHeader('Cache-Control', 'max-age='.$maxAge);
+					$this->getResponse()->setHeader('Pragma', '', true);
 				}
 				
 			}
