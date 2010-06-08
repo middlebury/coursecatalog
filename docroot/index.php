@@ -5,7 +5,13 @@ require_once(dirname(__FILE__) . '/../application/autoload.php');
 define('DISPLAY_ERROR_BACKTRACE', true);
 set_exception_handler(array('harmoni_ErrorHandler', 'handleException'));
 try {
-
+	// Start an output buffer so that we can prevent sending of Set-Cookie headers
+	// if no session data is stored.
+	ob_start();
+	require_once('lazy_sessions.php');
+	session_start();
+	
+	
 	$front = Zend_Controller_Front::getInstance();
 	$front->throwExceptions(true);
 	$front->registerPlugin(new CatalogExternalRedirector());

@@ -16,6 +16,7 @@ if (!defined('BASE_PATH')) {
 		. PATH_SEPARATOR . BASE_PATH . '/library/ZendFramework/library'
 		. PATH_SEPARATOR . BASE_PATH . '/library/fsmparser'
 		. PATH_SEPARATOR . BASE_PATH . '/library/phpcas/source'
+		. PATH_SEPARATOR . BASE_PATH . '/library/lazy_sessions'
 		. PATH_SEPARATOR . get_include_path()
 	);
 }

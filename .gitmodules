@@ -7,3 +7,6 @@
 [submodule "library/phpcas"]
 	path = library/phpcas
 	url = git://github.com/adamfranco/phpcas.git
+[submodule "library/lazy_sessions"]
+	path = library/lazy_sessions
+	url = git://github.com/adamfranco/lazy_sessions.git
