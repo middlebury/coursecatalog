@@ -15,6 +15,7 @@ class AuthController extends Zend_Controller_Action
     
     public function logoutAction()
     {
+    	session_destroy();
     	phpCAS::logoutWithUrl($this->_getParam('return'));
     	exit;
     }
