@@ -9,7 +9,9 @@ try {
 	$front = Zend_Controller_Front::getInstance();
 	$front->throwExceptions(true);
 	$front->registerPlugin(new CatalogExternalRedirector());
-	Zend_Layout::startMvc(new Zend_Config_Ini(BASE_PATH.'/frontend_config.ini'));
+	$registry = Zend_Registry::getInstance();
+	$registry->config = new Zend_Config_Ini(BASE_PATH.'/frontend_config.ini', 'development');
+	Zend_Layout::startMvc();
 	Zend_Controller_Front::run(APPLICATION_PATH.'/controllers');
 
 // Handle certain types of uncaught exceptions specially. In particular,

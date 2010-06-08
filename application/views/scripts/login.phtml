@@ -1,0 +1,12 @@
+<div class='login_info'>			
+<?php
+require_once(APPLICATION_PATH.'/controllers/AuthController.php');
+if (AuthController::isAuthenticated()) {
+	print 'Logged in as ';
+	print AuthController::getUserDisplayName();
+	print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'logout', 'return' => AuthController::getAsAbsolute($this->url()))).'">Log Out</a>';
+} else {
+	print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'index')).'">Log In</a>';
+}
+?>
+</div>
