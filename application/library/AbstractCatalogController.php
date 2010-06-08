@@ -494,14 +494,22 @@ abstract class AbstractCatalogController
      */
     private function setCacheControlHeaders () {
     	try {
-			$maxAge = phpkit_configuration_ConfigUtil::getSingleValuedValue(
-								self::getRuntimeManager()->getConfiguration(), 
-								new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:catalog/max_age'),
-								new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/Integer'));
-			if ($maxAge > 0 && !$this->getResponse()->isException()) {
-				$this->getResponse()->setHeader('Expires', gmdate('D, d M Y H:i:s', time() + $maxAge).' GMT', true);
-				$this->getResponse()->setHeader('Cache-Control', 'public', true);
-				$this->getResponse()->setHeader('Cache-Control', 'max-age='.$maxAge);
+			// Only allow caching if anonymous. This will ensure that users'
+			// browser caches will not cache pages if logged in.
+			require_once(APPLICATION_PATH.'/controllers/AuthController.php');
+			if (!AuthController::isAuthenticated()) {
+				
+				// Set cache-control headers
+				$maxAge = phpkit_configuration_ConfigUtil::getSingleValuedValue(
+									self::getRuntimeManager()->getConfiguration(), 
+									new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:catalog/max_age'),
+									new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/Integer'));
+				if ($maxAge > 0 && !$this->getResponse()->isException()) {
+					$this->getResponse()->setHeader('Expires', gmdate('D, d M Y H:i:s', time() + $maxAge).' GMT', true);
+					$this->getResponse()->setHeader('Cache-Control', 'public', true);
+					$this->getResponse()->setHeader('Cache-Control', 'max-age='.$maxAge);
+				}
+				
 			}
 				
 		} catch (osid_NotFoundException $e) {
