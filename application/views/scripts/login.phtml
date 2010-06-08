@@ -6,7 +6,7 @@ if (AuthController::isAuthenticated()) {
 	print AuthController::getUserDisplayName();
 	print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'logout', 'return' => AuthController::getAsAbsolute($this->url()))).'">Log Out</a>';
 } else {
-	print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'index')).'">Log In</a>';
+	print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'login')).'">Log In</a>';
 }
 ?>
 </div>

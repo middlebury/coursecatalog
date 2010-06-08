@@ -9,6 +9,11 @@ class AuthController extends Zend_Controller_Action
 	
     public function indexAction()
     {
+    	$this->loginAction();
+    }
+    
+    public function loginAction()
+    {
     	phpCAS::forceAuthentication();
     	$this->_redirect('/', array('prependBase' => true, 'exit' => true));
     }
