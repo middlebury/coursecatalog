@@ -70,6 +70,7 @@ abstract class AbstractCatalogController
 		$this->view->menuCatalogs = self::getCourseManager()->getCourseCatalogLookupSession()->getCourseCatalogs();
 		$this->view->catalogIdString = $this->_getParam('catalog');
 		$this->view->termIdString = $this->_getParam('term');
+		$this->view->addHelperPath(APPLICATION_PATH.'/views/helpers', 'Catalog_View_Helper');
 	}
 	
 	/**

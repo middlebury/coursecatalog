@@ -158,7 +158,7 @@ class CoursesController
 		}
 		
 		$keywords = trim($this->_getParam('keywords'));
-		$searchUrl = $this->getAsAbsolute($this->_helper->url('search', 'offerings', null, array('catalog' => $this->_getParam('catalog'), 'keywords' => $keywords, 'submit' => 'Search')));
+		$searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('search', 'offerings', null, array('catalog' => $this->_getParam('catalog'), 'keywords' => $keywords, 'submit' => 'Search')));
 		
 		header('Content-Type: text/xml');
 		print '<?xml version="1.0" encoding="utf-8" ?>
@@ -207,11 +207,11 @@ class CoursesController
 			print "</title>";
 			
 			print "\n\t\t\t<link>";
-			print $this->getAsAbsolute($this->_helper->url('view', 'courses', null, array('catalog' => $this->_getParam('catalog'), 'course' => $courseIdString)));
+			print $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'courses', null, array('catalog' => $this->_getParam('catalog'), 'course' => $courseIdString)));
 			print "</link>";
 			
 			print "\n\t\t\t<guid isPermaLink='true'>";
-			print $this->getAsAbsolute($this->_helper->url('view', 'courses', null, array('catalog' => $this->_getParam('catalog'), 'course' => $courseIdString)));
+			print $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'courses', null, array('catalog' => $this->_getParam('catalog'), 'course' => $courseIdString)));
 			print "</guid>";
 			
 			print "\n\t\t\t<description><![CDATA[";
@@ -274,7 +274,7 @@ class CoursesController
 			$topicIds[] = self::getOsidIdFromString($this->_getParam('topic'));
 		}
 		
-		$searchUrl = $this->getAsAbsolute($this->_helper->url('search', 'offerings', null, array()));
+		$searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('search', 'offerings', null, array()));
 		
 		// Fetch courses
 		$query = $searchSession->getCourseQuery();
@@ -363,7 +363,7 @@ class CoursesController
 		}
 		
 		$instructorId = self::getOsidIdFromString('resource/person/'.$instructor);
-		$searchUrl = $this->getAsAbsolute($this->_helper->url('view', 'resources', null, array('catalog' => $this->_getParam('catalog'), 'resource' => 'resouce/person/'.$instructor)));
+		$searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'resources', null, array('catalog' => $this->_getParam('catalog'), 'resource' => 'resouce/person/'.$instructor)));
 		
 		// Fetch courses
 		$query = $searchSession->getCourseQuery();
@@ -448,11 +448,11 @@ class CoursesController
 				$catalogIdString = self::getStringFromOsidId($catalog->getNextId());
 			else
 				$catalogIdString = null;
-			print $this->getAsAbsolute($this->_helper->url('view', 'courses', null, array('catalog' => $catalogIdString, 'course' => $courseIdString)));
+			print $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'courses', null, array('catalog' => $catalogIdString, 'course' => $courseIdString)));
 			print "</link>";
 			
 			print "\n\t\t\t<guid isPermaLink='true'>";
-			print $this->getAsAbsolute($this->_helper->url('view', 'courses', null, array('catalog' => $catalogIdString, 'course' => $courseIdString)));
+			print $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'courses', null, array('catalog' => $catalogIdString, 'course' => $courseIdString)));
 			print "</guid>";
 			
 			print "\n\t\t\t<description><![CDATA[";
@@ -482,7 +482,7 @@ class CoursesController
 			$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
 			foreach ($topics as $topic) {
 				$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
-				print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".AbstractCatalogController::getStringFromOsidId($topic->getId())."\" href=\"".$this->getAsAbsolute($this->view->url($topicParams))."\">";
+				print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".AbstractCatalogController::getStringFromOsidId($topic->getId())."\" href=\"".$this->_helper->pathAsAbsoluteUrl($this->view->url($topicParams))."\">";
 				print $this->view->escape($topic->getDisplayName());
 				print "</catalog:topic> ";
 			}
@@ -492,7 +492,7 @@ class CoursesController
 			$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
 			foreach ($topics as $topic) {
 				$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
-				print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".AbstractCatalogController::getStringFromOsidId($topic->getId())."\" href=\"".$this->getAsAbsolute($this->view->url($topicParams))."\">";
+				print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".AbstractCatalogController::getStringFromOsidId($topic->getId())."\" href=\"".$this->_helper->pathAsAbsoluteUrl($this->view->url($topicParams))."\">";
 				print $this->view->escape($topic->getDisplayName());
 				print "</catalog:topic> ";
 			}
@@ -502,7 +502,7 @@ class CoursesController
 			$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
 			foreach ($topics as $topic) {
 				$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
-				print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".AbstractCatalogController::getStringFromOsidId($topic->getId())."\" href=\"".$this->getAsAbsolute($this->view->url($topicParams))."\">";
+				print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".AbstractCatalogController::getStringFromOsidId($topic->getId())."\" href=\"".$this->_helper->pathAsAbsoluteUrl($this->view->url($topicParams))."\">";
 				print $this->view->escape($topic->getDisplayName());
 				print "</catalog:topic> ";
 			}
@@ -529,20 +529,6 @@ class CoursesController
 		$second = intval($dt -> format("s"));
 		$dt -> setTimezone($dtz_original);
 		return gmmktime($hour,$minute,$second,$month,$day,$year);
-	}
-	
-	/**
-	 * Answer an absolute URL from a relative string.
-	 * 
-	 * @param string $url
-	 * @return string
-	 * @access private
-	 * @since 6/15/09
-	 */
-	private function getAsAbsolute ($url) {
-		$parts = split('/', $_SERVER['SERVER_PROTOCOL']);
-		return strtolower(trim(array_shift($parts)))
-			. '://' . $_SERVER['HTTP_HOST'] . $url;
 	}
 }
 

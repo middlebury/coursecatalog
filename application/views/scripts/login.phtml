@@ -4,7 +4,7 @@ require_once(APPLICATION_PATH.'/controllers/AuthController.php');
 if (AuthController::isAuthenticated()) {
 	print 'Logged in as ';
 	print AuthController::getUserDisplayName();
-	print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'logout', 'return' => AuthController::getAsAbsolute($this->url()))).'">Log Out</a>';
+	print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'logout', 'return' => $this->pathAsAbsoluteUrl($this->url()))).'">Log Out</a>';
 } else {
 	print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'login')).'">Log In</a>';
 }

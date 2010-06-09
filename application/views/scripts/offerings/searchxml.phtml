@@ -1,21 +1,7 @@
 <?php
 
-/**
- * Answer an absolute URL from a relative string.
- * 
- * @param string $url
- * @return string
- * @access private
- * @since 6/15/09
- */
-function getAsAbsolute ($url) {
-	$parts = split('/', $_SERVER['SERVER_PROTOCOL']);
-	return strtolower(trim(array_shift($parts)))
-		. '://' . $_SERVER['HTTP_HOST'] . $url;
-}
-
 function printTerm(Zend_View $view, osid_course_Term $term, $label = 'term', $tabs = "\t\t\t") {
-	$termUrl = getAsAbsolute($view->url(array(
+	$termUrl = $view->pathAsAbsoluteUrl($view->url(array(
 					'controller'	=> 'terms',
 					'action'		=> 'view',
 					'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId()),
@@ -30,7 +16,7 @@ print '<?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
 	<channel>
 		<title>'.$this->feedTitle.'</title>
-		<link>'.getAsAbsolute($this->url($this->searchParams)).'</link>
+		<link>'.$this->pathAsAbsoluteUrl($this->url($this->searchParams)).'</link>
 		<description></description>
 		<lastBuildDate>'.date('r').'</lastBuildDate>
 		<generator>Course Catalog</generator>
@@ -85,7 +71,7 @@ while ($this->sections->hasNext()) {
 
 		<item>
 			<title><?php print $this->escape($section->getDisplayName()); ?></title>
-			<link><?php print getAsAbsolute($this->url($offeringParams)); ?></link>
+			<link><?php print $this->pathAsAbsoluteUrl($this->url($offeringParams)); ?></link>
 			<description><![CDATA[<?php print $section->getDescription(); ?>]]></description>
 			<catalog:title><?php print $this->escape($section->getTitle()); ?></catalog:title>
 <?php
@@ -97,14 +83,14 @@ if ($section->hasRecordType($alternateType)) {
 		while ($alternates->hasNext()) {
 			$alternate = $alternates->getNextCourseOffering();
 			$offeringParams['offering'] = AbstractCatalogController::getStringFromOsidId($alternate->getId());
-			print "\n\t\t\t<catalog:alternate href=\"".getAsAbsolute($this->url($offeringParams))."\">";
+			print "\n\t\t\t<catalog:alternate href=\"".$this->pathAsAbsoluteUrl($this->url($offeringParams))."\">";
 			print $this->escape($alternate->getDisplayName());
 			print "</catalog:alternate> ";
 		}
 	}
 }
 
-print "\n\t\t\t<catalog:genustype href=\"".getAsAbsolute($this->url($offeringParams))."\">";
+print "\n\t\t\t<catalog:genustype href=\"".$this->pathAsAbsoluteUrl($this->url($offeringParams))."\">";
 print $this->escape($section->getGenusType()->getDisplayName());
 print "</catalog:genustype> ";
 
@@ -116,7 +102,7 @@ $topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
 $topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
 foreach ($topics as $topic) {
 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
-	print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".AbstractCatalogController::getStringFromOsidId($topic->getId())."\" href=\"".getAsAbsolute($this->url($topicParams))."\">";
+	print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".AbstractCatalogController::getStringFromOsidId($topic->getId())."\" href=\"".$this->pathAsAbsoluteUrl($this->url($topicParams))."\">";
 	print $this->escape($topic->getDisplayName());
 	print "</catalog:topic> ";
 }
@@ -126,7 +112,7 @@ $topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
 $topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
 foreach ($topics as $topic) {
 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
-	print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".AbstractCatalogController::getStringFromOsidId($topic->getId())."\" href=\"".getAsAbsolute($this->url($topicParams))."\">";
+	print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".AbstractCatalogController::getStringFromOsidId($topic->getId())."\" href=\"".$this->pathAsAbsoluteUrl($this->url($topicParams))."\">";
 	print $this->escape($topic->getDisplayName());
 	print "</catalog:topic> ";
 }
@@ -136,7 +122,7 @@ $topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
 $topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
 foreach ($topics as $topic) {
 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
-	print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".AbstractCatalogController::getStringFromOsidId($topic->getId())."\" href=\"".getAsAbsolute($this->url($topicParams))."\">";
+	print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".AbstractCatalogController::getStringFromOsidId($topic->getId())."\" href=\"".$this->pathAsAbsoluteUrl($this->url($topicParams))."\">";
 	print $this->escape($topic->getDisplayName());
 	print "</catalog:topic> ";
 }
@@ -149,7 +135,7 @@ if ($section->hasRecordType($instructorsType)) {
 	while ($instructors->hasNext()) {
 		$instructor = $instructors->getNextResource();
 		$resourceParams['resource'] = AbstractCatalogController::getStringFromOsidId($instructor->getId());
-		print "\n\t\t\t<catalog:instructor id=\"".AbstractCatalogController::getStringFromOsidId($instructor->getId())."\"  href=\"".getAsAbsolute($this->url($resourceParams))."\">";
+		print "\n\t\t\t<catalog:instructor id=\"".AbstractCatalogController::getStringFromOsidId($instructor->getId())."\"  href=\"".$this->pathAsAbsoluteUrl($this->url($resourceParams))."\">";
 		print $this->escape($instructor->getDisplayName());
 		print "</catalog:instructor> ";
 	}
@@ -159,7 +145,7 @@ if ($section->hasLocation()) {
 	try {
 		$locationResource = $section->getLocation();
 		$resourceParams['resource'] = AbstractCatalogController::getStringFromOsidId($locationResource->getId());
-		print "\n\t\t\t<catalog:location id=\"".AbstractCatalogController::getStringFromOsidId($locationResource->getId())."\" href=\"".getAsAbsolute($this->url($resourceParams))."\">";
+		print "\n\t\t\t<catalog:location id=\"".AbstractCatalogController::getStringFromOsidId($locationResource->getId())."\" href=\"".$this->pathAsAbsoluteUrl($this->url($resourceParams))."\">";
 		print $this->escape($locationResource->getDisplayName());
 		print "</catalog:location> ";
 // 		if ($locationResource->getDescription())

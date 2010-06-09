@@ -78,18 +78,4 @@ class AuthController extends Zend_Controller_Action
 			self::$phpcasInitialized = true;
 		}
     }
-    
-    /**
-	 * Answer an absolute URL from a relative string.
-	 * 
-	 * @param string $url
-	 * @return string
-	 * @access private
-	 * @since 6/15/09
-	 */
-	public static function getAsAbsolute ($url) {
-		$parts = split('/', $_SERVER['SERVER_PROTOCOL']);
-		return strtolower(trim(array_shift($parts)))
-			. '://' . $_SERVER['HTTP_HOST'] . $url;
-	}
 }
