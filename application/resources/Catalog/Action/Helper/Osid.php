@@ -22,9 +22,8 @@ class Catalog_Action_Helper_Osid
 	 * @return string
 	 * @access public
 	 * @since 6/11/09
-	 * @static
 	 */
-	public static function getConfigPath () {
+	public function getConfigPath () {
 		if (!isset(self::$configPath))
 			self::$configPath = BASE_PATH.'/configuration.plist';
 		
@@ -38,9 +37,8 @@ class Catalog_Action_Helper_Osid
 	 * @access public
 	 * @since 6/11/09
 	 * @throws osid_InvalidStateException The config path has already been set.
-	 * @static
 	 */
-	public static function setConfigPath ($path) {
+	public function setConfigPath ($path) {
 		if (isset(self::$configPath))
 			throw new osid_InvalidStateException('the config path has already been set');
 		
@@ -56,7 +54,7 @@ class Catalog_Action_Helper_Osid
 	 */
 	public function getCourseManager () {
 		if (!isset(self::$courseManager)) {
-			$runtimeManager = self::getRuntimeManager();
+			$runtimeManager = $this->getRuntimeManager();
 			self::$courseManager = $runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
 		}
 		
@@ -69,11 +67,10 @@ class Catalog_Action_Helper_Osid
 	 * @return osid_OsidRuntimeManager
 	 * @access public
 	 * @since 4/20/09
-	 * @static
 	 */
-	public static function getRuntimeManager () {
+	public function getRuntimeManager () {
 		if (!isset(self::$runtimeManager)) {
-			self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(self::getConfigPath());
+			self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager($this->getConfigPath());
 		}
 		
 		return self::$runtimeManager;
@@ -91,7 +88,7 @@ class Catalog_Action_Helper_Osid
 		try {
 			$types = array();
 			$typeStrings = phpkit_configuration_ConfigUtil::getMultiValuedValue(
-								self::getRuntimeManager()->getConfiguration(), 
+								$this->getRuntimeManager()->getConfiguration(), 
 								new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:catalog/default_offering_genus_types_to_search'),
 								new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
 			foreach ($typeStrings as $typeString) {
@@ -114,7 +111,6 @@ class Catalog_Action_Helper_Osid
      * @throws osid_NotFoundException
      * @access public
      * @since 6/11/09
-     * @static
      */
     public function getCurrentTermId (osid_id_Id $catalogId) {
     	$catalogIdString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($catalogId);
@@ -125,7 +121,7 @@ class Catalog_Action_Helper_Osid
     		if (!$manager->supportsTermLookup())
     			throw new osid_NotFoundException('Could not determine a current term id. The manager does not support term lookup.');
     		$termLookup = $manager->getTermLookupSessionForCatalog($catalogId);
-	    	$currentTerm = self::getClosestTermId($termLookup->getTerms());
+	    	$currentTerm = $this->getClosestTermId($termLookup->getTerms());
 	    	if (!$currentTerm)
 		    	throw new osid_NotFoundException('Could not determine a current term id for the catalog passed.');
 	    	
@@ -185,9 +181,8 @@ class Catalog_Action_Helper_Osid
      * @return osid_id_Id
      * @access public
      * @since 6/11/09
-     * @static
      */
-    public static function getClosestTermId (osid_course_TermList $terms, DateTime $date = null) {
+    public function getClosestTermId (osid_course_TermList $terms, DateTime $date = null) {
     	$ids = array();
     	$diffs = array();
     	

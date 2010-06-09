@@ -29,7 +29,7 @@ abstract class AbstractCatalogController
 	 */
 	public function init () {
 		// Add the catalog list for menu generation.
-		$this->view->menuCatalogs = $this->_helper->catalog->getCourseManager()->getCourseCatalogLookupSession()->getCourseCatalogs();
+		$this->view->menuCatalogs = $this->_helper->osid->getCourseManager()->getCourseCatalogLookupSession()->getCourseCatalogs();
 		$this->view->catalogIdString = $this->_getParam('catalog');
 		$this->view->termIdString = $this->_getParam('term');
 		$this->view->addHelperPath(APPLICATION_PATH.'/views/helpers', 'Catalog_View_Helper');
@@ -139,7 +139,7 @@ abstract class AbstractCatalogController
     	$this->setCacheControlHeaders();
     			
     	$response = $this->getResponse();
-    	$db = $this->_helper->catalog->getCourseManager()->getDB();
+    	$db = $this->_helper->osid->getCourseManager()->getDB();
     	if (method_exists($db, 'getCounters')) {
     		foreach ($db->getCounters() as $name => $num) {
 		    	$response->setHeader('X-'.$name, $num);
@@ -164,7 +164,7 @@ abstract class AbstractCatalogController
 				
 				// Set cache-control headers
 				$maxAge = phpkit_configuration_ConfigUtil::getSingleValuedValue(
-									$this->_helper->catalog->getRuntimeManager()->getConfiguration(), 
+									$this->_helper->osid->getRuntimeManager()->getConfiguration(), 
 									new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:catalog/max_age'),
 									new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/Integer'));
 				if ($maxAge > 0 && !$this->getResponse()->isException()) {
