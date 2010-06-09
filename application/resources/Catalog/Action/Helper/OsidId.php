@@ -1,7 +1,7 @@
 <?php
 
 /**
- * A helper to provide access to the CourseManager OSID and OSID configuration.
+ * A helper to convert between object and string representations of Ids
  * 
  * @since 6/9/10
  * 

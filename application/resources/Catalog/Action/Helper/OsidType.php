@@ -1,7 +1,7 @@
 <?php
 
 /**
- * A helper to provide access to the CourseManager OSID and OSID configuration.
+ * A helper to convert between object and string representations of Types
  * 
  * @since 6/9/10
  * 
@@ -47,7 +47,6 @@ class Catalog_Action_Helper_OsidType
 		else
 			return phpkit_type_URNInetType::getInetURNString($type);
 	}
-	
 }
 
 ?>
