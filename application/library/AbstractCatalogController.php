@@ -360,20 +360,64 @@ abstract class AbstractCatalogController
      * @static
      */
     public static function getCurrentTermId (osid_id_Id $catalogId) {
-    	if (!isset($_SESSION['current_terms']))
-    		$_SESSION['current_terms'] = array();
     	$catalogIdString = self::getStringFromOsidId($catalogId);
-    	if (!isset($_SESSION['current_terms'][$catalogIdString])) {
+    	$cacheKey = 'current_term::'.$catalogIdString;
+    	$currentTerm = self::cache_get($cacheKey);
+    	if (!$currentTerm) {
     		$manager = self::getCourseManager();
     		if (!$manager->supportsTermLookup())
     			throw new osid_NotFoundException('Could not determine a current term id. The manager does not support term lookup.');
     		$termLookup = $manager->getTermLookupSessionForCatalog($catalogId);
-	    	$_SESSION['current_terms'][$catalogIdString] = self::getClosestTermId($termLookup->getTerms());
+	    	$currentTerm = self::getClosestTermId($termLookup->getTerms());
+	    	if (!$currentTerm)
+		    	throw new osid_NotFoundException('Could not determine a current term id for the catalog passed.');
+	    	
+	    	self::cache_set($cacheKey, $currentTerm);
     	}
-    	if (!isset($_SESSION['current_terms'][$catalogIdString]))
-    		throw new osid_NotFoundException('Could not determine a current term id for the catalog passed.');
     	
-    	return $_SESSION['current_terms'][$catalogIdString];
+    	return $currentTerm;
+    }
+    
+    /**
+     * Fetch from cache
+     * 
+     * @param string $key
+     * @return mixed, FALSE on failure
+     * @access private
+     * @since 6/9/10
+     */
+    private static function cache_get ($key) {
+    	if (function_exists('apc_fetch')) {
+    		return apc_fetch($key);
+    	}
+    	// Fall back to Session caching if APC is not available.
+    	else {
+			if (!isset($_SESSION['cache'][$key]))
+				return false;
+			return $_SESSION['cache'][$key];
+		}
+    }
+    
+    /**
+     * Set an item in the cache
+     * 
+     * @param string $key
+     * @param mixed $value
+     * @return boolean true on success, false on failure
+     * @access private
+     * @since 6/9/10
+     */
+    private static function cache_set ($key, $value) {
+    	if (function_exists('apc_fetch')) {
+    		return apc_store($key, $value, 3600);
+    	}
+    	// Fall back to Session caching if APC is not available.
+    	else {
+			if (!isset($_SESSION['cache']))
+				$_SESSION['cache'] = array();
+			$_SESSION['cache'][$key] = $value;
+			return true;
+		}
     }
     
     /**
