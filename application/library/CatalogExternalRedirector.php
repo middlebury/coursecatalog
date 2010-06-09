@@ -50,7 +50,7 @@ class CatalogExternalRedirector
 	 */
 	private function getTopicMap () {
 		$topicMap = phpkit_configuration_ConfigUtil::getMultiValuedValue(
-    								AbstractCatalogController::getRuntimeManager()->getConfiguration(), 
+    								Zend_Controller_Action_HelperBroker::getStaticHelper('Osid')->getRuntimeManager()->getConfiguration(), 
     								new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:catalog/topic_map'),
     								new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
     	return $topicMap;

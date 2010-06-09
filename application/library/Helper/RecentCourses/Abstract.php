@@ -119,7 +119,7 @@ abstract class Helper_RecentCourses_Abstract {
 			$groupId = false;
 			
 			$course = $courses->getNextCourse();
-			$courseIdString = AbstractCatalogController::getStringFromOsidId($course->getId());
+			$courseIdString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($course->getId());
 			
 // 			print "\n<h2>Grouping $courseIdString</h2>\n";
 // 			print "\n<h3>Current Groups:</h3>\n";
@@ -185,7 +185,7 @@ abstract class Helper_RecentCourses_Abstract {
 // 		print "\n<h3>Alternates:</h3>\n";
 		while ($altIds->hasNext()) {
 			$altId = $altIds->getNextId();
-			$altIdString = AbstractCatalogController::getStringFromOsidId($altId);
+			$altIdString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($altId);
 // 			var_dump($altIdString);
 			
 			foreach ($this->groups as $groupId => $group) {
@@ -270,9 +270,10 @@ abstract class Helper_RecentCourses_Abstract {
 		$now = new DateTime;
 		$cutOff = $this->DateTime_getTimestamp($now) - (60 * 60 * 24 * 365 * 4);
 		$recentTerms = array();
+		$osidIdHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId');
 		foreach ($allTerms as $term) {
 			if ($this->DateTime_getTimestamp($term->getEndTime()) > $cutOff) {
-				$termIdString = AbstractCatalogController::getStringFromOsidId($term->getId());
+				$termIdString = $osidIdHelper->toString($term->getId());
 				$recentTerms[$termIdString] = $term;
 			}
 		}

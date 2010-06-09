@@ -41,11 +41,11 @@ class ResourcesController
 // 	 */
 // 	public function listAction () {
 // 		if ($this->_getParam('catalog')) {
-// 			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
-// 			$lookupSession = self::getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+// 			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+// 			$lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
 // 			$this->view->title = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
 // 		} else {
-// 			$lookupSession = self::getCourseManager()->getTopicLookupSession();
+// 			$lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSession();
 // 			$this->view->title = 'Topics in All Catalogs';
 // 		}
 // 		$lookupSession->useFederatedCourseCatalogView();
@@ -64,21 +64,21 @@ class ResourcesController
 	 * @since 4/21/09
 	 */
 	public function viewAction () {
-		$id = self::getOsidIdFromString($this->_getParam('resource'));
-		$lookupSession = self::getCourseManager()->getResourceManager()->getResourceLookupSession();
+		$id = $this->_helper->osidId->fromString($this->_getParam('resource'));
+		$lookupSession = $this->_helper->osid->getCourseManager()->getResourceManager()->getResourceLookupSession();
 		$lookupSession->useFederatedBinView();
 		$this->view->resource = $lookupSession->getResource($id);
 		
-		$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSession();
+		$offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSession();
 		$offeringSearchSession->useFederatedCourseCatalogView();
 		$query = $offeringSearchSession->getCourseOfferingQuery();
 		
 		if ($this->_getParam('term')) {
-			$termId = self::getOsidIdFromString($this->_getParam('term'));
+			$termId = $this->_helper->osidId->fromString($this->_getParam('term'));
 			
 			$query->matchTermId($termId, true);
 			
-			$termLookupSession = self::getCourseManager()->getTermLookupSession();
+			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
 			$termLookupSession->useFederatedCourseCatalogView();
 			$this->view->term = $termLookupSession->getTerm($termId);
 		}
@@ -100,7 +100,7 @@ class ResourcesController
 			$allParams = array();
 			$allParams['resource'] = $this->_getParam('resource');
 			if ($this->getSelectedCatalogId())
-				$allParams['catalog'] = self::getStringFromOsidId($this->getSelectedCatalogId());
+				$allParams['catalog'] = $this->_helper->osidId->toString($this->getSelectedCatalogId());
 			$this->view->offeringsForAllTermsUrl = $this->_helper->url('view', 'resources', null, $allParams);
 			
 			$this->render('offerings', null, true);
@@ -110,7 +110,7 @@ class ResourcesController
 		
 		// Set the selected Catalog Id.
 		if ($this->_getParam('catalog')) {
-			$this->setSelectedCatalogId(self::getOsidIdFromString($this->_getParam('catalog')));
+			$this->setSelectedCatalogId($this->_helper->osidId->fromString($this->_getParam('catalog')));
 		}
 		
 		// Set the title
@@ -143,11 +143,11 @@ class ResourcesController
 		header('Content-Type: text/plain');
 		
 		if ($this->_getParam('catalog')) {
-			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
-			$lookupSession = self::getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalogId);
+			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+			$lookupSession = $this->_helper->osid->getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalogId);
 			$this->view->title = 'Resources in '.$lookupSession->getBin()->getDisplayName();
 		} else {
-			$lookupSession = self::getCourseManager()->getResourceManager()->getResourceLookupSession();
+			$lookupSession = $this->_helper->osid->getCourseManager()->getResourceManager()->getResourceLookupSession();
 			$this->view->title = 'Resources in All Bins';
 		}
 		$lookupSession->useFederatedBinView();
@@ -156,7 +156,7 @@ class ResourcesController
 		
 		while ($resources->hasNext()) {
 			$resource = $resources->getNextResource();
-			print self::getStringFromOsidId($resource->getId())."|".self::getStringFromOsidId($resource->getId())." - ".$resource->getDisplayName()."\n";
+			print $this->_helper->osidId->toString($resource->getId())."|".$this->_helper->osidId->toString($resource->getId())." - ".$resource->getDisplayName()."\n";
 		}
 // 		var_dump($lookupSession);
 // 		var_dump($resources);

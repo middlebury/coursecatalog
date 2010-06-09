@@ -20,44 +20,6 @@
 abstract class AbstractCatalogController 
 	extends Zend_Controller_Action
 {
-	
-	private static $runtimeManager;
-	private static $courseManager;
-	private static $configPath;
-	
-	private static $idAuthorityToShorten;
-		
-	/**
-	 * Answer the configuration path
-	 * 
-	 * @return string
-	 * @access public
-	 * @since 6/11/09
-	 * @static
-	 */
-	public static function getConfigPath () {
-		if (!isset(self::$configPath))
-			self::$configPath = BASE_PATH.'/configuration.plist';
-		
-		return self::$configPath;
-	}
-	
-	/**
-	 * Set the configuration path
-	 * 
-	 * @param string $path
-	 * @access public
-	 * @since 6/11/09
-	 * @throws osid_InvalidStateException The config path has already been set.
-	 * @static
-	 */
-	public static function setConfigPath ($path) {
-		if (isset(self::$configPath))
-			throw new osid_InvalidStateException('the config path has already been set');
-		
-		self::$configPath = $path;
-	}
-	
 	/**
 	 * Initialize our view with common properties
 	 * 
@@ -67,7 +29,7 @@ abstract class AbstractCatalogController
 	 */
 	public function init () {
 		// Add the catalog list for menu generation.
-		$this->view->menuCatalogs = self::getCourseManager()->getCourseCatalogLookupSession()->getCourseCatalogs();
+		$this->view->menuCatalogs = $this->_helper->catalog->getCourseManager()->getCourseCatalogLookupSession()->getCourseCatalogs();
 		$this->view->catalogIdString = $this->_getParam('catalog');
 		$this->view->termIdString = $this->_getParam('term');
 		$this->view->addHelperPath(APPLICATION_PATH.'/views/helpers', 'Catalog_View_Helper');
@@ -97,172 +59,6 @@ abstract class AbstractCatalogController
 	}
 	
 	/**
-	 * Answer the CourseManager
-	 * 
-	 * @return osid_course_CourseManager
-	 * @access public
-	 * @since 4/20/09
-	 * @static
-	 */
-	public static function getCourseManager () {
-		if (!isset(self::$courseManager)) {
-			$runtimeManager = self::getRuntimeManager();
-			self::$courseManager = $runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
-		}
-		
-		return self::$courseManager;
-	}
-	
-	/**
-	 * Answer the Runtime Manager
-	 * 
-	 * @return osid_OsidRuntimeManager
-	 * @access public
-	 * @since 4/20/09
-	 * @static
-	 */
-	public static function getRuntimeManager () {
-		if (!isset(self::$runtimeManager)) {
-			self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(self::getConfigPath());
-		}
-		
-		return self::$runtimeManager;
-	}
-	
-	/**
-	 * Get and OSID id object from a string.
-	 * 
-	 * @param string $idString
-	 * @return osid_id_Id
-	 * @access public
-	 * @since 4/21/09
-	 * @static
-	 */
-	public static function getOsidIdFromString ($idString) {
-		try {
-			return new phpkit_id_URNInetId($idString);
-		} catch (osid_InvalidArgumentException $e) {
-			if (self::getIdAuthorityToShorten())
-				return new phpkit_id_Id(self::getIdAuthorityToShorten(), 'urn', $idString);
-			else
-				throw $e;
-		}
-	}
-	
-	/**
-	 * Answer a string representation of an OSID id object
-	 * 
-	 * @param osid_id_Id $id
-	 * @return string
-	 * @access public
-	 * @since 4/21/09
-	 * @static
-	 */
-	public static function getStringFromOsidId (osid_id_Id $id) {
-		if (self::getIdAuthorityToShorten() 
-				&& strtolower($id->getIdentifierNamespace()) == 'urn' 
-				&& strtolower($id->getAuthority()) == self::getIdAuthorityToShorten())
-			return $id->getIdentifier();
-		else
-			return phpkit_id_URNInetId::getInetURNString($id);
-	}
-	
-	/**
-	 * Get and OSID type object from a string.
-	 * 
-	 * @param string $idString
-	 * @return osid_type_Type
-	 * @access public
-	 * @since 4/21/09
-	 * @static
-	 */
-	public static function getOsidTypeFromString ($idString) {
-		try {
-			return new phpkit_type_URNInetType($idString);
-		} catch (osid_InvalidArgumentException $e) {
-			if (self::getIdAuthorityToShorten())
-				return new phpkit_type_Type('urn', self::getIdAuthorityToShorten(), $idString);
-			else
-				throw $e;
-		}
-	}
-	
-	/**
-	 * Answer a string representation of an OSID type object
-	 * 
-	 * @param osid_type_Type $type
-	 * @return string
-	 * @access public
-	 * @since 4/21/09
-	 * @static
-	 */
-	public static function getStringFromOsidType (osid_type_Type $type) {
-		if (self::getIdAuthorityToShorten() 
-				&& strtolower($type->getIdentifierNamespace()) == 'urn' 
-				&& strtolower($type->getAuthority()) == self::getIdAuthorityToShorten())
-			return $type->getIdentifier();
-		else
-			return phpkit_id_URNInetType::getInetURNString($type);
-	}
-	
-	/**
-	 * Answer the id-authority for whom ids should be shortened.
-	 * 
-	 * @return mixed string or false if none should be shortened.
-	 * @access protected
-	 * @since 6/16/09
-	 * @static
-	 */
-	protected static function getIdAuthorityToShorten () {
-		if (!isset(self::$idAuthorityToShorten)) {
-			try {
-				$authority = phpkit_configuration_ConfigUtil::getSingleValuedValue(
-    								self::getRuntimeManager()->getConfiguration(), 
-    								new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:catalog/shorten_ids_for_authority'),
-    								new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
-    			if (strlen($authority))
-	    			self::$idAuthorityToShorten = $authority;
-	    		else
-	    			self::$idAuthorityToShorten = false;
-    		} catch (osid_NotFoundException $e) {
-    			self::$idAuthorityToShorten = false;
-    		} catch (osid_ConfigurationErrorException $e) {
-    			self::$idAuthorityToShorten = false;
-    		}
-		}
-		return self::$idAuthorityToShorten;
-	}
-	
-	/**
-	 * Answer the course offering genus types that should be searched by default
-	 * for a catalog
-	 * 
-	 * @return array of osid_type_Types
-	 * @access protected
-	 * @since 6/16/09
-	 * @static
-	 */
-	protected static function getDefaultGenusTypes () {
-		try {
-			$types = array();
-			$typeStrings = phpkit_configuration_ConfigUtil::getMultiValuedValue(
-								self::getRuntimeManager()->getConfiguration(), 
-								new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:catalog/default_offering_genus_types_to_search'),
-								new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
-			foreach ($typeStrings as $typeString) {
-				$types[] = new phpkit_type_URNInetType($typeString);
-			}
-			return $types;
-		} catch (osid_NotFoundException $e) {
-		} catch (osid_ConfigurationErrorException $e) {
-		}
-		
-		return array();
-	}
-	
-	
-	
-	/**
 	 * Load topics into our view
 	 * 
 	 * @param osid_course_TopicList
@@ -271,194 +67,16 @@ abstract class AbstractCatalogController
 	 * @since 4/28/09
 	 */
 	protected function loadTopics (osid_course_TopicList $topicList) {
-		$topics = self::topicListAsArray($topicList);
+		$topics = $this->_helper->topics->topicListAsArray($topicList);
 		
- 		$this->view->subjectTopics = self::filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject"));
+ 		$this->view->subjectTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject"));
  		
- 		$this->view->departmentTopics = self::filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department"));
+ 		$this->view->departmentTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department"));
  		
- 		$this->view->divisionTopics = self::filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division"));
+ 		$this->view->divisionTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division"));
  		
- 		$this->view->requirementTopics = self::filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement"));
+ 		$this->view->requirementTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement"));
 	}
-	
-	/**
-	 * Answer an array containing the list items.
-	 * 
-	 * @param osid_course_TopicList $topicList
-	 * @return array
-	 * @access public
-	 * @since 4/28/09
-	 * @static
-	 */
-	public static function topicListAsArray (osid_course_TopicList $topicList) {
-		$topics = array();
-		while ($topicList->hasNext()) {
-			$topics[] = $topicList->getNextTopic();
-		}
-		return $topics;
-	}
-	
-	/**
-	 * Return an array of topics matching a type 
-	 * 
-	 * @param array $topics
-	 * @param osid_type_Type $type
-	 * @return array
-	 * @access public
-	 * @since 4/28/09
-	 * @static
-	 */
-	public static function filterTopicsByType (array $topics, osid_type_Type $type) {
-		$matching = array();
-		foreach ($topics as $topic) {
-			if ($topic->getGenusType()->isEqual($type)) 
-				$matching[] = $topic;
-		}
-		return $matching;
-	}
-	
-	/**
-     * Answer a 24-hour time string from an integer number of seconds.
-     * 
-     * @param integer $seconds
-     * @return string
-     * @access protected
-     * @since 6/10/09
-     * @static
-     */
-    public static function getTimeString ($seconds) {
-    	$hour = floor($seconds/3600);
-    	$minute = floor(($seconds - ($hour * 3600))/60);
-    	$hour = $hour % 24;
-    	
-    	if (!$hour)
-    		$string = 12;
-    	else if ($hour < 13)
-	    	$string = $hour;
-	    else
-	    	$string = $hour - 12;
-    	
-    	$string .= ':'.str_pad($minute, 2, '0', STR_PAD_LEFT);
-    	
-    	if ($hour < 13)
-    		$string .= ' am';
-    	else
-    		$string .= ' pm';
-    		
-    	return $string;
-    }
-    
-    /**
-     * Answer the "current" termId for the catalog passed. If multiple terms overlap
-     * to be 'current', only one will be returned.
-     * 
-     * @param osid_id_Id $catalogId
-     * @return osid_id_Id The current term id.
-     * @throws osid_NotFoundException
-     * @access public
-     * @since 6/11/09
-     * @static
-     */
-    public static function getCurrentTermId (osid_id_Id $catalogId) {
-    	$catalogIdString = self::getStringFromOsidId($catalogId);
-    	$cacheKey = 'current_term::'.$catalogIdString;
-    	$currentTerm = self::cache_get($cacheKey);
-    	if (!$currentTerm) {
-    		$manager = self::getCourseManager();
-    		if (!$manager->supportsTermLookup())
-    			throw new osid_NotFoundException('Could not determine a current term id. The manager does not support term lookup.');
-    		$termLookup = $manager->getTermLookupSessionForCatalog($catalogId);
-	    	$currentTerm = self::getClosestTermId($termLookup->getTerms());
-	    	if (!$currentTerm)
-		    	throw new osid_NotFoundException('Could not determine a current term id for the catalog passed.');
-	    	
-	    	self::cache_set($cacheKey, $currentTerm);
-    	}
-    	
-    	return $currentTerm;
-    }
-    
-    /**
-     * Fetch from cache
-     * 
-     * @param string $key
-     * @return mixed, FALSE on failure
-     * @access private
-     * @since 6/9/10
-     */
-    private static function cache_get ($key) {
-    	if (function_exists('apc_fetch')) {
-    		return apc_fetch($key);
-    	}
-    	// Fall back to Session caching if APC is not available.
-    	else {
-			if (!isset($_SESSION['cache'][$key]))
-				return false;
-			return $_SESSION['cache'][$key];
-		}
-    }
-    
-    /**
-     * Set an item in the cache
-     * 
-     * @param string $key
-     * @param mixed $value
-     * @return boolean true on success, false on failure
-     * @access private
-     * @since 6/9/10
-     */
-    private static function cache_set ($key, $value) {
-    	if (function_exists('apc_fetch')) {
-    		return apc_store($key, $value, 3600);
-    	}
-    	// Fall back to Session caching if APC is not available.
-    	else {
-			if (!isset($_SESSION['cache']))
-				$_SESSION['cache'] = array();
-			$_SESSION['cache'][$key] = $value;
-			return true;
-		}
-    }
-    
-    /**
-     * Answer the term id whose timespan is closest to now. 
-     * 
-     * @param osid_course_TermList $terms
-     * @param optional DateTime $date The date to reference the terms to.
-     * @return osid_id_Id
-     * @access public
-     * @since 6/11/09
-     * @static
-     */
-    public static function getClosestTermId (osid_course_TermList $terms, DateTime $date = null) {
-    	$ids = array();
-    	$diffs = array();
-    	
-    	if (is_null($date))
-	    	$date = time();
-	    else
-	    	$date = intval($date->format('U'));
-	    
-    	if (!$terms->hasNext())
-    		throw new osid_NotFoundException('Could not determine a current term id. No terms found.');
-		
-		while ($terms->hasNext()) {
-			$term = $terms->getNextTerm();
-			$start = intval($term->getStartTime()->format('U'));
-			$end = intval($term->getEndTime()->format('U'));
-			
-			// If our current time is within the term timespan, return that term's id.
-			if ($date >= $start && $date <= $end)
-				return $term->getId();
-			
-			$ids[] = $term->getId();
-			$diffs[] = abs($date - $start) + abs($date - $end);
-		}
-		
-		array_multisort($diffs, SORT_NUMERIC, SORT_ASC, $ids);
-		return $ids[0];
-    }
 	
 	private $startTime;
 	
@@ -521,7 +139,7 @@ abstract class AbstractCatalogController
     	$this->setCacheControlHeaders();
     			
     	$response = $this->getResponse();
-    	$db = self::getCourseManager()->getDB();
+    	$db = $this->_helper->catalog->getCourseManager()->getDB();
     	if (method_exists($db, 'getCounters')) {
     		foreach ($db->getCounters() as $name => $num) {
 		    	$response->setHeader('X-'.$name, $num);
@@ -546,7 +164,7 @@ abstract class AbstractCatalogController
 				
 				// Set cache-control headers
 				$maxAge = phpkit_configuration_ConfigUtil::getSingleValuedValue(
-									self::getRuntimeManager()->getConfiguration(), 
+									$this->_helper->catalog->getRuntimeManager()->getConfiguration(), 
 									new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:catalog/max_age'),
 									new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/Integer'));
 				if ($maxAge > 0 && !$this->getResponse()->isException()) {

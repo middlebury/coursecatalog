@@ -10,13 +10,13 @@ $resourceParams = array(
 							'controller'	=> 'resources',
 							'action'		=> 'view',
 							'offering'		=> null,
-							'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId()),
+							'term'			=> $this->getStringFromOsidId($term->getId()),
 						);
 
 $termUrl = $this->url(array(
 						'controller'	=> 'terms',
 						'action'		=> 'view',
-						'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId()),
+						'term'			=> $this->getStringFromOsidId($term->getId()),
 						'offering'		=> null
 					));
 $offeringParams = array(	
@@ -36,7 +36,7 @@ if ($this->offering->hasLocation()) {
 	print "\n\t\t<dt>Location:</dt>";
 	print "\n\t\t<dd>";
 	$locationResource = $this->offering->getLocation();
-	$resourceParams['resource'] = AbstractCatalogController::getStringFromOsidId($locationResource->getId());
+	$resourceParams['resource'] = $this->getStringFromOsidId($locationResource->getId());
 // 	print "<a href=\"".$this->url($resourceParams)."\">";
 	print $this->escape($locationResource->getDisplayName());
 // 	print "</a> ";
@@ -60,7 +60,7 @@ if ($this->offering->hasRecordType($instructorsType)) {
 	$instructors = $instructorsRecord->getInstructors();
 	while ($instructors->hasNext()) {
 		$instructor = $instructors->getNextResource();
-		$resourceParams['resource'] = AbstractCatalogController::getStringFromOsidId($instructor->getId());
+		$resourceParams['resource'] = $this->getStringFromOsidId($instructor->getId());
 		print "<a href=\"".$this->url($resourceParams)."\">";
 		print $this->escape($instructor->getDisplayName());
 		print "</a> ";
@@ -72,12 +72,12 @@ $topicParams = array(
 						'controller'	=> 'topics',
 						'action'		=> 'view',
 						'offering'		=> null,
-						'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId())
+						'term'			=> $this->getStringFromOsidId($term->getId())
 					);
 print "\n\t<dt>Subject:</dt>";
 print "\n\t\t<dd>";
 foreach ($this->subjectTopics as $topic) {
-	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+	$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
 	print "</a> ";
@@ -87,7 +87,7 @@ print "</dd>";
 print "\n\t\t<dt>Department:</dt>";
 print "\n\t\t<dd>";
 foreach ($this->departmentTopics as $topic) {
-	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+	$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
 	print "</a> ";
@@ -97,7 +97,7 @@ print "</dd>";
 print "\n\t\t<dt>Division:</dt>";
 print "\n\t\t<dd>";
 foreach ($this->divisionTopics as $topic) {
-// 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+// 	$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
 // 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
 // 	print "</a> ";
@@ -107,7 +107,7 @@ print "</dd>";
 print "\n\t\t<dt>Requirements Fulfilled:</dt>";
 print "\n\t\t<dd>";
 foreach ($this->requirementTopics as $topic) {
-	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+	$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
 	print "</a> ";
@@ -121,7 +121,7 @@ if (isset($this->alternates)) {
 	print "\n\t\t<dd>";
 	while ($this->alternates->hasNext()) {
 		$alternate = $this->alternates->getNextCourseOffering();
-		$offeringParams['offering'] = AbstractCatalogController::getStringFromOsidId($alternate->getId());
+		$offeringParams['offering'] = $this->getStringFromOsidId($alternate->getId());
 		print "<a href=\"".$this->url($offeringParams)."\">";
 		print $this->escape($alternate->getDisplayName());
 		print "</a>";
@@ -157,7 +157,7 @@ $course = $this->offering->getCourse();
 $courseParams = array(
 						'controller'	=> 'courses',
 						'action'		=> 'view',
-						'course'		=> AbstractCatalogController::getStringFromOsidId($course->getId()),
+						'course'		=> $this->getStringFromOsidId($course->getId()),
 						'offering'		=> null
 					);
 print "\n\t<h2>Course</h2>";
@@ -165,7 +165,7 @@ print "\n\t<div><a href='".$this->url($courseParams)."'>".$this->escape($course-
 
 
 if (isset($this->parentOffering)) {
-	$offeringParams['offering'] = AbstractCatalogController::getStringFromOsidId($this->parentOffering->getId());
+	$offeringParams['offering'] = $this->getStringFromOsidId($this->parentOffering->getId());
 	print "\n\t	<h2>Offering</h2>";
 print "\n\t\t<div><a href='".$this->url($offeringParams)."'>".$this->escape($section->getDisplayName())."</a></div>";
 }

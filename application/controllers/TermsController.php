@@ -29,11 +29,11 @@ class TermsController
 	 */
 	public function listAction () {
 		if ($this->_getParam('catalog')) {
-			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
-			$lookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+			$lookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 			$this->view->title = 'Terms in '.$lookupSession->getCourseCatalog()->getDisplayName();
 		} else {
-			$lookupSession = self::getCourseManager()->getTermLookupSession();
+			$lookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
 			$this->view->title = 'Terms in All Catalogs';
 		}
 		$lookupSession->useFederatedCourseCatalogView();
@@ -54,17 +54,17 @@ class TermsController
 	 * @since 4/21/09
 	 */
 	public function viewAction () {
-		$id = self::getOsidIdFromString($this->_getParam('term'));
-		$lookupSession = self::getCourseManager()->getTermLookupSession();
+		$id = $this->_helper->osidId->fromString($this->_getParam('term'));
+		$lookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
 		$lookupSession->useFederatedCourseCatalogView();
 		$this->view->term = $lookupSession->getTerm($id);
 		
-		$lookupSession = self::getCourseManager()->getCourseOfferingLookupSession();
+		$lookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
 		$lookupSession->useFederatedCourseCatalogView();
 		$this->view->offerings = $lookupSession->getCourseOfferingsByTerm($id);
 		
 		// Set the selected Catalog Id.
-		$catalogSession = self::getCourseManager()->getTermCatalogSession();
+		$catalogSession = $this->_helper->osid->getCourseManager()->getTermCatalogSession();
 		$catalogIds = $catalogSession->getCatalogIdsByTerm($id);
 		if ($catalogIds->hasNext()) {
 			$this->setSelectedCatalogId($catalogIds->getNextId());

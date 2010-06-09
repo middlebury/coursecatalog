@@ -42,11 +42,11 @@ class CoursesController
 	 */
 	public function listAction () {
 		if ($this->_getParam('catalog')) {
-			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
-			$lookupSession = self::getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
+			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+			$lookupSession = $this->_helper->osid->getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
 			$this->view->title = 'Courses in '.$lookupSession->getCourseCatalog()->getDisplayName();
 		} else {
-			$lookupSession = self::getCourseManager()->getCourseLookupSession();
+			$lookupSession = $this->_helper->osid->getCourseManager()->getCourseLookupSession();
 			$this->view->title = 'Courses in All Catalogs';
 		}
 		$lookupSession->useFederatedCourseCatalogView();
@@ -67,8 +67,8 @@ class CoursesController
 	 * @since 4/21/09
 	 */
 	public function viewAction () {
-		$id = self::getOsidIdFromString($this->_getParam('course'));
-		$lookupSession = self::getCourseManager()->getCourseLookupSession();
+		$id = $this->_helper->osidId->fromString($this->_getParam('course'));
+		$lookupSession = $this->_helper->osid->getCourseManager()->getCourseLookupSession();
 		$lookupSession->useFederatedCourseCatalogView();
 		$this->view->course = $lookupSession->getCourse($id);
 		
@@ -76,7 +76,7 @@ class CoursesController
  		$this->loadTopics($this->view->course->getTopics());
 		
 		// Set the selected Catalog Id.
-		$catalogSession = self::getCourseManager()->getCourseCatalogSession();
+		$catalogSession = $this->_helper->osid->getCourseManager()->getCourseCatalogSession();
 		$catalogIds = $catalogSession->getCatalogIdsByCourse($id);
 		if ($catalogIds->hasNext()) {
 			$this->setSelectedCatalogId($catalogIds->getNextId());
@@ -98,25 +98,25 @@ class CoursesController
 				
 		// Term
 		if ($this->_getParam('term')) {
-			$termId = self::getOsidIdFromString($this->_getParam('term'));
-			$termLookupSession = self::getCourseManager()->getTermLookupSession();
+			$termId = $this->_helper->osidId->fromString($this->_getParam('term'));
+			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
 			$termLookupSession->useFederatedCourseCatalogView();
 			$this->view->term = $termLookupSession->getTerm($termId);
 			
 			$allParams = array();
 			$allParams['course'] = $this->_getParam('course');
 			if ($this->getSelectedCatalogId())
-				$allParams['catalog'] = self::getStringFromOsidId($this->getSelectedCatalogId());
+				$allParams['catalog'] = $this->_helper->osidId->toString($this->getSelectedCatalogId());
 			$this->view->offeringsForAllTermsUrl = $this->_helper->url('view', 'courses', null, $allParams);
 		} else {
-			$this->view->linkTermId = self::getCurrentTermId($this->getSelectedCatalogId());
+			$this->view->linkTermId = $this->_helper->osid->getCurrentTermId($this->getSelectedCatalogId());
 		}
 		
 		$this->render();
 		
 		// offerings
 		$this->view->offeringsTitle = "Sections";
-		$offeringLookupSession = self::getCourseManager()->getCourseOfferingLookupSession();
+		$offeringLookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
 		$offeringLookupSession->useFederatedCourseCatalogView();
 		if (isset($this->view->term)) {
 			$this->view->offerings = $offeringLookupSession->getCourseOfferingsByTermForCourse(
@@ -145,8 +145,8 @@ class CoursesController
 			exit;
 		}
 		try {
-			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
-			$searchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
+			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+			$searchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
 		} catch (osid_InvalidArgumentException $e) {
 			header('HTTP/1.1 400 Bad Request');
 			print "The catalog id specified was not of the correct format.";
@@ -187,7 +187,7 @@ class CoursesController
 			
 			while ($offerings->hasNext() && count($courses) <= 20) {
 				$offering = $offerings->getNextCourseOffering();
-				$courseIdString = self::getStringFromOsidId($offering->getCourseId());
+				$courseIdString = $this->_helper->osidId->toString($offering->getCourseId());
 				if (!isset($courses[$courseIdString])) {
 					try {
 						$courses[$courseIdString] = $offering->getCourse();
@@ -245,10 +245,10 @@ class CoursesController
 			exit;
 		}
 		try {
-			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
-			$searchSession = self::getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
+			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+			$searchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
 			
-			$this->termLookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+			$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 		} catch (osid_InvalidArgumentException $e) {
 			header('HTTP/1.1 400 Bad Request');
 			print "The catalog id specified was not of the correct format.";
@@ -268,10 +268,10 @@ class CoursesController
 		$topicsIds = array();
 		if (is_array($this->_getParam('topic'))) {
 			foreach ($this->_getParam('topic') as $idString) {
-				$topicIds[] = self::getOsidIdFromString($idString);
+				$topicIds[] = $this->_helper->osidId->fromString($idString);
 			}
 		} else {
-			$topicIds[] = self::getOsidIdFromString($this->_getParam('topic'));
+			$topicIds[] = $this->_helper->osidId->fromString($this->_getParam('topic'));
 		}
 		
 		$searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('search', 'offerings', null, array()));
@@ -288,10 +288,10 @@ class CoursesController
 		$locationIds = array();
 		if (is_array($this->_getParam('location'))) {
 			foreach ($this->_getParam('location') as $idString) {
-				$locationIds[] = self::getOsidIdFromString($idString);
+				$locationIds[] = $this->_helper->osidId->fromString($idString);
 			}
 		} else if ($this->_getParam('location')) {
-			$locationIds[] = self::getOsidIdFromString($this->_getParam('location'));
+			$locationIds[] = $this->_helper->osidId->fromString($this->_getParam('location'));
 		}
 		$locationRecord = $query->getCourseQueryRecord(new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:location"));
 		foreach ($locationIds as $locationId) {
@@ -301,7 +301,7 @@ class CoursesController
 		
 		$courses = $searchSession->getCoursesByQuery($query);
 		
-		$topicLookup = self::getCourseManager()->getTopicLookupSession();
+		$topicLookup = $this->_helper->osid->getCourseManager()->getTopicLookupSession();
 		$topicLookup->useFederatedView();
 		$topic = $topicLookup->getTopic($topicId);
 		
@@ -321,28 +321,28 @@ class CoursesController
 		$this->_helper->viewRenderer->setNoRender();
 		
 		if (!$this->_getParam('catalog')) {
-			$searchSession = self::getCourseManager()->getCourseSearchSession();
+			$searchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSession();
 			$searchSession->useFederatedView();
-			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSession();
+			$offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSession();
 			$offeringSearchSession->useFederatedView();
 			
 			// Allow term current/past to be limited to a certain catalog while courses are fetched from many
 			if ($this->_getParam('term_catalog')) {
-				$catalogId = self::getOsidIdFromString($this->_getParam('term_catalog'));
-				$this->termLookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+				$catalogId = $this->_helper->osidId->fromString($this->_getParam('term_catalog'));
+				$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 			} 
 			// fall back to terms from any catalog.
 			else {
-				$this->termLookupSession = self::getCourseManager()->getTermLookupSession();
+				$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
 				$this->termLookupSession->useFederatedView();
 			}
 		} else {
 			try {
-				$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
-				$searchSession = self::getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
-				$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
+				$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+				$searchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
+				$offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
 				
-				$this->termLookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+				$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 			} catch (osid_InvalidArgumentException $e) {
 				header('HTTP/1.1 400 Bad Request');
 				print "The catalog id specified was not of the correct format.";
@@ -362,7 +362,7 @@ class CoursesController
 			exit;
 		}
 		
-		$instructorId = self::getOsidIdFromString('resource/person/'.$instructor);
+		$instructorId = $this->_helper->osidId->fromString('resource/person/'.$instructor);
 		$searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'resources', null, array('catalog' => $this->_getParam('catalog'), 'resource' => 'resouce/person/'.$instructor)));
 		
 		// Fetch courses
@@ -373,7 +373,7 @@ class CoursesController
 		
 		$courses = $searchSession->getCoursesByQuery($query);
 		
-		$resourceLookup = self::getCourseManager()->getResourceManager()->getResourceLookupSession();
+		$resourceLookup = $this->_helper->osid->getCourseManager()->getResourceManager()->getResourceLookupSession();
 		$instructorResource = $resourceLookup->getResource($instructorId);
 		
 		$recentCourses = new Helper_RecentCourses_Instructor($courses, $offeringSearchSession, $instructorId);
@@ -410,7 +410,7 @@ class CoursesController
 		flush();
 
 		// Set the next and previous terms
-		$currentTermId = self::getCurrentTermId($this->termLookupSession->getCourseCatalogId());
+		$currentTermId = $this->_helper->osid->getCurrentTermId($this->termLookupSession->getCourseCatalogId());
 		$currentTerm = $this->termLookupSession->getTerm($currentTermId);
 		$currentEndTime = $this->DateTime_getTimestamp($currentTerm->getEndTime());
 		
@@ -418,18 +418,18 @@ class CoursesController
 // 		print ($courses->debug());
 // 		print "]]></description>";
 		
-		$catalogSession = self::getCourseManager()->getCourseCatalogSession();
+		$catalogSession = $this->_helper->osid->getCourseManager()->getCourseCatalogSession();
 		$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
 		
 // 		foreach ($groups as $key => $group) {
 // 			print "\n$key";
 // 			foreach ($group as $course) {
-// 				print "\n\t".self::getStringFromOsidId($course->getId());
+// 				print "\n\t".$this->_helper->osidId->toString($course->getId());
 // 			}
 // 		}
 		
 		foreach ($recentCourses->getPrimaryCourses() as $course) {
-			$courseIdString = self::getStringFromOsidId($course->getId());
+			$courseIdString = $this->_helper->osidId->toString($course->getId());
 						
 			print "\n\t\t<item>";
 			
@@ -445,7 +445,7 @@ class CoursesController
 			print "\n\t\t\t<link>";
 			$catalog = $catalogSession->getCatalogIdsByCourse($course->getId());
 			if ($catalog->hasNext())
-				$catalogIdString = self::getStringFromOsidId($catalog->getNextId());
+				$catalogIdString = $this->_helper->osidId->toString($catalog->getNextId());
 			else
 				$catalogIdString = null;
 			print $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'courses', null, array('catalog' => $catalogIdString, 'course' => $courseIdString)));
@@ -464,7 +464,7 @@ class CoursesController
 			if (count($recentTerms)) {
 				$termStrings = array();
 				foreach ($recentTerms as $term) {
-					print "\n\t\t\t<catalog:term id=\"".self::getStringFromOsidId($term->getId())."\"";
+					print "\n\t\t\t<catalog:term id=\"".$this->_helper->osidId->toString($term->getId())."\"";
 					if ($term->getId()->isEqual($currentTermId)) {
 						print ' type="current"';
 					} else if ($currentEndTime < $this->DateTime_getTimestamp($term->getEndTime())) {
@@ -476,33 +476,33 @@ class CoursesController
 				}
 			}
 			
-			$allTopics = AbstractCatalogController::topicListAsArray($course->getTopics());
+			$allTopics = $this->_helper->topics->topicListAsArray($course->getTopics());
 			$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
-			$topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
-			$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
+			$topicTypeString = $this->_helper->osidType->toString($topicType);
+			$topics = $this->_helper->topics->filterTopicsByType($allTopics, $topicType);
 			foreach ($topics as $topic) {
-				$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
-				print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".AbstractCatalogController::getStringFromOsidId($topic->getId())."\" href=\"".$this->_helper->pathAsAbsoluteUrl($this->view->url($topicParams))."\">";
+				$topicParams['topic'] = $this->_helper->osidId->toString($topic->getId());
+				print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".$this->_helper->osidId->toString($topic->getId())."\" href=\"".$this->_helper->pathAsAbsoluteUrl($this->view->url($topicParams))."\">";
 				print $this->view->escape($topic->getDisplayName());
 				print "</catalog:topic> ";
 			}
 			
 			$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
-			$topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
-			$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
+			$topicTypeString = $this->_helper->osidType->toString($topicType);
+			$topics = $this->_helper->topics->filterTopicsByType($allTopics, $topicType);
 			foreach ($topics as $topic) {
-				$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
-				print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".AbstractCatalogController::getStringFromOsidId($topic->getId())."\" href=\"".$this->_helper->pathAsAbsoluteUrl($this->view->url($topicParams))."\">";
+				$topicParams['topic'] = $this->_helper->osidId->toString($topic->getId());
+				print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".$this->_helper->osidId->toString($topic->getId())."\" href=\"".$this->_helper->pathAsAbsoluteUrl($this->view->url($topicParams))."\">";
 				print $this->view->escape($topic->getDisplayName());
 				print "</catalog:topic> ";
 			}
 			
 			$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
-			$topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
-			$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
+			$topicTypeString = $this->_helper->osidType->toString($topicType);
+			$topics = $this->_helper->topics->filterTopicsByType($allTopics, $topicType);
 			foreach ($topics as $topic) {
-				$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
-				print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".AbstractCatalogController::getStringFromOsidId($topic->getId())."\" href=\"".$this->_helper->pathAsAbsoluteUrl($this->view->url($topicParams))."\">";
+				$topicParams['topic'] = $this->_helper->osidId->toString($topic->getId());
+				print "\n\t\t\t<catalog:topic type=\"".$topicTypeString."\" id=\"".$this->_helper->osidId->toString($topic->getId())."\" href=\"".$this->_helper->pathAsAbsoluteUrl($this->view->url($topicParams))."\">";
 				print $this->view->escape($topic->getDisplayName());
 				print "</catalog:topic> ";
 			}

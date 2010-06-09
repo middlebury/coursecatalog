@@ -27,7 +27,7 @@ while ($this->offerings->hasNext()) {
 		print "\n<h4>".$currentTerm->getDisplayName()."</h4>";
 	}
 	
-	$offeringParams['offering'] = AbstractCatalogController::getStringFromOsidId($offering->getId());
+	$offeringParams['offering'] = $this->getStringFromOsidId($offering->getId());
 	
 	if (isset($this->offering) && $offering->getId()->isEqual($this->offering->getId()))
 		print "\n\t<div class='selected_offering'>";

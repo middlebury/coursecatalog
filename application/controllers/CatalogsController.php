@@ -31,7 +31,7 @@ class CatalogsController
 	 * @since 4/21/09
 	 */
 	public function listAction() {
-		$lookupSession = self::getCourseManager()->getCourseCatalogLookupSession();
+		$lookupSession = $this->_helper->osid->getCourseManager()->getCourseCatalogLookupSession();
 		$this->view->catalogs = $lookupSession->getCourseCatalogs();
 		
 		$this->view->title = 'Available Catalogs';
@@ -46,23 +46,23 @@ class CatalogsController
 	 * @since 4/21/09
 	 */
 	public function viewAction () {
-		$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
+		$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
 		if ($this->_getParam('term')) {
 			try {
 				// Verify that the term is valid in this catalog
-				$termLookup = self::getCourseManager()->getTermLookupSession();
+				$termLookup = $this->_helper->osid->getCourseManager()->getTermLookupSession();
 				$termLookup->useFederatedCourseCatalogView();
-				$termId = $termLookup->getTerm(self::getOsidIdFromString($this->_getParam('term')))->getId();
+				$termId = $termLookup->getTerm($this->_helper->osidId->fromString($this->_getParam('term')))->getId();
 			} catch (osid_NotFoundException $e) {
 			}
 		}
 		if (!isset($termId)) {
-			$termId = self::getCurrentTermId($catalogId);
+			$termId = $this->_helper->osid->getCurrentTermId($catalogId);
 		}
 		
 		$this->_forward('search', 'Offerings', null, array(
-				'catalog'	=> self::getStringFromOsidId($catalogId),
-				'term' 		=> self::getStringFromOsidId($termId)
+				'catalog'	=> $this->_helper->osidId->toString($catalogId),
+				'term' 		=> $this->_helper->osidId->toString($termId)
 			));
 	}
 }

@@ -17,6 +17,7 @@ try {
 	$front->registerPlugin(new CatalogExternalRedirector());
 	
 	Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/controllers/helper', 'Helper');
+	Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/resources/Catalog/Action/Helper', 'Catalog_Action_Helper');
 	
 	$registry = Zend_Registry::getInstance();
 	$registry->config = new Zend_Config_Ini(BASE_PATH.'/frontend_config.ini', 'development');

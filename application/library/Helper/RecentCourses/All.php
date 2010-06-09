@@ -43,7 +43,7 @@ class Helper_RecentCourses_All
 	 * @since 11/16/09
 	 */
 	protected function fetchCourseTerms (osid_course_Course $course) {
-		$cacheKey = AbstractCatalogController::getStringFromOsidId($course->getId());
+		$cacheKey = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($course->getId());
 		
 		if (!isset($this->termsCache[$cacheKey])) {
 			$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");

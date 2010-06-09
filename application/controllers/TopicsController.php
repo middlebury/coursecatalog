@@ -29,11 +29,11 @@ class TopicsController
 	 */
 	public function listAction () {
 		if ($this->_getParam('catalog')) {
-			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
-			$lookupSession = self::getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+			$lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
 			$this->view->title = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
 		} else {
-			$lookupSession = self::getCourseManager()->getTopicLookupSession();
+			$lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSession();
 			$this->view->title = 'Topics in All Catalogs';
 		}
 		$lookupSession->useFederatedCourseCatalogView();
@@ -52,18 +52,18 @@ class TopicsController
 	 * @since 4/21/09
 	 */
 	public function viewAction () {
-		$id = self::getOsidIdFromString($this->_getParam('topic'));
-		$lookupSession = self::getCourseManager()->getTopicLookupSession();
+		$id = $this->_helper->osidId->fromString($this->_getParam('topic'));
+		$lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSession();
 		$lookupSession->useFederatedCourseCatalogView();
 		$this->view->topic = $lookupSession->getTopic($id);
 		
-		$lookupSession = self::getCourseManager()->getCourseOfferingLookupSession();
+		$lookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
 		$lookupSession->useFederatedCourseCatalogView();
 		if ($this->_getParam('term')) {
-			$termId = self::getOsidIdFromString($this->_getParam('term'));
+			$termId = $this->_helper->osidId->fromString($this->_getParam('term'));
 			$this->view->offerings = $lookupSession->getCourseOfferingsByTermByTopic($termId, $id);
 			
-			$termLookupSession = self::getCourseManager()->getTermLookupSession();
+			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
 			$termLookupSession->useFederatedCourseCatalogView();
 			$this->view->term = $termLookupSession->getTerm($termId);
 		} else {
@@ -77,7 +77,7 @@ class TopicsController
 		
 		// Set the selected Catalog Id.
 		if ($this->_getParam('catalog')) {
-			$this->setSelectedCatalogId(self::getOsidIdFromString($this->_getParam('catalog')));
+			$this->setSelectedCatalogId($this->_helper->osidId->fromString($this->_getParam('catalog')));
 		}
 		
 		// Set the title
@@ -89,7 +89,7 @@ class TopicsController
 		$allParams = array();
 		$allParams['topic'] = $this->_getParam('topic');
 		if ($this->getSelectedCatalogId())
-			$allParams['catalog'] = self::getStringFromOsidId($this->getSelectedCatalogId());
+			$allParams['catalog'] = $this->_helper->osidId->toString($this->getSelectedCatalogId());
 		$this->view->offeringsForAllTermsUrl = $this->_helper->url('view', 'topics', null, $allParams);
 		
  		$this->render('offerings', null, true);
@@ -151,11 +151,11 @@ class TopicsController
 		header('Content-Type: text/plain');
 		
 		if ($this->_getParam('catalog')) {
-			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
-			$lookupSession = self::getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+			$lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
 			$this->view->title = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
 		} else {
-			$lookupSession = self::getCourseManager()->getTopicLookupSession();
+			$lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSession();
 			$this->view->title = 'Topics in All Catalogs';
 		}
 		$lookupSession->useFederatedCourseCatalogView();
@@ -164,7 +164,7 @@ class TopicsController
 		
 		while ($topics->hasNext()) {
 			$topic = $topics->getNextTopic();
-			print self::getStringFromOsidId($topic->getId())."|".self::getStringFromOsidId($topic->getId())." - ".$topic->getDisplayName()."\n";
+			print $this->_helper->osidId->toString($topic->getId())."|".$this->_helper->osidId->toString($topic->getId())." - ".$topic->getDisplayName()."\n";
 		}
 		
 		exit;

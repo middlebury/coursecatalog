@@ -11,7 +11,7 @@ while ($this->menuCatalogs->hasNext()) {
 					array(
 						'controller' => 'catalogs', 
 						'action' => 'view', 
-						'catalog' => AbstractCatalogController::getStringFromOsidId($catalog->getId())),
+						'catalog' => $this->getStringFromOsidId($catalog->getId())),
 					null,
 					true);
 		print "\">".$this->escape($catalog->getDisplayName())."</a>";

@@ -32,7 +32,7 @@ class Helper_RecentCourses_Department
 		while ($courses->hasNext()) {
 			
 			$course = $courses->getNextCourse();
-			$courseIdString = AbstractCatalogController::getStringFromOsidId($course->getId());
+			$courseIdString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($course->getId());
 			
 			$groupId = $courseIdString;
 
