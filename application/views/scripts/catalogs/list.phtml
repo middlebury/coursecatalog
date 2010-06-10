@@ -4,7 +4,7 @@ $params = array(	'controller' 	=> 'catalogs',
 
 while ($this->catalogs->hasNext()) {
 	$catalog = $this->catalogs->getNextCourseCatalog();
-	$params['catalog'] = Helper_Catalog::getStringFromOsidId($catalog->getId());
+	$params['catalog'] = $this->getStringFromOsidId($catalog->getId());
 	print "\n\t<h2><a href='".$this->url($params)."'>".$catalog->getDisplayName()."</a></h2>";
 	print "\n\t<div>".$catalog->getDescription()."</div>";
 }
