@@ -22,20 +22,12 @@ abstract class Catalog_Action_Helper_AbstractOsidIdentifier
 	 */
 	protected function getIdAuthorityToShorten () {
 		if (!isset(self::$idAuthorityToShorten)) {
-			try {
-				$authority = phpkit_configuration_ConfigUtil::getSingleValuedValue(
-    								Zend_Controller_Action_HelperBroker::getStaticHelper('Osid')->getRuntimeManager()->getConfiguration(), 
-    								new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:catalog/shorten_ids_for_authority'),
-    								new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
-    			if (strlen($authority))
-	    			self::$idAuthorityToShorten = $authority;
-	    		else
-	    			self::$idAuthorityToShorten = false;
-    		} catch (osid_NotFoundException $e) {
-    			self::$idAuthorityToShorten = false;
-    		} catch (osid_ConfigurationErrorException $e) {
-    			self::$idAuthorityToShorten = false;
-    		}
+			$config = Zend_Registry::getInstance()->config;
+			$authority = strval($config->catalog->shorten_ids_for_authority);
+			if (strlen($authority))
+				self::$idAuthorityToShorten = $authority;
+			else
+				self::$idAuthorityToShorten = false;
 		}
 		return self::$idAuthorityToShorten;
 	}

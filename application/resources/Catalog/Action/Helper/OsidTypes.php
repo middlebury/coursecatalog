@@ -21,21 +21,16 @@ class Catalog_Action_Helper_OsidTypes
 	 * @since 6/16/09
 	 */
 	public function getDefaultGenusTypes () {
-		try {
-			$types = array();
-			$typeStrings = phpkit_configuration_ConfigUtil::getMultiValuedValue(
-				Zend_Controller_Action_HelperBroker::getStaticHelper('Osid')->getRuntimeManager()->getConfiguration(), 
-				new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:catalog/default_offering_genus_types_to_search'),
-				new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
-			foreach ($typeStrings as $typeString) {
-				$types[] = new phpkit_type_URNInetType($typeString);
-			}
-			return $types;
-		} catch (osid_NotFoundException $e) {
-		} catch (osid_ConfigurationErrorException $e) {
-		}
+		$types = array();
+		$config = Zend_Registry::getInstance()->config;
+		$typeStrings = $config->catalog->default_offering_genus_types_to_search;
+		if (!$typeStrings)
+			return array();
 		
-		return array();
+		foreach ($typeStrings as $typeString) {
+			$types[] = new phpkit_type_URNInetType($typeString);
+		}
+		return $types;
 	}
 }
 
