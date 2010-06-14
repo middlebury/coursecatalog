@@ -4,10 +4,10 @@ function printTerm(Zend_View $view, osid_course_Term $term, $label = 'term', $ta
 	$termUrl = $view->pathAsAbsoluteUrl($view->url(array(
 					'controller'	=> 'terms',
 					'action'		=> 'view',
-					'term'			=> $this->getStringFromOsidId($term->getId()),
+					'term'			=> $view->getStringFromOsidId($term->getId()),
 					'offering'		=> null
 				)));
-	print "\n".$tabs."<catalog:".$label." id=\"".$this->getStringFromOsidId($term->getId())."\" href=\"".$termUrl."\">";
+	print "\n".$tabs."<catalog:".$label." id=\"".$view->getStringFromOsidId($term->getId())."\" href=\"".$termUrl."\">";
 	print $view->escape($term->getDisplayName());
 	print "</catalog:".$label."> ";
 }
