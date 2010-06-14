@@ -109,7 +109,7 @@ class CoursesController
 				$allParams['catalog'] = $this->_helper->osidId->toString($this->getSelectedCatalogId());
 			$this->view->offeringsForAllTermsUrl = $this->_helper->url('view', 'courses', null, $allParams);
 		} else {
-			$this->view->linkTermId = $this->_helper->osid->getCurrentTermId($this->getSelectedCatalogId());
+			$this->view->linkTermId = $this->_helper->osidTerms->getCurrentTermId($this->getSelectedCatalogId());
 		}
 		
 		$this->render();
@@ -410,7 +410,7 @@ class CoursesController
 		flush();
 
 		// Set the next and previous terms
-		$currentTermId = $this->_helper->osid->getCurrentTermId($this->termLookupSession->getCourseCatalogId());
+		$currentTermId = $this->_helper->osidTerms->getCurrentTermId($this->termLookupSession->getCourseCatalogId());
 		$currentTerm = $this->termLookupSession->getTerm($currentTermId);
 		$currentEndTime = $this->DateTime_getTimestamp($currentTerm->getEndTime());
 		

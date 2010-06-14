@@ -69,7 +69,7 @@ class OfferingsController
 		// Add our parameters to the search query
 		if ($this->_getParam('term')) {
 			if ($this->_getParam('term') == 'CURRENT') {
-				$termId = $this->_helper->osid->getCurrentTermId();
+				$termId = $this->_helper->osidTerms->getCurrentTermId();
 			} else {
 				$termId = $this->_helper->osidId->fromString($this->_getParam('term'));
 			}
@@ -178,7 +178,7 @@ class OfferingsController
 		if ($this->_getParam('term') == 'ANY') {
 			// Don't set a term
 		} else if (!$this->_getParam('term') || $this->_getParam('term') == 'CURRENT') {
-			$termId = $this->_helper->osid->getCurrentTermId($offeringSearchSession->getCourseCatalogId());
+			$termId = $this->_helper->osidTerms->getCurrentTermId($offeringSearchSession->getCourseCatalogId());
 		} else {
 			$termId = $this->_helper->osidId->fromString($this->_getParam('term'));
 		}
@@ -378,7 +378,7 @@ class OfferingsController
 		
 		// Set the default selection to lecture/seminar if the is a new search
 		if (!$this->_getParam('submit') && !count($this->view->selectedGenusTypes)) {
-			$this->view->selectedGenusTypes = $this->_helper->osid->getDefaultGenusTypes();
+			$this->view->selectedGenusTypes = $this->_helper->osidTypes->getDefaultGenusTypes();
 		}
 		
 		if ($query->hasRecordType($this->weeklyScheduleType)) {
