@@ -160,7 +160,7 @@ abstract class AbstractCatalogController
 			// Only allow caching if anonymous. This will ensure that users'
 			// browser caches will not cache pages if logged in.
 			require_once(APPLICATION_PATH.'/controllers/AuthController.php');
-			if (!AuthController::isAuthenticated()) {
+			if (!$this->_helper->auth()->isAuthenticated()) {
 				
 				// Set cache-control headers
 				$maxAge = phpkit_configuration_ConfigUtil::getSingleValuedValue(

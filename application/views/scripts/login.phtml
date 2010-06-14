@@ -1,11 +1,12 @@
 <div class='login_info'>			
 <?php
-require_once(APPLICATION_PATH.'/controllers/AuthController.php');
-if (AuthController::isAuthenticated()) {
-	print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'logout', 'return' => $this->pathAsAbsoluteUrl($this->url()))).'">Log Out</a> ';
-	print AuthController::getUserDisplayName();
-} else {
-	print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'login')).'">Log In</a>';
+if ($this->isAuthenticationEnabled()) {
+	if ($this->isAuthenticated()) {
+		print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'logout', 'return' => $this->pathAsAbsoluteUrl($this->url()))).'">Log Out</a> ';
+		print $this->getUserDisplayName();
+	} else {
+		print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'login')).'">Log In</a>';
+	}
 }
 ?>
 </div>
