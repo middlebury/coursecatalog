@@ -40,7 +40,7 @@ class AuthController extends Zend_Controller_Action
     	$displayName = '';
     	$displayName .= phpCAS::getAttribute('FirstName');
     	$displayName .= ' '.phpCAS::getAttribute('LastName');
-    	$displayName .= ' ('.phpCAS::getAttribute('EMail').')';
+//     	$displayName .= ' ('.phpCAS::getAttribute('EMail').')';
     	return trim($displayName);
     }
     
