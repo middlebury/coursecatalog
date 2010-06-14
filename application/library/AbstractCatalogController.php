@@ -156,30 +156,26 @@ abstract class AbstractCatalogController
      * @since 6/4/10
      */
     private function setCacheControlHeaders () {
-    	try {
-			// Only allow caching if anonymous. This will ensure that users'
-			// browser caches will not cache pages if logged in.
-			require_once(APPLICATION_PATH.'/controllers/AuthController.php');
-			if (!$this->_helper->auth()->isAuthenticated()) {
-				
-				// Set cache-control headers
-				$maxAge = phpkit_configuration_ConfigUtil::getSingleValuedValue(
-									$this->_helper->osid->getRuntimeManager()->getConfiguration(), 
-									new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:catalog/max_age'),
-									new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/Integer'));
-				if ($maxAge > 0 && !$this->getResponse()->isException()) {
-					$this->getResponse()->setHeader('Expires', gmdate('D, d M Y H:i:s', time() + $maxAge).' GMT', true);
-					$this->getResponse()->setHeader('Cache-Control', 'public', true);
-					$this->getResponse()->setHeader('Cache-Control', 'max-age='.$maxAge);
-					$this->getResponse()->setHeader('Pragma', '', true);
-					$this->getResponse()->setHeader('Vary', 'Cookie,Accept-Encoding', true);
-				}
-				
+		// Only allow caching if anonymous. This will ensure that users'
+		// browser caches will not cache pages if logged in.
+		if (!$this->_helper->auth()->isAuthenticated()) {
+			
+			// Set cache-control headers
+			$config = Zend_Registry::getInstance()->config;
+			$maxAge = intval($config->cache_control->max_age);
+			$expirationOffset = intval($config->cache_control->expiration_offset);
+			if (!$expirationOffset)
+				$expirationOffset = $maxAge;
+			
+			if ($maxAge > 0 && !$this->getResponse()->isException()) {
+				$this->getResponse()->setHeader('Expires', gmdate('D, d M Y H:i:s', time() + $expirationOffset).' GMT', true);
+				$this->getResponse()->setHeader('Cache-Control', 'public', true);
+				$this->getResponse()->setHeader('Cache-Control', 'max-age='.$maxAge);
+				$this->getResponse()->setHeader('Pragma', '', true);
 			}
-				
-		} catch (osid_NotFoundException $e) {
-		} catch (osid_ConfigurationErrorException $e) {
 		}
+		
+		$this->getResponse()->setHeader('Vary', 'Cookie,Accept-Encoding', true);
     }
 }
 
