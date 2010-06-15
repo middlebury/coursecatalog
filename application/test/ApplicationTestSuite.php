@@ -10,7 +10,7 @@ class ApplicationTestSuite extends PHPUnit_Framework_TestSuite
 {
 	public static function suite()
     {
-        $suite = new banner_TestSuite('Application');
+        $suite = new ApplicationTestSuite('Application');
         
         self::recursiveAddTests($suite, dirname(__FILE__).'/Catalog');
         
@@ -20,12 +20,21 @@ class ApplicationTestSuite extends PHPUnit_Framework_TestSuite
     protected function setUp()
     {
     	$this->sharedFixture = banner_TestSuite::loadBannerDbAndGetSharedArray();
-    	Zend_Controller_Action_HelperBroker::getStaticHelper('Osid')->setConfigPath(dirname(__FILE__).'/banner/configuration.plist');
+    	
+    	Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/controllers/helper', 'Helper');
+		Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/resources/Catalog/Action/Helper', 'Catalog_Action_Helper');
+		Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/resources/Auth/Action/Helper', 'Auth_Action_Helper');
+    	
+		$registry = Zend_Registry::getInstance();
+		$registry->config = new Zend_Config_Ini(BASE_PATH.'/frontend_config.ini', 'development');
+		
+		Zend_Controller_Action_HelperBroker::getStaticHelper('Osid')->setConfigPath(dirname(__FILE__).'/banner/configuration.plist');
+
     }
  
     protected function tearDown()
     {
-		banner_TestSuite::emptyBannerDbAndCloseSharedArray($this->shareedFixture);
+		banner_TestSuite::emptyBannerDbAndCloseSharedArray($this->sharedFixture);
         $this->sharedFixture = NULL;
     }
     
