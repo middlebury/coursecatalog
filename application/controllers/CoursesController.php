@@ -404,6 +404,9 @@ class CoursesController
 		<docs>http://blogs.law.harvard.edu/tech/rss</docs>
 		
 ';
+		// Close the session before we send headers and content.
+		session_write_close();
+		
 		while (ob_get_level()) {
 			ob_end_flush();
 		}
