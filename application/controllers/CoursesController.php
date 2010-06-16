@@ -137,6 +137,7 @@ class CoursesController
 	 * @since 6/15/09
 	 */
 	public function searchxmlAction () {
+		$this->_helper->layout->disableLayout();
 		$this->_helper->viewRenderer->setNoRender();
 		
 		if (!$this->_getParam('catalog')) {
@@ -237,6 +238,7 @@ class CoursesController
 	 * @since 6/15/09
 	 */
 	public function topicxmlAction () {
+		$this->_helper->layout->disableLayout();
 		$this->_helper->viewRenderer->setNoRender();
 		
 		if (!$this->_getParam('catalog')) {
@@ -318,6 +320,7 @@ class CoursesController
 	 * @since 6/15/09
 	 */
 	public function instructorxmlAction () {
+		$this->_helper->layout->disableLayout();
 		$this->_helper->viewRenderer->setNoRender();
 		
 		if (!$this->_getParam('catalog')) {
@@ -392,6 +395,14 @@ class CoursesController
 	 * @since 10/19/09
 	 */
 	protected function outputCourseFeed (Helper_RecentCourses_Abstract $recentCourses, $title, $url) {		
+		// Set our cache-control headers since we will be flushing content soon.
+		$this->setCacheControlHeaders();
+		$this->getResponse()->sendHeaders();
+		
+		// Close the session before we send headers and content.
+		session_write_close();
+		
+		
 		header('Content-Type: text/xml');
 		print '<?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
@@ -404,8 +415,6 @@ class CoursesController
 		<docs>http://blogs.law.harvard.edu/tech/rss</docs>
 		
 ';
-		// Close the session before we send headers and content.
-		session_write_close();
 		
 		while (ob_get_level()) {
 			ob_end_flush();
