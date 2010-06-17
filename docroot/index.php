@@ -2,7 +2,6 @@
 $GLOBALS['start_time'] = microtime();
 require_once(dirname(__FILE__) . '/../application/autoload.php');
 
-define('DISPLAY_ERROR_BACKTRACE', true);
 set_exception_handler(array('harmoni_ErrorHandler', 'handleException'));
 try {
 	// Start an output buffer so that we can prevent sending of Set-Cookie headers
@@ -20,8 +19,22 @@ try {
 	Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/resources/Catalog/Action/Helper', 'Catalog_Action_Helper');
 	Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/resources/Auth/Action/Helper', 'Auth_Action_Helper');
 	
+	// Define application environment
+	defined('APPLICATION_ENV')
+	    || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
 	$registry = Zend_Registry::getInstance();
-	$registry->config = new Zend_Config_Ini(BASE_PATH.'/frontend_config.ini', 'development');
+	$registry->config = new Zend_Config_Ini(BASE_PATH.'/frontend_config.ini', APPLICATION_ENV);
+	
+	foreach ($registry->config->phpSettings as $key => $value) {
+		$key = empty($prefix) ? $key : $prefix . $key;
+		if (is_scalar($value)) {
+			ini_set($key, $value);
+		} elseif (is_array($value)) {
+			throw new Exception("I don't know how to handle array settings. See Zend_Application::setPhpSettings().");
+		}
+	}
+
+	
 	Zend_Layout::startMvc();
 	Zend_Controller_Front::run(APPLICATION_PATH.'/controllers');
 
