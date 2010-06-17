@@ -347,12 +347,9 @@ class CoursesController
 				
 				$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 			} catch (osid_InvalidArgumentException $e) {
-				header('HTTP/1.1 400 Bad Request');
-				print "The catalog id specified was not of the correct format.";
-				exit;
+				throw new osid_InvalidArgumentException("The catalog id specified was not of the correct format.");
 			} catch (osid_NotFoundException $e) {
-				header('HTTP/1.1 404 Not Found');
-				print "The catalog id specified was not found.";
+				throw new osid_NotFoundException("The catalog id specified was not found.");
 				exit;
 			}
 		}
@@ -360,9 +357,11 @@ class CoursesController
 		$instructor = trim($this->_getParam('instructor'));
 		
 		if (!$instructor || !strlen($instructor)) {
-			header('HTTP/1.1 400 Bad Request');
-			print "An instructor must be specified.";
-			exit;
+			// Make sure that this error response is cacheable.
+			$this->setCacheControlHeaders();
+			$this->getResponse()->sendHeaders();
+			
+			throw new InvalidArgumentException("An instructor must be specified.");
 		}
 		
 		$instructorId = $this->_helper->osidId->fromString('resource/person/'.$instructor);
@@ -377,7 +376,15 @@ class CoursesController
 		$courses = $searchSession->getCoursesByQuery($query);
 		
 		$resourceLookup = $this->_helper->osid->getCourseManager()->getResourceManager()->getResourceLookupSession();
-		$instructorResource = $resourceLookup->getResource($instructorId);
+		try {
+			$instructorResource = $resourceLookup->getResource($instructorId);
+		} catch (osid_NotFoundException $e) {
+			// Make sure that this error response is cacheable.
+			$this->setCacheControlHeaders();
+			$this->getResponse()->sendHeaders();
+			
+			throw $e;
+		}
 		
 		$recentCourses = new Helper_RecentCourses_Instructor($courses, $offeringSearchSession, $instructorId);
 		$this->outputCourseFeed($recentCourses, 'Courses taught by '.$instructorResource->getDisplayName(), $searchUrl);

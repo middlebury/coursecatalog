@@ -51,6 +51,8 @@ try {
 	ErrorPrinter::handleException($e, 403);
 } catch (UnknownIdException $e) {
 	ErrorPrinter::handleException($e, 404);
+} catch (osid_NotFoundException $e) {
+	ErrorPrinter::handleException($e, 404);
 }
 // Default 
 catch (Exception $e) {
