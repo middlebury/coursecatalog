@@ -19,6 +19,7 @@ class Auth_Action_Helper_Auth
 {
 
 	private $authHelper = null;
+	private $initialized = false;
 	
 	/**
 	 * Initialize this helper.
@@ -42,6 +43,7 @@ class Auth_Action_Helper_Auth
 				$this->authHelper = null;
 				throw new Exception("Auth helper for auth-type '$authType' has class '$class' which does not implement Auth_Action_Helper_AuthInterface.");
 			}
+			$this->initialized = true;
 		} catch (Zend_Controller_Action_Exception $e) {
 			throw new Exception("Can not use authentication type '".$authType."'. ".$e->getMessage());
 		}
@@ -56,6 +58,9 @@ class Auth_Action_Helper_Auth
 	 * @since 6/14/10
 	 */
 	public function getHelper () {
+		if (!$this->initialized)
+			$this->init();
+		
 		if (is_null($this->authHelper))
 			throw new Exception("No authentication helper is available. Maybe one wasn't configured.", 450);
 		
