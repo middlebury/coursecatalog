@@ -520,6 +520,9 @@ class OfferingsController
  			}
  		}
  		
+ 		// Bookmarked Courses and Schedules
+ 		$this->addBookmarkInfo($this->view->offering->getCourse()); 		
+ 		
  		$this->render();
  		
  		$this->render('offerings', null, true);
@@ -527,6 +530,20 @@ class OfferingsController
  		$this->view->menuIsOfferings = true;
 	}
 	
+	/**
+	 * Add Bookmark data to our view
+	 * 
+	 * @param object osid_course_Course $course
+	 * @return void
+	 * @access private
+	 * @since 7/2/10
+	 */
+	private function addBookmarkInfo (osid_course_Course $course) {
+ 		$this->view->bookmarks_IsCourseSaved = false;
+ 		$this->view->bookmarks_CourseId = $course->getId();
+ 		$this->view->bookmarks_CourseName = $course->getDisplayName();
+	}
+
 }
 
 ?>

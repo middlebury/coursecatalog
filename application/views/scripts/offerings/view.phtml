@@ -1,4 +1,7 @@
 <?php
+
+print $this->render('schedules/bookmark_control.phtml');
+
 // print "\n\t<div>".$this->escape($this->offering->getDisplayName())."</div>";
 print "\n\t<h2>".nl2br($this->escape($this->offering->getTitle()))."</h2>";
 if ($this->offering->getDescription())

@@ -1,0 +1,26 @@
+<?php if ($this->isAuthenticationEnabled()) { ?>
+
+<div class='schedule_controls'>
+
+<?php
+if ($this->isAuthenticated()) {
+	/*********************************************************
+	 * Bookmark
+	 *********************************************************/
+// 	print "\n\t\t<h4>Bookmark this course</h4>";
+	print "\n\t<div class='save_course'>";
+	if ($this->bookmarks_IsCourseSaved) {
+		print "&#9733; ".$this->escape($this->bookmarks_CourseName)." saved";
+	} else {
+		print "&#9734; Save ".$this->escape($this->bookmarks_CourseName);
+	}
+	print "\n\t</div>";
+} else {
+	print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'login')).'">Log-in to save courses and build schedules</a>';
+}
+
+?>
+
+</div>
+
+<?php } ?>

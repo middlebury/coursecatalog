@@ -158,3 +158,16 @@ label {
 div.login_info {
 	padding-top: 40px;
 }
+
+/*********************************************************
+ * Schedule styles
+ *********************************************************/
+div.schedule_controls {
+	float: right;
+	width: 188px;
+	border: 1px solid;
+	padding: 5px;
+	margin-bottom: 5px;
+	margin-left: 5px;
+	margin-top: -40px;
+}
