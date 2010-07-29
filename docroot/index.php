@@ -33,7 +33,8 @@ try {
 			throw new Exception("I don't know how to handle array settings. See Zend_Application::setPhpSettings().");
 		}
 	}
-
+	
+	$registry->db = Zend_Db::factory($registry->config->resources->db);
 	
 	Zend_Layout::startMvc();
 	Zend_Controller_Front::run(APPLICATION_PATH.'/controllers');
