@@ -1,0 +1,40 @@
+<?php
+$this->headScript()->appendScript("
+	$(function() { // on DOM ready 
+		
+		$('#schedules_term_choice select').change(function () {
+			window.location = $(this).val();
+		});
+		
+	});
+");
+?>
+
+<h1>Schedule Planner</h1>
+
+<table>
+	<thead>
+		<tr>
+			<td colspan='2'>
+				<form action='#' method='get' id='schedules_term_choice'>
+					<?php print $this->render('schedules/catalog_select.phtml'); ?>
+					<?php print $this->render('schedules/term_select.phtml'); ?>
+				</form>
+			</td>
+		</tr>
+		<tr>
+			<th>Bookmarked Courses</th>
+			<th>Schedules</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				<?php print $this->render('schedules/bookmarks.phtml'); ?>
+			</td>
+			<td>
+				<?php print $this->render('schedules/schedules.phtml'); ?>
+			</td>
+		</tr>
+	</tbody>
+</table>
