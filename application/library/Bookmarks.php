@@ -28,12 +28,13 @@ class Bookmarks {
 	 * @access public
 	 * @since 7/29/10
 	 */
-	public function __construct (Zend_Db_Adapter_Abstract $db, $userId) {
+	public function __construct (Zend_Db_Adapter_Abstract $db, $userId, osid_course_CourseManager $courseManager) {
 		if (!strlen($userId))
 			throw new InvalidArgumentException('No $userId passed.');
 		
 		$this->db = $db;
 		$this->userId = $userId;
+		$this->courseManager = $courseManager;
 	}
 	
 	private $db;
@@ -101,6 +102,61 @@ class Bookmarks {
 		));
 		$num = intval($stmt->fetchColumn());
 		return ($num > 0);
+	}
+	
+	/**
+	 * Answer an array of all bookmarked courseIds
+	 * 
+	 * @return osid_id_IdList
+	 * @access public
+	 * @since 7/30/10
+	 */
+	public function getAllBookmarkedCourseIds () {
+		$stmt = $this->db->prepare("SELECT * FROM user_savedcourses WHERE user_id = ?");
+		$stmt->execute(array(
+			$this->userId
+		));
+		$ids = array();
+		foreach ($stmt->fetchAll() as $row) {
+			$ids[] = new phpkit_id_Id($row['course_id_authority'], $row['course_id_namespace'], $row['course_id_keyword']);
+		}
+		return new phpkit_id_ArrayIdList($ids);
+	}
+	
+	/**
+	 * Answer an array of all bookmarked courses
+	 * 
+	 * @return osid_course_CourseList
+	 * @access public
+	 * @since 7/30/10
+	 */
+	public function getAllBookmarkedCourses () {
+		$courseLookupSession = $this->courseManager->getCourseLookupSession();
+		$courseLookupSession->useFederatedView();
+		return $courseLookupSession->getCoursesByIds($this->getAllBookmarkedCourseIds());
+	}
+	
+	/**
+	 * Answer an array of all bookmarked courses that match a given catalog and term.
+	 * 
+	 * @param osid_id_Id $catalogId
+	 * @param osid_id_Id $termId
+	 * @return osid_course_CourseList
+	 * @access public
+	 * @since 7/30/10
+	 */
+	public function getBookmarkedCoursesInCatalogForTerm (osid_id_Id $catalogId, osid_id_Id $termId) {
+		$searchSession = $this->courseManager->getCourseSearchSessionForCatalog($catalogId);
+		
+		$search = $searchSession->getCourseSearch();
+		$search->searchAmongCourses($this->getAllBookmarkedCourseIds());
+		
+		$query = $searchSession->getCourseQuery();
+		$record = $query->getCourseQueryRecord(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:term'));
+		$record->matchTermId($termId, true);
+		
+		$results = $searchSession->getCoursesBySearch($query, $search);
+		return $results->getCourses();
 	}
 }
 

@@ -19,7 +19,8 @@ class banner_course_Course_Search_Query
     implements osid_course_CourseQuery, 
     	middlebury_course_Course_Search_TopicQueryRecord,
     	middlebury_course_Course_Search_InstructorsQueryRecord,
-    	middlebury_course_Course_Search_LocationQueryRecord
+    	middlebury_course_Course_Search_LocationQueryRecord,
+    	middlebury_course_Course_Search_TermQueryRecord
 {
 	
 	/**
@@ -35,6 +36,7 @@ class banner_course_Course_Search_Query
 		
 		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:topic'));
 		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors'));
+		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:term'));
 		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:location'));
 		
 		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
@@ -696,6 +698,51 @@ class banner_course_Course_Search_Query
      *              supportsInstructorQuery() </code> is <code> true. </code> 
      */
     public function getInstructorQuery() {
+    	throw new osid_UnimplementedException();
+    }
+    
+/*********************************************************
+ * Methods from middlebury_course_Course_Search_TermQueryRecord
+ *********************************************************/
+
+	/**
+     *  Sets the term <code> Id </code> for this query to match courses 
+     *  that have a related term. 
+     *
+     *  @param object osid_id_Id $termId an term <code> Id </code> 
+     *  @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     *  @throws osid_NullArgumentException <code> termId </code> is <code> 
+     *          null </code> 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function matchTermId(osid_id_Id $termId, $match) {
+		$this->addClause('term_id', 'SSBSECT_TERM_CODE = ?', array($this->session->getDatabaseIdString($termId, 'term/')), $match);
+    	$this->addTableJoin('LEFT JOIN SSBSECT ON (SCBCRSE_SUBJ_CODE = SSBSECT_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SSBSECT_CRSE_NUMB)');
+    }
+
+    /**
+     *  Tests if an <code> TermQuery </code> is available. 
+     *
+     *  @return boolean <code> true </code> if a term query interface is 
+     *          available, <code> false </code> otherwise 
+     *  @compliance mandatory This method must be implemented. 
+     */
+    public function supportsTermQuery() {
+    	return false;
+    }
+
+    /**
+     *  Gets the query interface for an term. Multiple retrievals produce a 
+     *  nested <code> OR </code> term. 
+     *
+     *  @return object osid_resource_ResourceQuery the term query 
+     *  @throws osid_UnimplementedException <code> supportsTermQuery() 
+     *          </code> is <code> false </code> 
+     *  @compliance optional This method must be implemented if <code> 
+     *              supportsTermQuery() </code> is <code> true. </code> 
+     */
+    public function getTermQuery() {
     	throw new osid_UnimplementedException();
     }
     

@@ -20,7 +20,7 @@ class SchedulesController
 		$catalogLookupSession = $this->_helper->osid->getCourseManager()->getCourseCatalogLookupSession();
 		$this->view->catalogs = $catalogLookupSession->getCourseCatalogs();
 		
-		// Term
+		// Load all terms for our selection control
 		$termLookupSession->useFederatedCourseCatalogView();
 		$terms = $termLookupSession->getTerms();
 		$termCatalogSession = $this->_helper->osid->getCourseManager()->getTermCatalogSession();
@@ -37,6 +37,7 @@ class SchedulesController
 				'id'	=> $term->getId(),
 			);
 		}
+		// Set the selected term
 		if ($this->_getParam('term') == 'ANY') {
 			// Don't set a term
 		} else if (!$this->_getParam('term') || $this->_getParam('term') == 'CURRENT') {
@@ -46,6 +47,15 @@ class SchedulesController
 		}		
 		
 		
+		// Load the bookmarks for the selected catalog/terms
+		if (!$this->_helper->auth->getHelper()->isAuthenticated())
+			throw new Exception('You must be logged in to perform this action.');
 		
+		$bookmarks = new Bookmarks(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
+		if (isset($this->view->selectedTermId)) {
+			$this->view->bookmarked_courses = $bookmarks->getBookmarkedCoursesInCatalogForTerm($catalogId, $this->view->selectedTermId);
+		} else {
+			$this->view->bookmarked_courses = $bookmarks->getAllBookmarkedCourses();
+		}
     }
 }

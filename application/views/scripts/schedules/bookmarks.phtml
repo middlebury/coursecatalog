@@ -1,0 +1,11 @@
+<ul id="bookmarked_courses">
+<?php 
+	while ($this->bookmarked_courses->hasNext()) {
+		$course = $this->bookmarked_courses->getNextCourse();
+		print "\n\t<li>";
+		print $course->getDisplayName();
+		print "\n\t</li>";
+	}
+?>
+
+</ul>
