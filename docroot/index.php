@@ -18,6 +18,7 @@ try {
 	Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/controllers/helper', 'Helper');
 	Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/resources/Catalog/Action/Helper', 'Catalog_Action_Helper');
 	Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/resources/Auth/Action/Helper', 'Auth_Action_Helper');
+	Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/resources/General/Action/Helper', 'General_Action_Helper');
 	
 	// Define application environment
 	defined('APPLICATION_ENV')

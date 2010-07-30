@@ -21,6 +21,10 @@ class BookmarksController extends Zend_Controller_Action
 			throw new Exception('You must be logged in to perform this action.');
 		$this->bookmarks = new Bookmarks(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId());
 		
+		// Verify our CSRF key
+ 		if (!$this->_getParam('csrf_key') == $this->_helper->csrfKey())
+ 			throw new PermissionDeniedException('Invalid CSRF Key. Please log in again.');
+			
 		
 		$this->_helper->layout->disableLayout();
 		$this->_helper->viewRenderer->setNoRender(true);
