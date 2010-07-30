@@ -82,6 +82,26 @@ class Bookmarks {
 			$courseId->getIdentifierNamespace()
 		));
 	}
+	
+	/**
+	 * Answer true if the course Id passed is bookmarked
+	 * 
+	 * @param osid_id_Id $courseId
+	 * @return boolean
+	 * @access public
+	 * @since 7/29/10
+	 */
+	public function isBookmarked (osid_id_Id $courseId) {
+		$stmt = $this->db->prepare("SELECT COUNT(*) as is_bookmarked FROM user_savedcourses WHERE user_id = ? AND course_id_keyword = ? AND course_id_authority = ? AND course_id_namespace = ?");
+		$stmt->execute(array(
+			$this->userId,
+			$courseId->getIdentifier(),
+			$courseId->getAuthority(),
+			$courseId->getIdentifierNamespace()
+		));
+		$num = intval($stmt->fetchColumn());
+		return ($num > 0);
+	}
 }
 
 ?>

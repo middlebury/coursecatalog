@@ -9,15 +9,44 @@ if ($this->isAuthenticated()) {
 	 *********************************************************/
 // 	print "\n\t\t<h4>Bookmark this course</h4>";
 	print "\n\t<div class='save_course'>";
-	if ($this->bookmarks_IsCourseSaved) {
-		print "&#9733; ".$this->escape($this->bookmarks_CourseName)." saved";
-	} else {
-		print "&#9734; Save ".$this->escape($this->bookmarks_CourseName);
-	}
+	
+	print "\n\t\t<a href='".$this->url(array('controller' => 'bookmarks', 'action' => 'remove', 'course' => $this->getStringFromOsidId($this->bookmarks_CourseId)))."'";
+	if (!$this->bookmarks_IsCourseSaved)
+		print "style='display: none;'";
+	print " title='click to save'>";
+	print "&#9733; ".$this->escape($this->bookmarks_CourseName)." saved";
+	print "</a>";
+	
+	print "\n\t\t<a href='".$this->url(array('controller' => 'bookmarks', 'action' => 'add', 'course' => $this->getStringFromOsidId($this->bookmarks_CourseId)))."'";
+	if ($this->bookmarks_IsCourseSaved)
+		print "style='display: none;'";
+	print " title='click to forget'>";
+	print "&#9734; Save ".$this->escape($this->bookmarks_CourseName);
+	print "</a>";
+	
 	print "\n\t</div>";
 } else {
 	print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'login')).'">Log-in to save courses and build schedules</a>';
 }
+
+$this->headScript()->appendScript("
+	$(function() { // on DOM ready 
+		
+		$('.save_course a').click(function () {
+			var clickedAnchor = $(this);
+			$.ajax({
+				url: clickedAnchor.attr('href'), 
+				success: function () {
+					clickedAnchor.css('display', 'none');
+					clickedAnchor.siblings().css('display', 'inline');
+				}
+			
+			});
+			return false;
+		});
+		
+	});
+");
 
 ?>
 

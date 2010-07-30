@@ -46,6 +46,11 @@ class OfferingsController
 		$this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
 
 		$this->campusType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/campus");
+		
+		// Initialize our Bookmarks Model
+		if (!$this->_helper->auth->getHelper()->isAuthenticated())
+			throw new Exception('You must be logged in to perform this action.');
+		$this->bookmarks = new Bookmarks(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId());
 	}
 	
 	/**
@@ -539,7 +544,7 @@ class OfferingsController
 	 * @since 7/2/10
 	 */
 	private function addBookmarkInfo (osid_course_Course $course) {
- 		$this->view->bookmarks_IsCourseSaved = false;
+ 		$this->view->bookmarks_IsCourseSaved = $this->bookmarks->isBookmarked($course->getId());
  		$this->view->bookmarks_CourseId = $course->getId();
  		$this->view->bookmarks_CourseName = $course->getDisplayName();
 	}
