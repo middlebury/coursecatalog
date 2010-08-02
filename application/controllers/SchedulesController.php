@@ -4,6 +4,20 @@
 class SchedulesController 
 	extends AbstractCatalogController
 {
+	
+	/**
+	 * Make decisions about whether or not the requested action should be dispatched
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 8/2/10
+	 */
+	public function preDispatch () {
+		if (!$this->_helper->auth->getHelper()->isAuthenticated()) {
+			$this->_forward('login', 'auth');
+		}		
+	}
+	
     public function indexAction()
     {
     	// Set up data for the menu rendering
@@ -48,9 +62,6 @@ class SchedulesController
 		
 		
 		// Load the bookmarks for the selected catalog/terms
-		if (!$this->_helper->auth->getHelper()->isAuthenticated())
-			throw new Exception('You must be logged in to perform this action.');
-		
 		$bookmarks = new Bookmarks(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
 		if (isset($this->view->selectedTermId)) {
 			$this->view->bookmarked_courses = $bookmarks->getBookmarkedCoursesInCatalogForTerm($catalogId, $this->view->selectedTermId);
