@@ -98,6 +98,39 @@ class SchedulesController
     	
     	$schedule = $schedules->createSchedule($this->_helper->osidId->fromString($termIdString));
     	
+    	
+    	// Forward us back to the listing.
+    	$url = $this->view->url(array('action' => 'index', 'controller' => 'schedules', 'catalog' => $catalogIdString, 'term' => $termIdString));
+    	$this->_redirect($url, array('exit' => true, 'prependBase' => false));
+    }
+    
+    /**
+     * Update a schedule
+     * 
+     * @return void
+     * @access public
+     * @since 8/2/10
+     */
+    public function updateAction () {
+    	if (!$this->_request->isPost())
+    		throw new PermissionDeniedException("Update Schedules must be submitted as a POST request.");
+    	$this->_request->setParamSources(array('_POST'));
+    	
+    	// Verify our CSRF key
+ 		if (!$this->_getParam('csrf_key') == $this->_helper->csrfKey())
+ 			throw new PermissionDeniedException('Invalid CSRF Key. Please log in again.');
+    	
+    	$catalogIdString = $this->_getParam('catalog');
+    	$termIdString = $this->_getParam('term');
+    	$scheduleId = $this->_getParam('schedule_id');
+    	
+    	
+    	$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
+    	
+    	$schedule = $schedules->getSchedule($scheduleId);
+    	$schedule->setName($this->_getParam('name'));
+    	
+    	// Forward us back to the listing.
     	$url = $this->view->url(array('action' => 'index', 'controller' => 'schedules', 'catalog' => $catalogIdString, 'term' => $termIdString));
     	$this->_redirect($url, array('exit' => true, 'prependBase' => false));
     }

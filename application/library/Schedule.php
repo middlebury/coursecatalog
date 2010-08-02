@@ -63,6 +63,28 @@ class Schedule {
 	}
 	
 	/**
+	 * Update our display name
+	 * 
+	 * @param string $name
+	 * @return void
+	 * @access public
+	 * @since 8/2/10
+	 */
+	public function setName ($name) {
+		$name = trim(preg_replace('/\W/', ' ', $name));
+		if (!strlen($name))
+			throw new InvalidArgumentException('Name is invalid.');
+		
+		$stmt = $this->db->prepare("UPDATE user_schedules SET name = ? WHERE id = ? AND user_id = ?;");
+		$stmt->execute(array(
+			$name,
+			$this->id,
+			$this->userId
+		));
+		$this->name = $name;
+	}
+	
+	/**
 	 * Answer the id of the Schedule
 	 * 
 	 * @return string
