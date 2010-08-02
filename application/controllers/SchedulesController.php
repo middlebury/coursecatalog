@@ -75,13 +75,13 @@ class SchedulesController
     }
     
     /**
-     * Create a new schedule
+     * Verify change actions
      * 
      * @return void
-     * @access public
+     * @access protected
      * @since 8/2/10
      */
-    public function createAction () {
+    protected function verifyChangeRequest () {
     	if (!$this->_request->isPost())
     		throw new PermissionDeniedException("Create Schedules must be submitted as a POST request.");
     	$this->_request->setParamSources(array('_POST'));
@@ -89,19 +89,40 @@ class SchedulesController
     	// Verify our CSRF key
  		if (!$this->_getParam('csrf_key') == $this->_helper->csrfKey())
  			throw new PermissionDeniedException('Invalid CSRF Key. Please log in again.');
-    	
+    }
+    
+    /**
+     * Return to the index action
+     * 
+     * @return void
+     * @access protected
+     * @since 8/2/10
+     */
+    protected function returnToIndex () {
     	$catalogIdString = $this->_getParam('catalog');
     	$termIdString = $this->_getParam('term');
-    	
-    	
-    	$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
-    	
-    	$schedule = $schedules->createSchedule($this->_helper->osidId->fromString($termIdString));
-    	
     	
     	// Forward us back to the listing.
     	$url = $this->view->url(array('action' => 'index', 'controller' => 'schedules', 'catalog' => $catalogIdString, 'term' => $termIdString));
     	$this->_redirect($url, array('exit' => true, 'prependBase' => false));
+    }
+    
+    /**
+     * Create a new schedule
+     * 
+     * @return void
+     * @access public
+     * @since 8/2/10
+     */
+    public function createAction () {
+		$this->verifyChangeRequest();    	
+    	
+    	$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
+    	
+    	$schedule = $schedules->createSchedule($this->_helper->osidId->fromString($this->_getParam('term')));
+    	
+    	
+    	$this->returnToIndex();
     }
     
     /**
@@ -112,26 +133,30 @@ class SchedulesController
      * @since 8/2/10
      */
     public function updateAction () {
-    	if (!$this->_request->isPost())
-    		throw new PermissionDeniedException("Update Schedules must be submitted as a POST request.");
-    	$this->_request->setParamSources(array('_POST'));
-    	
-    	// Verify our CSRF key
- 		if (!$this->_getParam('csrf_key') == $this->_helper->csrfKey())
- 			throw new PermissionDeniedException('Invalid CSRF Key. Please log in again.');
-    	
-    	$catalogIdString = $this->_getParam('catalog');
-    	$termIdString = $this->_getParam('term');
-    	$scheduleId = $this->_getParam('schedule_id');
-    	
+		$this->verifyChangeRequest();    	
     	
     	$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
     	
-    	$schedule = $schedules->getSchedule($scheduleId);
+    	$schedule = $schedules->getSchedule($this->_getParam('schedule_id'));
     	$schedule->setName($this->_getParam('name'));
     	
-    	// Forward us back to the listing.
-    	$url = $this->view->url(array('action' => 'index', 'controller' => 'schedules', 'catalog' => $catalogIdString, 'term' => $termIdString));
-    	$this->_redirect($url, array('exit' => true, 'prependBase' => false));
+    	$this->returnToIndex();
+    }
+    
+    /**
+     * Delete a schedule
+     * 
+     * @return void
+     * @access public
+     * @since 8/2/10
+     */
+    public function deleteAction () {
+		$this->verifyChangeRequest();
+    	
+    	$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
+    	
+    	$schedules->deleteSchedule($this->_getParam('schedule_id'));
+    	
+    	$this->returnToIndex();
     }
 }

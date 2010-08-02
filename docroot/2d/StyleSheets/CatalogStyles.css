@@ -185,3 +185,7 @@ table.schedule_planner {
 table.schedule_planner td {
 	vertical-align: top;
 }
+
+form.delete_schedule {
+	float: right;
+}

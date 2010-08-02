@@ -1,7 +1,24 @@
 <?php 
 
+$this->headScript()->appendScript("
+	$(function() { // on DOM ready 
+		
+		$('form.delete_schedule').submit(function () {
+			return confirm('Are you sure you want to delete this schedule?');	
+		});
+		
+	});
+");
+
 foreach ($this->schedules as $schedule) {
 	print "\n<div class='schedule'>";
+	
+	print "\n\t<form class='delete_schedule' action='".$this->url(array('action' => 'delete'))."' method='post'>";
+	print "\n\t\t<input type='hidden' name='schedule_id' value='".$this->escape($schedule->getId())."'/>";
+	print "\n\t\t<input type='hidden' name='csrf_key' value='".$this->csrfKey()."' />";
+	print "\n\t\t<input type='submit' value='Delete'/>";
+	print "\n\t</form>";
+	
 	print "\n\t<form action='".$this->url(array('action' => 'update'))."' method='post'>";
 	print "\n\t\t<input type='text' name='name' value=\"".$this->escape($schedule->getName())."\"/>";
 	print "\n\t\t<input type='hidden' name='schedule_id' value='".$this->escape($schedule->getId())."'/>";
