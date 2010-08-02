@@ -171,3 +171,17 @@ div.schedule_controls {
 	margin-left: 5px;
 	margin-top: -40px;
 }
+
+div.schedule {
+	margin: 5px;
+	padding: 5px;
+	border: 1px solid;
+}
+
+table.schedule_planner {
+	width: 100%;
+}
+
+table.schedule_planner td {
+	vertical-align: top;
+}

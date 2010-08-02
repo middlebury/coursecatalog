@@ -68,5 +68,37 @@ class SchedulesController
 		} else {
 			$this->view->bookmarked_courses = $bookmarks->getAllBookmarkedCourses();
 		}
+		
+		// Load the Schedules for the selected catalog/terms
+		$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
+		$this->view->schedules = $schedules->getSchedulesByTerm($this->view->selectedTermId);
+    }
+    
+    /**
+     * Create a new schedule
+     * 
+     * @return void
+     * @access public
+     * @since 8/2/10
+     */
+    public function createAction () {
+    	if (!$this->_request->isPost())
+    		throw new PermissionDeniedException("Create Schedules must be submitted as a POST request.");
+    	$this->_request->setParamSources(array('_POST'));
+    	
+    	// Verify our CSRF key
+ 		if (!$this->_getParam('csrf_key') == $this->_helper->csrfKey())
+ 			throw new PermissionDeniedException('Invalid CSRF Key. Please log in again.');
+    	
+    	$catalogIdString = $this->_getParam('catalog');
+    	$termIdString = $this->_getParam('term');
+    	
+    	
+    	$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
+    	
+    	$schedule = $schedules->createSchedule($this->_helper->osidId->fromString($termIdString));
+    	
+    	$url = $this->view->url(array('action' => 'index', 'controller' => 'schedules', 'catalog' => $catalogIdString, 'term' => $termIdString));
+    	$this->_redirect($url, array('exit' => true, 'prependBase' => false));
     }
 }

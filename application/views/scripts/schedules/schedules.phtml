@@ -1,0 +1,31 @@
+<?php 
+
+foreach ($this->schedules as $schedule) {
+	print "\n<div class='schedule'>";
+	print "\n\t<form action='".$this->url(array('action' => 'update'))."' method='post'>";
+	print "\n\t\t<input type='text' name='name' value=\"".$this->escape($schedule->getName())."\"/>";
+	print "\n\t\t<input type='hidden' name='schedule_id' value='".$this->escape($schedule->getId())."'/>";
+	print "\n\t\t<input type='hidden' name='csrf_key' value='".$this->csrfKey()."' />";
+	print "\n\t\t<input type='submit' value='Save Name'/>";
+	print "\n\t</form>";
+	
+	print "\n\t\t<ul>";
+	foreach ($schedule->getOfferings() as $offering) {
+		print "\n\t\t\t<li>";
+		print $offering->getDisplayName();
+		print "\n\t\t\t</li>";
+	}
+	print "\n\t\t</ul>";
+	
+	print "\n</div>";
+}
+
+?>
+
+<form id='schedule_create' action="<?php print $this->url(array('action' => 'create')); ?>" method="post">
+	<input type="submit" value="Create new schedule"/> for 
+	<?php print $this->render('schedules/terms.phtml'); ?>
+	
+	<input type="hidden" name="catalog" value="<?php print $this->escape($this->getStringFromOsidId($this->menuCatalogSelectedId)); ?>" />
+	<input type="hidden" name="csrf_key" value="<?php print $this->csrfKey(); ?>" />
+</form>
