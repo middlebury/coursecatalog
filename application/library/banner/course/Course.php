@@ -531,8 +531,12 @@ ORDER BY
 			$this->session->getTermCodeFromTermId($termId),
 		));
 		$links = array();
-		foreach($results->fetchAll() as $row) {
-			$links[] = $this->getOsidIdFromString($row['SSBSECT_LINK_IDENT'], 'link/');
+		foreach($stmt->fetchAll() as $row) {
+			if (is_null($row['SSBSECT_LINK_IDENT']))
+				$links[] = $this->session->getOsidIdFromString('NULL', 'link/');
+			else
+				$links[] = $this->session->getOsidIdFromString($row['SSBSECT_LINK_IDENT'], 'link/');
+			
 		}
 		return new phpkit_id_ArrayIdList($links);
 	}

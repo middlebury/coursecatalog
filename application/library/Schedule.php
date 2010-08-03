@@ -96,6 +96,50 @@ class Schedule {
 	}
 	
 	/**
+	 * Add an offering to a schedule.
+	 * 
+	 * @param osid_id_Id $offeringId
+	 * @return void
+	 * @access public
+	 * @since 8/3/10
+	 */
+	public function add (osid_id_Id $offeringId) {
+		$stmt = $this->db->prepare("INSERT INTO user_schedule_offerings (schedule_id, offering_id_keyword, offering_id_authority, offering_id_namespace) VALUES (?, ?, ?, ?);");
+		$name = 'Untitled Schedule';
+		try {
+			$stmt->execute(array(
+				$this->getId(),
+				$offeringId->getIdentifier(),
+				$offeringId->getAuthority(),
+				$offeringId->getIdentifierNamespace(),
+			));
+		} catch (Zend_Db_Statement_Exception $e) {
+			if ($e->getCode() == 23000)
+				throw new Exception('Offering already added.', 23000);
+			else
+				throw $e;
+		}
+	}
+	
+	/**
+	 * Remove an offering from the schedule
+	 * 
+	 * @param osid_id_Id $offeringId
+	 * @return void
+	 * @access public
+	 * @since 8/3/10
+	 */
+	public function remove (osid_id_Id $offeringId) {
+		$stmt = $this->db->prepare("DELETE FROM user_schedule_offerings WHERE schedule_id = ? AND offering_id_keyword = ? AND offering_id_authority = ? AND offering_id_namespace = ? LIMIT 1;");
+		$stmt->execute(array(
+			$this->getId(),
+			$offeringId->getIdentifier(),
+			$offeringId->getAuthority(),
+			$offeringId->getIdentifierNamespace(),
+		));
+	}
+	
+	/**
 	 * Answer all of the offerings added to this schedule.
 	 * 
 	 * @return array of osid_course_CourseOffering objects

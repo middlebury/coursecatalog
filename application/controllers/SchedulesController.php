@@ -160,6 +160,105 @@ class SchedulesController
     	$this->returnToIndex();
     }
     
+     /**
+     * Add sections to a schedule
+     * 
+     * @return void
+     * @access public
+     * @since 8/2/10
+     */
+    public function addAction () {
+		$this->verifyChangeRequest();    	
+    	
+    	$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
+    	
+    	$schedule = $schedules->getSchedule($this->_getParam('schedule_id'));
+    	
+    	// Get our ids from the POST
+    	$offeringIds = array();
+    	foreach ($_POST as $key => $val) {
+    		if (preg_match('/^section_group_[0-9]+$/', $key)) {
+    			$offeringIds[] = $this->_helper->osidId->fromString($val);
+	    	}
+    	}
+    	if (!count($offeringIds))
+    		throw new InvalidArgumentException('No Sections selected.');
+    	
+    	/*********************************************************
+    	 * Validate the set of offerings chosen
+    	 *********************************************************/
+    	$lookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
+    	$lookupSession->useFederatedView();
+		$linkType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:link');
+		
+		$offering = $lookupSession->getCourseOffering($offeringIds[0]);
+    	$course = $offering->getCourse();
+    	$termId = $offering->getTermId();
+    	
+    	$requiredLinkIds = $course->getRequiredLinkIdsForTerm($termId);
+    	$requiredLinkInfo = array();
+    	while ($requiredLinkIds->hasNext()) {
+    		$requiredLinkInfo[] = array(
+    			'id' => $requiredLinkIds->getNextId(),
+    			'found' => false,
+    		);
+    	}
+    	
+    	foreach ($offeringIds as $id) {
+    		$offering = $lookupSession->getCourseOffering($id);
+    		
+    		// Check that we are adding a single section from each link-group.
+    		$linkRecord = $offering->getCourseOfferingRecord($linkType);
+    		$linkId = $linkRecord->getLinkId();
+    		$checked = false;
+    		foreach ($requiredLinkInfo as $key => $info) {
+    			if ($info['id']->isEqual($linkId)) {
+    				$checked = true;
+    				if ($info['found'])
+    					throw new Exception('A second section from the same link-group is selected.');
+    				else
+    					$requiredLinkInfo[$key]['found'] = true;
+    			}
+    		}
+    		if (!$checked)
+    			throw new Exception("The link-group id of the offering '".$linkId->getIdentifier()."' wasn't in the required list.");
+    		
+    		// Also check that the sections are from the same course and term.
+    		if (!$offering->getTermId()->isEqual($termId))
+    			throw new Exception("Trying to add offerings from multiple terms.");
+    		if (!$offering->getCourseId()->isEqual($course->getId()))
+    			throw new Exception("Trying to add offerings from multiple courses.");
+   		}
+   		// Check that we are adding a section for each link-group.
+   		foreach ($requiredLinkInfo as $info) {
+   			if (!$info['found'])
+   				throw new Exception("No offering was added for the link-group ".$info['id']->getIdentifier());
+   		}
+   
+    	/*********************************************************
+    	 * Remove any offerings for the course already added.
+    	 *********************************************************/
+    	foreach ($schedule->getOfferings() as $oldOffering) {
+    		if ($oldOffering->getCourseId()->isEqual($course->getId())) {
+    			$schedule->remove($oldOffering->getId());
+    		}
+    	}
+    	
+    	/*********************************************************
+    	 * Add the offerings to the Schedule
+    	 *********************************************************/
+    	foreach ($offeringIds as $offeringId) {
+    		try {
+				$schedule->add($offeringId);
+			} catch (Exception $e) {
+				if ($e->getCode() != 23000)
+					throw $e;
+			}
+		}
+    	
+    	$this->returnToIndex();
+    }
+    
     /**
      * Answer a JSON list of sections information for a course.
      * 

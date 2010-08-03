@@ -24,6 +24,7 @@
 				</ul>
 				
 				<input type='hidden' name='csrf_key' value='<?php print $this->csrfKey(); ?>' />
+				<input type='hidden' name='schedule_id' value='' />
 				<input type="submit" value="Add Sections"/>
 			</form>
 			<input type='hidden' name='course_id' value="<?php print $this->getStringFromOsidId($course->getId()); ?>" />
@@ -73,6 +74,8 @@
 		var lookupUrl = dialog.children("input[name=section_lookup_url]").val();
 		var courseId = dialog.children("input[name=course_id]").val();
 		
+		dialog.find("input[name=schedule_id]").val(scheduleId);
+		
 		$.getJSON(lookupUrl, {course: courseId}, function (data, textStatus) {
 			populateSectionSets(dialog, scheduleId, data);
 		});
@@ -93,7 +96,7 @@
 				
 				var item = $('<li class="section"></li>');
 				setList.append(item);
-				var radio = $('<input type="radio" name="section_set_'+i+'" value="'+section.id+'"/>');
+				var radio = $('<input type="radio" name="section_group_'+i+'" value="'+section.id+'"/>');
 				if (section.selected) {
 					radio.attr('checked', 'checked');
 				}
