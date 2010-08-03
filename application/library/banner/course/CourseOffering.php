@@ -701,7 +701,11 @@ class banner_course_CourseOffering
 	 * @since 8/3/10
 	 */
 	public function getLinkId () {
-		return $this->getOsidIdFromString($this->row['SSBSECT_LINK_IDENT'], 'linkgroup/');
+		if (is_null($this->row['SSBSECT_LINK_IDENT']))
+			$linkId = 'NULL';
+		else
+			$linkId = $this->row['SSBSECT_LINK_IDENT'];
+		return $this->getOsidIdFromString($linkId, 'linkgroup/');
 	}
     
 /*********************************************************

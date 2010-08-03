@@ -172,45 +172,59 @@ class SchedulesController
 		$this->_helper->viewRenderer->setNoRender(true);
 		$this->getResponse()->setHeader('Content-Type', 'text/plain');
 		
-		// Dummy data for testing.
-    	$sectionSets = 
-    		array(
-    			array(
-    				array(	'id' => 'section%2F201090%2F91440', 
-    						'name' => 'AMST0104A-F10', 
-    						'type' => 'Lecture', 
-    						'instructor' => 'Mittell', 
-    						'location' => 'Axinn Center 232(AXN 232)', 
-    						'schedule' => '11:00am-12:15pm on Tuesday, Thursday',
-    						'selected' => true,
-    				),
-    			),
-    			array(
-    				array(	'id' => 'section%2F201090%2F91441', 
-    						'name' => 'AMST0104X-F10', 
-    						'type' => 'Discussion', 
-    						'instructor' => 'Mittell', 
-    						'location' => 'Axinn Center 104(AXN 104)', 
-    						'schedule' => '9:05am-9:55am on Friday',
-    				),
-    				array(	'id' => 'section%2F201090%2F91442', 
-    						'name' => 'AMST0104Y-F10', 
-    						'type' => 'Discussion', 
-    						'instructor' => 'Mittell', 
-    						'location' => 'Axinn Center 104(AXN 104)', 
-    						'schedule' => '10:10am-11:00am on Friday',
-    						'selected' => true,
-    				),
-    				array(	'id' => 'section%2F201090%2F91443', 
-    						'name' => 'AMST0104Z-F10', 
-    						'type' => 'Discussion', 
-    						'instructor' => 'Mittell', 
-    						'location' => 'Axinn Center 104(AXN 104)', 
-    						'schedule' => '11:15am-12:05pm on Friday',
-    				),
-    			),
-    		);
+		
+		$offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSession();
+		$offeringSearchSession->useFederatedCourseCatalogView();
+		
+		$query = $offeringSearchSession->getCourseOfferingQuery();
+		$query->matchCourseId($this->_helper->osidId->fromString($this->_getParam('course')), true);
+		$query->matchTermId($this->_helper->osidId->fromString($this->_getParam('term')), true);
+		
+		$results = $offeringSearchSession->getCourseOfferingsByQuery($query);
+		
+		$groups = array();
+		$linkType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:link');
+		$instructorType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		while ($results->hasNext()) {
+			$offering = $results->getNextCourseOffering();
+			
+			$instructors = $offering->getInstructors();
+			$instructorString = '';
+			while ($instructors->hasNext()) {
+				$instructorString .= $instructors->getNextResource()->getDisplayName().", ";
+			}
+			$instructorString = trim($instructorString, ', ');
+			
+			$info = array(
+				'id' 			=> $this->_helper->osidId->toString($offering->getId()),
+				'name'			=> $offering->getDisplayName(),
+				'type'			=> $offering->getGenusType()->getDisplayName(),
+				'instructor'	=> $instructorString,
+				'location' 		=> $offering->getLocationInfo(), 
+				'schedule' 		=> $offering->getScheduleInfo(),
+			);
+			
+			
+			// Get the link id and ensure that we have a group for it.
+			$linkRecord = $offering->getCourseOfferingRecord($linkType);
+			$linkIdString = $this->_helper->osidId->toString($linkRecord->getLinkId());
+			if (!isset($groups[$linkIdString]))
+				$groups[$linkIdString] = array();
+			
+			// To start with, enable the first section in each group.
+			// Later, we may want to check if the target schedule already has
+			// this course added and select the already-added versions so that 
+			// a second addition will update that course's sections rather than
+			// add them again.
+			if (!count($groups[$linkIdString]))
+				$info['selected'] = true;
+			
+			// Add the info to the appropriate group.
+			$groups[$linkIdString][] = $info;
+		}
+		
+		$groups = array_values($groups);
     	
-    	print json_encode($sectionSets);
+    	print json_encode($groups);
     }
 }

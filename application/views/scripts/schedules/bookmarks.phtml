@@ -45,7 +45,14 @@
 			
 		$(".add_section_dialog").each(function () {
 			var form = $(this).siblings("form.add_to_schedule_form");
-			var addDialog = $(this).dialog({ autoOpen: false, width:  600, modal: true});
+			var addDialog = $(this).dialog({
+					autoOpen: false, 
+					width:  600, 
+					modal: true,
+					close: function(event, ui) {
+						$(this).find("ul.section_sets").empty();
+					}
+				});
 			
 			form.data("addDialog", addDialog);
 		});
