@@ -24,7 +24,8 @@ class banner_course_Course
     extends phpkit_AbstractOsidObject
     implements osid_course_Course, 
     middlebury_course_Course_TermsRecord,
-    middlebury_course_Course_AlternatesRecord
+    middlebury_course_Course_AlternatesRecord,
+    middlebury_course_Course_LinkRecord
 {
 	
 	/**
@@ -253,6 +254,7 @@ class banner_course_Course
 		
 		$this->addRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms'));
 		$this->addRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates'));
+		$this->addRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:link'));
 	}
 	
     /**
@@ -491,5 +493,47 @@ class banner_course_Course
 	 */
 	public function isPrimary () {
 		return false; // Currently no way of determining the 'primary'
+	}
+	
+/*********************************************************
+ * 	Methods from middlebury_course_Course_LinkRecord
+ *********************************************************/
+    /**
+	 * Answer the required link identifiers for the course in a given term.
+	 * 
+	 * When registering for a Course that has multiple Offerings (such as lecture + lab or 
+	 * lectures at different times), they must register for one Offering for 
+	 * each link identifier present.
+	 * 
+	 * 
+	 * @param osid_id_Id $termId
+	 * @return osid_id_IdList
+	 * @access public
+	 * @since 8/3/10
+	 */
+	public function getRequiredLinkIdsForTerm (osid_id_Id $termId) {
+		$stmt = $this->session->getManager()->getDb()->prepare(
+'SELECT
+	SSBSECT_LINK_IDENT
+FROM
+	SSBSECT
+WHERE
+	SSBSECT_SUBJ_CODE = ?
+	AND SSBSECT_CRSE_NUMB = ?
+	AND SSBSECT_TERM_CODE = ?
+GROUP BY 
+	SSBSECT_LINK_IDENT
+ORDER BY 
+	SSBSECT_SEQ_NUMB');
+		$stmt->execute(array(
+			$this->session->getSubjectFromCourseId($this->getId()),
+			$this->session->getNumberFromCourseId($this->getId()),
+			$this->session->getTermCodeFromTermId($termId),
+		));
+		$links = array();
+		foreach($results->fetchAll() as $row) {
+			$links[] = $this->getOsidIdFromString($row['SSBSECT_LINK_IDENT'], 'link/');
+		}
+		return new phpkit_id_ArrayIdList($links);
 	}
 }

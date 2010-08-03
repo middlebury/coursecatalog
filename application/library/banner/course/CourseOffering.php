@@ -19,7 +19,8 @@ class banner_course_CourseOffering
     extends phpkit_AbstractOsidObject
     implements osid_course_CourseOffering,
     middlebury_course_CourseOffering_InstructorsRecord,
-    middlebury_course_CourseOffering_AlternatesRecord
+    middlebury_course_CourseOffering_AlternatesRecord,
+	middlebury_course_CourseOffering_LinkRecord
 {
 	/**
 	 * @var array $requiredFields;
@@ -36,6 +37,7 @@ class banner_course_CourseOffering
 			'SSBSECT_CAMP_CODE',
 			'SSBSECT_CRSE_TITLE',
 			'SSBSECT_MAX_ENRL',
+			'SSBSECT_LINK_IDENT',
 			
 			'SSBDESC_TEXT_NARRATIVE',
 			
@@ -88,6 +90,7 @@ class banner_course_CourseOffering
 		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 		$this->alternatesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
+		$this->linkType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:link');
 		
 		parent::__construct();
 		$this->checkRow($row);
@@ -120,6 +123,7 @@ class banner_course_CourseOffering
 		$this->addRecordType($this->instructorsType);
 		$this->addRecordType($this->weeklyScheduleType);
 		$this->addRecordType($this->alternatesType);
+		$this->addRecordType($this->linkType);
 		
 		$this->identifiersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
 		$properties = array();
@@ -680,6 +684,25 @@ class banner_course_CourseOffering
     public function getInstructors() {
     	return $this->session->getInstructorsForOffering($this->getId());
     }
+    
+/*********************************************************
+ * LinkRecord support
+ *********************************************************/
+
+	/**
+	 * Answer the link identifier for an Offering. When registering
+	 * for a Course that has multiple Offerings (such as lecture + lab or 
+	 * lectures at different times), they must register for one Offering for 
+	 * each link identifier present.
+	 * 
+	 * 
+	 * @return osid_id_Id
+	 * @access public
+	 * @since 8/3/10
+	 */
+	public function getLinkId () {
+		return $this->getOsidIdFromString($this->row['SSBSECT_LINK_IDENT'], 'linkgroup/');
+	}
     
 /*********************************************************
  * AlternatesRecord support
