@@ -189,3 +189,35 @@ table.schedule_planner td {
 form.delete_schedule {
 	float: right;
 }
+
+div.add_section_dialog ul.section_sets {
+	margin-left: 0;
+}
+div.add_section_dialog ul.section_sets li {
+	list-style-type: none;
+}
+div.add_section_dialog ul.section_set {
+	border-top: 1px dotted;
+	margin-left: 0;
+}
+div.add_section_dialog ul {
+	clear: both;
+}
+
+div.add_section_dialog li.section {
+	clear: both;
+	margin-bottom: 10px;
+}
+
+div.add_section_dialog li.section div.section_time, div.add_section_dialog li.section div.section_location {
+	clear: both;
+}
+
+div.add_section_dialog li.section div.section_info {
+	float: none;
+	margin-left: 2em;
+}
+
+div.add_section_dialog li.section div.section_instructor {
+	float: right;
+}

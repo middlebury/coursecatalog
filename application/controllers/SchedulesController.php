@@ -159,4 +159,58 @@ class SchedulesController
     	
     	$this->returnToIndex();
     }
+    
+    /**
+     * Answer a JSON list of sections information for a course.
+     * 
+     * @return void
+     * @access public
+     * @since 8/3/10
+     */
+    public function sectionsforcourseAction () {
+    	$this->_helper->layout->disableLayout();
+		$this->_helper->viewRenderer->setNoRender(true);
+		$this->getResponse()->setHeader('Content-Type', 'text/plain');
+		
+		// Dummy data for testing.
+    	$sectionSets = 
+    		array(
+    			array(
+    				array(	'id' => 'section%2F201090%2F91440', 
+    						'name' => 'AMST0104A-F10', 
+    						'type' => 'Lecture', 
+    						'instructor' => 'Mittell', 
+    						'location' => 'Axinn Center 232(AXN 232)', 
+    						'schedule' => '11:00am-12:15pm on Tuesday, Thursday',
+    						'selected' => true,
+    				),
+    			),
+    			array(
+    				array(	'id' => 'section%2F201090%2F91441', 
+    						'name' => 'AMST0104X-F10', 
+    						'type' => 'Discussion', 
+    						'instructor' => 'Mittell', 
+    						'location' => 'Axinn Center 104(AXN 104)', 
+    						'schedule' => '9:05am-9:55am on Friday',
+    				),
+    				array(	'id' => 'section%2F201090%2F91442', 
+    						'name' => 'AMST0104Y-F10', 
+    						'type' => 'Discussion', 
+    						'instructor' => 'Mittell', 
+    						'location' => 'Axinn Center 104(AXN 104)', 
+    						'schedule' => '10:10am-11:00am on Friday',
+    						'selected' => true,
+    				),
+    				array(	'id' => 'section%2F201090%2F91443', 
+    						'name' => 'AMST0104Z-F10', 
+    						'type' => 'Discussion', 
+    						'instructor' => 'Mittell', 
+    						'location' => 'Axinn Center 104(AXN 104)', 
+    						'schedule' => '11:15am-12:05pm on Friday',
+    				),
+    			),
+    		);
+    	
+    	print json_encode($sectionSets);
+    }
 }

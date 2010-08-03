@@ -4,8 +4,103 @@
 		$course = $this->bookmarked_courses->getNextCourse();
 		print "\n\t<li>";
 		print $course->getDisplayName();
+		print " - ".$course->getTitle();
+		
+		print "\n\t\t<form class='add_to_schedule_form' action='".$this->url(array('action' => 'add'))."' method='post'>";
+		print "\n\t\t<select name='schedule_id'>";
+		print "\n\t\t\t<option value=''>Add to schedule...</option>";
+		foreach ($this->schedules as $schedule) {
+			print "\n\t\t\t<option value=\"".$schedule->getId()."\">".$schedule->getName()."</option>";
+		}
+		print "\n\t\t</select>";
+		print "\n\t\t<input type='hidden' name='csrf_key' value='".$this->csrfKey()."' />";
+		print "\n\t\t</form>";
+		
+?>
+		<div class="add_section_dialog" title="Add which sections?" style='display: none'>
+			<form action="<?php print $this->url(array('action' => 'add')); ?>" class="add_section_form" method="post">
+				Choose one option from each group:
+				<ul class="section_sets">
+				</ul>
+				
+				<input type='hidden' name='csrf_key' value='<?php print $this->csrfKey(); ?>' />
+				<input type="submit" value="Add Sections"/>
+			</form>
+			<input type='hidden' name='course_id' value="<?php print $this->getStringFromOsidId($course->getId()); ?>" />
+			<input type='hidden' name='section_lookup_url' value='<?php print $this->url(array('action' => 'sectionsforcourse')); ?>' />
+		</div>
+		
+<?php
+		
 		print "\n\t</li>";
 	}
 ?>
 
 </ul>
+
+<?php ob_start(); ?>
+
+	$(function() { // on DOM ready 
+		
+			
+		$(".add_section_dialog").each(function () {
+			var form = $(this).siblings("form.add_to_schedule_form");
+			var addDialog = $(this).dialog({ autoOpen: false, width:  600, modal: true});
+			
+			form.data("addDialog", addDialog);
+		});
+		
+		$("form.add_to_schedule_form select").change(function () {
+			var form = $(this).parent("form");
+			var addDialog = form.data("addDialog");
+			var scheduleId = $(this).val();
+			$(this).val("");
+			
+			getSectionSets(addDialog, scheduleId);
+			addDialog.dialog("open");
+		});
+		
+	});
+	
+	function getSectionSets (dialog, scheduleId) {
+		var lookupUrl = dialog.children("input[name=section_lookup_url]").val();
+		var courseId = dialog.children("input[name=course_id]").val();
+		
+		$.getJSON(lookupUrl, {course: courseId}, function (data, textStatus) {
+			populateSectionSets(dialog, scheduleId, data);
+		});
+	}
+	
+	function populateSectionSets (dialog, scheduleId, data) {
+		var setsList = dialog.find("ul.section_sets");
+		for (var i = 0; i < data.length; i++) {
+			var sectionSet = data[i];
+			
+			var setListItem = $('<li></li>');
+			setsList.append(setListItem);
+			var setList = $('<ul class="section_set"></ul>');
+			setListItem.append(setList);
+			
+			for (var j = 0; j < sectionSet.length; j++) {
+				var section = sectionSet[j];
+				
+				var item = $('<li class="section"></li>');
+				setList.append(item);
+				var radio = $('<input type="radio" name="section_set_'+i+'" value="'+section.id+'"/>');
+				if (section.selected) {
+					radio.attr('checked', 'checked');
+				}
+				item.append(radio);
+				item.append(' ');
+				item.append(section.name);
+				item.append(' <div class="section_instructor section_info"><span class="section_type">'+section.type+'</span> - <span class="section_instructor">'+section.instructor+'</span></div>');
+				item.append('');
+				item.append('<div class="section_time section_info">'+section.schedule+'</div>');
+				item.append('<div class="section_location section_info">'+section.location+'</div>');
+			}
+		}
+	}
+
+<?php 
+
+$this->headScript()->appendScript(ob_get_clean());
