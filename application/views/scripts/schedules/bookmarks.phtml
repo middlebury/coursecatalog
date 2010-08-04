@@ -8,6 +8,8 @@
 		print " - ".$this->escape($course->getTitle());
 		print "</a>";
 		
+		print " &nbsp; <button class='remove_course' title='Remove Course Bookmark' href='".$this->url(array('controller' => 'bookmarks', 'action' => 'remove', 'course' => $this->getStringFromOsidId($course->getId()), 'csrf_key' => $this->csrfKey()))."'>X</button>";
+		
 		print "\n\t\t<form class='add_to_schedule_form' action='".$this->url(array('action' => 'add'))."' method='post'>";
 		print "\n\t\t<select name='schedule_id'>";
 		print "\n\t\t\t<option value=''>Add to schedule...</option>";
@@ -45,7 +47,23 @@
 
 	$(function() { // on DOM ready 
 		
-			
+		$("button.remove_course").click(function () {
+			if (confirm('Do you want to remove the bookmark for this course?')) {
+				var li = $(this).parent();
+				$.ajax({
+					url: $(this).attr('href'), 
+					success: function () {
+						li.remove();
+					}
+				});
+			}
+		});
+		
+		
+		/*********************************************************
+		 * Set up the add-sections dialog controls
+		 *********************************************************/
+		
 		$(".add_section_dialog").each(function () {
 			var form = $(this).siblings("form.add_to_schedule_form");
 			var addDialog = $(this).dialog({

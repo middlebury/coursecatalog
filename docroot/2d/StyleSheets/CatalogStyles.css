@@ -221,3 +221,6 @@ div.add_section_dialog li.section div.section_info {
 div.add_section_dialog li.section div.section_instructor {
 	float: right;
 }
+
+ul.bookmarked_courses button.remove_course {
+}
