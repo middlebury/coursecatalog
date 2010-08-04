@@ -313,6 +313,9 @@ class SchedulesController
 		
 		$results = $offeringSearchSession->getCourseOfferingsByQuery($query);
 		
+		$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
+		$schedule = $schedules->getSchedule($this->_getParam('schedule_id'));
+		
 		$groups = array();
 		$linkType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:link');
 		$instructorType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
@@ -349,6 +352,12 @@ class SchedulesController
 			// add them again.
 			if (!count($groups[$linkIdString]))
 				$info['selected'] = true;
+			
+			if ($schedule->includes($offering->getId())) {
+				if (count($groups[$linkIdString]))
+					$groups[$linkIdString][0]['selected'] = false;
+				$info['selected'] = true;
+			}
 			
 			// Add the info to the appropriate group.
 			$groups[$linkIdString][] = $info;

@@ -122,6 +122,25 @@ class Schedule {
 	}
 	
 	/**
+	 * Answer true if the offering Id passed is included in the schedule.
+	 * 
+	 * @param osid_id_Id $offeringId
+	 * @return boolean
+	 * @access public
+	 * @since 8/3/10
+	 */
+	public function includes (osid_id_Id $offeringId) {
+		$stmt = $this->db->prepare("SELECT * FROM user_schedule_offerings WHERE schedule_id = ? AND offering_id_keyword = ? AND offering_id_authority = ? AND offering_id_namespace = ? LIMIT 1;");
+		$stmt->execute(array(
+			$this->getId(),
+			$offeringId->getIdentifier(),
+			$offeringId->getAuthority(),
+			$offeringId->getIdentifierNamespace(),
+		));
+		return (count($stmt->fetchAll()) > 0);
+	}
+	
+	/**
 	 * Remove an offering from the schedule
 	 * 
 	 * @param osid_id_Id $offeringId

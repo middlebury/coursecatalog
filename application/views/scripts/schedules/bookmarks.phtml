@@ -98,7 +98,7 @@
 		
 		dialog.find("input[name=schedule_id]").val(scheduleId);
 		
-		$.getJSON(lookupUrl, {course: courseId}, function (data, textStatus) {
+		$.getJSON(lookupUrl, {course: courseId, schedule_id: scheduleId}, function (data, textStatus) {
 			populateSectionSets(dialog, scheduleId, data);
 		});
 	}
