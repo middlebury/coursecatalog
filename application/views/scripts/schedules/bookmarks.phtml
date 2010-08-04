@@ -3,8 +3,10 @@
 	while ($this->bookmarked_courses->hasNext()) {
 		$course = $this->bookmarked_courses->getNextCourse();
 		print "\n\t<li>";
-		print $course->getDisplayName();
-		print " - ".$course->getTitle();
+		print "\n\t\t<a href='".$this->url(array('controller' => 'courses', 'action' => 'view', 'course' => $this->getStringFromOsidId($course->getId())))."' target='_blank'>";
+		print $this->escape($course->getDisplayName());
+		print " - ".$this->escape($course->getTitle());
+		print "</a>";
 		
 		print "\n\t\t<form class='add_to_schedule_form' action='".$this->url(array('action' => 'add'))."' method='post'>";
 		print "\n\t\t<select name='schedule_id'>";
