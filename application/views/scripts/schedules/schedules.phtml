@@ -28,8 +28,22 @@ foreach ($this->schedules as $schedule) {
 	
 	print "\n\t\t<ul>";
 	foreach ($schedule->getOfferings() as $offering) {
-		print "\n\t\t\t<li>";
-		print $offering->getDisplayName();
+		print "\n\t\t\t<li class='offering'>";
+		
+		print "\n\t\t<div class='offering_name'>";
+		print "\n\t\t\t<a href='".$this->url(array('controller' => 'offerings', 'action' => 'view', 'offering' => $this->getStringFromOsidId($offering->getId())))."' target='_blank'>";
+		print $this->escape($offering->getDisplayName());
+		print "</a>";
+		print "\n\t\t</div>";
+		
+		print "\n\t\t<div class='separator'> - </div>";
+		
+		print "\n\t\t<div class='offering_title'>";
+		print "\n\t\t\t<a href='".$this->url(array('controller' => 'offerings', 'action' => 'view', 'offering' => $this->getStringFromOsidId($offering->getId())))."' target='_blank'>";
+		print nl2br($this->escape($offering->getTitle()));
+		print "</a>";
+		print "\n\t\t</div>";
+		
 		print "\n\t\t\t</li>";
 	}
 	print "\n\t\t</ul>";

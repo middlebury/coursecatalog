@@ -226,6 +226,7 @@ div.add_section_dialog li.section div.section_instructor {
 	float: right;
 }
 
+
 form.add_to_schedule_form {
 	float: left;
 }
@@ -235,4 +236,24 @@ li.bookmarked_course, li.bookmarked_course div.course_info {
 }
 li.bookmarked_course div.remove_course {
 	float: right;
+}
+
+div.schedule li.offering {
+	clear: both;
+	margin-bottom: 10px;
+}
+div.schedule li.offering div.separator {
+	float: left;
+	width: 20px;
+	text-align: center;
+}
+div.schedule li.offering div.offering_name {
+	float: left;
+	width: 100px;
+}
+div.schedule li.offering div.offering_title {
+	float: left;
+	width: 180px;
+	white-space: nowrap;
+	overflow: hidden;
 }
