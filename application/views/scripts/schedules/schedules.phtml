@@ -39,8 +39,11 @@ foreach ($this->schedules as $schedule) {
 		print "\n\t\t\t<input type='hidden' name='schedule_id' value='".$schedule->getId()."'/>";
 		print "\n\t\t\t<input type='hidden' name='offering' value='".$this->getStringFromOsidId($offering->getId())."'>";
 		print "\n\t\t\t<input type='submit' title='Remove from the schedule.' value='X'/>";
-		print "\n\t\t\t<input type='hidden' name='course_name' value='".$offering->getCourse()->getDisplayName()."'/>";
+		print "\n\t\t\t<input type='hidden' name='course_name' value='".$this->escape($offering->getCourse()->getDisplayName())."'/>";
 		print "\n\t\t</form>";
+		
+		print "\n\t\t<div class='time'>".nl2br($this->escape($offering->getScheduleInfo()))."</div>";
+		print "\n\t\t<div class='location'>".nl2br($this->escape($offering->getLocationInfo()))."</div>";
 		
 		print "\n\t\t\t</li>";
 	}
