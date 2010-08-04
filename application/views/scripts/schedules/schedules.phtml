@@ -1,14 +1,4 @@
-<?php 
-
-$this->headScript()->appendScript("
-	$(function() { // on DOM ready 
-		
-		$('form.delete_schedule').submit(function () {
-			return confirm('Are you sure you want to delete this schedule?');	
-		});
-		
-	});
-");
+<?php
 
 foreach ($this->schedules as $schedule) {
 	print "\n<div class='schedule'>";
@@ -44,6 +34,14 @@ foreach ($this->schedules as $schedule) {
 		print "</a>";
 		print "\n\t\t</div>";
 		
+		print "\n\t\t<form class='remove_offering' action='".$this->url(array('action' => 'remove'))."' method='post'>";
+		print "\n\t\t\t<input type='hidden' name='csrf_key' value='".$this->csrfKey()."'/>";
+		print "\n\t\t\t<input type='hidden' name='schedule_id' value='".$schedule->getId()."'/>";
+		print "\n\t\t\t<input type='hidden' name='offering' value='".$this->getStringFromOsidId($offering->getId())."'>";
+		print "\n\t\t\t<input type='submit' title='Remove from the schedule.' value='X'/>";
+		print "\n\t\t\t<input type='hidden' name='course_name' value='".$offering->getCourse()->getDisplayName()."'/>";
+		print "\n\t\t</form>";
+		
 		print "\n\t\t\t</li>";
 	}
 	print "\n\t\t</ul>";
@@ -60,3 +58,22 @@ foreach ($this->schedules as $schedule) {
 	<input type="hidden" name="catalog" value="<?php print $this->escape($this->getStringFromOsidId($this->menuCatalogSelectedId)); ?>" />
 	<input type="hidden" name="csrf_key" value="<?php print $this->csrfKey(); ?>" />
 </form>
+
+<?php ob_start(); ?>
+
+	$(function() { // on DOM ready 
+		
+		$('form.delete_schedule').submit(function () {
+			return confirm('Are you sure you want to delete this schedule?');	
+		});
+		
+		$('form.remove_offering').submit(function () {
+			return confirm('Remove all sections of ' + $(this).find('[name=course_name]').val() + " from this schedule? \n\nHint: You can add the course to the schedule again to change which sections are chosen.");
+		});
+		
+		
+	});
+
+
+<?php 
+$this->headScript()->appendScript(ob_get_clean());

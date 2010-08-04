@@ -260,6 +260,38 @@ class SchedulesController
     }
     
     /**
+     * Remove an offering from a schedule
+     * 
+     * @return void
+     * @access public
+     * @since 8/4/10
+     */
+    public function removeAction () {
+    	$this->verifyChangeRequest();    	
+    	
+    	$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
+    	
+    	$schedule = $schedules->getSchedule($this->_getParam('schedule_id'));
+    	
+    	$lookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
+    	$lookupSession->useFederatedView();
+		
+		$offering = $lookupSession->getCourseOffering($this->_helper->osidId->fromString($this->_getParam('offering')));
+    	$courseId = $offering->getCourseId();
+    	
+    	// Remove the selected offering.
+    	$schedule->remove($offering->getId());
+    	
+    	// Remove all other offerings for the course.
+    	foreach ($schedule->getOfferings() as $offering) {
+    		if ($offering->getCourse()->getId()->isEqual($courseId))
+    			$schedule->remove($offering->getId());
+    	}
+    	
+    	$this->returnToIndex();
+    }
+    
+    /**
      * Answer a JSON list of sections information for a course.
      * 
      * @return void
