@@ -186,6 +186,10 @@ table.schedule_planner td {
 	vertical-align: top;
 }
 
+table.schedule_planner td#bookmarks_column {
+	width: 250px;
+}
+
 form.delete_schedule {
 	float: right;
 }
@@ -222,5 +226,13 @@ div.add_section_dialog li.section div.section_instructor {
 	float: right;
 }
 
-ul.bookmarked_courses button.remove_course {
+form.add_to_schedule_form {
+	float: left;
+}
+li.bookmarked_course, li.bookmarked_course div.course_info {
+	clear: both;
+	white-space: nowrap;
+}
+li.bookmarked_course div.remove_course {
+	float: right;
 }

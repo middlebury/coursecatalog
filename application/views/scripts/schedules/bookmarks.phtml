@@ -2,13 +2,15 @@
 <?php 
 	while ($this->bookmarked_courses->hasNext()) {
 		$course = $this->bookmarked_courses->getNextCourse();
-		print "\n\t<li>";
-		print "\n\t\t<a href='".$this->url(array('controller' => 'courses', 'action' => 'view', 'course' => $this->getStringFromOsidId($course->getId())))."' target='_blank'>";
+		print "\n\t<li class='bookmarked_course'>";
+		print "\n\t\t<div class='course_info'>";
+		print "\n\t\t\t<a href='".$this->url(array('controller' => 'courses', 'action' => 'view', 'course' => $this->getStringFromOsidId($course->getId())))."' target='_blank'>";
 		print $this->escape($course->getDisplayName());
 		print " - ".$this->escape($course->getTitle());
 		print "</a>";
-		
-		print " &nbsp; <button class='remove_course' title='Remove Course Bookmark' href='".$this->url(array('controller' => 'bookmarks', 'action' => 'remove', 'course' => $this->getStringFromOsidId($course->getId()), 'csrf_key' => $this->csrfKey()))."'>X</button>";
+		print "\n\t\t</div>";
+
+		print "<div class='remove_course'><button class='remove_course' title='Remove Course Bookmark' href='".$this->url(array('controller' => 'bookmarks', 'action' => 'remove', 'course' => $this->getStringFromOsidId($course->getId()), 'csrf_key' => $this->csrfKey()))."'>X</button></div>";
 		
 		print "\n\t\t<form class='add_to_schedule_form' action='".$this->url(array('action' => 'add'))."' method='post'>";
 		print "\n\t\t<select name='schedule_id'>";
