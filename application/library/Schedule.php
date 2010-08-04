@@ -160,6 +160,78 @@ class Schedule {
 			$offeringId = new phpkit_id_Id($row['offering_id_authority'], $row['offering_id_namespace'], $row['offering_id_keyword']);
 			$offerings[] = $lookupSession->getCourseOffering($offeringId);
 		}
+		
+		return $this->timeSort($offerings);
+	}
+	
+	/**
+	 * Sort an array of offerings based on their first meeting time.
+	 * 
+	 * @param ref array $offerings
+	 * @return array The sorted array
+	 * @access public
+	 * @since 8/4/10
+	 */
+	public function timeSort (array &$offerings) {
+		// Build a sort-key out of the day of week and time.
+		$sortkeys = array();
+		$names = array();
+		
+		$weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
+		
+		foreach ($offerings as $offering) {
+			$key = 0;
+			$rec = $offering->getCourseOfferingRecord($weeklyScheduleType);
+			
+			if ($rec->meetsOnSunday()) {
+				// Add an integer for the first week day.
+				$key += 1;
+				// Add a fraction for the first start time.
+				$times = $rec->getSundayStartTimes();
+				$key += $times[0] / 86400;
+			} else if ($rec->meetsOnMonday()) {
+				// Add an integer for the first week day.
+				$key += 2;
+				// Add a fraction for the first start time.
+				$times = $rec->getMondayStartTimes();
+				$key += $times[0] / 86400;
+			} else if ($rec->meetsOnTuesday()) {
+				// Add an integer for the first week day.
+				$key += 3;
+				// Add a fraction for the first start time.
+				$times = $rec->getTuesdayStartTimes();
+				$key += $times[0] / 86400;
+			} else if ($rec->meetsOnWednesday()) {
+				// Add an integer for the first week day.
+				$key += 4;
+				// Add a fraction for the first start time.
+				$times = $rec->getWednesdayStartTimes();
+				$key += $times[0] / 86400;
+			} else if ($rec->meetsOnThursday()) {
+				// Add an integer for the first week day.
+				$key += 5;
+				// Add a fraction for the first start time.
+				$times = $rec->getThursdayStartTimes();
+				$key += $times[0] / 86400;
+			} else if ($rec->meetsOnFriday()) {
+				// Add an integer for the first week day.
+				$key += 6;
+				// Add a fraction for the first start time.
+				$times = $rec->getFridayStartTimes();
+				$key += $times[0] / 86400;
+			} else if ($rec->meetsOnSaturday()) {
+				// Add an integer for the first week day.
+				$key += 7;
+				// Add a fraction for the first start time.
+				$times = $rec->getSaturdayStartTimes();
+				$key += $times[0] / 86400;
+			}
+			
+			$sortkeys[] = $key;
+			$names[] = $offering->getDisplayName();
+		}
+		
+		array_multisort($sortkeys, SORT_NUMERIC, SORT_ASC, $names, SORT_STRING, SORT_ASC, array_keys($offerings), $offerings);
 		return $offerings;
 	}
 }
