@@ -1,4 +1,5 @@
 <?php
+require_once('harmoni/Primitives/Chronology/Week.class.php');
 
 /** Zend_Controller_Action */
 class SchedulesController 
@@ -383,73 +384,26 @@ class SchedulesController
 		
 		$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
 		$schedule = $schedules->getSchedule($this->_getParam('schedule_id'));
-		
-		$scheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
-		$events = array();
-		$id = 1;
-		
-		require_once('harmoni/Primitives/Chronology/Week.class.php');
+				
 		$thisWeek = Week::current();
 		
-		foreach ($schedule->getOfferings() as $offering) {
-			$title = $offering->getDisplayName();
-			if ($offering->hasLocation()) {
-				$title .= '<br/>'.$offering->getLocation()->getDescription();
-			}
-			$rec = $offering->getCourseOfferingRecord($scheduleType);
+		$events = $schedule->getWeeklyEvents();
+		foreach ($events as $i => &$event) {
+			$event['title'] = $event['name'];
 			
-			if ($rec->meetsOnSunday()) {
-				$day = $thisWeek->asDateAndTime();
-				$this->addEvents($events, $id, $title, $day, $rec->getSundayStartTimes(), $rec->getSundayEndTimes());
-			}
-			if ($rec->meetsOnMonday()) {
-				$day = $thisWeek->asDateAndTime()->plus(Duration::withDays(1));
-				$this->addEvents($events, $id, $title, $day, $rec->getMondayStartTimes(), $rec->getMondayEndTimes());
-			}
-			if ($rec->meetsOnTuesday()) {
-				$day = $thisWeek->asDateAndTime()->plus(Duration::withDays(2));
-				$this->addEvents($events, $id, $title, $day, $rec->getTuesdayStartTimes(), $rec->getTuesdayEndTimes());
-			}
-			if ($rec->meetsOnWednesday()) {
-				$day = $thisWeek->asDateAndTime()->plus(Duration::withDays(3));
-				$this->addEvents($events, $id, $title, $day, $rec->getWednesdayStartTimes(), $rec->getWednesdayEndTimes());
-			}
-			if ($rec->meetsOnThursday()) {
-				$day = $thisWeek->asDateAndTime()->plus(Duration::withDays(4));
-				$this->addEvents($events, $id, $title, $day, $rec->getThursdayStartTimes(), $rec->getThursdayEndTimes());
-			}
-			if ($rec->meetsOnFriday()) {
-				$day = $thisWeek->asDateAndTime()->plus(Duration::withDays(5));
-				$this->addEvents($events, $id, $title, $day, $rec->getFridayStartTimes(), $rec->getFridayEndTimes());
-			}
-			if ($rec->meetsOnSaturday()) {
-				$day = $thisWeek->asDateAndTime()->plus(Duration::withDays(6));
-				$this->addEvents($events, $id, $title, $day, $rec->getSaturdayStartTimes(), $rec->getSaturdayEndTimes());
-			}
+			if ($event['location'])
+				$event['title'] .= '<br/>'.$event['location'];
+			
+			$day = $thisWeek->asDateAndTime();
+			if ($event['dayOfWeek'])
+				$day = $day->plus(Duration::withDays($event['dayOfWeek']));
+			
+			$event['start'] = $day->plus(Duration::withSeconds($event['startTime']))->printableString();
+			$event['end'] = $day->plus(Duration::withSeconds($event['endTime']))->printableString();
+			
+			$event['id'] = $i;
 		}
 		    	
     	print json_encode($events);
-    }
-    
-    /**
-     * Add events to an array.
-     * 
-     * @param <##>
-     * @return <##>
-     * @access private
-     * @since 8/5/10
-     */
-    private function addEvents (array &$events, $id, $title, DateAndTime $day, array $startTimes, array $endTimes) {
-    	foreach ($startTimes as $i => $startTime) {
-    		$start = $day->plus(Duration::withSeconds($startTime));
-    		$end = $day->plus(Duration::withSeconds($endTimes[$i]));
-			$events[] = array(
-				'id'	=> $id,
-				'title'	=> $title,
-				'start' => $start->printableString(),
-				'end'	=> $end->printableString(),
-			);
-			$id++;
-		}
     }
 }

@@ -184,6 +184,78 @@ class Schedule {
 	}
 	
 	/**
+	 * Answer an array of information about all of the events in a week.
+	 * The dayOfWeek field is a zero-based day-of-week. 0 for Sunday, 1 for Monday, etc.
+	 * 
+	 * @return array
+	 * @access public
+	 * @since 8/5/10
+	 */
+	public function getWeeklyEvents () {
+		$events = array();
+		$scheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
+		
+		foreach ($this->getOfferings() as $offering) {
+			$name = $offering->getDisplayName();
+			if ($offering->hasLocation()) {
+				$location = $offering->getLocation()->getDescription();
+			} else {
+				$location = '';
+			}
+			$rec = $offering->getCourseOfferingRecord($scheduleType);
+			
+			if ($rec->meetsOnSunday()) {
+				$this->addEvents($events, $name, $location, 0, $rec->getSundayStartTimes(), $rec->getSundayEndTimes());
+			}
+			if ($rec->meetsOnMonday()) {
+				$this->addEvents($events, $name, $location, 1, $rec->getMondayStartTimes(), $rec->getMondayEndTimes());
+			}
+			if ($rec->meetsOnTuesday()) {
+				$this->addEvents($events, $name, $location, 2, $rec->getTuesdayStartTimes(), $rec->getTuesdayEndTimes());
+			}
+			if ($rec->meetsOnWednesday()) {
+				$this->addEvents($events, $name, $location, 3, $rec->getWednesdayStartTimes(), $rec->getWednesdayEndTimes());
+			}
+			if ($rec->meetsOnThursday()) {
+				$this->addEvents($events, $name, $location, 4, $rec->getThursdayStartTimes(), $rec->getThursdayEndTimes());
+			}
+			if ($rec->meetsOnFriday()) {
+				$this->addEvents($events, $name, $location, 5, $rec->getFridayStartTimes(), $rec->getFridayEndTimes());
+			}
+			if ($rec->meetsOnSaturday()) {
+				$this->addEvents($events, $name, $location, 6, $rec->getSaturdayStartTimes(), $rec->getSaturdayEndTimes());
+			}
+		}
+		
+		return $events;
+	}
+	
+	/**
+     * Add events to an array.
+     * 
+     * @param ref array $events
+     * @param string $name
+     * @param string $location
+     * @param int $dayOfWeek
+     * @param array $startTimes
+     * @param array $endTimes
+     * @return <##>
+     * @access private
+     * @since 8/5/10
+     */
+    private function addEvents (array &$events, $name, $location, $dayOfWeek, array $startTimes, array $endTimes) {
+    	foreach ($startTimes as $i => $startTime) {
+			$events[] = array(
+				'name'	=> $name,
+				'location'	=> $location,
+				'dayOfWeek'	=> $dayOfWeek,
+				'startTime' => $startTime,
+				'endTime'	=> $endTimes[$i],
+			);
+		}
+    }
+	
+	/**
 	 * Sort an array of offerings based on their first meeting time.
 	 * 
 	 * @param ref array $offerings
