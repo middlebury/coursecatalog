@@ -59,7 +59,8 @@ class SchedulesController
 			$this->view->selectedTermId = $this->_helper->osidTerms->getCurrentTermId($catalogId);
 		} else {
 			$this->view->selectedTermId = $this->_helper->osidId->fromString($this->_getParam('term'));
-		}		
+		}
+		$this->view->termIdString = $this->_helper->osidId->toString($this->view->selectedTermId);
 		
 		
 		// Load the bookmarks for the selected catalog/terms

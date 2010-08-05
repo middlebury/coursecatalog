@@ -12,7 +12,7 @@
 
 		print "<div class='remove_course'><button class='remove_course' title='Remove Course Bookmark' href='".$this->url(array('controller' => 'bookmarks', 'action' => 'remove', 'course' => $this->getStringFromOsidId($course->getId()), 'csrf_key' => $this->csrfKey()))."'>X</button></div>";
 		
-		print "\n\t\t<form class='add_to_schedule_form' action='".$this->url(array('action' => 'add'))."' method='post'>";
+		print "\n\t\t<form class='add_to_schedule_form' action='".$this->url(array('action' => 'add', 'term' => $this->termIdString))."' method='post'>";
 		print "\n\t\t<select name='schedule_id'>";
 		print "\n\t\t\t<option value=''>Add to schedule...</option>";
 		foreach ($this->schedules as $schedule) {
@@ -24,7 +24,7 @@
 		
 ?>
 		<div class="add_section_dialog" title="Add which sections?" style='display: none'>
-			<form action="<?php print $this->url(array('action' => 'add')); ?>" class="add_section_form" method="post">
+			<form action="<?php print $this->url(array('action' => 'add', 'term' => $this->termIdString)); ?>" class="add_section_form" method="post">
 				Choose one option from each group:
 				<ul class="section_sets">
 				</ul>
@@ -34,7 +34,7 @@
 				<input type="submit" value="Add Sections"/>
 			</form>
 			<input type='hidden' name='course_id' value="<?php print $this->getStringFromOsidId($course->getId()); ?>" />
-			<input type='hidden' name='section_lookup_url' value='<?php print $this->url(array('action' => 'sectionsforcourse')); ?>' />
+			<input type='hidden' name='section_lookup_url' value='<?php print $this->url(array('action' => 'sectionsforcourse', 'term' => $this->termIdString)); ?>' />
 		</div>
 		
 <?php
