@@ -16,6 +16,9 @@ foreach ($this->schedules as $schedule) {
 	print "\n\t\t<input type='submit' value='Save Name'/>";
 	print "\n\t</form>";
 	
+	print "\n\t<button class='calendar_button' href='".$this->url(array('action' => 'eventsjson', 'schedule_id' => $schedule->getId()))."'>Calendar</button>";
+	print "\n\t<div class='calendar' style='display: none;' title=\"".$this->escape($schedule->getName())."\"></div>";
+	
 	print "\n\t\t<ul>";
 	foreach ($schedule->getOfferings() as $offering) {
 		print "\n\t\t\t<li class='offering'>";
@@ -75,8 +78,73 @@ foreach ($this->schedules as $schedule) {
 		});
 		
 		
+		/*********************************************************
+		 * Calendar controls
+		 *********************************************************/
+		<?php
+		$this->headLink()->appendStylesheet($this->url(array(), null, true).'javascript/jquery-week-calendar/jquery.weekcalendar.css');
+		$this->headStyle()->appendStyle('
+			div.wc-toolbar {display: none;}
+			.wc-time-slots .wc-today { background-color: #FFF; }
+			.wc-header .wc-today { font-weight: normal; }
+		');
+		$this->headScript()->appendFile($this->url(array(), null, true).'javascript/jquery-week-calendar/libs/date.js');
+		$this->headScript()->appendFile($this->url(array(), null, true).'javascript/jquery-week-calendar/jquery.weekcalendar.js');
+		?>
+		
+		$(".calendar").each(function() {
+			var button = $(this).siblings(".calendar_button");
+			var calendar = $(this).dialog({
+					autoOpen: false, 
+					width:  900, 
+					modal: true,
+					position: 'top'
+				});
+			
+			button.data("calendar", calendar);
+		});
+		$(".calendar_button").click(function(){
+			var jsonUrl = $(this).attr('href');
+			var calendar = $(this).data('calendar');
+			calendar.dialog("open");
+			
+			if (!calendar.data('initialized')) {
+			
+				var year = new Date().getFullYear();
+				var month = new Date().getMonth();
+				var day = new Date().getDate();
+				
+				calendar.weekCalendar({
+					readonly: true,
+					allowCalEventOverlap: true,
+					overlapEventsSeparate: true,
+					timeslotsPerHour: 4,
+					height: function($calendar){
+						return $(window).height() - $("h1").outerHeight(true);
+					},
+					eventRender : function(calEvent, $event) {
+// 						if(calEvent.end.getTime() < new Date().getTime()) {
+// 							$event.css("backgroundColor", "#aaa");
+// 							$event.find(".time").css({"backgroundColor": "#999", "border":"1px solid #888"});
+// 						}
+					},
+					noEvents : function() {
+						displayMessage("There are no events for this week");
+					},
+					data: jsonUrl
+				});
+				
+				calendar.find('td.wc-day-column-header').each(function() {
+					$(this).html($(this).html().replace(/<.*$/, ''));
+				});
+				calendar.data('initialized', true)
+			}
+			
+		});
+		
 	});
 
 
-<?php 
+<?php
+
 $this->headScript()->appendScript(ob_get_clean());
