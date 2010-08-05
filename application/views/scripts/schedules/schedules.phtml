@@ -16,7 +16,9 @@ foreach ($this->schedules as $schedule) {
 	print "\n\t\t<input type='submit' value='Save Name'/>";
 	print "\n\t</form>";
 	
-	print "\n\t<button class='calendar_button' href='".$this->url(array('action' => 'eventsjson', 'schedule_id' => $schedule->getId()))."'>Calendar</button>";
+	print "\n\t<a class='calendar_button' href='".$this->url(array('action' => 'eventsjson', 'schedule_id' => $schedule->getId()))."'>";
+	print "\n\t<img class='calendar_img' src='".$this->url(array('action' => 'png', 'schedule_id' => $schedule->getId()))."'/>";
+	print "\n\t\t</a>";
 	print "\n\t<div class='calendar' style='display: none;' title=\"".$this->escape($schedule->getName())."\"></div>";
 	
 	print "\n\t\t<ul>";
@@ -140,6 +142,7 @@ foreach ($this->schedules as $schedule) {
 				calendar.data('initialized', true)
 			}
 			
+			return false;
 		});
 		
 	});

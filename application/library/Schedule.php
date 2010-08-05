@@ -246,7 +246,8 @@ class Schedule {
     private function addEvents (array &$events, $name, $location, $dayOfWeek, array $startTimes, array $endTimes) {
     	foreach ($startTimes as $i => $startTime) {
 			$events[] = array(
-				'name'	=> $name,
+				'id'		=> $name.'-'.$dayOfWeek.'-'.$startTime,
+				'name'		=> $name,
 				'location'	=> $location,
 				'dayOfWeek'	=> $dayOfWeek,
 				'startTime' => $startTime,

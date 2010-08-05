@@ -406,4 +406,52 @@ class SchedulesController
 		    	
     	print json_encode($events);
     }
+    
+    /**
+     * Answer a PNG Image of the schedule
+     * 
+     * @return void
+     * @access public
+     * @since 8/5/10
+     */
+    public function pngAction () {
+    	$this->_helper->layout->disableLayout();
+    	
+		$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
+		$schedule = $schedules->getSchedule($this->_getParam('schedule_id'));
+		
+		$this->view->events = $schedule->getWeeklyEvents();
+		
+		$this->view->minTime = 24 * 60 * 60; // Default to starting at midnight
+		$this->view->maxTime = 0 * 60 * 60; // Default to ending at midnight
+		foreach ($this->view->events as $event) {
+			if ($event['startTime'] < $this->view->minTime)
+				$this->view->minTime = $event['startTime'];
+			if ($event['endTime'] > $this->view->maxTime)
+				$this->view->maxTime = $event['endTime'];
+		}
+		
+		// Check for collisions
+		for ($i = 0; $i < count($this->view->events); $i++) {
+			$this->view->events[$i]['collisions'] = 0;
+			$myTimespan = Timespan::startingEnding(
+				DateAndTime::today()->plus(Duration::withSeconds($this->view->events[$i]['startTime'])),
+				DateAndTime::today()->plus(Duration::withSeconds($this->view->events[$i]['endTime'])));
+			$day = $this->view->events[$i]['dayOfWeek'];
+			
+			// If we have a different event on the same day check its time for collisions.
+			for ($j = 0; $j < count($this->view->events); $j++) {
+				if ($i != $j && $day == $this->view->events[$j]['dayOfWeek']) {
+					$otherTimespan = Timespan::startingEnding(
+						DateAndTime::today()->plus(Duration::withSeconds($this->view->events[$j]['startTime'])),
+						DateAndTime::today()->plus(Duration::withSeconds($this->view->events[$j]['endTime'])));
+					if (!is_null($myTimespan->intersection($otherTimespan))) {
+						$this->view->events[$i]['collisions']++;
+					}
+				}
+			}
+		}
+		
+		$this->getResponse()->setHeader('Content-Type', 'image/png');
+    }
 }

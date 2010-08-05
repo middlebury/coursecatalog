@@ -238,6 +238,7 @@ li.bookmarked_course div.remove_course {
 	float: right;
 }
 
+
 div.schedule li.offering {
 	clear: both;
 	margin-bottom: 10px;
@@ -256,4 +257,8 @@ div.schedule li.offering div.offering_title {
 	width: 180px;
 	white-space: nowrap;
 	overflow: hidden;
+}
+
+img.calendar_img, img.calendar_button {
+	width: 100%;
 }
