@@ -117,6 +117,7 @@ foreach ($this->schedules as $schedule) {
 				var day = new Date().getDate();
 				
 				calendar.weekCalendar({
+					date:new Date(year, month, day, 9),
 					readonly: true,
 					allowCalEventOverlap: true,
 					overlapEventsSeparate: true,
