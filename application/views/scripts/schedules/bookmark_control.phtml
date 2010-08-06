@@ -27,7 +27,7 @@ if ($this->isAuthenticated()) {
 	
 	print "\n\t</div>";
 } else {
-	print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'login')).'">Log-in to save courses and build schedules</a>';
+	print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'login', 'return' => $this->url())).'">Log-in to save courses and build schedules</a>';
 }
 
 if (!defined('BOOKMARK_CONTROLS_SCRIPT_ADDED')) {
