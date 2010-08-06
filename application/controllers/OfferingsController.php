@@ -541,7 +541,7 @@ class OfferingsController
 	private function addBookmarkInfo (osid_course_Course $course) {
 		// Initialize our Bookmarks Model
 		if ($this->_helper->auth->getHelper()->isAuthenticated()) {
-			$bookmarks = new Bookmarks(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
+			$bookmarks = $this->_helper->bookmarks();
  			$this->view->bookmarks_IsCourseSaved = $bookmarks->isBookmarked($course->getId());
  			$this->view->bookmarks_CourseId = $course->getId();
  			$this->view->bookmarks_CourseName = $course->getDisplayName();

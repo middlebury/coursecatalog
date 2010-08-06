@@ -63,7 +63,7 @@ class SchedulesController
 		
 		
 		// Load the bookmarks for the selected catalog/terms
-		$bookmarks = new Bookmarks(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
+		$bookmarks = $this->_helper->bookmarks();
 		if (isset($this->view->selectedTermId)) {
 			$this->view->bookmarked_courses = $bookmarks->getBookmarkedCoursesInCatalogForTerm($catalogId, $this->view->selectedTermId);
 		} else {
