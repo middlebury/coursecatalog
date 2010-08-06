@@ -16,7 +16,7 @@ foreach ($this->schedules as $schedule) {
 	print "\n\t\t<input type='submit' value='Save Name'/>";
 	print "\n\t</form>";
 	
-	print "\n\t<a class='calendar_button' href='".$this->url(array('action' => 'eventsjson', 'schedule_id' => $schedule->getId()))."'>";
+	print "\n\t<a class='calendar_button' href='".$this->url(array('action' => 'eventsjson', 'schedule_id' => $schedule->getId()))."' title='Click to zoom'>";
 	print "\n\t<img class='calendar_img' src='".$this->url(array('action' => 'png', 'schedule_id' => $schedule->getId()))."' alt='Weekly Schedule Image'/>";
 	print "\n\t\t</a>";
 	
