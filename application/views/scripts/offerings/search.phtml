@@ -405,6 +405,11 @@ print "\n\t</dl>";
 
 			</td>
 			<td class='column2'>
+				<?php 
+				$this->bookmarks_CourseId = $section->getCourseId();
+				$this->bookmarks_IsCourseSaved = false;
+				print $this->render('schedules/bookmark_control.phtml'); 
+				?>
 				<div class='title'><?php print nl2br($section->getTitle()); ?></div>
 				<div class='description'><?php print $section->getDescription(); ?></div>				
 <?php
