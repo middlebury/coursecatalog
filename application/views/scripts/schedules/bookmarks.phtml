@@ -10,7 +10,11 @@
 		print "</a>";
 		print "\n\t\t</div>";
 
-		print "<div class='remove_course'><button class='remove_course' title='Remove Course Bookmark' href='".$this->url(array('controller' => 'bookmarks', 'action' => 'remove', 'course' => $this->getStringFromOsidId($course->getId()), 'csrf_key' => $this->csrfKey()))."'>X</button></div>";
+		print "\n\t\t<div class='remove_course'>";
+		print "\n\t\t\t<a class='remove_course' title='Remove Course Bookmark' href='".$this->url(array('controller' => 'bookmarks', 'action' => 'remove', 'course' => $this->getStringFromOsidId($course->getId()), 'csrf_key' => $this->csrfKey()))."'>";
+		print "\n\t\t\t\t<button>X</button>";
+		print "\n\t\t\t</a>";
+		print "\n\t\t</div>";
 		
 		print "\n\t\t<form class='add_to_schedule_form' action='".$this->url(array('action' => 'add', 'term' => $this->termIdString))."' method='post'>";
 		print "\n\t\t<select name='schedule_id'>";
@@ -27,6 +31,7 @@
 			<form action="<?php print $this->url(array('action' => 'add', 'term' => $this->termIdString)); ?>" class="add_section_form" method="post">
 				Choose one option from each group:
 				<ul class="section_sets">
+					<li> &nbsp; </li>
 				</ul>
 				
 				<input type='hidden' name='csrf_key' value='<?php print $this->csrfKey(); ?>' />
@@ -49,7 +54,7 @@
 
 	$(function() { // on DOM ready 
 		
-		$("button.remove_course").click(function () {
+		$("a.remove_course").click(function () {
 			if (confirm('Do you want to remove the bookmark for this course?')) {
 				var li = $(this).parent();
 				$.ajax({
@@ -59,6 +64,7 @@
 					}
 				});
 			}
+			return false;
 		});
 		
 		
@@ -86,6 +92,7 @@
 			var scheduleId = $(this).val();
 			$(this).val("");
 			
+			addDialog.find("ul.section_sets").empty();
 			getSectionSets(addDialog, scheduleId);
 			addDialog.dialog("open");
 		});

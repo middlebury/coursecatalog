@@ -33,6 +33,7 @@ abstract class AbstractCatalogController
 		$this->view->catalogIdString = $this->_getParam('catalog');
 		$this->view->termIdString = $this->_getParam('term');
 		$this->view->addHelperPath(APPLICATION_PATH.'/views/helpers', 'Catalog_View_Helper');
+		$this->view->doctype('XHTML1_TRANSITIONAL');
 	}
 	
 	/**

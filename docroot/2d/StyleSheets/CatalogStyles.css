@@ -242,6 +242,9 @@ li.bookmarked_course, li.bookmarked_course div.course_info {
 li.bookmarked_course div.remove_course {
 	float: right;
 }
+.remove_course a, .remove_course a:hover {
+	border-bottom: none;
+}
 
 
 div.schedule li.offering {

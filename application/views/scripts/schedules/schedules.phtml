@@ -17,7 +17,7 @@ foreach ($this->schedules as $schedule) {
 	print "\n\t</form>";
 	
 	print "\n\t<a class='calendar_button' href='".$this->url(array('action' => 'eventsjson', 'schedule_id' => $schedule->getId()))."'>";
-	print "\n\t<img class='calendar_img' src='".$this->url(array('action' => 'png', 'schedule_id' => $schedule->getId()))."'/>";
+	print "\n\t<img class='calendar_img' src='".$this->url(array('action' => 'png', 'schedule_id' => $schedule->getId()))."' alt='Weekly Schedule Image'/>";
 	print "\n\t\t</a>";
 	
 	print "\n\t<div class='calendar' style='display: none;' title=\"".$this->escape($schedule->getName())."\">";
@@ -28,7 +28,11 @@ foreach ($this->schedules as $schedule) {
 	print "</div>";
 	
 	print "\n\t\t<ul>";
-	foreach ($schedule->getOfferings() as $offering) {
+	$offerings = $schedule->getOfferings();
+	if (!count($offerings)) {
+		print "\n\t\t\t<li style='visibility: hidden'> &nbsp; </li>";
+	}
+	foreach ($offerings as $offering) {
 		print "\n\t\t\t<li class='offering'>";
 		
 		print "\n\t\t<div class='offering_name'>";
@@ -48,7 +52,7 @@ foreach ($this->schedules as $schedule) {
 		print "\n\t\t<form class='remove_offering' action='".$this->url(array('action' => 'remove'))."' method='post'>";
 		print "\n\t\t\t<input type='hidden' name='csrf_key' value='".$this->csrfKey()."'/>";
 		print "\n\t\t\t<input type='hidden' name='schedule_id' value='".$schedule->getId()."'/>";
-		print "\n\t\t\t<input type='hidden' name='offering' value='".$this->getStringFromOsidId($offering->getId())."'>";
+		print "\n\t\t\t<input type='hidden' name='offering' value='".$this->getStringFromOsidId($offering->getId())."'/>";
 		print "\n\t\t\t<input type='submit' title='Remove from the schedule.' value='X'/>";
 		print "\n\t\t\t<input type='hidden' name='course_name' value='".$this->escape($offering->getCourse()->getDisplayName())."'/>";
 		print "\n\t\t</form>";
