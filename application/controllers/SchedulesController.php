@@ -430,6 +430,8 @@ class SchedulesController
 			$this->view->maxTime = 17 * 3600;
 		}
 		
+		$this->view->height = 600;
+		
 		$this->getResponse()->setHeader('Content-Type', 'image/png');
     }
 }

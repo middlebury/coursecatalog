@@ -29,7 +29,12 @@ if (!$hasSaturday) {
  *********************************************************/
 
 $width = 910;
+if ($this->width)
+	$width = $this->width;
 $height = 800;
+if ($this->height)
+	$height = $this->height;
+
 $fontFile = "/usr/share/fonts/bitstream-vera/Vera.ttf";
 
 $im = ImageCreateTrueColor($width, $height);
