@@ -270,3 +270,16 @@ div.schedule li.offering div.offering_title {
 img.calendar_img, img.calendar_button {
 	width: 100%;
 }
+
+div.leftText {
+	margin-top: 40px;
+}
+div.content > ul.menu > li.leftText {
+	border-top: none;
+}
+
+div.leftText .notice {
+	border: 1px solid red;
+	color: red;
+	padding: 3px;
+}
