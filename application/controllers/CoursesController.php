@@ -112,6 +112,9 @@ class CoursesController
 			$this->view->linkTermId = $this->_helper->osidTerms->getCurrentTermId($this->getSelectedCatalogId());
 		}
 		
+		// Bookmarked Courses and Schedules
+ 		$this->view->bookmarks_CourseId = $this->view->course->getId(); 
+		
 		$this->render();
 		
 		// offerings
