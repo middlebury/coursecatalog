@@ -5,7 +5,7 @@ if ($this->isAuthenticationEnabled()) {
 		print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'logout', 'return' => $this->pathAsAbsoluteUrl($this->url()))).'">Log Out</a> ';
 		print $this->getUserDisplayName();
 	} else {
-		print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'login')).'">Log In</a>';
+		print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'login', 'return' => $this->pathAsAbsoluteUrl($this->url()))).'">Log In</a>';
 	}
 }
 ?>
