@@ -66,7 +66,7 @@ class Auth_Action_Helper_Cas
     	self::initializePhpCas();
     	
     	session_destroy();
-    	if ($return) {
+    	if ($returnUrl) {
 	    	phpCAS::logoutWithUrl($returnUrl);
 	    } else {
 	    	phpCAS::logout();
