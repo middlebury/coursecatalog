@@ -1,6 +1,6 @@
 <?php if ($this->isAuthenticationEnabled()) { ?>
 
-<div class='schedule_controls'>
+<div class='bookmark_controls'>
 
 <?php
 if ($this->isAuthenticated()) {
@@ -11,17 +11,17 @@ if ($this->isAuthenticated()) {
 	print "\n\t<div class='save_course'>";
 	
 	print "\n\t\t<a href='".$this->url(array('controller' => 'bookmarks', 'action' => 'remove', 'course' => $this->getStringFromOsidId($this->bookmarks_CourseId), 'csrf_key' => $this->csrfKey()))."'";
-	if (!$this->bookmarks_IsCourseSaved)
+	if (!$this->bookmarks()->isBookmarked($this->bookmarks_CourseId))
 		print "style='display: none;'";
 	print " title='click to save'>";
-	print "&#9733; ".$this->escape($this->bookmarks_CourseName)." saved";
+	print "&#9733; Saved";
 	print "</a>";
 	
 	print "\n\t\t<a href='".$this->url(array('controller' => 'bookmarks', 'action' => 'add', 'course' => $this->getStringFromOsidId($this->bookmarks_CourseId), 'csrf_key' => $this->csrfKey()))."'";
-	if ($this->bookmarks_IsCourseSaved)
+	if ($this->bookmarks()->isBookmarked($this->bookmarks_CourseId))
 		print "style='display: none;'";
 	print " title='click to forget'>";
-	print "&#9734; Save ".$this->escape($this->bookmarks_CourseName);
+	print "&#9734; Save";
 	print "</a>";
 	
 	print "\n\t</div>";

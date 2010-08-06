@@ -166,14 +166,15 @@ div.login_info {
 /*********************************************************
  * Schedule styles
  *********************************************************/
-div.schedule_controls {
+div.bookmark_controls {
 	float: right;
-	width: 188px;
-	border: 1px solid;
 	padding: 5px;
 	margin-bottom: 5px;
 	margin-left: 5px;
 	margin-top: -40px;
+}
+.search_results div.bookmark_controls {
+	margin-top: 0px;
 }
 
 div.schedule {

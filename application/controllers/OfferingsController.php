@@ -521,31 +521,13 @@ class OfferingsController
  		}
  		
  		// Bookmarked Courses and Schedules
- 		$this->addBookmarkInfo($this->view->offering->getCourse()); 		
+ 		$this->view->bookmarks_CourseId = $this->view->offering->getCourseId(); 		
  		
  		$this->render();
  		
  		$this->render('offerings', null, true);
  		
  		$this->view->menuIsOfferings = true;
-	}
-	
-	/**
-	 * Add Bookmark data to our view
-	 * 
-	 * @param object osid_course_Course $course
-	 * @return void
-	 * @access private
-	 * @since 7/2/10
-	 */
-	private function addBookmarkInfo (osid_course_Course $course) {
-		// Initialize our Bookmarks Model
-		if ($this->_helper->auth->getHelper()->isAuthenticated()) {
-			$bookmarks = $this->_helper->bookmarks();
- 			$this->view->bookmarks_IsCourseSaved = $bookmarks->isBookmarked($course->getId());
- 			$this->view->bookmarks_CourseId = $course->getId();
- 			$this->view->bookmarks_CourseName = $course->getDisplayName();
- 		}
 	}
 
 }
