@@ -192,60 +192,61 @@ class Schedule {
 	 * @since 8/5/10
 	 */
 	public function getWeeklyEvents () {
-		$events = array();
-		$scheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
-		
-		foreach ($this->getOfferings() as $offering) {
-			$name = $offering->getDisplayName();
-			if ($offering->hasLocation()) {
-				$location = $offering->getLocation()->getDescription();
-			} else {
-				$location = '';
-			}
-			$rec = $offering->getCourseOfferingRecord($scheduleType);
+		if (!isset($this->events)) {
+			$this->events = array();
+			$scheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 			
-			if ($rec->meetsOnSunday()) {
-				$this->addEvents($events, $name, $location, 0, $rec->getSundayStartTimes(), $rec->getSundayEndTimes());
-			}
-			if ($rec->meetsOnMonday()) {
-				$this->addEvents($events, $name, $location, 1, $rec->getMondayStartTimes(), $rec->getMondayEndTimes());
-			}
-			if ($rec->meetsOnTuesday()) {
-				$this->addEvents($events, $name, $location, 2, $rec->getTuesdayStartTimes(), $rec->getTuesdayEndTimes());
-			}
-			if ($rec->meetsOnWednesday()) {
-				$this->addEvents($events, $name, $location, 3, $rec->getWednesdayStartTimes(), $rec->getWednesdayEndTimes());
-			}
-			if ($rec->meetsOnThursday()) {
-				$this->addEvents($events, $name, $location, 4, $rec->getThursdayStartTimes(), $rec->getThursdayEndTimes());
-			}
-			if ($rec->meetsOnFriday()) {
-				$this->addEvents($events, $name, $location, 5, $rec->getFridayStartTimes(), $rec->getFridayEndTimes());
-			}
-			if ($rec->meetsOnSaturday()) {
-				$this->addEvents($events, $name, $location, 6, $rec->getSaturdayStartTimes(), $rec->getSaturdayEndTimes());
+			foreach ($this->getOfferings() as $offering) {
+				$name = $offering->getDisplayName();
+				if ($offering->hasLocation()) {
+					$location = $offering->getLocation()->getDescription();
+				} else {
+					$location = '';
+				}
+				$rec = $offering->getCourseOfferingRecord($scheduleType);
+				
+				if ($rec->meetsOnSunday()) {
+					$this->addEvents($name, $location, 0, $rec->getSundayStartTimes(), $rec->getSundayEndTimes());
+				}
+				if ($rec->meetsOnMonday()) {
+					$this->addEvents($name, $location, 1, $rec->getMondayStartTimes(), $rec->getMondayEndTimes());
+				}
+				if ($rec->meetsOnTuesday()) {
+					$this->addEvents($name, $location, 2, $rec->getTuesdayStartTimes(), $rec->getTuesdayEndTimes());
+				}
+				if ($rec->meetsOnWednesday()) {
+					$this->addEvents($name, $location, 3, $rec->getWednesdayStartTimes(), $rec->getWednesdayEndTimes());
+				}
+				if ($rec->meetsOnThursday()) {
+					$this->addEvents($name, $location, 4, $rec->getThursdayStartTimes(), $rec->getThursdayEndTimes());
+				}
+				if ($rec->meetsOnFriday()) {
+					$this->addEvents($name, $location, 5, $rec->getFridayStartTimes(), $rec->getFridayEndTimes());
+				}
+				if ($rec->meetsOnSaturday()) {
+					$this->addEvents($name, $location, 6, $rec->getSaturdayStartTimes(), $rec->getSaturdayEndTimes());
+				}
 			}
 		}
-		
-		return $events;
+		return $this->events;
 	}
+	private $events;			
 	
 	/**
      * Add events to an array.
      * 
-     * @param ref array $events
      * @param string $name
      * @param string $location
      * @param int $dayOfWeek
      * @param array $startTimes
      * @param array $endTimes
-     * @return <##>
+     * @return void
      * @access private
      * @since 8/5/10
      */
-    private function addEvents (array &$events, $name, $location, $dayOfWeek, array $startTimes, array $endTimes) {
+    private function addEvents ($name, $location, $dayOfWeek, array $startTimes, array $endTimes) {
     	foreach ($startTimes as $i => $startTime) {
-			$events[] = array(
+			$this->events[] = array(
 				'id'		=> $name.'-'.$dayOfWeek.'-'.$startTime,
 				'name'		=> $name,
 				'location'	=> $location,
@@ -254,6 +255,62 @@ class Schedule {
 				'endTime'	=> $endTimes[$i],
 			);
 		}
+    }
+    
+    /**
+     * Answer the earliest time seen in this schedule
+     * 
+     * @return int Seconds in a day
+     * @access public
+     * @since 8/6/10
+     */
+    public function getEarliestTime () {
+    	$time = 24 * 60 * 60;
+    	foreach ($this->getWeeklyEvents() as $event) {
+			if ($event['startTime'] < $time) {
+				$time = $event['startTime'];
+			}
+		}
+		return $time;
+    }
+    
+     /**
+     * Answer the latest time seen in this schedule
+     * 
+     * @return int Seconds in a day
+     * @access public
+     * @since 8/6/10
+     */
+    public function getLatestTime () {
+    	$time = 0;
+    	foreach ($this->getWeeklyEvents() as $event) {
+			if ($event['endTime'] > $time) {
+				$time = $event['endTime'];
+			}
+		}
+		return $time;
+    }
+    
+    /**
+     * Answer the earliest hour seen in this schedule (ignoring minutes);
+     * 
+     * @return int 0 to 23
+     * @access public
+     * @since 8/6/10
+     */
+    public function getEarliestHour () {
+    	return floor($this->getEarliestTime() / 3600);
+    }
+    
+    /**
+     * Answer the latest hour seen in this schedule (ignoring minutes);
+     * 
+     * @return int 0 to 23
+     * @access public
+     * @since 8/6/10
+     */
+    public function getLatestHour () {
+    	return floor($this->getLatestTime() / 3600);
     }
 	
 	/**

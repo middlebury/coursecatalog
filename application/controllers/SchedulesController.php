@@ -423,14 +423,8 @@ class SchedulesController
 		
 		$this->view->events = $schedule->getWeeklyEvents();
 		
-		$this->view->minTime = 24 * 60 * 60; // Default to starting at midnight
-		$this->view->maxTime = 0 * 60 * 60; // Default to ending at midnight
-		foreach ($this->view->events as $event) {
-			if ($event['startTime'] < $this->view->minTime)
-				$this->view->minTime = $event['startTime'];
-			if ($event['endTime'] > $this->view->maxTime)
-				$this->view->maxTime = $event['endTime'];
-		}
+		$this->view->minTime = $schedule->getEarliestTime();
+		$this->view->maxTime = $schedule->getLatestTime();
 		
 		// Check for collisions
 		for ($i = 0; $i < count($this->view->events); $i++) {
