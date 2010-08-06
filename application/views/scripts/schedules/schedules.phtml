@@ -19,7 +19,13 @@ foreach ($this->schedules as $schedule) {
 	print "\n\t<a class='calendar_button' href='".$this->url(array('action' => 'eventsjson', 'schedule_id' => $schedule->getId()))."'>";
 	print "\n\t<img class='calendar_img' src='".$this->url(array('action' => 'png', 'schedule_id' => $schedule->getId()))."'/>";
 	print "\n\t\t</a>";
-	print "\n\t<div class='calendar' style='display: none;' title=\"".$this->escape($schedule->getName())."\"></div>";
+	
+	print "\n\t<div class='calendar' style='display: none;' title=\"".$this->escape($schedule->getName())."\">";
+	print "\n\t\t<input type='hidden' name='start_hour' value='".($schedule->getEarliestHour())."'/>";
+	print "\n\t\t<input type='hidden' name='end_hour' value='".($schedule->getLatestHour() + 1)."'/>";
+	print "\n\t\t<input type='hidden' name='show_sunday' value='".(($schedule->hasEventsOnSunday())?'yes':'no')."'/>";
+	print "\n\t\t<input type='hidden' name='show_saturday' value='".(($schedule->hasEventsOnSaturday())?'yes':'no')."'/>";
+	print "</div>";
 	
 	print "\n\t\t<ul>";
 	foreach ($schedule->getOfferings() as $offering) {
@@ -116,20 +122,40 @@ foreach ($this->schedules as $schedule) {
 				var month = new Date().getMonth();
 				var day = new Date().getDate();
 				
+				var startHour = new Number(calendar.find('input:hidden[name=start_hour]').val());
+				var endHour = new Number(calendar.find('input:hidden[name=end_hour]').val());
+				
+				var daysToShow = 7;
+				var firstDayOfWeek = 0;
+				if (calendar.find('input:hidden[name=show_sunday]').val() == 'no') {
+					daysToShow--;
+					firstDayOfWeek = 1;
+				}
+				if (calendar.find('input:hidden[name=show_saturday]').val() == 'no') {
+					daysToShow--;
+				}
+				
 				calendar.weekCalendar({
 					date:new Date(year, month, day, 9),
 					readonly: true,
 					allowCalEventOverlap: true,
 					overlapEventsSeparate: true,
 					timeslotsPerHour: 4,
+					businessHours : {
+						start: startHour,
+						end: endHour,
+						limitDisplay : true
+					},
+					daysToShow: daysToShow,
+					firstDayOfWeek: firstDayOfWeek,
 					height: function($calendar){
 						return $(window).height() - $("h1").outerHeight(true);
 					},
 					eventRender : function(calEvent, $event) {
-// 						if(calEvent.end.getTime() < new Date().getTime()) {
-// 							$event.css("backgroundColor", "#aaa");
-// 							$event.find(".time").css({"backgroundColor": "#999", "border":"1px solid #888"});
-// 						}
+						if(calEvent.collisions > 0) {
+							$event.css({"backgroundColor":"#F77", "border":"1px solid #F00"});
+							$event.find(".wc-time").css({"backgroundColor": "#F22", "border":"1px solid #F00"});
+						}
 					},
 					noEvents : function() {
 						displayMessage("There are no events for this week");

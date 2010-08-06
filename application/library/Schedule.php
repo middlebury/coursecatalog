@@ -350,6 +350,36 @@ class Schedule {
     public function getLatestHour () {
     	return floor($this->getLatestTime() / 3600);
     }
+    
+    /**
+     * Answer true if this schedule has any events on Sunday
+     * 
+     * @return boolean
+     * @access public
+     * @since 8/6/10
+     */
+    public function hasEventsOnSunday () {
+    	foreach ($this->getWeeklyEvents() as $event) {
+			if ($event['dayOfWeek'] === 0)
+				return true;
+		}
+		return false;
+    }
+    
+    /**
+     * Answer true if this schedule has any events on Saturday
+     * 
+     * @return boolean
+     * @access public
+     * @since 8/6/10
+     */
+    public function hasEventsOnSaturday () {
+    	foreach ($this->getWeeklyEvents() as $event) {
+			if ($event['dayOfWeek'] === 6)
+				return true;
+		}
+		return false;
+    }
 	
 	/**
 	 * Sort an array of offerings based on their first meeting time.
