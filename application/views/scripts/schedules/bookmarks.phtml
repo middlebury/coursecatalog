@@ -56,7 +56,7 @@
 		
 		$("a.remove_course").click(function () {
 			if (confirm('Do you want to remove the bookmark for this course?')) {
-				var li = $(this).parent();
+				var li = $(this).parents('li.bookmarked_course');
 				$.ajax({
 					url: $(this).attr('href'), 
 					success: function () {
