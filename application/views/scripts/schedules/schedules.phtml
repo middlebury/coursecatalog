@@ -125,6 +125,10 @@ foreach ($this->schedules as $schedule) {
 				var startHour = new Number(calendar.find('input:hidden[name=start_hour]').val());
 				var endHour = new Number(calendar.find('input:hidden[name=end_hour]').val());
 				
+				// 4 timeslots per hour, 20 height per slot.
+				// Add on the approximate size of the header.
+				var scheduleHeight = ((endHour - startHour + 1) * 4 * 20) + 70; 
+				
 				var daysToShow = 7;
 				var firstDayOfWeek = 0;
 				if (calendar.find('input:hidden[name=show_sunday]').val() == 'no') {
@@ -141,6 +145,7 @@ foreach ($this->schedules as $schedule) {
 					allowCalEventOverlap: true,
 					overlapEventsSeparate: true,
 					timeslotsPerHour: 4,
+					timeslotHeight: 20,
 					businessHours : {
 						start: startHour,
 						end: endHour,
@@ -149,7 +154,11 @@ foreach ($this->schedules as $schedule) {
 					daysToShow: daysToShow,
 					firstDayOfWeek: firstDayOfWeek,
 					height: function($calendar){
-						return $(window).height() - $("h1").outerHeight(true);
+						var maxHeight = $(window).height() - $("h1").outerHeight(true);
+						if (maxHeight > scheduleHeight)
+							return scheduleHeight;
+						else
+							return maxHeight;
 					},
 					eventRender : function(calEvent, $event) {
 						if(calEvent.collisions > 0) {
