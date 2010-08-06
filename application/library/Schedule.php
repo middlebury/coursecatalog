@@ -182,7 +182,7 @@ class Schedule {
 			$offerings[] = $lookupSession->getCourseOffering($offeringId);
 		}
 		
-		return $this->timeSort($offerings);
+		return $this->nameSort($offerings);
 	}
 	
 	/**
@@ -449,6 +449,25 @@ class Schedule {
 		}
 		
 		array_multisort($sortkeys, SORT_NUMERIC, SORT_ASC, $names, SORT_STRING, SORT_ASC, array_keys($offerings), $offerings);
+		return $offerings;
+	}
+	
+	/**
+	 * Sort an array of offerings based on their names.
+	 * 
+	 * @param ref array $offerings
+	 * @return array The sorted array
+	 * @access public
+	 * @since 8/6/10
+	 */
+	public function nameSort (array &$offerings) {
+		$names = array();
+		
+		foreach ($offerings as $offering) {
+			$names[] = $offering->getDisplayName();
+		}
+		
+		array_multisort($names, SORT_STRING, SORT_ASC, array_keys($offerings), $offerings);
 		return $offerings;
 	}
 }
