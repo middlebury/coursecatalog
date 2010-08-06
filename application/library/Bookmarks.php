@@ -131,9 +131,13 @@ class Bookmarks {
 	 * @since 7/30/10
 	 */
 	public function getAllBookmarkedCourses () {
+		$courseIdList = $this->getAllBookmarkedCourseIds();
+		if (!$courseIdList->hasNext())
+			return new phpkit_course_ArrayCourseList(array());
+		
 		$courseLookupSession = $this->courseManager->getCourseLookupSession();
 		$courseLookupSession->useFederatedView();
-		return $courseLookupSession->getCoursesByIds($this->getAllBookmarkedCourseIds());
+		return $courseLookupSession->getCoursesByIds($courseIdList);
 	}
 	
 	/**
@@ -146,10 +150,14 @@ class Bookmarks {
 	 * @since 7/30/10
 	 */
 	public function getBookmarkedCoursesInCatalogForTerm (osid_id_Id $catalogId, osid_id_Id $termId) {
+		$courseIdList = $this->getAllBookmarkedCourseIds();
+		if (!$courseIdList->hasNext())
+			return new phpkit_course_ArrayCourseList(array());
+		
 		$searchSession = $this->courseManager->getCourseSearchSessionForCatalog($catalogId);
 		
 		$search = $searchSession->getCourseSearch();
-		$search->searchAmongCourses($this->getAllBookmarkedCourseIds());
+		$search->searchAmongCourses($courseIdList);
 		
 		$query = $searchSession->getCourseQuery();
 		$record = $query->getCourseQueryRecord(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:term'));
