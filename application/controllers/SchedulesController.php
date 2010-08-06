@@ -1,5 +1,4 @@
 <?php
-require_once('harmoni/Primitives/Chronology/Week.class.php');
 
 /** Zend_Controller_Action */
 class SchedulesController 
@@ -425,27 +424,6 @@ class SchedulesController
 		
 		$this->view->minTime = $schedule->getEarliestTime();
 		$this->view->maxTime = $schedule->getLatestTime();
-		
-		// Check for collisions
-		for ($i = 0; $i < count($this->view->events); $i++) {
-			$this->view->events[$i]['collisions'] = 0;
-			$myTimespan = Timespan::startingEnding(
-				DateAndTime::today()->plus(Duration::withSeconds($this->view->events[$i]['startTime'])),
-				DateAndTime::today()->plus(Duration::withSeconds($this->view->events[$i]['endTime'])));
-			$day = $this->view->events[$i]['dayOfWeek'];
-			
-			// If we have a different event on the same day check its time for collisions.
-			for ($j = 0; $j < count($this->view->events); $j++) {
-				if ($i != $j && $day == $this->view->events[$j]['dayOfWeek']) {
-					$otherTimespan = Timespan::startingEnding(
-						DateAndTime::today()->plus(Duration::withSeconds($this->view->events[$j]['startTime'])),
-						DateAndTime::today()->plus(Duration::withSeconds($this->view->events[$j]['endTime'])));
-					if (!is_null($myTimespan->intersection($otherTimespan))) {
-						$this->view->events[$i]['collisions']++;
-					}
-				}
-			}
-		}
 		
 		$this->getResponse()->setHeader('Content-Type', 'image/png');
     }

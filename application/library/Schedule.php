@@ -7,6 +7,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */ 
 
+require_once('harmoni/Primitives/Chronology/Week.class.php');
+
 /**
  * A class for working with user-created schedules
  * 
@@ -227,6 +229,8 @@ class Schedule {
 					$this->addEvents($name, $location, 6, $rec->getSaturdayStartTimes(), $rec->getSaturdayEndTimes());
 				}
 			}
+			
+			$this->checkForCollisions();
 		}
 		return $this->events;
 	}
@@ -254,6 +258,36 @@ class Schedule {
 				'startTime' => $startTime,
 				'endTime'	=> $endTimes[$i],
 			);
+		}
+    }
+    
+    /**
+     * Check for collisions between our events.
+     * 
+     * @return void
+     * @access private
+     * @since 8/6/10
+     */
+    private function checkForCollisions () {
+    	// Check for collisions
+		for ($i = 0; $i < count($this->events); $i++) {
+			$this->events[$i]['collisions'] = 0;
+			$myTimespan = Timespan::startingEnding(
+				DateAndTime::today()->plus(Duration::withSeconds($this->events[$i]['startTime'])),
+				DateAndTime::today()->plus(Duration::withSeconds($this->events[$i]['endTime'])));
+			$day = $this->events[$i]['dayOfWeek'];
+			
+			// If we have a different event on the same day check its time for collisions.
+			for ($j = 0; $j < count($this->events); $j++) {
+				if ($i != $j && $day == $this->events[$j]['dayOfWeek']) {
+					$otherTimespan = Timespan::startingEnding(
+						DateAndTime::today()->plus(Duration::withSeconds($this->events[$j]['startTime'])),
+						DateAndTime::today()->plus(Duration::withSeconds($this->events[$j]['endTime'])));
+					if (!is_null($myTimespan->intersection($otherTimespan))) {
+						$this->events[$i]['collisions']++;
+					}
+				}
+			}
 		}
     }
     
