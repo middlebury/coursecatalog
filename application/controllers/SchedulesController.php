@@ -423,7 +423,12 @@ class SchedulesController
 		$this->view->events = $schedule->getWeeklyEvents();
 		
 		$this->view->minTime = $schedule->getEarliestTime();
-		$this->view->maxTime = $schedule->getLatestTime();
+		if ($schedule->getLatestTime()) {
+			$this->view->maxTime = $schedule->getLatestTime();
+		} else {
+			$this->view->minTime = 9 * 3600;
+			$this->view->maxTime = 17 * 3600;
+		}
 		
 		$this->getResponse()->setHeader('Content-Type', 'image/png');
     }

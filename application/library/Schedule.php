@@ -305,6 +305,10 @@ class Schedule {
 				$time = $event['startTime'];
 			}
 		}
+		// If we didn't find any events with a non-zero time, set our start time to 0.
+		if ($time == 24 * 60 * 60)
+			return 0;
+		
 		return $time;
     }
     
