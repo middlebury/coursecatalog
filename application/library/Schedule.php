@@ -199,42 +199,17 @@ class Schedule {
 			$scheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 			
 			foreach ($this->getOfferings() as $offering) {
-				$name = $offering->getDisplayName();
-				if ($offering->hasLocation()) {
-					$location = $offering->getLocation()->getDescription();
-				} else {
-					$location = '';
-				}
-				$rec = $offering->getCourseOfferingRecord($scheduleType);
-				
-				if ($rec->meetsOnSunday()) {
-					$this->addEvents($name, $location, 0, $rec->getSundayStartTimes(), $rec->getSundayEndTimes());
-				}
-				if ($rec->meetsOnMonday()) {
-					$this->addEvents($name, $location, 1, $rec->getMondayStartTimes(), $rec->getMondayEndTimes());
-				}
-				if ($rec->meetsOnTuesday()) {
-					$this->addEvents($name, $location, 2, $rec->getTuesdayStartTimes(), $rec->getTuesdayEndTimes());
-				}
-				if ($rec->meetsOnWednesday()) {
-					$this->addEvents($name, $location, 3, $rec->getWednesdayStartTimes(), $rec->getWednesdayEndTimes());
-				}
-				if ($rec->meetsOnThursday()) {
-					$this->addEvents($name, $location, 4, $rec->getThursdayStartTimes(), $rec->getThursdayEndTimes());
-				}
-				if ($rec->meetsOnFriday()) {
-					$this->addEvents($name, $location, 5, $rec->getFridayStartTimes(), $rec->getFridayEndTimes());
-				}
-				if ($rec->meetsOnSaturday()) {
-					$this->addEvents($name, $location, 6, $rec->getSaturdayStartTimes(), $rec->getSaturdayEndTimes());
-				}
+				$this->events = array_merge($this->events, $this->getWeeklyOfferingEvents($offering));
 			}
 			
-			$this->checkForCollisions();
+			// Check for collisions
+			foreach ($this->events as $i => $event) {
+				$this->events[$i]['collisions'] = $this->numCollisions($event, $this->events);
+			}
 		}
 		return $this->events;
 	}
-	private $events;			
+	private $events;
 	
 	/**
      * Add events to an array.
@@ -248,9 +223,10 @@ class Schedule {
      * @access private
      * @since 8/5/10
      */
-    private function addEvents ($name, $location, $dayOfWeek, array $startTimes, array $endTimes) {
+    private function getDailyEvents ($name, $location, $dayOfWeek, array $startTimes, array $endTimes) {
+    	$events = array();
     	foreach ($startTimes as $i => $startTime) {
-			$this->events[] = array(
+			$events[] = array(
 				'id'		=> $name.'-'.$dayOfWeek.'-'.$startTime,
 				'name'		=> $name,
 				'location'	=> $location,
@@ -259,36 +235,110 @@ class Schedule {
 				'endTime'	=> $endTimes[$i],
 			);
 		}
+		return $events;
     }
     
     /**
-     * Check for collisions between our events.
+     * Answer an array of events for the offering
      * 
-     * @return void
+     * @param osid_course_CourseOffering $offering
+     * @return array
      * @access private
-     * @since 8/6/10
+     * @since 8/9/10
      */
-    private function checkForCollisions () {
-    	// Check for collisions
-		for ($i = 0; $i < count($this->events); $i++) {
-			$this->events[$i]['collisions'] = 0;
-			$myTimespan = Timespan::startingEnding(
-				DateAndTime::today()->plus(Duration::withSeconds($this->events[$i]['startTime'])),
-				DateAndTime::today()->plus(Duration::withSeconds($this->events[$i]['endTime'])));
-			$day = $this->events[$i]['dayOfWeek'];
-			
-			// If we have a different event on the same day check its time for collisions.
-			for ($j = 0; $j < count($this->events); $j++) {
-				if ($i != $j && $day == $this->events[$j]['dayOfWeek']) {
-					$otherTimespan = Timespan::startingEnding(
-						DateAndTime::today()->plus(Duration::withSeconds($this->events[$j]['startTime'])),
-						DateAndTime::today()->plus(Duration::withSeconds($this->events[$j]['endTime'])));
-					if (!is_null($myTimespan->intersection($otherTimespan))) {
-						$this->events[$i]['collisions']++;
-					}
+    private function getWeeklyOfferingEvents (osid_course_CourseOffering $offering) {
+		$scheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
+		$events = array();
+
+    	$name = $offering->getDisplayName();
+		if ($offering->hasLocation()) {
+			$location = $offering->getLocation()->getDescription();
+		} else {
+			$location = '';
+		}
+		try {
+			$rec = $offering->getCourseOfferingRecord($scheduleType);
+		} catch (osid_UnsupportedException $e) {
+			throw new InvalidArgumentException($e->getMessage(), $e->getCode());
+		}
+		
+		if ($rec->meetsOnSunday()) {
+			$events = array_merge($events, $this->getDailyEvents($name, $location, 0, $rec->getSundayStartTimes(), $rec->getSundayEndTimes()));
+		}
+		if ($rec->meetsOnMonday()) {
+			$events = array_merge($events, $this->getDailyEvents($name, $location, 1, $rec->getMondayStartTimes(), $rec->getMondayEndTimes()));
+		}
+		if ($rec->meetsOnTuesday()) {
+			$events = array_merge($events, $this->getDailyEvents($name, $location, 2, $rec->getTuesdayStartTimes(), $rec->getTuesdayEndTimes()));
+		}
+		if ($rec->meetsOnWednesday()) {
+			$events = array_merge($events, $this->getDailyEvents($name, $location, 3, $rec->getWednesdayStartTimes(), $rec->getWednesdayEndTimes()));
+		}
+		if ($rec->meetsOnThursday()) {
+			$events = array_merge($events, $this->getDailyEvents($name, $location, 4, $rec->getThursdayStartTimes(), $rec->getThursdayEndTimes()));
+		}
+		if ($rec->meetsOnFriday()) {
+			$events = array_merge($events, $this->getDailyEvents($name, $location, 5, $rec->getFridayStartTimes(), $rec->getFridayEndTimes()));
+		}
+		if ($rec->meetsOnSaturday()) {
+			$events = array_merge($events, $this->getDailyEvents($name, $location, 6, $rec->getSaturdayStartTimes(), $rec->getSaturdayEndTimes()));
+		}
+		
+		return $events;
+    }
+    
+    /**
+     * Answer true if the offering passed collides with offerings in the schedule.
+     * Will throw an InvalidArgumentException if the offering passed does not
+     * support the urn:inet:middlebury.edu:record:weekly_schedule record type.
+     * 
+     * @param osid_course_CourseOffering $offering
+     * @return boolean
+     * @access public
+     * @since 8/9/10
+     */
+    public function collides (osid_course_CourseOffering $offering) {
+    	$events = $this->getWeeklyOfferingEvents($offering);
+    	foreach ($events as $event) {
+    		if ($this->numCollisions($event, $this->getWeeklyEvents())) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    /**
+     * Answer the number of collisions between an event and an array of events.
+     * Events that have the same 'id' element will not be counted.
+     * 
+     * 
+     * @param array $event
+     * @param array $compEvents
+     * @return int
+     * @access private
+     * @since 8/9/10
+     */
+    private function numCollisions (array $event, $compEvents) {
+    	$collisions = 0;
+		$myTimespan = Timespan::startingEnding(
+			DateAndTime::today()->plus(Duration::withSeconds($event['startTime'])),
+			DateAndTime::today()->plus(Duration::withSeconds($event['endTime'])));
+		$day = $event['dayOfWeek'];
+		$id = $event['id'];
+		
+		// If we have a different event on the same day check its time for collisions.
+		foreach ($compEvents as $compEvent) {
+			if ($id != $compEvent['id'] && $day == $compEvent['dayOfWeek']) {
+				$otherTimespan = Timespan::startingEnding(
+					DateAndTime::today()->plus(Duration::withSeconds($compEvent['startTime'])),
+					DateAndTime::today()->plus(Duration::withSeconds($compEvent['endTime'])));
+				if (!is_null($myTimespan->intersection($otherTimespan))) {
+					$collisions++;
 				}
 			}
 		}
+		
+		return $collisions;
     }
     
     /**
