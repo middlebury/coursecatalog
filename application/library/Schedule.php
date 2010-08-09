@@ -309,7 +309,7 @@ class Schedule {
     }
     
     /**
-     * Answer true if the offering passed collides with offerings in the schedule.
+     * Answer true if the offering passed conflicts with offerings in the schedule.
      * Will throw an InvalidArgumentException if the offering passed does not
      * support the urn:inet:middlebury.edu:record:weekly_schedule record type.
      * 
@@ -318,7 +318,7 @@ class Schedule {
      * @access public
      * @since 8/9/10
      */
-    public function collides (osid_course_CourseOffering $offering) {
+    public function conflicts (osid_course_CourseOffering $offering) {
     	$events = $this->getWeeklyOfferingEvents($offering);
     	foreach ($events as $event) {
     		if ($this->numCollisions($event, $this->getWeeklyEvents())) {
@@ -326,6 +326,29 @@ class Schedule {
     		}
     	}
     	return false;
+    }
+    
+    /**
+     * Answer an array of events that conflict with the events in the offering.
+     * 
+     * @param osid_course_CourseOffering $offering
+     * @return boolean
+     * @access public
+     * @since 8/9/10
+     */
+    public function getConflictingEvents (osid_course_CourseOffering $offering) {
+    	$myEvents = $this->getWeeklyOfferingEvents($offering);
+    	$conflictingEvents = array();
+    	$conflictingEventIds = array();
+    	foreach ($myEvents as $myEvent) {
+    		foreach ($this->getWeeklyEvents() as $event) {
+	    		if ($this->eventsCollide($event, $myEvent) && !in_array($event['id'], $conflictingEventIds)) {
+	    			$conflictingEventIds[] = $event['id'];
+    				$conflictingEvents[] = $event;
+    			}
+    		}
+    	}
+    	return $conflictingEvents;
     }
     
     /**
@@ -363,25 +386,42 @@ class Schedule {
      */
     private function numCollisions (array $event, $compEvents) {
     	$collisions = 0;
-		$myTimespan = Timespan::startingEnding(
-			DateAndTime::today()->plus(Duration::withSeconds($event['startTime'])),
-			DateAndTime::today()->plus(Duration::withSeconds($event['endTime'])));
-		$day = $event['dayOfWeek'];
-		$id = $event['id'];
-		
 		// If we have a different event on the same day check its time for collisions.
 		foreach ($compEvents as $compEvent) {
-			if ($id != $compEvent['id'] && $day == $compEvent['dayOfWeek']) {
-				$otherTimespan = Timespan::startingEnding(
-					DateAndTime::today()->plus(Duration::withSeconds($compEvent['startTime'])),
-					DateAndTime::today()->plus(Duration::withSeconds($compEvent['endTime'])));
-				if (!is_null($myTimespan->intersection($otherTimespan))) {
-					$collisions++;
-				}
+			if ($this->eventsCollide($event, $compEvent)) {
+				$collisions++;
 			}
 		}
 		
 		return $collisions;
+    }
+    
+    /**
+     * Answer true if two events collide
+     * 
+     * @param array $event1
+     * @param array $event2
+     * @return boolean
+     * @access private
+     * @since 8/9/10
+     */
+    private function eventsCollide (array $event1, array $event2) {
+    	// Events on different days do not collide
+    	if ($event1['dayOfWeek'] != $event2['dayOfWeek'])
+    		return false;
+    	
+    	// An event won't conflict with itself
+    	if ($event1['id'] == $event2['id'])
+    		return false;
+    	
+    	$timespan1 = Timespan::startingEnding(
+			DateAndTime::today()->plus(Duration::withSeconds($event1['startTime'])),
+			DateAndTime::today()->plus(Duration::withSeconds($event1['endTime'])));
+		$timespan2 = Timespan::startingEnding(
+			DateAndTime::today()->plus(Duration::withSeconds($event2['startTime'])),
+			DateAndTime::today()->plus(Duration::withSeconds($event2['endTime'])));
+		
+		return !is_null($timespan1->intersection($timespan2));
     }
     
     /**

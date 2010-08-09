@@ -332,6 +332,17 @@ class SchedulesController
 			}
 			$instructorString = trim($instructorString, ', ');
 			
+			$conflicts = $schedule->conflicts($offering);
+			if ($conflicts) {
+				$conflictString = '';
+				$conflictingNames = array();
+				foreach ($schedule->getConflictingEvents($offering) as $event) {
+					$conflictingNames[] = $event['name'];
+				}
+				$conflictString = 'Conflicts with: '.implode(', ', array_unique($conflictingNames));
+			} else {
+				$conflictString = '';
+			}
 			$info = array(
 				'id' 			=> $this->_helper->osidId->toString($offering->getId()),
 				'name'			=> $offering->getDisplayName(),
@@ -339,6 +350,8 @@ class SchedulesController
 				'instructor'	=> $instructorString,
 				'location' 		=> $offering->getLocationInfo(), 
 				'schedule' 		=> $offering->getScheduleInfo(),
+				'conflicts'		=> $conflicts,
+				'conflictString'	=> $conflictString,
 			);
 			
 			

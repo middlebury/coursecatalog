@@ -230,6 +230,9 @@ div.add_section_dialog li.section div.section_info {
 div.add_section_dialog li.section div.section_instructor {
 	float: right;
 }
+div.add_section_dialog li.section div.conflicting {
+	color: #F00;
+}
 
 
 form.add_to_schedule_form {

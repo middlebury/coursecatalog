@@ -134,7 +134,14 @@
 				item.append(section.name);
 				item.append(' <div class="section_instructor section_info"><span class="section_type">'+section.type+'</span> - <span class="section_instructor">'+section.instructor+'</span></div>');
 				item.append('');
-				item.append('<div class="section_time section_info">'+section.schedule+'</div>');
+				if (section.conflicts) {
+					var conflictsClass = ' conflicting';
+					var conflictNames = '<br/> &nbsp; &nbsp; ' + section.conflictString;
+				} else {
+					var conflictsClass = '';
+					var conflictNames = '';
+				}
+				item.append('<div class="section_time section_info'+conflictsClass+'">'+section.schedule+conflictNames+'</div>');
 				item.append('<div class="section_location section_info">'+section.location+'</div>');
 			}
 		}
