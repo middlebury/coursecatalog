@@ -106,6 +106,7 @@ class Schedule {
 	 * @since 8/3/10
 	 */
 	public function add (osid_id_Id $offeringId) {
+		unset($this->offerings);
 		$stmt = $this->db->prepare("INSERT INTO user_schedule_offerings (schedule_id, offering_id_keyword, offering_id_authority, offering_id_namespace) VALUES (?, ?, ?, ?);");
 		$name = 'Untitled Schedule';
 		try {
@@ -132,6 +133,17 @@ class Schedule {
 	 * @since 8/3/10
 	 */
 	public function includes (osid_id_Id $offeringId) {
+		// If we've already loaded our offerings, look at the object properties
+		// rather than doing another query.
+		if (isset($this->offerings)) {
+			foreach ($this->offerings as $offering) {
+				if ($offeringId->isEqual($offering->getId()))
+					return true;
+			}
+			return false;
+		}
+		
+		// Do the lookup in the database.
 		$stmt = $this->db->prepare("SELECT * FROM user_schedule_offerings WHERE schedule_id = ? AND offering_id_keyword = ? AND offering_id_authority = ? AND offering_id_namespace = ? LIMIT 1;");
 		$stmt->execute(array(
 			$this->getId(),
@@ -151,6 +163,7 @@ class Schedule {
 	 * @since 8/3/10
 	 */
 	public function remove (osid_id_Id $offeringId) {
+		unset($this->offerings);
 		$stmt = $this->db->prepare("DELETE FROM user_schedule_offerings WHERE schedule_id = ? AND offering_id_keyword = ? AND offering_id_authority = ? AND offering_id_namespace = ? LIMIT 1;");
 		$stmt->execute(array(
 			$this->getId(),
@@ -168,22 +181,26 @@ class Schedule {
 	 * @since 8/2/10
 	 */
 	public function getOfferings () {
-		$stmt = $this->db->prepare("SELECT * FROM user_schedule_offerings WHERE schedule_id = ?;");
-		$stmt->execute(array(
-			$this->getId()
-		));
-		
-		$lookupSession = $this->courseManager->getCourseOfferingLookupSession();
-		$lookupSession->useFederatedView();
-		
-		$offerings = array();
-		foreach ($stmt->fetchAll() as $row) {
-			$offeringId = new phpkit_id_Id($row['offering_id_authority'], $row['offering_id_namespace'], $row['offering_id_keyword']);
-			$offerings[] = $lookupSession->getCourseOffering($offeringId);
+		if (!isset($this->offerings)) {
+			$stmt = $this->db->prepare("SELECT * FROM user_schedule_offerings WHERE schedule_id = ?;");
+			$stmt->execute(array(
+				$this->getId()
+			));
+			
+			$lookupSession = $this->courseManager->getCourseOfferingLookupSession();
+			$lookupSession->useFederatedView();
+			
+			$offerings = array();
+			foreach ($stmt->fetchAll() as $row) {
+				$offeringId = new phpkit_id_Id($row['offering_id_authority'], $row['offering_id_namespace'], $row['offering_id_keyword']);
+				$offerings[] = $lookupSession->getCourseOffering($offeringId);
+			}
+			
+			$this->offerings = $this->nameSort($offerings);
 		}
-		
-		return $this->nameSort($offerings);
+		return $this->offerings;
 	}
+	private $offerings;
 	
 	/**
 	 * Answer an array of information about all of the events in a week.
@@ -215,6 +232,7 @@ class Schedule {
      * Add events to an array.
      * 
      * @param string $name
+     * @param string $offeringIdString
      * @param string $location
      * @param int $dayOfWeek
      * @param array $startTimes
@@ -223,11 +241,12 @@ class Schedule {
      * @access private
      * @since 8/5/10
      */
-    private function getDailyEvents ($name, $location, $dayOfWeek, array $startTimes, array $endTimes) {
+    private function getDailyEvents ($name, $offeringIdString, $location, $dayOfWeek, array $startTimes, array $endTimes) {
     	$events = array();
     	foreach ($startTimes as $i => $startTime) {
 			$events[] = array(
 				'id'		=> $name.'-'.$dayOfWeek.'-'.$startTime,
+				'offeringId'	=> $offeringIdString,
 				'name'		=> $name,
 				'location'	=> $location,
 				'dayOfWeek'	=> $dayOfWeek,
@@ -262,26 +281,28 @@ class Schedule {
 			throw new InvalidArgumentException($e->getMessage(), $e->getCode());
 		}
 		
+		$idString = $this->idToString($offering->getId());
+		
 		if ($rec->meetsOnSunday()) {
-			$events = array_merge($events, $this->getDailyEvents($name, $location, 0, $rec->getSundayStartTimes(), $rec->getSundayEndTimes()));
+			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, 0, $rec->getSundayStartTimes(), $rec->getSundayEndTimes()));
 		}
 		if ($rec->meetsOnMonday()) {
-			$events = array_merge($events, $this->getDailyEvents($name, $location, 1, $rec->getMondayStartTimes(), $rec->getMondayEndTimes()));
+			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, 1, $rec->getMondayStartTimes(), $rec->getMondayEndTimes()));
 		}
 		if ($rec->meetsOnTuesday()) {
-			$events = array_merge($events, $this->getDailyEvents($name, $location, 2, $rec->getTuesdayStartTimes(), $rec->getTuesdayEndTimes()));
+			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, 2, $rec->getTuesdayStartTimes(), $rec->getTuesdayEndTimes()));
 		}
 		if ($rec->meetsOnWednesday()) {
-			$events = array_merge($events, $this->getDailyEvents($name, $location, 3, $rec->getWednesdayStartTimes(), $rec->getWednesdayEndTimes()));
+			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, 3, $rec->getWednesdayStartTimes(), $rec->getWednesdayEndTimes()));
 		}
 		if ($rec->meetsOnThursday()) {
-			$events = array_merge($events, $this->getDailyEvents($name, $location, 4, $rec->getThursdayStartTimes(), $rec->getThursdayEndTimes()));
+			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, 4, $rec->getThursdayStartTimes(), $rec->getThursdayEndTimes()));
 		}
 		if ($rec->meetsOnFriday()) {
-			$events = array_merge($events, $this->getDailyEvents($name, $location, 5, $rec->getFridayStartTimes(), $rec->getFridayEndTimes()));
+			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, 5, $rec->getFridayStartTimes(), $rec->getFridayEndTimes()));
 		}
 		if ($rec->meetsOnSaturday()) {
-			$events = array_merge($events, $this->getDailyEvents($name, $location, 6, $rec->getSaturdayStartTimes(), $rec->getSaturdayEndTimes()));
+			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, 6, $rec->getSaturdayStartTimes(), $rec->getSaturdayEndTimes()));
 		}
 		
 		return $events;
@@ -301,6 +322,28 @@ class Schedule {
     	$events = $this->getWeeklyOfferingEvents($offering);
     	foreach ($events as $event) {
     		if ($this->numCollisions($event, $this->getWeeklyEvents())) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    /**
+     * Answer true if the offering id passed exists in the schedule and has collisions. 
+     * The offering must exist in the schedule to obtain a result. 
+     * An InvalidArgumentException will be thrown if the offering is not in the schedule.
+     * 
+     * @param osid_id_Id
+     * @return boolean
+     * @access public
+     * @since 8/9/10
+     */
+    public function hasCollisions (osid_id_Id $id) {
+    	if (!$this->includes($id))
+    		throw new InvalidArgumentException('The offering Id passed is not in the schedule.');
+    	$idString = $this->idToString($id);
+    	foreach ($this->getWeeklyEvents() as $event) {
+    		if ($event['offeringId'] == $idString && $event['collisions'] > 0) {
     			return true;
     		}
     	}
@@ -519,6 +562,18 @@ class Schedule {
 		
 		array_multisort($names, SORT_STRING, SORT_ASC, array_keys($offerings), $offerings);
 		return $offerings;
+	}
+	
+	/**
+	 * Convert an Id to a string for hashing purposes.
+	 * 
+	 * @param osid_id_Id $id
+	 * @return string
+	 * @access private
+	 * @since 8/9/10
+	 */
+	private function idToString (osid_id_Id $id) {
+		return $id->getIdentifierNamespace().':'.$id->getAuthority().':'.$id->getIdentifier();
 	}
 }
 

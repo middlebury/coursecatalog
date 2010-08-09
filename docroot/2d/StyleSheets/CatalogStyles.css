@@ -266,6 +266,9 @@ div.schedule li.offering div.offering_title {
 	white-space: nowrap;
 	overflow: hidden;
 }
+div.schedule li.offering .conflicting {
+	color: #F00;
+}
 
 img.calendar_img, img.calendar_button {
 	width: 100%;
