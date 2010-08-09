@@ -1470,13 +1470,40 @@ WHERE
 	$mysql->commit();
 	
 	print "...\tUpdated derived table: catalog_term\n";
+
+	// Delete terms that have no sections in them.
+	print "Removing empty terms\t";
+	$mysql->beginTransaction();
 	
+	$mysql->query(
+"CREATE TEMPORARY TABLE empty_terms
+SELECT 
+	term_code
+FROM 
+	`catalog_term`
+	LEFT JOIN SSBSECT ON term_code = SSBSECT_TERM_CODE
+WHERE 
+	SSBSECT_CRN IS NULL
+GROUP BY 
+	term_code
+");
+	$mysql->query(
+"DELETE FROM catalog_term
+WHERE
+	term_code IN (SELECT term_code FROM empty_terms)
+");
+
+	$mysql->query("DROP TEMPORARY TABLE empty_terms");
+	$mysql->commit();
+	
+	print "...\tRemoved empty terms from derived table: catalog_term\n";
 	
 	// Rebuild our "materialized views"
 	require_once(dirname(__FILE__).'/../application/library/harmoni/SQLUtils.php');
 	$mysql->beginTransaction();
 	harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/../application/library/banner/sql/create_views.sql', $mysql);
 	$mysql->commit();
+	print "...\tUpdated materialized views\n";
 
 } catch (Exception $e) {
 	$exceptions[] = $e->__toString();

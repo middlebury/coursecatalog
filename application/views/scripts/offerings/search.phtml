@@ -93,6 +93,7 @@ while ($this->departments->hasNext()) {
 			</td>
 		</tr>
 
+<?php	if ($this->requirements->hasNext()) { ?>
 		<tr>
 			<th>Satisfies Requirements:</th>
 			<td>
@@ -122,7 +123,7 @@ while ($this->requirements->hasNext()) {
 				</div>
 			</td>
 		</tr>
-		
+<?php	} ?>		
 		<tr>
 			<th>Keywords:</th>
 			<td>
