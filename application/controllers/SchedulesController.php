@@ -74,7 +74,7 @@ class SchedulesController
 		$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
 		$this->view->schedules = $schedules->getSchedulesByTerm($this->view->selectedTermId);
 		
-		$this->view->leftText = "<p class='notice'><strong>Important:</strong> This tool is for planning purposes only. It does <strong>not</strong> register you for classes.</p>\n<p class='notice'>For help see: <a href='http://go.middlebury.edu/catalog-help' target='_blank'>go/catalog-help</a></p>";
+		$this->view->leftText = "<p class='notice'><strong>Important:</strong> This tool is for planning purposes only. It does <strong>not</strong> register you for classes.</p>\n<p class='notice'>For help see: <a href='http://go.middlebury.edu/catalog-help' target='_blank'>go/catalog-help</a><br/><br/>Report Bugs at: <a href='http://go.middlebury.edu/webbugs/Catalog/Planner'>go/webbugs/Catalog/Planner</a></p>";
     }
     
     /**
