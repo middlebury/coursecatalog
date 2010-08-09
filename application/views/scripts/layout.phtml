@@ -20,11 +20,8 @@
 	<link rel="stylesheet" media="screen" type="text/css" href="<?php echo $this->url(array(), null, true) ?>2d/StyleSheets/CatalogStyles.css" />
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-    <script type="text/javascript" src="https://web.middlebury.edu/development/tools/1d2010/Scripts/midd.js?f"></script>
-    <script type="text/javascript" src="<?php echo $this->url(array(), null, true) ?>javascript/middlebury.js?f"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="https://web.middlebury.edu/development/tools/1d2010/Scripts/features.js?f"></script>
-	
+    
 	<?php echo $this->headLink() ?> 
 	<?php echo $this->headScript() ?> 
 	<?php echo $this->headStyle() ?> 
@@ -79,8 +76,10 @@
         </ul>
     </div>
     <div id="content" class="container">
-        <div id="taskbar">
-          <a id="taskbar_back" href="http://www.middlebury.edu/academics">Return to the <strong>Academics Homepage</strong></a>
+        <div id="heading">
+          <a href="<?php echo $this->url(array(), null, true) ?>">
+          	<img src="<?php echo $this->url(array(), null, true) ?>images/catalog_header.jpg"/>
+          </a>
         </div>
         <div id="left">
         	<div class='content'>
@@ -176,6 +175,9 @@
     <div id="footer_panel"></div>
     <!--
     -->    
+	<script type="text/javascript" src="https://web.middlebury.edu/development/tools/1d2010/Scripts/middlebury.js?f"></script>
+	<script type="text/javascript" src="https://web.middlebury.edu/development/tools/1d2010/Scripts/features.js?f"></script>
+	<script type="text/javascript" src="https://web.middlebury.edu/development/tools/1d2010/Scripts/midd.js?f"></script>
     
 </body>
 </html>
