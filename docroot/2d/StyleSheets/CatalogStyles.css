@@ -234,7 +234,16 @@ div.add_section_dialog li.section div.conflicting {
 	color: #F00;
 }
 
-
+ul#bookmarked_courses {
+	padding: 3px;
+	margin-left: 0px;
+}
+li.bookmarked_course {
+	clear: both;
+	margin-bottom: 10px;
+	list-style-type: none;
+	border-top: 1px dotted;
+}
 form.add_to_schedule_form {
 	float: left;
 }
@@ -250,9 +259,15 @@ li.bookmarked_course div.remove_course {
 }
 
 
+div.schedule ul.offerings {
+	padding: 3px;
+	margin-left: 0px;
+}
 div.schedule li.offering {
 	clear: both;
 	margin-bottom: 10px;
+	list-style-type: none;
+	border-top: 1px dotted;
 }
 div.schedule li.offering div.separator {
 	float: left;
@@ -261,11 +276,11 @@ div.schedule li.offering div.separator {
 }
 div.schedule li.offering div.offering_name {
 	float: left;
-	width: 100px;
+	width: 101px;
 }
 div.schedule li.offering div.offering_title {
 	float: left;
-	width: 180px;
+	width: 190px;
 	white-space: nowrap;
 	overflow: hidden;
 }
@@ -280,7 +295,8 @@ div.schedule li.offering .time {
 }
 
 img.calendar_img, img.calendar_button {
-	width: 100%;
+	width: 350px;
+	_border: 1px solid #939393; /* IE-only */
 }
 
 div.leftText {

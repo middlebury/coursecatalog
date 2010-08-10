@@ -34,7 +34,7 @@ foreach ($this->schedules as $schedule) {
 	print "</div>";
 	
 	
-	print "\n\t\t<ul>";
+	print "\n\t\t<ul class='offerings'>";
 	$offerings = $schedule->getOfferings();
 	if (!count($offerings)) {
 		print "\n\t\t\t<li style='visibility: hidden'> &nbsp; </li>";
