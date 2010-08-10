@@ -55,7 +55,7 @@ class Catalog_Action_Helper_Osid
 	public function getCourseManager () {
 		if (!isset(self::$courseManager)) {
 			$runtimeManager = $this->getRuntimeManager();
-			self::$courseManager = $runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
+			self::$courseManager = $runtimeManager->getManager(osid_OSID::COURSE(), 'apc_course_CourseManager', '3.0.0');
 		}
 		
 		return self::$courseManager;

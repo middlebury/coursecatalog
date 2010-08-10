@@ -23,5 +23,8 @@
 	<string>testpassword</string>
 	<key>urn:inet:middlebury.edu:config:banner_course/pdo_username</key>
 	<string>testuser</string>
+	
+	<key>urn:inet:middlebury.edu:config:apc_course/impl_class_name</key>
+	<string>banner_course_CourseManager</string>
 </dict>
 </plist>

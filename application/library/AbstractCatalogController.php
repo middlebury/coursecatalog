@@ -140,12 +140,12 @@ abstract class AbstractCatalogController
     	$this->setCacheControlHeaders();
     			
     	$response = $this->getResponse();
-    	$db = $this->_helper->osid->getCourseManager()->getDB();
-    	if (method_exists($db, 'getCounters')) {
-    		foreach ($db->getCounters() as $name => $num) {
-		    	$response->setHeader('X-'.$name, $num);
-		    }
-		}		
+//     	$db = $this->_helper->osid->getCourseManager()->getDB();
+//     	if (method_exists($db, 'getCounters')) {
+//     		foreach ($db->getCounters() as $name => $num) {
+// 		    	$response->setHeader('X-'.$name, $num);
+// 		    }
+// 		}		
     	$response->setHeader('X-Runtime', $this->getExecTime());
     }
     
