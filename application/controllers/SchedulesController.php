@@ -449,4 +449,18 @@ class SchedulesController
 		
 		$this->getResponse()->setHeader('Content-Type', 'image/png');
     }
+    
+    /**
+     * Answer a print-view of the schedule
+     * 
+     * @return void
+     * @access public
+     * @since 8/5/10
+     */
+    public function printAction () {
+    	$this->_helper->layout->disableLayout();
+    	
+		$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
+		$this->view->schedule = $schedules->getSchedule($this->_getParam('schedule_id'));
+    }
 }

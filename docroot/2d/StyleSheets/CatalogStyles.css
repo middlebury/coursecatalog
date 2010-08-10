@@ -273,6 +273,12 @@ div.schedule li.offering .conflicting {
 	color: #F00;
 }
 
+div.schedule li.offering .time {
+/*
+	clear: both;
+*/
+}
+
 img.calendar_img, img.calendar_button {
 	width: 100%;
 }
