@@ -104,7 +104,7 @@ class apc_course_CourseManager
      *              supportsCourseLookup() </code> is <code> true. </code> 
      */
     public function getCourseLookupSession() {
-    	return $this->manager->getCourseLookupSession();
+    	return new apc_course_Course_Lookup_Session($this, $this->manager->getCourseLookupSession());
 	}
 
     /**
@@ -130,7 +130,7 @@ class apc_course_CourseManager
      *              </code> 
      */
     public function getCourseLookupSessionForCatalog(osid_id_Id $courseCatalogId) {
-    	return $this->manager->getCourseLookupSessionForCatalog($courseCatalogId);
+    	return new apc_course_Course_Lookup_Session($this, $this->manager->getCourseLookupSessionForCatalog($courseCatalogId), $courseCatalogId);
 	}
 
 
@@ -322,7 +322,7 @@ class apc_course_CourseManager
      *              </code> 
      */
     public function getCourseOfferingLookupSession() {
-    	return $this->manager->getCourseOfferingLookupSession();
+    	return new apc_course_CourseOffering_Lookup_Session($this, $this->manager->getCourseOfferingLookupSession());
 	}
 
 
@@ -349,7 +349,7 @@ class apc_course_CourseManager
      *              </code> 
      */
     public function getCourseOfferingLookupSessionForCatalog(osid_id_Id $courseCatalogId) {
-    	return $this->manager->getCourseOfferingLookupSessionForCatalog($courseCatalogId);
+    	return new apc_course_CourseOffering_Lookup_Session($this, $this->manager->getCourseOfferingLookupSessionForCatalog($courseCatalogId), $courseCatalogId);
 	}
 
 
