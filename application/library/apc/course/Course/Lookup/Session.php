@@ -44,7 +44,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 class apc_course_Course_Lookup_Session
-    extends apc_course_AbstractSession
+    extends apc_course_CachableSession
     implements osid_course_CourseLookupSession
 {
 	/**

@@ -36,7 +36,7 @@
  * 
  */
 class apc_course_CourseOffering_Lookup_Session
-    extends apc_course_AbstractSession
+    extends apc_course_CachableSession
     implements osid_course_CourseOfferingLookupSession
 {
 	
@@ -430,7 +430,16 @@ class apc_course_CourseOffering_Lookup_Session
      *  @throws osid_PermissionDeniedException authorization failure 
      */
     public function getCourseOfferingGenusTypes() {
-    	return $this->session->getCourseOfferingGenusTypes();
+    	$val = $this->cacheGetObj('genus_types');
+    	if (is_null($val)) {
+    		$val = array();
+    		$types = $this->session->getCourseOfferingGenusTypes();
+    		while ($types->hasNext()) {
+    			$val[] = $types->getNextType();
+    		}
+    		$this->cacheSetObj('genus_types', $val);
+    	}
+    	return new phpkit_type_ArrayTypeList($val);
     }
 	
 }
