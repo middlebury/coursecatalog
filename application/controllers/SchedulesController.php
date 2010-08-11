@@ -191,7 +191,7 @@ class SchedulesController
     	 * Validate the set of offerings chosen
     	 *********************************************************/
     	$lookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
-    	$lookupSession->useFederatedView();
+    	$lookupSession->useFederatedCourseCatalogView();
 		$linkType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:link');
 		
 		$offering = $lookupSession->getCourseOffering($offeringIds[0]);
@@ -277,7 +277,7 @@ class SchedulesController
     	$schedule = $schedules->getSchedule($this->_getParam('schedule_id'));
     	
     	$lookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
-    	$lookupSession->useFederatedView();
+    	$lookupSession->useFederatedCourseCatalogView();
 		
 		$offering = $lookupSession->getCourseOffering($this->_helper->osidId->fromString($this->_getParam('offering')));
     	$courseId = $offering->getCourseId();

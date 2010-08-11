@@ -307,7 +307,7 @@ class CoursesController
 		$courses = $searchSession->getCoursesByQuery($query);
 		
 		$topicLookup = $this->_helper->osid->getCourseManager()->getTopicLookupSession();
-		$topicLookup->useFederatedView();
+		$topicLookup->useFederatedCourseCatalogView();
 		$topic = $topicLookup->getTopic($topicId);
 		
 		$recentCourses = new Helper_RecentCourses_Department($courses);
@@ -328,9 +328,9 @@ class CoursesController
 		
 		if (!$this->_getParam('catalog')) {
 			$searchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSession();
-			$searchSession->useFederatedView();
+			$searchSession->useFederatedCourseCatalogView();
 			$offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSession();
-			$offeringSearchSession->useFederatedView();
+			$offeringSearchSession->useFederatedCourseCatalogView();
 			
 			// Allow term current/past to be limited to a certain catalog while courses are fetched from many
 			if ($this->_getParam('term_catalog')) {
@@ -340,7 +340,7 @@ class CoursesController
 			// fall back to terms from any catalog.
 			else {
 				$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
-				$this->termLookupSession->useFederatedView();
+				$this->termLookupSession->useFederatedCourseCatalogView();
 			}
 		} else {
 			try {

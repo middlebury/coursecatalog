@@ -188,7 +188,7 @@ class Schedule {
 			));
 			
 			$lookupSession = $this->courseManager->getCourseOfferingLookupSession();
-			$lookupSession->useFederatedView();
+			$lookupSession->useFederatedCourseCatalogView();
 			
 			$offerings = array();
 			foreach ($stmt->fetchAll() as $row) {

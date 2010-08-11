@@ -136,7 +136,7 @@ class Bookmarks {
 			return new phpkit_course_ArrayCourseList(array());
 		
 		$courseLookupSession = $this->courseManager->getCourseLookupSession();
-		$courseLookupSession->useFederatedView();
+		$courseLookupSession->useFederatedCourseCatalogView();
 		return $courseLookupSession->getCoursesByIds($courseIdList);
 	}
 	
