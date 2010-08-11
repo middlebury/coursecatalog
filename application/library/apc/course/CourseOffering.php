@@ -43,6 +43,9 @@ class apc_course_CourseOffering
 	}
 	private $courseOffering;
 	private $session;
+	private $apcSession;
+	private $id;
+	private $localRecordTypes;
 	
 	/**
 	 * Answer our internal course offering object
@@ -587,6 +590,9 @@ class apc_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCalendarId() {
+    	if (!$this->hasCalendar())
+    		throw new osid_IllegalStateException('hasCalendar() is false.');
+    	
     	$val = $this->cacheGetObj('schedule_info');
     	if (is_null($val))
     		return $this->cacheSetObj('schedule_info', $this->getOffering()->getScheduleInfo());
@@ -607,6 +613,9 @@ class apc_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCalendar() {
+    	if (!$this->hasCalendar())
+    		throw new osid_IllegalStateException('hasCalendar() is false.');
+    	
     	return $this->getOffering()->getCalendar();
 	}
 
@@ -638,6 +647,9 @@ class apc_course_CourseOffering
      *  @compliance mandatory This method is must be implemented. 
      */
     public function getLearningObjectiveId() {
+    	if (!$this->hasLearningObjective())
+    		throw new osid_IllegalStateException('hasLearningObjective() is false.');
+    	
     	$val = $this->cacheGetObj('learningObjectiveId');
     	if (is_null($val))
     		return $this->cacheSetObj('learningObjectiveId', $this->getOffering()->getLearningObjectiveId());
@@ -659,6 +671,9 @@ class apc_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getLearningObjective() {
+    	if (!$this->hasLearningObjective())
+    		throw new osid_IllegalStateException('hasLearningObjective() is false.');
+    	
     	return $this->getOffering()->getLearningObjective();
 	}
 
