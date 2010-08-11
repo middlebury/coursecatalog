@@ -177,7 +177,7 @@ class apc_course_Course_Lookup_Session
      *  @compliance mandatory This method must be implemented. 
      */
     public function getCourse(osid_id_Id $courseId) {
-    	return new apc_course_Course($this->session, $courseId);
+    	return new apc_course_Course($this, $this->session, $courseId);
 	}
 
     /**
