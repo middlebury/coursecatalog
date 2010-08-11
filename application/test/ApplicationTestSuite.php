@@ -28,7 +28,7 @@ class ApplicationTestSuite extends PHPUnit_Framework_TestSuite
 		$registry = Zend_Registry::getInstance();
 		$registry->config = new Zend_Config_Ini(BASE_PATH.'/frontend_config.ini', 'development');
 		
-		Zend_Controller_Action_HelperBroker::getStaticHelper('Osid')->setConfigPath(dirname(__FILE__).'/banner/configuration.plist');
+		Zend_Controller_Action_HelperBroker::getStaticHelper('Osid')->setConfigPath(dirname(__FILE__).'/apc/configuration.plist');
 
     }
  

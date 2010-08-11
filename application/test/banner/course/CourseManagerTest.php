@@ -51,18 +51,18 @@ class banner_course_CourseManagerTest
     /**
      * Test that a PDO object is returned
      */
-    public function testGetDB()
-    {
-       $this->assertType('PDO', $this->manager->getDB());
-    }
+//     public function testGetDB()
+//     {
+//        $this->assertType('PDO', $this->manager->getDB());
+//     }
 
     /**
      * Test that the id Authority is that specified in our test config.
      */
-    public function testGetIdAuthority()
-    {
-       $this->assertEquals('middlebury.edu', $this->manager->getIdAuthority());
-    }
+//     public function testGetIdAuthority()
+//     {
+//        $this->assertEquals('middlebury.edu', $this->manager->getIdAuthority());
+//     }
 
     /**
      * Ensure that we cannot initialize the manager again.
