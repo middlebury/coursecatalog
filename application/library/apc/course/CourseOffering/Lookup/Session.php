@@ -417,4 +417,20 @@ class apc_course_CourseOffering_Lookup_Session
     	return $this->session->getCourseOfferings();
 	}
 	
+	/*********************************************************
+	 * Custom extensions from middlebury_course_CourseOffering_Lookup_SessionInterface
+	 *********************************************************/
+	
+	/**
+     *  Gets a list of the genus types for course offerings
+     *
+     *  @return object osid_id_TypeList the list of course offering genus types.
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     */
+    public function getCourseOfferingGenusTypes() {
+    	return $this->session->getCourseOfferingGenusTypes();
+    }
+	
 }
