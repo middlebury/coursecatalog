@@ -126,10 +126,10 @@
 				var item = $('<li class="section"></li>');
 				setList.append(item);
 				var radio = $('<input type="radio" name="section_group_'+i+'" value="'+section.id+'"/>');
+				item.append(radio);
 				if (section.selected) {
 					radio.attr('checked', 'checked');
 				}
-				item.append(radio);
 				item.append(' ');
 				item.append(section.name);
 				item.append(' <div class="section_instructor section_info"><span class="section_type">'+section.type+'</span> - <span class="section_instructor">'+section.instructor+'</span></div>');
