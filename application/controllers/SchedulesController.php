@@ -76,7 +76,14 @@ class SchedulesController
 		$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
 		$this->view->schedules = $schedules->getSchedulesByTerm($this->view->selectedTermId);
 		
-		$this->view->leftText = "<p class='notice'><strong>Important:</strong> This tool is for planning purposes only. It does <strong>not</strong> register you for classes.</p>\n<p class='notice'>For help see: <a href='http://go.middlebury.edu/catalog-help' target='_blank'>go/catalog-help</a><br/><br/>Report Bugs at: <a href='http://go.middlebury.edu/webbugs/Catalog/Planner' target='_blank'>go/webbugs/Catalog/Planner</a></p>";
+		$this->view->leftText = "
+		<p class='notice'><strong>Important:</strong> This tool is for planning purposes only. It does <strong>not</strong> register you for classes.
+		<br/><br/>For help see: <a href='http://go.middlebury.edu/catalog-help' target='_blank'>go/catalog-help</a></p>
+		
+		<p class='notice'><strong>This feature is currently in Beta!</strong>
+		<br/><br/>Report Bugs at: <a href='http://go.middlebury.edu/webbugs/Catalog/Planner' target='_blank'>go/webbugs/Catalog/Planner</a>
+		<br/><br/>Send general comments to: <a href='mailto:afranco@middlebury.edu'>Adam Franco</a>
+		</p>";
     }
     
     /**
