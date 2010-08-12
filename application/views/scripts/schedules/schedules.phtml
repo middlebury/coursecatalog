@@ -21,6 +21,31 @@ foreach ($this->schedules as $schedule) {
 	print "\n\t<button>Print</button>";
 	print "\n\t\t</a>";
 	
+	// Email view.
+	print "\n\t<a class='email_button' href='#' title='Click for print view.'>";
+	print "\n\t<button>EMail</button>";
+	print "\n\t\t</a>";
+	
+	print "\n\t<div class='email_dialog' style='display: none;' title=\"".$this->escape($schedule->getName())."\">";
+	
+	print "\n\n<p class='notice'><strong>This feature is not yet operational. Please check back in a few days.</strong></p>";
+	
+	print "\n\t\t<form action='".$this->url(array('action' => 'email'))."' method='post'>";
+	print "\n\t\t\t<label for='from-".$schedule->getId()."'>From: </label><input id='from-".$schedule->getId()."' name='from' type='text' value='".$this->getUserDisplayName()."' readonly='readonly' size='42'/>";
+	print "\n\t\t\t<br/><label for='to-".$schedule->getId()."'>To: </label><input id='to-".$schedule->getId()."' name='to' type='text' size='42'/>";
+	print "\n\t\t\t<br/><label for='subject-".$schedule->getId()."'>Subject:</label><input id='subject-".$schedule->getId()."' name='subject' type='text' value=\"".$this->escape($schedule->getName())."\" size='42'/>";
+	print "\n\t\t\t<br/><label for='message-".$schedule->getId()."'> &nbsp; </label><textarea id='message-".$schedule->getId()."' name='message' type='text' value='' cols='40' rows='10'></textarea>";
+	print "\n\t\t<input type='hidden' name='csrf_key' value='".$this->csrfKey()."' />";
+	print "\n\t\t<input type='hidden' name='schedule_id' value='".$this->escape($schedule->getId())."'/>";
+	print "\n\t\t</form>";
+	
+	print "\n\t\t<hr/>";
+	
+	$this->schedule = $schedule;
+	print $this->render('schedules/schedule_email.phtml');
+	
+	print "</div>";
+	
 	// Calendar
 	print "\n\t<a class='calendar_button' href='".$this->url(array('action' => 'eventsjson', 'schedule_id' => $schedule->getId()))."' title='Click to zoom'>";
 	print "\n\t<img class='calendar_img' src='".$this->url(array('action' => 'png', 'schedule_id' => $schedule->getId()))."' alt='Weekly Schedule Image'/>";
@@ -143,6 +168,27 @@ foreach ($this->schedules as $schedule) {
 				renderSchedule(calendar, jsonUrl);
 				calendar.data('initialized', true);
 			}
+			
+			return false;
+		});
+		
+		/*********************************************************
+		 * Email controls
+		 *********************************************************/
+		$(".email_dialog").each(function() {
+			var button = $(this).siblings(".email_button");
+			var emailDialog = $(this).dialog({
+					autoOpen: false, 
+					width:  700, 
+					modal: true,
+					position: 'top'
+				});
+			
+			button.data("emailDialog", emailDialog);
+		});
+		$(".email_button").click(function(){
+			var emailDialog = $(this).data('emailDialog');
+			emailDialog.dialog("open");
 			
 			return false;
 		});

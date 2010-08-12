@@ -311,3 +311,53 @@ div.leftText .notice {
 	color: red;
 	padding: 3px;
 }
+
+/*********************************************************
+ * Email dialog
+ *********************************************************/
+div.email_dialog label {
+	display: block;
+	float: left;
+	width: 100px;
+}
+div.email_dialog .notice {
+	border: 1px solid red;
+	color: red;
+	padding: 3px;
+}
+
+div.email_dialog img.calendar_img {
+	width: 650px;
+	_border: 1px solid #939393; /* IE-only */
+}
+
+div.email_dialog ul.offerings {
+	font-size: 12px;
+	padding: 3px;
+	margin-left: 0px;
+}
+div.email_dialog li.offering {
+	clear: both;
+	margin-bottom: 10px;
+	list-style-type: none;
+	border-top: 1px dotted;
+}
+div.email_dialog li.offering div.separator {
+	float: left;
+	width: 20px;
+	text-align: center;
+}
+div.email_dialog li.offering div.offering_name {
+	float: left;
+	width: 101px;
+}
+div.email_dialog li.offering div.offering_title {
+	float: left;
+	width: 200px;
+	height: 3em;
+	white-space: nowrap;
+	overflow: hidden;
+}
+div.email_dialog li.offering .conflicting {
+	color: #F00;
+}

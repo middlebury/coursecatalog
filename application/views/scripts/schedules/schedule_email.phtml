@@ -1,0 +1,36 @@
+<?php
+
+print "\n\t<img class='calendar_img' src='".$this->url(array('action' => 'png', 'schedule_id' => $this->schedule->getId()))."' alt='Weekly Schedule Image'/>";
+
+$offerings = $this->schedule->getOfferings();
+
+print "\n\t\t<ul class='offerings'>";
+if (!count($offerings)) {
+	print "\n\t\t\t<li style='visibility: hidden'> &nbsp; </li>";
+}
+foreach ($offerings as $offering) {
+	print "\n\t\t\t<li class='offering'>";
+	
+	print "\n\t\t<div class='offering_name'>";
+	print "\n\t\t\t<a href='".$this->url(array('controller' => 'offerings', 'action' => 'view', 'offering' => $this->getStringFromOsidId($offering->getId())))."' target='_blank'>";
+	print $this->escape($offering->getDisplayName());
+	print "</a>";
+	print "\n\t\t</div>";
+	
+	print "\n\t\t<div class='separator'> - </div>";
+	
+	print "\n\t\t<div class='offering_title'>";
+	print "\n\t\t\t<a href='".$this->url(array('controller' => 'offerings', 'action' => 'view', 'offering' => $this->getStringFromOsidId($offering->getId())))."' target='_blank'>";
+	print nl2br($this->escape($offering->getTitle()));
+	print "</a>";
+	print "\n\t\t</div>";
+	
+	print "\n\t\t<div class='time";
+	if ($this->schedule->hasCollisions($offering->getId()))
+		print ' conflicting';
+	print "'>".nl2br($this->escape($offering->getScheduleInfo()))."</div>";
+	print "\n\t\t<div class='location'>".nl2br($this->escape($offering->getLocationInfo()))."</div>";
+	
+	print "\n\t\t\t</li>";
+}
+print "\n\t\t</ul>";
