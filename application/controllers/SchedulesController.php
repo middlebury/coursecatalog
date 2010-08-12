@@ -14,7 +14,9 @@ class SchedulesController
 	 */
 	public function preDispatch () {
 		if (!$this->_helper->auth->getHelper()->isAuthenticated()) {
-			$this->_forward('login', 'auth');
+			$this->_redirect(
+				$this->view->url(array('controller' => 'auth', 'action' => 'login', 'return' => $this->view->url())),
+				array('exit' => true, 'prependBase' => false));
 		}		
 	}
 	
