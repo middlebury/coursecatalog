@@ -412,7 +412,7 @@ print "\n\t</dl>";
 				print $this->render('schedules/bookmark_control.phtml'); 
 				?>
 				<div class='title'><?php print nl2br($this->escape($section->getTitle())); ?></div>
-				<div class='description'><?php print nl2br($this->escape($section->getDescription())); ?></div>				
+				<div class='description'><?php print $section->getDescription(); ?></div>				
 <?php
 print "\n\t<dl>";
 
