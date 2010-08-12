@@ -55,7 +55,15 @@ class Catalog_Action_Helper_Osid
 	public function getCourseManager () {
 		if (!isset(self::$courseManager)) {
 			$runtimeManager = $this->getRuntimeManager();
-			self::$courseManager = $runtimeManager->getManager(osid_OSID::COURSE(), 'apc_course_CourseManager', '3.0.0');
+			
+			$config = Zend_Registry::getInstance()->config;
+			if (!isset($config->osid->course_impl) || !strlen(trim($config->osid->course_impl))) {
+				$implClass = 'banner_course_CourseManager';
+			} else {
+				$implClass = $config->osid->course_impl;
+			}
+			
+			self::$courseManager = $runtimeManager->getManager(osid_OSID::COURSE(), $implClass, '3.0.0');
 		}
 		
 		return self::$courseManager;
