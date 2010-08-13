@@ -359,3 +359,13 @@ div.email_dialog li.offering div.offering_title {
 div.email_dialog li.offering .conflicting {
 	color: #F00;
 }
+
+
+.beta {
+ color: red;
+}
+
+div.content > ul.menu {
+	width: 195px;
+	margin-left: -15px;
+}
