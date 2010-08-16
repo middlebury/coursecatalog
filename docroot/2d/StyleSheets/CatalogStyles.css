@@ -324,6 +324,10 @@ div.schedule li.offering .remove_button {
 }
 
 
+/*********************************************************
+ * Left text
+ *********************************************************/
+
 
 div.leftText {
 	margin-top: 40px;
@@ -336,6 +340,12 @@ div.leftText .notice {
 	border: 1px solid red;
 	color: red;
 	padding: 3px;
+}
+
+div.leftText .help {
+	border: 1px solid;
+	padding: 3px;
+	margin-bottom: 10px;
 }
 
 /*********************************************************

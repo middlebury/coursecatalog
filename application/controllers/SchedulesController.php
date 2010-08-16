@@ -82,10 +82,20 @@ class SchedulesController
 			$this->view->schedules = $schedules->getSchedules();
 		
 		$this->view->leftText = "
-		<p class='notice'><strong>Important:</strong> This tool is for planning purposes only. It does <strong>not</strong> register you for classes.
-		<br/><br/>For help see: <a href='http://go.middlebury.edu/catalog-help' target='_blank'>go/catalog-help</a></p>
+		<p class='notice'><strong>Important:</strong> This tool is for planning purposes only. It does <strong>not</strong> register you for classes.</p>
 		
-		<p class='notice'><strong>This feature is currently in Beta!</strong>
+		<div class='help'><strong>Basic Usage:</strong>
+			<ol>
+				<li>Search for courses and save interesting ones.</li>
+				<li>Create one or more schedules.</li>
+				<li>Add courses to schedules.</li>
+				<li>Print or email your schedules.</li>
+			</ol>
+			
+			<p><strong>For more help see:</strong> <a href='http://go.middlebury.edu/catalog-help' target='_blank'>go/catalog-help</a></p>
+		</div>
+		
+		<p class='notice'><strong>This feature is currently in Beta</strong>
 		<br/><br/>Report Bugs at: <a href='http://go.middlebury.edu/webbugs/Catalog/Planner' target='_blank'>go/webbugs/Catalog/Planner</a>
 		<br/><br/>Send general comments to: <a href='mailto:afranco@middlebury.edu'>Adam Franco</a>
 		</p>";
