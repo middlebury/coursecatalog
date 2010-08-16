@@ -187,6 +187,10 @@ div.schedule {
 	border: 1px solid;
 }
 
+div.schedule div.term_name {
+	font-weight: bold;
+}
+
 table.schedule_planner {
 	width: 100%;
 }

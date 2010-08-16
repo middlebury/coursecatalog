@@ -3,12 +3,21 @@
 foreach ($this->schedules as $schedule) {
 	print "\n<div class='schedule'>";
 	
+	// Print the Term the schedule is for if we don't have a term selected.
+	if (!$this->selectedTermId) {
+		print "\n\t<div class='term_name'>";
+		print $schedule->getTermName();
+		print "</div>";
+	}
+	
+	// Delete Button
 	print "\n\t<form class='delete_schedule' action='".$this->url(array('action' => 'delete'))."' method='post'>";
 	print "\n\t\t<input type='hidden' name='schedule_id' value='".$this->escape($schedule->getId())."'/>";
 	print "\n\t\t<input type='hidden' name='csrf_key' value='".$this->csrfKey()."' />";
 	print "\n\t\t<input type='submit' value='Delete'/>";
 	print "\n\t</form>";
 	
+	// Schedule name
 	print "\n\t<form action='".$this->url(array('action' => 'update'))."' method='post'>";
 	print "\n\t\t<input type='text' name='name' value=\"".$this->escape($schedule->getName())."\"/>";
 	print "\n\t\t<input type='hidden' name='schedule_id' value='".$this->escape($schedule->getId())."'/>";

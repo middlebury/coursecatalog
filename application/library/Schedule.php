@@ -32,7 +32,7 @@ class Schedule {
 	 * @access public
 	 * @since 7/29/10
 	 */
-	public function __construct ($id, Zend_Db_Adapter_Abstract $db, $userId, osid_course_CourseManager $courseManager, $name) {
+	public function __construct ($id, Zend_Db_Adapter_Abstract $db, $userId, osid_course_CourseManager $courseManager, $name, osid_id_Id $termId) {
 		if (!strlen($userId))
 			throw new InvalidArgumentException('No $userId passed.');
 		if (!strlen($id))
@@ -45,6 +45,7 @@ class Schedule {
 		$this->courseManager = $courseManager;
 		$this->id = $id;
 		$this->name = $name;
+		$this->termId = $termId;
 	}
 	
 	private $db;
@@ -52,6 +53,7 @@ class Schedule {
 	private $courseManager;
 	private $name;
 	private $id;
+	private $termId;
 	
 	/**
 	 * Answer the name of the Schedule
@@ -95,6 +97,34 @@ class Schedule {
 	 */
 	public function getId () {
 		return $this->id;
+	}
+	
+	/**
+	 * Answer the Id of the term this schedule is associated with.
+	 * 
+	 * @return osid_id_Id
+	 * @access public
+	 * @since 8/16/10
+	 */
+	public function getTermId () {
+		return $this->termId;
+	}
+	
+	/**
+	 * Answer the name of the term this schedule is associated with.
+	 * 
+	 * @return string
+	 * @access public
+	 * @since 8/16/10
+	 */
+	public function getTermName () {
+		try {
+			$session = $this->courseManager->getTermLookupSession();
+			$session->useFederatedCourseCatalogView();
+			return $session->getTerm($this->termId)->getDisplayName();
+		} catch (osid_NotFoundException $e) {
+			return $this->termId->getIdentifier();
+		}
 	}
 	
 	/**

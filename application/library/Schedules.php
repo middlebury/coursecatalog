@@ -60,7 +60,7 @@ class Schedules {
 			$name,
 		));
 		$id = $this->db->lastInsertId();
-		return new Schedule($id, $this->db, $this->userId, $this->courseManager, $name);
+		return new Schedule($id, $this->db, $this->userId, $this->courseManager, $name, $termId);
 	}
 	
 	/**
@@ -96,7 +96,7 @@ class Schedules {
 		$rows = $stmt->fetchAll();
 		if (!count($rows))
 			throw new InvalidArgumentException('Schedule was not found.');
-		return new Schedule($rows[0]['id'], $this->db, $this->userId, $this->courseManager, $rows[0]['name']);
+		return new Schedule($rows[0]['id'], $this->db, $this->userId, $this->courseManager, $rows[0]['name'], new phpkit_id_Id($rows[0]['term_id_authority'], $rows[0]['term_id_namespace'], $rows[0]['term_id_keyword']));
 
 	}
 	
@@ -115,7 +115,7 @@ class Schedules {
 		
 		$schedules = array();
 		foreach ($stmt->fetchAll() as $row) {
-			$schedules[] = new Schedule($row['id'], $this->db, $this->userId, $this->courseManager, $row['name']);
+			$schedules[] = new Schedule($row['id'], $this->db, $this->userId, $this->courseManager, $row['name'], new phpkit_id_Id($row['term_id_authority'], $row['term_id_namespace'], $row['term_id_keyword']));
 		}
 		return $schedules;
 	}
@@ -139,7 +139,7 @@ class Schedules {
 		
 		$schedules = array();
 		foreach ($stmt->fetchAll() as $row) {
-			$schedules[] = new Schedule($row['id'], $this->db, $this->userId, $this->courseManager, $row['name']);
+			$schedules[] = new Schedule($row['id'], $this->db, $this->userId, $this->courseManager, $row['name'], new phpkit_id_Id($row['term_id_authority'], $row['term_id_namespace'], $row['term_id_keyword']));
 		}
 		return $schedules;
 	}
