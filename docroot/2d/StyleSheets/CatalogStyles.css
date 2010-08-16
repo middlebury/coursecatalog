@@ -110,10 +110,14 @@ div.help_text {
  *********************************************************/
 
 #left {
-	width: 175px;
+	width: 200px;
+	padding-left: 0px;
 }
 div.content > ul.menu {
-	width: 175px;	
+	width: 200px;	
+}
+#page {
+	width: 742px;
 }
 
 
@@ -280,7 +284,7 @@ div.schedule li.offering div.offering_name {
 }
 div.schedule li.offering div.offering_title {
 	float: left;
-	width: 190px;
+	width: 220px;
 	white-space: nowrap;
 	overflow: hidden;
 }
@@ -363,9 +367,4 @@ div.email_dialog li.offering .conflicting {
 
 .beta {
  color: red;
-}
-
-div.content > ul.menu {
-	width: 195px;
-	margin-left: -15px;
 }
