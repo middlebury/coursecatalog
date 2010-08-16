@@ -32,7 +32,7 @@
  * Search
  *********************************************************/
 table.search_options {
-	width: 725px;
+	width: 710px;
 }
 
 table.search_options th {
@@ -68,7 +68,7 @@ table.search_results .title {
 }
 
 table.search_results {
-	width: 725px;
+	width: 710px;
 }
 
 table.search_results th {
@@ -87,12 +87,12 @@ table.search_results td.column1 {
 }
 
 div.search_results_item_pagination {
-	width: 725px;
+	width: 710px;
 	text-align: right;
 }
 
 div.search_results_search_pagination {
-	width: 725px;
+	width: 710px;
 	text-align: center;
 }
 
