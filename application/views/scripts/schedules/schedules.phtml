@@ -43,7 +43,7 @@ foreach ($this->schedules as $schedule) {
 	print "\n\t\t\t<label for='from-".$schedule->getId()."'>From: </label><input id='from-".$schedule->getId()."' name='from' type='text' value='".$this->getUserDisplayName()."' readonly='readonly' size='42'/>";
 	print "\n\t\t\t<br/><label for='to-".$schedule->getId()."'>To: </label><input id='to-".$schedule->getId()."' name='to' type='text' size='42'/>";
 	print "\n\t\t\t<br/><label for='subject-".$schedule->getId()."'>Subject:</label><input id='subject-".$schedule->getId()."' name='subject' type='text' value=\"".$this->escape($schedule->getName())."\" size='42'/>";
-	print "\n\t\t\t<br/><label for='message-".$schedule->getId()."'> &nbsp; </label><textarea id='message-".$schedule->getId()."' name='message' type='text' value='' cols='40' rows='10'></textarea>";
+	print "\n\t\t\t<br/><label for='message-".$schedule->getId()."'> &nbsp; </label><textarea id='message-".$schedule->getId()."' name='message' cols='40' rows='10'></textarea>";
 	print "\n\t\t<input type='hidden' name='csrf_key' value='".$this->csrfKey()."' />";
 	print "\n\t\t<input type='hidden' name='schedule_id' value='".$this->escape($schedule->getId())."'/>";
 	print "\n\t\t</form>";
@@ -115,7 +115,7 @@ foreach ($this->schedules as $schedule) {
 		print "\n\t\t</div>";
 		
 		// Remove/Change Button.
-		print "\n\t\t<button class='remove_button' href='#' title='Remove or Change Sections'>X</button>";
+		print "\n\t\t<button class='remove_button' title='Remove or Change Sections'>X</button>";
 		
 		print "\n\t\t<div class='offering_name'>";
 		print "\n\t\t\t<a href='".$this->url(array('controller' => 'offerings', 'action' => 'view', 'offering' => $this->getStringFromOsidId($offering->getId())))."' target='_blank'>";

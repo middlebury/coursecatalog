@@ -15,7 +15,7 @@ if ($this->isAuthenticated()) {
 	if (!$this->bookmarks()->isBookmarked($this->bookmarks_CourseId))
 		print "style='display: none;'";
 	print " title='click to forget' class='forget'>";
-	print "<img src='".$this->url(array(), null, true)."images/Crystal_Clear/Crystal_Clear_action_bookmark.png' />";
+	print "<img src='".$this->url(array(), null, true)."images/Crystal_Clear/Crystal_Clear_action_bookmark.png' alt='star icon'/>";
 	print " Saved";
 	print "</a>";
 	
@@ -23,7 +23,7 @@ if ($this->isAuthenticated()) {
 	if ($this->bookmarks()->isBookmarked($this->bookmarks_CourseId))
 		print "style='display: none;'";
 	print " title='click to save' class='save'>";
-	print "<img src='".$this->url(array(), null, true)."images/Crystal_Clear/Crystal_Clear_action_bookmark_Silver.png' />";
+	print "<img src='".$this->url(array(), null, true)."images/Crystal_Clear/Crystal_Clear_action_bookmark_Silver.png' alt='star icon'/>";
 	print " Save";
 	print "</a>";
 	
