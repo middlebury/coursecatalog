@@ -61,7 +61,9 @@ class SchedulesController
 		} else {
 			$this->view->selectedTermId = $this->_helper->osidId->fromString($this->_getParam('term'));
 		}
-		$this->view->termIdString = $this->_helper->osidId->toString($this->view->selectedTermId);
+		if ($this->view->selectedTermId) {
+			$this->view->termIdString = $this->_helper->osidId->toString($this->view->selectedTermId);
+		}
 		
 		
 		// Load the bookmarks for the selected catalog/terms
@@ -74,7 +76,10 @@ class SchedulesController
 		
 		// Load the Schedules for the selected catalog/terms
 		$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
-		$this->view->schedules = $schedules->getSchedulesByTerm($this->view->selectedTermId);
+		if ($this->view->selectedTermId)
+			$this->view->schedules = $schedules->getSchedulesByTerm($this->view->selectedTermId);
+		else
+			$this->view->schedules = $schedules->getSchedules();
 		
 		$this->view->leftText = "
 		<p class='notice'><strong>Important:</strong> This tool is for planning purposes only. It does <strong>not</strong> register you for classes.
