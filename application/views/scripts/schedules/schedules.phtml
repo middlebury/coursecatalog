@@ -93,7 +93,7 @@ foreach ($this->schedules as $schedule) {
 				
 				<input type='hidden' name='csrf_key' value='<?php print $this->csrfKey(); ?>' />
 				<input type='hidden' name='schedule_id' value='<?php print $schedule->getId(); ?>' />
-				<input type="submit" value="Choose Sections"/>
+				<input type="submit" value="Save Changes"/>
 			</form>
 			<input type='hidden' name='course_id' value="<?php print $this->getStringFromOsidId($offering->getCourseId()); ?>" />
 			<input type='hidden' name='section_lookup_url' value='<?php print $this->url(array('action' => 'sectionsforcourse', 'term' => $scheduleTermIdString)); ?>' />
