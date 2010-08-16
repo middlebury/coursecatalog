@@ -207,38 +207,38 @@ form.delete_schedule {
 	float: right;
 }
 
-div.add_section_dialog ul.section_sets {
+div.section_dialog ul.section_sets {
 	margin-left: 0;
 }
-div.add_section_dialog ul.section_sets li {
+div.section_dialog ul.section_sets li {
 	list-style-type: none;
 }
-div.add_section_dialog ul.section_set {
+div.section_dialog ul.section_set {
 	border-top: 1px dotted;
 	margin-left: 0;
 }
-div.add_section_dialog ul {
+div.section_dialog ul {
 	clear: both;
 }
 
-div.add_section_dialog li.section {
+div.section_dialog li.section {
 	clear: both;
 	margin-bottom: 10px;
 }
 
-div.add_section_dialog li.section div.section_time, div.add_section_dialog li.section div.section_location {
+div.section_dialog li.section div.section_time, div.section_dialog li.section div.section_location {
 	clear: both;
 }
 
-div.add_section_dialog li.section div.section_info {
+div.section_dialog li.section div.section_info {
 	float: none;
 	margin-left: 2em;
 }
 
-div.add_section_dialog li.section div.section_instructor {
+div.section_dialog li.section div.section_instructor {
 	float: right;
 }
-div.add_section_dialog li.section div.conflicting {
+div.section_dialog li.section div.conflicting {
 	color: #F00;
 }
 
@@ -265,6 +265,9 @@ li.bookmarked_course div.remove_course {
 .remove_course a, .remove_course a:hover {
 	border-bottom: none;
 }
+.remove_dialog form.remove_offering_form {
+	display: inline;
+}
 
 
 div.schedule ul.offerings {
@@ -288,7 +291,7 @@ div.schedule li.offering div.offering_name {
 }
 div.schedule li.offering div.offering_title {
 	float: left;
-	width: 220px;
+	width: 210px;
 	white-space: nowrap;
 	overflow: hidden;
 }
@@ -304,6 +307,17 @@ img.calendar_img, img.calendar_button {
 	width: 350px;
 	_border: 1px solid #939393; /* IE-only */
 }
+
+div.schedule li.offering div.remove_dialog {
+	display: none;
+}
+
+div.schedule li.offering .remove_button {
+	display: block;
+	float: right;
+}
+
+
 
 div.leftText {
 	margin-top: 40px;
