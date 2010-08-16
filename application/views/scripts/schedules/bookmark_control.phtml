@@ -43,7 +43,6 @@ $(function() { // on DOM ready
 		$.ajax({
 			url: clickedAnchor.attr('href'), 
 			success: function () {
-				console.log('success');
 				if (clickedAnchor.hasClass('save')) {
 					bookmarks_show_forget(courseId);
 				} else {
