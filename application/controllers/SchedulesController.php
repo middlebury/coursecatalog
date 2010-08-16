@@ -86,8 +86,8 @@ class SchedulesController
 		
 		<div class='help'><strong>Basic Usage:</strong>
 			<ol>
-				<li>Search for courses and save interesting ones.</li>
-				<li>Create one or more schedules.</li>
+				<li>Search for courses in the catalog and save interesting ones.</li>
+				<li>Create one or more schedules in the Planner.</li>
 				<li>Add courses to schedules.</li>
 				<li>Print or email your schedules.</li>
 			</ol>
