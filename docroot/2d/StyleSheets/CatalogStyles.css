@@ -177,6 +177,12 @@ div.bookmark_controls {
 	margin-left: 5px;
 	margin-top: -40px;
 }
+
+div.bookmark_controls img {
+	width: 1.5em;
+	vertical-align: middle;
+}
+
 .search_results div.bookmark_controls {
 	margin-top: 0px;
 }

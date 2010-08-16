@@ -15,19 +15,21 @@ if ($this->isAuthenticated()) {
 	if (!$this->bookmarks()->isBookmarked($this->bookmarks_CourseId))
 		print "style='display: none;'";
 	print " title='click to forget' class='forget'>";
-	print "&#9733; Saved";
+	print "<img src='".$this->url(array(), null, true)."images/Crystal_Clear/Crystal_Clear_action_bookmark.png' />";
+	print " Saved";
 	print "</a>";
 	
 	print "\n\t\t<a href='".$this->url(array('controller' => 'bookmarks', 'action' => 'add', 'course' => $this->getStringFromOsidId($this->bookmarks_CourseId), 'csrf_key' => $this->csrfKey()))."'";
 	if ($this->bookmarks()->isBookmarked($this->bookmarks_CourseId))
 		print "style='display: none;'";
 	print " title='click to save' class='save'>";
-	print "&#9734; Save";
+	print "<img src='".$this->url(array(), null, true)."images/Crystal_Clear/Crystal_Clear_action_bookmark_Silver.png' />";
+	print " Save";
 	print "</a>";
 	
 	print "\n\t</div>";
 } else {
-	print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'login', 'return' => $this->url())).'">Log-in to save</a>';
+	print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'login', 'return' => $this->url(array(), null, true))).'">Log-in to save</a>';
 }
 
 if (!defined('BOOKMARK_CONTROLS_SCRIPT_ADDED')) {
