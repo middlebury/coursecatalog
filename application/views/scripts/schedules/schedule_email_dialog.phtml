@@ -10,17 +10,18 @@
 			
 			<div class='row'>
 				<label for='from-<?php print $this->schedule->getId(); ?>'>From: </label>
-				<input id='from-<?php print $this->schedule->getId(); ?>' name='from' type='text' value="<?php print $this->escape($this->getUserDisplayName()); ?> &lt;<?php print $this->getUserEmail(); ?>&gt;" readonly='readonly' disabled='disabled' size='42'/>
+				<input id='from-<?php print $this->schedule->getId(); ?>' name='from' type='text' value="<?php print $this->getUserEmail(); ?>" readonly='readonly' disabled='disabled' size='42'/>
 			</div>
 			
 			<div class='row'>
 				<label for='to-<?php print $this->schedule->getId(); ?>'>To: </label>
 				<input id='to-<?php print $this->schedule->getId(); ?>' name='to' type='text' size='42'/>
+				<span class='hint'>(comma separated)</span>
 			</div>
 			
 			<div class='row'>
 				<label for='cc-<?php print $this->schedule->getId(); ?>'>CC: </label>
-				<input id='cc-<?php print $this->schedule->getId(); ?>' name='cc' type='text' value="<?php print $this->escape($this->getUserDisplayName()); ?> &lt;<?php print $this->getUserEmail(); ?>&gt;" readonly='readonly' disabled='disabled' size='42'/>
+				<input id='cc-<?php print $this->schedule->getId(); ?>' name='cc' type='text' value="<?php print $this->getUserEmail(); ?>" readonly='readonly' disabled='disabled' size='42'/>
 			</div>
 			
 			<div class='row'>
@@ -71,7 +72,51 @@ if (!defined('EMAIL_DIALOG_JS_ADDED')) {
 			return false;
 		});
 		
+		$(".email_dialog form").submit(function() {
+			var to = $(this).find("input[name=to]").val();
+			to = to.replace(/^\s*/, '').replace(/\s*$/, '');
+			
+			if (!to.length) {
+				if (!confirm("You didn't specify a recipient.\n\nClick 'Cancel' to add one or 'Ok' to send only to yourself.")) {
+					return false;
+				}
+			}
+			if (!validateEmail(to)) {
+				alert("It doesn't look like you specified a valid email address in the 'To:' field.");
+				return false;
+			}
+		});
+		
 	});
+	
+	/**
+	 * Validate the email field
+	 * 
+	 * @param string emailString
+	 * @return boolean
+	 */
+	function validateEmail (emailString) {
+		var addresses = emailString.split(",");
+		for (var i = 0; i < addresses.length; i++) {
+			var address = addresses[i].replace(/^\s*/, '').replace(/\s*$/, '');
+			if (!validateEmailAddress(address)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Validate an email address.
+	 * By "sectrean" at http://stackoverflow.com/questions/46155/validate-email-address-in-javascript/46181#46181
+	 * 
+	 * @param string email
+	 * @return boolean
+	 */
+	function validateEmailAddress (email) { 
+		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		return email.match(re);
+	}
 
 
 <?php
