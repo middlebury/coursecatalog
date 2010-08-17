@@ -259,7 +259,7 @@ class SchedulesController
    		// Check that we are adding a section for each link-group.
    		foreach ($requiredLinkInfo as $info) {
    			if (!$info['found'])
-   				throw new Exception("No offering was added for the link-group ".$info['id']->getIdentifier());
+   				throw new Exception("No offering was added for the link-group ".$info['id']->getIdentifier()." when adding sections for ".$course->getDisplayName().". POST: ".print_r($_POST, true));
    		}
    
     	/*********************************************************
