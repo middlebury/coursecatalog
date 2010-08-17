@@ -4,6 +4,10 @@
 		<p class='notice'><strong>This feature is not yet operational. Please check back in a few days.</strong></p>
 
 		<form action='<?php print $this->url(array('action' => 'email')); ?>' method='post'>
+			<div class='row controls'>
+				<input type='submit' value='Send'/>
+			</div>
+			
 			<div class='row'>
 				<label for='from-<?php print $this->schedule->getId(); ?>'>From: </label>
 				<input id='from-<?php print $this->schedule->getId(); ?>' name='from' type='text' value="<?php print $this->escape($this->getUserDisplayName()); ?> &lt;<?php print $this->getUserEmail(); ?>&gt;" readonly='readonly' disabled='disabled' size='42'/>

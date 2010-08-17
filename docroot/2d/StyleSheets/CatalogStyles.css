@@ -359,6 +359,10 @@ div.email_dialog label {
 div.email_dialog div.row {
 	clear: both;
 }
+div.email_dialog div.controls {
+	margin-bottom: 10px;
+}
+
 div.email_dialog .notice {
 	border: 1px solid red;
 	color: red;
