@@ -116,6 +116,19 @@ class Auth_Action_Helper_Cas
     	return trim($displayName);
     }
     
+    /**
+	 * Answer an email address for the user if a user is currently authenticated or throw an Exception
+	 * if isAuthenticated is false.
+	 * 
+	 * @return string
+	 * @access public
+	 */
+    public function getUserEmail() {
+    	self::initializePhpCas();
+    	
+    	return trim(phpCAS::getAttribute('EMail'));
+    }
+    
     static $phpcasInitialized = false;
     /**
      * Initialize phpCAS

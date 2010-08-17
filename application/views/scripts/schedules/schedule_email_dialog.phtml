@@ -9,7 +9,7 @@ print "\n\t<div class='email_dialog' style='display: none;' title=\"".$this->esc
 print "\n\n<p class='notice'><strong>This feature is not yet operational. Please check back in a few days.</strong></p>";
 
 print "\n\t\t<form action='".$this->url(array('action' => 'email'))."' method='post'>";
-print "\n\t\t\t<label for='from-".$this->schedule->getId()."'>From: </label><input id='from-".$this->schedule->getId()."' name='from' type='text' value='".$this->getUserDisplayName()."' readonly='readonly' size='42'/>";
+print "\n\t\t\t<label for='from-".$this->schedule->getId()."'>From: </label><input id='from-".$this->schedule->getId()."' name='from' type='text' value='".$this->getUserDisplayName()." &lt;".$this->getUserEmail()."&gt;' readonly='readonly' size='42'/>";
 print "\n\t\t\t<br/><label for='to-".$this->schedule->getId()."'>To: </label><input id='to-".$this->schedule->getId()."' name='to' type='text' size='42'/>";
 print "\n\t\t\t<br/><label for='subject-".$this->schedule->getId()."'>Subject:</label><input id='subject-".$this->schedule->getId()."' name='subject' type='text' value=\"".$this->escape($this->schedule->getName())."\" size='42'/>";
 print "\n\t\t\t<br/><label for='message-".$this->schedule->getId()."'> &nbsp; </label><textarea id='message-".$this->schedule->getId()."' name='message' cols='40' rows='10'></textarea>";

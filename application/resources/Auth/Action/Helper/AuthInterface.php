@@ -66,6 +66,15 @@ interface Auth_Action_Helper_AuthInterface {
 	 * @access public
 	 */
     public function getUserDisplayName();
+    
+    /**
+	 * Answer an email address for the user if a user is currently authenticated or throw an Exception
+	 * if isAuthenticated is false.
+	 * 
+	 * @return string
+	 * @access public
+	 */
+    public function getUserEmail();
 	
 }
 
