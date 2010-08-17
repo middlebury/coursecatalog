@@ -1,0 +1,62 @@
+<?php
+
+print "\n\t<a class='email_button' href='#' title='Click for print view.'>";
+print "\n\t<button>EMail</button>";
+print "\n\t\t</a>";
+
+print "\n\t<div class='email_dialog' style='display: none;' title=\"".$this->escape($this->schedule->getName())."\">";
+
+print "\n\n<p class='notice'><strong>This feature is not yet operational. Please check back in a few days.</strong></p>";
+
+print "\n\t\t<form action='".$this->url(array('action' => 'email'))."' method='post'>";
+print "\n\t\t\t<label for='from-".$this->schedule->getId()."'>From: </label><input id='from-".$this->schedule->getId()."' name='from' type='text' value='".$this->getUserDisplayName()."' readonly='readonly' size='42'/>";
+print "\n\t\t\t<br/><label for='to-".$this->schedule->getId()."'>To: </label><input id='to-".$this->schedule->getId()."' name='to' type='text' size='42'/>";
+print "\n\t\t\t<br/><label for='subject-".$this->schedule->getId()."'>Subject:</label><input id='subject-".$this->schedule->getId()."' name='subject' type='text' value=\"".$this->escape($this->schedule->getName())."\" size='42'/>";
+print "\n\t\t\t<br/><label for='message-".$this->schedule->getId()."'> &nbsp; </label><textarea id='message-".$this->schedule->getId()."' name='message' cols='40' rows='10'></textarea>";
+print "\n\t\t<input type='hidden' name='csrf_key' value='".$this->csrfKey()."' />";
+print "\n\t\t<input type='hidden' name='schedule_id' value='".$this->escape($this->schedule->getId())."'/>";
+print "\n\t\t</form>";
+
+print "\n\t\t<hr/>";
+
+
+print $this->render('schedules/schedule_email.phtml');
+
+print "</div>";
+
+
+if (!defined('EMAIL_DIALOG_JS_ADDED')) {
+	ob_start();
+?>
+
+	$(function() { // on DOM ready 
+		
+		/*********************************************************
+		 * Email controls
+		 *********************************************************/
+		$(".email_dialog").each(function() {
+			var button = $(this).siblings(".email_button");
+			var emailDialog = $(this).dialog({
+					autoOpen: false, 
+					width:  700, 
+					modal: true,
+					position: 'top'
+				});
+			
+			button.data("emailDialog", emailDialog);
+		});
+		$(".email_button").click(function(){
+			var emailDialog = $(this).data('emailDialog');
+			emailDialog.dialog("open");
+			
+			return false;
+		});
+		
+	});
+
+
+<?php
+
+	$this->headScript()->appendScript(ob_get_clean());
+	define('EMAIL_DIALOG_JS_ADDED', true);
+}
