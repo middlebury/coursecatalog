@@ -356,6 +356,9 @@ div.email_dialog label {
 	float: left;
 	width: 100px;
 }
+div.email_dialog div.row {
+	clear: both;
+}
 div.email_dialog .notice {
 	border: 1px solid red;
 	color: red;
