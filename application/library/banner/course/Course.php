@@ -513,7 +513,7 @@ class banner_course_Course
 	 */
 	public function getRequiredLinkIdsForTerm (osid_id_Id $termId) {
 		$stmt = $this->session->getManager()->getDb()->prepare(
-'SELECT
+"SELECT
 	SSBSECT_LINK_IDENT
 FROM
 	SSBSECT
@@ -521,10 +521,12 @@ WHERE
 	SSBSECT_SUBJ_CODE = ?
 	AND SSBSECT_CRSE_NUMB = ?
 	AND SSBSECT_TERM_CODE = ?
+	AND SSBSECT_SSTS_CODE = 'A'
+	AND SSBSECT_PRNT_IND != 'N'
 GROUP BY 
 	SSBSECT_LINK_IDENT
 ORDER BY 
-	SSBSECT_SEQ_NUMB');
+	SSBSECT_SEQ_NUMB");
 		$stmt->execute(array(
 			$this->session->getSubjectFromCourseId($this->getId()),
 			$this->session->getNumberFromCourseId($this->getId()),
