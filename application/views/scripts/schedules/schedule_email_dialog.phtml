@@ -25,8 +25,8 @@
 			</div>
 			
 			<div class='row'>
-				<label for='message-<?php print $this->schedule->getId(); ?>'> &nbsp; </label>
-				<textarea id='message-<?php print $this->schedule->getId(); ?>' name='message' cols='40' rows='10'></textarea>
+				<label for='message-<?php print $this->schedule->getId(); ?>'>Message: </label>
+				<textarea id='message-<?php print $this->schedule->getId(); ?>' name='message' cols='40' rows='10'>Below is my schedule, '<?php print $this->escape($this->schedule->getName()); ?>'.</textarea>
 			</div>
 			
 			<input type='hidden' name='csrf_key' value='<?php print $this->csrfKey(); ?>' />
