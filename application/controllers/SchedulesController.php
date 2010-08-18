@@ -456,7 +456,18 @@ class SchedulesController
     public function pngAction () {
     	$this->_helper->layout->disableLayout();
     	
-		$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
+		$this->initializeScheduleImage();
+		
+		$this->getResponse()->setHeader('Content-Type', 'image/png');
+    }
+    
+    /**
+     * Initialize a schedule image.
+     * 
+     * @return void
+     */
+    protected function initializeScheduleImage () {
+    	$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
 		$schedule = $schedules->getSchedule($this->_getParam('schedule_id'));
 		
 		$this->view->events = $schedule->getWeeklyEvents();
@@ -470,8 +481,6 @@ class SchedulesController
 		}
 		
 		$this->view->height = 600;
-		
-		$this->getResponse()->setHeader('Content-Type', 'image/png');
     }
     
     /**
