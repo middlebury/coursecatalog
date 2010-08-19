@@ -513,12 +513,12 @@ class SchedulesController
      * @return void
      */
     public function emailAction () {
+    	$this->_helper->layout->disableLayout();
+		$this->_helper->viewRenderer->setNoRender(true);
+		$this->getResponse()->setHeader('Content-Type', 'text/plain');
+		
 		try {
 			$this->verifyChangeRequest();
-			
-			$this->_helper->layout->disableLayout();
-			$this->_helper->viewRenderer->setNoRender(true);
-			$this->getResponse()->setHeader('Content-Type', 'text/plain');
 			
 			$this->initializeSchedule();
 			$this->view->messageBody = $this->_getParam('message');
@@ -564,18 +564,18 @@ class SchedulesController
 			$headers = $mime->headers($headers);
 			
 			$mail = Mail::factory('mail');
-			$mail->send($to, $headers, $body);
+			$result = $mail->send($to, $headers, $body);
 			
-			print "Email sent.";
-			
-// 			var_dump($to);
-// 			var_dump($headers);
-// 			var_dump($body);
-// 			print "\n\ndone";
-			
+			if ($result === true) {
+				print "Email sent.";
+			} else {
+				throw $result;
+			}
 	    } catch (Exception $e) {
-// 	    	error_log($e->getMessage());
-	    	throw $e;
+	    	error_log($e->getMessage());
+	    	
+	    	$this->getResponse()->setHttpResponseCode(500);
+	    	$this->getResponse()->setBody($e->getMessage());
 	    }
     }
 }
