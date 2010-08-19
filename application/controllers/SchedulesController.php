@@ -462,19 +462,30 @@ class SchedulesController
     }
     
     /**
+     * Intitialize our schedule with the ID passed.
+     * 
+     * @return void
+     */
+    protected function initializeSchedule () {
+    	if (!isset($this->view->schedule)) {
+			$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
+			$this->view->schedule = $schedules->getSchedule($this->_getParam('schedule_id'));
+		}
+    }
+    
+    /**
      * Initialize a schedule image.
      * 
      * @return void
      */
     protected function initializeScheduleImage () {
-    	$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
-		$schedule = $schedules->getSchedule($this->_getParam('schedule_id'));
+		$this->initializeSchedule();
 		
-		$this->view->events = $schedule->getWeeklyEvents();
+		$this->view->events = $this->view->schedule->getWeeklyEvents();
 		
-		$this->view->minTime = $schedule->getEarliestTime();
-		if ($schedule->getLatestTime()) {
-			$this->view->maxTime = $schedule->getLatestTime();
+		$this->view->minTime = $this->view->schedule->getEarliestTime();
+		if ($this->view->schedule->getLatestTime()) {
+			$this->view->maxTime = $this->view->schedule->getLatestTime();
 		} else {
 			$this->view->minTime = 9 * 3600;
 			$this->view->maxTime = 17 * 3600;
@@ -493,7 +504,6 @@ class SchedulesController
     public function printAction () {
     	$this->_helper->layout->disableLayout();
     	
-		$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
-		$this->view->schedule = $schedules->getSchedule($this->_getParam('schedule_id'));
+		$this->initializeSchedule();
     }
 }
