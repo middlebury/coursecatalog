@@ -548,7 +548,7 @@ class SchedulesController
 			}
 			
 			// Build the email
-			$mime = new Mail_mime("\r\n");
+			$mime = new Mail_mime();
 			$headers = array(
 				'From'		=> $this->_helper->auth()->getUserEmail(),
 				'Subject'	=> preg_replace('/[^\w \'"&-_.,\/*%#$@!()=+:;<>?]/', '', $this->_getParam('subject')),
@@ -556,6 +556,7 @@ class SchedulesController
 			$mime->setTXTBody($text);
 			$mime->setHTMLBody($html);
 			$mime->addHTMLImage($imageData, 'image/png', 'schedule_image.png', false);
+			$mime->addAttachment($imageData, 'image/png', 'schedule_image.png', false);
 			
 			
 			// Send the email
