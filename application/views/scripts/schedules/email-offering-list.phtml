@@ -2,33 +2,31 @@
 
 $offerings = $this->schedule->getOfferings();
 
-print "\n\t\t<ul class='offerings'>";
 if (!count($offerings)) {
-	print "\n\t\t\t<li style='visibility: hidden'> &nbsp; </li>";
+	return;
 }
+print "\n\t\t<table style='border: 0px; width: 100%; font-size: 12px;'>";
 foreach ($offerings as $offering) {
-	print "\n\t\t\t<li class='offering'>";
+	print "\n\t\t\t<tr>";
 	
-	print "\n\t\t<div class='offering_name'>";
+	print "\n\t\t<td style='border-top: 1px dotted; vertical-align: top; white-space: nowrap;'>";
 	print "\n\t\t\t<a href='".$this->url(array('controller' => 'offerings', 'action' => 'view', 'offering' => $this->getStringFromOsidId($offering->getId())))."' target='_blank'>";
 	print $this->escape($offering->getDisplayName());
 	print "</a>";
-	print "\n\t\t</div>";
+	print "\n\t\t</td>";
 	
-	print "\n\t\t<div class='separator'> - </div>";
-	
-	print "\n\t\t<div class='offering_title'>";
+	print "\n\t\t<td style='border-top: 1px dotted; vertical-align: top; white-space: nowrap;'>";
 	print "\n\t\t\t<a href='".$this->url(array('controller' => 'offerings', 'action' => 'view', 'offering' => $this->getStringFromOsidId($offering->getId())))."' target='_blank'>";
 	print nl2br($this->escape($offering->getTitle()));
 	print "</a>";
-	print "\n\t\t</div>";
+	print "\n\t\t</td>";
 	
-	print "\n\t\t<div class='time";
+	print "\n\t\t<td style='border-top: 1px dotted; vertical-align: top;";
 	if ($this->schedule->hasCollisions($offering->getId()))
-		print ' conflicting';
-	print "'>".nl2br($this->escape($offering->getScheduleInfo()))."</div>";
-	print "\n\t\t<div class='location'>".nl2br($this->escape($offering->getLocationInfo()))."</div>";
+		print ' color: red;';
+	print "'>".nl2br($this->escape($offering->getScheduleInfo()))."</td>";
+	print "\n\t\t<td style='border-top: 1px dotted; vertical-align: top;'>".nl2br($this->escape($offering->getLocationInfo()))."</td>";
 	
-	print "\n\t\t\t</li>";
+	print "\n\t\t\t</tr>";
 }
-print "\n\t\t</ul>";
+print "\n\t\t</table>";
