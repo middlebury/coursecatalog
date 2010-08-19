@@ -32,6 +32,8 @@ class SchedulesController
 		}
 		$this->setSelectedCatalogId($catalogId);
 		
+		$this->view->emailEnabled = $this->emailEnabled();
+		
 		// Catalogs
 		$catalogLookupSession = $this->_helper->osid->getCourseManager()->getCourseCatalogLookupSession();
 		$this->view->catalogs = $catalogLookupSession->getCourseCatalogs();
@@ -508,6 +510,16 @@ class SchedulesController
     }
     
     /**
+     * Answer true if sending email is enabled.
+     * 
+     * @return boolean
+     */
+    protected function emailEnabled () {
+    	$config = Zend_Registry::getInstance()->config;
+    	return (isset($config->schedules->email->enabled) && $config->schedules->email->enabled);
+    }
+    
+    /**
      * Email a schedule to one or more addresses.
      * 
      * @return void
@@ -518,6 +530,9 @@ class SchedulesController
 		$this->getResponse()->setHeader('Content-Type', 'text/plain');
 		
 		try {
+			if (!$this->emailEnabled()) {
+				throw new Exception("Emailing of schedules is not enabled in frontend_config.ini.");
+			}
 			$this->verifyChangeRequest();
 			
 			$this->initializeSchedule();

@@ -1,3 +1,8 @@
+<?php
+if (!$this->emailEnabled) {
+	return;
+}
+?>
 	<a class='email_button' href='#' title='Click for print view.'><button>EMail</button></a>
 
 	<div class='email_dialog' style='display: none;' title="<?php print $this->escape($this->schedule->getName()); ?>">
