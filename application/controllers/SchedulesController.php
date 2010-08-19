@@ -550,7 +550,8 @@ class SchedulesController
 			// Build the email
 			$mime = new Mail_mime();
 			$headers = array(
-				'From'		=> $this->_helper->auth()->getUserEmail(),
+				'From'		=> $this->_helper->auth()->getUserDisplayName().' <'.$this->_helper->auth()->getUserEmail().'>',
+				'Reply-To'		=> $this->_helper->auth()->getUserEmail(),
 				'Subject'	=> preg_replace('/[^\w \'"&-_.,\/*%#$@!()=+:;<>?]/', '', $this->_getParam('subject')),
 			);
 			$mime->setTXTBody($text);
