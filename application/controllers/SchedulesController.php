@@ -506,4 +506,75 @@ class SchedulesController
     	
 		$this->initializeSchedule();
     }
+    
+    /**
+     * Email a schedule to one or more addresses.
+     * 
+     * @return void
+     */
+    public function emailAction () {
+		try {
+			$this->verifyChangeRequest();
+			
+			$this->_helper->layout->disableLayout();
+			$this->_helper->viewRenderer->setNoRender(true);
+			$this->getResponse()->setHeader('Content-Type', 'text/plain');
+			
+			$this->initializeSchedule();
+			$this->view->messageBody = $this->_getParam('message');
+			
+			// Generate the text version of the email.
+			$this->render('email-text');
+			$text = $this->getResponse()->getBody();
+			$this->getResponse()->setBody('');
+			
+			// Generate the html version of the email.
+			$this->render('email-html');
+			$html = $this->getResponse()->getBody();
+			$this->getResponse()->setBody('');
+			
+			// Generate the Schedule image.
+			$this->initializeScheduleImage();
+			$this->render('generate-image');
+			ob_start();
+			imagepng($this->view->image, null, 5);
+			imagedestroy($this->view->image);
+			$imageData = ob_get_clean();
+			
+			// To
+			$to = $this->_helper->auth()->getUserEmail();
+			if (strlen(trim($this->_getParam('to'))) && trim($this->_getParam('to')) != $to) {
+				$to .= ', '.trim($this->_getParam('to'));
+			}
+			
+			// Build the email
+			$mime = new Mail_mime("\r\n");
+			$headers = array(
+				'From'		=> $this->_helper->auth()->getUserEmail(),
+				'Subject'	=> preg_replace('/[^\w \'"&-_.,\/*%#$@!()=+:;<>?]/', '', $this->_getParam('subject')),
+			);
+			$mime->setTXTBody($text);
+			$mime->setHTMLBody($html);
+			$mime->addHTMLImage($imageData, 'image/png', 'schedule_image.png', false);
+			
+			
+			// Send the email
+			$body = $mime->get();
+			$headers = $mime->headers($headers);
+			
+			$mail = Mail::factory('mail');
+			$mail->send($to, $headers, $body);
+			
+			print "Email sent.";
+			
+// 			var_dump($to);
+// 			var_dump($headers);
+// 			var_dump($body);
+// 			print "\n\ndone";
+			
+	    } catch (Exception $e) {
+// 	    	error_log($e->getMessage());
+	    	throw $e;
+	    }
+    }
 }
