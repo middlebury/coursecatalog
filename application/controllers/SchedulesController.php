@@ -531,7 +531,7 @@ class SchedulesController
     	if (isset($config->schedules->email->send_mail_as_user) && $config->schedules->email->send_mail_as_user) {
     		return $name.' <'.$this->_helper->auth()->getUserEmail().'>';
     	} else if (isset($config->schedules->email->send_mail_as) && $config->schedules->email->send_mail_as) {
-    		return $name.' <'.$config->schedules->email->send_mail_as.'>';
+    		return $name.' - Catalog <'.$config->schedules->email->send_mail_as.'>';
     	} else {
     		throw new Exception ('schedules.email.send_mail_as_user is false, but schedules.email.send_mail_as is not set (in frontend_config.ini).');
     	}
