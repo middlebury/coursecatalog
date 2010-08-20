@@ -17,20 +17,47 @@ class SchedulesController
 			$this->_redirect(
 				$this->view->url(array('controller' => 'auth', 'action' => 'login', 'return' => $this->view->url())),
 				array('exit' => true, 'prependBase' => false));
-		}		
+		}
+	}
+	
+	/**
+	 * Initialize the catalog and term we are working with.
+	 *
+	 * Sets the following member properties:
+	 * 		catalogId				osid_id_Id or NULL
+	 *		termLookupSession		osid_course_TermLookupSession
+	 *		termId					osid_id_Id or NULL
+	 * 
+	 * @return void
+	 */
+	protected function initializeCatalogAndTerm () {
+		// Select the catalog.
+		if ($this->_getParam('catalog')) {
+			$this->catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));	
+			$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($this->catalogId);
+		} else {
+			$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
+			$this->catalogId = $this->termLookupSession->getCourseCatalogId();
+		}
+		
+		
+		// Select the term
+		if ($this->_getParam('term') == 'ANY') {
+			// Don't set a term
+			$this->termId = null;
+		} else if (!$this->_getParam('term') || $this->_getParam('term') == 'CURRENT') {
+			$this->termId = $this->_helper->osidTerms->getCurrentTermId($this->catalogId);
+		} else {
+			$this->termId = $this->_helper->osidId->fromString($this->_getParam('term'));
+		}
 	}
 	
     public function indexAction()
     {
+    	$this->initializeCatalogAndTerm();
+    	
     	// Set up data for the menu rendering
-    	if ($this->_getParam('catalog')) {
-			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));	
-			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
-		} else {
-			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
-			$catalogId = $termLookupSession->getCourseCatalogId();
-		}
-		$this->setSelectedCatalogId($catalogId);
+		$this->setSelectedCatalogId($this->catalogId);
 		
 		$this->view->emailEnabled = $this->emailEnabled();
 		
@@ -39,8 +66,8 @@ class SchedulesController
 		$this->view->catalogs = $catalogLookupSession->getCourseCatalogs();
 		
 		// Load all terms for our selection control
-		$termLookupSession->useFederatedCourseCatalogView();
-		$terms = $termLookupSession->getTerms();
+		$this->termLookupSession->useFederatedCourseCatalogView();
+		$terms = $this->termLookupSession->getTerms();
 		$termCatalogSession = $this->_helper->osid->getCourseManager()->getTermCatalogSession();
 		$this->view->terms = array();
 		while ($terms->hasNext()) {
@@ -56,22 +83,16 @@ class SchedulesController
 			);
 		}
 		// Set the selected term
-		if ($this->_getParam('term') == 'ANY') {
-			// Don't set a term
-		} else if (!$this->_getParam('term') || $this->_getParam('term') == 'CURRENT') {
-			$this->view->selectedTermId = $this->_helper->osidTerms->getCurrentTermId($catalogId);
-		} else {
-			$this->view->selectedTermId = $this->_helper->osidId->fromString($this->_getParam('term'));
-		}
-		if ($this->view->selectedTermId) {
-			$this->view->termIdString = $this->_helper->osidId->toString($this->view->selectedTermId);
+		if ($this->termId) {
+			$this->view->selectedTermId = $this->termId;
+			$this->view->termIdString = $this->_helper->osidId->toString($this->termId);
 		}
 		
 		
 		// Load the bookmarks for the selected catalog/terms
 		$bookmarks = $this->_helper->bookmarks();
 		if (isset($this->view->selectedTermId)) {
-			$this->view->bookmarked_courses = $bookmarks->getBookmarkedCoursesInCatalogForTerm($catalogId, $this->view->selectedTermId);
+			$this->view->bookmarked_courses = $bookmarks->getBookmarkedCoursesInCatalogForTerm($this->catalogId, $this->view->selectedTermId);
 		} else {
 			$this->view->bookmarked_courses = $bookmarks->getAllBookmarkedCourses();
 		}
