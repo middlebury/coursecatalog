@@ -520,6 +520,24 @@ class SchedulesController
     }
     
     /**
+     * Answer the email address to send mail from.
+     * 
+     * @return string
+     */
+    protected function getFromEmail () {
+    	$config = Zend_Registry::getInstance()->config;
+    	$name = $this->_helper->auth()->getUserDisplayName();
+    	
+    	if (isset($config->schedules->email->send_mail_as_user) && $config->schedules->email->send_mail_as_user) {
+    		return $name.' <'.$this->_helper->auth()->getUserEmail().'>';
+    	} else if (isset($config->schedules->email->send_mail_as) && $config->schedules->email->send_mail_as) {
+    		return $name.' <'.$config->schedules->email->send_mail_as.'>';
+    	} else {
+    		throw new Exception ('schedules.email.send_mail_as_user is false, but schedules.email.send_mail_as is not set (in frontend_config.ini).');
+    	}
+    }
+    
+    /**
      * Email a schedule to one or more addresses.
      * 
      * @return void
@@ -565,7 +583,7 @@ class SchedulesController
 			// Build the email
 			$mime = new Mail_mime();
 			$headers = array(
-				'From'		=> $this->_helper->auth()->getUserDisplayName().' <'.$this->_helper->auth()->getUserEmail().'>',
+				'From'		=> $this->getFromEmail(),
 				'Reply-To'	=> $this->_helper->auth()->getUserEmail(),
 				'CC'		=> $this->_helper->auth()->getUserEmail(),
 				'Subject'	=> preg_replace('/[^\w \'"&-_.,\/*%#$@!()=+:;<>?]/', '', $this->_getParam('subject')),
