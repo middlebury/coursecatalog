@@ -33,7 +33,15 @@ class SchedulesController
 	protected function initializeCatalogAndTerm () {
 		// Select the catalog.
 		if ($this->_getParam('catalog')) {
-			$this->catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));	
+			$this->catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+			$this->setSavedCatalogId($this->catalogId);
+		} else {
+			// Check for a saved catalog id.
+			$this->catalogId = $this->getSavedCatalogId();
+		}
+		
+		// Load the termLookupSession
+		if ($this->catalogId) {
 			$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($this->catalogId);
 		} else {
 			$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
@@ -50,6 +58,25 @@ class SchedulesController
 		} else {
 			$this->termId = $this->_helper->osidId->fromString($this->_getParam('term'));
 		}
+	}
+	
+	/**
+	 * Answer a saved catalog Id or null
+	 * 
+	 * @return osid_id_Id or NULL
+	 */
+	protected function getSavedCatalogId () {
+		return null;
+	}
+	
+	/**
+	 * Set the saved catalog id.
+	 * 
+	 * @param osid_id_Id $catalogId
+	 * @return void
+	 */
+	protected function setSavedCatalogId (osid_id_Id $catalogId) {
+		return;
 	}
 	
     public function indexAction()
