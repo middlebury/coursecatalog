@@ -66,7 +66,18 @@ class SchedulesController
 	 * @return osid_id_Id or NULL
 	 */
 	protected function getSavedCatalogId () {
-		return null;
+		if (!isset($this->savedCatalogId)) {
+			$stmt = Zend_Registry::get('db')->prepare("SELECT * FROM user_catalog WHERE user_id = ?");
+			$stmt->execute(array($this->_helper->auth()->getUserId()));
+			$row = $stmt->fetch();
+			$stmt->closeCursor();
+			if ($row) {
+				$this->savedCatalogId = new phpkit_id_Id($row['catalog_id_authority'], $row['catalog_id_namespace'], $row['catalog_id_keyword']);
+			} else {
+				$this->savedCatalogId = null;
+			}
+		}
+		return $this->savedCatalogId;
 	}
 	
 	/**
@@ -76,7 +87,24 @@ class SchedulesController
 	 * @return void
 	 */
 	protected function setSavedCatalogId (osid_id_Id $catalogId) {
-		return;
+		if (!is_null($this->getSavedCatalogId()) && $catalogId->isEqual($this->getSavedCatalogId()))
+			return;
+		
+		$db = Zend_Registry::get('db');
+		$insert = $db->prepare("INSERT INTO user_catalog (user_id, catalog_id_authority, catalog_id_namespace, catalog_id_keyword) VALUES (?, ?, ?, ?);");
+		try {
+			$insert->execute(array($this->_helper->auth()->getUserId(), $catalogId->getAuthority(), $catalogId->getIdentifierNamespace(), $catalogId->getIdentifier()));
+		} catch (Zend_Db_Statement_Exception $e) {
+			// Already exists
+			if ($e->getCode() == 23000) {
+				$update = $db->prepare("UPDATE user_catalog SET catalog_id_authority = ?, catalog_id_namespace = ?, catalog_id_keyword = ? WHERE user_id = ?");
+				$update->execute(array($catalogId->getAuthority(), $catalogId->getIdentifierNamespace(), $catalogId->getIdentifier(), $this->_helper->auth()->getUserId()));
+			} else {
+				throw $e;
+			}
+		}
+		
+		$this->savedCatalogId = $catalogId;
 	}
 	
     public function indexAction()

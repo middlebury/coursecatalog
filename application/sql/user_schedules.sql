@@ -69,3 +69,20 @@ CREATE TABLE IF NOT EXISTS `user_schedule_offerings` (
 --
 ALTER TABLE `user_schedule_offerings`
   ADD CONSTRAINT `user_schedule_offerings_ibfk_1` FOREIGN KEY (`schedule_id`) REFERENCES `user_schedules` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_cat_term`
+--
+
+CREATE TABLE IF NOT EXISTS `user_catalog` (
+  `user_id` varchar(100) collate utf8_bin NOT NULL,
+  `catalog_id_keyword` varchar(40) collate utf8_bin NOT NULL,
+  `catalog_id_authority` varchar(20) collate utf8_bin NOT NULL,
+  `catalog_id_namespace` varchar(10) collate utf8_bin NOT NULL,
+  `updated` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  PRIMARY KEY  (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores a user-preference of the default catalog and term.';
