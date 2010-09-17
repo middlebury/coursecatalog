@@ -37,7 +37,10 @@ try {
 	
 	$registry->db = Zend_Db::factory($registry->config->resources->db);
 	
-	Zend_Layout::startMvc();
+	Zend_Layout::startMvc(array(
+		'layoutPath' => BASE_PATH.'/application/layouts/scripts',
+		'layout'     => 'midd',
+		));
 	Zend_Controller_Front::run(APPLICATION_PATH.'/controllers');
 
 // Handle certain types of uncaught exceptions specially. In particular,
