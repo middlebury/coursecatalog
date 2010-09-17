@@ -40,6 +40,7 @@ table.search_results td.column2 dl {
 table.schedule_planner {
 	width: 690px;
 	margin-left: -20px;
+	margin-top: -15px;
 	
 }
 li.bookmarked_course, li.bookmarked_course div.course_info {
