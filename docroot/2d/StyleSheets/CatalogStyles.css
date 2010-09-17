@@ -109,17 +109,6 @@ div.help_text {
  * New 1D fixes
  *********************************************************/
 
-#left {
-	width: 200px;
-	padding-left: 0px;
-}
-div.content > ul.menu {
-	width: 200px;	
-}
-#page {
-	width: 742px;
-}
-
 
 .search_results .column1 dl {
 	width: 20em;
