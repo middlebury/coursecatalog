@@ -34,6 +34,28 @@ abstract class AbstractCatalogController
 		$this->view->termIdString = $this->_getParam('term');
 		$this->view->addHelperPath(APPLICATION_PATH.'/views/helpers', 'Catalog_View_Helper');
 		$this->view->doctype('XHTML1_TRANSITIONAL');
+		
+		$this->setLayout();
+	}
+	
+	/**
+	 * Configure the layout to use for the current action.
+	 * 
+	 * @return void
+	 */
+	protected function setLayout () {
+		if ($this->_getParam('catalog')) {
+			$config = Zend_Registry::getInstance()->config;
+			if (count($config->catalog->layouts)) {
+				$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+				foreach ($config->catalog->layouts as $layoutConfig) {
+					if ($catalogId->isEqual(new phpkit_id_URNInetId($layoutConfig->catalog_id))) {
+						$this->_helper->layout()->setLayout($layoutConfig->layout);
+						break;
+					}
+				}
+			}
+		}
 	}
 	
 	/**
