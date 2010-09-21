@@ -515,8 +515,10 @@ class SchedulesController
 			if ($event['dayOfWeek'])
 				$day = $day->plus(Duration::withDays($event['dayOfWeek']));
 			
-			$event['start'] = $day->plus(Duration::withSeconds($event['startTime']))->printableString();
-			$event['end'] = $day->plus(Duration::withSeconds($event['endTime']))->printableString();
+			$dateTime = $day->plus(Duration::withSeconds($event['startTime']));
+			$event['start'] = $dateTime->ymdString().' '.$dateTime->hmsString();
+			$dateTime = $day->plus(Duration::withSeconds($event['endTime']));
+			$event['end'] = $dateTime->ymdString().' '.$dateTime->hmsString();
 			
 			$event['id'] = $i;
 		}
