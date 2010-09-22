@@ -317,7 +317,7 @@ class banner_course_CourseOffering_Search_OrderTest
     {
         $this->object->orderByScheduleInfo();
     	$this->object->descend();
-        $this->assertEquals('ORDER BY SSRMEET_SUN_DAY DESC, SSRMEET_MON_DAY DESC, SSRMEET_TUE_DAY DESC, SSRMEET_WED_DAY DESC, SSRMEET_THU_DAY DESC, SSRMEET_FRI_DAY DESC, SSRMEET_SAT_DAY DESC, SSRMEET_BEGIN_TIME DESC, SSRMEET_END_TIME DESC', $this->object->getOrderByClause());
+        $this->assertEquals('ORDER BY SSRMEET_START_DATE DESC, SSRMEET_END_DATE DESC, SSRMEET_SUN_DAY DESC, SSRMEET_MON_DAY DESC, SSRMEET_TUE_DAY DESC, SSRMEET_WED_DAY DESC, SSRMEET_THU_DAY DESC, SSRMEET_FRI_DAY DESC, SSRMEET_SAT_DAY DESC, SSRMEET_BEGIN_TIME DESC, SSRMEET_END_TIME DESC', $this->object->getOrderByClause());
         $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
     }
 

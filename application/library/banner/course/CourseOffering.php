@@ -58,6 +58,8 @@ class banner_course_CourseOffering
 			'SSRMEET_THU_DAY',
 			'SSRMEET_FRI_DAY',
 			'SSRMEET_SAT_DAY',
+			'SSRMEET_START_DATE',
+			'SSRMEET_END_DATE',
 			'num_meet',
 			
 			'STVBLDG_DESC',
@@ -448,6 +450,7 @@ class banner_course_CourseOffering
 				.' on '.implode(', ', $days);
 			if (count($rows) > 1)
 				$info .= ' at '.$row['SSRMEET_BLDG_CODE'].' ' .$row['SSRMEET_ROOM_CODE'];
+			$info .= ' ('.$row['SSRMEET_START_DATE'].' to '.$row['SSRMEET_END_DATE'].')';
 			$parts[] = $info;
 		}
 		
