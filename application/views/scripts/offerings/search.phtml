@@ -442,7 +442,7 @@ if ($section->hasLocation()) {
 		print $this->escape($locationResource->getDisplayName());
 // 		print "</a> ";
 		if ($locationResource->getDescription())
-			print "<span class='location_description'>(".$this->escape($locationResource->getDescription()).")</span>";
+			print " <span class='location_description'>(".$this->escape($locationResource->getDescription()).")</span>";
 		print "\n\t\t</dd>";
 	} catch (osid_OperationFailedException $e) {
 		print "\n\t\t<dd>".$this->escape($section->getLocationInfo())."</dd>";
