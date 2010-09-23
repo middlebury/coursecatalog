@@ -450,7 +450,11 @@ class banner_course_CourseOffering
 				.' on '.implode(', ', $days);
 			if (count($rows) > 1)
 				$info .= ' at '.$row['SSRMEET_BLDG_CODE'].' ' .$row['SSRMEET_ROOM_CODE'];
-			$info .= ' ('.$row['SSRMEET_START_DATE'].' to '.$row['SSRMEET_END_DATE'].')';
+			
+			$start = date('M j, Y', strtotime($row['SSRMEET_START_DATE']));
+			$end = date('M j, Y', strtotime($row['SSRMEET_END_DATE']));
+			$info .= ' ('.$start.' to '.$end.')';
+			
 			$parts[] = $info;
 		}
 		
