@@ -18,7 +18,7 @@
  -->
 	</dict>
 	<key>urn:inet:middlebury.edu:config:banner_course/pdo_dsn</key>
-	<string>mysql:dbname=afranco_courses_banner;host=localhost</string>
+	<string>mysql:dbname=afranco_catalog;host=localhost</string>
 	<key>urn:inet:middlebury.edu:config:banner_course/pdo_password</key>
 	<string>testpassword</string>
 	<key>urn:inet:middlebury.edu:config:banner_course/pdo_username</key>
