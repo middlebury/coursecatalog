@@ -567,6 +567,12 @@ class banner_course_Course
 			}
 		}
 		$linkTypeIds = array_unique($linkTypeIds);
+		
+		// Ensure that we always at least have the null type.
+		if (!count($linkTypeIds)) {
+			$linkTypeIds[] = 'NULL';
+		}
+		
 		foreach ($linkTypeIds as $key => $val) {
 			$linkTypeIds[$key] = $this->session->getOsidIdFromString($val, 'link_type/');
 		}
