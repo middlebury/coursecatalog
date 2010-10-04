@@ -29,7 +29,11 @@ if ($this->isAuthenticated()) {
 	
 	print "\n\t</div>";
 } else {
-	print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'login', 'return' => $this->url(array(), null, true))).'">Log-in to save</a>';
+	$return = $this->pathAsAbsoluteUrl($this->url());
+	if (count($_GET))
+		$return .= '?'.http_build_query($_GET);
+	
+	print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'login', 'return' => $return)).'">Log-in to save</a>';
 }
 
 if (!defined('BOOKMARK_CONTROLS_SCRIPT_ADDED')) {
