@@ -456,7 +456,7 @@ class SchedulesController
 				'type'			=> $offering->getGenusType()->getDisplayName(),
 				'instructor'	=> $instructorString,
 				'location' 		=> $offering->getLocationInfo(), 
-				'schedule' 		=> $offering->getScheduleInfo(),
+				'schedule' 		=> $this->view->formatScheduleInfo($offering->getScheduleInfo()),
 				'conflicts'		=> $conflicts,
 				'conflictString'	=> $conflictString,
 			);

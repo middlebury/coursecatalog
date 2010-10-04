@@ -24,7 +24,7 @@ foreach ($offerings as $offering) {
 	print "\n\t\t<td style='border-top: 1px dotted; vertical-align: top;";
 	if ($this->schedule->hasCollisions($offering->getId()))
 		print ' color: red;';
-	print "'>".nl2br($this->escape($offering->getScheduleInfo()))."</td>";
+	print "'>".$this->formatScheduleInfo($offering->getScheduleInfo())."</td>";
 	print "\n\t\t<td style='border-top: 1px dotted; vertical-align: top;'>".nl2br($this->escape($offering->getLocationInfo()))."</td>";
 	
 	print "\n\t\t\t</tr>";

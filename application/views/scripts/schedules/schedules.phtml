@@ -70,7 +70,7 @@ foreach ($this->schedules as $schedule) {
 		print "\n\t\t<div class='time";
 		if ($schedule->hasCollisions($offering->getId()))
 			print ' conflicting';
-		print "'>".nl2br($this->escape($offering->getScheduleInfo()))."</div>";
+		print "'>".$this->formatScheduleInfo($offering->getScheduleInfo())."</div>";
 		print "\n\t\t<div class='location'>".nl2br($this->escape($offering->getLocationInfo()))."</div>";
 		
 		print "\n\t\t\t</li>";

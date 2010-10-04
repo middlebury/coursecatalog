@@ -453,9 +453,7 @@ if ($section->hasLocation()) {
 }
 
 print "\n\t\t<dt>Schedule:</dt>";
-$scheduleInfo = nl2br($this->escape($section->getScheduleInfo()));
-$scheduleInfo = preg_replace('/\([^\)]+\)/', '<span style="white-space: nowrap">$0</span>', $scheduleInfo);
-print "\n\t\t<dd>".$scheduleInfo."</dd>";
+print "\n\t\t<dd>".$this->formatScheduleInfo($section->getScheduleInfo())."</dd>";
 
 // print "\n\t<dt>Subject:</dt>";
 // print "\n\t\t<dd>";
