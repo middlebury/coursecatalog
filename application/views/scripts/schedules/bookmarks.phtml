@@ -29,13 +29,17 @@
 ?>
 		<div class="add_section_dialog section_dialog" title="Add which sections?" style='display: none'>
 			<form action="<?php print $this->url(array('action' => 'add', 'term' => $this->termIdString)); ?>" class="add_section_form" method="post">
-				Choose one option from each group:
-				<select class="section_set" name="section_set">
-					<option value=''>Loading...</option>
-				</select>
-				<ul class="section_types">
-					<li> &nbsp; </li>
-				</ul>
+				<div class='section_set' style='display: none'>Choose a group: 
+					<select class="section_set" name="section_set">
+						<option value='' class='loading'>Loading...</option>
+					</select>
+				</div>
+				
+				<div class='section_types'>Choose one option of each type:
+					<ul class="section_types">
+						<li class='loading'>Loading...</li>
+					</ul>
+				</div>
 				
 				<input type='hidden' name='csrf_key' value='<?php print $this->csrfKey(); ?>' />
 				<input type='hidden' name='schedule_id' value='' />
@@ -117,9 +121,16 @@
 	function populateSectionSetSelect(dialog, scheduleId, data) {
 		var selectList = dialog.find("select.section_set");
 		selectList.empty();
+		var i = 0;
 		for (var linkSetId in data) {
-			var option = $('<option value="'+linkSetId+'">'+linkSetId+'</option>');
+			i++;
+			var option = $('<option value="'+linkSetId+'">'+i+'</option>');
 			selectList.append(option);
+		}
+		if (i > 1) {
+			dialog.find("div.section_set").show();
+		} else {
+			dialog.find("div.section_set").hide();
 		}
 
 		selectList.data('section_data', data);

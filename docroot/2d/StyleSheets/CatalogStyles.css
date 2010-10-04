@@ -221,6 +221,10 @@ div.section_dialog li.section {
 	margin-bottom: 10px;
 }
 
+div.section_dialog li.loading {
+	color: green;
+}
+
 div.section_dialog li.section div.section_time, div.section_dialog li.section div.section_location {
 	clear: both;
 }
