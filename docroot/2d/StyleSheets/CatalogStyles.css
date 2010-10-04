@@ -208,7 +208,7 @@ div.section_dialog ul.section_types {
 div.section_dialog ul.section_types li {
 	list-style-type: none;
 }
-div.section_dialog ul.section_set {
+div.section_dialog ul.section_type {
 	border-top: 1px dotted;
 	margin-left: 0;
 }

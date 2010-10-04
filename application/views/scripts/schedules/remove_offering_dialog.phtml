@@ -10,10 +10,18 @@ $scheduleTermIdString = $this->getStringFromOsidId($this->schedule->getTermId())
 <button class='change_sections_button'>Change sections</button>
 <div class="change_section_dialog section_dialog" title="Include which sections?" style='display: none'>
 	<form action="<?php print $this->url(array('action' => 'add', 'term' => $scheduleTermIdString)); ?>" class="add_section_form" method="post">
-		Choose one option from each group:
-		<ul class="section_sets">
-			<li> &nbsp; </li>
-		</ul>
+		
+		<div class='section_set' style='display: none'>Choose a group: 
+			<select class="section_set" name="section_set">
+				<option value='' class='loading'>Loading...</option>
+			</select>
+		</div>
+		
+		<div class='section_types'>Choose one option of each type:
+			<ul class="section_types">
+				<li class='loading'>Loading...</li>
+			</ul>
+		</div>
 		
 		<input type='hidden' name='csrf_key' value='<?php print $this->csrfKey(); ?>' />
 		<input type='hidden' name='schedule_id' value='<?php print $this->schedule->getId(); ?>' />
