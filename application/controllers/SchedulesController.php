@@ -467,28 +467,31 @@ class SchedulesController
 			$info['link_set'] = $linkSetIdString;
 			if (!isset($sets[$linkSetIdString]))
 				$sets[$linkSetIdString] = array();
+			if (!isset($sets[$linkSetIdString]['types']))
+				$sets[$linkSetIdString]['types'] = array();
 
 			$linkTypeIdString = $this->_helper->osidId->toString($linkRecord->getLinkTypeId());
 			$info['link_type'] = $linkTypeIdString;
-			if (!isset($sets[$linkSetIdString][$linkTypeIdString]))
-				$sets[$linkSetIdString][$linkTypeIdString] = array();
+			if (!isset($sets[$linkSetIdString]['types'][$linkTypeIdString]))
+				$sets[$linkSetIdString]['types'][$linkTypeIdString] = array();
 			
 			// To start with, enable the first section in each group.
 			// Later, we may want to check if the target schedule already has
 			// this course added and select the already-added versions so that 
 			// a second addition will update that course's sections rather than
 			// add them again.
-			if (!count($sets[$linkSetIdString][$linkTypeIdString]))
+			if (!count($sets[$linkSetIdString]['types'][$linkTypeIdString]))
 				$info['selected'] = true;
 			
 			if ($schedule->includes($offering->getId())) {
-				if (count($sets[$linkSetIdString][$linkTypeIdString]))
-					$sets[$linkSetIdString][$linkTypeIdString][0]['selected'] = false;
+				if (count($sets[$linkSetIdString]['types'][$linkTypeIdString]))
+					$sets[$linkSetIdString]['types'][$linkTypeIdString][0]['selected'] = false;
 				$info['selected'] = true;
+				$sets[$linkSetIdString]['selected'] = true;
 			}
 			
 			// Add the info to the appropriate set.
-			$sets[$linkSetIdString][$linkTypeIdString][] = $info;
+			$sets[$linkSetIdString]['types'][$linkTypeIdString][] = $info;
 		}
 		// Use indexted arrays.
 // 		foreach ($sets as $key => $types) {
