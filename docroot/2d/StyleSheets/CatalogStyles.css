@@ -202,10 +202,10 @@ form.delete_schedule {
 	float: right;
 }
 
-div.section_dialog ul.section_sets {
+div.section_dialog ul.section_types {
 	margin-left: 0;
 }
-div.section_dialog ul.section_sets li {
+div.section_dialog ul.section_types li {
 	list-style-type: none;
 }
 div.section_dialog ul.section_set {
