@@ -299,12 +299,12 @@ class SchedulesController
 		$offering = $lookupSession->getCourseOffering($offeringIds[0]);
     	$course = $offering->getCourse();
     	$termId = $offering->getTermId();
-    	
-	$selectedLinkSet = $this->_helper->osidId->fromString($this->_getParam('section_set'));
-	$linkTypes = $course->getLinkTypeIdsForTermAndSet($termId, $selectedLinkSet);
-	$requiredLinkTypes = array();
-	while ($linkTypes->hasNext()) {
-		$requiredLinkTypes[] = array(
+			
+		$selectedLinkSet = $this->_helper->osidId->fromString($this->_getParam('section_set'));
+		$linkTypes = $course->getLinkTypeIdsForTermAndSet($termId, $selectedLinkSet);
+		$requiredLinkTypes = array();
+		while ($linkTypes->hasNext()) {
+			$requiredLinkTypes[] = array(
 			'id' => $linkTypes->getNextId(),
     			'found' => false,
     		);
@@ -313,24 +313,25 @@ class SchedulesController
     	foreach ($offeringIds as $id) {
     		$offering = $lookupSession->getCourseOffering($id);
     		
-		// Verify that the offering is part of the selected link-set.
-    		$linkRecord = $offering->getCourseOfferingRecord($linkType);
-		if (!$selectedLinkSet->isEqual($linkRecord->getLinkSetId()))
-			throw new Exception('The offering chosen is not part of the link-set selected.');
-		// Check that we are adding a single section from each link-type.
-		$linkTypeId = $linkRecord->getLinkTypeId();
-    		$checked = false;
-		foreach ($requiredLinkTypes as $key => $info) {
-			if ($info['id']->isEqual($linkTypeId)) {
-    				$checked = true;
-    				if ($info['found'])
-    					throw new Exception('A second section from the same link-group is selected.');
-    				else
-					$requiredLinkTypes[$key]['found'] = true;
+			// Verify that the offering is part of the selected link-set.
+			$linkRecord = $offering->getCourseOfferingRecord($linkType);
+			if (!$selectedLinkSet->isEqual($linkRecord->getLinkSetId()))
+				throw new Exception('The offering chosen is not part of the link-set selected.');
+			
+			// Check that we are adding a single section from each link-type.
+			$linkTypeId = $linkRecord->getLinkTypeId();
+			$checked = false;
+			foreach ($requiredLinkTypes as $key => $info) {
+				if ($info['id']->isEqual($linkTypeId)) {
+					$checked = true;
+					if ($info['found'])
+						throw new Exception('A second section from the same link-group is selected.');
+					else
+						$requiredLinkTypes[$key]['found'] = true;
     			}
     		}
     		if (!$checked)
-			throw new Exception("The link-group id of the offering '".$linkTypeId->getIdentifier()."' wasn't in the required list.");
+				throw new Exception("The link-group id of the offering '".$linkTypeId->getIdentifier()."' wasn't in the required list.");
     		
     		// Also check that the sections are from the same course and term.
     		if (!$offering->getTermId()->isEqual($termId))
