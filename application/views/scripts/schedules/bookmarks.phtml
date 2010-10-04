@@ -114,7 +114,7 @@
 		
 		$.getJSON(lookupUrl, {course: courseId, schedule_id: scheduleId}, function (data, textStatus) {
 			populateSectionSetSelect(dialog, scheduleId, data);
-			populateSectionSets(dialog, scheduleId, dialog.find("select.section_set").val(), data);
+			populateSectionTypes(dialog, scheduleId, dialog.find("select.section_set").val(), data);
 		});
 	}
 	
@@ -137,28 +137,28 @@
 		selectList.data('dialog', dialog);
 		selectList.data('scheduleId', scheduleId);
 		selectList.change(function() {
-			populateSectionSets($(this).data('dialog'), $(this).data('scheduleId'), $(this).val(), $(this).data('section_data'));
+			populateSectionTypes($(this).data('dialog'), $(this).data('scheduleId'), $(this).val(), $(this).data('section_data'));
 		});
 	}
 
-	function populateSectionSets (dialog, scheduleId, linkSetId, data) {
+	function populateSectionTypes (dialog, scheduleId, linkSetId, data) {
 
-		var setsList = dialog.find("ul.section_types");
-		setsList.empty();
+		var typesList = dialog.find("ul.section_types");
+		typesList.empty();
 		var i = 0;
 		for (var linkTypeId in data[linkSetId]) {
-			var sectionSet = data[linkSetId][linkTypeId];
+			var sectionType = data[linkSetId][linkTypeId];
 			
-			var setListItem = $('<li></li>');
-			setsList.append(setListItem);
-			var setList = $('<ul class="section_set"></ul>');
-			setListItem.append(setList);
+			var typeListItem = $('<li></li>');
+			typesList.append(typeListItem);
+			var typeList = $('<ul class="section_type"></ul>');
+			typeListItem.append(typeList);
 			
-			for (var j = 0; j < sectionSet.length; j++) {
-				var section = sectionSet[j];
+			for (var j = 0; j < sectionType.length; j++) {
+				var section = sectionType[j];
 				
 				var item = $('<li class="section"></li>');
-				setList.append(item);
+				typeList.append(item);
 				var radio = $('<input type="radio" name="section_group_'+i+'" value="'+section.id+'"/>');
 				item.append(radio);
 				if (section.selected) {
