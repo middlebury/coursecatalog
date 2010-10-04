@@ -697,22 +697,57 @@ class banner_course_CourseOffering
  *********************************************************/
 
 	/**
-	 * Answer the link identifier for an Offering. When registering
-	 * for a Course that has multiple Offerings (such as lecture + lab or 
-	 * lectures at different times), they must register for one Offering for 
-	 * each link identifier present.
+	 * Answer the link-set id for the offering.
+	 *
+	 * The offerings of a course in a term will be grouped into one or more link sets
+	 * (set 1, set 2, set 3, etc).
+	 * Each offering also has a link type (such as lecture, discussion, lab, etc).
+	 *
+	 * When registering for a Course that has multiple Offerings (such as lecture + lab or
+	 * lectures at different times), students must choose a link set and then one offering
+	 * of each type within that set.
+	 *
+	 *
+	 * @return osid_id_Id
+	 * @access public
+	 * @since 8/3/10
+	 */
+	public function getLinkSetId () {
+		if (is_null($this->row['SSBSECT_LINK_IDENT']))
+			$linkId = 'NULL';
+		else {
+			// Link ids are of the form L1, L2, D1, D2.
+			// The set id is the second charactor.
+			$linkId = substr($this->row['SSBSECT_LINK_IDENT'], 1, 1);
+		}
+		return $this->getOsidIdFromString($linkId, 'link_set/');
+	}
+
+	/**
+	 * Answer the link-type id for the offering.
+	 *
+	 * The offerings of a course in a term will be grouped into one or more link sets
+	 * (set 1, set 2, set 3, etc).
+	 * Each offering also has a link type (such as lecture, discussion, lab, etc).
+	 *
+	 * When registering for a Course that has multiple Offerings (such as lecture + lab or
+	 * lectures at different times), students must choose a link set and then one offering
+	 * of each type within that set.
 	 * 
 	 * 
 	 * @return osid_id_Id
 	 * @access public
 	 * @since 8/3/10
 	 */
-	public function getLinkId () {
+	public function getLinkTypeId () {
 		if (is_null($this->row['SSBSECT_LINK_IDENT']))
 			$linkId = 'NULL';
-		else
-			$linkId = $this->row['SSBSECT_LINK_IDENT'];
-		return $this->getOsidIdFromString($linkId, 'link/');
+		else {
+			// Link ids are of the form L1, L2, D1, D2.
+			// The type id is the first charactor.
+			$linkId = substr($this->row['SSBSECT_LINK_IDENT'], 0, 1);
+		}
+		return $this->getOsidIdFromString($linkId, 'link_type/');
 	}
     
 /*********************************************************

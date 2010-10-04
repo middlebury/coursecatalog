@@ -300,11 +300,12 @@ class SchedulesController
     	$course = $offering->getCourse();
     	$termId = $offering->getTermId();
     	
-    	$requiredLinkIds = $course->getRequiredLinkIdsForTerm($termId);
-    	$requiredLinkInfo = array();
-    	while ($requiredLinkIds->hasNext()) {
-    		$requiredLinkInfo[] = array(
-    			'id' => $requiredLinkIds->getNextId(),
+	$selectedLinkSet = $this->_helper->osidId->fromString($this->_getParam('section_set'));
+	$linkTypes = $course->getLinkTypeIdsForTermAndSet($termId, $selectedLinkSet);
+	$requiredLinkTypes = array();
+	while ($linkTypes->hasNext()) {
+		$requiredLinkTypes[] = array(
+			'id' => $linkTypes->getNextId(),
     			'found' => false,
     		);
     	}
@@ -312,21 +313,24 @@ class SchedulesController
     	foreach ($offeringIds as $id) {
     		$offering = $lookupSession->getCourseOffering($id);
     		
-    		// Check that we are adding a single section from each link-group.
+		// Verify that the offering is part of the selected link-set.
     		$linkRecord = $offering->getCourseOfferingRecord($linkType);
-    		$linkId = $linkRecord->getLinkId();
+		if (!$selectedLinkSet->isEqual($linkRecord->getLinkSetId()))
+			throw new Exception('The offering chosen is not part of the link-set selected.');
+		// Check that we are adding a single section from each link-type.
+		$linkTypeId = $linkRecord->getLinkTypeId();
     		$checked = false;
-    		foreach ($requiredLinkInfo as $key => $info) {
-    			if ($info['id']->isEqual($linkId)) {
+		foreach ($requiredLinkTypes as $key => $info) {
+			if ($info['id']->isEqual($linkTypeId)) {
     				$checked = true;
     				if ($info['found'])
     					throw new Exception('A second section from the same link-group is selected.');
     				else
-    					$requiredLinkInfo[$key]['found'] = true;
+					$requiredLinkTypes[$key]['found'] = true;
     			}
     		}
     		if (!$checked)
-    			throw new Exception("The link-group id of the offering '".$linkId->getIdentifier()."' wasn't in the required list.");
+			throw new Exception("The link-group id of the offering '".$linkTypeId->getIdentifier()."' wasn't in the required list.");
     		
     		// Also check that the sections are from the same course and term.
     		if (!$offering->getTermId()->isEqual($termId))
@@ -335,7 +339,7 @@ class SchedulesController
     			throw new Exception("Trying to add offerings from multiple courses.");
    		}
    		// Check that we are adding a section for each link-group.
-   		foreach ($requiredLinkInfo as $info) {
+		foreach ($requiredLinkTypes as $info) {
    			if (!$info['found'])
    				throw new Exception("No offering was added for the link-group ".$info['id']->getIdentifier()." when adding sections for ".$course->getDisplayName().". POST: ".print_r($_POST, true));
    		}
@@ -421,7 +425,7 @@ class SchedulesController
 		$schedules = new Schedules(Zend_Registry::get('db'),  $this->_helper->auth->getHelper()->getUserId(), $this->_helper->osid->getCourseManager());
 		$schedule = $schedules->getSchedule($this->_getParam('schedule_id'));
 		
-		$groups = array();
+		$sets = array();
 		$linkType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:link');
 		$instructorType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 		while ($results->hasNext()) {
@@ -457,33 +461,42 @@ class SchedulesController
 			);
 			
 			
-			// Get the link id and ensure that we have a group for it.
+			// Get the link id and ensure that we have a set and type-group for it.
 			$linkRecord = $offering->getCourseOfferingRecord($linkType);
-			$linkIdString = $this->_helper->osidId->toString($linkRecord->getLinkId());
-			if (!isset($groups[$linkIdString]))
-				$groups[$linkIdString] = array();
+			$linkSetIdString = $this->_helper->osidId->toString($linkRecord->getLinkSetId());
+			$info['link_set'] = $linkSetIdString;
+			if (!isset($sets[$linkSetIdString]))
+				$sets[$linkSetIdString] = array();
+
+			$linkTypeIdString = $this->_helper->osidId->toString($linkRecord->getLinkTypeId());
+			$info['link_type'] = $linkTypeIdString;
+			if (!isset($sets[$linkSetIdString][$linkTypeIdString]))
+				$sets[$linkSetIdString][$linkTypeIdString] = array();
 			
 			// To start with, enable the first section in each group.
 			// Later, we may want to check if the target schedule already has
 			// this course added and select the already-added versions so that 
 			// a second addition will update that course's sections rather than
 			// add them again.
-			if (!count($groups[$linkIdString]))
+			if (!count($sets[$linkSetIdString][$linkTypeIdString]))
 				$info['selected'] = true;
 			
 			if ($schedule->includes($offering->getId())) {
-				if (count($groups[$linkIdString]))
-					$groups[$linkIdString][0]['selected'] = false;
+				if (count($sets[$linkSetIdString][$linkTypeIdString]))
+					$sets[$linkSetIdString][$linkTypeIdString][0]['selected'] = false;
 				$info['selected'] = true;
 			}
 			
-			// Add the info to the appropriate group.
-			$groups[$linkIdString][] = $info;
+			// Add the info to the appropriate set.
+			$sets[$linkSetIdString][$linkTypeIdString][] = $info;
 		}
-		
-		$groups = array_values($groups);
+		// Use indexted arrays.
+// 		foreach ($sets as $key => $types) {
+// 			$sets[$key] = array_values($types);
+// 		}
+// 		$sets = array_values($sets);
     	
-    	print json_encode($groups);
+	print json_encode($sets);
     }
     
     /**

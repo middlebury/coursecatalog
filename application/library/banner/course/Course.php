@@ -498,12 +498,16 @@ class banner_course_Course
 /*********************************************************
  * 	Methods from middlebury_course_Course_LinkRecord
  *********************************************************/
-    /**
-	 * Answer the required link identifiers for the course in a given term.
+	/**
+	 * Answer the link-set ids for the offerings of this course in the term specified.
 	 * 
+	 * The offerings of a course in a term will be grouped into one or more link sets
+	 * (set 1, set 2, set 3, etc).
+	 * Each offering also has a link type (such as lecture, discussion, lab, etc).
+	 *
 	 * When registering for a Course that has multiple Offerings (such as lecture + lab or 
-	 * lectures at different times), they must register for one Offering for 
-	 * each link identifier present.
+	 * lectures at different times), students must choose a link set and then one offering
+	 * of each type within that set.
 	 * 
 	 * 
 	 * @param osid_id_Id $termId
@@ -511,8 +515,74 @@ class banner_course_Course
 	 * @access public
 	 * @since 8/3/10
 	 */
-	public function getRequiredLinkIdsForTerm (osid_id_Id $termId) {
-		$stmt = $this->session->getManager()->getDb()->prepare(
+	public function getLinkSetIdsForTerm (osid_id_Id $termId) {
+		$linkSetIds = array();
+		foreach ($this->getLinkIdStrings($termId) as $linkIdString) {
+			if (is_null($linkIdString)) {
+				$linkSetIds[] = 'NULL';
+			} else {
+				// Link ids are of the form L1, L2, D1, D2.
+				// The set id is the second charactor.
+				$linkSetIds[] = substr($linkIdString, 1, 1);
+			}
+		}
+		$linkSetIds = array_unique($linkSetIds);
+		foreach ($linkSetIds as $key => $val) {
+			$linkSetIds[$key] = $this->session->getOsidIdFromString($val, 'link_set/');
+		}
+
+		return new phpkit_id_ArrayIdList($linkSetIds);
+	}
+
+	/**
+	 * Answer the link-type ids for the offerings of this course in the term specified.
+	 *
+	 * The offerings of a course in a term will be grouped into one or more link sets
+	 * (set 1, set 2, set 3, etc).
+	 * Each offering also has a link type (such as lecture, discussion, lab, etc).
+	 *
+	 * When registering for a Course that has multiple Offerings (such as lecture + lab or
+	 * lectures at different times), students must choose a link set and then one offering
+	 * of each type within that set.
+	 *
+	 *
+	 * @param osid_id_Id $termId
+	 * @param osid_id_Id $linkSetId
+	 * @return osid_id_IdList
+	 * @access public
+	 * @since 8/3/10
+	 */
+	public function getLinkTypeIdsForTermAndSet (osid_id_Id $termId, osid_id_Id $linkSetId) {
+		$linkTypeIds = array();
+		foreach ($this->getLinkIdStrings($termId) as $linkIdString) {
+			if (!is_null($linkIdString)) {
+				// Link ids are of the form L1, L2, D1, D2.
+				// The set id is the second charactor.
+				$setId = substr($linkIdString, 1, 1);
+				// The type id is the first charactor.
+				$typeId = substr($linkIdString, 0, 1);
+				if ($linkSetId->isEqual($this->session->getOsidIdFromString($setId, 'link_set/'))) {
+					$linkTypeIds[] = $typeId;
+				}
+			}
+		}
+		$linkTypeIds = array_unique($linkTypeIds);
+		foreach ($linkTypeIds as $key => $val) {
+			$linkTypeIds[$key] = $this->session->getOsidIdFromString($val, 'link_type/');
+		}
+
+		return new phpkit_id_ArrayIdList($linkTypeIds);
+	}
+
+	/**
+	 * Answer an array of link-id strings for the term given.
+	 *
+	 * @param osid_id_Id $termId
+	 * @return array of strings
+	 */
+	protected function getLinkIdStrings (osid_id_Id $termId) {
+		if (!isset(self::$linkStmt)) {
+			self::$linkStmt = $this->session->getManager()->getDb()->prepare(
 "SELECT
 	SSBSECT_LINK_IDENT
 FROM
@@ -527,19 +597,19 @@ GROUP BY
 	SSBSECT_LINK_IDENT
 ORDER BY 
 	SSBSECT_SEQ_NUMB");
-		$stmt->execute(array(
+		}
+
+		self::$linkStmt->execute(array(
 			$this->session->getSubjectFromCourseId($this->getId()),
 			$this->session->getNumberFromCourseId($this->getId()),
 			$this->session->getTermCodeFromTermId($termId),
 		));
-		$links = array();
-		foreach($stmt->fetchAll() as $row) {
-			if (is_null($row['SSBSECT_LINK_IDENT']))
-				$links[] = $this->session->getOsidIdFromString('NULL', 'link/');
-			else
-				$links[] = $this->session->getOsidIdFromString($row['SSBSECT_LINK_IDENT'], 'link/');
-			
+		$linkIds = self::$linkStmt->fetchAll(PDO::FETCH_COLUMN);
+		if (!is_array($linkIds)) {
+			throw new Exception('$linkIds should be an array. '.$linkIds.' got instead.');
 		}
-		return new phpkit_id_ArrayIdList($links);
+		return array_unique($linkIds);
 	}
+	private static $linkStmt;
+
 }

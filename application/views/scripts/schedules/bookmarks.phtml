@@ -30,7 +30,10 @@
 		<div class="add_section_dialog section_dialog" title="Add which sections?" style='display: none'>
 			<form action="<?php print $this->url(array('action' => 'add', 'term' => $this->termIdString)); ?>" class="add_section_form" method="post">
 				Choose one option from each group:
-				<ul class="section_sets">
+				<select class="section_set" name="section_set">
+					<option value=''>Loading...</option>
+				</select>
+				<ul class="section_types">
 					<li> &nbsp; </li>
 				</ul>
 				
@@ -79,7 +82,7 @@
 					width:  600, 
 					modal: true,
 					close: function(event, ui) {
-						$(this).find("ul.section_sets").empty();
+						$(this).find("select.section_set").empty();
 					}
 				});
 			
@@ -92,7 +95,7 @@
 			var scheduleId = $(this).val();
 			$(this).val("");
 			
-			addDialog.find("ul.section_sets").empty();
+			addDialog.find("select.section_set").empty();
 			getSectionSets(addDialog, scheduleId);
 			addDialog.dialog("open");
 		});
@@ -106,14 +109,34 @@
 		dialog.find("input[name=schedule_id]").val(scheduleId);
 		
 		$.getJSON(lookupUrl, {course: courseId, schedule_id: scheduleId}, function (data, textStatus) {
-			populateSectionSets(dialog, scheduleId, data);
+			populateSectionSetSelect(dialog, scheduleId, data);
+			populateSectionSets(dialog, scheduleId, dialog.find("select.section_set").val(), data);
 		});
 	}
 	
-	function populateSectionSets (dialog, scheduleId, data) {
-		var setsList = dialog.find("ul.section_sets");
-		for (var i = 0; i < data.length; i++) {
-			var sectionSet = data[i];
+	function populateSectionSetSelect(dialog, scheduleId, data) {
+		var selectList = dialog.find("select.section_set");
+		selectList.empty();
+		for (var linkSetId in data) {
+			var option = $('<option value="'+linkSetId+'">'+linkSetId+'</option>');
+			selectList.append(option);
+		}
+
+		selectList.data('section_data', data);
+		selectList.data('dialog', dialog);
+		selectList.data('scheduleId', scheduleId);
+		selectList.change(function() {
+			populateSectionSets($(this).data('dialog'), $(this).data('scheduleId'), $(this).val(), $(this).data('section_data'));
+		});
+	}
+
+	function populateSectionSets (dialog, scheduleId, linkSetId, data) {
+
+		var setsList = dialog.find("ul.section_types");
+		setsList.empty();
+		var i = 0;
+		for (var linkTypeId in data[linkSetId]) {
+			var sectionSet = data[linkSetId][linkTypeId];
 			
 			var setListItem = $('<li></li>');
 			setsList.append(setListItem);
@@ -144,6 +167,8 @@
 				item.append('<div class="section_time section_info'+conflictsClass+'">'+section.schedule+conflictNames+'</div>');
 				item.append('<div class="section_location section_info">'+section.location+'</div>');
 			}
+
+			i++;
 		}
 	}
 
