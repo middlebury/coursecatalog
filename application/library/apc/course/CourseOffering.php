@@ -798,22 +798,51 @@ class apc_course_CourseOffering
 /*********************************************************
  * LinkRecord support
  *********************************************************/
+ 	
+ 	/**
+	 * Answer the link-set id for the offering.
+	 *
+	 * The offerings of a course in a term will be grouped into one or more link sets
+	 * (set 1, set 2, set 3, etc).
+	 * Each offering also has a link type (such as lecture, discussion, lab, etc).
+	 *
+	 * When registering for a Course that has multiple Offerings (such as lecture + lab or
+	 * lectures at different times), students must choose a link set and then one offering
+	 * of each type within that set.
+	 *
+	 *
+	 * @return osid_id_Id
+	 * @access public
+	 * @since 8/3/10
+	 */
+	public function getLinkSetId () {
+		$val = $this->cacheGetPlain('link_set_id');
+    	if (is_null($val))
+    		return $this->cacheSetPlain('link_set_id', $this->getOffering()->getLinkSetId());
+    	else
+    		return $val;
+	}
 
 	/**
-	 * Answer the link identifier for an Offering. When registering
-	 * for a Course that has multiple Offerings (such as lecture + lab or 
-	 * lectures at different times), they must register for one Offering for 
-	 * each link identifier present.
+	 * Answer the link-type id for the offering.
+	 *
+	 * The offerings of a course in a term will be grouped into one or more link sets
+	 * (set 1, set 2, set 3, etc).
+	 * Each offering also has a link type (such as lecture, discussion, lab, etc).
+	 *
+	 * When registering for a Course that has multiple Offerings (such as lecture + lab or
+	 * lectures at different times), students must choose a link set and then one offering
+	 * of each type within that set.
 	 * 
 	 * 
 	 * @return osid_id_Id
 	 * @access public
 	 * @since 8/3/10
 	 */
-	public function getLinkId () {
-		$val = $this->cacheGetPlain('link_id');
+	public function getLinkTypeId () {
+		$val = $this->cacheGetPlain('link_type_id');
     	if (is_null($val))
-    		return $this->cacheSetPlain('link_id', $this->getOffering()->getLinkId());
+    		return $this->cacheSetPlain('link_type_id', $this->getOffering()->getLinkTypeId());
     	else
     		return $val;
 	}

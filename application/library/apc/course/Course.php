@@ -610,12 +610,16 @@ class apc_course_Course
 /*********************************************************
  * 	Methods from middlebury_course_Course_LinkRecord
  *********************************************************/
-    /**
-	 * Answer the required link identifiers for the course in a given term.
+	/**
+	 * Answer the link-set ids for the offerings of this course in the term specified.
 	 * 
+	 * The offerings of a course in a term will be grouped into one or more link sets
+	 * (set 1, set 2, set 3, etc).
+	 * Each offering also has a link type (such as lecture, discussion, lab, etc).
+	 *
 	 * When registering for a Course that has multiple Offerings (such as lecture + lab or 
-	 * lectures at different times), they must register for one Offering for 
-	 * each link identifier present.
+	 * lectures at different times), students must choose a link set and then one offering
+	 * of each type within that set.
 	 * 
 	 * 
 	 * @param osid_id_Id $termId
@@ -623,15 +627,59 @@ class apc_course_Course
 	 * @access public
 	 * @since 8/3/10
 	 */
-	public function getRequiredLinkIdsForTerm (osid_id_Id $termId) {
-		$val = $this->cacheGetObj('link_ids');
+	public function getLinkSetIdsForTerm (osid_id_Id $termId) {
+		$cacheKey = 'link_set_ids::'
+			.$termId->getIdentifierNamespace().'::'
+			.$termId->getAuthority().'::'
+			.$termId->getIdentifier();
+		
+		$val = $this->cacheGetObj($cacheKey);
     	if (is_null($val)) {
     		$val = array();
-    		$ids = $this->getMyCourse()->getRequiredLinkIdsForTerm($termId);
+    		$ids = $this->getMyCourse()->getLinkSetIdsForTerm($termId);
     		while ($ids->hasNext()) {
     			$val[] = $ids->getNextId();
     		}
-    		$this->cacheSetObj('link_ids', $val);
+    		$this->cacheSetObj($cacheKey, $val);
+    	}
+    	return new phpkit_id_ArrayIdList($val);
+	}
+
+	/**
+	 * Answer the link-type ids for the offerings of this course in the term specified.
+	 *
+	 * The offerings of a course in a term will be grouped into one or more link sets
+	 * (set 1, set 2, set 3, etc).
+	 * Each offering also has a link type (such as lecture, discussion, lab, etc).
+	 *
+	 * When registering for a Course that has multiple Offerings (such as lecture + lab or
+	 * lectures at different times), students must choose a link set and then one offering
+	 * of each type within that set.
+	 *
+	 *
+	 * @param osid_id_Id $termId
+	 * @param osid_id_Id $linkSetId
+	 * @return osid_id_IdList
+	 * @access public
+	 * @since 8/3/10
+	 */
+	public function getLinkTypeIdsForTermAndSet (osid_id_Id $termId, osid_id_Id $linkSetId) {
+		$cacheKey = 'link_type_ids::'
+			.$termId->getIdentifierNamespace().'::'
+			.$termId->getAuthority().'::'
+			.$termId->getIdentifier().'::'
+			.$linkSetId->getIdentifierNamespace().'::'
+			.$linkSetId->getAuthority().'::'
+			.$linkSetId->getIdentifier();
+
+		$val = $this->cacheGetObj($cacheKey);
+    	if (is_null($val)) {
+    		$val = array();
+    		$ids = $this->getMyCourse()->getLinkTypeIdsForTermAndSet($termId, $linkSetId);
+    		while ($ids->hasNext()) {
+    			$val[] = $ids->getNextId();
+    		}
+    		$this->cacheSetObj($cacheKey, $val);
     	}
     	return new phpkit_id_ArrayIdList($val);
 	}
