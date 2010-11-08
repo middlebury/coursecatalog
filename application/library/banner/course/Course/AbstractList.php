@@ -23,6 +23,7 @@ abstract class banner_course_Course_AbstractList
 
 	protected $session;
 	private $catalogId;
+	private $activeOnly = true;
 
 	/**
 	 * Constructor
@@ -79,9 +80,6 @@ FROM
 	".$this->getAdditionalTableJoins()."
 WHERE
 	".$this->getAllWhereTerms()."
-	AND SCBCRSE_CSTA_CODE NOT IN (
-		'C', 'I', 'P', 'T', 'X'
-	)
 	AND SCBCRSE_COLL_CODE IN (
 		SELECT
 			coll_code
@@ -135,10 +133,17 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 	 */
 	protected function getAllWhereTerms () {
 		$terms = $this->getWhereTerms();
+		if ($this->activeOnly) {
+			$activeWhere = " AND SCBCRSE_CSTA_CODE NOT IN (
+		'C', 'I', 'P', 'T', 'X'
+	)";
+		} else {
+			$activeWhere = '';
+		}
 		if (strlen(trim($terms)))
-			return $terms;
+			return $terms.$activeWhere;
 		else
-			return 'TRUE';
+			return 'TRUE'.$activeWhere;
 	}
 	
 	/**
@@ -220,6 +225,15 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 	 * @since 4/17/09
 	 */
 	abstract protected function getWhereTerms();
+	
+	/**
+	 * Include inactive courses in the list.
+	 * 
+	 * @return void
+	 */
+	protected function includeInactive () {
+		$this->activeOnly = FALSE;
+	}
 		
 	/**
 	 * Answer an object from a result row

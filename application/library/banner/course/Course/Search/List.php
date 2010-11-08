@@ -38,6 +38,11 @@ class banner_course_Course_Search_List
 		$this->db = $db;
 		$this->courseQuery = $courseQuery;
 		
+		// Set our parent list to search both inactive and active courses.
+		// We'll rely on the query having a matchGenusType("urn:inet:middlebury.edu:status-active")
+		// if we need to limit to just active courses.
+		$this->includeInactive();
+		
 		$this->where = $courseQuery->getWhereClause();
 		$searchWhere = $courseSearch->getWhereClause();
 		if (strlen($searchWhere))

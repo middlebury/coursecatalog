@@ -27,10 +27,6 @@ WHERE
 	-- Clause for the 'outer self exclusion join'
 	crse2.SCBCRSE_SUBJ_CODE IS NULL
 	
-	-- Exclude non-active status codes.
-	AND crse1.SCBCRSE_CSTA_CODE NOT IN (
-		'C', 'I', 'P', 'T', 'X'
-	)
 GROUP BY crse1.SCBCRSE_SUBJ_CODE , crse1.SCBCRSE_CRSE_NUMB
 ORDER BY crse1.SCBCRSE_SUBJ_CODE , crse1.SCBCRSE_CRSE_NUMB;
 

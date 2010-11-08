@@ -163,6 +163,9 @@ class Bookmarks {
 		$record = $query->getCourseQueryRecord(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:term'));
 		$record->matchTermId($termId, true);
 		
+		// Limit to just active courses
+		$query->matchGenusType(new phpkit_type_URNInetType("urn:inet:middlebury.edu:status-active"), true);
+		
 		$results = $searchSession->getCoursesBySearch($query, $search);
 		return $results->getCourses();
 	}

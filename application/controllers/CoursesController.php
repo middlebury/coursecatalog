@@ -303,6 +303,8 @@ class CoursesController
 			$locationRecord->matchLocationId($locationId, true);
 		}
 		
+		// Limit to just active courses
+		$query->matchGenusType(new phpkit_type_URNInetType("urn:inet:middlebury.edu:status-active"), true);
 		
 		$courses = $searchSession->getCoursesByQuery($query);
 		

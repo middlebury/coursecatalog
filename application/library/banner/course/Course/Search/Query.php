@@ -165,6 +165,12 @@ class banner_course_Course_Search_Query
      *  @compliance mandatory This method must be implemented. 
      */
     public function matchGenusType(osid_type_Type $genusType, $match) {
+    	if ($genusType->isEqual(new phpkit_type_URNInetType("urn:inet:middlebury.edu:status-inactive"))) {
+    		$this->addClause('genus_type', "SCBCRSE_CSTA_CODE IN ('C', 'I', 'P', 'T', 'X')", array(), $match);
+    	}
+    	if ($genusType->isEqual(new phpkit_type_URNInetType("urn:inet:middlebury.edu:status-active"))) {
+    		$this->addClause('genus_type', "SCBCRSE_CSTA_CODE NOT IN ('C', 'I', 'P', 'T', 'X')", array(), $match);
+    	}
     	if ($genusType->isEqual(new phpkit_type_URNInetType("urn:inet:osid.org:genera:none")))
     		$this->addClause('genus_type', 'TRUE', array(), $match);
     	else
