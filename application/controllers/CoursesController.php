@@ -735,7 +735,8 @@ class CoursesController
 		
 		// This is a nasty hack, but I don't know how to get through Drupal webservices currently.
 		if (!isset($this->drupalStatement)) {
-			$pdo = new PDO('mysql:dbname=afranco_drupal_MIDD;host=localhost', 'testuser', 'testpassword');
+			$config = Zend_Registry::getInstance()->config;
+			$pdo = new PDO($config->catalog->print_drupal_db->connection, $config->catalog->print_drupal_db->user, $config->catalog->print_drupal_db->password);
 			$this->drupalStatement = $pdo->prepare('SELECT body FROM node_revisions WHERE nid = :nid1 and vid = (SELECT MAX(vid) AS vid FROM node_revisions WHERE nid = :nid2)');
 		}
 		
