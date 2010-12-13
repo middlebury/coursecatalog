@@ -569,6 +569,9 @@ class CoursesController
 			exit;
 		}
 		
+		if ($config->catalog->print_max_exec_time)
+			ini_set('max_execution_time', $config->catalog->print_max_exec_time);
+		
 		try {
 			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
 			$this->courseSearchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
