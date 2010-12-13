@@ -307,6 +307,8 @@ class banner_course_CourseOffering_Search_Order
      */
     public function orderByScheduleInfo() {
     	$this->addOrderColumns(array(
+    		'SSRMEET_START_DATE',
+			'SSRMEET_END_DATE',
     		'SSRMEET_SUN_DAY', 
     		'SSRMEET_MON_DAY', 
     		'SSRMEET_TUE_DAY', 

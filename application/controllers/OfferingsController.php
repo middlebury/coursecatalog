@@ -31,6 +31,7 @@ class OfferingsController
     	$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
 		$this->booleanStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:boolean");
 		$this->instructorType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		$this->locationType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:location');
 		$this->alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
 		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 
@@ -43,6 +44,8 @@ class OfferingsController
         $this->levelType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
         
 		$this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
+
+		$this->campusType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/campus");
 	}
 	
 	/**
@@ -54,11 +57,11 @@ class OfferingsController
 	 */
 	public function listAction () {
 		if ($this->_getParam('catalog')) {
-			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
-			$lookupSession = self::getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
+			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+			$lookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
 			$this->view->title = $lookupSession->getCourseCatalog()->getDisplayName();
 		} else {
-			$lookupSession = self::getCourseManager()->getCourseOfferingLookupSession();
+			$lookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
 			$this->view->title = 'All Catalogs';
 		}
 		$lookupSession->useFederatedCourseCatalogView();
@@ -66,12 +69,12 @@ class OfferingsController
 		// Add our parameters to the search query
 		if ($this->_getParam('term')) {
 			if ($this->_getParam('term') == 'CURRENT') {
-				$termId = self::getCurrentTermId();
+				$termId = $this->_helper->osidTerms->getCurrentTermId();
 			} else {
-				$termId = self::getOsidIdFromString($this->_getParam('term'));
+				$termId = $this->_helper->osidId->fromString($this->_getParam('term'));
 			}
 			
-			$termLookupSession = self::getCourseManager()->getTermLookupSession();
+			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
 			$termLookupSession->useFederatedCourseCatalogView();
 			
 			$this->view->term = $termLookupSession->getTerm($termId);
@@ -148,17 +151,19 @@ class OfferingsController
 	 */
 	public function searchAction () {
 		if ($this->_getParam('catalog')) {
-			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
-			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
-			$offeringLookupSession = self::getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
-			$topicSearchSession = self::getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
-			$termLookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+			$offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
+			$offeringLookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
+			$topicSearchSession = $this->_helper->osid->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
+			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+			$resourceLookupSession = $this->_helper->osid->getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalogId);
 			$this->view->title = 'Search in '.$offeringSearchSession->getCourseCatalog()->getDisplayName();
 		} else {
-			$offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSession();
-			$offeringLookupSession = self::getCourseManager()->getCourseOfferingLookupSession();
-			$topicSearchSession = self::getCourseManager()->getTopicSearchSession();
-			$termLookupSession = self::getCourseManager()->getTermLookupSession();
+			$offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSession();
+			$offeringLookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
+			$topicSearchSession = $this->_helper->osid->getCourseManager()->getTopicSearchSession();
+			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
+			$resourceLookupSession = $this->_helper->osid->getCourseManager()->getResourceManager()->getResourceLookupSession();
 			$this->view->title = 'Search in All Catalogs';
 		}
 		$termLookupSession->useFederatedCourseCatalogView();
@@ -173,9 +178,9 @@ class OfferingsController
 		if ($this->_getParam('term') == 'ANY') {
 			// Don't set a term
 		} else if (!$this->_getParam('term') || $this->_getParam('term') == 'CURRENT') {
-			$termId = self::getCurrentTermId($offeringSearchSession->getCourseCatalogId());
+			$termId = $this->_helper->osidTerms->getCurrentTermId($offeringSearchSession->getCourseCatalogId());
 		} else {
-			$termId = self::getOsidIdFromString($this->_getParam('term'));
+			$termId = $this->_helper->osidId->fromString($this->_getParam('term'));
 		}
 		
 	 	
@@ -222,6 +227,12 @@ class OfferingsController
 		
 		$this->view->genusTypes = $offeringLookupSession->getCourseOfferingGenusTypes();
 		
+		// Campuses -- only include if we have more than one.
+		$campuses = $resourceLookupSession->getResourcesByGenusType($this->campusType);
+		if ($campuses->hasNext() && $campuses->getNextResource() && $campuses->hasNext()) {
+			$this->view->campuses = $resourceLookupSession->getResourcesByGenusType($this->campusType);
+		}
+		
 	/*********************************************************
 	 * Set up and run our search query.
 	 *********************************************************/
@@ -240,7 +251,7 @@ class OfferingsController
 			
 			$query->matchTermId($termId, true);
 			
-			$termLookupSession = self::getCourseManager()->getTermLookupSession();
+			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
 			$termLookupSession->useFederatedCourseCatalogView();
 			$this->view->term = $termLookupSession->getTerm($termId);
 			$this->view->selectedTermId = $termId;
@@ -255,7 +266,7 @@ class OfferingsController
 				$departments = array($this->_getParam('department'));
 			
 			foreach ($departments as $idString) {
-				$id = self::getOsidIdFromString($idString);
+				$id = $this->_helper->osidId->fromString($idString);
 				$query->matchTopicId($id, true);
 				// set the first as the selected one if multiple.
 				if (!isset($this->view->selectedDepartmentId))
@@ -272,7 +283,7 @@ class OfferingsController
 				$subjects = array($this->_getParam('subject'));
 			
 			foreach ($subjects as $idString) {
-				$id = self::getOsidIdFromString($idString);
+				$id = $this->_helper->osidId->fromString($idString);
 				$query->matchTopicId($id, true);
 				// set the first as the selected one if multiple.
 				if (!isset($this->view->selectedSubjectId))
@@ -289,7 +300,7 @@ class OfferingsController
 				$divisions = array($this->_getParam('division'));
 			
 			foreach ($divisions as $idString) {
-				$id = self::getOsidIdFromString($idString);
+				$id = $this->_helper->osidId->fromString($idString);
 				$query->matchTopicId($id, true);
 				// set the first as the selected one if multiple.
 				if (!isset($this->view->selectedDivisionId))
@@ -307,7 +318,7 @@ class OfferingsController
 				$requirements = array($this->_getParam('requirement'));
 			
 			foreach ($requirements as $idString) {
-				$id = self::getOsidIdFromString($idString);
+				$id = $this->_helper->osidId->fromString($idString);
 				$query->matchTopicId($id, true);
 				$this->view->selectedRequirementIds[] = $id;
 			}
@@ -323,7 +334,7 @@ class OfferingsController
 				$levels = array($this->_getParam('level'));
 			
 			foreach ($levels as $idString) {
-				$id = self::getOsidIdFromString($idString);
+				$id = $this->_helper->osidId->fromString($idString);
 				$query->matchTopicId($id, true);
 				$this->view->selectedLevelIds[] = $id;
 			}
@@ -339,16 +350,35 @@ class OfferingsController
 				$genusTypes = array($this->_getParam('type'));
 			
 			foreach ($genusTypes as $typeString) {
-				$genusType = self::getOsidTypeFromString($typeString);
+				$genusType = $this->_helper->osidType->fromString($typeString);
 				$query->matchGenusType($genusType, true);
 				$this->view->selectedGenusTypes[] = $genusType;
 			}
 			
 			$this->view->searchParams['type'] = $genusTypes;
 		}
+		
+		// Campuses
+		$this->view->selectedCampusIds = array();
+		if ($this->_getParam('location') && count($this->_getParam('location'))) {
+			if (is_array($this->_getParam('location')))
+				$campuses = $this->_getParam('location');
+			else
+				$campuses = array($this->_getParam('location'));
+			
+			foreach ($campuses as $idString) {
+				$id = $this->_helper->osidId->fromString($idString);
+				$query->matchLocationId($id, true);
+				$this->view->selectedCampusIds[] = $id;
+			}
+			
+			$this->view->searchParams['location'] = $campuses;
+		}
+		
+		
 		// Set the default selection to lecture/seminar if the is a new search
 		if (!$this->_getParam('submit') && !count($this->view->selectedGenusTypes)) {
-			$this->view->selectedGenusTypes = self::getDefaultGenusTypes();
+			$this->view->selectedGenusTypes = $this->_helper->osidTypes->getDefaultGenusTypes();
 		}
 		
 		if ($query->hasRecordType($this->weeklyScheduleType)) {
@@ -416,7 +446,7 @@ class OfferingsController
 		if ($this->_getParam('instructor')) {
 			if ($query->hasRecordType($this->instructorType)) {
 				$queryRecord = $query->getCourseOfferingQueryRecord($this->instructorType);
-				$queryRecord->matchInstructorId(self::getOsidIdFromString($this->_getParam('instructor')), true);
+				$queryRecord->matchInstructorId($this->_helper->osidId->fromString($this->_getParam('instructor')), true);
 			}
 			$this->view->searchParams['instructor'] = $this->_getParam('instructor');
 		}
@@ -452,8 +482,8 @@ class OfferingsController
 	 * @since 4/21/09
 	 */
 	public function viewAction () {
-		$id = self::getOsidIdFromString($this->_getParam('offering'));
-		$lookupSession = self::getCourseManager()->getCourseOfferingLookupSession();
+		$id = $this->_helper->osidId->fromString($this->_getParam('offering'));
+		$lookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
 		$lookupSession->useFederatedCourseCatalogView();
 		$this->view->offering = $lookupSession->getCourseOffering($id);
  		
@@ -461,7 +491,7 @@ class OfferingsController
  		$this->loadTopics($this->view->offering->getTopics());
 		
 		// Set the selected Catalog Id.
-		$catalogSession = self::getCourseManager()->getCourseOfferingCatalogSession();
+		$catalogSession = $this->_helper->osid->getCourseManager()->getCourseOfferingCatalogSession();
 		$catalogIds = $catalogSession->getCatalogIdsByCourseOffering($id);
 		if ($catalogIds->hasNext()) {
 			$this->setSelectedCatalogId($catalogIds->getNextId());
@@ -490,13 +520,16 @@ class OfferingsController
  			}
  		}
  		
+ 		// Bookmarked Courses and Schedules
+ 		$this->view->bookmarks_CourseId = $this->view->offering->getCourseId(); 		
+ 		
  		$this->render();
  		
  		$this->render('offerings', null, true);
  		
  		$this->view->menuIsOfferings = true;
 	}
-	
+
 }
 
 ?>

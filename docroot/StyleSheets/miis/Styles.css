@@ -1,0 +1,48 @@
+ul.menu {
+	color: #999;
+}
+
+ul.menu a {
+	color: #FFF;
+}
+
+/* Search Options */
+table.search_options {
+	width: 100%;
+}
+
+/* Search Results */
+div.search_results_item_pagination {
+	width: 100%;
+}
+table.search_results {
+	width: 100%;
+}
+table.search_results td.column1 dl {
+	width: 12em;
+}
+table.search_results td.column1 dt {
+	width: 12em;
+}
+table.search_results td.column1 dd {
+	width: 12em;
+}
+table.search_results td.column2 dl {
+	width: 30em;
+}
+#page table.search_results .title {
+	background: none;
+	padding: 0px;
+}
+
+/* Schedule planner */
+table.schedule_planner {
+	width: 690px;
+	margin-left: -20px;
+	margin-top: -15px;
+	
+}
+li.bookmarked_course, li.bookmarked_course div.course_info {
+	width:250px;
+	overflow: hidden;
+}

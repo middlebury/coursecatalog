@@ -1,0 +1,16 @@
+<?php
+
+if (!isset($this->selectedTermId)) {
+	print "All Terms";
+	return;
+}
+
+$found = false;
+foreach($this->terms as $termInfo) {
+	 if ($termInfo['id']->isEqual($this->selectedTermId)) {
+		print $termInfo['name'];
+		$found = true;
+	}
+}
+if (!$found)
+	if (isset($this->selectedTermId));

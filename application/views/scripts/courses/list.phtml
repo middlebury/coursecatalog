@@ -4,7 +4,7 @@ $params = array(	'action'		=> 'view'
 
 while ($this->courses->hasNext()) {
 	$course = $this->courses->getNextCourse();
-	$params['course'] = AbstractCatalogController::getStringFromOsidId($course->getId());
+	$params['course'] = $this->getStringFromOsidId($course->getId());
 	print "\n\t<h2><a href='".$this->url($params)."'>".$course->getDisplayName()."</a></h2>";
 	print "\n\t<div>".$course->getDescription()."</div>";
 }

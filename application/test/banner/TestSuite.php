@@ -137,7 +137,7 @@ class banner_TestSuite extends PHPUnit_Framework_TestSuite
     private $minMemory = '300M';
     private $currentMemory = null;
     
-    private function setMemoryLimit() {
+    protected function setMemoryLimit() {
     	$minBytes = $this->asBytes($this->minMemory);
     	$currentBytes = $this->asBytes(ini_get('memory_limit'));
     	if ($currentBytes < $minBytes) {
@@ -153,7 +153,7 @@ class banner_TestSuite extends PHPUnit_Framework_TestSuite
      * @access private
      * @since 11/12/09
      */
-    private function resetMemoryLimit () {
+    protected function resetMemoryLimit () {
     	if (!is_null($this->currentMemory)) {
     		ini_set('memory_limit', $this->currentMemory);
     	}

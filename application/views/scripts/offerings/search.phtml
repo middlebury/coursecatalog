@@ -47,11 +47,11 @@ $this->headScript()->appendScript(
 while ($this->terms->hasNext()) {
 	$term = $this->terms->getNextTerm();
 	print "\n\t\t\t\t\t<option value='";
-	print AbstractCatalogController::getStringFromOsidId($term->getId());
+	print $this->getStringFromOsidId($term->getId());
 	print "'";
 	if (isset($this->selectedTermId) && $term->getId()->isEqual($this->selectedTermId))
 		print " selected='selected'";
-	print ">".$term->getDisplayName()."</option>";
+	print ">".$this->escape($term->getDisplayName())."</option>";
 }
 ?>
 				</select>
@@ -68,11 +68,11 @@ while ($this->terms->hasNext()) {
 while ($this->subjects->hasNext()) {
 	$topic = $this->subjects->getNextTopic();
 	print "\n\t\t\t\t\t<option value='";
-	print AbstractCatalogController::getStringFromOsidId($topic->getId());
+	print $this->getStringFromOsidId($topic->getId());
 	print "'";
 	if (isset($this->selectedDepartmentId) && $topic->getId()->isEqual($this->selectedDepartmentId))
 		print " selected='selected'";
-	print ">".$topic->getDisplayName()."</option>";
+	print ">".$this->escape($topic->getDisplayName())."</option>";
 }
 ?>
 					</optgroup>
@@ -81,11 +81,11 @@ while ($this->subjects->hasNext()) {
 while ($this->departments->hasNext()) {
 	$topic = $this->departments->getNextTopic();
 	print "\n\t\t\t\t\t<option value='";
-	print AbstractCatalogController::getStringFromOsidId($topic->getId());
+	print $this->getStringFromOsidId($topic->getId());
 	print "'";
 	if (isset($this->selectedDepartmentId) && $topic->getId()->isEqual($this->selectedDepartmentId))
 		print " selected='selected'";
-	print ">".$topic->getDisplayName()."</option>";
+	print ">".$this->escape($topic->getDisplayName())."</option>";
 }
 ?>
 					</optgroup>
@@ -93,6 +93,7 @@ while ($this->departments->hasNext()) {
 			</td>
 		</tr>
 
+<?php	if ($this->requirements->hasNext()) { ?>
 		<tr>
 			<th>Satisfies Requirements:</th>
 			<td>
@@ -106,7 +107,7 @@ while ($this->requirements->hasNext()) {
 	
 	$topic = $this->requirements->getNextTopic();
 	print "\n\t\t\t\t<input type='checkbox' name='requirement[]' value='";
-	print AbstractCatalogController::getStringFromOsidId($topic->getId());
+	print $this->getStringFromOsidId($topic->getId());
 	print "'";
 	foreach ($this->selectedRequirementIds as $selectedId) {
 		if ($topic->getId()->isEqual($selectedId)) {
@@ -114,7 +115,7 @@ while ($this->requirements->hasNext()) {
 			break;
 		}
 	}
-	print "/><label>".$topic->getDisplayName()."</label><br/>";
+	print "/><label>".$this->escape($topic->getDisplayName())."</label><br/>";
 	
 	$i++;
 }
@@ -122,7 +123,7 @@ while ($this->requirements->hasNext()) {
 				</div>
 			</td>
 		</tr>
-		
+<?php	} ?>		
 		<tr>
 			<th>Keywords:</th>
 			<td>
@@ -135,13 +136,13 @@ while ($this->requirements->hasNext()) {
 		<tr>
 			<th>Days of the week:</th>
 			<td>
-				<input type='checkbox' name='days[]' value='sunday' <?php if (in_array('sunday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /><label>Sunday</label> 
-				<label><input type='checkbox' name='days[]' value='monday' <?php if (in_array('monday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /><label>Monday</label> 
-				<input type='checkbox' name='days[]' value='tuesday' <?php if (in_array('tuesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /><label>Tuesday</label> 
-				<input type='checkbox' name='days[]' value='wednesday' <?php if (in_array('wednesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /><label>Wednesday</label> 
-				<input type='checkbox' name='days[]' value='thursday' <?php if (in_array('thursday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /><label>Thursday</label> 
-				<input type='checkbox' name='days[]' value='friday' <?php if (in_array('friday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /><label>Friday</label> 
-				<input type='checkbox' name='days[]' value='saturday' <?php if (in_array('saturday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /><label>Saturday</label> 
+				<label><input type='checkbox' name='days[]' value='sunday' <?php if (in_array('sunday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Sunday</label> 
+				<label><input type='checkbox' name='days[]' value='monday' <?php if (in_array('monday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Monday</label> 
+				<label><input type='checkbox' name='days[]' value='tuesday' <?php if (in_array('tuesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Tuesday</label> 
+				<label><input type='checkbox' name='days[]' value='wednesday' <?php if (in_array('wednesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Wednesday</label> 
+				<label><input type='checkbox' name='days[]' value='thursday' <?php if (in_array('thursday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Thursday</label> 
+				<label><input type='checkbox' name='days[]' value='friday' <?php if (in_array('friday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Friday</label> 
+				<label><input type='checkbox' name='days[]' value='saturday' <?php if (in_array('saturday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Saturday</label> 
 				<div class='help_text'>Leave all unchecked if no preference.</div>
 			</td>
 		</tr>
@@ -157,7 +158,7 @@ while ($this->requirements->hasNext()) {
 		print "\n\t\t\t\t\t<option value='$i'";
 		if ($this->timeStart == $i)
 			print " selected='selected'";
-		print ">".AbstractCatalogController::getTimeString($i)."</option>";
+		print ">".$this->getTimeString($i)."</option>";
 	}
 ?>
 				</select> 
@@ -170,7 +171,7 @@ while ($this->requirements->hasNext()) {
 		print "\n\t\t\t\t\t<option value='$i'";
 		if ($this->timeEnd == $i)
 			print " selected='selected'";
-		print ">".AbstractCatalogController::getTimeString($i)."</option>";
+		print ">".$this->getTimeString($i)."</option>";
 	}
 ?>
 				<option value='86400'<?php if ($this->timeEnd == 86400) { print  " selected='selected'"; } ?>>Any Time</option>
@@ -192,7 +193,7 @@ while ($this->genusTypes->hasNext()) {
 	
 	$type = $this->genusTypes->getNextType();
 	print "\n\t\t\t\t<input type='checkbox' name='type[]' value='";
-	print AbstractCatalogController::getStringFromOsidType($type);
+	print $this->getStringFromOsidType($type);
 	print "'";
 	foreach ($this->selectedGenusTypes as $selectedType) {
 		if ($type->isEqual($selectedType)) {
@@ -200,7 +201,7 @@ while ($this->genusTypes->hasNext()) {
 			break;
 		}
 	}
-	print "/><label>".$type->getDisplayName()."</label><br/>";
+	print "/><label>".$this->escape($type->getDisplayName())."</label><br/>";
 	
 	$i++;
 }
@@ -222,7 +223,7 @@ while ($this->levels->hasNext()) {
 	
 	$topic = $this->levels->getNextTopic();
 	print "\n\t\t\t\t<input type='checkbox' name='level[]' value='";
-	print AbstractCatalogController::getStringFromOsidId($topic->getId());
+	print $this->getStringFromOsidId($topic->getId());
 	print "'";
 	foreach ($this->selectedLevelIds as $selectedId) {
 		if ($topic->getId()->isEqual($selectedId)) {
@@ -230,7 +231,7 @@ while ($this->levels->hasNext()) {
 			break;
 		}
 	}
-	print "/><label>".$topic->getDisplayName()."</label><br/>";
+	print "/><label>".$this->escape($topic->getDisplayName())."</label><br/>";
 	
 	$i++;
 }
@@ -239,6 +240,40 @@ while ($this->levels->hasNext()) {
 			</td>
 		</tr>
 
+<?php
+if (isset($this->campuses) && $this->campuses->hasNext()) {
+?>
+		<tr>
+			<th>Campus:</th>
+			<td>
+				<div class='help_text'>(Leave all blank for no preference)</div>
+				<div class='requirement_group'>
+<?php
+$i = 0;
+while ($this->campuses->hasNext()) {
+	if (!($i % 5))
+		print "\n\t\t\t</div>\n\t\t\t<div class='requirement_group'>";
+	
+	$campus = $this->campuses->getNextResource();
+	print "\n\t\t\t\t<input type='checkbox' name='location[]' value='";
+	print $this->getStringFromOsidId($campus->getId());
+	print "'";
+	
+	foreach ($this->selectedCampusIds as $selectedId) {
+		if ($campus->getId()->isEqual($selectedId)) {
+			print " checked='checked'";
+			break;
+		}
+	}
+	print "/><label>".$this->escape($campus->getDisplayName())."</label><br/>";
+	
+	$i++;
+}
+?>
+				</div>
+			</td>
+		</tr>
+<?php } ?>
 
 <?php } ?>
 
@@ -247,7 +282,7 @@ while ($this->levels->hasNext()) {
 		</tr>
 
 	</table>
-<form>
+</form>
 
 <?php
 /*********************************************************
@@ -274,12 +309,12 @@ print $this->paginationControl($this->paginator, 'Sliding', 'ItemPaginationContr
 		$offeringParams = array(
 							'controller'	=> 'offerings',
 							'action'		=> 'view',
-							'offering'		=> AbstractCatalogController::getStringFromOsidId($section->getId())
+							'offering'		=> $this->getStringFromOsidId($section->getId())
 						);
 		$resourceParams = array(
 							'controller'	=> 'resources',
 							'action'		=> 'view',
-							'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId()),
+							'term'			=> $this->getStringFromOsidId($term->getId()),
 							'offering'		=> null
 						);
 
@@ -287,22 +322,22 @@ print $this->paginationControl($this->paginator, 'Sliding', 'ItemPaginationContr
 		$termUrl = $this->url(array(
 						'controller'	=> 'terms',
 						'action'		=> 'view',
-						'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId()),
+						'term'			=> $this->getStringFromOsidId($term->getId()),
 						'offering'		=> null
 					));
 		$topicParams = array(
 						'controller'	=> 'topics',
 						'action'		=> 'view',
 						'offering'		=> null,
-						'term'			=> AbstractCatalogController::getStringFromOsidId($term->getId())
+						'term'			=> $this->getStringFromOsidId($term->getId())
 					);
 		
 		// Topics
-		$allTopics = AbstractCatalogController::topicListAsArray($section->getTopics());
+		$allTopics = $this->topicListAsArray($section->getTopics());
 ?>
 		<tr>
 			<td class='column1'>
-				<a class='title' href='<?php print $this->url($offeringParams); ?>'><?php print $section->getDisplayName(); ?></a>
+				<a class='title' href='<?php print $this->url($offeringParams); ?>'><?php print $this->escape($section->getDisplayName()); ?></a>
 <?php
 
 if ($section->hasRecordType($alternateType)) {
@@ -317,7 +352,7 @@ if ($section->hasRecordType($alternateType)) {
 		while ($alternates->hasNext()) {
 			print "\n\t\t\t\t<br/>";
 			$alternate = $alternates->getNextCourseOffering();
-			$offeringParams['offering'] = AbstractCatalogController::getStringFromOsidId($alternate->getId());
+			$offeringParams['offering'] = $this->getStringFromOsidId($alternate->getId());
 			print "<a class='title' href=\"".$this->url($offeringParams)."\">";
 			print $this->escape($alternate->getDisplayName());
 			print "</a> ";
@@ -344,9 +379,9 @@ print "\n\t\t<dt>Term:</dt>";
 +print "\n\t\t</dd>";
 print "\n\t\t<dt>Department:</dt>";
 print "\n\t\t<dd>";
-$topics = AbstractCatalogController::filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department"));
+$topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department"));
 foreach ($topics as $topic) {
-	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+	$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
 	print "</a> ";
@@ -355,9 +390,9 @@ print "</dd>";
 
 print "\n\t\t<dt>Requirements Fulfilled:</dt>";
 print "\n\t\t<dd>";
-$topics = AbstractCatalogController::filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement"));
+$topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement"));
 foreach ($topics as $topic) {
-	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+	$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
 	print "</a> ";
@@ -371,7 +406,12 @@ print "\n\t</dl>";
 
 			</td>
 			<td class='column2'>
-				<div class='title'><?php print nl2br($section->getTitle()); ?></div>
+				<?php 
+				$this->bookmarks_CourseId = $section->getCourseId();
+				$this->bookmarks_IsCourseSaved = false;
+				print $this->render('schedules/bookmark_control.phtml'); 
+				?>
+				<div class='title'><?php print nl2br($this->escape($section->getTitle())); ?></div>
 				<div class='description'><?php print $section->getDescription(); ?></div>				
 <?php
 print "\n\t<dl>";
@@ -384,7 +424,7 @@ if ($section->hasRecordType($instructorsType)) {
 	$instructors = $instructorsRecord->getInstructors();
 	while ($instructors->hasNext()) {
 		$instructor = $instructors->getNextResource();
-		$resourceParams['resource'] = AbstractCatalogController::getStringFromOsidId($instructor->getId());
+		$resourceParams['resource'] = $this->getStringFromOsidId($instructor->getId());
 		print "<a href=\"".$this->url($resourceParams)."\">";
 		print $this->escape($instructor->getDisplayName());
 		print "</a> ";
@@ -397,12 +437,12 @@ if ($section->hasLocation()) {
 	try {
 		$locationResource = $section->getLocation();
 		print "\n\t\t<dd>";
-// 		$resourceParams['resource'] = AbstractCatalogController::getStringFromOsidId($locationResource->getId());
+// 		$resourceParams['resource'] = $this->getStringFromOsidId($locationResource->getId());
 // 		print "<a href=\"".$this->url($resourceParams)."\">";
 		print $this->escape($locationResource->getDisplayName());
 // 		print "</a> ";
 		if ($locationResource->getDescription())
-			print "<span class='location_description'>(".$this->escape($locationResource->getDescription()).")</span>";
+			print " <span class='location_description'>(".$this->escape($locationResource->getDescription()).")</span>";
 		print "\n\t\t</dd>";
 	} catch (osid_OperationFailedException $e) {
 		print "\n\t\t<dd>".$this->escape($section->getLocationInfo())."</dd>";
@@ -413,13 +453,13 @@ if ($section->hasLocation()) {
 }
 
 print "\n\t\t<dt>Schedule:</dt>";
-print "\n\t\t<dd>".nl2br($this->escape($section->getScheduleInfo()))."</dd>";
+print "\n\t\t<dd>".$this->formatScheduleInfo($section->getScheduleInfo())."</dd>";
 
 // print "\n\t<dt>Subject:</dt>";
 // print "\n\t\t<dd>";
-// $topics = AbstractCatalogController::filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject"));
+// $topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject"));
 // foreach ($topics as $topic) {
-// 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+// 	$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
 // 	print "<a href=\"".$this->url($topicParams)."\">";
 // 	print $this->escape($topic->getDisplayName());
 // 	print "</a> ";
@@ -428,9 +468,9 @@ print "\n\t\t<dd>".nl2br($this->escape($section->getScheduleInfo()))."</dd>";
 
 // print "\n\t\t<dt>Division:</dt>";
 // print "\n\t\t<dd>";
-// $topics = AbstractCatalogController::filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division"));
+// $topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division"));
 // foreach ($topics as $topic) {
-// 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+// 	$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
 // 	print "<a href=\"".$this->url($topicParams)."\">";
 // 	print $this->escape($topic->getDisplayName());
 // 	print "</a> ";

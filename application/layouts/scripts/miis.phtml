@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <link rel="Stylesheet" type="text/css" media="screen" href="http://web.middlebury.edu/development/tools/Miis/Stylesheets/Miis2009.css" />
+        <link rel="Stylesheet" type="text/css" media="screen" href="http://web.middlebury.edu/development/tools/Miis/Stylesheets/Menu.css" />
+        <link rel="Stylesheet" type="text/css" media="screen" href="http://web.middlebury.edu/development/tools/Miis/Stylesheets/MenuStyle.css" />
+        <link rel="icon" type="image/gif" href="http://web.middlebury.edu/development/tools/Miis/Images/favicon.gif">
+        
+        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/base/jquery-ui.css" type="text/css" media="all" />
+        
+        <link rel="stylesheet" media="screen" type="text/css" href="<?php echo $this->url(array(), null, true) ?>2d/StyleSheets/CatalogStyles.css" />
+        <link rel="stylesheet" media="screen" type="text/css" href="<?php echo $this->url(array(), null, true) ?>StyleSheets/miis/Styles.css" />
+
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+		
+		<?php echo $this->headLink() ?> 
+		<?php echo $this->headScript() ?> 
+		<?php echo $this->headStyle() ?> 
+        
+        <?php echo $this->headTitle() ?> 
+    </head>
+    <body>
+		<div id="header" style="background-image:url(http://www.miis.edu/media/view/21299/original/);">
+			<div class="container">
+				<a id="wordmark" href="http://www.miis.edu"><img src="http://web.middlebury.edu/development/tools/Miis/Images/logo.png" width="430" height="90" alt="Monterey Institute of International Studies" /></a>
+				<form  id="search" action="http://www.miis.edu/search" method="get">
+				  <input type="text" id="search_query" name="q2" />
+				  <input type="submit" value="Go" id="search_submit" />
+				</form>
+				<ul id="gateways">
+					<li class="left"><a href="http://www.miis.edu/students">Students</a></li>
+					<li class="right"><a href="http://www.miis.edu/alumni">Alumni</a></li>
+					<li class="left"><a href="http://www.miis.edu/facstaff">Faculty &amp; Staff</a></li>
+					<li class="right"><a href="http://www.miis.edu/employers">Employers</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="navbar">
+			<ul id="navigation" class="container">
+				<li id="nav_about"><a href="http://www.miis.edu/about" class="tab">About<span></span></a></li>
+				<li id="nav_admissions"><a href="http://www.miis.edu/admissions" class="tab">Admissions<span></span></a></li>
+				<li id="nav_academics"><a href="http://www.miis.edu/academics" class="tab">Academics<span></span></a></li>
+				<li id="nav_community"><a href="http://www.miis.edu/community" class="tab">Community<span></span></a></li>
+				<li id="nav_careers"><a href="http://www.miis.edu/careers" class="tab">Careers<span></span></a></li>
+				<li id="nav_giving"><a href="http://www.miis.edu/giving" class="tab">Giving<span></span></a></li>
+				<li id="nav_offices"><a href="http://www.miis.edu/offices#" class="tab">Offices &amp; Services<span></span></a></li>
+			</ul>
+		</div>
+		<div id="content" class="container">
+			<div id="page">
+				<div id="breadcrumb"><a href="http://www.miis.edu">Home</a> &raquo; </div>
+				<div class="titlecard">
+					<div class="title">
+						<h1>Course Catalog</h1>
+					</div>
+<!-- 
+					<div class="opening">
+						<p>Courses and schedules.</p>
+					</div>
+-->
+				</div>
+				<div class="body">
+					<div class="content">
+						<!--CONTENT GOES HERE-->
+						<?php echo $this->render('header.phtml') ?> 
+						<?php echo $this->layout()->content ?> 
+						<?php echo $this->render('footer.phtml') ?> 
+						<!--CONTENT GOES HERE-->
+					</div>
+				</div>
+			</div>
+			<div id="right">
+				<div id="subnavigation">
+					<div class="content">
+						<ul class="menu">
+							<li class="expanded">
+								<?php echo $this->render('menu.phtml') ?> 
+							</li>
+							<li class="expanded">
+								<?php echo $this->render('login.phtml') ?> 
+							</li>
+							<li class="leftText">
+								<?php echo $this->render('leftText.phtml') ?> 
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="clear">&#160;</div>
+			<div id="footer">
+				<div class="name">
+					<a href="http://www.miis.edu">Monterey Institute of International Studies</a>
+				</div>
+				<div class="address">
+					<a href="http://www.miis.edu/about/middlebury">A Graduate School of Middlebury College</a><br />
+					460 Pierce St<br />
+					Monterey, CA 93940<br />
+					831-647-4123
+				</div>
+				<div class="right">
+					<h6>Quick Links</h6>
+					<ul>
+						<li><a href="https://web.middlebury.edu/database/directory/Miis.aspx">Directory</a></li>
+						<li><a href="http://www.miis.edu/offices/humanresources/opportunities">Employment</a></li>
+						<li><a href="http://go.miis.edu/bannerweb">BannerWeb</a></li>
+						<li><a href="http://mail.middlebury.edu" target="_blank">WebMail</a></li>
+					</ul>
+				</div>
+				<div class="right">
+					<h6>Be Social</h6>
+					<a href="http://go.miis.edu/facebook"><img src="http://www.miis.edu/media/view/21113/standard/social_facebook.png" alt="Become a Facebook fan" title="Become a Facebook fan" /></a>
+					<a href="http://go.miis.edu/twitter"><img src="http://www.miis.edu/media/view/21115/standard/social_twitter.png" alt="Follow us on Twitter" title="Follow us on Twitter" /></a>
+					<a href="http://go.miis.edu/linkedin"><img src="http://www.miis.edu/media/view/21114/standard/social_linkedin.png" alt="Join our LinkedIn group" title="Join our LinkedIn group" /></a><br />
+					<a href="http://go.miis.edu/youtube"><img src="http://www.miis.edu/media/view/21116/standard/social_youtube.png" alt="Watch our YouTube videos" title="Watch our YouTube videos" /></a>
+					<a href="http://go.miis.edu/blogs"><img src="http://www.miis.edu/media/view/21118/standard/social_wordpress.png" alt="Join our blogging community" title="Join our blogging community"></a>
+					<a href="http://feeds.feedburner.com/miisnews"><img src="http://www.miis.edu/media/view/21117/standard/social_rss.png" alt="Subscribe to News &amp; Events" title="Subscribe to News &amp; Events" /></a>
+				</div>
+				<div class="clear"></div>
+				<asp:ContentPlaceHolder ID="LogOn" runat="server" />
+				<div class="clear"></div>
+			</div>
+		</div>
+    </body>
+</html>

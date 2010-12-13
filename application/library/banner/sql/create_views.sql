@@ -27,10 +27,6 @@ WHERE
 	-- Clause for the 'outer self exclusion join'
 	crse2.SCBCRSE_SUBJ_CODE IS NULL
 	
-	-- Exclude non-active status codes.
-	AND crse1.SCBCRSE_CSTA_CODE NOT IN (
-		'C', 'I', 'P', 'T', 'X'
-	)
 GROUP BY crse1.SCBCRSE_SUBJ_CODE , crse1.SCBCRSE_CRSE_NUMB
 ORDER BY crse1.SCBCRSE_SUBJ_CODE , crse1.SCBCRSE_CRSE_NUMB;
 
@@ -288,3 +284,21 @@ WHERE
 
 GROUP BY levl1.SCRLEVL_SUBJ_CODE , levl1.SCRLEVL_CRSE_NUMB, levl1.SCRLEVL_LEVL_CODE 
 ORDER BY levl1.SCRLEVL_SUBJ_CODE , levl1.SCRLEVL_CRSE_NUMB, levl1.SCRLEVL_LEVL_CODE;
+
+-- ---------------------------------------------------------
+
+--
+-- This view allows fetching the campuses at which the offerings in a catalog are held.
+--	
+DROP VIEW IF EXISTS catalog_campus;
+DROP TABLE IF EXISTS catalog_campus;
+CREATE TABLE catalog_campus
+SELECT 
+	catalog_id,
+	STVCAMP_CODE,
+	STVCAMP_DESC
+FROM 
+	ssbsect_scbcrse
+	INNER JOIN course_catalog_college ON SCBCRSE_COLL_CODE = coll_code
+	INNER JOIN STVCAMP ON SSBSECT_CAMP_CODE = STVCAMP_CODE
+GROUP BY catalog_id, STVCAMP_CODE;

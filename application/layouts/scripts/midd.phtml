@@ -4,8 +4,10 @@
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<?php echo $this->headTitle() ?> 
 	
-	<link href="https://web.middlebury.edu/development/tools/1d2010/Stylesheets/style.css" rel="stylesheet" />
-	<link href="https://web.middlebury.edu/development/tools/1d2010/Stylesheets/style-custom.css" rel="stylesheet" />
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/base/jquery-ui.css" type="text/css" media="all" />
+
+	<link href="https://web.middlebury.edu/development/tools/1d2010/Stylesheets/style.css" rel="stylesheet" type='text/css' />
+	<link href="https://web.middlebury.edu/development/tools/1d2010/Stylesheets/style-custom.css" rel="stylesheet" type='text/css' />
 	<!--[if lt IE 7]><link rel="stylesheet" href="https://web.middlebury.edu/development/tools/1d2010/Stylesheets/ie6.css"/><![endif]-->
 	<!--[if lt IE 7]><link rel="stylesheet" href="https://web.middlebury.edu/development/tools/1d2010/Stylesheets/ie7.css"/><![endif]-->
 
@@ -16,15 +18,12 @@
 	<meta name="robots" content="all" />
 	
 	<link rel="stylesheet" media="screen" type="text/css" href="<?php echo $this->url(array(), null, true) ?>2d/StyleSheets/CatalogStyles.css" />
+	<link rel="stylesheet" media="screen" type="text/css" href="<?php echo $this->url(array(), null, true) ?>StyleSheets/midd/Styles.css" />
 
-    <script type="text/javascript" src="https://web.middlebury.edu/development/tools/1d2010/Scripts/jquery.min.js?f"></script>
-    <script type="text/javascript" src="https://web.middlebury.edu/development/tools/1d2010/Scripts/midd.js?f"></script>
-    <script type="text/javascript" src="https://web.middlebury.edu/development/tools/1d2010/Scripts/jquery-1.4a2.js?f"></script>
-
-    <script type="text/javascript" src="https://web.middlebury.edu/development/tools/1d2010/Scripts/jquery-ui.min.js?f"></script>
-    <script type="text/javascript" src="https://web.middlebury.edu/development/tools/1d2010/Scripts/middlebury.js?f"></script>
-    <script type="text/javascript" src="https://web.middlebury.edu/development/tools/1d2010/Scripts/features.js?f"></script>
-	
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+    
+	<?php echo $this->headLink() ?> 
 	<?php echo $this->headScript() ?> 
 	<?php echo $this->headStyle() ?> 
 </head>
@@ -69,7 +68,7 @@
             <li id="nav_sustainability" class="bottom"><a href="http://www.middlebury.edu/sustainability/">
                 Sustainability<span></span></a></li>
             <li id="nav_giving" class="bottom"><a href="http://www.middlebury.edu/giving/">Giving<span></span></a></li>
-            <li id="nav_news" class="bottom"><a href="http://www.middlebury.edu/news/">News Room<span></span></a></li>
+            <li id="nav_news" class="bottom"><a href="http://www.middlebury.edu/newsroom/">News Room<span></span></a></li>
             <li id="nav_events" class="bottom"><a href="http://www.middlebury.edu/events/">Calendar
                 of Events<span></span></a></li>
             <li id="nav_offices" class="bottom"><a href="http://www.middlebury.edu/offices/">Offices
@@ -78,15 +77,23 @@
         </ul>
     </div>
     <div id="content" class="container">
-        <div id="taskbar">
-          <a id="taskbar_back" href="http://www.middlebury.edu/academics">Return to the <strong>Academics Homepage</strong></a>
+        <div id="heading">
+          <a href="<?php echo $this->url(array(), null, true) ?>">
+          	<img src="<?php echo $this->url(array(), null, true) ?>images/catalog_header.jpg" alt="header image"/>
+          </a>
         </div>
         <div id="left">
         	<div class='content'>
         		<ul class="menu">
-        		<li class="expanded">
-		        	<?php echo $this->render('menu.phtml') ?> 
-		        </li>
+					<li class="expanded">
+						<?php echo $this->render('menu.phtml') ?> 
+					</li>
+					<li class="expanded">
+						<?php echo $this->render('login.phtml') ?> 
+					</li>
+					<li class="leftText">
+						<?php echo $this->render('leftText.phtml') ?> 
+					</li>
 		        </ul>
 	        </div>
         </div>
@@ -115,7 +122,7 @@
                 <li><a href="http://www.middlebury.edu/alumni/">Undergraduate Alumni</a></li>
                 <li><a href="http://www.middlebury.edu/alumni/ls">Language Schools</a></li>
 
-                <li><a href="http://www.middlebury.edu/>alumni/blse">Bread Loaf School of English</a></li>
+                <li><a href="http://www.middlebury.edu/alumni/blse">Bread Loaf School of English</a></li>
                 <li><a href="http://www.miis.edu/alumni">Monterey Institute</a></li>
               </ul>
             </div>
@@ -169,6 +176,9 @@
     <div id="footer_panel"></div>
     <!--
     -->    
+	<script type="text/javascript" src="<?php echo $this->url(array(), null, true) ?>javascript/middlebury.js?f"></script>
+	<script type="text/javascript" src="https://web.middlebury.edu/development/tools/1d2010/Scripts/features.js?f"></script>
+	<script type="text/javascript" src="https://web.middlebury.edu/development/tools/1d2010/Scripts/midd.js?f"></script>
     
 </body>
 </html>

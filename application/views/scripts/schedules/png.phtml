@@ -1,0 +1,6 @@
+<?php
+
+$this->render('schedules/generate-image.phtml');
+
+imagepng($this->image, null, 5);
+imagedestroy($this->image);

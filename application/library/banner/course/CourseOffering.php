@@ -19,7 +19,8 @@ class banner_course_CourseOffering
     extends phpkit_AbstractOsidObject
     implements osid_course_CourseOffering,
     middlebury_course_CourseOffering_InstructorsRecord,
-    middlebury_course_CourseOffering_AlternatesRecord
+    middlebury_course_CourseOffering_AlternatesRecord,
+	middlebury_course_CourseOffering_LinkRecord
 {
 	/**
 	 * @var array $requiredFields;
@@ -36,6 +37,7 @@ class banner_course_CourseOffering
 			'SSBSECT_CAMP_CODE',
 			'SSBSECT_CRSE_TITLE',
 			'SSBSECT_MAX_ENRL',
+			'SSBSECT_LINK_IDENT',
 			
 			'SSBDESC_TEXT_NARRATIVE',
 			
@@ -56,9 +58,13 @@ class banner_course_CourseOffering
 			'SSRMEET_THU_DAY',
 			'SSRMEET_FRI_DAY',
 			'SSRMEET_SAT_DAY',
+			'SSRMEET_START_DATE',
+			'SSRMEET_END_DATE',
 			'num_meet',
 			
 			'STVBLDG_DESC',
+			
+			'STVCAMP_DESC',
 			
 			'SCBCRSE_TITLE',
 			'SCBCRSE_DEPT_CODE',
@@ -86,6 +92,7 @@ class banner_course_CourseOffering
 		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 		$this->alternatesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
+		$this->linkType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:link');
 		
 		parent::__construct();
 		$this->checkRow($row);
@@ -118,6 +125,7 @@ class banner_course_CourseOffering
 		$this->addRecordType($this->instructorsType);
 		$this->addRecordType($this->weeklyScheduleType);
 		$this->addRecordType($this->alternatesType);
+		$this->addRecordType($this->linkType);
 		
 		$this->identifiersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
 		$properties = array();
@@ -342,6 +350,8 @@ class banner_course_CourseOffering
      *  @compliance mandatory This method must be implemented. 
      */
     public function getLocationInfo() {
+    	$campus = $this->row['STVCAMP_DESC'];
+    	
     	$parts = array();
     	foreach ($this->getMeetingRows() as $row) {
     		if ($this->row['SSRMEET_ROOM_CODE'] || $row['SSRMEET_ROOM_CODE'] || $row['STVBLDG_DESC'])
@@ -349,10 +359,12 @@ class banner_course_CourseOffering
     		.' ('.$row['STVBLDG_DESC'].')';
     	}
     	
+    	
+    	
     	if (count($parts))
-	    	return implode(", ", $parts);
+	    	return $campus.": ".implode(", ", $parts);
 	    else
-	    	return "";
+	    	return $campus;
     }
 
 
@@ -438,6 +450,11 @@ class banner_course_CourseOffering
 				.' on '.implode(', ', $days);
 			if (count($rows) > 1)
 				$info .= ' at '.$row['SSRMEET_BLDG_CODE'].' ' .$row['SSRMEET_ROOM_CODE'];
+			
+			$start = date('M j, Y', strtotime($row['SSRMEET_START_DATE']));
+			$end = date('M j, Y', strtotime($row['SSRMEET_END_DATE']));
+			$info .= ' ('.$start.' to '.$end.')';
+			
 			$parts[] = $info;
 		}
 		
@@ -674,6 +691,64 @@ class banner_course_CourseOffering
     public function getInstructors() {
     	return $this->session->getInstructorsForOffering($this->getId());
     }
+    
+/*********************************************************
+ * LinkRecord support
+ *********************************************************/
+
+	/**
+	 * Answer the link-set id for the offering.
+	 *
+	 * The offerings of a course in a term will be grouped into one or more link sets
+	 * (set 1, set 2, set 3, etc).
+	 * Each offering also has a link type (such as lecture, discussion, lab, etc).
+	 *
+	 * When registering for a Course that has multiple Offerings (such as lecture + lab or
+	 * lectures at different times), students must choose a link set and then one offering
+	 * of each type within that set.
+	 *
+	 *
+	 * @return osid_id_Id
+	 * @access public
+	 * @since 8/3/10
+	 */
+	public function getLinkSetId () {
+		if (is_null($this->row['SSBSECT_LINK_IDENT']))
+			$linkId = 'NULL';
+		else {
+			// Link ids are of the form L1, L2, D1, D2.
+			// The set id is the second charactor.
+			$linkId = substr($this->row['SSBSECT_LINK_IDENT'], 1, 1);
+		}
+		return $this->getOsidIdFromString($linkId, 'link_set/');
+	}
+
+	/**
+	 * Answer the link-type id for the offering.
+	 *
+	 * The offerings of a course in a term will be grouped into one or more link sets
+	 * (set 1, set 2, set 3, etc).
+	 * Each offering also has a link type (such as lecture, discussion, lab, etc).
+	 *
+	 * When registering for a Course that has multiple Offerings (such as lecture + lab or
+	 * lectures at different times), students must choose a link set and then one offering
+	 * of each type within that set.
+	 * 
+	 * 
+	 * @return osid_id_Id
+	 * @access public
+	 * @since 8/3/10
+	 */
+	public function getLinkTypeId () {
+		if (is_null($this->row['SSBSECT_LINK_IDENT']))
+			$linkId = 'NULL';
+		else {
+			// Link ids are of the form L1, L2, D1, D2.
+			// The type id is the first charactor.
+			$linkId = substr($this->row['SSBSECT_LINK_IDENT'], 0, 1);
+		}
+		return $this->getOsidIdFromString($linkId, 'link_type/');
+	}
     
 /*********************************************************
  * AlternatesRecord support

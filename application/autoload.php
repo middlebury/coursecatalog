@@ -12,9 +12,12 @@ if (!defined('BASE_PATH')) {
 	define('APPLICATION_PATH', BASE_PATH.'/application');
 	set_include_path(
 		APPLICATION_PATH . '/library'
+		. PATH_SEPARATOR . APPLICATION_PATH . '/resources'
 		. PATH_SEPARATOR . BASE_PATH . '/library/osid-phpkit'
 		. PATH_SEPARATOR . BASE_PATH . '/library/ZendFramework/library'
 		. PATH_SEPARATOR . BASE_PATH . '/library/fsmparser'
+		. PATH_SEPARATOR . BASE_PATH . '/library/phpcas/source'
+		. PATH_SEPARATOR . BASE_PATH . '/library/lazy_sessions'
 		. PATH_SEPARATOR . get_include_path()
 	);
 }

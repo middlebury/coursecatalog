@@ -55,12 +55,16 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
         $this->undergraduateType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:undergraduate");
         
         $this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+        $this->locationType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:location');
         $this->topicQueryRecordType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:topic');
 		$this->otherType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:other');
 		
 		$this->barryId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/WEBID1000002');
 		$this->dudleyId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/WEBID1000004');
     	$this->calvinId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/WEBID1000003');
+    	
+    	$this->mainCampusId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/place/campus/M');
+    	$this->breadloafCampusId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/place/campus/BL');
     }
 
     /**
@@ -967,6 +971,97 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
     {
     	$record = $this->object->getCourseQueryRecord($this->instructorsType);
         $record->getInstructorQuery();
+    }
+    
+/*********************************************************
+ * Tests for the location query record
+ *********************************************************/
+
+	/**
+     * 
+     */
+    public function testGetLocationCourseQueryRecord()
+    {
+        $record = $this->object->getCourseQueryRecord($this->locationType);
+        $this->assertType('osid_course_CourseQueryRecord', $record);
+        $this->assertType('middlebury_course_Course_Search_LocationQueryRecord', $record);
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchLocationId()
+    {
+    	$record = $this->object->getCourseQueryRecord($this->locationType);
+        $record->matchLocationId($this->mainCampusId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('M', $params[0]);
+        $this->assertFalse(isset($params[1]));
+        
+        $this->assertEquals('(SSBSECT_CAMP_CODE = ?)', $this->object->getWhereClause());
+
+		$courses = $this->session->getCoursesByQuery($this->object);
+// 		print $courses->debug();
+		$this->assertEquals(4, $courses->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchSecondLocationId()
+    {
+    	$record = $this->object->getCourseQueryRecord($this->locationType);
+        $record->matchLocationId($this->breadloafCampusId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('BL', $params[0]);
+        $this->assertFalse(isset($params[1]));
+        
+        $this->assertEquals('(SSBSECT_CAMP_CODE = ?)', $this->object->getWhereClause());
+
+		$courses = $this->session->getCoursesByQuery($this->object);
+// 		print $courses->debug();
+		$this->assertEquals(0, $courses->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatch2LocationIds()
+    {
+        $record = $this->object->getCourseQueryRecord($this->locationType);
+        $record->matchLocationId($this->mainCampusId, true);
+        $record->matchLocationId($this->breadloafCampusId, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals('M', $params[0]);
+        $this->assertEquals('BL', $params[1]);
+        $this->assertFalse(isset($params[2]));
+        
+        $this->assertEquals("(SSBSECT_CAMP_CODE = ?\n\t\tOR SSBSECT_CAMP_CODE = ?)", $this->object->getWhereClause());
+
+		$courses = $this->session->getCoursesByQuery($this->object);
+// 		print $courses->debug();
+		$this->assertEquals(4, $courses->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testSupportsLocationQuery()
+    {
+    	$record = $this->object->getCourseQueryRecord($this->locationType);
+        $this->assertFalse($record->supportsLocationQuery());
+    }
+
+    /**
+     * @expectedException osid_UnimplementedException
+     */
+    public function testGetLocationQuery()
+    {
+    	$record = $this->object->getCourseQueryRecord($this->locationType);
+        $record->getLocationQuery();
     }
 }
 ?>

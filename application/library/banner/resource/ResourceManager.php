@@ -184,7 +184,7 @@ class banner_resource_ResourceManager
      *              supportsResourceLookup() </code> is <code> true. </code> 
      */
     public function getResourceLookupSession() {
-    	return new banner_resource_Resource_Lookup_Session($this);
+    	return new banner_resource_Resource_Lookup_CombinedSession($this);
 	}
 
 
@@ -210,10 +210,10 @@ class banner_resource_ResourceManager
      *              </code> 
      */
     public function getResourceLookupSessionForBin(osid_id_Id $binId) {
-    	if (!$binId->isEqual($this->getCombinedBinId()))
-    		throw new osid_NotFoundException('Unknown bin id passed.');
-    	
-    	return $this->getResourceLookupSession();
+    	if ($binId->isEqual($this->getCombinedBinId()))
+    		return $this->getResourceLookupSession();
+    	else
+	    	return new banner_resource_Resource_Lookup_PerCatalogSession($this, $binId);
 	}
 
 
@@ -401,7 +401,7 @@ class banner_resource_ResourceManager
      *              supportsBinLookup() </code> is <code> true. </code> 
      */
     public function getBinLookupSession() {
-    	throw new osid_UnimplementedException();
+    	return new banner_resource_Bin_Lookup_Session($this);
 	}
 
 
@@ -592,7 +592,7 @@ class banner_resource_ResourceManager
      *  @compliance mandatory This method must be implemented. 
      */
     public function supportsBinLookup() {
-    	return false;
+    	return true;
     }
 
 

@@ -49,8 +49,9 @@ class Helper_RecentCourses_Instructor
 	 * @since 11/16/09
 	 */
 	protected function fetchCourseTerms (osid_course_Course $course) {
-		$cacheKey = AbstractCatalogController::getStringFromOsidId($course->getId())
-			."_".AbstractCatalogController::getStringFromOsidId($this->instructorId);
+		$osidIdHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId');
+		$cacheKey = $osidIdHelper->toString($course->getId())
+			."_".$osidIdHelper->toString($this->instructorId);
 		
 		if (!isset($this->termsCache[$cacheKey])) {
 			$instructorsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:instructors");
@@ -75,7 +76,7 @@ class Helper_RecentCourses_Instructor
 			$seen = array();
 			while ($offerings->hasNext()) {
 				$term = $offerings->getNextCourseOffering()->getTerm();
-				$termIdString = AbstractCatalogController::getStringFromOsidId($term->getId());
+				$termIdString = $osidIdHelper->toString($term->getId());
 	// 			print $termIdString."\n";
 				if (!in_array($termIdString, $seen)) {
 					$allTerms[] = $term;

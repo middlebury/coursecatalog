@@ -49,11 +49,19 @@ class CatalogExternalRedirector
 	 * @since 10/26/09
 	 */
 	private function getTopicMap () {
-		$topicMap = phpkit_configuration_ConfigUtil::getMultiValuedValue(
-    								AbstractCatalogController::getRuntimeManager()->getConfiguration(), 
-    								new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:catalog/topic_map'),
-    								new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
-    	return $topicMap;
+		$config = Zend_Registry::getInstance()->config;
+		$entries = $config->catalog->topic_map;
+		$topicMap = array();
+		if ($entries && count($entries)) {
+			foreach ($entries as $key => $entry) {
+				if (!isset($entry->id) || !$entry->id)
+					throw new Exception('Each topic_map entry must have an id, "'.$key.'" does not.');
+				if (!isset($entry->url) || !$entry->url)
+					throw new Exception('Each topic_map entry must have an url, "'.$key.'" does not.');
+				$topicMap[$entry->id] = $entry->url;
+			}
+		}
+		return $topicMap;
 	}
 	
 }

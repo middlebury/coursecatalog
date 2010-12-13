@@ -183,7 +183,7 @@ class ErrorPrinter {
 	 */
 	private function printException (Exception $e, $code, $additionalHtml = '') {
 		// Debugging mode for development, rethrow the exception
-		if (defined('DISPLAY_ERROR_BACKTRACE') && DISPLAY_ERROR_BACKTRACE) {
+		if (ini_get('display_errors') && preg_match('/on|1/i', ini_get('display_errors'))) {
 			throw $e;
 		} 
 		

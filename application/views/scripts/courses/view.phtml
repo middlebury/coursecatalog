@@ -1,4 +1,7 @@
 <?php
+
+print $this->render('schedules/bookmark_control.phtml');
+
 // print "\n\t<div>".$this->escape($this->course->getDisplayName())."</div>";
 print "\n\t<h2>".$this->escape($this->course->getTitle())."</h2>";
 if ($this->course->getDescription())
@@ -12,15 +15,15 @@ $topicParams = array(
 						'offering'		=> null
 					);
 if (isset($this->term)) {
-	$topicParams['term'] = AbstractCatalogController::getStringFromOsidId($this->term->getId());
+	$topicParams['term'] = $this->getStringFromOsidId($this->term->getId());
 } else if (isset($this->linkTermId)) {
-	$topicParams['term'] = AbstractCatalogController::getStringFromOsidId($this->linkTermId);
+	$topicParams['term'] = $this->getStringFromOsidId($this->linkTermId);
 }
 
 print "\n\t<dt>Subject:</dt>";
 print "\n\t\t<dd>";
 foreach ($this->subjectTopics as $topic) {
-	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+	$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
 	print "</a> ";
@@ -30,7 +33,7 @@ print "</dd>";
 print "\n\t\t<dt>Department:</dt>";
 print "\n\t\t<dd>";
 foreach ($this->departmentTopics as $topic) {
-	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+	$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
 	print "</a> ";
@@ -40,7 +43,7 @@ print "</dd>";
 print "\n\t\t<dt>Division:</dt>";
 print "\n\t\t<dd>";
 foreach ($this->divisionTopics as $topic) {
-// 	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+// 	$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
 // 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
 // 	print "</a> ";
@@ -50,7 +53,7 @@ print "</dd>";
 print "\n\t\t<dt>Requirements Fulfilled:</dt>";
 print "\n\t\t<dd>";
 foreach ($this->requirementTopics as $topic) {
-	$topicParams['topic'] = AbstractCatalogController::getStringFromOsidId($topic->getId());
+	$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
 	print "<a href=\"".$this->url($topicParams)."\">";
 	print $this->escape($topic->getDisplayName());
 	print "</a> ";
@@ -65,7 +68,7 @@ if (isset($this->alternates)) {
 	while ($this->alternates->hasNext()) {
 		try {
 			$alternate = $this->alternates->getNextCourse();
-			$altParams['course'] = AbstractCatalogController::getStringFromOsidId($alternate->getId());
+			$altParams['course'] = $this->getStringFromOsidId($alternate->getId());
 			print "<a href=\"".$this->url($altParams)."\">";
 			print $this->escape($alternate->getDisplayName());
 			print "</a>";

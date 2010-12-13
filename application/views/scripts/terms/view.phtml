@@ -7,7 +7,7 @@ $offeringParams = array(
 				);
 while ($this->offerings->hasNext()) {
 	$offering = $this->offerings->getNextCourseOffering();
-	$offeringParams['offering'] = AbstractCatalogController::getStringFromOsidId($offering->getId());
+	$offeringParams['offering'] = $this->getStringFromOsidId($offering->getId());
 	print "\n\t<div>";
 	print "<a href='".$this->url($offeringParams)."'>".$this->escape($offering->getDisplayName())."</a>";
 	print " \"".$this->escape($offering->getTitle())."\" - ";

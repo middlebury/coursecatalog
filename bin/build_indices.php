@@ -5,8 +5,9 @@ require_once(dirname(__FILE__) . '/../application/autoload.php');
 define('DISPLAY_ERROR_BACKTRACE', true);
 set_exception_handler(array('harmoni_ErrorHandler', 'handleException'));
 try {
-
-	$courseManager = AbstractCatalogController::getCourseManager();
+	$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(BASE_PATH.'/configuration.plist');
+	$courseManager = $runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
+	
 	if (!$courseManager->supportsCourseOfferingSearch()) {
 		print "\nCourseOfferingSearch is unsupported. Not building indices.\n";
 		exit(1);

@@ -14,6 +14,8 @@ class TestSuite extends PHPUnit_Framework_TestSuite
         
         $suite->addTestSuite('banner_TestSuite');
         
+        $suite->addTestSuite('apc_TestSuite');
+        
         $suite->addTestSuite('ApplicationTestSuite');
                 
         return $suite;

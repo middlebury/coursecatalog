@@ -44,7 +44,7 @@ class banner_course_Course_Lookup_CombinedSessionTest
         
         $this->manager = $this->sharedFixture['CourseManager'];
         $this->session = $this->manager->getCourseLookupSession();
-        $this->session->useFederatedView();
+        $this->session->useFederatedCourseCatalogView();
         
         $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
         $this->geolId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/GEOL0250');

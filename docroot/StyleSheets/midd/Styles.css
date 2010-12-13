@@ -1,0 +1,10 @@
+#left {
+	width: 202px;
+	padding-left: 0px;
+}
+div.content > ul.menu {
+	width: 202px;	
+}
+#page {
+	width: 740px;
+}
