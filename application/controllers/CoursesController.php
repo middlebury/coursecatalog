@@ -557,11 +557,11 @@ class CoursesController
 			exit;
 		}
 		try {
-			$catalogId = self::getOsidIdFromString($this->_getParam('catalog'));
-			$this->courseSearchSession = self::getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
-			$this->offeringSearchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
-			
-			$this->termLookupSession = self::getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+			$this->courseSearchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
+			$this->offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
+
+			$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 		} catch (osid_InvalidArgumentException $e) {
 			header('HTTP/1.1 400 Bad Request');
 			print "The catalog id specified was not of the correct format.";
@@ -576,7 +576,7 @@ class CoursesController
 			$this->selectedTerms = array();
 			// Get all offerings in the terms
 			foreach ($this->_getParam('term') as $termIdString) {
-				$termId = self::getOsidIdFromString($termIdString);
+				$termId = $this->_helper->osidId->fromString($termIdString);
 				$this->selectedTerms[] = $termId;
 			}
 		} catch (osid_InvalidArgumentException $e) {
@@ -595,187 +595,187 @@ class CoursesController
 			
 			array(	'type' => 'h1',		'text' => 'American Studies'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/amst/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/AMST')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/AMST')),
 			array(	'type' => 'h1',		'text' => 'Arabic'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/arabic/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/ARBC')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/ARBC')),
 			array(	'type' => 'h1',		'text' => 'Biology'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/bio/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/BIOL')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/BIOL')),
 			array(	'type' => 'h1',		'text' => 'Chemistry & Biochemistry'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/chem/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/CHEM')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/CHEM')),
 			array(	'type' => 'h1',		'text' => 'Chinese'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/chinese/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/CHNS')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/CHNS')),
 			array(	'type' => 'h1',		'text' => 'Classics & Classical Studies'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/clas/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/CLAS')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/CLAS')),
 			array(	'type' => 'h1',		'text' => 'Computer Science'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/cs/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/CSCI')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/CSCI')),
 			array(	'type' => 'h1',		'text' => 'Dance'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/dance/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/ARDV')),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/DANC')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/ARDV')),
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/DANC')),
 			array(	'type' => 'h1',		'text' => 'Economics'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/econ/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/ECON')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/ECON')),
 			array(	'type' => 'h1',		'text' => 'Education Studies'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/edst/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/EDST')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/EDST')),
 			array(	'type' => 'h1',		'text' => 'English & American Literatures'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/enam/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/ENAM')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/ENAM')),
 			array(	'type' => 'h1',		'text' => 'Environmental Studies'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/es/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/ENVS')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/ENVS')),
 			array(	'type' => 'h1',		'text' => 'Film & Media Culture'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/fmmc/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/FMMC')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/FMMC')),
 			array(	'type' => 'h1',		'text' => 'First Year Seminars'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/fys/mission'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/FYSE')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/FYSE')),
 			array(	'type' => 'h1',		'text' => 'French'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/french/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/FREN')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/FREN')),
 			array(	'type' => 'h1',		'text' => 'Geography'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/geog/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/GEOG')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/GEOG')),
 			array(	'type' => 'h1',		'text' => 'Geology'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/geol/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/GEOL')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/GEOL')),
 			array(	'type' => 'h1',		'text' => 'German'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/german/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/GRMN')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/GRMN')),
 			array(	'type' => 'h1',		'text' => 'History'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/hist/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/HIST')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/HIST')),
 			array(	'type' => 'h1',		'text' => 'History of Art & Architecture'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/haa/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/HARC')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/HARC')),
 			array(	'type' => 'h1',		'text' => 'Interdepartmental Courses'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/INTD')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/INTD')),
 			array(	'type' => 'h1',		'text' => 'International Politics & Economics'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/ipe/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/IPEC')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/IPEC')),
 			array(	'type' => 'h1',		'text' => 'International Studies'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/is/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/subject/INTL')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/subject/INTL')),
 			array(	'type' => 'h1',		'text' => 'Italian'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/italian/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/ITAL')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/ITAL')),
 			array(	'type' => 'h1',		'text' => 'Japanese'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/japanese/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/JAPN')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/JAPN')),
 			array(	'type' => 'h1',		'text' => 'Linguistics'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/catalog/linguistics'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/subject/LNGT')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/subject/LNGT')),
 			array(	'type' => 'h1',		'text' => 'Jewish Studies Minor'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/jewish'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/subject/HEBM')),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/subject/HEBR')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/subject/HEBM')),
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/subject/HEBR')),
 			array(	'type' => 'h1',		'text' => 'Literary Studies'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/lit/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/LITS')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/LITS')),
 			array(	'type' => 'h1',		'text' => 'Literature Program'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/litp/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/LITP')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/LITP')),
 			array(	'type' => 'h1',		'text' => 'Mathematics'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/math/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/MATH')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/MATH')),
 			array(	'type' => 'h1',		'text' => 'Molecular Biology & Biochemistry'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/mbb/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/MBBC')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/MBBC')),
 			array(	'type' => 'h1',		'text' => 'Music'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/music/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/MUSC')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/MUSC')),
 			array(	'type' => 'h1',		'text' => 'Neuroscience'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/neuro/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/NSCI')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/NSCI')),
 			array(	'type' => 'h1',		'text' => 'Philosophy'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/phil/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/PHIL')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/PHIL')),
 			array(	'type' => 'h1',		'text' => 'Physics'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/physics/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/PHYS')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/PHYS')),
 			array(	'type' => 'h1',		'text' => 'Political Science'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/ps/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/PSCI')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/PSCI')),
 			array(	'type' => 'h1',		'text' => 'Psychology'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/psych/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/PSYC')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/PSYC')),
 			array(	'type' => 'h1',		'text' => 'Religion'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/rel/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/RELI')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/RELI')),
 			array(	'type' => 'h1',		'text' => 'Russian'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/russian/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/RUSS')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/RUSS')),
 			array(	'type' => 'h1',		'text' => 'Sociology & Anthropology'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/soan/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/SOAN')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/SOAN')),
 			array(	'type' => 'h1',		'text' => 'South Asian Studies Minor'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/catalog/soasian'),
 			
 			array(	'type' => 'h1',		'text' => 'Spanish & Portuguese'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/span/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/SPAN')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/SPAN')),
 			array(	'type' => 'h1',		'text' => 'Studio Art'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/art/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/ART')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/ART')),
 			array(	'type' => 'h1',		'text' => 'Theatre'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/thea/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/THEA')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/THEA')),
 			array(	'type' => 'h1',		'text' => "Women's and Gender Studies"),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/ws/requirements'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/WAGS')),
 			
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/WAGS')),
 			array(	'type' => 'h1',		'text' => 'Writing Program'),
 			array(	'type' => 'page_content',	'url' => 'http://www.middlebury.edu/academics/writing/writingrequirement'),
-			array(	'type' => 'courses',		'id' => self::getOsidIdFromString('topic/department/WRPR')),
+			array(	'type' => 'courses',		'id' => $this->_helper->osidId->fromString('topic/department/WRPR')),
 		);
 		
 		
@@ -836,7 +836,7 @@ class CoursesController
 		$coursesNotPrinted = array();
 		while ($offerings->hasNext()) {
 			$offering = $offerings->getNextCourseOffering();
-			$courseIdString = self::getStringFromOsidId($offering->getCourseId());
+			$courseIdString = $this->_helper->osidId->toString($offering->getCourseId());
 			if (!in_array($courseIdString, $this->printedCourseIds)) {
 				$coursesNotPrinted[$courseIdString] = $offering->getCourse();
 			}
@@ -942,7 +942,7 @@ class CoursesController
 			$course = $courses->getNextCourse();
 			$i++;
 			
-			$courseIdString = self::getStringFromOsidId($course->getId());
+			$courseIdString = $this->_helper->osidId->toString($course->getId());
 			$this->printedCourseIds[] = $courseIdString;
 			
 			$this->printCourse($course);
@@ -992,12 +992,12 @@ class CoursesController
 			}
 		}
 		
-		$allTopics = AbstractCatalogController::topicListAsArray($course->getTopics());
+		$allTopics = $this->_helper->topics->topicListAsArray($course->getTopics());
 
 		$reqs = array();
 		$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
-		$topicTypeString = AbstractCatalogController::getStringFromOsidType($topicType);
-		$topics = AbstractCatalogController::filterTopicsByType($allTopics, $topicType);
+		$topicTypeString = $this->_helper->osidType->toString($topicType);
+		$topics = $this->_helper->topics->filterTopicsByType($allTopics, $topicType);
 		foreach ($topics as $topic) {
 			$reqs[] = $this->view->escape($topic->getDisplayName());
 		}
@@ -1026,7 +1026,7 @@ class CoursesController
 			$offering = $offerings->getNextCourseOffering();
 			if ($offering->getDescription() && $offering->getDescription() != $course->getDescription()) {
 				$term = $offering->getTerm();
-				$termIdString = self::getStringFromOsidId($term->getId());
+				$termIdString = $this->_helper->osidId->toString($term->getId());
 				$sectionTerms[$termIdString] = $term->getDisplayName();
 				$sectionDescriptions[$termIdString] = $offering->getDescription();
 			}
