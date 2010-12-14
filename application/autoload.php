@@ -22,8 +22,6 @@ if (!defined('BASE_PATH')) {
 	);
 }
 
-if (!function_exists('__autoload')) {
-	function __autoload($className) {
-		require_once(implode('/', explode('_', $className)).'.php');
-	}
-}
+require_once('Zend/Loader/Autoloader.php');
+$autoloader = Zend_Loader_Autoloader::getInstance();
+$autoloader->setFallbackAutoloader(true);
