@@ -626,13 +626,22 @@ class CoursesController
 			$sections[] = $section;
 		}
 		
+		$title = 'Course Catalog - ';
+		$title .= $this->courseSearchSession->getCourseCatalog()->getDisplayName();
+		$termNames = array();
+		foreach ($this->selectedTerms as $termId) {	
+			$termNames[] = $this->termLookupSession->getTerm($termId)->getDisplayName();
+		}
+		if (count($termNames)) {
+			$title .= ' - '.implode(', ', $termNames);
+		}
 		
 		header('Content-Type: text/html');
 		header('Content-Disposition: filename="AllCourses.html"');
 		print 
 '<html>
 <head>
-	<title>Print Catalog</title>
+	<title>'.$title.'</title>
 	<style>
 		br { mso-data-placement:same-cell; }
 	</style>
