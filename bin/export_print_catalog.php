@@ -64,10 +64,10 @@ if (count($exports)) {
 // If we have a new export, convert it to a PDF.
 $pdfName = $fileBase.'.pdf';
 $pdfPath = $pdfRoot.'/'.$pdfName;
-$command = "htmldoc --book -f ".escapeshellarg($pdfPath)." ".escapeshellarg($htmlPath);
+$command = "htmldoc --book -f ".escapeshellarg($pdfPath)." ".escapeshellarg($htmlPath).' 2>&1';
 exec($command, $output, $return);
 if ($return) {
-	file_put_contents('php://stderr', "Error running command:\n\n\t$command\n");
+	file_put_contents('php://stderr', "Error running command:\n\n\t$command\n$output\n");
 	return 3;
 }
 
