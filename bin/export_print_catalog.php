@@ -65,10 +65,28 @@ if (count($exports)) {
 	}
 }
 
+// Generate a title file
+$titlePath = $htmlRoot.'/title.html';
+$titleLine = strip_tags(shell_exec('head '.escapeshellarg($htmlPath).' | grep '.escapeshellarg('<title>')));
+$titles = explode(' - ', $titleLine);
+ob_start();
+print "<html>
+<body>
+<h1>&nbsp;</h1>
+<h1>&nbsp;</h1>
+<h1>&nbsp;</h1>
+<h1>&nbsp;</h1>
+";
+foreach ($titles as $title)
+	print "\n<center><h1>".trim($title)."</h1></center>";
+print "\n</body>\n</html>";
+file_put_contents($titlePath, ob_get_clean());
+
+
 // If we have a new export, convert it to a PDF.
 $pdfName = $fileBase.'.pdf';
 $pdfPath = $pdfRoot.'/'.$pdfName;
-$command = "htmldoc --book -f ".escapeshellarg($pdfPath)." ".escapeshellarg($htmlPath).' 2>&1';
+$command = "htmldoc --titlefile ".escapeshellarg($titlePath)." --toclevels 1 --book -f ".escapeshellarg($pdfPath)." ".escapeshellarg($htmlPath).' 2>&1';
 exec($command, $output, $return);
 if ($return) {
 	file_put_contents('php://stderr', "Error running command:\n\n\t$command\n$output\n");

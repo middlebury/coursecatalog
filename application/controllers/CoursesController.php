@@ -679,7 +679,8 @@ class CoursesController
 		}
 		
 		print "\n<hr/>";
-		print "\n<h1>Courses not included</h1>";
+		print "\n<h1>Other Courses</h1>";
+		print "\n<p>The following courses are listed in Banner but not included in the department and program listings above.</p>";
 		
 		flush();
 		
