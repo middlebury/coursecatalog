@@ -9,6 +9,10 @@ $jobs = array(
 		'dest_dir'	=> 'MCUG/2010-2011',
 		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201090&term[]=term%2F201110&term[]=term%2F201120',
 	),
+	'MCUG-2011-2012' => array(
+		'dest_dir'	=> 'MCUG/2011-2012',
+		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201190&term[]=term%2F201210&term[]=term%2F201220',
+	),
 );
 
 $cmd = array_shift($argv);
