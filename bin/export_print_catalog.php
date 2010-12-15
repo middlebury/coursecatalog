@@ -49,6 +49,7 @@ $command = $myDir.'/zfcli.php -a courses.allrecentcourses -p '.escapeshellarg($j
 exec($command, $output, $return);
 if ($return) {
 	file_put_contents('php://stderr', "Error running command:\n\n\t$command\n");
+	unlink($htmlPath);
 	return 2;
 }
 
