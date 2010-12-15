@@ -57,10 +57,12 @@ $exports = explode("\n", trim(shell_exec('ls -1t '.escapeshellarg($htmlRoot))));
 array_shift($exports);
 if (count($exports)) {
 	$diff = trim(shell_exec('diff '.escapeshellarg($htmlPath).' '.escapeshellarg($htmlRoot.'/'.$exports[0])));
+	
 	// Delete our current export if it is the same as the last one.
 	// This way we only keep versions that contain changes.
 	if (!strlen($diff)) {
 		unlink($htmlPath);
+		file_put_contents('php://stderr', "New version is the same as the last. Not generating the pdf.\n");
 		return 0;
 	}
 }
@@ -90,8 +92,11 @@ $command = "htmldoc --titlefile ".escapeshellarg($titlePath)." --toclevels 1 --b
 exec($command, $output, $return);
 if ($return) {
 	file_put_contents('php://stderr', "Error running command:\n\n\t$command\n$output\n");
+	unlink($titlePath);
 	return 3;
 }
+
+unlink($titlePath);
 
 // Update the symbolic link to the latest snapshot.
 $linkName = str_replace('/', '-', $job['dest_dir']).'_latest.pdf';
