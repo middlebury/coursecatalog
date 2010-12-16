@@ -93,6 +93,21 @@ abstract class banner_course_AbstractSession
 	}
 	
 	/**
+	 * Answer the courseoffering Search session
+	 * 
+	 * @return osid_course_CourseOfferingSearchSession
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getCourseOfferingSearchSession () {
+		if (!isset($this->courseOfferingSearchSession)) {
+			$this->courseOfferingSearchSession = $this->manager->getCourseOfferingSearchSessionForCatalog($this->getCourseCatalogId());
+			$this->courseOfferingSearchSession->useFederatedCourseCatalogView();
+		}
+		return $this->courseOfferingSearchSession;
+	}
+	
+	/**
 	 * Answer a term lookup session
 	 * 
 	 * @return osid_course_TermLookupSession

@@ -492,7 +492,34 @@ class banner_course_Course
      *  @throws osid_PermissionDeniedException authorization failure 
 	 */
 	public function isPrimary () {
-		return false; // Currently no way of determining the 'primary'
+		// Get the most recent offereings for this course and its equivalents
+		$session = $this->session->getCourseOfferingSearchSession();
+		$query = $session->getCourseOfferingQuery();
+		
+		$query->matchCourseId($this->getId(), true);
+		$alternateIds = $this->getAlternateIds();
+		while ($alternateIds->hasNext()) {
+			$query->matchCourseId($alternateIds->getNextId(), true);
+		}
+		
+		$search = $session->getCourseOfferingSearch();
+		$order = $session->getCourseOfferingSearchOrder();
+		$order->orderByTerm();
+		$order->descend();
+		$search->orderCourseOfferingResults($order);
+		
+		$offerings = $session->getCourseOfferingsBySearch($query, $search);
+		while ($offerings->hasNext()) {
+			$offering = $offerings->getNextCourseOffering();
+			if ($offering->isPrimary()) {
+				if ($offering->getCourseId()->isEqual($this->getId()))
+					return true;
+				else
+					return false;
+			}
+		}
+		
+		return false;
 	}
 	
 /*********************************************************

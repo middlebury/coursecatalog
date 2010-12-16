@@ -46,9 +46,13 @@ abstract class Helper_RecentCourses_Abstract {
 	 */
 	public function getPrimaryCourses () {
 		$primaries = array();
+		$names = array();
 		foreach ($this->groups as $group) {
 			$primaries[] = current($group);
+			$names[] = current($group)->getDisplayName();
 		}
+		
+		array_multisort($names, $primaries);
 		return $primaries;
 	}
 	
@@ -149,11 +153,13 @@ abstract class Helper_RecentCourses_Abstract {
 		
 		// Sort all of the groups by effective date.
 		foreach ($this->groups as $groupKey => &$group) {
+			$isPrimary = array();
 			$dates = array();
 			$names = array();
 			foreach ($group as $key => $course) {
 				try {
 					$term = $this->getMostRecentTermForCourse($course);
+					$isPrimary[] = intval($course->isPrimary());
 					$dates[] = $this->DateTime_getTimestamp($term->getEndTime());
 					$names[] = $course->getDisplayName();
 				} catch (osid_NotFoundException $e) {
@@ -161,9 +167,10 @@ abstract class Helper_RecentCourses_Abstract {
 				}
 			}
 // 			var_dump(array_keys($group));
+// 			var_dump($isPrimary);
 // 			var_dump($dates);
 // 			var_dump($names);
-			array_multisort($dates, SORT_NUMERIC, SORT_DESC, $names, SORT_ASC, $group);
+			array_multisort($isPrimary, SORT_NUMERIC, SORT_DESC, $dates, SORT_NUMERIC, SORT_DESC, $names, SORT_ASC, $group);
 			
 			// Filter out any groups that don't have courses with recent terms.
 			if (!count($group))
