@@ -113,5 +113,18 @@ if (!symlink($pdfPath, $linkPath)) {
 	return 5;
 }
 
+$linkName = str_replace('/', '-', $job['dest_dir']).'_latest.html';
+$linkPath = $jobRoot.'/'.$linkName;
+if (file_exists($linkPath)) {
+    if (!unlink($linkPath)) {
+        file_put_contents('php://stderr', "Error deleting latest link: $linkPath\n");
+        return 4;
+    }
+}
+if (!symlink($htmlPath, $linkPath)) {
+    file_put_contents('php://stderr', "Error creating latest link: $linkPath\n");                                    
+    return 5;                                                                                                        
+} 
+
 // Success
 return 0;
