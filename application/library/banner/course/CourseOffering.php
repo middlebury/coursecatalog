@@ -118,8 +118,8 @@ class banner_course_CourseOffering
 			$this->session->getIdAuthority(), 			// id authority
 			'genera:offering/'.$row['STVSCHD_CODE'], 	// identifier
 			'Course Offerings', 						// domain
-			$row['STVSCHD_DESC'], 						// display name
-			$row['STVSCHD_CODE']						// display label
+			trim($row['STVSCHD_DESC']), 						// display name
+			trim($row['STVSCHD_CODE'])						// display label
 		));
 		
 		$this->addRecordType($this->instructorsType);

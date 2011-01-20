@@ -419,7 +419,7 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 	final protected function getObjectFromRow (array $row) {
 		return new banner_course_Topic(
 			$this->session->getOsidIdFromString($row['type'].'/'.$row['id'], 'topic/'),
-			$row['display_name'],
+			trim($row['display_name']),
 			'',
 			new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/'.$row['type'])
 		);
