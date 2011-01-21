@@ -27,6 +27,19 @@ CREATE TABLE IF NOT EXISTS `catalog_term` (
   KEY `catalog_id` (`catalog_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='This table maps term_code patterns to a given catalog.';
 
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `catalog_term_inactive`
+--
+
+CREATE TABLE IF NOT EXISTS `catalog_term_inactive` (
+  `term_code` varchar(6) NOT NULL COMMENT 'Maps to STVTERM.STVTERM_CODE',
+  PRIMARY KEY  (`term_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Terms that should be ignored even with sections';
+
+
 -- --------------------------------------------------------
 
 --

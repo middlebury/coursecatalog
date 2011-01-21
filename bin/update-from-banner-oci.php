@@ -1498,6 +1498,21 @@ WHERE
 	
 	print "...\tRemoved empty terms from derived table: catalog_term\n";
 	
+	// Delete terms that are manually inactivated.
+	print "Removing deactivated terms\t";
+	$mysql->beginTransaction();
+	
+	$mysql->query(
+"DELETE FROM 
+	catalog_term
+WHERE
+	term_code IN (SELECT term_code FROM catalog_term_inactive)
+");
+
+	$mysql->commit();
+	
+	print "...\tRemoved deactivated terms from derived table: catalog_term\n";
+	
 	// Rebuild our "materialized views"
 	require_once(dirname(__FILE__).'/../application/library/harmoni/SQLUtils.php');
 	$mysql->beginTransaction();
