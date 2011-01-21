@@ -19,7 +19,8 @@ class banner_course_CourseOffering_Search_Query
     implements osid_course_CourseOfferingQuery,
     osid_course_CourseOfferingQueryRecord,
     middlebury_course_CourseOffering_Search_InstructorsQueryRecord,
-    middlebury_course_CourseOffering_Search_WeeklyScheduleQueryRecord
+    middlebury_course_CourseOffering_Search_WeeklyScheduleQueryRecord,
+    middlebury_course_CourseOffering_Search_EnrollmentQueryRecord
 {
 	
 	/**
@@ -35,6 +36,7 @@ class banner_course_CourseOffering_Search_Query
 		
 		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors'));
 		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule'));
+		$this->addSupportedRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:enrollment'));
 		
 		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
 		$this->booleanStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:boolean");
@@ -1280,5 +1282,84 @@ AND SCBCRSE_COLL_CODE IN (
     	$hour = floor($seconds/3600);
     	$minute = floor(($seconds - ($hour * 3600))/60);
     	return str_pad($hour, 2, '0', STR_PAD_LEFT).str_pad($minute, 2, '0', STR_PAD_LEFT);
+    }
+    
+/*********************************************************
+ * Methods from the middlebury_course_CourseOffering_EnrollmentQueryRecord
+ *********************************************************/
+
+    /**
+     * Match CourseOfferings that may be or have been open for enrollment.
+     * These may have a non-zero maximum enrollment or other flag that indicates
+     * that they are not just placeholders (such as for cross-lists).
+     * 
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     */
+    public function matchEnrollable ($match) {
+    	$this->addClause('enrollable', "SSBSECT_MAX_ENRL > 0", array(), $match);
+    }
+    
+    /**
+     * Match CourseOfferings based on their enrollment.
+     * 
+     * @param integer $rangeStart The lower bound of enrollment range to match. 0 or greater.
+     * @param integer $rangeEnd The upper bound of the enrollment range to match. 0 or greater, or NULL to indicate no upper bound.
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     */
+    public function matchEnrollment ($rangeStart, $rangeEnd, $match) {
+    	if (is_null($rangeStart))
+    		throw new osid_NullArgumentException('$rangeStart cannot be null');
+    	if (!is_numeric($rangeStart))
+    		throw new osid_InvalidArgumentException('$rangeStart must be an integer 0 or greater');
+    	$rangeStart = intval($rangeStart);
+    	if ($rangeStart < 0)
+    		throw new osid_InvalidArgumentException('$rangeStart must be an integer 0 or greater');
+    	
+    	if (is_null($rangeEnd)) {
+    		$this->addClause('enrollment', "SSBSECT_ENRL >= ?", array($rangeStart), $match);
+    	} else {
+	    	if (!is_numeric($rangeEnd))
+    			throw new osid_InvalidArgumentException('$rangeEnd must be an integer 0 or greater');
+    		$rangeEnd = intval($rangeEnd);
+    		if ($rangeEnd < 0)
+				throw new osid_InvalidArgumentException('$rangeEnd must be an integer 0 or greater');
+	    	$this->addClause('enrollment', "(SSBSECT_ENRL >= ? AND SSBSECT_ENRL <= ?)", array($rangeStart, $rangeEnd), $match);
+	    }
+    }
+    
+    /**
+     * Match CourseOfferings based on their seats available.
+     * 
+     * @param integer $rangeStart The lower bound of the seats range to match. NULL to indicate no lower bound.
+     * @param integer $rangeEnd The upper bound of the seats range to match. NULL to indicate no upper bound.
+     * @param boolean $match <code> true </code> if a positive match, <code> 
+     *          false </code> for negative match 
+     */
+    public function matchSeatsAvailable ($rangeStart, $rangeEnd, $match) {
+    	if (is_null($rangeStart) && is_null($rangeEnd))
+    		throw new osid_NullArgumentException('Both $rangeStart and $rangeEnd cannot be null');
+    	
+    	if (is_null($rangeStart)) {
+    		if (!is_numeric($rangeEnd))
+    			throw new osid_InvalidArgumentException('$rangeEnd must be an integer');
+    		$this->addClause('seats_available', "SSBSECT_SEATS_AVAIL <= ?", array($rangeEnd), $match);
+    		return;
+    	}
+    	
+    	if (!is_numeric($rangeStart))
+    		throw new osid_InvalidArgumentException('$rangeStart must be an integer');
+    	$rangeStart = intval($rangeStart);
+    	
+    	if (is_null($rangeEnd)) {
+    		$this->addClause('seats_available', "SSBSECT_SEATS_AVAIL >= ?", array($rangeStart), $match);
+    	} else {
+	    	if (!is_numeric($rangeEnd))
+    			throw new osid_InvalidArgumentException('$rangeEnd must be an integer');
+    		
+    		$rangeEnd = intval($rangeEnd);
+	    	$this->addClause('seats_available', "(SSBSECT_SEATS_AVAIL >= ? AND SSBSECT_SEATS_AVAIL <= ?)", array($rangeStart, $rangeEnd), $match);
+	    }
     }
 }

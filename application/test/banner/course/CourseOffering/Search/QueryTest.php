@@ -48,6 +48,7 @@ class banner_course_CourseOffering_Search_QueryTest
 		
 		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
+		$this->enrollmentType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:enrollment');
 		$this->otherType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:other');
 		
 		$this->lectureType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/LCT');
@@ -2005,6 +2006,148 @@ AND SCBCRSE_COLL_CODE IN (
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
 		$this->assertEquals(0, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchEnrollable()
+    {
+    	$record = $this->object->getCourseOfferingQueryRecord($this->enrollmentType);
+        $record->matchEnrollable(true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals(0, count($params));
+        
+        $this->assertEquals('(SSBSECT_MAX_ENRL > 0)', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(92, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchEnrollment()
+    {
+    	$record = $this->object->getCourseOfferingQueryRecord($this->enrollmentType);
+        $record->matchEnrollment(1, null, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals(1, count($params));
+        $this->assertEquals(1, $params[0]);
+        
+        $this->assertEquals('(SSBSECT_ENRL >= ?)', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(81, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchEnrollment10_20()
+    {
+    	$record = $this->object->getCourseOfferingQueryRecord($this->enrollmentType);
+        $record->matchEnrollment(10, 20, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals(2, count($params));
+        $this->assertEquals(10, $params[0]);
+        $this->assertEquals(20, $params[1]);
+        
+        $this->assertEquals('((SSBSECT_ENRL >= ? AND SSBSECT_ENRL <= ?))', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(44, $courseOfferings->available());
+    }
+    
+    /**
+     * @expectedException osid_NullArgumentException
+     */
+    public function testMatchEnrollmentNullStart()
+    {
+    	$record = $this->object->getCourseOfferingQueryRecord($this->enrollmentType);
+        $record->matchEnrollment(null, 2, true);
+    }
+    
+    /**
+     * @expectedException osid_InvalidArgumentException
+     */
+    public function testMatchEnrollmentNegative()
+    {
+    	$record = $this->object->getCourseOfferingQueryRecord($this->enrollmentType);
+        $record->matchEnrollment(-1, 2, true);
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchSeatsAvailable()
+    {
+    	$record = $this->object->getCourseOfferingQueryRecord($this->enrollmentType);
+        $record->matchSeatsAvailable(1, null, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals(1, count($params));
+        $this->assertEquals(1, $params[0]);
+        
+        $this->assertEquals('(SSBSECT_SEATS_AVAIL >= ?)', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(88, $courseOfferings->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchSeatsAvailable10_20()
+    {
+    	$record = $this->object->getCourseOfferingQueryRecord($this->enrollmentType);
+        $record->matchSeatsAvailable(10, 20, true);
+
+        $params = $this->object->getParameters();
+        $this->assertEquals(2, count($params));
+        $this->assertEquals(10, $params[0]);
+        $this->assertEquals(20, $params[1]);
+        
+        $this->assertEquals('((SSBSECT_SEATS_AVAIL >= ? AND SSBSECT_SEATS_AVAIL <= ?))', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(25, $courseOfferings->available());
+    }
+    
+    /**
+     * @expectedException osid_NullArgumentException
+     */
+    public function testMatchSeatsAvailableBothNull()
+    {
+    	$record = $this->object->getCourseOfferingQueryRecord($this->enrollmentType);
+        $record->matchSeatsAvailable(null, null, true);
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchSeatsAvailableNegative()
+    {
+    	$record = $this->object->getCourseOfferingQueryRecord($this->enrollmentType);
+        $record->matchSeatsAvailable(null, -1, true);
+        
+        $params = $this->object->getParameters();
+        $this->assertEquals(1, count($params));
+        $this->assertEquals(-1, $params[0]);
+        
+        $this->assertEquals('(SSBSECT_SEATS_AVAIL <= ?)', $this->object->getWhereClause());
+
+		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
+// 		print $courseOfferings->debug();
+		$this->assertEquals(2, $courseOfferings->available());
     }
 }
 ?>

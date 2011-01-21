@@ -31,6 +31,7 @@ class OfferingsController
     	$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
 		$this->booleanStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:boolean");
 		$this->instructorType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		$this->enrollmentType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:enrollment');
 		$this->locationType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:location');
 		$this->alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
 		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
@@ -449,6 +450,14 @@ class OfferingsController
 				$queryRecord->matchInstructorId($this->_helper->osidId->fromString($this->_getParam('instructor')), true);
 			}
 			$this->view->searchParams['instructor'] = $this->_getParam('instructor');
+		}
+		
+		if ($this->_getParam('enrollable')) {
+			if ($query->hasRecordType($this->enrollmentType)) {
+				$queryRecord = $query->getCourseOfferingQueryRecord($this->enrollmentType);
+				$queryRecord->matchEnrollable(true);
+			}
+			$this->view->searchParams['enrollable'] = $this->_getParam('enrollable');
 		}
 		
 		// Make our session and query available to the XML version of this action.
