@@ -1,0 +1,69 @@
+<h1>Manage Term Visibility</h1>
+<div><a href="<?php print $this->url(array('action' => 'index')); ?>">&laquo; Back to Administration</a></div>
+
+<form action="<?php print $this->url(); ?>" method="get">
+	<select name='catalog' onchange="this.form.submit();">
+<?php
+foreach ($this->catalogs as $catalog) {
+	print "<option value='".$catalog."'".(($catalog == $this->catalog)?' selected="selected"':'').">".$catalog."</option>";
+}
+?>
+	</select>
+</form>
+
+<p>Please Note: Any changes made here will take effect during the next synchronization with Banner</p>
+
+<table class='section_admin'>
+<thead>
+	<tr>
+		<th>Term Code</th>
+		<th>Description</th>
+		<th>Sections</th>
+		<th>Manual Override</th>
+		<th>Active?</th>
+	</tr>
+</thead>
+<tbody>
+		
+<?php
+foreach ($this->terms as $term) {
+	$numSections = intval($term['num_sections']);
+	$manuallyDisabled = intval($term['manually_disabled']);
+	$active = ($numSections && !$manuallyDisabled);
+	print "\n\t<tr".(($active)?' class="active"':'').">";
+	print "\n\t\t<td class='code'>".$term['STVTERM_CODE']."</td>";
+	print "\n\t\t<td class='desc'>".$term['STVTERM_DESC']."</td>";
+	print "\n\t\t<td class='num_sections'>".$numSections."</td>";
+	
+	print "\n\t\t<td class='disable'>";
+	print "\n\t\t\t<form action='".$this->url()."' method='post'>";
+	print "\n\t\t\t<input type='hidden' name='catalog' value='".$this->catalog."' />";
+	print "\n\t\t\t<input type='hidden' name='term' value='".$term['STVTERM_CODE']."' />";
+	print "\n\t\t\t<input type='hidden' name='change_visibility' value='true' />";
+	print "\n\t\t\t<input type='hidden' name='csrf_key' value='".$this->csrf_key."' />";
+	print "\n\t\t\t<label>";
+	print "<input type='checkbox' name='disabled' value='true'";
+	print (($manuallyDisabled)?' checked="checked"':'');
+	print " onchange='if (confirm(\"".(($manuallyDisabled)?'Enable':'Disable')." ".$term['STVTERM_CODE']."?\")) {this.form.submit();}'";
+	print '/>';
+	print " Disabled?</label>";
+	print "\n\t\t\t</form>";
+	print "\n\t\t</td>";
+	
+	print "\n\t\t<td class='is_active'>";
+	if ($active) {
+		print "Yes";
+	} else {
+		print "No: ";
+		if ($manuallyDisabled)
+			print "Manually disabled. ";
+		if (!$numSections)
+			print "Zero sections. ";
+	}
+	print "\n\t\t</td>";
+	
+	print "\n\t</tr>";
+}
+?>
+</tbody>
+</table>

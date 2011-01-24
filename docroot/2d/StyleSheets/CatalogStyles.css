@@ -405,3 +405,15 @@ div.email_dialog li.offering .conflicting {
 .beta {
  color: red;
 }
+
+/*********************************************************
+ * Admin forms
+ *********************************************************/
+
+table.section_admin td.num_sections {
+	text-align: right;
+}
+
+table.section_admin tr.active td {
+	font-weight: bold;
+}
