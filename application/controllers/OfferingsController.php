@@ -378,7 +378,7 @@ class OfferingsController
 		
 		
 		// Set the default selection to lecture/seminar if the is a new search
-		if (!$this->_getParam('submit') && !count($this->view->selectedGenusTypes)) {
+		if (!$this->_getParam('search') && !count($this->view->selectedGenusTypes)) {
 			$this->view->selectedGenusTypes = $this->_helper->osidTypes->getDefaultGenusTypes();
 		}
 		
@@ -465,8 +465,8 @@ class OfferingsController
 		$this->query = $query;
 		
 		// Run the query if submitted.
-		if ($this->_getParam('submit')) {
-			$this->view->searchParams['submit'] = $this->_getParam('submit');
+		if ($this->_getParam('search')) {
+			$this->view->searchParams['search'] = $this->_getParam('search');
 			$this->view->paginator = new Zend_Paginator(new Paginator_Adaptor_CourseOfferingSearch($offeringSearchSession, $query));
 			$this->view->paginator->setCurrentPageNumber($this->_getParam('page'));
 		}

@@ -41,7 +41,7 @@ $this->headScript()->appendScript(
 		<tr>
 			<th>By Term:</th>
 			<td>
-				<select name="term">
+				<select name="term" onchange="this.form['search'].value = ''; this.form.submit();">
 					<option value='ANY'>Any Term</option>
 <?php
 while ($this->terms->hasNext()) {
@@ -278,7 +278,7 @@ while ($this->campuses->hasNext()) {
 <?php } ?>
 
 		<tr>
-			<td colspan='2'><input type='submit' name='submit' value='Search'/></td>
+			<td colspan='2'><input type='submit' name='search' value='Search'/></td>
 		</tr>
 
 	</table>
