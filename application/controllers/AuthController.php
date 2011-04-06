@@ -22,5 +22,10 @@ class AuthController extends Zend_Controller_Action
     public function logoutAction()
     {
     	$this->_helper->auth()->logout($this->_getParam('return'));
+    	
+    	if ($this->_getParam('return'))
+			$this->_redirect($this->_getParam('return'), array('prependBase' => false, 'exit' => true));
+		else
+			$this->_redirect('/', array('prependBase' => true, 'exit' => true));
     }
 }

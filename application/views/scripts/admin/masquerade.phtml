@@ -1,0 +1,13 @@
+<h1>Masquerade as another user</h1>
+<div><a href="<?php print $this->url(array('action' => 'index')); ?>">&laquo; Back to Administration</a></div>
+
+<p> &nbsp;</p>
+
+<p>Current User: <input type="text" readonly="readonly" size="45" value="<?php print $this->userId; ?>"/> <?php print $this->userName; ?>
+
+<p>Enter the id of another user to act as them.</p>
+<form action="<?php print $this->url(); ?>" method="post">
+	<label>User Id: <input type="text" name="masquerade" size="45" /></label>
+	<input type="submit" value="Change User"/>
+	<input type="hidden" name="csrf_key" value="<?php print $this->csrf_key; ?>"/>
+</form>

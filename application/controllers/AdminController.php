@@ -120,4 +120,21 @@ ORDER BY
 		$this->view->catalog = $catalog;
 		$this->view->terms = $stmt->fetchAll();
 	}
+	
+	public function masqueradeAction()
+    {
+    	$masqueradeAuth = $this->_helper->auth->getMasqueradeHelper();
+    	
+    	if ($this->_getParam('masquerade')) {
+			// Verify our CSRF key
+			if (!$this->_getParam('csrf_key') == $this->_helper->csrfKey())
+				throw new PermissionDeniedException('Invalid CSRF Key. Please log in again.');
+			
+			$masqueradeAuth->changeUser($this->_getParam('masquerade'));
+			$this->_redirect('/', array('prependBase' => true, 'exit' => true));
+		}
+		
+		$this->view->userId = $this->_helper->auth()->getUserId();
+		$this->view->userName = $this->_helper->auth()->getUserDisplayName();
+    }
 }
