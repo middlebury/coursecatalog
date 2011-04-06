@@ -37,6 +37,18 @@ class Auth_Action_Helper_Auth
 		}
 		
 		try {
+			// Use a masquerade auth helper if enabled and in use.
+			try {
+				$masqueradeHelper = $this->getMasqueradeHelper();
+				if ($masqueradeHelper->isAuthenticated()) {
+					$this->authHelper = $masqueradeHelper;
+					$this->initialized = true;
+					return;
+				}
+			} catch (Exception $e) {
+			}
+			
+			// Use our standard Auth helper.
 			$this->authHelper = $this->getAuthHelperInstance($authType);
 			$this->initialized = true;
 		} catch (Zend_Controller_Action_Exception $e) {
@@ -85,6 +97,21 @@ class Auth_Action_Helper_Auth
 	 */
 	public function direct () {
 		return $this->getHelper();
+	}
+	
+	/**
+	 * Answer the configured Masquerade helper if configured.
+	 * 
+	 * Throws an exception if no masquerade helper is available.
+	 * 
+	 * @return Auth_Action_Helper_MasqueradeInterface
+	 */
+	public function getMasqueradeHelper () {
+		$config = Zend_Registry::getInstance()->config;
+		if (!empty($config->masquerade->enabled) && !empty($config->masquerade->type)) {
+			return $this->getAuthHelperInstance($config->masquerade->type);
+		}
+		throw new Exception("No masquerade auth helper enabled.");
 	}
 }
 
