@@ -37,18 +37,27 @@ class Auth_Action_Helper_Auth
 		}
 		
 		try {
-			$this->authHelper = Zend_Controller_Action_HelperBroker::getStaticHelper($authType);
-			if (!($this->authHelper instanceOf Auth_Action_Helper_AuthInterface)) {
-				$class = get_class($this->authHelper);
-				$this->authHelper = null;
-				throw new Exception("Auth helper for auth-type '$authType' has class '$class' which does not implement Auth_Action_Helper_AuthInterface.");
-			}
+			$this->authHelper = $this->getAuthHelperInstance($authType);
 			$this->initialized = true;
 		} catch (Zend_Controller_Action_Exception $e) {
 			throw new Exception("Can not use authentication type '".$authType."'. ".$e->getMessage());
 		}
 	}
 	
+	/**
+	 * Answer an instance of the AuthHelper for the authType specified.
+	 * 
+	 * @param string $authType
+	 * @return Auth_Action_Helper_AuthInterface
+	 */
+	private function getAuthHelperInstance ($authType) {
+		$authHelper = Zend_Controller_Action_HelperBroker::getStaticHelper($authType);
+		if (!($authHelper instanceOf Auth_Action_Helper_AuthInterface)) {
+			$class = get_class($authHelper);
+			throw new Exception("Auth helper for auth-type '$authType' has class '$class' which does not implement Auth_Action_Helper_AuthInterface.");
+		}
+		return $authHelper;
+	}
 	
 	/**
 	 * Answer the configured Authentication Helper
