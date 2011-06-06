@@ -804,14 +804,25 @@ class banner_course_CourseOffering_Search_Query
 				array($locationParts[0], $locationParts[1]),
 				$match);
 		} 
-		// Try campus locations
+		// Try building locations
 		catch (osid_NotFoundException $e) {
-			$campus = $this->session->getDatabaseIdString($resourceId, 'resource/place/campus/');
-    		$this->addClause(
-    			'location', 
-				'SSBSECT_CAMP_CODE = ?',
-				array($campus),
-				$match);
+			try {
+				$building = $this->session->getDatabaseIdString($resourceId, 'resource/place/building/');
+				$this->addClause(
+					'location', 
+					'SSRMEET_BLDG_CODE = ?',
+					array($building),
+					$match);
+			} 
+			// Try campus locations
+			catch (osid_NotFoundException $e) {
+				$campus = $this->session->getDatabaseIdString($resourceId, 'resource/place/campus/');
+				$this->addClause(
+					'location', 
+					'SSBSECT_CAMP_CODE = ?',
+					array($campus),
+					$match);
+			}
 		}
     }
 
