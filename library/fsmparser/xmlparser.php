@@ -1,4 +1,4 @@
-<?
+<?php
 /*
  FSM Parser demo: the simple XML parser.
 */

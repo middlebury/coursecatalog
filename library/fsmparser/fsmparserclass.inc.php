@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 
 Finite State Machine Parser class.
