@@ -74,6 +74,7 @@ while ($this->sections->hasNext()) {
 			<link><?php print $this->pathAsAbsoluteUrl($this->url($offeringParams)); ?></link>
 			<description><![CDATA[<?php print $section->getDescription(); ?>]]></description>
 			<catalog:title><?php print $this->escape($section->getTitle()); ?></catalog:title>
+			<catalog:id><?php print $this->escape($this->getStringFromOsidId($section->getId())); ?></catalog:id>
 <?php
 
 if ($section->hasRecordType($alternateType)) {
