@@ -7,7 +7,12 @@ function printTerm(Zend_View $view, osid_course_Term $term, $label = 'term', $ta
 					'term'			=> $view->getStringFromOsidId($term->getId()),
 					'offering'		=> null
 				)));
-	print "\n".$tabs."<catalog:".$label." id=\"".$view->getStringFromOsidId($term->getId())."\" href=\"".$termUrl."\">";
+	
+	$start_date = $term->getStartTime()->format('Y-m-d');
+	$end_date = $term->getEndTime()->format('Y-m-d');
+	$span = $term->getEndTime()->diff($term->getStartTime());
+	$weeks = ceil($span->days / 7);
+	print "\n".$tabs."<catalog:".$label." id=\"".$view->getStringFromOsidId($term->getId())."\" href=\"".$termUrl."\" start_date=\"".$start_date."\" end_date=\"".$end_date."\" weeks=\"".$weeks."\">";
 	print $view->escape($term->getDisplayName());
 	print "</catalog:".$label."> ";
 }
