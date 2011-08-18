@@ -77,6 +77,43 @@ class TermsController
 		$this->view->menuIsTerms = true;
 	}
 	
+	/**
+	 * View a catalog details
+	 * 
+	 * @return void
+	 * @access public
+	 */
+	public function detailsAction () {
+		$id = $this->_helper->osidId->fromString($this->_getParam('term'));
+		$lookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
+		$lookupSession->useFederatedCourseCatalogView();
+		$this->view->term = $lookupSession->getTerm($id);
+		
+		// Set the selected Catalog Id.
+		$catalogSession = $this->_helper->osid->getCourseManager()->getTermCatalogSession();
+		$catalogIds = $catalogSession->getCatalogIdsByTerm($id);
+		if ($catalogIds->hasNext()) {
+			$this->setSelectedCatalogId($catalogIds->getNextId());
+		}
+		
+		// Set the title
+		$this->view->title = $this->view->term->getDisplayName();
+		$this->view->headTitle($this->view->title);
+		
+		$this->view->menuIsTerms = true;
+	}
+	
+	/**
+	 * View a catalog details
+	 * 
+	 * @return void
+	 * @access public
+	 */
+	public function detailsxmlAction () {
+		$this->_helper->layout->disableLayout();
+		$this->detailsAction();
+	}
+	
 }
 
 ?>
