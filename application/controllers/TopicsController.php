@@ -38,11 +38,31 @@ class TopicsController
 		}
 		$lookupSession->useFederatedCourseCatalogView();
 		
-		$this->loadTopics($lookupSession->getTopics());
+		if ($this->_getParam('type')) {
+			$genusType = $this->_helper->osidType->fromString($this->_getParam('type'));
+			$topics = $lookupSession->getTopicsByGenusType($genusType);
+			$this->view->title .= ' of type '.$this->_getParam('type');
+		} else {
+			$topics = $lookupSession->getTopics();
+		}
+		
+		$this->loadTopics($topics);
 		
 		$this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
 		$this->view->headTitle($this->view->title);
 	}
+	
+	/**
+     * Print out an XML list of all catalogs
+     * 
+     * @return void
+     */
+    public function listxmlAction () {
+    	$this->_helper->layout->disableLayout();
+		$this->getResponse()->setHeader('Content-Type', 'text/xml');
+		
+    	$this->listAction();
+    }
 	
 	/**
 	 * View a catalog details
