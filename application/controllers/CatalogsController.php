@@ -37,6 +37,18 @@ class CatalogsController
 		$this->view->title = 'Available Catalogs';
 		$this->view->headTitle($this->view->title);
     }
+    
+    /**
+     * Print out an XML list of all catalogs
+     * 
+     * @return void
+     */
+    public function listxmlAction () {
+    	$this->_helper->layout->disableLayout();
+		$this->getResponse()->setHeader('Content-Type', 'text/xml');
+		
+    	$this->listAction();
+    }
 	
 	/**
 	 * View a catalog details
