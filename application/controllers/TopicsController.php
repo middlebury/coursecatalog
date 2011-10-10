@@ -116,6 +116,39 @@ class TopicsController
 	}
 	
 	/**
+	 * Print out an XML listing of a topic
+	 * 
+	 * @return void
+	 */
+	public function viewxmlAction () {
+		$this->_helper->layout->disableLayout();
+		$this->getResponse()->setHeader('Content-Type', 'text/xml');
+		
+		if ($this->_getParam('catalog')) {
+			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+			$lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+			$this->view->title = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
+		} else {
+			$lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSession();
+			$this->view->title = 'Topics in All Catalogs';
+		}
+		$lookupSession->useFederatedCourseCatalogView();
+		
+		$topicId = $this->_helper->osidId->fromString($this->_getParam('topic'));
+		
+		$topic = $lookupSession->getTopic($topicId);
+		$topics = new phpkit_course_ArrayTopicList(array($topic));
+		
+		$this->loadTopics($topics);
+		
+		$this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
+		$this->view->title = 'Catalog Details';
+		$this->view->headTitle($this->view->title);
+		
+		$this->render('topics/listxml', null, true);
+	}
+	
+	/**
 	 * List all department topics as a text file with each line being Id|DisplayName
 	 * 
 	 * @return void
