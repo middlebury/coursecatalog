@@ -77,6 +77,27 @@ class CatalogsController
 				'term' 		=> $this->_helper->osidId->toString($termId)
 			));
 	}
+	
+	/**
+	 * Print out an XML listing of a catalog
+	 * 
+	 * @return void
+	 */
+	public function viewxmlAction () {
+		$this->_helper->layout->disableLayout();
+		$this->getResponse()->setHeader('Content-Type', 'text/xml');
+		
+		$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+		
+		$lookupSession = $this->_helper->osid->getCourseManager()->getCourseCatalogLookupSession();
+		$catalog = $lookupSession->getCourseCatalog($catalogId);
+		$this->view->catalogs = new phpkit_course_ArrayCourseCatalogList(array($catalog));
+		
+		$this->view->title = 'Catalog Details';
+		$this->view->headTitle($this->view->title);
+		
+		$this->render('catalogs/listxml', null, true);
+	}
 }
 
 ?>
