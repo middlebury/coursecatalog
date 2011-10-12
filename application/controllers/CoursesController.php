@@ -230,6 +230,7 @@ class CoursesController
 			print "\n\t\t\t<description><![CDATA[";
 			print $course->getDescription();
 			print "]]></description>";
+			print "\n\t\t\t<catalog:id>".$courseIdString."</catalog:id>";
 			
 			print "\n\t\t</item>";
 		}
@@ -490,8 +491,8 @@ class CoursesController
 			
 			print "\n\t\t\t<description><![CDATA[";
 			print $course->getDescription();
-			
 			print "]]></description>";
+			print "\n\t\t\t<catalog:id>".$courseIdString."</catalog:id>";
 			
 			$recentTerms = $recentCourses->getTermsForCourse($course);
 			if (count($recentTerms)) {
