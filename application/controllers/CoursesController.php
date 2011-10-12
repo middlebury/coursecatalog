@@ -114,9 +114,7 @@ class CoursesController
 		
 		// Bookmarked Courses and Schedules
  		$this->view->bookmarks_CourseId = $this->view->course->getId(); 
-		
-		$this->render();
-		
+				
 		// offerings
 		$this->view->offeringsTitle = "Sections";
 		$offeringLookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
@@ -129,7 +127,18 @@ class CoursesController
 		} else {
 			$this->view->offerings = $offeringLookupSession->getCourseOfferingsForCourse($id);
 		}
- 		$this->render('offerings', null, true);
+	}
+	
+	/**
+	 * Get an XML view of a course.
+	 * 
+	 * @return void
+	 */
+	public function viewxmlAction () {
+		$this->_helper->layout->disableLayout();
+		$this->getResponse()->setHeader('Content-Type', 'text/xml');
+		
+		$this->viewAction();
 	}
 	
 	/**
