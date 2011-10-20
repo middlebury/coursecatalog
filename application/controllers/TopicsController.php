@@ -63,6 +63,84 @@ class TopicsController
 		
     	$this->listAction();
     }
+    
+    /**
+	 * Print out a list of all topics
+	 * 
+	 * @return void
+	 * @access public
+	 * @since 4/21/09
+	 */
+	public function recentAction () {
+		if ($this->_getParam('catalog')) {
+			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+			$searchSession = $this->_helper->osid->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
+			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+			$this->view->title = 'Topics in '.$searchSession->getCourseCatalog()->getDisplayName();
+		} else {
+			$searchSession = $this->_helper->osid->getCourseManager()->getTopicSearchSession();
+			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
+
+			$this->view->title = 'Topics in All Catalogs';
+		}
+		$searchSession->useFederatedCourseCatalogView();
+		$query = $searchSession->getTopicQuery();
+		
+		// Match recent terms
+		$terms = $termLookupSession->getTerms();
+		// Define a cutoff date after which courses will be included in the feed.
+		// Currently set to 4 years. Would be good to have as a configurable time.
+		$now = new DateTime;
+		$cutOff = $this->DateTime_getTimestamp($now) - (60 * 60 * 24 * 365 * 4);
+		while ($terms->hasNext()) {
+			$term = $terms->getNextTerm();
+			if ($this->DateTime_getTimestamp($term->getEndTime()) > $cutOff) {
+				$query->matchTermId($term->getId(), true);
+			}
+		}
+		
+		if ($this->_getParam('type')) {
+			$genusType = $this->_helper->osidType->fromString($this->_getParam('type'));
+			$query->matchGenusType($genusType, true);
+			$this->view->title .= ' of type '.$this->_getParam('type');
+		}
+		
+		$topics = $searchSession->getTopicsByQuery($query);
+		
+		$this->loadTopics($topics);
+		
+		$this->setSelectedCatalogId($searchSession->getCourseCatalogId());
+		$this->view->headTitle($this->view->title);
+		
+		$this->_helper->viewRenderer->setRender('topics/list', null, true);
+	}
+	
+	function DateTime_getTimestamp($dt) {
+		$dtz_original = $dt -> getTimezone();
+		$dtz_utc = new DateTimeZone("UTC");
+		$dt -> setTimezone($dtz_utc);
+		$year = intval($dt -> format("Y"));
+		$month = intval($dt -> format("n"));
+		$day = intval($dt -> format("j"));
+		$hour = intval($dt -> format("G"));
+		$minute = intval($dt -> format("i"));
+		$second = intval($dt -> format("s"));
+		$dt -> setTimezone($dtz_original);
+		return gmmktime($hour,$minute,$second,$month,$day,$year);
+	}
+	
+	/**
+     * Print out an XML list of all catalogs
+     * 
+     * @return void
+     */
+    public function recentxmlAction () {
+    	$this->_helper->layout->disableLayout();
+		$this->getResponse()->setHeader('Content-Type', 'text/xml');
+		
+    	$this->recentAction();
+    	$this->_helper->viewRenderer->setRender('topics/listxml', null, true);
+    }
 	
 	/**
 	 * View a catalog details
