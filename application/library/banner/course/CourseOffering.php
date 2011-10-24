@@ -362,7 +362,7 @@ class banner_course_CourseOffering
     	
     	
     	if (count($parts))
-	    	return $campus.": ".implode(", ", $parts);
+	    	return $campus." Campus: ".implode(", ", $parts);
 	    else
 	    	return $campus;
     }
