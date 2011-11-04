@@ -6,7 +6,7 @@
 	url = http://community.middlebury.edu/~afranco/git/external/ZendFramework.git/
 [submodule "library/phpcas"]
 	path = library/phpcas
-	url = git://github.com/adamfranco/phpcas.git
+	url = git://github.com/Jasig/phpCAS.git
 [submodule "library/lazy_sessions"]
 	path = library/lazy_sessions
 	url = git://github.com/adamfranco/lazy_sessions.git
