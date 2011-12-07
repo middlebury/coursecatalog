@@ -853,7 +853,7 @@ class CoursesController
 					// See if the term is in one of our chosen terms
 					foreach ($this->selectedTerms as $selectedTermId) {
 						if ($selectedTermId->isEqual($term->getId())) {
-							$termStrings[] = $term->getDisplayName();
+							$termStrings[$this->_helper->osidId->toString($term->getId())] = $term->getDisplayName();
 						}
 					}
 				}
@@ -891,13 +891,45 @@ class CoursesController
 		
 		$sectionTerms = array();
 		$sectionDescriptions = array();
+		$sectionInstructors = array();
+		$instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		$namesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:person_names');
 		while ($offerings->hasNext()) {
 			$offering = $offerings->getNextCourseOffering();
+			$term = $offering->getTerm();
+			$termIdString = $this->_helper->osidId->toString($term->getId());
+			$sectionTerms[$termIdString] = $term->getDisplayName();
 			if ($offering->getDescription() && $offering->getDescription() != $course->getDescription()) {
-				$term = $offering->getTerm();
-				$termIdString = $this->_helper->osidId->toString($term->getId());
-				$sectionTerms[$termIdString] = $term->getDisplayName();
 				$sectionDescriptions[$termIdString] = $offering->getDescription();
+			}
+			if ($offering->hasRecordType($instructorsType)) {
+				$instructorsRecord = $offering->getCourseOfferingRecord($instructorsType);
+				$instructors = $instructorsRecord->getInstructors();
+				if (!isset($sectionInstructors[$termIdString]))
+					$sectionInstructors[$termIdString] = array(
+						'label' => $term->getDisplayName(),
+						'instructors' => array(),
+					);
+					$instructorNames = array();
+					$instructorIds = array();
+					$instructorSortkeys = array();
+					while($instructors->hasNext()) {
+						$instructor = $instructors->getNextResource();
+						$instructorIdString = $this->_helper->osidId->toString($instructor->getId());
+						$instructorIds[] = $instructorIdString;
+						if ($instructor->hasRecordType($namesType)) {
+							$nameRecord = $instructor->getResourceRecord($namesType);
+							$instructorNames[] = substr($nameRecord->getGivenName(), 0, 1).'. '.$nameRecord->getSurname();
+							$instructorSortkeys[] = $nameRecord->getSurname().' '.$nameRecord->getGivenName();
+						} else {
+							$instructorNames[] = $instructor->getDisplayName();
+							$instructorSortkeys[] = $instructor->getDisplayName();
+						}
+					}
+					array_multisort($instructorSortkeys, $instructorIds, $instructorNames);
+					foreach ($instructorIds as $i => $instructorId) {
+						$sectionInstructors[$termIdString]['instructors'][$instructorId] = $instructorNames[$i]; 
+					}
 			}
 		}
 		
@@ -907,19 +939,27 @@ class CoursesController
 			reset($sectionDescriptions);
 			$description = current($sectionDescriptions);
 			$description .= " <strong>".implode (", ", $reqs)."</strong>";
+			$description .= $this->getInstructorText($sectionInstructors);
 		}
 		// If there are multiple section descriptions, print them separately
 		else if (count($sectionDescriptions)) {
 			$description = '';
-			foreach ($sectionDescriptions as $i => $desc) {
+			foreach ($termStrings as $i => $desc) {
+				if (empty($sectionDescriptions[$i]))
+					$desc = $course->getDescription();
+				else
+					$desc = $sectionDescriptions[$i];
 				$description .= "\n\t<h3>".$sectionTerms[$i]."</h3>";
 				$description .= "\n\t<p>".$desc;
 				$description .= " <strong>".implode (", ", $reqs)."</strong>";
+				$description .= $this->getInstructorText($sectionInstructors, $i);
 				$description .= "</p>";
 			}
-		} else {
+		}
+		else {
 			$description = "\n\t<p>".$description;
 			$description .=  " <strong>".implode (", ", $reqs)."</strong>";
+			$description .= $this->getInstructorText($sectionInstructors);
 			$description .= "</p>";
 		}
 		
@@ -981,6 +1021,68 @@ class CoursesController
 
 		
 		flush();
+	}
+	
+	/**
+	 * Answer an instructor listing string
+	 * 
+	 * @param array $sectionInstructors
+	 * @param string $termIdString
+	 * @return string
+	 */
+	protected function getInstructorText (array $sectionInstructors, $termIdString = null) {
+		if (empty($sectionInstructors))
+			return '';
+		foreach ($sectionInstructors as $termId => &$termInfo) {
+			$ids = array_keys($termInfo['instructors']);
+			sort($ids);
+			$termInfo['hash'] = implode(':', $ids);
+			$termInfo['instructorString'] = implode(', ', $termInfo['instructors']);
+		}
+		
+		// Use just the instructors of the term passed.
+		if ($termIdString) {
+			if (empty($sectionInstructors[$termIdString]['instructorString']))
+				return '';
+			else
+				return ' ('.$sectionInstructors[$termIdString]['instructorString'].')';
+		}
+		
+		// For a course with just a single term, use that term's instructors
+		if (count($sectionInstructors) === 1) {
+			reset($sectionInstructors);
+			$info = current($sectionInstructors);
+			if (empty($info['instructorString']))
+				return '';
+			else
+				return ' ('.$info['instructorString'].')';
+		}
+		
+		// For courses with multiple terms, first find out if the instructor list is always the same.
+		reset($sectionInstructors);
+		$firstTerm = current($sectionInstructors);
+		$firstHash = $firstTerm['hash'];
+		$instructorListConstant = true;
+		foreach ($sectionInstructors as $termId => $info) {
+			if ($info['hash'] != $firstHash)
+				$instructorListConstant = false;
+		}
+		// If we have the same instructor list each term, just use the first string.
+		if ($instructorListConstant) {
+			if (empty($firstTerm['instructorString']))
+				return '';
+			else
+				return ' ('.$firstTerm['instructorString'].')';
+		}
+		// If we have a different instructor list each term, identify them.
+		else {
+			$termStrings = array();
+			foreach ($sectionInstructors as $termId => $info) {
+				if (!empty($info['instructorString']))
+					$termStrings[] = $info['label'].': '.$info['instructorString'];
+			}
+			return ' ('.implode('; ', $termStrings).')';
+		}
 	}
 	
 	function DateTime_getTimestamp($dt) {
