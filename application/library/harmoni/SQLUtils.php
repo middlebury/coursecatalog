@@ -52,19 +52,19 @@ class harmoni_SQLUtils {
 	 */
 	public static function parseSQLString ( $queryString ) {
 		// Remove the comments
-		$queryString = ereg_replace("(#|--)[^\n\r]*(\n|\r|\n\r)", "", $queryString);
+		$queryString = preg_replace("/(#|--)[^\n\r]*(\n|\r|\n\r)/", "", $queryString);
 		
 		// Remove the line returns
-		$queryString = ereg_replace("\n|\r", " ", $queryString);
+		$queryString = preg_replace("/\n|\r/", " ", $queryString);
 		
 		// Remove multiple spaces
-		$queryString = ereg_replace("[\ \t]+", " ", $queryString);
+		$queryString = preg_replace("/[\ \t]+/", " ", $queryString);
 		
 		// Remove backticks included by MySQL since they aren't needed anyway.
-		$queryString = ereg_replace("`", "", $queryString);
+		$queryString = preg_replace("/`/", "", $queryString);
 		
 		// Add new lines after the end of each query.
-		$queryString = ereg_replace(";", ";\n", $queryString);
+		$queryString = preg_replace("/;/", ";\n", $queryString);
 		
 		return $queryString;
 	}
