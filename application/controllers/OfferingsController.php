@@ -108,6 +108,9 @@ class OfferingsController
 	 * @since 10/21/09
 	 */
 	public function searchxmlAction () {
+		$this->_helper->layout->disableLayout();
+		$this->getResponse()->setHeader('Content-Type', 'text/xml');
+		
 		$this->searchAction();
 		$this->view->sections = $this->searchSession->getCourseOfferingsByQuery($this->query);
 		
@@ -136,11 +139,7 @@ class OfferingsController
 		$this->view->terms = $this->termLookupSession->getTerms();
 		
 		$this->view->feedTitle = 'Course Offering Results';
-		
-		$output = $this->view->render('offerings/searchxml.phtml');
-// 		header('Content-Type: text/plain');
-		print $output;
-		exit;
+		$this->postDispatch();
 	}
 	
 	/**
