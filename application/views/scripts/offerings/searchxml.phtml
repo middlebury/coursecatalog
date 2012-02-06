@@ -100,7 +100,8 @@ if ($section->hasRecordType($alternateType)) {
 	}
 }
 
-print "\n\t\t\t<catalog:genustype href=\"".$this->pathAsAbsoluteUrl($this->url($offeringParams))."\">";
+print "\n\t\t\t<catalog:genustype id=\"".$this->getStringFromOsidType($section->getGenusType())."\" ";
+print "href=\"".$this->pathAsAbsoluteUrl($this->url($offeringParams))."\">";
 print $this->escape($section->getGenusType()->getDisplayName());
 print "</catalog:genustype> ";
 
