@@ -83,7 +83,20 @@ class banner_course_Course
   )?
 }ix
 ';
-		$output = preg_replace($urlRegex, '<a href="$0">$0</a>', $output);
+		if (preg_match_all($urlRegex, $output, $matches, PREG_SET_ORDER)) {
+			foreach ($matches as $match) {
+				$start = strpos($output, $match[0]);
+				
+				// Case with leading protocol://
+				if ($match[2])
+					$link = '<a href="'.$match[0].'">'.$match[0].'</a>';
+				// just www.example.edu
+				else
+					$link = '<a href="http://'.$match[0].'">'.$match[0].'</a>';
+				
+				$output = substr_replace($output, $link, $start, strlen($match[0]));
+			}
+		}
 		
 		return nl2br($output);
 	}
