@@ -223,7 +223,11 @@ class Schedule {
 			$offerings = array();
 			foreach ($stmt->fetchAll() as $row) {
 				$offeringId = new phpkit_id_Id($row['offering_id_authority'], $row['offering_id_namespace'], $row['offering_id_keyword']);
-				$offerings[] = $lookupSession->getCourseOffering($offeringId);
+				try {
+					$offerings[] = $lookupSession->getCourseOffering($offeringId);
+				} catch (osid_NotFoundException $e) {
+					// Ignore offerings that are no longer being offered.
+				}
 			}
 			
 			$this->offerings = $this->nameSort($offerings);
