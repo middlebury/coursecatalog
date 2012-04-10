@@ -224,7 +224,16 @@ class Schedule {
 			foreach ($stmt->fetchAll() as $row) {
 				$offeringId = new phpkit_id_Id($row['offering_id_authority'], $row['offering_id_namespace'], $row['offering_id_keyword']);
 				try {
-					$offerings[] = $lookupSession->getCourseOffering($offeringId);
+					$offering = $lookupSession->getCourseOffering($offeringId);
+					
+					// This existence test (getDisplayName) shouldn't really be needed,
+					// but the apc_course_CourseOffering_Lookup_Session::getCourseOffering($id)
+					// method blindly returns course offerings without checking their
+					// existence. While this is a huge performance boost, it also means
+					// that the CourseOffering returned might not be fully usable.
+					$offering->getDisplayName();
+					
+					$offerings[] = $offering;
 				} catch (osid_NotFoundException $e) {
 					// Ignore offerings that are no longer being offered.
 				}
