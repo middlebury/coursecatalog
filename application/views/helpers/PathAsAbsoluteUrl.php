@@ -22,7 +22,7 @@ class Catalog_View_Helper_PathAsAbsoluteUrl
 	 * @since 6/9/10
 	 */
 	public function pathAsAbsoluteUrl ($path) {
-		$parts = split('/', $_SERVER['SERVER_PROTOCOL']);
+		$parts = explode('/', $_SERVER['SERVER_PROTOCOL']);
 		return strtolower(trim(array_shift($parts)))
 			. '://' . $_SERVER['HTTP_HOST'] . $path;
 	}
