@@ -171,12 +171,9 @@ class SchedulesController
 			</ol>
 			
 			<p><strong>For more help see:</strong> <a href='http://go.middlebury.edu/catalog-help' target='_blank'>go/catalog-help</a></p>
+			<p><strong>Issues or Feedback?</strong> <a href='http://go.middlebury.edu/webbugs/Catalog/Planner' target='_blank'>go/webbugs/Catalog/Planner</a></p>
 		</div>
-		
-		<p class='notice'><strong>This feature is currently in Beta</strong>
-		<br/><br/>Report Bugs at: <a href='http://go.middlebury.edu/webbugs/Catalog/Planner' target='_blank'>go/webbugs/Catalog/Planner</a>
-		<br/><br/>Send general comments to: <a href='mailto:afranco@middlebury.edu'>Adam Franco</a>
-		</p>";
+		";
     }
     
     /**
