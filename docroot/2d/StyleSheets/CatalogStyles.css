@@ -329,13 +329,13 @@ div.content > ul.menu > li.leftText {
 	border-top: none;
 }
 
-div.leftText .notice {
+.notice {
 	border: 1px solid red;
 	color: red;
 	padding: 3px;
 }
 
-div.leftText .help {
+.help {
 	border: 1px solid;
 	padding: 3px;
 	margin-bottom: 10px;

@@ -1,3 +1,8 @@
+<?php
+if (!$this->bookmarked_courses->hasNext()) {
+	print "\n\t<p class='notice'>You have no starred courses for this term. Please <a href=\"".$this->url(array('controller' => 'offerings', 'action' => 'search', 'catalog' => $this->catalogIdString, 'term' => $this->termIdString), null, true)."\">search for courses</a> and star intersting ones first.</p>";
+}
+?>
 <ul id="bookmarked_courses">
 <?php 
 	while ($this->bookmarked_courses->hasNext()) {
