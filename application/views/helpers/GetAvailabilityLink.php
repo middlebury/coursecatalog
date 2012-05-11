@@ -20,7 +20,7 @@ class Catalog_View_Helper_GetAvailabilityLink
 		$bannerIdRecordType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
 		if (!empty($config->catalog->banner_web_url) && $courseOffering->hasRecordType($bannerIdRecordType)) {
 			$bannerIdRecord = $courseOffering->getCourseOfferingRecord($bannerIdRecordType);
-			return "<a href=\"".$config->catalog->banner_web_url."?term_in=".$bannerIdRecord->getTermCode()."&crn_in=".$bannerIdRecord->getCourseReferenceNumber()."\" target='_blank'>View availablity and requirements.</a>";
+			return "<a href=\"".$config->catalog->banner_web_url."?term_in=".$bannerIdRecord->getTermCode()."&crn_in=".$bannerIdRecord->getCourseReferenceNumber()."\" target='_blank'>View availability and requirements.</a>";
 		}
 		return null;
 	}
