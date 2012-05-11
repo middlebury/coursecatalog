@@ -139,7 +139,16 @@ if (isset($this->alternates)) {
 	print "</dd>";
 }
 
+$availabilityLink = $this->getAvailabilityLink($this->offering);
+if (!empty($availabilityLink)) {
+	print "\n\t\t<dt>Availability:</dt>";
+	print "\n\t\t<dd>";	
+	print $availabilityLink;
+	print "\n\t\t</dd>";
+}
+
 print "\n\t</dl>";
+
 
 print "\n\t<dl class='section_properties'>";
 $properties = $this->offering->getProperties();

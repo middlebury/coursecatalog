@@ -20,7 +20,8 @@ class banner_course_CourseOffering
     implements osid_course_CourseOffering,
     middlebury_course_CourseOffering_InstructorsRecord,
     middlebury_course_CourseOffering_AlternatesRecord,
-	middlebury_course_CourseOffering_LinkRecord
+	middlebury_course_CourseOffering_LinkRecord,
+	middlebury_course_CourseOffering_BannerIdentifiersRecord
 {
 	/**
 	 * @var array $requiredFields;
@@ -93,6 +94,7 @@ class banner_course_CourseOffering
 		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 		$this->alternatesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
 		$this->linkType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:link');
+		$this->identifiersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
 		
 		parent::__construct();
 		$this->checkRow($row);
@@ -126,8 +128,8 @@ class banner_course_CourseOffering
 		$this->addRecordType($this->weeklyScheduleType);
 		$this->addRecordType($this->alternatesType);
 		$this->addRecordType($this->linkType);
+		$this->addRecordType($this->identifiersType);
 		
-		$this->identifiersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
 		$properties = array();
 		$properties[] = new phpkit_Property('Course Reference Number', 'CRN', 'An number that uniquely identifies a section within a term.', $row['SSBSECT_CRN']);
 // 		$properties[] = new phpkit_Property('Term Code', 'Term Code', 'An code that identifies the term a section is associated with.', $row['SSBSECT_TERM_CODE']);
@@ -805,6 +807,34 @@ class banner_course_CourseOffering
 	public function isPrimary () {
 		return (intval($this->row['SSBSECT_MAX_ENRL']) > 0);
 	}
+
+/*********************************************************
+ * BannerIdentifiersRecord support
+ *********************************************************/
+
+	/**
+     *  Answers the term-code of the Course Offering.
+     *
+     *  @return string The term-code.
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     */
+    public function getTermCode() {
+    	return $this->row['SSBSECT_TERM_CODE'];
+    }
+    
+    /**
+     *  Answers the Course Reference Number (CRN) of a course.
+     *
+     *  @return string The Course Reference Number (CRN)
+     *  @compliance mandatory This method must be implemented. 
+     *  @throws osid_OperationFailedException unable to complete request 
+     *  @throws osid_PermissionDeniedException authorization failure 
+     */
+    public function getCourseReferenceNumber() {
+    	return $this->row['SSBSECT_CRN'];
+    }
     
 /*********************************************************
  * WeeklyScheduleRecord support

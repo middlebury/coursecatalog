@@ -185,6 +185,9 @@ if (!$this->bookmarked_courses->hasNext()) {
 				}
 				item.append('<div class="section_time section_info'+conflictsClass+'">'+section.schedule+conflictNames+'</div>');
 				item.append('<div class="section_location section_info">'+section.location+'</div>');
+				if (section.availability) {
+					item.append('<div class="section_availability section_info">'+section.availability+'</div>');
+				}
 			}
 
 			i++;
