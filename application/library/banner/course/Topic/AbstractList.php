@@ -75,6 +75,7 @@ FROM
 WHERE
 	".$this->getAllRequirementWhereTerms()."
 	AND ".$this->getCatalogWhereTerms('req')."
+	AND SSBSECT_PRNT_IND = 'Y'
 GROUP BY STVATTR_CODE)
 ";
 		}
@@ -93,6 +94,7 @@ FROM
 WHERE
 	".$this->getAllLevelWhereTerms()."
 	AND ".$this->getCatalogWhereTerms('level')."
+	AND SSBSECT_PRNT_IND = 'Y'
 GROUP BY STVLEVL_CODE)
 ";
 		}
@@ -111,6 +113,7 @@ FROM
 WHERE
 	".$this->getAllDivisionWhereTerms()."
 	AND ".$this->getCatalogWhereTerms('div')."
+	AND SSBSECT_PRNT_IND = 'Y'
 GROUP BY SCBCRSE_DIVS_CODE)
 ";
 		}
@@ -129,6 +132,7 @@ FROM
 WHERE
 	".$this->getAllDepartmentWhereTerms()."
 	AND ".$this->getCatalogWhereTerms('dep')."
+	AND SSBSECT_PRNT_IND = 'Y'
 GROUP BY SCBCRSE_DEPT_CODE)
 ";
 		}
@@ -148,6 +152,7 @@ WHERE
 	".$this->getAllSubjectWhereTerms()."
 	AND ".$this->getCatalogWhereTerms('sub')."
 	AND STVSUBJ_DISP_WEB_IND = 'Y'
+	AND SSBSECT_PRNT_IND = 'Y'
 GROUP BY SCBCRSE_SUBJ_CODE)
 ";
 		}
