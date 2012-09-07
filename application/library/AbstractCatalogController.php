@@ -68,6 +68,7 @@ abstract class AbstractCatalogController
 	 */
 	protected function setSelectedCatalogId (osid_id_Id $id) {
 		$this->view->menuCatalogSelectedId = $id;
+		$this->view->menuCatalogSelected = $this->_helper->osid->getCourseManager()->getCourseCatalogLookupSession()->getCourseCatalog($id);
 	}
 	
 	/**

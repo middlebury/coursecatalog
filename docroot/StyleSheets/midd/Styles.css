@@ -2,6 +2,9 @@
 	width: 202px;
 	padding-left: 0px;
 }
+#left div.content {
+	margin-top: 0px;
+}
 div.content > ul.menu {
 	width: 202px;	
 }
