@@ -1,6 +1,6 @@
 						
 					<div id="breadcrumb">
-						<a href="<?php echo $this->url(array(), null, true) ?>">All Catalogs</a>
+						<a href="<?php echo $this->url(array(), null, true) ?>">Search Catalogs</a>
 						<?php
 						if (!empty($this->menuCatalogSelected)) {
 							$searchUrl = $this->url(
@@ -14,8 +14,6 @@
 								true);
 							print "\n\t\t\t\t\t\t &raquo; ";
 							print "<a class=\"\" href=\"".$searchUrl."\">".$this->escape($this->menuCatalogSelected->getDisplayName())."</a>";
-							print "\n\t\t\t\t\t\t &raquo; ";
-							print "<a class=\"\" href=\"".$searchUrl."\">Search</a>";
 							
 							if (!empty($this->course)) {
 								print "\n\t\t\t\t\t\t &raquo; ";
