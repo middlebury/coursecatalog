@@ -543,6 +543,7 @@ GROUP BY SCBCRSE_DIVS_CODE
     }
     
     private static $getRequirementTopic_stmts = array();
+    private static $getCourseRequirementTopic_stmts = array();
     /**
      * Answer a requirement topic by id
      * 
@@ -571,6 +572,31 @@ GROUP BY STVATTR_CODE
 			self::$getRequirementTopic_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
 		}
 		
+		// Statement for Course-only requirements not associated with an offering.
+		if (!isset(self::$getCourseRequirementTopic_stmts[$catalogWhere])) {
+	    	$query =
+"SELECT 
+	STVATTR_CODE,
+	STVATTR_DESC
+FROM 
+	scbcrse_recent
+	INNER JOIN SCRATTR ON (SCBCRSE_SUBJ_CODE = SCRATTR_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SCRATTR_CRSE_NUMB)
+	INNER JOIN STVATTR ON (SCRATTR_ATTR_CODE = STVATTR_CODE)
+WHERE
+	SCRATTR_ATTR_CODE = :requirement_code
+	AND SCBCRSE_COLL_CODE IN (
+		SELECT
+			coll_code
+		FROM
+			course_catalog_college
+		WHERE
+			".$this->getCatalogWhereTerms()."
+	)
+GROUP BY STVATTR_CODE
+";
+			self::$getCourseRequirementTopic_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
+		}
+		
 		$parameters = array_merge(
 			array(
 				':requirement_code' => $this->getDatabaseIdString($topicId, 'topic/requirement/')
@@ -580,9 +606,15 @@ GROUP BY STVATTR_CODE
 		$row = self::$getRequirementTopic_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
 		self::$getRequirementTopic_stmts[$catalogWhere]->closeCursor();
 		
-		if (!$row['STVATTR_CODE'])
-			throw new osid_NotFoundException("Could not find a topic matching the requirement code ".$this->getDatabaseIdString($topicId, 'topic/requirement/').".");
-		
+		if (!$row['STVATTR_CODE']) {
+			// Try the course-only requirements
+			self::$getCourseRequirementTopic_stmts[$catalogWhere]->execute($parameters);
+			$row = self::$getCourseRequirementTopic_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
+			self::$getCourseRequirementTopic_stmts[$catalogWhere]->closeCursor();
+			
+			if (!$row['STVATTR_CODE'])
+				throw new osid_NotFoundException("Could not find a topic matching the requirement code ".$this->getDatabaseIdString($topicId, 'topic/requirement/').".");
+		}
 		return new banner_course_Topic(
 					$this->getOsidIdFromString($row['STVATTR_CODE'], 'topic/requirement/'),
 					trim($row['STVATTR_DESC']),
