@@ -129,6 +129,25 @@ class Auth_Action_Helper_Cas
     	return trim(phpCAS::getAttribute('EMail'));
     }
     
+    /**
+	 * Answer an array of groups for the user if a user is currently authenticated or throw an Exception
+	 * if isAuthenticated is false.
+	 * 
+	 * @return array
+	 * @access public
+	 */
+    public function getUserGroups() {
+    	self::initializePhpCas();
+    	
+    	$memberOf = phpCAS::getAttribute('MemberOf');
+    	if (empty($memberOf))
+    		return array();
+    	if (is_array($memberOf))
+    		return $memberOf;
+    	else
+    		return array($memberOf);
+    }
+    
     static $phpcasInitialized = false;
     /**
      * Initialize phpCAS

@@ -105,6 +105,17 @@ class Auth_Action_Helper_NullAuth
     public function getUserEmail() {
     	throw new Exception('No user authenticated.');
     }
+    
+    /**
+	 * Answer an array of groups for the user if a user is currently authenticated or throw an Exception
+	 * if isAuthenticated is false.
+	 * 
+	 * @return array
+	 * @access public
+	 */
+    public function getUserGroups() {
+    	throw new Exception('No user authenticated.');
+    }
 }
 
 ?>

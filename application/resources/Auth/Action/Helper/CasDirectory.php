@@ -112,6 +112,20 @@ class Auth_Action_Helper_CasDirectory
     		throw new Exception("No user authenticated.");
     	return $_SESSION['masquerade.CasDirectory']['email'];
     }
+    
+    /**
+	 * Answer an array of groups for the user if a user is currently authenticated or throw an Exception
+	 * if isAuthenticated is false.
+	 * 
+	 * @return array
+	 * @access public
+	 */
+    public function getUserGroups() {
+    	if (!$this->isAuthenticated())
+    		throw new Exception("No user authenticated.");
+    	
+    	return $_SESSION['masquerade.CasDirectory']['memberof'];
+    }
 
 	/**
      * Change to a different user account. Clients are responsible for checking that 
@@ -172,6 +186,12 @@ class Auth_Action_Helper_CasDirectory
 			$_SESSION['masquerade.CasDirectory']['email'] = $elements->item(0)->getAttribute('value');
 		else
 			$_SESSION['masquerade.CasDirectory']['email'] = '';
+		
+		$elements = $xpath->query('/cas:results/cas:entry/cas:attribute[@name="MemberOf"]');
+		$_SESSION['masquerade.CasDirectory']['memberof'] = array();
+		foreach ($elements as $element) {
+			$_SESSION['masquerade.CasDirectory']['memberof'][] = $element->getAttribute('value');
+		}
 	}
     
 }

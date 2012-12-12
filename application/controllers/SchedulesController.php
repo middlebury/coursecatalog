@@ -609,7 +609,21 @@ class SchedulesController
      */
     protected function emailEnabled () {
     	$config = Zend_Registry::getInstance()->config;
-    	return (isset($config->schedules->email->enabled) && $config->schedules->email->enabled);
+    	if (!isset($config->schedules->email->enabled) ||  !$config->schedules->email->enabled) {
+    		return false;
+    	}
+    	
+    	// Allow enabling email for only some users
+    	if (!empty($config->schedules->email->allowed_groups)) {
+    		$userGroups = $this->_helper->auth()->getUserGroups();
+    		foreach ($config->schedules->email->allowed_groups as $group) {
+    			if (in_array($group, $userGroups))
+    				return true;
+    		}
+    		return false;
+    	}
+    	
+    	return true;
     }
     
     /**

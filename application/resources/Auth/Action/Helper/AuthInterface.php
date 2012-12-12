@@ -75,6 +75,15 @@ interface Auth_Action_Helper_AuthInterface {
 	 * @access public
 	 */
     public function getUserEmail();
+    
+    /**
+	 * Answer an array of groups for the user if a user is currently authenticated or throw an Exception
+	 * if isAuthenticated is false.
+	 * 
+	 * @return array
+	 * @access public
+	 */
+    public function getUserGroups();
 	
 }
 
