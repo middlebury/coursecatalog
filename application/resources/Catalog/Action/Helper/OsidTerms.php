@@ -31,7 +31,7 @@ class Catalog_Action_Helper_OsidTerms
     		if (!$manager->supportsTermLookup())
     			throw new osid_NotFoundException('Could not determine a current term id. The manager does not support term lookup.');
     		$termLookup = $manager->getTermLookupSessionForCatalog($catalogId);
-	    	$currentTerm = $this->getClosestTermId($termLookup->getTerms());
+	    	$currentTerm = $this->getNextOrLatestTermId($termLookup->getTerms());
 	    	if (!$currentTerm)
 		    	throw new osid_NotFoundException('Could not determine a current term id for the catalog passed.');
 	    	
@@ -80,6 +80,57 @@ class Catalog_Action_Helper_OsidTerms
 				$_SESSION['cache'] = array();
 			$_SESSION['cache'][$key] = $value;
 			return true;
+		}
+    }
+    
+    /**
+     * Answer the term id whose start time is nearest in the future or latest if none are in the future.
+     * 
+     * @param osid_course_TermList $terms
+     * @param optional DateTime $date The date to reference the terms to.
+     * @return osid_id_Id
+     * @access public
+     * @since 2/07/13
+     */
+    public function getNextOrLatestTermId (osid_course_TermList $terms, DateTime $date = null) {
+    	$upcomingIds = array();
+    	$upcomingDates = array();
+    	$pastIds = array();
+    	$pastDates = array();
+    	
+    	if (is_null($date))
+	    	$date = time();
+	    else
+	    	$date = intval($date->format('U'));
+	    
+    	if (!$terms->hasNext())
+    		throw new osid_NotFoundException('Could not determine a current term id. No terms found.');
+		
+		while ($terms->hasNext()) {
+			$term = $terms->getNextTerm();
+			$start = intval($term->getStartTime()->format('U'));
+			
+			// If the term starts in the future, add it to the upcoming list
+			if ($start > $date) {
+				$upcomingIds[] = $term->getId();
+				$upcomingDates[] = $start;
+			}
+			// Otherwise, add it to our past terms
+			else {
+				$pastIds[] = $term->getId();
+				$pastDates[] = $start;
+			}
+		}
+		
+		// If we have an upcoming term, return the one that is soonest in the future.
+		if (count($upcomingIds)) {
+			array_multisort($upcomingDates, SORT_NUMERIC, SORT_ASC, $upcomingIds);
+			return $upcomingIds[0];
+		}
+		// Otherwise return the most recent past term
+		else {
+			array_multisort($pastDates, SORT_NUMERIC, SORT_DESC, $pastIds);
+			return $pastIds[0];
 		}
     }
     
