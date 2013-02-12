@@ -151,10 +151,19 @@ try {
 		throw new Exception('Oracle connect failed with message: '.$error['message'], $error['code']);
 	}
 	
-	$tempMysql = new PDO($tempMysqlDSN, $tempMysqlUser, $tempMysqlPassword, array(PDO::MYSQL_ATTR_MAX_BUFFER_SIZE => 1024*1024*100));
+	// The libmysql driver needs to allocate a buffer bigger than the expected data
+	if (defined('PDO::MYSQL_ATTR_MAX_BUFFER_SIZE')) {
+		$mysqlOptions = array(PDO::MYSQL_ATTR_MAX_BUFFER_SIZE => 1024*1024*100);
+	}
+	// The mysqlnd driver on the other hand allocates buffers as big as needed.
+	else {
+		$mysqlOptions = array();
+	}
+	
+	$tempMysql = new PDO($tempMysqlDSN, $tempMysqlUser, $tempMysqlPassword, $mysqlOptions);
 	$tempMysql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	
-	$primaryMysql = new PDO($primaryMysqlDSN, $primaryMysqlUser, $primaryMysqlPassword, array(PDO::MYSQL_ATTR_MAX_BUFFER_SIZE => 1024*1024*100));
+	$primaryMysql = new PDO($primaryMysqlDSN, $primaryMysqlUser, $primaryMysqlPassword, $mysqlOptions);
 	$primaryMysql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
