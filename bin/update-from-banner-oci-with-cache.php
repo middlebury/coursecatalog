@@ -219,7 +219,12 @@ try {
 	print "...\tUpdated GORINTG\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -249,7 +254,12 @@ try {
 	print "...\tUpdated GTVDUNT\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 
 
@@ -278,7 +288,12 @@ try {
 	print "...\tUpdated GTVINSM\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -307,7 +322,12 @@ try {
 	print "...\tUpdated GTVINTP\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -337,7 +357,12 @@ try {
 	print "...\tUpdated GTVMTYP\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 
 
@@ -365,7 +390,12 @@ try {
 	print "...\tUpdated GTVSCHS\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -430,7 +460,12 @@ try {
 	print "...\tUpdated SCBCRSE\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 
 // SATURN.SCBDESC
@@ -616,7 +651,12 @@ try {
 	print "...\tUpdated SSRXLST\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 // SATURN.SIRASGN
@@ -656,7 +696,12 @@ try {
 	print "...\tUpdated SIRASGN\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 
 // SATURN.SSBDESC
@@ -777,7 +822,12 @@ try {
 	print "...\tUpdated SSBSECT\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 
 
@@ -805,7 +855,12 @@ try {
 	print "...\tUpdated SSRATTR\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 
 
@@ -859,7 +914,12 @@ try {
 	print "...\tUpdated SSRMEET\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 
 
@@ -887,7 +947,12 @@ try {
 	print "...\tUpdated STVACYR\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -914,7 +979,12 @@ try {
 	print "...\tUpdated STVAPRV\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -941,7 +1011,12 @@ try {
 	print "...\tUpdated STVASTY\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -968,7 +1043,12 @@ try {
 	print "...\tUpdated STVATTR\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -996,7 +1076,12 @@ try {
 	print "...\tUpdated STVBLDG\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -1024,7 +1109,12 @@ try {
 	print "...\tUpdated STVCAMP\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -1055,7 +1145,12 @@ try {
 	print "...\tUpdated STVCIPC\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -1093,7 +1188,12 @@ try {
 	print "...\tUpdated STVCOLL\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 
 
@@ -1121,7 +1221,12 @@ try {
 	print "...\tUpdated STVCOMT\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -1149,7 +1254,12 @@ try {
 	print "...\tUpdated STVCSTA\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -1178,7 +1288,12 @@ try {
 	print "...\tUpdated STVDEPT\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -1205,7 +1320,12 @@ try {
 	print "...\tUpdated STVDIVS\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 	
@@ -1233,7 +1353,12 @@ try {
 	print "...\tUpdated STVFCNT\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 
 // SATURN.STVLEVL
@@ -1264,7 +1389,12 @@ try {
 	print "...\tUpdated STVLEVL\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 
 // SATURN.STVMEET
@@ -1298,7 +1428,12 @@ try {
 	print "...\tUpdated STVMEET\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -1325,7 +1460,12 @@ try {
 	print "...\tUpdated STVPWAV\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -1352,7 +1492,12 @@ try {
 	print "...\tUpdated STVREPS\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -1384,7 +1529,12 @@ try {
 	print "...\tUpdated STVSCHD\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -1413,7 +1563,12 @@ try {
 	print "...\tUpdated STVSUBJ\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -1451,7 +1606,12 @@ try {
 	print "...\tUpdated STVTERM\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -1478,7 +1638,12 @@ try {
 	print "...\tUpdated STVTRMT\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 	
 
@@ -1508,7 +1673,12 @@ try {
 	print "...\tUpdated SYVINST\n";
 } catch(Exception $e) {
 	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
+	try {
+		$tempMysql->rollBack();
+	} catch (PDOException $pdo_e) {
+	}
+	fwrite(STDERR, $e->__toString());
+	exit(2);
 }
 
 
