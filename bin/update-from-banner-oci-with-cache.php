@@ -59,7 +59,6 @@ function sendExceptions($exceptions) {
 		if ($sendMailOnError)
 			mail($to, $subject, $message, $headers);
 		
-		print_r($message);
 	}
 }
 
@@ -163,7 +162,7 @@ if ($return_var) {
  * MySQL where this works.
  */
 
-$banner; $tempMysql; $primaryMysql; $exceptions = array();
+$banner; $tempMysql; $primaryMysql;
 
 try {
 	$banner = oci_connect($bannerUser, $bannerPassword, $bannerTNS, "UTF8");
@@ -186,16 +185,10 @@ try {
 	
 	$primaryMysql = new PDO($primaryMysqlDSN, $primaryMysqlUser, $primaryMysqlPassword, $mysqlOptions);
 	$primaryMysql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	sendExceptions($exceptions);
-	die("Failed to connect. ".$e->getMessage()."\n");
-}
+	
 
 
-// GENERAL.GORINTG
- 
-try {
+	// GENERAL.GORINTG
 	print "Updating GORINTG\t";
 	$tempMysql->beginTransaction();
 	$tgorintg = $tempMysql->prepare("TRUNCATE TABLE GORINTG");
@@ -217,20 +210,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($gorintg);
 	print "...\tUpdated GORINTG\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// GENERAL.GTVDUNT
- 
-try {
+		
+	
+	// GENERAL.GTVDUNT	 
 	print "Updating GTVDUNT\t";
 	$tempMysql->beginTransaction();
 	$tgtvdunt = $tempMysql->prepare("TRUNCATE TABLE GTVDUNT");
@@ -252,20 +235,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($gtvdunt);
 	print "...\tUpdated GTVDUNT\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
 
-
-// GENERAL.GTVINSM
- 
-try {
+	
+	
+	// GENERAL.GTVINSM
 	print "Updating GTVINSM\t";
 	$tempMysql->beginTransaction();
 	$tgtvinsm = $tempMysql->prepare("TRUNCATE TABLE GTVINSM");
@@ -286,20 +259,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($gtvinsm);
 	print "...\tUpdated GTVINSM\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// GENERAL.GTVINTP
- 
-try {
+		
+	
+	// GENERAL.GTVINTP
 	print "Updating GTVINTP\t";
 	$tempMysql->beginTransaction();
 	$tgtvintp = $tempMysql->prepare("TRUNCATE TABLE GTVINTP");
@@ -320,20 +283,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($gtvintp);
 	print "...\tUpdated GTVINTP\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// GENERAL.GTVMTYP
- 
-try {
+		
+	
+	// GENERAL.GTVMTYP
 	print "Updating GTVMTYP\t";
 	$tempMysql->beginTransaction();
 	$tgtvmtyp = $tempMysql->prepare("TRUNCATE TABLE GTVMTYP");
@@ -355,20 +308,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($gtvmtyp);
 	print "...\tUpdated GTVMTYP\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
 
-
-// GENERAL.GTVSCHS
- 
-try {
+	
+	
+	// GENERAL.GTVSCHS
 	print "Updating GTVSCHS\t";
 	$tempMysql->beginTransaction();
 	$tgtvschs = $tempMysql->prepare("TRUNCATE TABLE GTVSCHS");
@@ -388,20 +331,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($gtvschs);
 	print "...\tUpdated GTVSCHS\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// SATURN.SCBCRSE
- 
-try {
+		
+	
+	// SATURN.SCBCRSE
 	print "Updating SCBCRSE\t";
 	$tempMysql->beginTransaction();
 	$tscbcrse = $tempMysql->prepare("TRUNCATE TABLE SCBCRSE");
@@ -458,19 +391,9 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($scbcrse);
 	print "...\tUpdated SCBCRSE\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
 
-// SATURN.SCBDESC
- 
-try {
+	
+	// SATURN.SCBDESC
 	print "Updating SCBDESC\t";
 	$tempMysql->beginTransaction();
 	$tSCBDESC = $tempMysql->prepare("TRUNCATE TABLE SCBDESC");
@@ -498,16 +421,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($SCBDESC);
 	print "...\tUpdated SCBDESC\n";
-} catch(Exception $e) {
-	print $e->__toString()."\n";
-	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
-}
 
-
-// SATURN.SCRATTR
- 
-try {
+	
+	
+	// SATURN.SCRATTR
 	print "Updating SCRATTR\t";
 	$tempMysql->beginTransaction();
 	$tSCRATTR = $tempMysql->prepare("TRUNCATE TABLE SCRATTR");
@@ -528,16 +445,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($SCRATTR);
 	print "...\tUpdated SCRATTR\n";
-} catch(Exception $e) {
-	print $e->__toString()."\n";
-	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
-}
 
-
-// SATURN.SCREQIV
- 
-try {
+	
+	
+	// SATURN.SCREQIV
 	print "Updating SCREQIV\t";
 	$tempMysql->beginTransaction();
 	$tSCREQIV = $tempMysql->prepare("TRUNCATE TABLE SCREQIV");
@@ -561,15 +472,9 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($SCREQIV);
 	print "...\tUpdated SCREQIV\n";
-} catch(Exception $e) {
-	print $e->__toString()."\n";
-	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
-}
 
-// SATURN.SCRLEVL
- 
-try {
+	
+	// SATURN.SCRLEVL
 	print "Updating SCRLEVL\t";
 	$tempMysql->beginTransaction();
 	$tSCRLEVL = $tempMysql->prepare("TRUNCATE TABLE SCRLEVL");
@@ -590,15 +495,9 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($SCRLEVL);
 	print "...\tUpdated SCRLEVL\n";
-} catch(Exception $e) {
-	print $e->__toString()."\n";
-	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
-}
 
-// SATURN.SSBXLST
- 
-try {
+	
+	// SATURN.SSBXLST
 	print "Updating SSBXLST\t";
 	$tempMysql->beginTransaction();
 	$tSSBXLST = $tempMysql->prepare("TRUNCATE TABLE SSBXLST");
@@ -621,15 +520,9 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($SSBXLST);
 	print "...\tUpdated SSBXLST\n";
-} catch(Exception $e) {
-	print $e->__toString()."\n";
-	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
-}
 
-// SATURN.SSRXLST
- 
-try {
+	
+	// SATURN.SSRXLST
 	print "Updating SSRXLST\t";
 	$tempMysql->beginTransaction();
 	$tSSRXLST = $tempMysql->prepare("TRUNCATE TABLE SSRXLST");
@@ -649,19 +542,9 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($SSRXLST);
 	print "...\tUpdated SSRXLST\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
-// SATURN.SIRASGN
- 
-try {
+
+		
+	// SATURN.SIRASGN
 	print "Updating SIRASGN\t";
 	$tempMysql->beginTransaction();
 	$tsirasgn = $tempMysql->prepare("TRUNCATE TABLE SIRASGN");
@@ -694,19 +577,9 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($sirasgn);
 	print "...\tUpdated SIRASGN\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
 
-// SATURN.SSBDESC
- 
-try {
+	
+	// SATURN.SSBDESC
 	print "Updating SSBDESC\t";
 	$tempMysql->beginTransaction();
 	$tSSBDESC = $tempMysql->prepare("TRUNCATE TABLE SSBDESC");
@@ -732,16 +605,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($SSBDESC);
 	print "...\tUpdated SSBDESC\n";
-} catch(Exception $e) {
-	print $e->__toString()."\n";
-	$exceptions[] = $e->__toString();
-	$tempMysql->rollBack();
-}
 
-
-// SATURN.SSBSECT
- 
-try {
+	
+	
+	// SATURN.SSBSECT
 	print "Updating SSBSECT\t";
 	$tempMysql->beginTransaction();
 	$tssbsect = $tempMysql->prepare("TRUNCATE TABLE SSBSECT");
@@ -820,20 +687,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($ssbsect);
 	print "...\tUpdated SSBSECT\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
 
-
-// SATURN.SSRATTR
- 
-try {
+	
+	
+	// SATURN.SSRATTR
 	print "Updating SSRATTR\t";
 	$tempMysql->beginTransaction();
 	$tssrattr = $tempMysql->prepare("TRUNCATE TABLE SSRATTR");
@@ -853,20 +710,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($ssrattr);
 	print "...\tUpdated SSRATTR\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
 
-
-// SATURN.SSRMEET
-
-try {
+	
+	
+	// SATURN.SSRMEET
 	print "Updating SSRMEET\t";
 	$tempMysql->beginTransaction();
 	$tssrmeet = $tempMysql->prepare("TRUNCATE TABLE SSRMEET");
@@ -912,20 +759,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($ssrmeet);
 	print "...\tUpdated SSRMEET\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
 
-
-// SATURN.STVACYR
- 
-try {
+	
+	
+	// SATURN.STVACYR
 	print "Updating STVACYR\t";
 	$tempMysql->beginTransaction();
 	$tstvacyr = $tempMysql->prepare("TRUNCATE TABLE STVACYR");
@@ -945,20 +782,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvacyr);
 	print "...\tUpdated STVACYR\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// SATURN.STVAPRV
- 
-try {
+		
+	
+	// SATURN.STVAPRV
 	print "Updating STVAPRV\t";
 	$tempMysql->beginTransaction();
 	$tstvaprv = $tempMysql->prepare("TRUNCATE TABLE STVAPRV");
@@ -977,20 +804,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvaprv);
 	print "...\tUpdated STVAPRV\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// SATURN.STVASTY
- 
-try {
+		
+	
+	// SATURN.STVASTY
 	print "Updating STVASTY\t";
 	$tempMysql->beginTransaction();
 	$tstvasty = $tempMysql->prepare("TRUNCATE TABLE STVASTY");
@@ -1009,20 +826,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvasty);
 	print "...\tUpdated STVASTY\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// SATURN.STVATTR
- 
-try {
+		
+	
+	// SATURN.STVATTR
 	print "Updating STVATTR\t";
 	$tempMysql->beginTransaction();
 	$tstvattr = $tempMysql->prepare("TRUNCATE TABLE STVATTR");
@@ -1041,20 +848,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvattr);
 	print "...\tUpdated STVATTR\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// SATURN.STVBLDG
- 
-try {
+		
+	
+	// SATURN.STVBLDG
 	print "Updating STVBLDG\t";
 	$tempMysql->beginTransaction();
 	$tstvbldg = $tempMysql->prepare("TRUNCATE TABLE STVBLDG");
@@ -1074,20 +871,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvbldg);
 	print "...\tUpdated STVBLDG\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// SATURN.STVCAMP
- 
-try {
+
+	
+	// SATURN.STVCAMP
 	print "Updating STVCAMP\t";
 	$tempMysql->beginTransaction();
 	$tstvcamp = $tempMysql->prepare("TRUNCATE TABLE STVCAMP");
@@ -1107,20 +894,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvcamp);
 	print "...\tUpdated STVCAMP\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// SATURN.STVCIPC
- 
-try {
+		
+	
+	// SATURN.STVCIPC
 	print "Updating STVCIPC\t";
 	$tempMysql->beginTransaction();
 	$tstvcipc = $tempMysql->prepare("TRUNCATE TABLE STVCIPC");
@@ -1143,20 +920,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvcipc);
 	print "...\tUpdated STVCIPC\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// SATURN.STVCOLL
- 
-try {
+		
+	
+	// SATURN.STVCOLL
 	print "Updating STVCOLL\t";
 	$tempMysql->beginTransaction();
 	$tstvcoll = $tempMysql->prepare("TRUNCATE TABLE STVCOLL");
@@ -1186,20 +953,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvcoll);
 	print "...\tUpdated STVCOLL\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
 
-
-// SATURN.STVCOMT
- 
-try {
+	
+	
+	// SATURN.STVCOMT
 	print "Updating STVCOMT\t";
 	$tempMysql->beginTransaction();
 	$tstvcomt = $tempMysql->prepare("TRUNCATE TABLE STVCOMT");
@@ -1219,20 +976,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvcomt);
 	print "...\tUpdated STVCOMT\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// SATURN.STVCSTA
- 
-try {
+		
+	
+	// SATURN.STVCSTA
 	print "Updating STVCSTA\t";
 	$tempMysql->beginTransaction();
 	$tstvcsta = $tempMysql->prepare("TRUNCATE TABLE STVCSTA");
@@ -1252,20 +999,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvcsta);
 	print "...\tUpdated STVCSTA\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// SATURN.STVDEPT
- 
-try {
+		
+	
+	// SATURN.STVDEPT
 	print "Updating STVDEPT\t";
 	$tempMysql->beginTransaction();
 	$tstvdept = $tempMysql->prepare("TRUNCATE TABLE STVDEPT");
@@ -1286,20 +1023,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvdept);
 	print "...\tUpdated STVDEPT\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
+
+		
 	
-
-// SATURN.STVDIVS
-
-try {
+	// SATURN.STVDIVS
 	print "Updating STVDIVS\t";
 	$tempMysql->beginTransaction();
 	$tstvdivs = $tempMysql->prepare("TRUNCATE TABLE STVDIVS");
@@ -1318,21 +1045,11 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvdivs);
 	print "...\tUpdated STVDIVS\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
-	
 
-// SATURN.STVFCNT
- 
-try {
+		
+		
+	
+	// SATURN.STVFCNT
 	print "Updating STVFCNT\t";
 	$tempMysql->beginTransaction();
 	$tstvfcnt = $tempMysql->prepare("TRUNCATE TABLE STVFCNT");
@@ -1351,19 +1068,9 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvfcnt);
 	print "...\tUpdated STVFCNT\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
 
-// SATURN.STVLEVL
- 
-try {
+	
+	// SATURN.STVLEVL
 	print "Updating STVLEVL\t";
 	$tempMysql->beginTransaction();
 	$tstvlevl = $tempMysql->prepare("TRUNCATE TABLE STVLEVL");
@@ -1387,19 +1094,9 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvlevl);
 	print "...\tUpdated STVLEVL\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
 
-// SATURN.STVMEET
- 
-try {
+	
+	// SATURN.STVMEET
 	print "Updating STVMEET\t";
 	$tempMysql->beginTransaction();
 	$tSTVMEET = $tempMysql->prepare("TRUNCATE TABLE STVMEET");
@@ -1426,20 +1123,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($STVMEET);
 	print "...\tUpdated STVMEET\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// SATURN.STVPWAV
- 
-try {
+		
+	
+	// SATURN.STVPWAV
 	print "Updating STVPWAV\t";
 	$tempMysql->beginTransaction();
 	$tstvpwav = $tempMysql->prepare("TRUNCATE TABLE STVPWAV");
@@ -1458,20 +1145,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvpwav);
 	print "...\tUpdated STVPWAV\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// SATURN.STVREPS
- 
-try {
+		
+	
+	// SATURN.STVREPS
 	print "Updating STVREPS\t";
 	$tempMysql->beginTransaction();
 	$tstvreps = $tempMysql->prepare("TRUNCATE TABLE STVREPS");
@@ -1490,20 +1167,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvreps);
 	print "...\tUpdated STVREPS\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// SATURN.STVSCHD
- 
-try {
+		
+	
+	// SATURN.STVSCHD
 	print "Updating STVSCHD\t";
 	$tempMysql->beginTransaction();
 	$tstvschd = $tempMysql->prepare("TRUNCATE TABLE STVSCHD");
@@ -1527,20 +1194,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvschd);
 	print "...\tUpdated STVSCHD\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// SATURN.STVSUBJ
- 
-try {
+		
+	
+	// SATURN.STVSUBJ
 	print "Updating STVSUBJ\t";
 	$tempMysql->beginTransaction();
 	$tstvsubj = $tempMysql->prepare("TRUNCATE TABLE STVSUBJ");
@@ -1561,20 +1218,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvsubj);
 	print "...\tUpdated STVSUBJ\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// SATURN.STVTERM
- 
-try {
+		
+	
+	// SATURN.STVTERM
 	print "Updating STVTERM\t";
 	$tempMysql->beginTransaction();
 	$tstvterm = $tempMysql->prepare("TRUNCATE TABLE STVTERM");
@@ -1604,20 +1251,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvterm);
 	print "...\tUpdated STVTERM\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// SATURN.STVTRMT
- 
-try {
+		
+	
+	// SATURN.STVTRMT
 	print "Updating STVTRMT\t";
 	$tempMysql->beginTransaction();
 	$tstvtrmt = $tempMysql->prepare("TRUNCATE TABLE STVTRMT");
@@ -1636,20 +1273,10 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($stvtrmt);
 	print "...\tUpdated STVTRMT\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
-	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-	
 
-// SATURN_MIDD.SYVINST
- 
-try {
+		
+	
+	// SATURN_MIDD.SYVINST
 	print "Updating SYVINST\t";
 	$tempMysql->beginTransaction();
 	$tsyvinst = $tempMysql->prepare("TRUNCATE TABLE SYVINST");
@@ -1671,54 +1298,37 @@ try {
 	$tempMysql->commit();
 	oci_free_statement($syvinst);
 	print "...\tUpdated SYVINST\n";
-} catch(Exception $e) {
-	$exceptions[] = $e->__toString();
-	try {
-		$tempMysql->rollBack();
-	} catch (PDOException $pdo_e) {
+
+	
+	
+	/*********************************************************
+	 * Copy the temporary tables into our primary database
+	 *********************************************************/
+	// If we haven't had any problems updating from banner, import into our primary database
+	$command = $mysqldump.' --add-drop-table --single-transaction '
+		.' -h '.escapeshellarg($tempMysqlHost)
+		.' -u '.escapeshellarg($tempMysqlUser)
+		.' -p'.escapeshellarg($tempMysqlPassword)
+		.' '.escapeshellarg($tempMysqlDatabase)
+		.' '.implode(' ', $bannerTables)
+		.' | mysql'
+		.' -h '.escapeshellarg($primaryMysqlHost)
+		.' -u '.escapeshellarg($primaryMysqlUser)
+		.' -p'.escapeshellarg($primaryMysqlPassword)
+		.' -D '.escapeshellarg($primaryMysqlDatabase);
+	print "Moving from cache database to primary database 	...";
+	exec($command, $output, $return_var);
+	print "	done\n";
+	if ($return_var) {
+		throw new Exception('Moving from temp database to primary database failed: '.implode("\n", $output));
 	}
-	fwrite(STDERR, $e->__toString());
-	exit(2);
-}
-
-
-/*********************************************************
- * Copy the temporary tables into our primary database
- *********************************************************/
-if (count($exceptions)) {
-	print "Updating temporary tables failed:\n\t";
-	print implode("\n\t", $exceptions);
-	print "\nSkipping primary DB update due to exceptions.\n";
-	exit(1);
-}
-
-// If we haven't had any problems updating from banner, import into our primary database
-$command = $mysqldump.' --add-drop-table --single-transaction '
-	.' -h '.escapeshellarg($tempMysqlHost)
-	.' -u '.escapeshellarg($tempMysqlUser)
-	.' -p'.escapeshellarg($tempMysqlPassword)
-	.' '.escapeshellarg($tempMysqlDatabase)
-	.' '.implode(' ', $bannerTables)
-	.' | mysql'
-	.' -h '.escapeshellarg($primaryMysqlHost)
-	.' -u '.escapeshellarg($primaryMysqlUser)
-	.' -p'.escapeshellarg($primaryMysqlPassword)
-	.' -D '.escapeshellarg($primaryMysqlDatabase);
-print "Moving from cache database to primary database 	...";
-exec($command, $output, $return_var);
-print "	done\n";
-if ($return_var) {
-	fwrite(STDERR, 'Moving from temp database to primary database failed: '.implode("\n", $output));
-	exit(1);
-}
-
-
-/*********************************************************
- * Build derived tables
- *********************************************************/
-
-// Build derived table for easier term-catalog lookups
-try {
+	
+	
+	/*********************************************************
+	 * Build derived tables
+	 *********************************************************/
+	
+	// Build derived table for easier term-catalog lookups
 	print "Updating derived tables\t";
 	$primaryMysql->beginTransaction();
 	$ttermcat = $primaryMysql->prepare("TRUNCATE TABLE catalog_term");
@@ -1804,10 +1414,7 @@ WHERE
 	print "...\tUpdated materialized views\n";
 
 } catch (Exception $e) {
-	$exceptions[] = $e->__toString();
-	$primaryMysql->rollBack();
+	fwrite(STDERR, $e->getMessage()."\n");
+	sendExceptions(array($e->getMessage()));
+	exit(1);
 }
-
-sendExceptions($exceptions);
-
-?>
