@@ -63,6 +63,16 @@ function sendExceptions($exceptions) {
 	}
 }
 
+/**
+ * Custom Error handler function to throw exceptions on any PHP
+ * Warnings or Errors. This should catch any OCI problems that
+ * are not picked up by calls to oci_error().
+ */
+function exception_error_handler ($errno, $errstr, $errfile, $errLine, $errcontext) {
+	throw new Exception($errstr, $errno);
+}
+set_error_handler('exception_error_handler', E_ERROR | E_WARNING);
+
 function oci_execute_query($connection, $query) { 
 	$statement = oci_parse($connection, $query);
 	if ($error = oci_error($connection))
