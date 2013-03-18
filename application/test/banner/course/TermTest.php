@@ -73,7 +73,7 @@ class banner_course_TermTest
     public function testGetStartTime()
     {
         $date = $this->object->getStartTime();
-        $this->assertType('DateTime', $date);
+        $this->assertInstanceOf('DateTime', $date);
         $this->assertEquals(new DateTime('2008-09-08'), $date);
     }
 
@@ -83,7 +83,7 @@ class banner_course_TermTest
     public function testGetEndTime()
     {
         $date = $this->object->getStartTime();
-        $this->assertType('DateTime', $date);
+        $this->assertInstanceOf('DateTime', $date);
         $this->assertEquals(new DateTime('2008-12-16'), $date);
     }
 
@@ -118,7 +118,7 @@ class banner_course_TermTest
     {
         $types = $this->object->getRecordTypes();
     	while ($types->hasNext()) {
-	        $this->assertType('osid_course_CourseRecord', $this->object->getTermRecord($types->getNextType()));
+	        $this->assertInstanceOf('osid_course_CourseRecord', $this->object->getTermRecord($types->getNextType()));
 	    }
     }
 }

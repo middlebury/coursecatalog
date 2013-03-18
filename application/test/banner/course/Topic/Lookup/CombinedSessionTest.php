@@ -93,7 +93,7 @@ class banner_course_Topic_Lookup_CombinedSessionTest
      */
     public function testGetCourseCatalogId()
     {
-        $this->assertType('osid_id_Id', $this->session->getCourseCatalogId());
+        $this->assertInstanceOf('osid_id_Id', $this->session->getCourseCatalogId());
 //         $this->assertTrue($this->manager->getCombinedCatalogId()->isEqual($this->session->getCourseCatalogId()));
     }
 
@@ -102,7 +102,7 @@ class banner_course_Topic_Lookup_CombinedSessionTest
      */
     public function testGetCourseCatalog()
     {
-        $this->assertType('osid_course_CourseCatalog', $this->session->getCourseCatalog());
+        $this->assertInstanceOf('osid_course_CourseCatalog', $this->session->getCourseCatalog());
 //         $this->assertTrue($this->manager->getCombinedCatalogId()->isEqual($this->session->getCourseCatalog()->getId()));
     }
 
@@ -122,7 +122,7 @@ class banner_course_Topic_Lookup_CombinedSessionTest
        $this->session->useComparativeTopicView();
        $topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
         				$this->geolSubjId, $this->physDeptId, $this->unknownId)));
-        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
         $this->assertEquals(2, $topics->available());
     }
 
@@ -200,10 +200,10 @@ class banner_course_Topic_Lookup_CombinedSessionTest
      */
     public function testGetTopic()
     {
-        $this->assertType('osid_course_Topic', $this->session->getTopic($this->physSubjId));
-        $this->assertType('osid_course_Topic', $this->session->getTopic($this->chemDeptId));
-        $this->assertType('osid_course_Topic', $this->session->getTopic($this->dedReqId));
-        $this->assertType('osid_course_Topic', $this->session->getTopic($this->nsciDivId));
+        $this->assertInstanceOf('osid_course_Topic', $this->session->getTopic($this->physSubjId));
+        $this->assertInstanceOf('osid_course_Topic', $this->session->getTopic($this->chemDeptId));
+        $this->assertInstanceOf('osid_course_Topic', $this->session->getTopic($this->dedReqId));
+        $this->assertInstanceOf('osid_course_Topic', $this->session->getTopic($this->nsciDivId));
     }
 
     /**
@@ -213,13 +213,13 @@ class banner_course_Topic_Lookup_CombinedSessionTest
     {
         $topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
         				$this->geolSubjId, $this->physDeptId, $this->sciReqId, $this->nsciDivId)));
-        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
         $this->assertTrue($topics->hasNext());
         $this->assertEquals(4, $topics->available());
-        $this->assertType('osid_course_Topic', $topics->getNextTopic());
-        $this->assertType('osid_course_Topic', $topics->getNextTopic());
-        $this->assertType('osid_course_Topic', $topics->getNextTopic());
-        $this->assertType('osid_course_Topic', $topics->getNextTopic());
+        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
         $this->assertFalse($topics->hasNext());
         $this->assertEquals(0, $topics->available());
     }
@@ -230,10 +230,10 @@ class banner_course_Topic_Lookup_CombinedSessionTest
     public function testGetTopicsByRequirementGenusType()
     {
         $topics = $this->session->getTopicsByGenusType($this->requirementType);
-        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
         $this->assertTrue($topics->hasNext());
         $this->assertEquals(2, $topics->available());
-        $this->assertType('osid_course_Topic', $topics->getNextTopic());
+        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
         $this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->requirementType));
     }
     
@@ -244,11 +244,11 @@ class banner_course_Topic_Lookup_CombinedSessionTest
     public function testGetTopicsByDepartmentGenusType()
     {    
         $topics = $this->session->getTopicsByGenusType($this->departmentType);
-        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
         $this->assertTrue($topics->hasNext());
         $this->assertEquals(4, $topics->available());
-        $this->assertType('osid_course_Topic', $topics->getNextTopic());
-        $this->assertType('osid_course_Topic', $topics->getNextTopic());
+        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
         $this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->departmentType));
         
     }
@@ -259,11 +259,11 @@ class banner_course_Topic_Lookup_CombinedSessionTest
     public function testGetTopicsBySubjectGenusType()
     { 
         $topics = $this->session->getTopicsByGenusType($this->subjectType);
-        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
         $this->assertTrue($topics->hasNext());
         $this->assertEquals(4, $topics->available());
-        $this->assertType('osid_course_Topic', $topics->getNextTopic());
-        $this->assertType('osid_course_Topic', $topics->getNextTopic());
+        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
         $this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->subjectType));
         
     }
@@ -274,11 +274,11 @@ class banner_course_Topic_Lookup_CombinedSessionTest
     public function testGetTopicsByDivisionGenusType()
     { 
         $topics = $this->session->getTopicsByGenusType($this->divisionType);
-        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
         $this->assertTrue($topics->hasNext());
         $this->assertEquals(2, $topics->available());
         $topic = $topics->getNextTopic();
-        $this->assertType('osid_course_Topic', $topic);
+        $this->assertInstanceOf('osid_course_Topic', $topic);
         $this->assertTrue($topic->getGenusType()->isEqual($this->divisionType));
         
     }
@@ -289,11 +289,11 @@ class banner_course_Topic_Lookup_CombinedSessionTest
     public function testGetTopicsByOtherGenusType()
     { 
         $topics = $this->session->getTopicsByGenusType($this->generaNoneType);
-        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
         $this->assertFalse($topics->hasNext());
         
         $topics = $this->session->getTopicsByGenusType($this->unknownType);
-        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
         $this->assertFalse($topics->hasNext());
     }
 
@@ -303,10 +303,10 @@ class banner_course_Topic_Lookup_CombinedSessionTest
     public function testGetTopicsByRequirementParentGenusType()
     {
         $topics = $this->session->getTopicsByParentGenusType($this->requirementType);
-        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
         $this->assertTrue($topics->hasNext());
         $this->assertEquals(2, $topics->available());
-        $this->assertType('osid_course_Topic', $topics->getNextTopic());
+        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
         $this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->requirementType));
      }
 
@@ -316,11 +316,11 @@ class banner_course_Topic_Lookup_CombinedSessionTest
     public function testGetTopicsByDepartmentParentGenusType()
     {   
         $topics = $this->session->getTopicsByParentGenusType($this->departmentType);
-        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
         $this->assertTrue($topics->hasNext());
         $this->assertEquals(4, $topics->available());
-        $this->assertType('osid_course_Topic', $topics->getNextTopic());
-        $this->assertType('osid_course_Topic', $topics->getNextTopic());
+        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
         $this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->departmentType));
      }
 
@@ -330,11 +330,11 @@ class banner_course_Topic_Lookup_CombinedSessionTest
     public function testGetTopicsBySubjectParentGenusType()
     {    
         $topics = $this->session->getTopicsByParentGenusType($this->subjectType);
-        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
         $this->assertTrue($topics->hasNext());
         $this->assertEquals(4, $topics->available());
-        $this->assertType('osid_course_Topic', $topics->getNextTopic());
-        $this->assertType('osid_course_Topic', $topics->getNextTopic());
+        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
         $this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->subjectType));
      }
 
@@ -344,11 +344,11 @@ class banner_course_Topic_Lookup_CombinedSessionTest
     public function testGetTopicsByDivisionParentGenusType()
     {    
         $topics = $this->session->getTopicsByParentGenusType($this->divisionType);
-        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
         $this->assertTrue($topics->hasNext());
         $this->assertEquals(2, $topics->available());
         $topic = $topics->getNextTopic();
-        $this->assertType('osid_course_Topic', $topic);
+        $this->assertInstanceOf('osid_course_Topic', $topic);
         $this->assertTrue($topic->getGenusType()->isEqual($this->divisionType));
      }
 
@@ -358,11 +358,11 @@ class banner_course_Topic_Lookup_CombinedSessionTest
     public function testGetTopicsByOtherParentGenusType()
     {    
         $topics = $this->session->getTopicsByParentGenusType($this->generaNoneType);
-        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
         $this->assertFalse($topics->hasNext());
         
         $topics = $this->session->getTopicsByParentGenusType($this->unknownType);
-        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
         $this->assertFalse($topics->hasNext());
     }
 
@@ -372,7 +372,7 @@ class banner_course_Topic_Lookup_CombinedSessionTest
     public function testGetTopicsByRecordType()
     {
         $topics = $this->session->getTopicsByRecordType($this->unknownType);
-        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
         $this->assertFalse($topics->hasNext());
     }
 
@@ -382,11 +382,11 @@ class banner_course_Topic_Lookup_CombinedSessionTest
     public function testGetTopics()
     {
         $topics = $this->session->getTopics();
-        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
         $this->assertTrue($topics->hasNext());
         $this->assertEquals(13, $topics->available());
-        $this->assertType('osid_course_Topic', $topics->getNextTopic());
-        $this->assertType('osid_course_Topic', $topics->getNextTopic());
+        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
     }
 }
 ?>

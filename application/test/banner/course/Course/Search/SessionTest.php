@@ -76,7 +76,7 @@ class banner_course_Course_Search_SessionTest
     public function testGetCourseCatalogId()
     {
         $id = $this->session->getCourseCatalogId();
-        $this->assertType('osid_id_Id', $id);
+        $this->assertInstanceOf('osid_id_Id', $id);
         $this->assertTrue($this->mcugId->isEqual($id));
     }
 
@@ -85,7 +85,7 @@ class banner_course_Course_Search_SessionTest
      */
     public function testGetCourseCatalog()
     {
-        $this->assertType('osid_course_CourseCatalog', $this->session->getCourseCatalog());
+        $this->assertInstanceOf('osid_course_CourseCatalog', $this->session->getCourseCatalog());
     }
 
     /**
@@ -127,7 +127,7 @@ class banner_course_Course_Search_SessionTest
      */
     public function testGetCourseQuery()
     {
-        $this->assertType('osid_course_CourseQuery', $this->session->getCourseQuery());
+        $this->assertInstanceOf('osid_course_CourseQuery', $this->session->getCourseQuery());
     }
 
     /**
@@ -140,9 +140,9 @@ class banner_course_Course_Search_SessionTest
     	
         $courses = $this->session->getCoursesByQuery($query);
 //          print $courses->debug();
-       	$this->assertType('osid_course_CourseList', $courses);
+       	$this->assertInstanceOf('osid_course_CourseList', $courses);
        	$this->assertEquals(1, $courses->available());
-       	$this->assertType('osid_course_Course', $courses->getNextCourse());
+       	$this->assertInstanceOf('osid_course_Course', $courses->getNextCourse());
     }
 
     /**
@@ -150,7 +150,7 @@ class banner_course_Course_Search_SessionTest
      */
     public function testGetCourseSearch()
     {
-        $this->assertType('osid_course_CourseSearch', $this->session->getCourseSearch());
+        $this->assertInstanceOf('osid_course_CourseSearch', $this->session->getCourseSearch());
     }
 
     /**
@@ -158,7 +158,7 @@ class banner_course_Course_Search_SessionTest
      */
     public function testGetCourseSearchOrder()
     {
-        $this->assertType('osid_course_CourseSearchOrder', $this->session->getCourseSearchOrder());
+        $this->assertInstanceOf('osid_course_CourseSearchOrder', $this->session->getCourseSearchOrder());
     }
 
     /**
@@ -174,11 +174,11 @@ class banner_course_Course_Search_SessionTest
     	
         $results = $this->session->getCoursesBySearch($query, $search);
 //          print $courses->debug();
-       	$this->assertType('osid_course_CourseSearchResults', $results);
+       	$this->assertInstanceOf('osid_course_CourseSearchResults', $results);
        	$this->assertEquals(4, $results->getResultSize());
        	$courses = $results->getCourses();
        	$this->assertEquals(3, $courses->available());
-       	$this->assertType('osid_course_Course', $courses->getNextCourse());
+       	$this->assertInstanceOf('osid_course_Course', $courses->getNextCourse());
     }
     
     public function testGetCoursesBySearchWithOrder()
@@ -195,7 +195,7 @@ class banner_course_Course_Search_SessionTest
     	
         // Set up our first result set.
         $results = $this->session->getCoursesBySearch($query, $search);
-       	$this->assertType('osid_course_CourseSearchResults', $results);
+       	$this->assertInstanceOf('osid_course_CourseSearchResults', $results);
 //        	print $results->debug();
        	$this->assertEquals(4, $results->getResultSize());
        	
@@ -212,7 +212,7 @@ class banner_course_Course_Search_SessionTest
        	$search->orderCourseResults($order);
        	
        	$results = $this->session->getCoursesBySearch($query, $search);
-       	$this->assertType('osid_course_CourseSearchResults', $results);
+       	$this->assertInstanceOf('osid_course_CourseSearchResults', $results);
 //        	print $results->debug();
        	$this->assertEquals(4, $results->getResultSize());
        	

@@ -69,7 +69,7 @@ class banner_resource_Resource_Lookup_SessionTest
      */
     public function testGetBinId()
     {
-    	$this->assertType('osid_id_Id', $this->session->getBinId());
+    	$this->assertInstanceOf('osid_id_Id', $this->session->getBinId());
     	$this->assertTrue($this->manager->getCombinedBinId()->isEqual($this->session->getBinId()));
     }
 
@@ -78,7 +78,7 @@ class banner_resource_Resource_Lookup_SessionTest
      */
     public function testGetBin()
     {
-        $this->assertType('osid_resource_Bin', $this->session->getBin());
+        $this->assertInstanceOf('osid_resource_Bin', $this->session->getBin());
     	$this->assertTrue($this->manager->getCombinedBinId()->isEqual($this->session->getBin()->getId()));
     }
 
@@ -98,7 +98,7 @@ class banner_resource_Resource_Lookup_SessionTest
         $this->session->useComparativeResourceView();
         $resources = $this->session->getResourcesByIds(new phpkit_id_ArrayIdList(array(
         				$this->person1Id, $this->campusId, $this->buildingId, $this->roomId, $this->unknownId)));
-        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertInstanceOf('osid_resource_ResourceList', $resources);
         $this->assertEquals(4, $resources->available());
     }
 
@@ -134,8 +134,8 @@ class banner_resource_Resource_Lookup_SessionTest
      */
     public function testGetResource()
     {
-        $this->assertType('osid_resource_Resource', $this->session->getResource($this->person1Id));
-        $this->assertType('osid_resource_Resource', $this->session->getResource($this->person2Id));
+        $this->assertInstanceOf('osid_resource_Resource', $this->session->getResource($this->person1Id));
+        $this->assertInstanceOf('osid_resource_Resource', $this->session->getResource($this->person2Id));
     }
 
     /**
@@ -145,11 +145,11 @@ class banner_resource_Resource_Lookup_SessionTest
     {
         $resources = $this->session->getResourcesByIds(new phpkit_id_ArrayIdList(array(
         				$this->person1Id, $this->person2Id)));
-        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertInstanceOf('osid_resource_ResourceList', $resources);
         $this->assertTrue($resources->hasNext());
         $this->assertEquals(2, $resources->available());
-        $this->assertType('osid_resource_Resource', $resources->getNextResource());
-        $this->assertType('osid_resource_Resource', $resources->getNextResource());
+        $this->assertInstanceOf('osid_resource_Resource', $resources->getNextResource());
+        $this->assertInstanceOf('osid_resource_Resource', $resources->getNextResource());
         $this->assertFalse($resources->hasNext());
         $this->assertEquals(0, $resources->available());
     }
@@ -160,7 +160,7 @@ class banner_resource_Resource_Lookup_SessionTest
     public function testGetResourcesByUnknownGenusType()
     {
         $resources = $this->session->getResourcesByGenusType($this->unknownType);
-        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertInstanceOf('osid_resource_ResourceList', $resources);
         $this->assertEquals(0, $resources->available());
     }
     
@@ -170,10 +170,10 @@ class banner_resource_Resource_Lookup_SessionTest
     public function testGetResourcesByPersonGenusType()
     {
         $resources = $this->session->getResourcesByGenusType($this->personType);
-        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertInstanceOf('osid_resource_ResourceList', $resources);
         $this->assertTrue($resources->hasNext());
         $this->assertEquals(14, $resources->available());
-        $this->assertType('osid_resource_Resource', $resources->getNextResource());
+        $this->assertInstanceOf('osid_resource_Resource', $resources->getNextResource());
         $resourceGenusType = $resources->getNextResource()->getGenusType();
         $this->assertEquals('genera:resource/person', $resourceGenusType->getIdentifier());
         $this->assertTrue($resourceGenusType->isEqual($this->personType));
@@ -185,7 +185,7 @@ class banner_resource_Resource_Lookup_SessionTest
     public function testGetResourcesByPlaceGenusType()
     {
         $resources = $this->session->getResourcesByGenusType($this->placeType);
-        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertInstanceOf('osid_resource_ResourceList', $resources);
         $this->assertEquals(0, $resources->available());
     }
     
@@ -195,7 +195,7 @@ class banner_resource_Resource_Lookup_SessionTest
     public function testGetResourcesByParentPlaceGenusType()
     {
         $resources = $this->session->getResourcesByParentGenusType($this->placeType);
-        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertInstanceOf('osid_resource_ResourceList', $resources);
         $this->assertEquals(12, $resources->available());
 		$this->assertTrue($resources->hasNext());
 
@@ -207,7 +207,7 @@ class banner_resource_Resource_Lookup_SessionTest
     public function testGetResourcesByCampusGenusType()
     {
         $resources = $this->session->getResourcesByGenusType($this->campusType);
-        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertInstanceOf('osid_resource_ResourceList', $resources);
         $this->assertEquals(2, $resources->available());
     }
     
@@ -217,7 +217,7 @@ class banner_resource_Resource_Lookup_SessionTest
     public function testGetResourcesByBuildingGenusType()
     {
         $resources = $this->session->getResourcesByGenusType($this->buildingType);
-        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertInstanceOf('osid_resource_ResourceList', $resources);
         $this->assertEquals(1, $resources->available());
     }
     
@@ -227,7 +227,7 @@ class banner_resource_Resource_Lookup_SessionTest
     public function testGetResourcesByRoomGenusType()
     {
         $resources = $this->session->getResourcesByGenusType($this->roomType);
-        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertInstanceOf('osid_resource_ResourceList', $resources);
         $this->assertEquals(9, $resources->available());
     }
 
@@ -237,10 +237,10 @@ class banner_resource_Resource_Lookup_SessionTest
     public function testGetResourcesByParentPersonGenusType()
     {
         $resources = $this->session->getResourcesByParentGenusType($this->personType);
-        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertInstanceOf('osid_resource_ResourceList', $resources);
         $this->assertTrue($resources->hasNext());
         $this->assertEquals(14, $resources->available());
-        $this->assertType('osid_resource_Resource', $resources->getNextResource());
+        $this->assertInstanceOf('osid_resource_Resource', $resources->getNextResource());
         $resourceGenusType = $resources->getNextResource()->getGenusType();
         $this->assertEquals('genera:resource/person', $resourceGenusType->getIdentifier());
         $this->assertTrue($resourceGenusType->isEqual($this->personType));
@@ -252,7 +252,7 @@ class banner_resource_Resource_Lookup_SessionTest
     public function testGetResourcesByRecordType()
     {
         $resources = $this->session->getResourcesByRecordType($this->unknownType);
-        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertInstanceOf('osid_resource_ResourceList', $resources);
         $this->assertFalse($resources->hasNext());
     }
 
@@ -262,10 +262,10 @@ class banner_resource_Resource_Lookup_SessionTest
     public function testGetResources()
     {
         $resources = $this->session->getResources();
-        $this->assertType('osid_resource_ResourceList', $resources);
+        $this->assertInstanceOf('osid_resource_ResourceList', $resources);
         $this->assertTrue($resources->hasNext());
         $this->assertEquals(26, $resources->available());
-        $this->assertType('osid_resource_Resource', $resources->getNextResource());
+        $this->assertInstanceOf('osid_resource_Resource', $resources->getNextResource());
     }
 }
 ?>

@@ -45,9 +45,9 @@ class Catalog_Action_Helper_OsidTopicTest extends PHPUnit_Framework_TestCase
         $topics = $this->topicLookup->getTopics();
         $numTopics = $topics->available();
         $topicArray = $this->osidTopicHelper->topicListAsArray($topics);
-        $this->assertType('array', $topicArray);
+        $this->assertInternalType('array', $topicArray);
         $this->assertEquals($numTopics, count($topicArray));
-        $this->assertType('osid_course_Topic', $topicArray[0]);
+        $this->assertInstanceOf('osid_course_Topic', $topicArray[0]);
     }
 
     /**
@@ -62,10 +62,10 @@ class Catalog_Action_Helper_OsidTopicTest extends PHPUnit_Framework_TestCase
         $subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
 
         $filteredTopics = $this->osidTopicHelper->filterTopicsByType($topicArray, $subjectType);
-        $this->assertType('array', $filteredTopics);
+        $this->assertInternalType('array', $filteredTopics);
         $this->assertLessThan($numTopics, count($filteredTopics));
         $this->assertEquals(4, count($filteredTopics));
-        $this->assertType('osid_course_Topic', $filteredTopics[0]);
+        $this->assertInstanceOf('osid_course_Topic', $filteredTopics[0]);
     }
 }
 ?>

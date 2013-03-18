@@ -79,7 +79,7 @@ class banner_course_CourseOffering_Search_QueryTest
      */
     public function testGetWhereClause()
     {
-        $this->assertType('string', $this->object->getWhereClause());
+        $this->assertInternalType('string', $this->object->getWhereClause());
     }
     
     /**
@@ -87,7 +87,7 @@ class banner_course_CourseOffering_Search_QueryTest
      */
     public function testGetAdditionalTableJoins()
     {
-        $this->assertType('array', $this->object->getAdditionalTableJoins());
+        $this->assertInternalType('array', $this->object->getAdditionalTableJoins());
     }
 
     /**
@@ -95,7 +95,7 @@ class banner_course_CourseOffering_Search_QueryTest
      */
     public function testGetParameters()
     {
-        $this->assertType('array', $this->object->getParameters());
+        $this->assertInternalType('array', $this->object->getParameters());
     }
 
     /**
@@ -104,7 +104,7 @@ class banner_course_CourseOffering_Search_QueryTest
     public function testGetStringMatchTypes()
     {
         $types = $this->object->getStringMatchTypes();
-        $this->assertType('osid_type_TypeList', $types);
+        $this->assertInstanceOf('osid_type_TypeList', $types);
         $this->assertEquals(2, $types->available());
         $this->assertTrue($this->wildcardStringMatchType->isEqual($types->getNextType()));
     }
@@ -1670,8 +1670,8 @@ AND SCBCRSE_COLL_CODE IN (
     public function testGetCourseOfferingQueryRecord()
     {
         $record = $this->object->getCourseOfferingQueryRecord($this->instructorsType);
-        $this->assertType('osid_course_CourseOfferingQueryRecord', $record);
-        $this->assertType('middlebury_course_CourseOffering_Search_InstructorsQueryRecord', $record);
+        $this->assertInstanceOf('osid_course_CourseOfferingQueryRecord', $record);
+        $this->assertInstanceOf('middlebury_course_CourseOffering_Search_InstructorsQueryRecord', $record);
     }
     
     /**

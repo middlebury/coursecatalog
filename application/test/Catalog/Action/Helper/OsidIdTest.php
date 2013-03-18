@@ -40,7 +40,7 @@ class Catalog_Action_Helper_OsidIdTest extends PHPUnit_Framework_TestCase
     	$idString = $this->osidIdHelper->toString($id);
     	
     	$newId = $this->osidIdHelper->fromString($idString);
-        $this->assertType('osid_id_Id', $newId);
+        $this->assertInstanceOf('osid_id_Id', $newId);
         $this->assertTrue($id->isEqual($newId));
     }
 
@@ -51,7 +51,7 @@ class Catalog_Action_Helper_OsidIdTest extends PHPUnit_Framework_TestCase
     {
     	$id = new phpkit_id_Id('example.edu', 'urn', '123456789/abcd');
     	$idString = $this->osidIdHelper->toString($id);
-        $this->assertType('string', $idString);
+        $this->assertInternalType('string', $idString);
         
         $newId = $this->osidIdHelper->fromString($idString);
         $this->assertEquals($idString, $this->osidIdHelper->toString($newId));

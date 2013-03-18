@@ -57,7 +57,7 @@ class banner_course_Topic_Search_QueryTest extends PHPUnit_Framework_TestCase
     public function testGetStringMatchTypes()
     {
         $types = $this->object->getStringMatchTypes();
-        $this->assertType('osid_type_TypeList', $types);
+        $this->assertInstanceOf('osid_type_TypeList', $types);
         $this->assertEquals(1, $types->available());
         $this->assertTrue($this->wildcardStringMatchType->isEqual($types->getNextType()));
     }
@@ -224,7 +224,7 @@ class banner_course_Topic_Search_QueryTest extends PHPUnit_Framework_TestCase
     {
         $this->object->matchRecordType($this->requirementType, true);
         $topics = $this->session->getTopicsByQuery($this->object);
-        $this->assertType('osid_course_TopicList', $topics);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
     }
 
     /**
@@ -232,7 +232,7 @@ class banner_course_Topic_Search_QueryTest extends PHPUnit_Framework_TestCase
      */
     public function testHasRecordType()
     {
-        $this->assertType('boolean', $this->object->hasRecordType($this->requirementType));
+        $this->assertInternalType('boolean', $this->object->hasRecordType($this->requirementType));
     }
 
     /**
@@ -306,7 +306,7 @@ class banner_course_Topic_Search_QueryTest extends PHPUnit_Framework_TestCase
     public function testGetTopicQueryRecord()
     {
         $termRecord = $this->object->getTopicQueryRecord($this->termType);
-        $this->assertType('middlebury_course_Topic_Search_TermQueryRecord', $termRecord);
+        $this->assertInstanceOf('middlebury_course_Topic_Search_TermQueryRecord', $termRecord);
     }
     
     /**

@@ -34,7 +34,7 @@ class Catalog_Action_Helper_OsidTest extends PHPUnit_Framework_TestCase
      */
     public function testGetCourseManager()
     {
-        $this->assertType('osid_course_CourseManager', $this->osidHelper->getCourseManager());
+        $this->assertInstanceOf('osid_course_CourseManager', $this->osidHelper->getCourseManager());
     }
 
     /**
@@ -42,7 +42,7 @@ class Catalog_Action_Helper_OsidTest extends PHPUnit_Framework_TestCase
      */
     public function testGetRuntimeManager()
     {
-        $this->assertType('osid_OsidRuntimeManager', $this->osidHelper->getRuntimeManager());
+        $this->assertInstanceOf('osid_OsidRuntimeManager', $this->osidHelper->getRuntimeManager());
     }
 }
 ?>

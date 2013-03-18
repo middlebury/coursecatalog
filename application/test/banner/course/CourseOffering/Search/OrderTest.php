@@ -64,7 +64,7 @@ class banner_course_CourseOffering_Search_OrderTest
      */
     public function testGetOrderByClause()
     {
-        $this->assertType('string', $this->object->getOrderByClause());
+        $this->assertInternalType('string', $this->object->getOrderByClause());
         $this->assertEquals('', $this->object->getOrderByClause());
     }
 
@@ -73,7 +73,7 @@ class banner_course_CourseOffering_Search_OrderTest
      */
     public function testGetAdditionalTableJoins()
     {
-        $this->assertType('array', $this->object->getAdditionalTableJoins());
+        $this->assertInternalType('array', $this->object->getAdditionalTableJoins());
         $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
     }
 
@@ -152,7 +152,7 @@ class banner_course_CourseOffering_Search_OrderTest
     {
         $record = $this->object->getCourseSearchOrderRecord($this->instructorsType);
         $order = $record->getCourseOfferingSearchOrder();
-        $this->assertType('osid_course_CourseOfferingSearchOrder', $order);
+        $this->assertInstanceOf('osid_course_CourseOfferingSearchOrder', $order);
     }
 
     /**
@@ -161,7 +161,7 @@ class banner_course_CourseOffering_Search_OrderTest
     public function testGetCourseSearchOrderRecord()
     {
         $record = $this->object->getCourseSearchOrderRecord($this->instructorsType);
-        $this->assertType('osid_course_CourseOfferingSearchOrderRecord', $record);
+        $this->assertInstanceOf('osid_course_CourseOfferingSearchOrderRecord', $record);
     }
     
      /**
@@ -170,7 +170,7 @@ class banner_course_CourseOffering_Search_OrderTest
     public function testGetCourseSearchOrderRecordOther()
     {
         $record = $this->object->getCourseSearchOrderRecord($this->otherType);
-        $this->assertType('osid_course_CourseOfferingSearchOrderRecord', $record);
+        $this->assertInstanceOf('osid_course_CourseOfferingSearchOrderRecord', $record);
     }
 
     /**

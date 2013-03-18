@@ -42,7 +42,7 @@ class Catalog_Action_Helper_OsidTypeTest extends PHPUnit_Framework_TestCase
     	$typeString = $this->osidTypeHelper->toString($type);
     	
     	$newType = $this->osidTypeHelper->fromString($typeString);
-        $this->assertType('osid_type_Type', $newType);
+        $this->assertInstanceOf('osid_type_Type', $newType);
         $this->assertTrue($type->isEqual($newType));
     }
 
@@ -53,7 +53,7 @@ class Catalog_Action_Helper_OsidTypeTest extends PHPUnit_Framework_TestCase
     {
     	$type = new phpkit_type_Type('urn', 'example.edu', '123456789/abcd');
     	$typeString = $this->osidTypeHelper->toString($type);
-        $this->assertType('string', $typeString);
+        $this->assertInternalType('string', $typeString);
         
         $newType = $this->osidTypeHelper->fromString($typeString);
         $this->assertEquals($typeString, $this->osidTypeHelper->toString($newType));

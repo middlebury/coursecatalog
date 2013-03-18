@@ -100,8 +100,8 @@ class banner_course_CourseCatalog_Lookup_SessionTest
      */
     public function testGetCourseCatalog()
     {
-        $this->assertType('osid_course_CourseCatalog', $this->session->getCourseCatalog($this->mcugId));
-        $this->assertType('osid_course_CourseCatalog', $this->session->getCourseCatalog($this->miisId));
+        $this->assertInstanceOf('osid_course_CourseCatalog', $this->session->getCourseCatalog($this->mcugId));
+        $this->assertInstanceOf('osid_course_CourseCatalog', $this->session->getCourseCatalog($this->miisId));
         try {
         	$catalog = $this->session->getCourseCatalog($this->unknownId);
         	$this->fail('An osid_NotFoundException should have been thrown.');
@@ -119,7 +119,7 @@ class banner_course_CourseCatalog_Lookup_SessionTest
         $catalogs = $this->session->getCourseCatalogsByIds(new phpkit_id_ArrayIdList(array(
        					$this->mcugId,
        					$this->miisId)));
-       	$this->assertType('osid_course_CourseCatalogList', $catalogs);
+       	$this->assertInstanceOf('osid_course_CourseCatalogList', $catalogs);
         $this->assertEquals(2, $catalogs->available());
     }
 
@@ -129,11 +129,11 @@ class banner_course_CourseCatalog_Lookup_SessionTest
     public function testGetCourseCatalogsByGenusType()
     {
     	$catalogs = $this->session->getCourseCatalogsByGenusType($this->generaNoneType);
-       	$this->assertType('osid_course_CourseCatalogList', $catalogs);
+       	$this->assertInstanceOf('osid_course_CourseCatalogList', $catalogs);
        	$this->assertTrue($catalogs->hasNext());
        	
        	$catalogs = $this->session->getCourseCatalogsByGenusType($this->secondaryType);
-       	$this->assertType('osid_course_CourseCatalogList', $catalogs);
+       	$this->assertInstanceOf('osid_course_CourseCatalogList', $catalogs);
        	$this->assertFalse($catalogs->hasNext());
     }
 
@@ -143,11 +143,11 @@ class banner_course_CourseCatalog_Lookup_SessionTest
     public function testGetCourseCatalogsByParentGenusType()
     {
         $catalogs = $this->session->getCourseCatalogsByGenusType($this->generaNoneType);
-       	$this->assertType('osid_course_CourseCatalogList', $catalogs);
+       	$this->assertInstanceOf('osid_course_CourseCatalogList', $catalogs);
        	$this->assertTrue($catalogs->hasNext());
        	
        	$catalogs = $this->session->getCourseCatalogsByGenusType($this->secondaryType);
-       	$this->assertType('osid_course_CourseCatalogList', $catalogs);
+       	$this->assertInstanceOf('osid_course_CourseCatalogList', $catalogs);
        	$this->assertFalse($catalogs->hasNext());
     }
 
@@ -157,7 +157,7 @@ class banner_course_CourseCatalog_Lookup_SessionTest
     public function testGetCourseCatalogsByRecordType()
     {
         $catalogs = $this->session->getCourseCatalogsByRecordType($this->unknownType);
-       	$this->assertType('osid_course_CourseCatalogList', $catalogs);
+       	$this->assertInstanceOf('osid_course_CourseCatalogList', $catalogs);
        	$this->assertFalse($catalogs->hasNext());
     }
 
@@ -167,7 +167,7 @@ class banner_course_CourseCatalog_Lookup_SessionTest
     public function testGetCourseCatalogs()
     {
         $catalogs = $this->session->getCourseCatalogs();
-       	$this->assertType('osid_course_CourseCatalogList', $catalogs);
+       	$this->assertInstanceOf('osid_course_CourseCatalogList', $catalogs);
        	$this->assertTrue($catalogs->hasNext());
     }
 }

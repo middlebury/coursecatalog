@@ -52,7 +52,7 @@ class banner_resource_ResourceManagerTest
      */
     public function testGetDB()
     {
-        $this->assertType('PDO', $this->manager->getDB());
+        $this->assertInstanceOf('PDO', $this->manager->getDB());
     }
 
     /**
@@ -79,7 +79,7 @@ class banner_resource_ResourceManagerTest
     {
         // If supported, validate our session response
     	if ($this->manager->supportsResourceLookup()) {
-    		 $this->assertType('osid_resource_ResourceLookupSession', $this->manager->getResourceLookupSession());
+    		 $this->assertInstanceOf('osid_resource_ResourceLookupSession', $this->manager->getResourceLookupSession());
     	} 
     	// Otherwise, ensure that the propper exception is thrown
     	else {
@@ -99,7 +99,7 @@ class banner_resource_ResourceManagerTest
     {
         // If supported, validate our session response
     	if ($this->manager->supportsResourceLookup()) {
-    		 $this->assertType('osid_resource_ResourceLookupSession', $this->manager->getResourceLookupSessionForBin($this->allBinId));
+    		 $this->assertInstanceOf('osid_resource_ResourceLookupSession', $this->manager->getResourceLookupSessionForBin($this->allBinId));
     	} 
     	// Otherwise, ensure that the propper exception is thrown
     	else {
@@ -119,7 +119,7 @@ class banner_resource_ResourceManagerTest
     {
     	// If supported, validate our session response
     	if ($this->manager->supportsResourceSearch()) {
-    		 $this->assertType('osid_resource_ResourceSearchSession', $this->manager->getResourceSearchSession());
+    		 $this->assertInstanceOf('osid_resource_ResourceSearchSession', $this->manager->getResourceSearchSession());
     	} 
     	// Otherwise, ensure that the propper exception is thrown
     	else {
@@ -140,7 +140,7 @@ class banner_resource_ResourceManagerTest
     {
     	// If supported, validate our session response
     	if ($this->manager->supportsResourceSearch()) {
-    		 $this->assertType('osid_resource_ResourceSearchSession', $this->manager->getResourceSearchSessionForBin($this->allBinId));
+    		 $this->assertInstanceOf('osid_resource_ResourceSearchSession', $this->manager->getResourceSearchSessionForBin($this->allBinId));
     	} 
     	// Otherwise, ensure that the propper exception is thrown
     	else {
@@ -161,7 +161,7 @@ class banner_resource_ResourceManagerTest
     {
     	// If supported, validate our session response
     	if ($this->manager->supportsResourceAdmin()) {
-    		 $this->assertType('osid_resource_ResourceAdminSession', $this->manager->getResourceAdminSession());
+    		 $this->assertInstanceOf('osid_resource_ResourceAdminSession', $this->manager->getResourceAdminSession());
     	} 
     	// Otherwise, ensure that the propper exception is thrown
     	else {
@@ -182,7 +182,7 @@ class banner_resource_ResourceManagerTest
     {
     	// If supported, validate our session response
     	if ($this->manager->supportsResourceAdmin()) {
-    		 $this->assertType('osid_resource_ResourceAdminSession', $this->manager->getResourceAdminSessionForBin($this->allBinId));
+    		 $this->assertInstanceOf('osid_resource_ResourceAdminSession', $this->manager->getResourceAdminSessionForBin($this->allBinId));
     	} 
     	// Otherwise, ensure that the propper exception is thrown
     	else {
@@ -203,7 +203,7 @@ class banner_resource_ResourceManagerTest
     {
     	// If supported, validate our session response
     	if ($this->manager->supportsResourceNotification()) {
-    		 $this->assertType('osid_resource_ResourceNotificationSession', $this->manager->getResourceNotificationSession(new phpkit_resource_DummyResourceReceiver));
+    		 $this->assertInstanceOf('osid_resource_ResourceNotificationSession', $this->manager->getResourceNotificationSession(new phpkit_resource_DummyResourceReceiver));
     	} 
     	// Otherwise, ensure that the propper exception is thrown
     	else {
@@ -224,7 +224,7 @@ class banner_resource_ResourceManagerTest
     {
     	// If supported, validate our session response
     	if ($this->manager->supportsResourceNotification()) {
-    		 $this->assertType('osid_resource_ResourceNotificationSession', $this->manager->getResourceNotificationSessionForBin(new phpkit_resource_DummyResourceReceiver, $this->allBinId));
+    		 $this->assertInstanceOf('osid_resource_ResourceNotificationSession', $this->manager->getResourceNotificationSessionForBin(new phpkit_resource_DummyResourceReceiver, $this->allBinId));
     	} 
     	// Otherwise, ensure that the propper exception is thrown
     	else {
@@ -245,7 +245,7 @@ class banner_resource_ResourceManagerTest
     {
     	// If supported, validate our session response
     	if ($this->manager->supportsResourceBin()) {
-    		 $this->assertType('osid_resource_ResourceBinSession', $this->manager->getResourceBinSession());
+    		 $this->assertInstanceOf('osid_resource_ResourceBinSession', $this->manager->getResourceBinSession());
     	} 
     	// Otherwise, ensure that the propper exception is thrown
     	else {
@@ -266,7 +266,7 @@ class banner_resource_ResourceManagerTest
     {
     	// If supported, validate our session response
     	if ($this->manager->supportsResourceBinAssignment()) {
-    		 $this->assertType('osid_resource_ResourceBinAssignmentSession', $this->manager->getResourceBinAssignmentSession());
+    		 $this->assertInstanceOf('osid_resource_ResourceBinAssignmentSession', $this->manager->getResourceBinAssignmentSession());
     	} 
     	// Otherwise, ensure that the propper exception is thrown
     	else {
@@ -287,7 +287,7 @@ class banner_resource_ResourceManagerTest
     {
     	// If supported, validate our session response
     	if ($this->manager->supportsBinLookup()) {
-    		 $this->assertType('osid_resource_BinLookupSession', $this->manager->getBinLookupSession());
+    		 $this->assertInstanceOf('osid_resource_BinLookupSession', $this->manager->getBinLookupSession());
     	} 
     	// Otherwise, ensure that the propper exception is thrown
     	else {
@@ -308,7 +308,7 @@ class banner_resource_ResourceManagerTest
     {
     	// If supported, validate our session response
     	if ($this->manager->supportsBinSearch()) {
-    		 $this->assertType('osid_resource_BinSearchSession', $this->manager->getBinSearchSession());
+    		 $this->assertInstanceOf('osid_resource_BinSearchSession', $this->manager->getBinSearchSession());
     	} 
     	// Otherwise, ensure that the propper exception is thrown
     	else {
@@ -329,7 +329,7 @@ class banner_resource_ResourceManagerTest
     {
     	// If supported, validate our session response
     	if ($this->manager->supportsBinAdmin()) {
-    		 $this->assertType('osid_resource_BinAdminSession', $this->manager->getBinAdminSession());
+    		 $this->assertInstanceOf('osid_resource_BinAdminSession', $this->manager->getBinAdminSession());
     	} 
     	// Otherwise, ensure that the propper exception is thrown
     	else {
@@ -350,7 +350,7 @@ class banner_resource_ResourceManagerTest
     {
     	// If supported, validate our session response
     	if ($this->manager->supportsBinNotification()) {
-    		 $this->assertType('osid_resource_BinNotificationSession', $this->manager->getBinNotificationSession(new phpkit_resource_DummyBinReceiver));
+    		 $this->assertInstanceOf('osid_resource_BinNotificationSession', $this->manager->getBinNotificationSession(new phpkit_resource_DummyBinReceiver));
     	} 
     	// Otherwise, ensure that the propper exception is thrown
     	else {
@@ -371,7 +371,7 @@ class banner_resource_ResourceManagerTest
     {
     	// If supported, validate our session response
     	if ($this->manager->supportsBinHierarchy()) {
-    		 $this->assertType('osid_resource_BinHierarchySession', $this->manager->getBinHierarchySession());
+    		 $this->assertInstanceOf('osid_resource_BinHierarchySession', $this->manager->getBinHierarchySession());
     	} 
     	// Otherwise, ensure that the propper exception is thrown
     	else {
@@ -392,7 +392,7 @@ class banner_resource_ResourceManagerTest
     {
     	// If supported, validate our session response
     	if ($this->manager->supportsBinHierarchyDesign()) {
-    		 $this->assertType('osid_resource_BinHierarchyDesignSession', $this->manager->getBinHierarchyDesignSession());
+    		 $this->assertInstanceOf('osid_resource_BinHierarchyDesignSession', $this->manager->getBinHierarchyDesignSession());
     	} 
     	// Otherwise, ensure that the propper exception is thrown
     	else {
@@ -524,7 +524,7 @@ class banner_resource_ResourceManagerTest
     public function testGetResourceRecordTypes()
     {
         $types = $this->manager->getResourceRecordTypes();
-        $this->assertType('osid_type_TypeList', $types);
+        $this->assertInstanceOf('osid_type_TypeList', $types);
         
         // Check for any needed types or an empty list.
         $this->assertFalse($types->hasNext());
@@ -551,7 +551,7 @@ class banner_resource_ResourceManagerTest
     public function testGetResourceSearchRecordTypes()
     {
         $types = $this->manager->getResourceSearchRecordTypes();
-        $this->assertType('osid_type_TypeList', $types);
+        $this->assertInstanceOf('osid_type_TypeList', $types);
         
         // Check for any needed types or an empty list.
         $this->assertFalse($types->hasNext());
@@ -578,7 +578,7 @@ class banner_resource_ResourceManagerTest
     public function testGetBinRecordTypes()
     {
         $types = $this->manager->getBinRecordTypes();
-        $this->assertType('osid_type_TypeList', $types);
+        $this->assertInstanceOf('osid_type_TypeList', $types);
         
         // Check for any needed types or an empty list.
         $this->assertFalse($types->hasNext());
@@ -605,7 +605,7 @@ class banner_resource_ResourceManagerTest
     public function testGetBinSearchRecordTypes()
     {
         $types = $this->manager->getBinSearchRecordTypes();
-        $this->assertType('osid_type_TypeList', $types);
+        $this->assertInstanceOf('osid_type_TypeList', $types);
         
         // Check for any needed types or an empty list.
         $this->assertFalse($types->hasNext());

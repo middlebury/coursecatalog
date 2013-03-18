@@ -189,7 +189,7 @@ class banner_course_Course_Search_OrderTest extends PHPUnit_Framework_TestCase
     {
 //         $record = $this->object->getCourseSearchOrderRecord($this->instructorsType);
 //         $order = $record->getCourseSearchOrder();
-//         $this->assertType('osid_course_CourseSearchOrder', $order);
+//         $this->assertInstanceOf('osid_course_CourseSearchOrder', $order);
     }
 
     /**
@@ -198,7 +198,7 @@ class banner_course_Course_Search_OrderTest extends PHPUnit_Framework_TestCase
     public function testGetCourseSearchOrderRecord()
     {
 //         $record = $this->object->getCourseSearchOrderRecord($this->instructorsType);
-//         $this->assertType('osid_course_CourseSearchOrderRecord', $record);
+//         $this->assertInstanceOf('osid_course_CourseSearchOrderRecord', $record);
     }
     
      /**
@@ -207,7 +207,7 @@ class banner_course_Course_Search_OrderTest extends PHPUnit_Framework_TestCase
     public function testGetCourseSearchOrderRecordOther()
     {
         $record = $this->object->getCourseSearchOrderRecord($this->otherType);
-        $this->assertType('osid_course_CourseSearchOrderRecord', $record);
+        $this->assertInstanceOf('osid_course_CourseSearchOrderRecord', $record);
     }
 }
 ?>

@@ -68,7 +68,7 @@ class banner_course_Course_Search_SearchTest extends PHPUnit_Framework_TestCase
      */
     public function testGetLimitClause()
     {
-        $this->assertType('string', $this->object->getLimitClause());
+        $this->assertInternalType('string', $this->object->getLimitClause());
         $this->assertEquals('', $this->object->getLimitClause());
     }
 
@@ -77,7 +77,7 @@ class banner_course_Course_Search_SearchTest extends PHPUnit_Framework_TestCase
      */
     public function testGetOrderByClause()
     {
-        $this->assertType('string', $this->object->getOrderByClause());
+        $this->assertInternalType('string', $this->object->getOrderByClause());
         $this->assertEquals('', $this->object->getOrderByClause());
     }
     
@@ -86,7 +86,7 @@ class banner_course_Course_Search_SearchTest extends PHPUnit_Framework_TestCase
      */
     public function testGetWhereClause()
     {
-        $this->assertType('string', $this->object->getWhereClause());
+        $this->assertInternalType('string', $this->object->getWhereClause());
         $this->assertEquals('', $this->object->getWhereClause());
     }
 
@@ -95,7 +95,7 @@ class banner_course_Course_Search_SearchTest extends PHPUnit_Framework_TestCase
      */
     public function testGetAdditionalTableJoins()
     {
-        $this->assertType('array', $this->object->getAdditionalTableJoins());
+        $this->assertInternalType('array', $this->object->getAdditionalTableJoins());
         $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
         
     }
@@ -105,7 +105,7 @@ class banner_course_Course_Search_SearchTest extends PHPUnit_Framework_TestCase
      */
     public function testGetParameters()
     {
-        $this->assertType('array', $this->object->getParameters());
+        $this->assertInternalType('array', $this->object->getParameters());
         $this->assertEquals(0, count($this->object->getParameters()));
     }
     
@@ -203,7 +203,7 @@ class banner_course_Course_Search_SearchTest extends PHPUnit_Framework_TestCase
         $query->matchNumber('*2*', $this->wildcardStringMatchType, true);
         
     	$all200Results = $this->session->getCoursesBySearch($query, $this->object);
-        $this->assertType('osid_course_CourseSearchResults', $all200Results);
+        $this->assertInstanceOf('osid_course_CourseSearchResults', $all200Results);
   		$this->assertEquals(3, $all200Results->getResultSize());
     	
     	$this->object->searchWithinCourseResults($all200Results);
@@ -213,7 +213,7 @@ class banner_course_Course_Search_SearchTest extends PHPUnit_Framework_TestCase
     	
     	$results = $this->session->getCoursesBySearch($query2, $this->object);
 //     	print $results->debug();
-       	$this->assertType('osid_course_CourseSearchResults', $results);
+       	$this->assertInstanceOf('osid_course_CourseSearchResults', $results);
         $this->assertEquals(2, $results->getResultSize());
     }
 

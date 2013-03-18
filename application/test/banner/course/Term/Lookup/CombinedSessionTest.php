@@ -63,7 +63,7 @@ class banner_course_Term_Lookup_CombinedSessionTest
      */
     public function testGetCourseCatalogId()
     {
-        $this->assertType('osid_id_Id', $this->session->getCourseCatalogId());
+        $this->assertInstanceOf('osid_id_Id', $this->session->getCourseCatalogId());
 //         $this->assertTrue($this->manager->getCombinedCatalogId()->isEqual($this->session->getCourseCatalogId()));
     }
 
@@ -72,7 +72,7 @@ class banner_course_Term_Lookup_CombinedSessionTest
      */
     public function testGetCourseCatalog()
     {
-        $this->assertType('osid_course_CourseCatalog', $this->session->getCourseCatalog());
+        $this->assertInstanceOf('osid_course_CourseCatalog', $this->session->getCourseCatalog());
 //         $this->assertTrue($this->manager->getCombinedCatalogId()->isEqual($this->session->getCourseCatalog()->getId()));
     }
 
@@ -95,7 +95,7 @@ class banner_course_Term_Lookup_CombinedSessionTest
         			$this->termId,
         			$this->springTermId,
         			$this->unknownId)));
-        $this->assertType('osid_course_TermList', $terms);
+        $this->assertInstanceOf('osid_course_TermList', $terms);
         $this->assertEquals(2, $terms->available());
     }
 
@@ -121,7 +121,7 @@ class banner_course_Term_Lookup_CombinedSessionTest
     	$this->session->useFederatedCourseCatalogView();
     	
         $term = $this->session->getTerm($this->termId);
-        $this->assertType('osid_course_Term', $term);
+        $this->assertInstanceOf('osid_course_Term', $term);
     }
 
     /**
@@ -133,7 +133,7 @@ class banner_course_Term_Lookup_CombinedSessionTest
     	$this->session->useIsolatedCourseCatalogView();
     	
     	$term = $this->session->getTerm($this->termId);
-        $this->assertType('osid_course_Term', $term);
+        $this->assertInstanceOf('osid_course_Term', $term);
     }
     
     /**
@@ -145,7 +145,7 @@ class banner_course_Term_Lookup_CombinedSessionTest
     	$this->session->useIsolatedCourseCatalogView();
     	
         $terms = $this->session->getTerms();
-        $this->assertType('osid_course_TermList', $terms);
+        $this->assertInstanceOf('osid_course_TermList', $terms);
         $this->assertEquals(0, $terms->available());
     }
     
@@ -160,7 +160,7 @@ class banner_course_Term_Lookup_CombinedSessionTest
         $terms = $this->session->getTermsByIds(new phpkit_id_ArrayIdList(array(
         			$this->termId,
         			$this->springTermId)));
-        $this->assertType('osid_course_TermList', $terms);
+        $this->assertInstanceOf('osid_course_TermList', $terms);
         $this->assertEquals(0, $terms->available());
     }
 
@@ -170,7 +170,7 @@ class banner_course_Term_Lookup_CombinedSessionTest
     public function testGetTerm()
     {
         $term = $this->session->getTerm($this->termId);
-        $this->assertType('osid_course_Term', $term);
+        $this->assertInstanceOf('osid_course_Term', $term);
         $this->assertTrue($term->getId()->isEqual($this->termId));
     }
     
@@ -190,10 +190,10 @@ class banner_course_Term_Lookup_CombinedSessionTest
         $terms = $this->session->getTermsByIds(new phpkit_id_ArrayIdList(array(
         			$this->termId,
         			$this->springTermId)));
-        $this->assertType('osid_course_TermList', $terms);
+        $this->assertInstanceOf('osid_course_TermList', $terms);
         $this->assertEquals(2, $terms->available());
-        $this->assertType('osid_course_Term', $terms->getNextTerm());
-        $this->assertType('osid_course_Term', $terms->getNextTerm());
+        $this->assertInstanceOf('osid_course_Term', $terms->getNextTerm());
+        $this->assertInstanceOf('osid_course_Term', $terms->getNextTerm());
         $this->assertFalse($terms->hasNext());
     }
 
@@ -203,11 +203,11 @@ class banner_course_Term_Lookup_CombinedSessionTest
     public function testGetTermsByGenusType()
     {
         $terms = $this->session->getTermsByGenusType($this->generaNoneType);
-       	$this->assertType('osid_course_TermList', $terms);
+       	$this->assertInstanceOf('osid_course_TermList', $terms);
        	$this->assertTrue($terms->hasNext());
        	
        	$terms = $this->session->getTermsByGenusType($this->secondaryType);
-       	$this->assertType('osid_course_TermList', $terms);
+       	$this->assertInstanceOf('osid_course_TermList', $terms);
        	$this->assertFalse($terms->hasNext());
     }
 
@@ -217,11 +217,11 @@ class banner_course_Term_Lookup_CombinedSessionTest
     public function testGetTermsByParentGenusType()
     {
         $terms = $this->session->getTermsByParentGenusType($this->generaNoneType);
-       	$this->assertType('osid_course_TermList', $terms);
+       	$this->assertInstanceOf('osid_course_TermList', $terms);
        	$this->assertTrue($terms->hasNext());
        	
        	$terms = $this->session->getTermsByParentGenusType($this->secondaryType);
-       	$this->assertType('osid_course_TermList', $terms);
+       	$this->assertInstanceOf('osid_course_TermList', $terms);
        	$this->assertFalse($terms->hasNext());
     }
 
@@ -231,7 +231,7 @@ class banner_course_Term_Lookup_CombinedSessionTest
     public function testGetTermsByRecordType()
     {
         $terms = $this->session->getTermsByRecordType($this->unknownType);
-       	$this->assertType('osid_course_TermList', $terms);
+       	$this->assertInstanceOf('osid_course_TermList', $terms);
        	$this->assertFalse($terms->hasNext());
     }
 
@@ -241,10 +241,10 @@ class banner_course_Term_Lookup_CombinedSessionTest
     public function testGetTerms()
     {
         $terms = $this->session->getTerms();
-        $this->assertType('osid_course_TermList', $terms);
+        $this->assertInstanceOf('osid_course_TermList', $terms);
         $this->assertEquals(13, $terms->available());
-        $this->assertType('osid_course_Term', $terms->getNextTerm());
-        $this->assertType('osid_course_Term', $terms->getNextTerm());
+        $this->assertInstanceOf('osid_course_Term', $terms->getNextTerm());
+        $this->assertInstanceOf('osid_course_Term', $terms->getNextTerm());
     }
 }
 ?>

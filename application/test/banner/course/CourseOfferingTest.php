@@ -66,7 +66,7 @@ class banner_course_CourseOfferingTest
 	
 	public function testGenusType() {
     	$type = $this->object->getGenusType();
-    	$this->assertType('osid_type_Type', $type);
+    	$this->assertInstanceOf('osid_type_Type', $type);
     	$this->assertEquals('genera:offering/LCT', $type->getIdentifier());
     	$this->assertEquals('Lecture', trim($type->getDisplayName()));
     }
@@ -76,7 +76,7 @@ class banner_course_CourseOfferingTest
      */
     public function testGetTitle()
     {
-        $this->assertType('string', $this->object->getTitle());
+        $this->assertInternalType('string', $this->object->getTitle());
         $this->assertEquals('Relativity And Quantum Physics', $this->object->getTitle());
     }
     
@@ -140,7 +140,7 @@ class banner_course_CourseOfferingTest
     public function testChemGetNumber()
     {
     	$object = $this->session->getCourseOffering($this->chemOfferingId);
-        $this->assertType('string', $object->getNumber());
+        $this->assertInternalType('string', $object->getNumber());
         $this->assertEquals('CHEM0104T-S05', $object->getNumber());
     }
 
@@ -149,7 +149,7 @@ class banner_course_CourseOfferingTest
      */
     public function testGetNumber()
     {
-        $this->assertType('string', $this->object->getNumber());
+        $this->assertInternalType('string', $this->object->getNumber());
         $this->assertEquals('PHYS0201A-F08', $this->object->getNumber());
     }
 
@@ -158,7 +158,7 @@ class banner_course_CourseOfferingTest
      */
     public function testGetCredits()
     {
-        $this->assertType('float', $this->object->getCredits());
+        $this->assertInternalType('float', $this->object->getCredits());
         $this->assertEquals(1.00, $this->object->getCredits());
     }
 
@@ -167,7 +167,7 @@ class banner_course_CourseOfferingTest
      */
     public function testGetPrereqInfo()
     {
-        $this->assertType('string', $this->object->getPrereqInfo());
+        $this->assertInternalType('string', $this->object->getPrereqInfo());
     }
 
     /**
@@ -175,7 +175,7 @@ class banner_course_CourseOfferingTest
      */
     public function testGetCourseId()
     {
-        $this->assertType('osid_id_Id', $this->object->getCourseId());
+        $this->assertInstanceOf('osid_id_Id', $this->object->getCourseId());
     }
 
     /**
@@ -183,7 +183,7 @@ class banner_course_CourseOfferingTest
      */
     public function testGetCourse()
     {
-        $this->assertType('osid_course_Course', $this->object->getCourse());
+        $this->assertInstanceOf('osid_course_Course', $this->object->getCourse());
     }
 
     /**
@@ -191,7 +191,7 @@ class banner_course_CourseOfferingTest
      */
     public function testGetTermId()
     {
-        $this->assertType('osid_id_Id', $this->object->getTermId());
+        $this->assertInstanceOf('osid_id_Id', $this->object->getTermId());
     }
 
     /**
@@ -199,7 +199,7 @@ class banner_course_CourseOfferingTest
      */
     public function testGetTerm()
     {
-        $this->assertType('osid_course_Term', $this->object->getTerm());
+        $this->assertInstanceOf('osid_course_Term', $this->object->getTerm());
     }
     
     /**
@@ -208,9 +208,9 @@ class banner_course_CourseOfferingTest
     public function testGetTopicIds()
     {
     	$list = $this->object->getTopicIds();
-        $this->assertType('osid_id_IdList', $list);
+        $this->assertInstanceOf('osid_id_IdList', $list);
         $this->assertEquals(6, $list->available());
-        $this->assertType('osid_id_Id', $list->getNextId());
+        $this->assertInstanceOf('osid_id_Id', $list->getNextId());
     }
 
     /**
@@ -219,9 +219,9 @@ class banner_course_CourseOfferingTest
     public function testGetTopics()
     {
         $list = $this->object->getTopics();
-        $this->assertType('osid_course_TopicList', $list);
+        $this->assertInstanceOf('osid_course_TopicList', $list);
         $this->assertEquals(6, $list->available());
-        $this->assertType('osid_course_Topic', $list->getNextTopic());
+        $this->assertInstanceOf('osid_course_Topic', $list->getNextTopic());
     }
     
     /**
@@ -253,7 +253,7 @@ class banner_course_CourseOfferingTest
      */
     public function testGetLocationInfo()
     {
-        $this->assertType('string', $this->object->getLocationInfo());
+        $this->assertInternalType('string', $this->object->getLocationInfo());
 //         $this->assertEquals('', $this->object->getLocationInfo());
     }
 
@@ -262,7 +262,7 @@ class banner_course_CourseOfferingTest
      */
     public function testHasLocation()
     {
-        $this->assertType('boolean', $this->object->hasLocation());
+        $this->assertInternalType('boolean', $this->object->hasLocation());
     }
 
     /**
@@ -271,7 +271,7 @@ class banner_course_CourseOfferingTest
     public function testGetLocationId()
     {
         if ($this->object->hasLocation()) {
-        	$this->assertType('osid_id_Id', $this->object->getLocationId());
+        	$this->assertInstanceOf('osid_id_Id', $this->object->getLocationId());
         } else {
         	try {
         		$this->object->getLocationId();
@@ -289,7 +289,7 @@ class banner_course_CourseOfferingTest
     {
         if ($this->object->hasLocation()) {
 	        try {
-	        	$this->assertType('osid_resource_Resource', $this->object->getLocation());
+	        	$this->assertInstanceOf('osid_resource_Resource', $this->object->getLocation());
 			} catch (osid_OperationFailedException $e) {
 				$this->markTestIncomplete($e->getMessage().' - getResourceManager() needs to be fully implemented..');
 			}
@@ -309,7 +309,7 @@ class banner_course_CourseOfferingTest
      */
     public function testGetScheduleInfo()
     {
-        $this->assertType('string', $this->object->getScheduleInfo());
+        $this->assertInternalType('string', $this->object->getScheduleInfo());
 //         $this->assertEquals('', $this->object->getScheduleInfo());
     }
 
@@ -318,7 +318,7 @@ class banner_course_CourseOfferingTest
      */
     public function testHasCalendar()
     {
-        $this->assertType('boolean', $this->object->hasCalendar());
+        $this->assertInternalType('boolean', $this->object->hasCalendar());
     }
 
     /**
@@ -327,7 +327,7 @@ class banner_course_CourseOfferingTest
     public function testGetCalendarId()
     {
         if ($this->object->hasCalendar()) {
-        	$this->assertType('osid_id_Id', $this->object->getCalendarId());
+        	$this->assertInstanceOf('osid_id_Id', $this->object->getCalendarId());
         } else {
         	try {
         		$this->object->getCalendarId();
@@ -344,7 +344,7 @@ class banner_course_CourseOfferingTest
     public function testGetCalendar()
     {
         if ($this->object->hasCalendar()) {
-        	$this->assertType('osid_resource_Resource', $this->object->getCalendar());
+        	$this->assertInstanceOf('osid_resource_Resource', $this->object->getCalendar());
         } else {
         	try {
         		$this->object->getCalendar();
@@ -360,7 +360,7 @@ class banner_course_CourseOfferingTest
      */
     public function testHasLearningObjective()
     {
-        $this->assertType('boolean', $this->object->hasLearningObjective());
+        $this->assertInternalType('boolean', $this->object->hasLearningObjective());
     }
 
     /**
@@ -369,7 +369,7 @@ class banner_course_CourseOfferingTest
     public function testGetLearningObjectiveId()
     {
         if ($this->object->hasLearningObjective()) {
-        	$this->assertType('osid_id_Id', $this->object->getLearningObjectiveId());
+        	$this->assertInstanceOf('osid_id_Id', $this->object->getLearningObjectiveId());
         } else {
         	try {
         		$this->object->getLearningObjectiveId();
@@ -386,7 +386,7 @@ class banner_course_CourseOfferingTest
     public function testGetLearningObjective()
     {
         if ($this->object->hasLearningObjective()) {
-        	$this->assertType('osid_id_Id', $this->object->getLearningObjective());
+        	$this->assertInstanceOf('osid_id_Id', $this->object->getLearningObjective());
         } else {
         	try {
         		$this->object->getLearningObjective();
@@ -402,7 +402,7 @@ class banner_course_CourseOfferingTest
      */
     public function testGetURL()
     {
-        $this->assertType('string', $this->object->getURL());
+        $this->assertInternalType('string', $this->object->getURL());
     }
 
     /**
@@ -412,7 +412,7 @@ class banner_course_CourseOfferingTest
     {
         $types = $this->object->getRecordTypes();
     	while ($types->hasNext()) {
-	        $this->assertType('osid_course_CourseOfferingRecord', $this->object->getCourseOfferingRecord($types->getNextType()));
+	        $this->assertInstanceOf('osid_course_CourseOfferingRecord', $this->object->getCourseOfferingRecord($types->getNextType()));
 	    }
     }
     
@@ -430,8 +430,8 @@ class banner_course_CourseOfferingTest
     public function testGetInstructorsRecord()
     {
         $record = $this->object->getCourseOfferingRecord($this->instructorsType);
-        $this->assertType('osid_course_CourseOfferingRecord', $record);
-        $this->assertType('middlebury_course_CourseOffering_InstructorsRecord', $record);
+        $this->assertInstanceOf('osid_course_CourseOfferingRecord', $record);
+        $this->assertInstanceOf('middlebury_course_CourseOffering_InstructorsRecord', $record);
     }
     
     /**
@@ -441,9 +441,9 @@ class banner_course_CourseOfferingTest
     {
         $record = $this->object->getCourseOfferingRecord($this->instructorsType);
         $ids = $record->getInstructorIds();
-        $this->assertType('osid_id_IdList', $ids);
+        $this->assertInstanceOf('osid_id_IdList', $ids);
         $this->assertEquals(1, $ids->available());
-        $this->assertType('osid_id_Id', $ids->getNextId());
+        $this->assertInstanceOf('osid_id_Id', $ids->getNextId());
     }
     
     /**
@@ -453,10 +453,10 @@ class banner_course_CourseOfferingTest
     {
         $record = $this->object->getCourseOfferingRecord($this->instructorsType);
         $instructors = $record->getInstructors();
-        $this->assertType('osid_resource_ResourceList', $instructors);
+        $this->assertInstanceOf('osid_resource_ResourceList', $instructors);
         $this->assertEquals(1, $instructors->available());
         $person = $instructors->getNextResource();
-        $this->assertType('osid_resource_Resource', $person);
+        $this->assertInstanceOf('osid_resource_Resource', $person);
         $this->assertEquals('Nevin Nordemire', $person->getDisplayName());
         
         $names = $person->getResourceRecord($this->namesType);
@@ -472,9 +472,9 @@ class banner_course_CourseOfferingTest
     	$object = $this->session->getCourseOffering($this->chemOfferingId);
         $record = $object->getCourseOfferingRecord($this->instructorsType);
         $ids = $record->getInstructorIds();
-        $this->assertType('osid_id_IdList', $ids);
+        $this->assertInstanceOf('osid_id_IdList', $ids);
         $this->assertEquals(2, $ids->available());
-        $this->assertType('osid_id_Id', $ids->getNextId());
+        $this->assertInstanceOf('osid_id_Id', $ids->getNextId());
     }
     
     /**
@@ -485,11 +485,11 @@ class banner_course_CourseOfferingTest
         $object = $this->session->getCourseOffering($this->chemOfferingId);
         $record = $object->getCourseOfferingRecord($this->instructorsType);
         $instructors = $record->getInstructors();
-        $this->assertType('osid_resource_ResourceList', $instructors);
+        $this->assertInstanceOf('osid_resource_ResourceList', $instructors);
         $this->assertEquals(2, $instructors->available());
         
         $person = $instructors->getNextResource();
-        $this->assertType('osid_resource_Resource', $person);
+        $this->assertInstanceOf('osid_resource_Resource', $person);
         $this->assertEquals('Barry Bancroft', $person->getDisplayName());
         
         $names = $person->getResourceRecord($this->namesType);
@@ -497,7 +497,7 @@ class banner_course_CourseOfferingTest
         $this->assertEquals('Bancroft', $names->getSurname());
         
         $person = $instructors->getNextResource();
-        $this->assertType('osid_resource_Resource', $person);
+        $this->assertInstanceOf('osid_resource_Resource', $person);
         $this->assertEquals('Georges Gleuseau', $person->getDisplayName());
         
         $names = $person->getResourceRecord($this->namesType);
@@ -522,7 +522,7 @@ class banner_course_CourseOfferingTest
     public function testGetAlternateIds () {
     	$record = $this->object->getCourseOfferingRecord($this->alternatesType);
     	$ids = $record->getAlternateIds();
-    	$this->assertType('osid_id_IdList', $ids);
+    	$this->assertInstanceOf('osid_id_IdList', $ids);
     }
     
     /**
@@ -531,7 +531,7 @@ class banner_course_CourseOfferingTest
     public function testGetAlternates () {
     	$record = $this->object->getCourseOfferingRecord($this->alternatesType);
     	$alternates = $record->getAlternates();
-    	$this->assertType('osid_course_CourseOfferingList', $alternates);
+    	$this->assertInstanceOf('osid_course_CourseOfferingList', $alternates);
     }
     
     /**
@@ -550,7 +550,7 @@ class banner_course_CourseOfferingTest
     	$offering = $this->session->getCourseOffering($this->geolOfferingId);
     	$record = $offering->getCourseOfferingRecord($this->alternatesType);
     	$ids = $record->getAlternateIds();
-    	$this->assertType('osid_id_IdList', $ids);
+    	$this->assertInstanceOf('osid_id_IdList', $ids);
     	$this->assertEquals(1, $ids->available());
     }
     
@@ -561,7 +561,7 @@ class banner_course_CourseOfferingTest
     	$offering = $this->session->getCourseOffering($this->geolOfferingId);
     	$record = $offering->getCourseOfferingRecord($this->alternatesType);
     	$alternates = $record->getAlternates();
-    	$this->assertType('osid_course_CourseOfferingList', $alternates);
+    	$this->assertInstanceOf('osid_course_CourseOfferingList', $alternates);
     	$this->assertEquals(1, $alternates->available());
     }
     
@@ -601,7 +601,7 @@ class banner_course_CourseOfferingTest
     public function testGetSundayStartTimes () {
     	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
     	$times = $record->getSundayStartTimes();
-    	$this->assertType('array', $times);
+    	$this->assertInternalType('array', $times);
     	$this->assertEquals(0, count($times));
     }
     
@@ -611,7 +611,7 @@ class banner_course_CourseOfferingTest
     public function testGetSundayEndTimes () {
     	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
     	$times = $record->getSundayEndTimes();
-    	$this->assertType('array', $times);
+    	$this->assertInternalType('array', $times);
     	$this->assertEquals(0, count($times));
     }
     
@@ -629,7 +629,7 @@ class banner_course_CourseOfferingTest
     public function testGetMondayStartTimes () {
     	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
     	$times = $record->getMondayStartTimes();
-    	$this->assertType('array', $times);
+    	$this->assertInternalType('array', $times);
     	$this->assertEquals(1, count($times));
     	$this->assertEquals(40500, $times[0]);	// 11:15am
     }
@@ -640,7 +640,7 @@ class banner_course_CourseOfferingTest
     public function testGetMondayEndTimes () {
     	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
     	$times = $record->getMondayEndTimes();
-    	$this->assertType('array', $times);
+    	$this->assertInternalType('array', $times);
     	$this->assertEquals(1, count($times));
     	$this->assertEquals(43500, $times[0]);	// 12:05pm
     }
@@ -659,7 +659,7 @@ class banner_course_CourseOfferingTest
     public function testGetTuesdayStartTimes () {
     	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
     	$times = $record->getTuesdayStartTimes();
-    	$this->assertType('array', $times);
+    	$this->assertInternalType('array', $times);
     	$this->assertEquals(0, count($times));
     }
     
@@ -669,7 +669,7 @@ class banner_course_CourseOfferingTest
     public function testGetTuesdayEndTimes () {
     	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
     	$times = $record->getTuesdayEndTimes();
-    	$this->assertType('array', $times);
+    	$this->assertInternalType('array', $times);
     	$this->assertEquals(0, count($times));
     }
 
@@ -687,7 +687,7 @@ class banner_course_CourseOfferingTest
     public function testGetWednesdayStartTimes () {
     	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
     	$times = $record->getWednesdayStartTimes();
-    	$this->assertType('array', $times);
+    	$this->assertInternalType('array', $times);
     	$this->assertEquals(1, count($times));
     	$this->assertEquals(40500, $times[0]);	// 11:15am
     }
@@ -698,7 +698,7 @@ class banner_course_CourseOfferingTest
     public function testGetWednesdayEndTimes () {
     	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
     	$times = $record->getWednesdayEndTimes();
-    	$this->assertType('array', $times);
+    	$this->assertInternalType('array', $times);
     	$this->assertEquals(1, count($times));
     	$this->assertEquals(43500, $times[0]);	// 12:05pm
     }
@@ -717,7 +717,7 @@ class banner_course_CourseOfferingTest
     public function testGetThursdayStartTimes () {
     	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
     	$times = $record->getThursdayStartTimes();
-    	$this->assertType('array', $times);
+    	$this->assertInternalType('array', $times);
     	$this->assertEquals(0, count($times));
     }
     
@@ -727,7 +727,7 @@ class banner_course_CourseOfferingTest
     public function testGetThursdayEndTimes () {
     	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
     	$times = $record->getThursdayEndTimes();
-    	$this->assertType('array', $times);
+    	$this->assertInternalType('array', $times);
     	$this->assertEquals(0, count($times));
     }
     
@@ -745,7 +745,7 @@ class banner_course_CourseOfferingTest
     public function testGetFridayStartTimes () {
     	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
     	$times = $record->getFridayStartTimes();
-    	$this->assertType('array', $times);
+    	$this->assertInternalType('array', $times);
     	$this->assertEquals(1, count($times));
     	$this->assertEquals(40500, $times[0]);	// 11:15am
     }
@@ -756,7 +756,7 @@ class banner_course_CourseOfferingTest
     public function testGetFridayEndTimes () {
     	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
     	$times = $record->getFridayEndTimes();
-    	$this->assertType('array', $times);
+    	$this->assertInternalType('array', $times);
     	$this->assertEquals(1, count($times));
     	$this->assertEquals(43500, $times[0]);	// 12:05pm
     }
@@ -775,7 +775,7 @@ class banner_course_CourseOfferingTest
     public function testGetSaturdayStartTimes () {
     	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
     	$times = $record->getSaturdayStartTimes();
-    	$this->assertType('array', $times);
+    	$this->assertInternalType('array', $times);
     	$this->assertEquals(0, count($times));
     }
     
@@ -785,7 +785,7 @@ class banner_course_CourseOfferingTest
     public function testGetSaturdayEndTimes () {
     	$record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
     	$times = $record->getSaturdayEndTimes();
-    	$this->assertType('array', $times);
+    	$this->assertInternalType('array', $times);
     	$this->assertEquals(0, count($times));
     }
 

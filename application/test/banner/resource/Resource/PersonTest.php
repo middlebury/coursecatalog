@@ -94,7 +94,7 @@ class banner_resource_Resource_PersonTest
     public function testGetResourceRecord()
     {
         $names = $this->object->getResourceRecord($this->namesType);
-        $this->assertType('middlebury_resource_Resource_PersonNamesRecord', $names);
+        $this->assertInstanceOf('middlebury_resource_Resource_PersonNamesRecord', $names);
     }
 
     /**
@@ -112,7 +112,7 @@ class banner_resource_Resource_PersonTest
     public function testGetResource()
     {
         $resource = $this->names->getResource();
-        $this->assertType('middlebury_resource_Resource_PersonNamesRecord', $resource);
+        $this->assertInstanceOf('middlebury_resource_Resource_PersonNamesRecord', $resource);
     }
 
     /**
@@ -190,7 +190,7 @@ class banner_resource_Resource_PersonTest
     public function testGetGenusType()
     {
     	$type = $this->object->getGenusType();
-    	$this->assertType('osid_type_Type', $type);
+    	$this->assertInstanceOf('osid_type_Type', $type);
     	$this->assertEquals('urn', $type->getIdentifierNamespace());
     	$this->assertEquals('middlebury.edu', $type->getAuthority());
     	$this->assertEquals('genera:resource/person', $type->getIdentifier());

@@ -81,7 +81,7 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
      */
     public function testGetWhereClause()
     {
-        $this->assertType('string', $this->object->getWhereClause());
+        $this->assertInternalType('string', $this->object->getWhereClause());
     }
     
     /**
@@ -89,7 +89,7 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
      */
     public function testGetAdditionalTableJoins()
     {
-        $this->assertType('array', $this->object->getAdditionalTableJoins());
+        $this->assertInternalType('array', $this->object->getAdditionalTableJoins());
     }
 
     /**
@@ -97,7 +97,7 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
      */
     public function testGetParameters()
     {
-        $this->assertType('array', $this->object->getParameters());
+        $this->assertInternalType('array', $this->object->getParameters());
     }
 
     /**
@@ -106,7 +106,7 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
     public function testGetStringMatchTypes()
     {
         $types = $this->object->getStringMatchTypes();
-        $this->assertType('osid_type_TypeList', $types);
+        $this->assertInstanceOf('osid_type_TypeList', $types);
         $this->assertEquals(2, $types->available());
         $this->assertTrue($this->wildcardStringMatchType->isEqual($types->getNextType()));
     }
@@ -776,8 +776,8 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
     public function testGetCourseQueryRecord()
     {
         $record = $this->object->getCourseQueryRecord($this->otherType);
-//         $this->assertType('osid_course_CourseQueryRecord', $record);
-//         $this->assertType('middlebury_course_Course_Search_InstructorsQueryRecord', $record);
+//         $this->assertInstanceOf('osid_course_CourseQueryRecord', $record);
+//         $this->assertInstanceOf('middlebury_course_Course_Search_InstructorsQueryRecord', $record);
     }
     
     
@@ -786,8 +786,8 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTopicCourseQueryRecord() {
     	$record = $this->object->getCourseQueryRecord($this->topicQueryRecordType);
-        $this->assertType('osid_course_CourseQueryRecord', $record);
-        $this->assertType('middlebury_course_Course_Search_TopicQueryRecord', $record);
+        $this->assertInstanceOf('osid_course_CourseQueryRecord', $record);
+        $this->assertInstanceOf('middlebury_course_Course_Search_TopicQueryRecord', $record);
     }
     
     /**
@@ -859,7 +859,7 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
      */
     public function testGetQueryFromRecord() {
     	$record = $this->object->getCourseQueryRecord($this->topicQueryRecordType);
-        $this->assertType('osid_course_CourseQuery', $record->getCourseQuery());
+        $this->assertInstanceOf('osid_course_CourseQuery', $record->getCourseQuery());
     }
     
 /*********************************************************
@@ -872,8 +872,8 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
     public function testGetInstructorCourseQueryRecord()
     {
         $record = $this->object->getCourseQueryRecord($this->instructorsType);
-        $this->assertType('osid_course_CourseQueryRecord', $record);
-        $this->assertType('middlebury_course_Course_Search_InstructorsQueryRecord', $record);
+        $this->assertInstanceOf('osid_course_CourseQueryRecord', $record);
+        $this->assertInstanceOf('middlebury_course_Course_Search_InstructorsQueryRecord', $record);
     }
     
     /**
@@ -982,8 +982,8 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
     public function testGetLocationCourseQueryRecord()
     {
         $record = $this->object->getCourseQueryRecord($this->locationType);
-        $this->assertType('osid_course_CourseQueryRecord', $record);
-        $this->assertType('middlebury_course_Course_Search_LocationQueryRecord', $record);
+        $this->assertInstanceOf('osid_course_CourseQueryRecord', $record);
+        $this->assertInstanceOf('middlebury_course_Course_Search_LocationQueryRecord', $record);
     }
     
     /**

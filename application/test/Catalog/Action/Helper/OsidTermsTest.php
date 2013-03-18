@@ -45,7 +45,7 @@ class Catalog_Action_Helper_OsidTermsTest extends PHPUnit_Framework_TestCase
      */
     public function testGetCurrentTermId()
     {
-        $this->assertType('osid_id_Id', $this->osidTermsHelper->getCurrentTermId($this->mcugId));
+        $this->assertInstanceOf('osid_id_Id', $this->osidTermsHelper->getCurrentTermId($this->mcugId));
     }
 
     /**

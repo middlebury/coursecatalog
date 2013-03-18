@@ -78,7 +78,7 @@ class banner_course_CourseCatalogTest
     {
         $types = $this->object->getRecordTypes();
     	while ($types->hasNext()) {
-	        $this->assertType('osid_course_CourseCatalogRecord', $this->object->getCourseRecord($types->getNextType()));
+	        $this->assertInstanceOf('osid_course_CourseCatalogRecord', $this->object->getCourseRecord($types->getNextType()));
 	    }
     }
 }

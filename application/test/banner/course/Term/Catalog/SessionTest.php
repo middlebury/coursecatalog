@@ -64,9 +64,9 @@ class banner_course_Term_Catalog_SessionTest
        $termIds = $this->session->getTermIdsByCatalogs(new phpkit_id_ArrayIdList(array(
        					$this->mcugId,
        					$this->unknownId)));
-       $this->assertType('osid_id_IdList', $termIds);
+       $this->assertInstanceOf('osid_id_IdList', $termIds);
        $this->assertEquals(13, $termIds->available());
-       $this->assertType('osid_id_Id', $termIds->getNextId());
+       $this->assertInstanceOf('osid_id_Id', $termIds->getNextId());
     }
 
     /**
@@ -94,9 +94,9 @@ class banner_course_Term_Catalog_SessionTest
     public function testGetTermIdsByCatalog()
     {
        $termIds = $this->session->getTermIdsByCatalog($this->mcugId);
-       $this->assertType('osid_id_IdList', $termIds);
+       $this->assertInstanceOf('osid_id_IdList', $termIds);
        $this->assertEquals(13, $termIds->available());
-       $this->assertType('osid_id_Id', $termIds->getNextId());
+       $this->assertInstanceOf('osid_id_Id', $termIds->getNextId());
     }
 
     /**
@@ -105,9 +105,9 @@ class banner_course_Term_Catalog_SessionTest
     public function testGetTermsByCatalog()
     {
        $terms = $this->session->getTermsByCatalog($this->mcugId);
-       $this->assertType('osid_course_TermList', $terms);
+       $this->assertInstanceOf('osid_course_TermList', $terms);
        $this->assertEquals(13, $terms->available());
-       $this->assertType('osid_course_Term', $terms->getNextTerm());
+       $this->assertInstanceOf('osid_course_Term', $terms->getNextTerm());
     }
 
     /**
@@ -117,9 +117,9 @@ class banner_course_Term_Catalog_SessionTest
     {
        $termIds = $this->session->getTermIdsByCatalogs(new phpkit_id_ArrayIdList(array(
        					$this->mcugId)));
-       $this->assertType('osid_id_IdList', $termIds);
+       $this->assertInstanceOf('osid_id_IdList', $termIds);
        $this->assertEquals(13, $termIds->available());
-       $this->assertType('osid_id_Id', $termIds->getNextId());
+       $this->assertInstanceOf('osid_id_Id', $termIds->getNextId());
     }
 
     /**
@@ -129,9 +129,9 @@ class banner_course_Term_Catalog_SessionTest
     {
        $terms = $this->session->getTermsByCatalogs(new phpkit_id_ArrayIdList(array(
        					$this->mcugId)));
-       $this->assertType('osid_course_TermList', $terms);
+       $this->assertInstanceOf('osid_course_TermList', $terms);
        $this->assertEquals(13, $terms->available());
-       $this->assertType('osid_course_Term', $terms->getNextTerm());
+       $this->assertInstanceOf('osid_course_Term', $terms->getNextTerm());
     }
 
     /**

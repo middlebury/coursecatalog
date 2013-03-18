@@ -53,7 +53,7 @@ class banner_course_Topic_Search_SessionTest extends PHPUnit_Framework_TestCase
      */
     public function testGetCourseCatalogId()
     {
-        $this->assertType('osid_id_Id', $this->session->getCourseCatalogId());
+        $this->assertInstanceOf('osid_id_Id', $this->session->getCourseCatalogId());
         $this->assertTrue($this->mcugId->isEqual($this->session->getCourseCatalogId()));
     }
 
@@ -62,7 +62,7 @@ class banner_course_Topic_Search_SessionTest extends PHPUnit_Framework_TestCase
      */
     public function testGetCourseCatalog()
     {
-        $this->assertType('osid_course_CourseCatalog', $this->session->getCourseCatalog());
+        $this->assertInstanceOf('osid_course_CourseCatalog', $this->session->getCourseCatalog());
         $this->assertTrue($this->mcugId->isEqual($this->session->getCourseCatalog()->getId()));
     }
 
@@ -101,7 +101,7 @@ class banner_course_Topic_Search_SessionTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTopicQuery()
     {
-        $this->assertType('osid_course_TopicQuery', $this->session->getTopicQuery());
+        $this->assertInstanceOf('osid_course_TopicQuery', $this->session->getTopicQuery());
     }
 
     /**
@@ -109,7 +109,7 @@ class banner_course_Topic_Search_SessionTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTopicsByQuery()
     {
-        $this->assertType('osid_course_TopicList', $this->session->getTopicsByQuery($this->session->getTopicQuery()));
+        $this->assertInstanceOf('osid_course_TopicList', $this->session->getTopicsByQuery($this->session->getTopicQuery()));
     }
 
     /**
@@ -117,7 +117,7 @@ class banner_course_Topic_Search_SessionTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTopicSearch()
     {
-        $this->assertType('osid_course_TopicSearch', $this->session->getTopicSearch());
+        $this->assertInstanceOf('osid_course_TopicSearch', $this->session->getTopicSearch());
     }
 
     /**
@@ -125,7 +125,7 @@ class banner_course_Topic_Search_SessionTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTopicSearchOrder()
     {
-        $this->assertType('osid_course_TopicSearchOrder', $this->session->getTopicSearchOrder());
+        $this->assertInstanceOf('osid_course_TopicSearchOrder', $this->session->getTopicSearchOrder());
     }
 
     /**
@@ -133,7 +133,7 @@ class banner_course_Topic_Search_SessionTest extends PHPUnit_Framework_TestCase
      */
     public function testGetTopicsBySearch()
     {
-        $this->assertType('osid_course_TopicSearchResults', $this->session->getTopicsBySearch($this->session->getTopicQuery(), $this->session->getTopicSearch()));
+        $this->assertInstanceOf('osid_course_TopicSearchResults', $this->session->getTopicsBySearch($this->session->getTopicQuery(), $this->session->getTopicSearch()));
     }
 }
 ?>

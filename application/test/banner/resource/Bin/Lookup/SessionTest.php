@@ -96,8 +96,8 @@ class banner_resource_Bin_Lookup_SessionTest
      */
     public function testGetBin()
     {
-        $this->assertType('osid_resource_Bin', $this->session->getBin($this->mcugId));
-        $this->assertType('osid_resource_Bin', $this->session->getBin($this->miisId));
+        $this->assertInstanceOf('osid_resource_Bin', $this->session->getBin($this->mcugId));
+        $this->assertInstanceOf('osid_resource_Bin', $this->session->getBin($this->miisId));
         try {
         	$bin = $this->session->getBin($this->unknownId);
         	$this->fail('An osid_NotFoundException should have been thrown.');
@@ -115,7 +115,7 @@ class banner_resource_Bin_Lookup_SessionTest
         $bins = $this->session->getBinsByIds(new phpkit_id_ArrayIdList(array(
        					$this->mcugId,
        					$this->miisId)));
-       	$this->assertType('osid_resource_BinList', $bins);
+       	$this->assertInstanceOf('osid_resource_BinList', $bins);
         $this->assertEquals(2, $bins->available());
     }
 
@@ -125,11 +125,11 @@ class banner_resource_Bin_Lookup_SessionTest
     public function testGetBinsByGenusType()
     {
         $bins = $this->session->getBinsByGenusType($this->generaNoneType);
-       	$this->assertType('osid_resource_BinList', $bins);
+       	$this->assertInstanceOf('osid_resource_BinList', $bins);
        	$this->assertTrue($bins->hasNext());
        	
        	$bins = $this->session->getBinsByGenusType($this->secondaryType);
-       	$this->assertType('osid_resource_BinList', $bins);
+       	$this->assertInstanceOf('osid_resource_BinList', $bins);
        	$this->assertFalse($bins->hasNext());
     }
 
@@ -139,11 +139,11 @@ class banner_resource_Bin_Lookup_SessionTest
     public function testGetBinsByParentGenusType()
     {
         $bins = $this->session->getBinsByParentGenusType($this->generaNoneType);
-       	$this->assertType('osid_resource_BinList', $bins);
+       	$this->assertInstanceOf('osid_resource_BinList', $bins);
        	$this->assertTrue($bins->hasNext());
        	
        	$bins = $this->session->getBinsByParentGenusType($this->secondaryType);
-       	$this->assertType('osid_resource_BinList', $bins);
+       	$this->assertInstanceOf('osid_resource_BinList', $bins);
        	$this->assertFalse($bins->hasNext());
     }
 
@@ -153,7 +153,7 @@ class banner_resource_Bin_Lookup_SessionTest
     public function testGetBinsByRecordType()
     {
         $bins = $this->session->getBinsByRecordType($this->unknownType);
-       	$this->assertType('osid_resource_BinList', $bins);
+       	$this->assertInstanceOf('osid_resource_BinList', $bins);
        	$this->assertFalse($bins->hasNext());
     }
 
@@ -163,7 +163,7 @@ class banner_resource_Bin_Lookup_SessionTest
     public function testGetBins()
     {
         $bins = $this->session->getBins();
-       	$this->assertType('osid_resource_BinList', $bins);
+       	$this->assertInstanceOf('osid_resource_BinList', $bins);
        	$this->assertTrue($bins->hasNext());
     }
 }
