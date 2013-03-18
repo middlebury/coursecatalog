@@ -1,5 +1,4 @@
 <?php
-require_once 'PHPUnit/Framework.php';
 
 /**
  * Test class for Catalog_Action_Helper_OsidId.

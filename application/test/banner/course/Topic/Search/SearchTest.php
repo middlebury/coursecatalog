@@ -1,5 +1,4 @@
 <?php
-require_once 'PHPUnit/Framework.php';
 
 /**
  * Test class for banner_course_Topic_Search_Search.
