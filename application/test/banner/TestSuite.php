@@ -19,62 +19,51 @@ class banner_TestSuite extends PHPUnit_Framework_TestSuite
     protected function setUp()
     {
     	$this->setMemoryLimit();
-    	$this->sharedFixture = self::loadBannerDbAndGetSharedArray();
+        $this->loadBannerDb();
     }
  
     protected function tearDown()
     {
-        self::emptyBannerDbAndCloseSharedArray($this->sharedFixture);
-        $this->sharedFixture = NULL;
+        $this->emptyBannerDbAndClose();
         $this->resetMemoryLimit();
     }
     
     /**
-     * Load the banner testing database and return the array of items for the shared fixture.
+     * Load the banner testing database
      * 
-     * @return array
      * @access public
      * @since 6/11/09
-     * @static
      */
-    public static function loadBannerDbAndGetSharedArray () {
-    	$sharedFixture = array();
-    	$sharedFixture['RuntimeManager'] = new phpkit_AutoloadOsidRuntimeManager(dirname(__FILE__).'/configuration.plist');
-        $sharedFixture['CourseManager'] = $sharedFixture['RuntimeManager']->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
+    public function loadBannerDb () {
+        $this->runtimeManager = new phpkit_AutoloadOsidRuntimeManager(dirname(__FILE__).'/configuration.plist');
+        $this->courseManager = $this->runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
         
         // Initialize our testing database
-        $db = $sharedFixture['CourseManager']->getDB();
+        $db = $this->courseManager->getDB();
         harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/drop_tables.sql', $db);
         harmoni_SQLUtils::runSQLfile(APPLICATION_PATH.'/library/banner/sql/table_creation.sql', $db);
         harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/test_data.sql', $db);
         
         // Build our full-text search index.
-        $searchSession = $sharedFixture['CourseManager']->getCourseOfferingSearchSession();
+        $searchSession = $this->courseManager->getCourseOfferingSearchSession();
         $searchSession->buildIndex(false);
         
         if (method_exists($db, 'resetCounters')) {
 	       $db->resetCounters();
 	       $db->recordDuplicates();
 	    }
-	    
-	    return $sharedFixture;
     }
     
     /**
      * Destroy the data in the banner testing database and shut down the managers.
      * 
-     * @param array $sharedFixture
      * @return void
      * @access public
      * @since 6/11/09
-     * @static
      */
-    public static function emptyBannerDbAndCloseSharedArray (array $sharedFixture) {
-    	$sharedFixture['CourseManager']->shutdown();
-//     	$sharedFixture['RuntimeManager']->shutdown();
-        
+    public function emptyBannerDbAndClose () {
         // Remove our testing database
-        $db = $sharedFixture['CourseManager']->getDB();
+        $db = $this->courseManager->getDB();
         if (method_exists($db, 'getCounters')) {
         	$maxName = 0;
         	$maxNum = 0;
@@ -111,6 +100,9 @@ class banner_TestSuite extends PHPUnit_Framework_TestSuite
 	        }
 	    }
         harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/drop_tables.sql', $db);
+        
+        $this->courseManager->shutdown();
+        $this->runtimeManager->shutdown();
     }
     
     /**

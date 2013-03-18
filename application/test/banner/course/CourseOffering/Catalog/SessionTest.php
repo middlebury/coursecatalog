@@ -26,6 +26,21 @@ class banner_course_CourseOffering_Catalog_SessionTest
 	protected function getSession () {
 		return $this->session;
 	}
+	
+	static $runtimeManager;
+	static $courseManager;
+
+	public static function setUpBeforeClass() 
+	{
+		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../../../').'/configuration.plist');
+		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
+	}
+
+	public static function tearDownAfterClass()
+	{
+	    self::$courseManager->shutdown();
+	    self::$runtimeManager->shutdown();
+	}
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -35,8 +50,7 @@ class banner_course_CourseOffering_Catalog_SessionTest
      */
     protected function setUp()
     {
-        $this->manager = $this->sharedFixture['CourseManager'];
-        $this->session = $this->manager->getCourseOfferingCatalogSession();
+        $this->session = self::$courseManager->getCourseOfferingCatalogSession();
         
         $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
         $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');

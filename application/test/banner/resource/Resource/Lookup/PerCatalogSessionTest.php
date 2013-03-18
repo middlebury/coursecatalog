@@ -23,6 +23,21 @@ class banner_resource_Resource_Lookup_PerCatalogSessionTest
 	protected function getSession () {
 		return $this->session;
 	}
+	
+	static $runtimeManager;
+	static $courseManager;
+
+	public static function setUpBeforeClass() 
+	{
+		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../../../').'/configuration.plist');
+		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
+	}
+
+	public static function tearDownAfterClass()
+	{
+	    self::$courseManager->shutdown();
+	    self::$runtimeManager->shutdown();
+	}
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -36,8 +51,7 @@ class banner_resource_Resource_Lookup_PerCatalogSessionTest
         $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
         
         $this->allBinId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/all');
-		$this->courseManager = $this->sharedFixture['CourseManager'];
-        $this->manager = $this->courseManager->getResourceManager();
+		$this->manager = self::$courseManager->getResourceManager();
         $this->session = $this->manager->getResourceLookupSessionForBin($this->mcugId);
         
         $this->personType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/person");

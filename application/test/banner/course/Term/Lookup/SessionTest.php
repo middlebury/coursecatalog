@@ -23,6 +23,21 @@ class banner_course_Term_Lookup_SessionTest
 	protected function getSession () {
 		return $this->session;
 	}
+	
+	static $runtimeManager;
+	static $courseManager;
+
+	public static function setUpBeforeClass() 
+	{
+		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../../../').'/configuration.plist');
+		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
+	}
+
+	public static function tearDownAfterClass()
+	{
+	    self::$courseManager->shutdown();
+	    self::$runtimeManager->shutdown();
+	}
     
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -38,8 +53,7 @@ class banner_course_Term_Lookup_SessionTest
         $this->springTermId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200920');
         $this->badTermId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200866');
         
-        $this->manager = $this->sharedFixture['CourseManager'];
-        $this->session = $this->manager->getTermLookupSessionForCatalog($this->mcugId);
+        $this->session = self::$courseManager->getTermLookupSessionForCatalog($this->mcugId);
         
         $this->unknownType = new phpkit_type_URNInetType("urn:inet:osid.org:unknown_type");
         $this->generaNoneType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:none");

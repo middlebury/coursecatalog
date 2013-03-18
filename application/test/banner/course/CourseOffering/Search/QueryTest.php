@@ -12,6 +12,21 @@ class banner_course_CourseOffering_Search_QueryTest
      * @access protected
      */
     protected $object;
+    
+    static $runtimeManager;
+	static $courseManager;
+
+	public static function setUpBeforeClass() 
+	{
+		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../../../').'/configuration.plist');
+		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
+	}
+
+	public static function tearDownAfterClass()
+	{
+	    self::$courseManager->shutdown();
+	    self::$runtimeManager->shutdown();
+	}
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -26,8 +41,7 @@ class banner_course_CourseOffering_Search_QueryTest
     	$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
         $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
 
-	 	$this->manager = $this->sharedFixture['CourseManager'];
-        $this->session = $this->manager->getCourseOfferingSearchSessionForCatalog($this->mcugId);
+	 	$this->session = self::$courseManager->getCourseOfferingSearchSessionForCatalog($this->mcugId);
         $this->object = $this->session->getCourseOfferingQuery();
         
         $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');

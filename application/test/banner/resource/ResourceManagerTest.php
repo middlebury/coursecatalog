@@ -24,6 +24,21 @@ class banner_resource_ResourceManagerTest
 		return $this->manager;
 	}
 	
+	static $runtimeManager;
+	static $courseManager;
+
+	public static function setUpBeforeClass() 
+	{
+		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../').'/configuration.plist');
+		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
+	}
+
+	public static function tearDownAfterClass()
+	{
+	    self::$courseManager->shutdown();
+	    self::$runtimeManager->shutdown();
+	}
+	
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -33,8 +48,7 @@ class banner_resource_ResourceManagerTest
     protected function setUp()
     {
     	$this->allBinId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/all');
-		$this->courseManager = $this->sharedFixture['CourseManager'];
-        $this->manager = $this->courseManager->getResourceManager();
+		$this->manager = self::$courseManager->getResourceManager();
     }
 
     /**
@@ -69,7 +83,7 @@ class banner_resource_ResourceManagerTest
      */
     public function testInitialize()
     {
-        $this->manager->initialize($this->sharedFixture['RuntimeManager']);
+        $this->manager->initialize(self::$runtimeManager);
     }
 
     /**

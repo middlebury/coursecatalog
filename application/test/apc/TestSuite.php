@@ -10,8 +10,8 @@ class apc_TestSuite extends banner_TestSuite
     {
         $suite = new apc_TestSuite('apc.course');
         
-        banner_TestSuite::recursiveAddTests($suite, dirname(__FILE__).'/../banner/course');
-        banner_TestSuite::recursiveAddTests($suite, dirname(__FILE__).'/../banner/resource');
+        self::recursiveAddTests($suite, dirname(__FILE__).'/course');
+        self::recursiveAddTests($suite, dirname(__FILE__).'/resource');
         
         return $suite;
     }
@@ -19,22 +19,12 @@ class apc_TestSuite extends banner_TestSuite
     protected function setUp()
     {
     	$this->setMemoryLimit();
-    	$this->sharedFixture = banner_TestSuite::loadBannerDbAndGetSharedArray();
-    	
-    	// Replace the course manager with our APC one after setup is complete.
-    	$this->sharedFixture['BannerCourseManager'] = $this->sharedFixture['CourseManager'];
-    	unset($this->sharedFixture['CourseManager']);
-    	$this->sharedFixture['CourseManager'] = $this->sharedFixture['RuntimeManager']->getManager(osid_OSID::COURSE(), 'apc_course_CourseManager', '3.0.0');
+    	$this->loadBannerDb();
     }
  
     protected function tearDown()
     {
-    	// Shut down our course
-    	$this->sharedFixture['CourseManager']->shutdown();
-    	$this->sharedFixture['CourseManager'] = $this->sharedFixture['BannerCourseManager'];
-    	
-        banner_TestSuite::emptyBannerDbAndCloseSharedArray($this->sharedFixture);
-        $this->sharedFixture = NULL;
+        $this->emptyBannerDbAndClose();
         $this->resetMemoryLimit();
     }
 }

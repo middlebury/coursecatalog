@@ -4,7 +4,7 @@ set_include_path(dirname(__FILE__) . PATH_SEPARATOR . get_include_path());
 
 require_once(dirname(__FILE__).'/../autoload.php');
 
-class ApplicationTestSuite extends PHPUnit_Framework_TestSuite
+class ApplicationTestSuite extends banner_TestSuite
 {
 	public static function suite()
     {
@@ -17,7 +17,7 @@ class ApplicationTestSuite extends PHPUnit_Framework_TestSuite
     
     protected function setUp()
     {
-    	$this->sharedFixture = banner_TestSuite::loadBannerDbAndGetSharedArray();
+    	$this->loadBannerDb();
     	
     	Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/controllers/helper', 'Helper');
 		Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/resources/Catalog/Action/Helper', 'Catalog_Action_Helper');
@@ -32,8 +32,7 @@ class ApplicationTestSuite extends PHPUnit_Framework_TestSuite
  
     protected function tearDown()
     {
-		banner_TestSuite::emptyBannerDbAndCloseSharedArray($this->sharedFixture);
-        $this->sharedFixture = NULL;
+		$this->emptyBannerDbAndClose();
     }
     
     /**

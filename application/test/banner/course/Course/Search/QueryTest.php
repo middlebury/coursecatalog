@@ -11,6 +11,21 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
      * @access protected
      */
     protected $object;
+    
+    static $runtimeManager;
+	static $courseManager;
+
+	public static function setUpBeforeClass() 
+	{
+		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../../../').'/configuration.plist');
+		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
+	}
+
+	public static function tearDownAfterClass()
+	{
+	    self::$courseManager->shutdown();
+	    self::$runtimeManager->shutdown();
+	}
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -24,8 +39,7 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
         $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
         
-        $this->manager = $this->sharedFixture['CourseManager'];
-        $this->session = $this->manager->getCourseSearchSessionForCatalog($this->mcugId);
+        $this->session = self::$courseManager->getCourseSearchSessionForCatalog($this->mcugId);
         
         $this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
         

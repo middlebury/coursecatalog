@@ -23,6 +23,21 @@ class banner_course_CourseOfferingTest
 	protected function getObject () {
 		return $this->object;
 	}
+	
+	static $runtimeManager;
+	static $courseManager;
+
+	public static function setUpBeforeClass() 
+	{
+		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../').'/configuration.plist');
+		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
+	}
+
+	public static function tearDownAfterClass()
+	{
+	    self::$courseManager->shutdown();
+	    self::$runtimeManager->shutdown();
+	}
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -38,8 +53,7 @@ class banner_course_CourseOfferingTest
     	$this->geolOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/92418');
     	$this->geogOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/92443');
     	$this->chemOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200520/20022');
-    	$this->manager = $this->sharedFixture['CourseManager'];
-        $this->session = $this->manager->getCourseOfferingLookupSessionForCatalog($this->mcugCatalogId);
+    	$this->session = self::$courseManager->getCourseOfferingLookupSessionForCatalog($this->mcugCatalogId);
         $this->object = $this->session->getCourseOffering($this->physOfferingId);
         
         $this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');

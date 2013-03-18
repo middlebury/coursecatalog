@@ -7,6 +7,18 @@
 class banner_course_CourseManagerTest
 	extends phpkit_test_phpunit_AbstractOsidManagerTest
 {
+	static $runtimeManager;
+
+	public static function setUpBeforeClass() 
+	{
+		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../').'/configuration.plist');
+	}
+
+	public static function tearDownAfterClass()
+	{
+	    self::$runtimeManager->shutdown();
+	}
+	
     /**
      * @var    banner_course_CourseManager
      * @access protected
@@ -33,7 +45,7 @@ class banner_course_CourseManagerTest
     protected function setUp()
     {
     	$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
-		$this->manager = $this->sharedFixture['CourseManager'];
+		$this->manager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
     }
 
     /**
@@ -44,7 +56,8 @@ class banner_course_CourseManagerTest
      */
     protected function tearDown()
     {
-    	
+    	if ($this->manager)
+	    	$this->manager->shutdown();
     }
 
     /**
@@ -69,7 +82,7 @@ class banner_course_CourseManagerTest
      */
     public function testInitialize()
     {
-        $this->manager->initialize($this->sharedFixture['RuntimeManager']);
+        $this->manager->initialize(self::$runtimeManager);
     }
 
     /**

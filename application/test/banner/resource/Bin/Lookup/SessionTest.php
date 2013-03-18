@@ -27,6 +27,21 @@ class banner_resource_Bin_Lookup_SessionTest
 		return $this->session;
 	}
 	
+	static $runtimeManager;
+	static $courseManager;
+
+	public static function setUpBeforeClass() 
+	{
+		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../../../').'/configuration.plist');
+		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
+	}
+
+	public static function tearDownAfterClass()
+	{
+	    self::$courseManager->shutdown();
+	    self::$runtimeManager->shutdown();
+	}
+	
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -35,8 +50,7 @@ class banner_resource_Bin_Lookup_SessionTest
      */
     protected function setUp()
     {
-		$this->courseManager = $this->sharedFixture['CourseManager'];
-        $this->manager = $this->courseManager->getResourceManager();
+		$this->manager = self::$courseManager->getResourceManager();
         $this->session = $this->manager->getBinLookupSession();
         
         $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
