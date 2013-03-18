@@ -70,6 +70,8 @@ class banner_course_Topic_Lookup_SessionTest
         $this->sciReqId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/SCI');
 
         $this->ugLevelId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/level/UG');
+
+        $this->ccBlockId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/block/CC');
         
         $this->nsciDivId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/division/NSCI');
         $this->artsDivId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/division/ARTS');
@@ -79,6 +81,7 @@ class banner_course_Topic_Lookup_SessionTest
         $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
         $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
         $this->levelType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
+        $this->blockType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block");
         
        	$this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200893/90143');
        	$this->geolOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200420/20663');
@@ -256,6 +259,20 @@ class banner_course_Topic_Lookup_SessionTest
         $this->assertTrue($topic->getGenusType()->isEqual($this->levelType));
     }
     
+    /**
+     * 
+     */
+    public function testGetTopicsByBlockGenusType()
+    {
+        $topics = $this->session->getTopicsByGenusType($this->blockType);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
+        $this->assertTrue($topics->hasNext());
+        $this->assertEquals(1, $topics->available());
+        $topic = $topics->getNextTopic();
+        $this->assertInstanceOf('osid_course_Topic', $topic);
+        $this->assertTrue($topic->getGenusType()->isEqual($this->blockType));
+    }
+    
     
     /**
      * 
@@ -342,6 +359,20 @@ class banner_course_Topic_Lookup_SessionTest
         $this->assertInstanceOf('osid_course_Topic', $topic);
         $this->assertTrue($topic->getGenusType()->isEqual($this->levelType));
      }
+    
+    /**
+     * 
+     */
+    public function testGetTopicsByBlockParentGenusType()
+    {
+        $topics = $this->session->getTopicsByParentGenusType($this->blockType);
+        $this->assertInstanceOf('osid_course_TopicList', $topics);
+        $this->assertTrue($topics->hasNext());
+        $this->assertEquals(1, $topics->available());
+        $topic = $topics->getNextTopic();
+        $this->assertInstanceOf('osid_course_Topic', $topic);
+        $this->assertTrue($topic->getGenusType()->isEqual($this->blockType));
+     }
 
     /**
      * 
@@ -417,7 +448,7 @@ class banner_course_Topic_Lookup_SessionTest
         $topics = $this->session->getTopics();
         $this->assertInstanceOf('osid_course_TopicList', $topics);
         $this->assertTrue($topics->hasNext());
-        $this->assertEquals(13, $topics->available());
+        $this->assertEquals(14, $topics->available());
         $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
         $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
     }

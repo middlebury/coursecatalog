@@ -52,6 +52,7 @@ class banner_course_Topic_Search_QueryTest extends PHPUnit_Framework_TestCase
         $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
         $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
         $this->levelType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
+        $this->blockType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block");
 
     }
 
@@ -107,6 +108,9 @@ class banner_course_Topic_Search_QueryTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($params));
         $params = $this->object->getLevelParameters();
         $this->assertEquals('Physics', $params[0]);
+        $params = $this->object->getBlockParameters();
+        $this->assertEquals('Physics', $params[0]);
+        $this->assertEquals(1, count($params));
         $this->assertEquals(1, count($params));
         $params = $this->object->getDivisionParameters();
         $this->assertEquals('Physics', $params[0]);
@@ -121,6 +125,7 @@ class banner_course_Topic_Search_QueryTest extends PHPUnit_Framework_TestCase
         
         $this->assertEquals('(STVATTR_DESC LIKE(?))', $this->object->getRequirementWhereClause());
         $this->assertEquals('(STVLEVL_DESC LIKE(?))', $this->object->getLevelWhereClause());
+        $this->assertEquals('(STVBLCK_DESC LIKE(?))', $this->object->getBlockWhereClause());
         $this->assertEquals('(STVDIVS_DESC LIKE(?))', $this->object->getDivisionWhereClause());
         $this->assertEquals('(STVDEPT_DESC LIKE(?))', $this->object->getDepartmentWhereClause());
         $this->assertEquals('(STVSUBJ_DESC LIKE(?))', $this->object->getSubjectWhereClause());
@@ -131,7 +136,7 @@ class banner_course_Topic_Search_QueryTest extends PHPUnit_Framework_TestCase
     
     public function testMatchAll() {
     	$topics = $this->session->getTopicsByQuery($this->object);
-		$this->assertEquals(13, $topics->available());
+		$this->assertEquals(14, $topics->available());
 // 		print "\n";
 // 		while ($topics->hasNext())
 // 			print "\n".$topics->getNextTopic()->getId()->getIdentifier();
@@ -206,6 +211,16 @@ class banner_course_Topic_Search_QueryTest extends PHPUnit_Framework_TestCase
     public function testMatchLevelGenusType()
     {
     	$this->object->matchGenusType($this->levelType, true);
+        $topics = $this->session->getTopicsByQuery($this->object);
+		$this->assertEquals(1, $topics->available());
+    }
+    
+    /**
+     * 
+     */
+    public function testMatchBlockGenusType()
+    {
+    	$this->object->matchGenusType($this->blockType, true);
         $topics = $this->session->getTopicsByQuery($this->object);
 		$this->assertEquals(1, $topics->available());
     }
