@@ -96,7 +96,7 @@ class banner_course_TermTest
      */
     public function testGetEndTime()
     {
-        $date = $this->object->getStartTime();
+        $date = $this->object->getEndTime();
         $this->assertInstanceOf('DateTime', $date);
         $this->assertEquals(new DateTime('2008-12-16'), $date);
     }
