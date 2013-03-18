@@ -1,18 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 3.1.3.1
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: Nov 11, 2009 at 09:34 AM
--- Server version: 5.0.77
--- PHP Version: 5.2.9
-
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
---
--- Database: `afranco_courses_test`
---
-
 -- --------------------------------------------------------
 
 --
@@ -25,8 +10,7 @@ CREATE TABLE IF NOT EXISTS `catalog_term` (
   `term_display_label` varchar(4) NOT NULL COMMENT 'The label such as ''F'', ''S'', ''W'', ''L'', etc used to build a section display name.',
   PRIMARY KEY  (`catalog_id`,`term_code`),
   KEY `catalog_id` (`catalog_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='This table maps term_code patterns to a given catalog.';
-
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='This table maps term_code patterns to a given catalog.';
 
 -- --------------------------------------------------------
 
@@ -52,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `catalog_term_match` (
   `term_display_label` varchar(4) NOT NULL COMMENT 'The label such as ''F'', ''S'', ''W'', ''L'', etc used to build a section display name.',
   PRIMARY KEY  (`catalog_id`,`term_code_match`),
   KEY `catalog_id` (`catalog_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='This table maps term_code patterns to a given catalog.';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='This table maps term_code patterns to a given catalog.';
 
 -- --------------------------------------------------------
 
@@ -63,8 +47,9 @@ CREATE TABLE IF NOT EXISTS `catalog_term_match` (
 CREATE TABLE IF NOT EXISTS `course_catalog` (
   `catalog_id` varchar(10) NOT NULL COMMENT 'An identifier for the catalog.',
   `catalog_title` varchar(100) NOT NULL COMMENT 'A title for the catalog, will be displayed in drop-down menus and headings.',
+  `current_term` varchar(6) default NULL,
   PRIMARY KEY  (`catalog_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='A listing of catalogs, each of which may be made up several ';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='A listing of catalogs, each of which may be made up several ';
 
 -- --------------------------------------------------------
 
@@ -77,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `course_catalog_college` (
   `coll_code` char(2) NOT NULL COMMENT 'The college code from STVCOLL_CODE',
   KEY `catalog_id` (`catalog_id`),
   KEY `coll_code` (`coll_code`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='A join-table that maps colleges from STVCOLL to catalogs in ';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='A join-table that maps colleges from stvcoll to catalogs in ';
 
 -- --------------------------------------------------------
 
@@ -93,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `GORINTG` (
   `GORINTG_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'ACTIVITY DATE: The date that the information for the row was inserted or updated in the GORINTG table.',
   `GORINTG_DATA_ORIGIN` varchar(30) default NULL COMMENT 'DATA ORIGIN: Source system that created or updated the row',
   PRIMARY KEY  (`GORINTG_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Integration Partner System Rule Table.';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Integration Partner System Rule Table.';
 
 -- --------------------------------------------------------
 
@@ -109,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `GTVDUNT` (
   `GTVDUNT_USER_ID` varchar(30) NOT NULL default '' COMMENT 'User ID: The username of the person who entered or last updated this record',
   `GTVDUNT_VR_MSG_NO` decimal(6,0) default NULL COMMENT 'Voice Response Message Number',
   PRIMARY KEY  (`GTVDUNT_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -124,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `GTVINSM` (
   `GTVINSM_USER_ID` varchar(30) NOT NULL default '' COMMENT 'User ID: The username of the person who entered or last updated this record',
   `GTVINSM_VR_MSG_NO` decimal(6,0) default NULL COMMENT 'Voice Response Message Number',
   PRIMARY KEY  (`GTVINSM_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Instructional Method Code  Validation Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Instructional Method Code  Validation Table';
 
 -- --------------------------------------------------------
 
@@ -139,7 +124,7 @@ CREATE TABLE IF NOT EXISTS `GTVINTP` (
   `GTVINTP_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'ACTIVITY DATE: The date that the information for the row was inserted or updated in the GTVINTP table.',
   `GTVINTP_DATA_ORIGIN` varchar(30) default NULL COMMENT 'DATA ORIGIN: Source system that created or updated the row',
   PRIMARY KEY  (`GTVINTP_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Integration Partner System Code Validation Table.';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Integration Partner System Code Validation Table.';
 
 -- --------------------------------------------------------
 
@@ -155,7 +140,7 @@ CREATE TABLE IF NOT EXISTS `GTVMTYP` (
   `GTVMTYP_USER_ID` varchar(30) NOT NULL default '' COMMENT 'User ID: The username of the person who entered or last updated this record',
   `GTVMTYP_VR_MSG_NO` decimal(6,0) default NULL COMMENT 'Voice Response Message Number',
   PRIMARY KEY  (`GTVMTYP_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Meeting Type Code validation table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Meeting Type Code validation table';
 
 -- --------------------------------------------------------
 
@@ -169,7 +154,7 @@ CREATE TABLE IF NOT EXISTS `GTVSCHS` (
   `GTVSCHS_SYSTEM_REQ_IND` char(1) NOT NULL default '' COMMENT 'A Y in this column indicates that the row is delivered by SCT and required for the system.',
   `GTVSCHS_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the date a record was created or updated.',
   PRIMARY KEY  (`GTVSCHS_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Validation entries for Schedule Status Codes.';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Validation entries for Schedule Status Codes.';
 
 -- --------------------------------------------------------
 
@@ -221,7 +206,8 @@ CREATE TABLE IF NOT EXISTS `SCBCRSE` (
   `SCBCRSE_USER_ID` varchar(30) default NULL COMMENT 'USER ID: User who inserted or last update the data',
   UNIQUE KEY `SCBCRSE_KEY_INDEX` (`SCBCRSE_SUBJ_CODE`,`SCBCRSE_CRSE_NUMB`,`SCBCRSE_EFF_TERM`),
   KEY `SCBCRSE_COLL_CODE` (`SCBCRSE_COLL_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Course General Information Base Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Course General Information Base Table';
+
 
 -- --------------------------------------------------------
 
@@ -239,7 +225,7 @@ CREATE TABLE IF NOT EXISTS `SCBDESC` (
   `SCBDESC_TERM_CODE_END` varchar(6) default NULL COMMENT 'End Term.  Identifies the term that the course description effective term ends',
   PRIMARY KEY  (`SCBDESC_SUBJ_CODE`,`SCBDESC_CRSE_NUMB`,`SCBDESC_TERM_CODE_EFF`),
   FULLTEXT KEY `SCBDESC_TEXT_NARRATIVE` (`SCBDESC_TEXT_NARRATIVE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Course Catalog Description Narrative Text Table';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Course Catalog Description Narrative Text Table';
 
 -- --------------------------------------------------------
 
@@ -254,7 +240,7 @@ CREATE TABLE IF NOT EXISTS `SCRATTR` (
   `SCRATTR_ATTR_CODE` varchar(4) default NULL COMMENT 'This field defines the attribute code of the course',
   `SCRATTR_ACTIVITY_DATE` date NOT NULL COMMENT 'This field identifies the date the record was created or updated',
   UNIQUE KEY `SCRATTR_SUBJ_CODE` (`SCRATTR_SUBJ_CODE`,`SCRATTR_CRSE_NUMB`,`SCRATTR_EFF_TERM`,`SCRATTR_ATTR_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Course Attribute Repeating Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Course Attribute Repeating Table';
 
 -- --------------------------------------------------------
 
@@ -272,7 +258,7 @@ CREATE TABLE IF NOT EXISTS `SCREQIV` (
   `SCREQIV_END_TERM` varchar(6) default NULL COMMENT 'This field is used to specify the end term of the course version which is       equivalent to the course entered in the Key Block.',
   `SCREQIV_ACTIVITY_DATE` date NOT NULL COMMENT 'This field specifies the most current date record was created or updated.',
   UNIQUE KEY `SCREQIV_SUBJ_CODE` (`SCREQIV_SUBJ_CODE`,`SCREQIV_CRSE_NUMB`,`SCREQIV_EFF_TERM`,`SCREQIV_SUBJ_CODE_EQIV`,`SCREQIV_CRSE_NUMB_EQIV`,`SCREQIV_START_TERM`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Equivalent Course Repeating Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Equivalent Course Repeating Table';
 
 -- --------------------------------------------------------
 
@@ -287,7 +273,7 @@ CREATE TABLE IF NOT EXISTS `SCRLEVL` (
   `SCRLEVL_LEVL_CODE` varchar(2) NOT NULL COMMENT 'This field is used to authorize the level for which a course may be offered.    Each course must be authorized to be offered for at least one level.  A         course can be authorized for an unlimited number of levels.',
   `SCRLEVL_ACTIVITY_DATE` date NOT NULL COMMENT 'This field specifies the most current date record was created or updated.',
   PRIMARY KEY  (`SCRLEVL_SUBJ_CODE`,`SCRLEVL_CRSE_NUMB`,`SCRLEVL_EFF_TERM`,`SCRLEVL_LEVL_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Course Level Repeating Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Course Level Repeating Table';
 
 
 -- --------------------------------------------------------
@@ -317,7 +303,7 @@ CREATE TABLE IF NOT EXISTS `SIRASGN` (
   PRIMARY KEY  (`SIRASGN_TERM_CODE`,`SIRASGN_CRN`,`SIRASGN_PIDM`,`SIRASGN_CATEGORY`),
   UNIQUE KEY `SIRASGN_KEY_INDEX2` (`SIRASGN_PIDM`,`SIRASGN_TERM_CODE`,`SIRASGN_CRN`,`SIRASGN_CATEGORY`),
   KEY `SIRASGN_CRN` (`SIRASGN_CRN`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Faculty Member Instructional Assignment  Repeating Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Faculty Member Instructional Assignment  Repeating Table';
 
 -- --------------------------------------------------------
 
@@ -332,7 +318,7 @@ CREATE TABLE IF NOT EXISTS `SSBDESC` (
   `SSBDESC_ACTIVITY_DATE` date NOT NULL COMMENT 'ACTIVITY DATE: The date that the information for the row was inserted or updated in the SSBDESC table.',
   `SSBDESC_USER_ID` varchar(30) NOT NULL COMMENT 'USER IDENTIFICATION: The unique identification of the user who changed the record.',
   PRIMARY KEY  (`SSBDESC_TERM_CODE`,`SSBDESC_CRN`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Section Description Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Section Description Table';
 
 -- --------------------------------------------------------
 
@@ -404,11 +390,13 @@ CREATE TABLE IF NOT EXISTS `SSBSECT` (
   `SSBSECT_DATA_ORIGIN` varchar(30) default NULL COMMENT 'DATA ORIGIN: Source system that created or updated the row',
   `SSBSECT_USER_ID` varchar(30) default NULL COMMENT 'USER ID: User who inserted or last update the data',
   `SSBSECT_INTG_CDE` varchar(5) default NULL COMMENT 'INTEGRATION PARTNER SYSTEM CODE: Code defined on GORINTG that associates with the User Integration Code.',
+  `SSBSECT_fulltext` text NOT NULL COMMENT 'A dynamicly generated column for full-text searching.',
   PRIMARY KEY  (`SSBSECT_TERM_CODE`,`SSBSECT_CRN`),
   UNIQUE KEY `SSBSECT_INDEX_SUBJ` (`SSBSECT_SUBJ_CODE`,`SSBSECT_CRSE_NUMB`,`SSBSECT_TERM_CODE`,`SSBSECT_CRN`),
   KEY `SSBSECT_GSCH_INDEX` (`SSBSECT_GSCH_NAME`),
   KEY `SSBSECT_PTRM_DATE_INDEX` (`SSBSECT_PTRM_START_DATE`),
-  KEY `SSBSECT_DATE_INDEX` (`SSBSECT_REG_FROM_DATE`,`SSBSECT_REG_TO_DATE`,`SSBSECT_TERM_CODE`)
+  KEY `SSBSECT_DATE_INDEX` (`SSBSECT_REG_FROM_DATE`,`SSBSECT_REG_TO_DATE`,`SSBSECT_TERM_CODE`),
+  FULLTEXT KEY `SSBSECT_fulltext_index` (`SSBSECT_fulltext`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Section General Information Base Table';
 
 -- --------------------------------------------------------
@@ -426,7 +414,7 @@ CREATE TABLE IF NOT EXISTS `SSBXLST` (
   `SSBXLST_SEATS_AVAIL` int(4) NOT NULL COMMENT 'Cross List Section Available Seats.',
   `SSBXLST_ACTIVITY_DATE` date NOT NULL COMMENT 'This field identifies the most recent date a record was created or updated.',
   PRIMARY KEY  (`SSBXLST_TERM_CODE`,`SSBXLST_XLST_GROUP`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Cross List Enrollment Information Base Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Cross List Enrollment Information Base Table';
 
 -- --------------------------------------------------------
 
@@ -440,7 +428,7 @@ CREATE TABLE IF NOT EXISTS `SSRATTR` (
   `SSRATTR_ATTR_CODE` varchar(4) NOT NULL default '' COMMENT 'This field defines the attribute code of the section.',
   `SSRATTR_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field contains the most current date the record was added or changed.',
   PRIMARY KEY  (`SSRATTR_TERM_CODE`,`SSRATTR_CRN`,`SSRATTR_ATTR_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Degree Program Attribute Repeating Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Degree Program Attribute Repeating Table';
 
 -- --------------------------------------------------------
 
@@ -481,7 +469,7 @@ CREATE TABLE IF NOT EXISTS `SSRMEET` (
   `SSRMEET_USER_ID` varchar(30) default NULL COMMENT 'USER ID: User who inserted or last update the data',
   KEY `SSRMEET_KEY_INDEX` (`SSRMEET_TERM_CODE`,`SSRMEET_CRN`,`SSRMEET_BEGIN_TIME`,`SSRMEET_MON_DAY`,`SSRMEET_TUE_DAY`,`SSRMEET_WED_DAY`,`SSRMEET_THU_DAY`,`SSRMEET_FRI_DAY`,`SSRMEET_SAT_DAY`,`SSRMEET_SUN_DAY`),
   KEY `SSRMEET_KEY_INDEX2` (`SSRMEET_BLDG_CODE`,`SSRMEET_ROOM_CODE`,`SSRMEET_BEGIN_TIME`,`SSRMEET_END_TIME`,`SSRMEET_MON_DAY`,`SSRMEET_TUE_DAY`,`SSRMEET_WED_DAY`,`SSRMEET_THU_DAY`,`SSRMEET_FRI_DAY`,`SSRMEET_SAT_DAY`,`SSRMEET_SUN_DAY`,`SSRMEET_START_DATE`,`SSRMEET_END_DATE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Section Meeting Times Repeating Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Section Meeting Times Repeating Table';
 
 -- --------------------------------------------------------
 
@@ -496,7 +484,7 @@ CREATE TABLE IF NOT EXISTS `SSRXLST` (
   `SSRXLST_ACTIVITY_DATE` date NOT NULL COMMENT 'This field identifies the most recent date a record was created or updated.',
   PRIMARY KEY  (`SSRXLST_TERM_CODE`,`SSRXLST_XLST_GROUP`,`SSRXLST_CRN`),
   KEY `SSRXLST_TERM_CODE` (`SSRXLST_TERM_CODE`,`SSRXLST_CRN`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Cross List Section Repeating Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Cross List Section Repeating Table';
 
 -- --------------------------------------------------------
 
@@ -510,7 +498,7 @@ CREATE TABLE IF NOT EXISTS `STVACYR` (
   `STVACYR_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most current date a record was created or updated.',
   `STVACYR_SYSREQ_IND` char(1) default NULL COMMENT 'The system required indicator',
   PRIMARY KEY  (`STVACYR_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Academic Year Validation Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Academic Year Validation Table';
 
 -- --------------------------------------------------------
 
@@ -523,7 +511,7 @@ CREATE TABLE IF NOT EXISTS `STVAPRV` (
   `STVAPRV_DESC` varchar(30) NOT NULL default '' COMMENT 'This field specifies the type of approval (e.g. dean"s, departmental, etc.)     associated with the approval code.',
   `STVAPRV_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most current date a record was created or updated.',
   PRIMARY KEY  (`STVAPRV_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Catalog Approval Code Validation Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Catalog Approval Code Validation Table';
 
 -- --------------------------------------------------------
 
@@ -536,7 +524,7 @@ CREATE TABLE IF NOT EXISTS `STVASTY` (
   `STVASTY_DESC` varchar(30) NOT NULL default '' COMMENT 'Description of Code',
   `STVASTY_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'The Activity Date',
   PRIMARY KEY  (`STVASTY_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Assignment Type Validation Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Assignment Type Validation Table';
 
 -- --------------------------------------------------------
 
@@ -549,7 +537,7 @@ CREATE TABLE IF NOT EXISTS `STVATTR` (
   `STVATTR_DESC` varchar(30) NOT NULL default '' COMMENT 'Description for the attribute code',
   `STVATTR_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'Description for the attribute code',
   PRIMARY KEY  (`STVATTR_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Degree Program Attribute Validation Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Degree Program Attribute Validation Table';
 
 -- --------------------------------------------------------
 
@@ -563,7 +551,7 @@ CREATE TABLE IF NOT EXISTS `STVBLDG` (
   `STVBLDG_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most recent date a record was created or updated .',
   `STVBLDG_VR_MSG_NO` decimal(6,0) default NULL COMMENT 'The Voice Response message number assigned to the recorded message that describes the building code.',
   PRIMARY KEY  (`STVBLDG_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Building Code Validation Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Building Code Validation Table';
 
 -- --------------------------------------------------------
 
@@ -577,7 +565,7 @@ CREATE TABLE IF NOT EXISTS `STVCAMP` (
   `STVCAMP_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most recent date a record was created or updated.',
   `STVCAMP_DICD_CODE` char(3) default NULL COMMENT 'District Identifier Code validated by HR form PTVDICD.',
   PRIMARY KEY  (`STVCAMP_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Campus Validation Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Campus Validation Table';
 
 -- --------------------------------------------------------
 
@@ -594,7 +582,7 @@ CREATE TABLE IF NOT EXISTS `STVCIPC` (
   `STVCIPC_CIPC_C_IND` char(1) default NULL COMMENT 'CIPC C indicator. Y causes the IPEDS Completion Report to process the CIPC code on the C report.',
   `STVCIPC_SP04_PROGRAM_CDE` varchar(5) default NULL COMMENT 'Code for California MIS process for field SP04.',
   PRIMARY KEY  (`STVCIPC_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='CIP Code Validation Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='CIP Code Validation Table';
 
 -- --------------------------------------------------------
 
@@ -618,7 +606,7 @@ CREATE TABLE IF NOT EXISTS `STVCOLL` (
   `STVCOLL_STATSCAN_CDE3` varchar(6) default NULL COMMENT 'Statistics Canadian reporting institution specific code.',
   `STVCOLL_DICD_CODE` char(3) default NULL COMMENT 'MIS DISTRICT/DIVISION CODE: This field indicates equivalent district or division associated with an Institution.',
   PRIMARY KEY  (`STVCOLL_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='College Validation Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='College Validation Table';
 
 -- --------------------------------------------------------
 
@@ -632,7 +620,7 @@ CREATE TABLE IF NOT EXISTS `STVCOMT` (
   `STVCOMT_TRANS_PRINT` char(1) default NULL COMMENT 'This field indicates whether the committee type will appear on transcript.',
   `STVCOMT_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most current date a record was created or changed.',
   PRIMARY KEY  (`STVCOMT_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Committee Type Code Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Committee Type Code Table';
 
 -- --------------------------------------------------------
 
@@ -646,7 +634,7 @@ CREATE TABLE IF NOT EXISTS `STVCSTA` (
   `STVCSTA_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most recent date a record was created or updated.',
   `STVCSTA_ACTIVE_IND` char(1) NOT NULL default '' COMMENT 'Course Status Code Active Indicator.',
   PRIMARY KEY  (`STVCSTA_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Course Status Code Validation Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Course Status Code Validation Table';
 
 -- --------------------------------------------------------
 
@@ -661,7 +649,7 @@ CREATE TABLE IF NOT EXISTS `STVDEPT` (
   `STVDEPT_SYSTEM_REQ_IND` char(1) default NULL COMMENT 'System Required Indicator',
   `STVDEPT_VR_MSG_NO` decimal(6,0) default NULL COMMENT 'The Voice Response message number assigned to the recorded message that describes the department code.',
   PRIMARY KEY  (`STVDEPT_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Department Validation Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Department Validation Table';
 
 -- --------------------------------------------------------
 
@@ -674,7 +662,7 @@ CREATE TABLE IF NOT EXISTS `STVDIVS` (
   `STVDIVS_DESC` varchar(30) NOT NULL default '' COMMENT 'This field specifies the division associated with the division code.',
   `STVDIVS_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most recent date a record was created or updated.',
   PRIMARY KEY  (`STVDIVS_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -687,8 +675,7 @@ CREATE TABLE IF NOT EXISTS `STVFCNT` (
   `STVFCNT_DESC` varchar(30) NOT NULL default '' COMMENT 'Description of faculty member contract type code',
   `STVFCNT_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'The activity date',
   PRIMARY KEY  (`STVFCNT_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Faculty Contract Code Validation Table';
-
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Faculty Contract Code Validation Table';
 
 -- --------------------------------------------------------
 
@@ -706,8 +693,7 @@ CREATE TABLE IF NOT EXISTS `STVLEVL` (
   `STVLEVL_VR_MSG_NO` int(6) default NULL COMMENT 'The Voice Response message number assigned to the recorded message that describes the student level.',
   `STVLEVL_EDI_EQUIV` varchar(2) default NULL COMMENT 'EDI Level Code',
   PRIMARY KEY  (`STVLEVL_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Student Level Validation Table';
-
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Student Level Validation Table';
 
 -- --------------------------------------------------------
 
@@ -728,7 +714,7 @@ CREATE TABLE IF NOT EXISTS `STVMEET` (
   `STVMEET_END_TIME` varchar(4) default NULL COMMENT 'End Time.',
   `STVMEET_ACTIVITY_DATE` date NOT NULL COMMENT 'This field identifies the most recent date a record was created or updated.',
   PRIMARY KEY  (`STVMEET_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Meeting Time Code Validation Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Meeting Time Code Validation Table';
 
 -- --------------------------------------------------------
 
@@ -741,7 +727,7 @@ CREATE TABLE IF NOT EXISTS `STVPWAV` (
   `STVPWAV_DESC` varchar(30) NOT NULL default '' COMMENT 'This field specifies the prerequisite waiver requirement/approval source        associated with the pre-req waiver code.',
   `STVPWAV_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most recent date a record was created or updated.',
   PRIMARY KEY  (`STVPWAV_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Pre-Requisite Waiver Code Validation Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Pre-Requisite Waiver Code Validation Table';
 
 -- --------------------------------------------------------
 
@@ -754,7 +740,7 @@ CREATE TABLE IF NOT EXISTS `STVREPS` (
   `STVREPS_DESC` varchar(30) NOT NULL default '' COMMENT 'Description of repeat status.',
   `STVREPS_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field identifies the most recent date a record was created or updated.',
   PRIMARY KEY  (`STVREPS_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Repeat Status Validation Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Repeat Status Validation Table';
 
 -- --------------------------------------------------------
 
@@ -772,7 +758,7 @@ CREATE TABLE IF NOT EXISTS `STVSCHD` (
   `STVSCHD_INSM_CODE` varchar(5) default NULL COMMENT 'Instructional Method code:  This field indicates how the course is delivered to the learner.  Examples are Web based, mixed media, face to face',
   `STVSCHD_VR_MSG_NO` decimal(6,0) default '0' COMMENT 'Voice Response Message Number',
   PRIMARY KEY  (`STVSCHD_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -787,7 +773,7 @@ CREATE TABLE IF NOT EXISTS `STVSUBJ` (
   `STVSUBJ_VR_MSG_NO` decimal(6,0) default NULL COMMENT 'The Voice Response message number assigned to the recorded message that describes the subject code.',
   `STVSUBJ_DISP_WEB_IND` char(1) NOT NULL default '' COMMENT 'Web registration indicator',
   PRIMARY KEY  (`STVSUBJ_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Subject Validation Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Subject Validation Table';
 
 -- --------------------------------------------------------
 
@@ -815,7 +801,7 @@ CREATE TABLE IF NOT EXISTS `STVTERM` (
   KEY `STVTERM_AIDY_INDEX` (`STVTERM_FA_PROC_YR`,`STVTERM_CODE`),
   KEY `STVTERM_END_DATE_INDEX` (`STVTERM_END_DATE`),
   KEY `STVTERM_START_DATE_INDEX` (`STVTERM_START_DATE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Term Code Validation Table';
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Term Code Validation Table';
 
 -- --------------------------------------------------------
 
@@ -828,7 +814,7 @@ CREATE TABLE IF NOT EXISTS `STVTRMT` (
   `STVTRMT_DESC` varchar(30) NOT NULL default '' COMMENT 'Specifies the type of term associated with term type code.',
   `STVTRMT_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'Most recent date record was created or updated.',
   PRIMARY KEY  (`STVTRMT_CODE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -845,4 +831,20 @@ CREATE TABLE IF NOT EXISTS `SYVINST` (
   `WEB_ID` varchar(100) NOT NULL COMMENT 'This field is used in web applications to identify individuals rather than using their PIDMs.',
   PRIMARY KEY  (`SYVINST_TERM_CODE`,`SYVINST_CRN`,`SYVINST_PIDM`),
   KEY `SYVINST_PIDM` (`SYVINST_PIDM`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `catalog_term_match`
+--
+ALTER TABLE `catalog_term_match`
+  ADD CONSTRAINT `catalog_term_match_ibfk_1` FOREIGN KEY (`catalog_id`) REFERENCES `course_catalog` (`catalog_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `course_catalog_college`
+--
+ALTER TABLE `course_catalog_college`
+  ADD CONSTRAINT `course_catalog_college_ibfk_1` FOREIGN KEY (`catalog_id`) REFERENCES `course_catalog` (`catalog_id`) ON DELETE CASCADE ON UPDATE CASCADE;
