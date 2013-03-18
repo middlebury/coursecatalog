@@ -178,6 +178,14 @@ class banner_course_CourseManager
 			throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode(), $e);
 		}
     }
+    
+    /**
+	 *	Shuts down this <code>osid.OsidManager</code>
+	 */
+	public function shutdown() {
+		$this->db = null;
+		parent::shutdown();
+	}
 
 /*********************************************************
  * From osid_course_CourseManager

@@ -85,6 +85,14 @@ class apc_course_CourseManager
     	
     	$this->manager = $runtime->getManager(osid_OSID::COURSE(), $implClassName, '3.0.0');
     }
+    
+    /**
+	 *	Shuts down this <code>osid.OsidManager</code>
+	 */
+	public function shutdown() {
+		$this->manager->shutdown();
+		parent::shutdown();
+	}
 
 /*********************************************************
  * From osid_course_CourseManager
