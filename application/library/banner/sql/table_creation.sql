@@ -433,6 +433,24 @@ CREATE TABLE IF NOT EXISTS `SSRATTR` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `SSRBLCK`
+--
+
+CREATE TABLE IF NOT EXISTS `SSRBLCK` (
+  `SSRBLCK_TERM_CODE` varchar(6) NOT NULL COMMENT 'Term Code',
+  `SSRBLCK_BLCK_CODE` varchar(10) NOT NULL COMMENT 'Block Schedule Code',
+  `SSRBLCK_CRN` varchar(5) NOT NULL COMMENT 'Course Reference Number',
+  `SSRBLCK_CREDIT_HRS` float default NULL COMMENT 'Academic Credit Hours Override',
+  `SSRBLCK_BILL_HRS` float default NULL COMMENT 'Billing Credit Hourse Override',
+  `SSRBLCK_GMOD_CODE` varchar(1) default NULL COMMENT 'Grading Mode Override',
+  `SSRBLCK_APPR_IND` varchar(1) default NULL COMMENT 'Special Approval Code Override Indicator',
+  `SSRBLCK_ACTIVITY_DATE` date NOT NULL COMMENT 'Activity Date',
+  PRIMARY KEY  (`SSRBLCK_TERM_CODE`,`SSRBLCK_BLCK_CODE`,`SSRBLCK_CRN`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `SSRMEET`
 --
 
@@ -538,6 +556,19 @@ CREATE TABLE IF NOT EXISTS `STVATTR` (
   `STVATTR_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'Description for the attribute code',
   PRIMARY KEY  (`STVATTR_CODE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Degree Program Attribute Validation Table';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `STVBLCK`
+--
+
+CREATE TABLE IF NOT EXISTS `STVBLCK` (
+  `STVBLCK_CODE` varchar(10) NOT NULL,
+  `STVBLCK_DESC` varchar(30) NOT NULL,
+  `STVBLCK_ACTIVITY_DATE` date NOT NULL,
+  PRIMARY KEY  (`STVBLCK_CODE`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
