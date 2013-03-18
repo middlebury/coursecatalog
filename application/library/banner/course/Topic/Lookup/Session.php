@@ -192,6 +192,8 @@ class banner_course_Topic_Lookup_Session
    				return $this->getRequirementTopic($topicId);
    			case 'level':
    				return $this->getLevelTopic($topicId);
+			case 'block':
+				return $this->getBlockTopic($topicId);
    			default:
    				throw new osid_NotFoundException('No topic found with category '.$type);
    		}
@@ -207,7 +209,7 @@ class banner_course_Topic_Lookup_Session
      */
     public function getTopicType (osid_id_Id $topicId) {
     	$string = $this->getDatabaseIdString($topicId, 'topic/');
-    	if (!preg_match('#(subject|department|division|requirement|level)/.+#', $string, $matches))
+	if (!preg_match('#(subject|department|division|requirement|level|block)/.+#', $string, $matches))
     		throw new osid_NotFoundException('Could not turn "'.$string.'" into a topic type.');
     	
     	return $matches[1];
@@ -223,7 +225,7 @@ class banner_course_Topic_Lookup_Session
      */
     public function getTopicValue (osid_id_Id $topicId) {
     	$string = $this->getDatabaseIdString($topicId, 'topic/');
-    	if (!preg_match('#(subject|department|division|requirement|level)/(.+)#', $string, $matches))
+	if (!preg_match('#(subject|department|division|requirement|level|block)/(.+)#', $string, $matches))
     		throw new osid_NotFoundException('Could not turn "'.$string.'" into a topic type.');
     	
     	return $matches[2];
@@ -772,6 +774,98 @@ GROUP BY STVLEVL_CODE
 		return new phpkit_course_ArrayTopicList($topics);
     }
     
+	private static $getBlockTopic_stmts = array();
+    /**
+     * Answer a block topic by id
+     *
+     * @param osid_id_Id $topicId
+     * @return osid_course_Topic
+     * @access private
+     * @since 4/24/09
+     */
+    private function getBlockTopic (osid_id_Id $topicId) {
+	$catalogWhere = $this->getCatalogWhereTerms();
+	if (!isset(self::$getBlockTopic_stmts[$catalogWhere])) {
+		$query =
+"SELECT
+    STVBLOCK_CODE,
+	STVBLOCK_DESC
+FROM
+	SSRBLOCK
+	INNER JOIN catalog_term ON SSRBLCK_TERM_CODE = term_code
+	INNER JOIN STVBLCK ON SSRBLCK_BLCK_CODE = STVBLCK_CODE
+WHERE
+	SSRBLCK_BLCK_CODE = :block_code
+	AND ".$this->getCatalogWhereTerms()."
+
+GROUP BY STVBLCK_CODE
+";
+			self::$getBlockTopic_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
+		}
+
+		$parameters = array_merge(
+			array(
+				':block_code' => $this->getDatabaseIdString($topicId, 'topic/block/')
+			),
+			$this->getCatalogParameters());
+		self::$getBlockTopic_stmts[$catalogWhere]->execute($parameters);
+		$row = self::$getBlockTopic_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
+		self::$getBlockTopic_stmts[$catalogWhere]->closeCursor();
+
+		if (!$row['STVBLCK_CODE']) {
+			throw new osid_NotFoundException("Could not find a topic matching the block code ".$this->getDatabaseIdString($topicId, 'topic/block/').".");
+		}
+		return new banner_course_Topic(
+					$this->getOsidIdFromString($row['STVBLCK_CODE'], 'topic/block/'),
+					trim($row['STVBLCK_DESC']),
+					'',
+					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block")
+			);
+    }
+
+    private static $getBlockTopics_stmts = array();
+    /**
+     * Answer all of the block topics
+     *
+     * @return osid_course_TopicList
+     * @access private
+     * @since 4/24/09
+     */
+    private function getBlockTopics () {
+	$catalogWhere = $this->getCatalogWhereTerms();
+	if (!isset(self::$getBlockTopics_stmts[$catalogWhere])) {
+		$query =
+"SELECT
+    STVBLCK_CODE,
+	STVBLCK_DESC
+FROM
+	SSRBLCK
+	INNER JOIN catalog_term ON SSRBLCK_TERM_CODE = term_code
+	INNER JOIN STVBLCK ON SSRBLCK_BLCK_CODE = STVBLCK_CODE
+WHERE
+	".$this->getCatalogWhereTerms()."
+
+GROUP BY STVBLCK_CODE
+";
+			self::$getBlockTopics_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
+		}
+
+		$parameters = $this->getCatalogParameters();
+		self::$getBlockTopics_stmts[$catalogWhere]->execute($parameters);
+
+		$topics = array();
+		while ($row = self::$getBlockTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
+			$topics[] = new banner_course_Topic(
+						$this->getOsidIdFromString($row['STVBLCK_CODE'], 'topic/block/'),
+						trim($row['STVBLCK_DESC']),
+						'',
+						new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block")
+				);
+		}
+		self::$getBlockTopics_stmts[$catalogWhere]->closeCursor();
+		return new phpkit_course_ArrayTopicList($topics);
+    }
+
     /**
 	 * Answer the catalog where terms
 	 * 
@@ -878,6 +972,8 @@ GROUP BY STVLEVL_CODE
    				return $this->getRequirementTopics();
    			case 'genera:topic/level':
    				return $this->getLevelTopics();
+			case 'genera:topic/block':
+				return $this->getBlockTopics();
    			default:
    				return new phpkit_EmptyList('osid_course_TopicList');
    		}
@@ -949,6 +1045,7 @@ GROUP BY STVLEVL_CODE
     	$topicList->addList($this->getDivisionTopics());
     	$topicList->addList($this->getRequirementTopics());
     	$topicList->addList($this->getLevelTopics());
+	$topicList->addList($this->getBlockTopics());
     	return $topicList;
     }
 

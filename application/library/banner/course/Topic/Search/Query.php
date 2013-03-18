@@ -34,6 +34,7 @@ class banner_course_Topic_Search_Query
 	public function __construct (banner_course_SessionInterface $session) {
 		$this->requirementQuery = new banner_course_Topic_Search_Query_Requirement($session);
 		$this->levelQuery = new banner_course_Topic_Search_Query_Level($session);
+		$this->blockQuery = new banner_course_Topic_Search_Query_Block($session);
 		$this->divisionQuery = new banner_course_Topic_Search_Query_Division($session);
 		$this->departmentQuery = new banner_course_Topic_Search_Query_Department($session);
 		$this->subjectQuery = new banner_course_Topic_Search_Query_Subject($session);
@@ -47,6 +48,7 @@ class banner_course_Topic_Search_Query
         $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
         $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
         $this->levelType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
+        $this->blockType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block");
 		
 		$this->toInclude = array();
 	}
@@ -79,6 +81,20 @@ class banner_course_Topic_Search_Query
 			return in_array('level', $this->toInclude);
 	}
 	
+	/**
+	 * Answer true if block topics should be included
+	 *
+	 * @return boolean
+	 * @access public
+	 * @since 6/12/09
+	 */
+	public function includeBlocks () {
+		if (!count($this->toInclude))
+			return true;
+		else
+			return in_array('block', $this->toInclude);
+	}
+
 	/**
 	 * Answer true if division topics should be included
 	 * 
@@ -165,6 +181,29 @@ class banner_course_Topic_Search_Query
 		return $this->levelQuery->getParameters();
 	}
 	
+	/**
+	 * Answer the Where clause for blocks
+	 *
+	 * @return string
+	 * @access public
+	 * @since 6/12/09
+	 */
+	public function getBlockWhereClause () {
+		return $this->blockQuery->getWhereClause();
+	}
+
+	/**
+	 * Answer the input parameters for blocks
+	 *
+	 * @return string
+	 * @access public
+	 * @since 6/12/09
+	 */
+	public function getBlockParameters () {
+		return $this->blockQuery->getParameters();
+	}
+
+
 	/**
 	 * Answer the Where clause for divisions
 	 * 
@@ -288,6 +327,7 @@ class banner_course_Topic_Search_Query
                                  $match) {
     	$this->requirementQuery->matchKeyword($keyword, $stringMatchType, $match);
     	$this->levelQuery->matchKeyword($keyword, $stringMatchType, $match);
+	$this->blockQuery->matchKeyword($keyword, $stringMatchType, $match);
     	$this->divisionQuery->matchKeyword($keyword, $stringMatchType, $match);
     	$this->departmentQuery->matchKeyword($keyword, $stringMatchType, $match);
     	$this->subjectQuery->matchKeyword($keyword, $stringMatchType, $match);
@@ -317,6 +357,7 @@ class banner_course_Topic_Search_Query
                                      osid_type_Type $stringMatchType, $match) {
     	$this->requirementQuery->matchDisplayName($displayName, $stringMatchType, $match);
     	$this->levelQuery->matchDisplayName($displayName, $stringMatchType, $match);
+	$this->blockQuery->matchDisplayName($displayName, $stringMatchType, $match);
     	$this->divisionQuery->matchDisplayName($displayName, $stringMatchType, $match);
     	$this->departmentQuery->matchDisplayName($displayName, $stringMatchType, $match);
     	$this->subjectQuery->matchDisplayName($displayName, $stringMatchType, $match);
@@ -376,6 +417,8 @@ class banner_course_Topic_Search_Query
 			$type = 'requirement';
     	if ($this->levelType->isEqual($genusType))
 			$type = 'level';
+	if ($this->blockType->isEqual($genusType))
+			$type = 'block';
 		if ($this->divisionType->isEqual($genusType))
 			$type = 'division';
 		if ($this->departmentType->isEqual($genusType))
@@ -392,6 +435,7 @@ class banner_course_Topic_Search_Query
     		if (!count($this->toInclude)) {
     			$this->toInclude[] = 'requirement';
     			$this->toInclude[] = 'level';
+			$this->toInclude[] = 'block';
     			$this->toInclude[] = 'division';
     			$this->toInclude[] = 'department';
     			$this->toInclude[] = 'subject';
@@ -634,6 +678,7 @@ class banner_course_Topic_Search_Query
     public function matchTermId(osid_id_Id $termId, $match) {
     	$this->requirementQuery->matchTermId($termId, $match);
     	$this->levelQuery->matchTermId($termId, $match);
+	$this->blockQuery->matchTermId($termId, $match);
     	$this->divisionQuery->matchTermId($termId, $match);
     	$this->departmentQuery->matchTermId($termId, $match);
     	$this->subjectQuery->matchTermId($termId, $match);

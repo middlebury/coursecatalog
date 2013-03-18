@@ -67,6 +67,9 @@ class banner_course_CourseOffering_Lookup_ByTermByTopicList
 			case 'level':
  				$params[':level_code'] = $value;
 				return $params;
+			case 'block':
+				$params[':block_code'] = $value;
+				return $params;
    			default:
    				throw new osid_NotFoundException('No topic found with category '.$type);
 		}
@@ -92,6 +95,8 @@ class banner_course_CourseOffering_Lookup_ByTermByTopicList
    				return 'SSBSECT_TERM_CODE = :term_code AND SSRATTR_ATTR_CODE = :requirement_code';
    			case 'level':
    				return 'SSBSECT_TERM_CODE = :term_code AND SCRLEVL_LEVL_CODE = :level_code';
+			case 'block':
+				return 'SSBSECT_TERM_CODE = :term_code AND SSRBLCK_BLCK_CODE = :block_code';
    			default:
    				throw new osid_NotFoundException('No topic found with category '.$type);
 		}
@@ -109,6 +114,8 @@ class banner_course_CourseOffering_Lookup_ByTermByTopicList
 			return 'LEFT JOIN SSRATTR ON (SSBSECT_TERM_CODE = SSRATTR_TERM_CODE AND SSBSECT_CRN = SSRATTR_CRN)';
 		else if ('level' == $this->session->getTopicLookupSession()->getTopicType($this->topicId))
 			return 'LEFT JOIN scrlevl_recent ON (SSBSECT_SUBJ_CODE = SCRLEVL_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCRLEVL_CRSE_NUMB)';
+		else if ('block' == $this->session->getTopicLookupSession()->getTopicType($this->topicId))
+			return 'LEFT JOIN SSRBLCK ON (SSBSECT_TERM_CODE = SSRBLCK_TERM_CODE AND SSBSECT_CRN = SSRBLCK_CRN)';
 		else
 			return '';
 	}

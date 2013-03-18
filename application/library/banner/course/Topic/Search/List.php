@@ -43,6 +43,7 @@ class banner_course_Topic_Search_List
 		$this->departmentWhere = $topicQuery->getDepartmentWhereClause();
 		$this->subjectWhere = $topicQuery->getSubjectWhereClause();
 		$this->levelWhere = $topicQuery->getLevelWhereClause();
+		$this->blockWhere = $topicQuery->getBlockWhereClause();
 		
 // 		$searchWhere = $topicSearch->getWhereClause();
 // 		if (strlen($searchWhere)) {
@@ -50,6 +51,7 @@ class banner_course_Topic_Search_List
 // 			$this->divisionWhere .= "\n\tAND ".$searchWhere;
 // 			$this->departmentWhere .= "\n\tAND ".$searchWhere;
 // 			$this->subjectWhere .= "\n\tAND ".$searchWhere;
+// 			$this->blockWhere .= "\n\tAND ".$searchWhere;
 // 		}
 // 				
 // 		$orderTerms = $topicSearch->getOrderByTerms();
@@ -92,6 +94,20 @@ class banner_course_Topic_Search_List
 			}
 		}
 		
+		if ($this->includeBlocks()) {
+			foreach ($topicQuery->getBlockParameters() as $i => $val) {
+				if (is_int($i)) {
+					$name = ':req_search_'.$i;
+					$this->parameters[$name] = $val;
+					$this->blockWhere = preg_replace('/\?/', $name, $this->blockWhere, 1);
+				} else if (preg_match('/^:[a-z0-9_]+$/i', $i)) {
+					$this->parameters[$i] = $val;
+				} else {
+					throw new osid_OperationFailedException("Invalid parameter name '$i'. Must be an integer or of the ':param_name' form.");
+				}
+			}
+		}
+
 		if ($this->includeDivisions()) {
 			foreach ($topicQuery->getDivisionParameters() as $i => $val) {
 				if (is_int($i)) {
@@ -142,6 +158,7 @@ class banner_course_Topic_Search_List
 // 				$this->divisionWhere = preg_replace('/\?/', $name, $this->divisionWhere, 1);
 // 				$this->departmentWhere = preg_replace('/\?/', $name, $this->departmentWhere, 1);
 // 				$this->subjectWhere = preg_replace('/\?/', $name, $this->subjectWhere, 1);
+// 				$this->blockWhere = preg_replace('/\?/', $name, $this->blockWhere, 1);
 // 			} else if (preg_match('/^:[a-z0-9_]+$/i', $i)) {
 // 				$this->parameters[$i] = $val;
 // 			} else {
@@ -222,6 +239,17 @@ class banner_course_Topic_Search_List
 	 * @access protected
 	 * @since 4/17/09
 	 */
+	protected function getBlockWhereTerms() {
+		return $this->blockWhere;
+	}
+
+	/**
+	 * Answer additional where terms. E.g. 'SSRMEET_MON_DAY = true AND SSRMEET_TUE_DAY = false'
+	 *
+	 * @return array
+	 * @access protected
+	 * @since 4/17/09
+	 */
 	protected function getDivisionWhereTerms() {
 		return $this->divisionWhere;
 	}
@@ -270,6 +298,17 @@ class banner_course_Topic_Search_List
 		return $this->topicQuery->includeLevels();
 	}
 	
+	/**
+	 * Answer true if block topics should be included
+	 *
+	 * @return boolean
+	 * @access protected
+	 * @since 6/12/09
+	 */
+	protected function includeBlocks () {
+		return $this->topicQuery->includeBlocks();
+	}
+
 	/**
 	 * Answer true if division topics should be included
 	 * 

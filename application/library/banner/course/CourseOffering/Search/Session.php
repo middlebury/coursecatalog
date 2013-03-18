@@ -254,6 +254,7 @@ class banner_course_CourseOffering_Search_Session
         $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
         $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
         $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
+        $this->blockType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block");
         // Known record types
         $this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 		

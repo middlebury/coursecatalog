@@ -99,6 +99,25 @@ GROUP BY STVLEVL_CODE)
 ";
 		}
 		
+		if ($this->includeBlocks()) {
+			$subqueries[] = "
+(SELECT
+	'block' AS type,
+	STVBLCK_CODE AS id,
+	STVBLCK_DESC AS display_name
+FROM
+	catalog_term
+	INNER JOIN SSBSECT ON term_code = SSBSECT_TERM_CODE
+	INNER JOIN SSRBLCK ON (SSBSECT_TERM_CODE = SSRBLCK_TERM_CODE AND SSBSECT_CRN = SSRBLCK_CRN)
+	INNER JOIN STVBLCK ON SSRBLCK_BLCK_CODE = STVBLCK_CODE
+WHERE
+	".$this->getAllBlockWhereTerms()."
+	AND ".$this->getCatalogWhereTerms('block')."
+	AND SSBSECT_PRNT_IND = 'Y'
+GROUP BY STVBLCK_CODE)
+";
+		}
+
 		if ($this->includeDivisions()) {
 			$subqueries[] = "
 (SELECT 
@@ -177,6 +196,8 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 				$params[':req_catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
 			if ($this->includeLevels())
 				$params[':level_catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
+			if ($this->includeBlocks())
+				$params[':block_catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
 			if ($this->includeDepartments())
 				$params[':dep_catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
 			if ($this->includeDivisions())
@@ -220,6 +241,21 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 	/**
 	 * Answer a where clause
 	 * 
+	 * @return string
+	 * @access private
+	 * @since 4/20/09
+	 */
+	private function getAllBlockWhereTerms () {
+		$terms = $this->getBlockWhereTerms();
+		if (strlen(trim($terms)))
+			return $terms;
+		else
+			return 'TRUE';
+	}
+
+	/**
+	 * Answer a where clause
+	 *
 	 * @return string
 	 * @access private
 	 * @since 4/20/09
@@ -348,6 +384,15 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 	 * @access protected
 	 * @since 4/17/09
 	 */
+	abstract protected function getBlockWhereTerms();
+
+	/**
+	 * Answer additional where terms. E.g. 'SSRMEET_MON_DAY = true AND SSRMEET_TUE_DAY = false'
+	 *
+	 * @return array
+	 * @access protected
+	 * @since 4/17/09
+	 */
 	abstract protected function getDivisionWhereTerms();
 	
 	/**
@@ -386,6 +431,15 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 	 */
 	abstract protected function includeLevels ();
 	
+	/**
+	 * Answer true if block topics should be included
+	 *
+	 * @return boolean
+	 * @access protected
+	 * @since 6/12/09
+	 */
+	abstract protected function includeBlocks ();
+
 	/**
 	 * Answer true if division topics should be included
 	 * 

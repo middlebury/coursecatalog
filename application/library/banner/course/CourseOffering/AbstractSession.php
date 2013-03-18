@@ -224,6 +224,42 @@ WHERE
     	return $topicIds;
     }
     
+    private static $blockTopics_stmt;
+    /**
+     * Answer the block topic ids for a given course offering id.
+     *
+     * @param string osid_id_Id $courseOfferingId
+     * @return array of osid_id_Id objects
+     * @access public
+     * @since 4/27/09
+     */
+    public function getBlockTopicIdsForCourseOffering (osid_id_Id $courseOfferingId) {
+	if (!isset(self::$blockTopics_stmt)) {
+		$query = "
+SELECT
+	SSRBLCK_BLCK_CODE
+FROM
+	SSRBLCK
+WHERE
+	SSRBLCK_TERM_CODE = :term_code
+	AND SSRBLCK_CRN = :crn
+";
+			self::$blockTopics_stmt = $this->manager->getDB()->prepare($query);
+		}
+
+		$parameters = array(
+				':term_code' => $this->getTermCodeFromOfferingId($courseOfferingId),
+				':crn' => $this->getCrnFromOfferingId($courseOfferingId)
+			);
+		self::$blockTopics_stmt->execute($parameters);
+		$topicIds = array();
+		while ($row = self::$blockTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
+			$topicIds[] = $this->getOsidIdFromString($row['SSRBLCK_BLCK_CODE'], 'topic/block/');
+	}
+	self::$blockTopics_stmt->closeCursor();
+	return $topicIds;
+    }
+
     private static $meetingRows_stmt;
     /**
      * Answer all meeting rows for a course offering.
