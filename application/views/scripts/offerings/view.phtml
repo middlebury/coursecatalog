@@ -117,6 +117,18 @@ foreach ($this->requirementTopics as $topic) {
 }
 print "</dd>";
 
+if (!empty($this->blockTopics)) {
+	print "\n\t\t<dt>Engagement:</dt>";
+	print "\n\t\t<dd>";
+	foreach ($this->blockTopics as $topic) {
+		$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
+		print "<a href=\"".$this->url($topicParams)."\">";
+		print $this->escape($topic->getDisplayName());
+		print "</a> ";
+	}
+	print "</dd>";
+}
+
 if (isset($this->alternates)) {
 	$alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
 	

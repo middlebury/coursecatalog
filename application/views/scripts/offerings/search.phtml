@@ -401,6 +401,19 @@ print "</dd>";
 
 print "\n\t</dl>";
 
+$topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block"));
+if (!empty($topics)) {
+	print "\n\t\t<dt>Engagement:</dt>";
+	print "\n\t\t<dd>";
+	foreach ($topics as $topic) {
+		$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
+		print "<a href=\"".$this->url($topicParams)."\">";
+		print $this->escape($topic->getDisplayName());
+		print "</a> ";
+	}
+	print "</dd>";
+}
+
 ?>
 
 

@@ -100,6 +100,10 @@ abstract class AbstractCatalogController
  		$this->view->divisionTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division"));
  		
  		$this->view->requirementTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement"));
+ 		
+ 		$this->view->levelTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level"));
+ 		
+ 		$this->view->blockTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block"));
 	}
 	
 	private $startTime;
