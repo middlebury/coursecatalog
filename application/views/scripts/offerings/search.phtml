@@ -210,6 +210,38 @@ while ($this->genusTypes->hasNext()) {
 			</td>
 		</tr>
 		
+<?php	if ($this->blocks->hasNext()) { ?>
+		<tr>
+			<th>Engagement:</th>
+			<td>
+				<div class='help_text'>(Leave all blank for no preference)</div>
+				<div class='block_group'>
+<?php
+$i = 0;
+while ($this->blocks->hasNext()) {
+	if (!($i % 5))
+		print "\n\t\t\t</div>\n\t\t\t<div class='requirement_group'>";
+	
+	$topic = $this->blocks->getNextTopic();
+	print "\n\t\t\t\t<input type='checkbox' name='block[]' value='";
+	print $this->getStringFromOsidId($topic->getId());
+	print "'";
+	foreach ($this->selectedBlockIds as $selectedId) {
+		if ($topic->getId()->isEqual($selectedId)) {
+			print " checked='checked'";
+			break;
+		}
+	}
+	print "/><label>".$this->escape($topic->getDisplayName())."</label><br/>";
+	
+	$i++;
+}
+?>
+				</div>
+			</td>
+		</tr>
+<?php	} ?>		
+		
 		<tr>
 			<th>Level:</th>
 			<td>
@@ -400,6 +432,19 @@ foreach ($topics as $topic) {
 print "</dd>";
 
 print "\n\t</dl>";
+
+$topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block"));
+if (!empty($topics)) {
+	print "\n\t\t<dt>Engagement:</dt>";
+	print "\n\t\t<dd>";
+	foreach ($topics as $topic) {
+		$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
+		print "<a href=\"".$this->url($topicParams)."\">";
+		print $this->escape($topic->getDisplayName());
+		print "</a> ";
+	}
+	print "</dd>";
+}
 
 ?>
 

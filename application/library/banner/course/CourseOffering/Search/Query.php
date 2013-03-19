@@ -713,6 +713,10 @@ class banner_course_CourseOffering_Search_Query
    				$this->addClause('level_topic_id', 'SCRLEVL_LEVL_CODE = ?', array($value), $match);
    				$this->addTableJoin('LEFT JOIN scrlevl_recent ON (SSBSECT_SUBJ_CODE = SCRLEVL_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCRLEVL_CRSE_NUMB)');
    				return;
+			case 'block':
+				$this->addClause('block_topic_id', 'SSRBLCK_BLCK_CODE = ?', array($value), $match);
+				$this->addTableJoin('LEFT JOIN SSRBLCK ON (SSRBLCK_TERM_CODE = SSBSECT_TERM_CODE AND SSRBLCK_CRN = SSBSECT_CRN)');
+				return;
    			default:
    				$this->addClause('topic_id', 'FALSE', array(), $match);
 		}

@@ -261,6 +261,45 @@ class banner_course_CourseOfferingTest
         		$this->fail('Topic "'.$id.'" was not found.');
         }
     }
+    
+    /**
+     * 
+     */
+    public function testGeolGetTopics()
+    {
+    	$offering = $this->session->getCourseOffering($this->geolOfferingId);
+        $list = $offering->getTopics();
+        $this->assertInstanceOf('osid_course_TopicList', $list);
+        $this->assertEquals(7, $list->available());
+        $this->assertInstanceOf('osid_course_Topic', $list->getNextTopic());
+    }
+    
+    /**
+     * 
+     */
+    public function testGeolTopicIds()
+    {
+    	$offering = $this->session->getCourseOffering($this->geolOfferingId);
+        $list = $offering->getTopicIds();
+        $this->assertEquals(7, $list->available());
+        $identifiers = array(
+        					'topic/subject/GEOL', 
+        					'topic/department/GEOL', 
+        					'topic/division/NSCI',
+        					'topic/requirement/DED',
+        					'topic/requirement/SCI',
+        					'topic/level/UG',
+        					'topic/block/CC',
+        				);
+        $found = array();
+        while ($list->hasNext()) {
+        	$found[] = $list->getNextId()->getIdentifier();
+        }
+        foreach ($identifiers as $id) {
+        	if (!in_array($id, $found))
+        		$this->fail('Topic "'.$id.'" was not found.');
+        }
+    }
 
     /**
      * 

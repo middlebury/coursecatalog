@@ -33,6 +33,8 @@ $sendMailOnError = false;
 $errorMailFrom	= "admin@example.edu";
 $errorMailTo	= array("admin@example.edu", "admin2@example.edu");
 
+$allowedBlckCodes = array('CC');
+
 /*********************************************************
  * End - Config
  *********************************************************/
@@ -104,12 +106,14 @@ $bannerTables = array(
 	'SSBSECT',
 	'SSBXLST',
 	'SSRATTR',
+	'SSRBLCK',
 	'SSRMEET',
 	'SSRXLST',
 	'STVACYR',
 	'STVAPRV',
 	'STVASTY',
 	'STVATTR',
+	'STVBLCK',
 	'STVBLDG',
 	'STVCAMP',
 	'STVCIPC',
@@ -713,6 +717,41 @@ try {
 
 	
 	
+	// SATURN.SSRBLCK
+	print "Updating SSRBLCK\t";
+	$tempMysql->beginTransaction();
+	$tssrblck = $tempMysql->prepare("TRUNCATE TABLE SSRBLCK");
+	$tssrblck->execute();
+
+	$query = "SELECT * FROM SATURN.SSRBLCK";
+	if (count($allowedBlckCodes)) {
+		$codes = array();
+		foreach ($allowedBlckCodes as $code) {
+			$codes[] = "'".$code."'";
+		}
+		$query .= " WHERE SSRBLCK_BLCK_CODE IN (".implode(', ', $codes).")";
+	}
+	$ssrblck = oci_execute_query($banner, $query);
+
+	$insert = $tempMysql->prepare("INSERT INTO SSRBLCK (SSRBLCK_TERM_CODE, SSRBLCK_BLCK_CODE, SSRBLCK_CRN, SSRBLCK_CREDIT_HRS, SSRBLCK_BILL_HRS, SSRBLCK_GMOD_CODE, SSRBLCK_APPR_IND, SSRBLCK_ACTIVITY_DATE) VALUES (:SSRBLCK_TERM_CODE, :SSRBLCK_BLCK_CODE, :SSRBLCK_CRN, :SSRBLCK_CREDIT_HRS, :SSRBLCK_BILL_HRS, :SSRBLCK_GMOD_CODE, :SSRBLCK_APPR_IND, :SSRBLCK_ACTIVITY_DATE)");
+	while($row = oci_fetch_object($ssrblck)) {
+		$insert->bindValue(":SSRBLCK_TERM_CODE", $row->SSRBLCK_TERM_CODE);
+		$insert->bindValue(":SSRBLCK_BLCK_CODE", $row->SSRBLCK_BLCK_CODE);
+		$insert->bindValue(":SSRBLCK_CRN", $row->SSRBLCK_CRN);
+		$insert->bindValue(":SSRBLCK_CREDIT_HRS", $row->SSRBLCK_CREDIT_HRS);
+		$insert->bindValue(":SSRBLCK_BILL_HRS", $row->SSRBLCK_BILL_HRS);
+		$insert->bindValue(":SSRBLCK_GMOD_CODE", $row->SSRBLCK_GMOD_CODE);
+		$insert->bindValue(":SSRBLCK_APPR_IND", $row->SSRBLCK_APPR_IND);
+		$insert->bindValue(":SSRBLCK_ACTIVITY_DATE", toMySQLDate($row->SSRBLCK_ACTIVITY_DATE));
+		$insert->execute();
+	}
+
+	$tempMysql->commit();
+	oci_free_statement($ssrblck);
+	print "...\tUpdated SSRBLCK\n";
+
+
+
 	// SATURN.SSRMEET
 	print "Updating SSRMEET\t";
 	$tempMysql->beginTransaction();
@@ -851,6 +890,36 @@ try {
 
 		
 	
+	// SATURN.STVBLCK
+	print "Updating STVBLCK\t";
+	$tempMysql->beginTransaction();
+	$tstvblck = $tempMysql->prepare("TRUNCATE TABLE STVBLCK");
+	$tstvblck->execute();
+
+	$query = "SELECT * FROM SATURN.STVBLCK";
+	if (count($allowedBlckCodes)) {
+		$codes = array();
+		foreach ($allowedBlckCodes as $code) {
+			$codes[] = "'".$code."'";
+		}
+		$query .= " WHERE STVBLCK_CODE IN (".implode(', ', $codes).")";
+	}
+	$stvblck = oci_execute_query($banner, $query);
+
+	$insert = $tempMysql->prepare("INSERT INTO STVBLCK (STVBLCK_CODE, STVBLCK_DESC, STVBLCK_ACTIVITY_DATE) VALUES (:STVBLCK_CODE, :STVBLCK_DESC, :STVBLCK_ACTIVITY_DATE)");
+	while($row = oci_fetch_object($stvblck)) {
+		$insert->bindValue(":STVBLCK_CODE", $row->STVBLCK_CODE);
+		$insert->bindValue(":STVBLCK_DESC", $row->STVBLCK_DESC);
+		$insert->bindValue(":STVBLCK_ACTIVITY_DATE", $row->STVBLCK_ACTIVITY_DATE);
+		$insert->execute();
+	}
+
+	$tempMysql->commit();
+	oci_free_statement($stvblck);
+	print "...\tUpdated STVBLCK\n";
+
+
+
 	// SATURN.STVBLDG
 	print "Updating STVBLDG\t";
 	$tempMysql->beginTransaction();

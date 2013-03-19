@@ -43,6 +43,7 @@ class OfferingsController
         $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
         $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
         $this->levelType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
+        $this->blockType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block");
         
 		$this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
 
@@ -225,6 +226,14 @@ class OfferingsController
 	 	}
 		$this->view->levels = $topicSearchSession->getTopicsByQuery($topicQuery);
 		
+		$topicQuery = $topicSearchSession->getTopicQuery();
+	 	$topicQuery->matchGenusType($this->blockType, true);
+	 	if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+	 		$record = $topicQuery->getTopicQueryRecord($this->termType);
+	 		$record->matchTermId($termId, true);
+	 	}
+		$this->view->blocks = $topicSearchSession->getTopicsByQuery($topicQuery);
+		
 		$this->view->genusTypes = $offeringLookupSession->getCourseOfferingGenusTypes();
 		
 		// Campuses -- only include if we have more than one.
@@ -340,6 +349,22 @@ class OfferingsController
 			}
 			
 			$this->view->searchParams['level'] = $levels;
+		}
+		
+		$this->view->selectedBlockIds = array();
+		if ($this->_getParam('block') && count($this->_getParam('block'))) {
+			if (is_array($this->_getParam('block')))
+				$blocks = $this->_getParam('block');
+			else
+				$blocks = array($this->_getParam('block'));
+			
+			foreach ($blocks as $idString) {
+				$id = $this->_helper->osidId->fromString($idString);
+				$query->matchTopicId($id, true);
+				$this->view->selectedBlockIds[] = $id;
+			}
+			
+			$this->view->searchParams['block'] = $blocks;
 		}
 		
 		$this->view->selectedGenusTypes = array();
