@@ -210,6 +210,38 @@ while ($this->genusTypes->hasNext()) {
 			</td>
 		</tr>
 		
+<?php	if ($this->blocks->hasNext()) { ?>
+		<tr>
+			<th>Engagement:</th>
+			<td>
+				<div class='help_text'>(Leave all blank for no preference)</div>
+				<div class='block_group'>
+<?php
+$i = 0;
+while ($this->blocks->hasNext()) {
+	if (!($i % 5))
+		print "\n\t\t\t</div>\n\t\t\t<div class='requirement_group'>";
+	
+	$topic = $this->blocks->getNextTopic();
+	print "\n\t\t\t\t<input type='checkbox' name='block[]' value='";
+	print $this->getStringFromOsidId($topic->getId());
+	print "'";
+	foreach ($this->selectedBlockIds as $selectedId) {
+		if ($topic->getId()->isEqual($selectedId)) {
+			print " checked='checked'";
+			break;
+		}
+	}
+	print "/><label>".$this->escape($topic->getDisplayName())."</label><br/>";
+	
+	$i++;
+}
+?>
+				</div>
+			</td>
+		</tr>
+<?php	} ?>		
+		
 		<tr>
 			<th>Level:</th>
 			<td>
