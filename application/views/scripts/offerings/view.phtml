@@ -129,6 +129,22 @@ if (!empty($this->blockTopics)) {
 	print "</dd>";
 }
 
+if (!empty($this->levelTopics)) {
+	print "\n\t\t<dt>Levels:</dt>";
+	print "\n\t\t<dd>";
+	$i = 0;
+	foreach ($this->levelTopics as $topic) {
+		if ($i > 0)
+			print ", ";
+// 		$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
+// 		print "<a href=\"".$this->url($topicParams)."\">";
+		print $this->escape($topic->getDisplayName());
+// 		print "</a> ";
+		$i++;
+	}
+	print "</dd>";
+}
+
 if (isset($this->alternates)) {
 	$alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
 	
