@@ -118,7 +118,7 @@ foreach ($this->requirementTopics as $topic) {
 print "</dd>";
 
 if (!empty($this->blockTopics)) {
-	print "\n\t\t<dt>Engagement:</dt>";
+	print "\n\t\t<dt>Additional Details:</dt>";
 	print "\n\t\t<dd>";
 	foreach ($this->blockTopics as $topic) {
 		$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());

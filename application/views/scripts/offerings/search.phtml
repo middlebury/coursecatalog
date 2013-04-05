@@ -212,7 +212,7 @@ while ($this->genusTypes->hasNext()) {
 		
 <?php	if ($this->blocks->hasNext()) { ?>
 		<tr>
-			<th>Engagement:</th>
+			<th>Additional Details:</th>
 			<td>
 				<div class='help_text'>(Leave all blank for no preference)</div>
 				<div class='block_group'>
@@ -435,7 +435,7 @@ print "\n\t</dl>";
 
 $topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block"));
 if (!empty($topics)) {
-	print "\n\t\t<dt>Engagement:</dt>";
+	print "\n\t\t<dt>Additional Details:</dt>";
 	print "\n\t\t<dd>";
 	foreach ($topics as $topic) {
 		$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
