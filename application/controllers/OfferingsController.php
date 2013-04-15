@@ -192,7 +192,12 @@ class OfferingsController
 	 		$record = $topicQuery->getTopicQueryRecord($this->termType);
 	 		$record->matchTermId($termId, true);
 	 	}
-		$this->view->departments = $topicSearchSession->getTopicsByQuery($topicQuery);
+		$search = $topicSearchSession->getTopicSearch();
+		$order = $topicSearchSession->getTopicSearchOrder();
+		$order->orderByDisplayName();
+		$search->orderTopicResults($order);
+		$searchResults = $topicSearchSession->getTopicsBySearch($topicQuery, $search);
+		$this->view->departments = $searchResults->getTopics();
 		
 		$topicQuery = $topicSearchSession->getTopicQuery();
 	 	$topicQuery->matchGenusType($this->subjectType, true);
@@ -200,7 +205,12 @@ class OfferingsController
 	 		$record = $topicQuery->getTopicQueryRecord($this->termType);
 	 		$record->matchTermId($termId, true);
 	 	}
-		$this->view->subjects = $topicSearchSession->getTopicsByQuery($topicQuery);
+		$search = $topicSearchSession->getTopicSearch();
+		$order = $topicSearchSession->getTopicSearchOrder();
+		$order->orderByDisplayName();
+		$search->orderTopicResults($order);
+		$searchResults = $topicSearchSession->getTopicsBySearch($topicQuery, $search);
+		$this->view->subjects = $searchResults->getTopics();
 		
 		$topicQuery = $topicSearchSession->getTopicQuery();
 	 	$topicQuery->matchGenusType($this->divisionType, true);

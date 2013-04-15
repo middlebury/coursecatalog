@@ -53,16 +53,13 @@ class banner_course_Topic_Search_List
 // 			$this->subjectWhere .= "\n\tAND ".$searchWhere;
 // 			$this->blockWhere .= "\n\tAND ".$searchWhere;
 // 		}
-// 				
-// 		$orderTerms = $topicSearch->getOrderByTerms();
-// 		$orderTerms = array_merge($orderTerms, $topicQuery->getOrderByTerms());
-// 		if (count($orderTerms))
-// 			$this->orderBy = 'ORDER BY '.(implode(', ', $orderTerms));
-// 		else
-// 			$this->orderBy = '';
-// 		$this->limit = $topicSearch->getLimitClause();
-		$this->orderBy = 'ORDER BY id ASC';
-		$this->limit = '';
+		
+		$orderTerms = $topicSearch->getOrderByTerms();
+		if (count($orderTerms))
+			$this->orderBy = 'ORDER BY '.(implode(', ', $orderTerms));
+		else
+			$this->orderBy = 'ORDER BY id ASC';
+		$this->limit = $topicSearch->getLimitClause();
 		
 		$this->parameters = array();
 		

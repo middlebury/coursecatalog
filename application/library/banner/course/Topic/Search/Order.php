@@ -17,6 +17,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 class banner_course_Topic_Search_Order
+	extends banner_course_AbstractSearchOrder
 	implements osid_course_TopicSearchOrder
 {
 
@@ -31,7 +32,9 @@ class banner_course_Topic_Search_Order
      *  @compliance mandatory This method must be implemented. 
      */
     public function ascend() {
-    	
+    	if (count($this->terms)) {
+			$this->terms[$last]['direction'] = 'ASC';
+    	}
     }
 
 
@@ -42,7 +45,9 @@ class banner_course_Topic_Search_Order
      *  @compliance mandatory This method must be implemented. 
      */
     public function descend() {
-    	
+    	if (count($this->terms)) {
+			$this->terms[$last]['direction'] = 'DESC';
+    	}
     }
 
 
@@ -53,7 +58,7 @@ class banner_course_Topic_Search_Order
      *  @compliance mandatory This method must be implemented. 
      */
     public function orderByDisplayName() {
-    	
+    	$this->addOrderColumns(array('display_name'));
     }
 
 
@@ -63,7 +68,7 @@ class banner_course_Topic_Search_Order
      *  @compliance mandatory This method must be implemented. 
      */
     public function orderByGenusType() {
-    	
+    	$this->addOrderColumns(array('type'));
     }
 
 

@@ -21,6 +21,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 class banner_course_Topic_Search_Search
+	extends banner_course_AbstractSearch
 	implements osid_course_TopicSearch
 {
 
@@ -42,7 +43,7 @@ class banner_course_Topic_Search_Search
      *  @compliance mandatory This method must be implemented. 
      */
     public function limitResultSet($start, $end) {
-    	
+    	return parent::limitResultSet($start, $end);
     }
 
 
@@ -109,7 +110,7 @@ class banner_course_Topic_Search_Search
      *  @compliance mandatory This method must be implemented. 
      */
     public function orderTopicResults(osid_course_TopicSearchOrder $topicSearchOrder) {
-    	
+    	$this->order = $topicSearchOrder;
     }
 
 
