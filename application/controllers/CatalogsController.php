@@ -69,7 +69,7 @@ class CatalogsController
 			}
 		}
 		if (!isset($termId)) {
-			$termId = $this->_helper->osidTerms->getCurrentTermId($catalogId);
+			$termId = $this->_helper->osidTerms->getNextOrLatestTermId($catalogId);
 		}
 		
 		$this->_forward('search', 'Offerings', null, array(

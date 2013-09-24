@@ -51,11 +51,11 @@ class Catalog_Action_Helper_OsidTermsTest extends PHPUnit_Framework_TestCase
     /**
      * 
      */
-    public function testGetClosestTermId()
+    public function testFindClosestTermId()
     {
         $testDate = new DateTime('2009-09-30');
         $terms = $this->termLookup->getTerms();
-        $closestTermId = $this->osidTermsHelper->getClosestTermId($terms, $testDate);
+        $closestTermId = $this->osidTermsHelper->findClosestTermId($terms, $testDate);
         $this->assertTrue($closestTermId->isEqual($this->fall2009TermId));
         
     }
@@ -63,11 +63,11 @@ class Catalog_Action_Helper_OsidTermsTest extends PHPUnit_Framework_TestCase
     /**
      * 
      */
-    public function testGetClosestNonOverlappingTermIdA()
+    public function testFindlosestNonOverlappingTermIdA()
     {
         $testDate = new DateTime('2009-08-15');
         $terms = $this->termLookup->getTerms();
-        $closestTermId = $this->osidTermsHelper->getClosestTermId($terms, $testDate);
+        $closestTermId = $this->osidTermsHelper->findClosestTermId($terms, $testDate);
         $this->assertTrue($closestTermId->isEqual($this->fall2009TermId));
         
     }
@@ -75,11 +75,11 @@ class Catalog_Action_Helper_OsidTermsTest extends PHPUnit_Framework_TestCase
     /**
      * 
      */
-    public function testGetClosestNonOverlappingTermIdB()
+    public function testFindClosestNonOverlappingTermIdB()
     {
         $testDate = new DateTime('2009-06-15');
         $terms = $this->termLookup->getTerms();
-        $closestTermId = $this->osidTermsHelper->getClosestTermId($terms, $testDate);
+        $closestTermId = $this->osidTermsHelper->findClosestTermId($terms, $testDate);
         $this->assertTrue($closestTermId->isEqual($this->spring2009TermId));
         
     }
@@ -87,11 +87,11 @@ class Catalog_Action_Helper_OsidTermsTest extends PHPUnit_Framework_TestCase
     /**
      * 
      */
-    public function testGetClosestTermIdBeyondRange()
+    public function testFindClosestTermIdBeyondRange()
     {
         $testDate = new DateTime('2020-01-01');
         $terms = $this->termLookup->getTerms();
-        $closestTermId = $this->osidTermsHelper->getClosestTermId($terms, $testDate);
+        $closestTermId = $this->osidTermsHelper->findClosestTermId($terms, $testDate);
         $this->assertTrue($closestTermId->isEqual($this->fall2009TermId));
         
     }

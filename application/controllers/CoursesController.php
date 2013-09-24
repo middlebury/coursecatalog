@@ -109,7 +109,7 @@ class CoursesController
 				$allParams['catalog'] = $this->_helper->osidId->toString($this->getSelectedCatalogId());
 			$this->view->offeringsForAllTermsUrl = $this->_helper->url('view', 'courses', null, $allParams);
 		} else {
-			$this->view->linkTermId = $this->_helper->osidTerms->getCurrentTermId($this->getSelectedCatalogId());
+			$this->view->linkTermId = $this->_helper->osidTerms->getNextOrLatestTermId($this->getSelectedCatalogId());
 		}
 		
 		// Bookmarked Courses and Schedules

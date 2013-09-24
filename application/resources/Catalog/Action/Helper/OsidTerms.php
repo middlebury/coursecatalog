@@ -11,6 +11,35 @@
 class Catalog_Action_Helper_OsidTerms
 	extends Catalog_Action_Helper_AbstractOsidIdentifier
 {
+
+	/**
+     * Answer the "current" termId for the catalog passed. If multiple terms overlap
+     * to be 'current', only one will be returned.
+     * 
+     * @param osid_id_Id $catalogId
+     * @return osid_id_Id The current term id.
+     * @throws osid_NotFoundException
+     * @access public
+     * @since 6/11/09
+     */
+    public function getNextOrLatestTermId (osid_id_Id $catalogId) {
+    	$catalogIdString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($catalogId);
+    	$cacheKey = 'upcoming_term::'.$catalogIdString;
+    	$currentTerm = self::cache_get($cacheKey);
+    	if (!$currentTerm) {
+    		$manager = Zend_Controller_Action_HelperBroker::getStaticHelper('Osid')->getCourseManager();
+    		if (!$manager->supportsTermLookup())
+    			throw new osid_NotFoundException('Could not determine a current term id. The manager does not support term lookup.');
+    		$termLookup = $manager->getTermLookupSessionForCatalog($catalogId);
+	    	$currentTerm = $this->findNextOrLatestTermId($termLookup->getTerms());
+	    	if (!$currentTerm)
+		    	throw new osid_NotFoundException('Could not determine an upcoming term id for the catalog passed.');
+	    	
+	    	self::cache_set($cacheKey, $currentTerm);
+    	}
+    	
+    	return $currentTerm;
+    }
 	
 	/**
      * Answer the "current" termId for the catalog passed. If multiple terms overlap
@@ -31,7 +60,7 @@ class Catalog_Action_Helper_OsidTerms
     		if (!$manager->supportsTermLookup())
     			throw new osid_NotFoundException('Could not determine a current term id. The manager does not support term lookup.');
     		$termLookup = $manager->getTermLookupSessionForCatalog($catalogId);
-	    	$currentTerm = $this->getNextOrLatestTermId($termLookup->getTerms());
+	    	$currentTerm = $this->findClosestTermId($termLookup->getTerms());
 	    	if (!$currentTerm)
 		    	throw new osid_NotFoundException('Could not determine a current term id for the catalog passed.');
 	    	
@@ -92,7 +121,7 @@ class Catalog_Action_Helper_OsidTerms
      * @access public
      * @since 2/07/13
      */
-    public function getNextOrLatestTermId (osid_course_TermList $terms, DateTime $date = null) {
+    public function findNextOrLatestTermId (osid_course_TermList $terms, DateTime $date = null) {
     	$upcomingIds = array();
     	$upcomingDates = array();
     	$pastIds = array();
@@ -143,7 +172,7 @@ class Catalog_Action_Helper_OsidTerms
      * @access public
      * @since 6/11/09
      */
-    public function getClosestTermId (osid_course_TermList $terms, DateTime $date = null) {
+    public function findClosestTermId (osid_course_TermList $terms, DateTime $date = null) {
     	$ids = array();
     	$diffs = array();
     	

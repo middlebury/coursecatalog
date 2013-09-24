@@ -71,7 +71,7 @@ class OfferingsController
 		// Add our parameters to the search query
 		if ($this->_getParam('term')) {
 			if ($this->_getParam('term') == 'CURRENT') {
-				$termId = $this->_helper->osidTerms->getCurrentTermId();
+				$termId = $this->_helper->osidTerms->getNextOrLatestTermId();
 			} else {
 				$termId = $this->_helper->osidId->fromString($this->_getParam('term'));
 			}
@@ -179,7 +179,13 @@ class OfferingsController
 		if ($this->_getParam('term') == 'ANY') {
 			// Don't set a term
 		} else if (!$this->_getParam('term') || $this->_getParam('term') == 'CURRENT') {
-			$termId = $this->_helper->osidTerms->getCurrentTermId($offeringSearchSession->getCourseCatalogId());
+			// When accessing the "current" term via xml, use the term we are in.
+			// When displaying the search interface, use the next upcoming term.
+			if ($this->_getParam('action') == 'searchxml') {
+				$termId = $this->_helper->osidTerms->getCurrentTermId($offeringSearchSession->getCourseCatalogId());
+			} else {
+				$termId = $this->_helper->osidTerms->getNextOrLatestTermId($offeringSearchSession->getCourseCatalogId());
+			}
 		} else {
 			$termId = $this->_helper->osidId->fromString($this->_getParam('term'));
 		}

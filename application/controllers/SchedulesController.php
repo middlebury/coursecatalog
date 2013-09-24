@@ -54,7 +54,7 @@ class SchedulesController
 			// Don't set a term
 			$this->termId = null;
 		} else if (!$this->_getParam('term') || $this->_getParam('term') == 'CURRENT') {
-			$this->termId = $this->_helper->osidTerms->getCurrentTermId($this->catalogId);
+			$this->termId = $this->_helper->osidTerms->getNextOrLatestTermId($this->catalogId);
 		} else {
 			$this->termId = $this->_helper->osidId->fromString($this->_getParam('term'));
 		}
