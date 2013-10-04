@@ -175,7 +175,7 @@ class CoursesController
 		
 		header('Content-Type: text/xml');
 		print '<?xml version="1.0" encoding="utf-8" ?>
-<rss version="2.0">
+<rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
 	<channel>
 		<title>Course Search: "'.htmlspecialchars($keywords).'"</title>
 		<link>'.$searchUrl.'</link>
