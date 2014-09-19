@@ -22,6 +22,10 @@ abstract class Helper_RecentCourses_Abstract {
 	private $terms;
 	protected $alternateType;
 	
+	protected $recentInterval;
+	private $courses;
+	private $initialized = false;
+	
 	/**
 	 * Constructor
 	 * 
@@ -34,7 +38,20 @@ abstract class Helper_RecentCourses_Abstract {
 		$this->alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
 		$this->groups = array();
 		$this->terms = array();
-		$this->groupAlternates($courses);
+		$this->recentInterval = new DateInterval('P4Y');
+		$this->courses = $courses;
+	}
+	
+	/**
+	 * Set the duration considered recent by a DateInterval object.
+	 * 
+	 * @param DateInterval $interval
+	 * @return null
+	 * @access public
+	 * @since 9/19/14
+	 */
+	public function setRecentInterval (DateInterval $interval) {
+		$this->recentInterval = $interval;
 	}
 	
 	/**
@@ -45,6 +62,8 @@ abstract class Helper_RecentCourses_Abstract {
 	 * @since 11/16/09
 	 */
 	public function getPrimaryCourses () {
+		$this->initialize();
+		
 		$primaries = array();
 		$names = array();
 		foreach ($this->groups as $group) {
@@ -65,6 +84,8 @@ abstract class Helper_RecentCourses_Abstract {
 	 * @since 11/16/09
 	 */
 	public function getAlternatesForCourse (osid_course_Course $course) {
+		$this->initialize();
+		
 		foreach ($this->groups as $group) {
 			$primary = current($group);
 			if ($primary->getId()->isEqual($course->getId())) {
@@ -88,6 +109,8 @@ abstract class Helper_RecentCourses_Abstract {
 	 * @since 11/16/09
 	 */
 	public function getTermsForCourse (osid_course_Course $course) {
+		$this->initialize();
+		
 		return $this->getRecentTermsForCourse($course, true);
 	}
 	
@@ -108,7 +131,21 @@ abstract class Helper_RecentCourses_Abstract {
 /*********************************************************
  * Internal methods
  *********************************************************/
-
+	
+	/**
+	 * Initialize our groupings
+	 * 
+	 * @return null
+	 * @access protected
+	 * @since 9/19/14
+	 */
+	protected function initialize () {
+		// initiate our grouping
+		if (!$this->initialized) {
+			$this->groupAlternates($this->courses);
+			$this->initialized = true;
+		}
+	}
 	
 	/**
 	 * Group alternate courses
@@ -275,7 +312,7 @@ abstract class Helper_RecentCourses_Abstract {
 		// Define a cutoff date after which courses will be included in the feed.
 		// Currently set to 4 years. Would be good to have as a configurable time.
 		$now = new DateTime;
-		$cutOff = $this->DateTime_getTimestamp($now) - (60 * 60 * 24 * 365 * 4);
+		$cutOff = $this->DateTime_getTimestamp($now->sub($this->recentInterval));
 		$recentTerms = array();
 		$osidIdHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId');
 		foreach ($allTerms as $term) {

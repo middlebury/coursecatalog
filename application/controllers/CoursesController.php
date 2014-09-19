@@ -323,6 +323,9 @@ class CoursesController
 		$topic = $topicLookup->getTopic($topicId);
 		
 		$recentCourses = new Helper_RecentCourses_Department($courses);
+		if ($this->_getParam('cutoff')) {
+			$recentCourses->setRecentInterval(new DateInterval($this->_getParam('cutoff')));
+		}
 		$this->outputCourseFeed($recentCourses, htmlentities('Courses in  '.$topic->getDisplayName()), $searchUrl);
 		
 	}
@@ -402,6 +405,9 @@ class CoursesController
 		}
 		
 		$recentCourses = new Helper_RecentCourses_Instructor($courses, $offeringSearchSession, $instructorId);
+		if ($this->_getParam('cutoff')) {
+			$recentCourses->setRecentInterval(new DateInterval($this->_getParam('cutoff')));
+		}
 		$this->outputCourseFeed($recentCourses, 'Courses taught by '.$instructorResource->getDisplayName(), $searchUrl);
 		
 	}
