@@ -1,138 +1,126 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-	<?php echo $this->headTitle() ?> 
-	
+	<?php echo $this->headTitle() ?>
+
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/themes/base/jquery-ui.css" type="text/css" media="all" />
 
-	<link href="https://web.middlebury.edu/development/tools/1d2010/Stylesheets/style.css" rel="stylesheet" type='text/css' />
-	<link href="https://web.middlebury.edu/development/tools/1d2010/Stylesheets/style-custom.css" rel="stylesheet" type='text/css' />
-	<!--[if lt IE 7]><link rel="stylesheet" href="https://web.middlebury.edu/development/tools/1d2010/Stylesheets/ie6.css"/><![endif]-->
-	<!--[if lt IE 7]><link rel="stylesheet" href="https://web.middlebury.edu/development/tools/1d2010/Stylesheets/ie7.css"/><![endif]-->
+    <link rel="stylesheet" href="//cdn.middlebury.edu/middlebury.edu/2010/css/midd.css">
+    <link rel="shortcut icon" href="//cdn.middlebury.edu/middlebury.edu/2010/images/midd_favicon.ico">
+    <link rel="apple-touch-icon" href="//cdn.middlebury.edu/middlebury.edu/2010/images/apple-touch-icon/icon.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="//cdn.middlebury.edu/middlebury.edu/2010/images/apple-touch-icon/icon-ipad.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="//cdn.middlebury.edu/middlebury.edu/2010/images/apple-touch-icon/icon-retina.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="//cdn.middlebury.edu/middlebury.edu/2010/images/apple-touch-icon/icon-ipad-retina.png">
+    <!--[if lt IE 8]><script src="http://ie7-js.googlecode.com/svn/version/2.1(beta4)/IE8.js"></script><![endif]-->
+    <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 
-	
+
 	<meta name="author" content="Middlebury College" />
 	<meta name="keywords" content="middlebury college, liberal arts, education, higher education, middlebury, vermont" />
 	<meta name="description" content="middlebury college" />
 	<meta name="robots" content="all" />
-	
+
 	<link rel="stylesheet" media="screen" type="text/css" href="<?php echo $this->url(array(), null, true) ?>2d/StyleSheets/CatalogStyles.css" />
 	<link rel="stylesheet" media="screen" type="text/css" href="<?php echo $this->url(array(), null, true) ?>StyleSheets/midd/Styles.css" />
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
-    
-	<?php echo $this->headLink() ?> 
-	<?php echo $this->headScript() ?> 
-	<?php echo $this->headStyle() ?> 
+
+	<?php echo $this->headLink() ?>
+	<?php echo $this->headScript() ?>
+	<?php echo $this->headStyle() ?>
 </head>
 
-<!-- BODY CLASSES -->
-<!-- Use 'fullwidth' for no menu. -->
-<!-- Use 'basic' for dark-background menu with light text. -->
-<!-- Use 'department' for white-background menu with dark text. -->
-<body class="department">
-
-    <a href="#content" class="skiplink">Skip to content</a>
-    <div class="container">
-        <form id="search" action="http://www.middlebury.edu/search" method="get">
-
-        <label for="search_query">
-            Search Midd</label>
-        <input type="text" id="search_query" name="q2" />
-        <input type="submit" id="search_submit" value="Go" />
-        </form>
-        <div id="wordmark">
-            <a href="http://www.middlebury.edu">
-                <img src="https://web.middlebury.edu/development/tools/1d2010/Images/logo.gif"
-                    width="206" height="39" alt="Middlebury" /></a></div>
-
-        <ul id="navigation">
-            <li id="nav_admissions" class="top"><a href="http://www.middlebury.edu/admissions/">
-                Admissions<span></span></a></li>
-            <li id="nav_academics" class="top active"><a href="http://www.middlebury.edu/academics/">
-                Academics<span></span></a></li>
-            <li id="nav_studentlife" class="top"><a href="http://www.middlebury.edu/studentlife/">
-                Student Life<span></span></a></li>
-
-            <li id="nav_athletics" class="top"><a href="http://www.middlebury.edu/athletics/">
-                Athletics<span></span></a></li>
-            <li id="nav_arts" class="top"><a href="http://www.middlebury.edu/arts/">Arts<span></span></a></li>
-            <li id="nav_international" class="top"><a href="http://www.middlebury.edu/international/">
-                Middlebury International<span></span></a></li>
-            <li id="nav_middlab" class="top"><a href="http://www.middlebury.edu/middlab/">MiddLab<span></span></a></li>
-            <li id="nav_about" class="bottom"><a href="http://www.middlebury.edu/about/">About
-                Middlebury<span></span></a></li>
-
-            <li id="nav_sustainability" class="bottom"><a href="http://www.middlebury.edu/sustainability/">
-                Sustainability<span></span></a></li>
-            <li id="nav_giving" class="bottom"><a href="http://www.middlebury.edu/giving/">Giving<span></span></a></li>
-            <li id="nav_news" class="bottom"><a href="http://www.middlebury.edu/newsroom/">News Room<span></span></a></li>
-            <li id="nav_events" class="bottom"><a href="http://www.middlebury.edu/events/">Calendar
-                of Events<span></span></a></li>
-            <li id="nav_offices" class="bottom"><a href="http://www.middlebury.edu/offices/">Offices
-                &amp; Services<span></span></a></li>
-
-        </ul>
-    </div>
-    <div id="content" class="container">
-        <div id="heading">
-          <a href="<?php echo $this->url(array(), null, true) ?>">
-          	<img src="<?php echo $this->url(array(), null, true) ?>images/catalog_header.jpg" alt="header image"/>
-          </a>
-        </div>
-        <div id="left">
+<body class="midd_department">
+    <a href="#midd_content" class="skiplink">Skip to content</a>
+    <header class="container">
+<!--
+      <nav class="leftlinks">
+        <a href="http://go.middlebury.edu/mail">WebMail</a>&nbsp;|
+        <a href="http://go.middlebury.edu/bw">BannerWeb</a>&nbsp;|
+        <a href="http://go.middlebury.edu/portal">Portal</a>
+      </nav>
+ -->
+      <form class="search" action="http://www.middlebury.edu/search" method="get" target="_top">
+        <label for="midd_search_query">Search Midd</label>
+        <input type="search" id="midd_search_query" class="search_query x-webkit-speech" name="q2" placeholder="Search Midd" x-webkit-speech required>
+        <input type="submit" id="midd_search_submit" class="search_submit" value="Go">
+        <input type="hidden" id="midd_ajax_search_url" value="http://www.middlebury.edu/go/search">
+      </form>
+      <h1 id="midd_wordmark" class="wordmark"><a href="http://www.middlebury.edu"><img src="//cdn.middlebury.edu/middlebury.edu/2010/images/logo.png" width="380" height="110" alt="Middlebury"></a></h1>
+    </header>
+    <nav id="midd_navigation" class="navigation container">
+      <ul>
+        <li class="nav_admissions top"><a href="http://www.middlebury.edu/admissions">Admissions<span></span></a></li>
+        <li class="nav_academics top active"><a href="http://www.middlebury.edu/academics">Academics<span></span></a></li>
+        <li class="nav_studentlife top"><a href="http://www.middlebury.edu/studentlife">Student Life<span></span></a></li>
+        <li class="nav_athletics top"><a href="http://www.middlebury.edu/athletics">Athletics<span></span></a></li>
+        <li class="nav_arts top"><a href="http://www.middlebury.edu/arts">Arts<span></span></a></li>
+        <li class="nav_international top"><a href="http://www.middlebury.edu/international">Middlebury International<span></span></a></li>
+        <li class="nav_middlab top"><a href="http://middlab.middlebury.edu/">MiddLab<span></span></a></li>
+        <li class="nav_about bottom"><a href="http://www.middlebury.edu/about">About<span></span></a></li>
+        <li class="nav_sustainability bottom"><a href="http://www.middlebury.edu/sustainability">Sustainability<span></span></a></li>
+        <li class="nav_giving bottom"><a href="http://www.middlebury.edu/giving">Giving<span></span></a></li>
+        <li class="nav_news bottom"><a href="http://www.middlebury.edu/newsroom">News Room<span></span></a></li>
+        <li class="nav_events bottom"><a href="http://www.middlebury.edu/events">Calendar of Events<span></span></a></li>
+        <li class="nav_offices bottom"><a href="http://www.middlebury.edu/offices">Office &amp; Services<span></span></a></li>
+      </ul>
+    </nav>
+    <article id="midd_content" class="pagecontent container">
+		<section class="banner">
+		  <a href="<?php echo $this->url(array(), null, true) ?>">
+			<img src="<?php echo $this->url(array(), null, true) ?>images/catalog_header.jpg" alt="header image"/>
+		  </a>
+		</section>
+        <nav class="left">
         	<div class='content'>
         		<ul class="menu">
 					<li class="expanded">
-						<?php echo $this->render('menu.phtml') ?> 
+						<?php echo $this->render('menu.phtml') ?>
 					</li>
 					<li class="expanded">
-						<?php echo $this->render('login.phtml') ?> 
+						<?php echo $this->render('login.phtml') ?>
 					</li>
 					<li class="leftText">
-						<?php echo $this->render('leftText.phtml') ?> 
+						<?php echo $this->render('leftText.phtml') ?>
 					</li>
 		        </ul>
 	        </div>
-        </div>
-        <div id="page">
+        </nav>
+        <section class="page">
 			<div id="body">
 				<?php echo $this->render('breadcrumbs.phtml') ?>
-				
+
 				<!--CONTENT GOES HERE-->
-				<?php echo $this->render('header.phtml') ?> 
-				<?php echo $this->layout()->content ?> 
-				<?php echo $this->render('footer.phtml') ?> 
+				<?php echo $this->render('header.phtml') ?>
+				<?php echo $this->layout()->content ?>
+				<?php echo $this->render('footer.phtml') ?>
 				<!--CONTENT GOES HERE-->
 			</div>
-		</div>
+		</section>
 		<!-- <div id="address"></div> -->
 		<div class="clear"></div>
-    </div>
-    <div id="footer">
-      <div class="container">
-        <ul id="gateways">
-          <li id="gateways_students"><a href="http://www.middlebury.edu/students/">Current Students<span></span></a></li>
-          <li id="gateways_parents"><a href="http://www.middlebury.edu/parents/">Parents<span></span></a></li>
+    </article>
 
-          <li id="gateways_staff"><a href="http://www.middlebury.edu/facstaff/">Faculty &amp; Staff<span></span></a></li>
-          <li id="gateways_alumni" class="quick_footer"><a href="http://www.middlebury.edu/alumni/">Alumni<span></span></a>
-            <div class="contents">
-              <ul class="quick_footer">
-                <li><a href="http://www.middlebury.edu/alumni/">Undergraduate Alumni</a></li>
-                <li><a href="http://www.middlebury.edu/alumni/ls">Language Schools</a></li>
 
-                <li><a href="http://www.middlebury.edu/alumni/blse">Bread Loaf School of English</a></li>
-                <li><a href="http://www.miis.edu/alumni">Monterey Institute</a></li>
-              </ul>
-            </div>
+    <footer id="midd_footer" class="footer">
+      <nav class="container">
+        <ul>
+          <li class="gateways_students"><a href="http://students.middlebury.edu">Current Students<span></span></a></li>
+          <li class="gateways_parents"><a href="http://parents.middlebury.edu">Parents<span></span></a></li>
+          <li class="gateways_staff"><a href="http://facstaff.middlebury.edu">Faculty &amp; Staff<span></span></a></li>
+          <li class="gateways_alumni quick_footer"><a href="http://alumni.middlebury.edu">Alumni<span></span></a>
+            <ul class="quick_footer contents">
+              <li><a href="http://www.middlebury.edu/alumni">Middlebury College</a></li>
+              <li><a href="http://www.middlebury.edu/alumni/ls">Middlebury Language Schools</a></li>
+              <li><a href="http://www.middlebury.edu/alumni/blse">Middlebury Bread Loaf School of English</a></li>
+              <li><a href="http://alumni.middlebury.edu">Middlebury Institute of International Studies at Monterey</a></li>
+            </ul>
           </li>
         </ul>
-        <ul id="quick">
-          <li id="quick_go" class="quick_footer"><a href="http://go.middlebury.edu">Quick Links<span></span></a>
-
+        <ul class="footer_right">
+          <li class="quick_footer quick_go"><a href="http://go.middlebury.edu">Quick Links<span></span></a>
             <div class="contents">
               <ul class="quick_footer">
                 <li><a href="http://go.middlebury.edu/bannerweb">BannerWeb</a></li>
@@ -149,39 +137,43 @@
                 <li><a href="http://go.middlebury.edu/bookstore">Bookstore</a></li>
                 <li><a href="http://boxoffice.middlebury.edu">Box Office</a></li>
                 <li><a href="http://museum.middlebury.edu">Museum of Art</a></li>
-                <li><a href="http://go.middlebury.edu/campusmap">Campus Maps</a></li>
+                <li><a href="http://go.middlebury.edu/presidential-search">Presidential Search</a></li>
                 <li><a href="http://go.middlebury.edu/privacy">Privacy</a></li>
                 <li><a href="http://go.middlebury.edu/copyright">Copyright</a></li>
                 <li><a href="https://secure.ethicspoint.com/domain/media/en/gui/28296/index.html">EthicsPoint</a></li>
               </ul>
+            </div>
           </li>
-          <li id="quick_contact" class="quick_footer"><a href="mailto:webmaster@middlebury.edu">Directions &amp; Contact Information<span></span></a>
+          <li class="quick_footer quick_contact"><a href="mailto:webmaster@middlebury.edu">Directions &amp; Contact Information<span></span></a>
             <div class="contents">
               <p><a href="http://go.middlebury.edu/directory">Directory</a></p>
-
-              <p><strong>Mailing Address</strong><br />
-              Middlebury College<br />
-              Middlebury, Vermont 05753<br />
-              802.443.5000<br />
-              <a href="http://go.middlebury.edu/directions">Directions to Middlebury</a></p>
-              <p><strong>Admissions</strong> 802.443.3000<br />
-
-              <a href="mailto:admissions@middlebury.edu">admissions@middlebury.edu</a></p>
-              <p><strong>Public Safety</strong> 802.443.5911<br />
-              <a href="mailto:publicsafety@middlebury.edu">publicsafety@middlebury.edu</a></p>
+              <p>
+                <strong>Mailing Address</strong><br>
+                Middlebury College<br>
+                Middlebury, Vermont 05753<br>
+                802.443.5000<br>
+                <a href="http://go.middlebury.edu/directions">Directions to Middlebury</a>
+              </p>
+              <p>
+                <strong>Admissions</strong> 802.443.3000<br>
+                <a href="mailto:admissions@middlebury.edu">admissions@middlebury.edu</a>
+              </p>
+              <p>
+                <strong>Public Safety</strong>
+                <a href="mailto:publicsafety@middlebury.edu">publicsafety@middlebury.edu</a>
+              </p>
             </div>
           </li>
         </ul>
-
         <div class="clear"></div>
-      </div>
-    </div>
-    <div id="footer_panel"></div>
-    <!--
-    -->    
-	<script type="text/javascript" src="<?php echo $this->url(array(), null, true) ?>javascript/middlebury.js?f"></script>
-	<script type="text/javascript" src="https://web.middlebury.edu/development/tools/1d2010/Scripts/features.js?f"></script>
-	<script type="text/javascript" src="https://web.middlebury.edu/development/tools/1d2010/Scripts/midd.js?f"></script>
-    
-</body>
+      </nav>
+    </footer>
+    <div id="midd_footer_panel" class="footer_panel"></div>
+    <script src="//cdn.middlebury.edu/middlebury.edu/2010/js/midd.js"></script>
+    <script type="text/javascript">
+    <!--//--><![CDATA[//><!--
+    var _gaq = _gaq || [];_gaq.push(["_setAccount", "UA-993303-1"]);_gaq.push(["_setDomainName", ".middlebury.edu"]);_gaq.push(["_trackPageview"]);(function() {var ga = document.createElement("script");ga.type = "text/javascript";ga.async = true;ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(ga, s);})();
+    //--><!]]>
+    </script>
+  </body>
 </html>

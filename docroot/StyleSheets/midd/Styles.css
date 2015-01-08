@@ -1,13 +1,17 @@
-#left {
-	width: 202px;
-	padding-left: 0px;
+.left {
+	width: 196px;
 }
-#left div.content {
+.left div.content {
 	margin-top: 0px;
 }
-div.content > ul.menu {
-	width: 202px;	
+
+div.content > ul.menu > li > ul.menu > li.expanded > a {
+	color: #272c6f;
 }
-#page {
-	width: 740px;
+div.content > ul.menu > li > ul.menu > li.expanded > ul.menu li.here > a {
+	color: #272c6f;
+}
+
+div.content > ul.menu {
+	width: 214px;
 }
