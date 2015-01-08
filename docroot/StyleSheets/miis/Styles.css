@@ -1,3 +1,44 @@
+.main_title {
+    background-color: #1b457a;
+    box-shadow: 0 4px 4px -2px #000000;
+    color: #ffffff;
+    display: block;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 32px;
+    margin: -12px 0 0 -12px;
+    min-height: 32px;
+    padding: 12px 24px;
+    position: relative;
+    text-align: center;
+    width: 672px;
+    z-index: 200;
+}
+
+.slides {
+    margin: 0 -12px 24px;
+    position: relative;
+    z-index: 120;
+
+    overflow: hidden;
+}
+
+.breadcrumb {
+    background: none repeat scroll 0 0 transparent;
+    margin-top: px;
+    width: auto;
+}
+
+.breadcrumb a {
+    color: #003366;
+}
+
+.content h1 {
+	/* color: #790e39; */
+    font-size: 1.6em;
+    font-weight: bold;
+    line-height: 1.25em;
+}
+
 ul.menu {
 	color: #999;
 }
@@ -40,9 +81,13 @@ table.schedule_planner {
 	width: 690px;
 	margin-left: -20px;
 	margin-top: -15px;
-	
+
 }
 li.bookmarked_course, li.bookmarked_course div.course_info {
 	width:250px;
 	overflow: hidden;
+}
+
+.ui-dialog {
+	z-index: 999;
 }
