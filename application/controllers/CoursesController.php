@@ -742,38 +742,16 @@ class CoursesController
 		$feedDoc = new DOMDocument;
 		$feedDoc->load($feedUrl);
 		$xpath = new DOMXPath($feedDoc);
-		$links = $xpath->query('/rss/channel/item/link');
+		$descriptions = $xpath->query('/rss/channel/item/description');
 		ob_start();
-		foreach ($links as $link) {
-			print $this->getNodeContent($link->nodeValue);
+		foreach ($descriptions as $description) {
+			$body = $description->nodeValue;
+			$body = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $body); // Strip out none-printable characters.
+			print $body;
 		}
 		return ob_get_clean();
 	}
-	
-	/**
-	 * Answer the HTML data for a Drupal Node
-	 * 
-	 * @param string $url
-	 * @return string
-	 * @access protected
-	 * @since 4/26/10
-	 */
-	protected function getNodeContent ($url) {
-		preg_match('/[0-9]+$/', $url, $matches);
-		$nodeId = $matches[0];
-		
-		// This is a nasty hack, but I don't know how to get through Drupal webservices currently.
-		if (!isset($this->drupalStatement)) {
-			$config = Zend_Registry::getInstance()->config;
-			$pdo = new PDO($config->catalog->print_drupal_db->connection, $config->catalog->print_drupal_db->user, $config->catalog->print_drupal_db->password);
-			$this->drupalStatement = $pdo->prepare('SELECT body FROM node_revisions WHERE nid = :nid1 and vid = (SELECT MAX(vid) AS vid FROM node_revisions WHERE nid = :nid2)');
-		}
-		
-		$this->drupalStatement->execute(array(':nid1' => $nodeId, ':nid2' => $nodeId));
-		$rows = $this->drupalStatement->fetchAll();
-		return preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $rows[0]['body']); // Strip out none-printable characters.
-	}
-	
+
 	/**
 	 * Print out the courses for a topic
 	 * 
