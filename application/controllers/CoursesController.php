@@ -625,6 +625,11 @@ class CoursesController
 					$section['text'] = $sectionConf->text;
 				else
 					throw new InvalidArgumentException("catalog.print_sections.$i.text is missing.");
+			} else if ($sectionConf->type == 'h2') {
+				if (strlen(trim($sectionConf->text)))
+					$section['text'] = $sectionConf->text;
+				else
+					throw new InvalidArgumentException("catalog.print_sections.$i.text is missing.");
 			} else if ($sectionConf->type == 'page_content') {
 				if (strlen(trim($sectionConf->url)))
 					$section['url'] = $sectionConf->url;
@@ -636,7 +641,7 @@ class CoursesController
 				else
 					throw new InvalidArgumentException("catalog.print_sections.$i.id is missing.");
 			} else {
-				throw new InvalidArgumentException("catalog.print_sections.$i.type is '".$sectionConf->type."'. Must be one of h1, page_content, or courses.");
+				throw new InvalidArgumentException("catalog.print_sections.$i.type is '".$sectionConf->type."'. Must be one of h1, h2, page_content, or courses.");
 			}
 			
 			$sections[] = $section;
