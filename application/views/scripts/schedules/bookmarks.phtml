@@ -1,10 +1,10 @@
 <?php
 if (!$this->bookmarked_courses->hasNext()) {
-	print "\n\t<p class='notice'>You have no starred courses for this term. Please <a href=\"".$this->url(array('controller' => 'offerings', 'action' => 'search', 'catalog' => $this->catalogIdString, 'term' => $this->termIdString), null, true)."\">search for courses</a> and star intersting ones first.</p>";
+	print "\n\t<p class='notice'>You have no starred courses for this term. Please <a href=\"".$this->url(array('controller' => 'offerings', 'action' => 'search', 'catalog' => $this->catalogIdString, 'term' => $this->termIdString), null, true)."\">search for courses</a> and star interesting ones first.</p>";
 }
 ?>
 <ul id="bookmarked_courses">
-<?php 
+<?php
 	while ($this->bookmarked_courses->hasNext()) {
 		$course = $this->bookmarked_courses->getNextCourse();
 		print "\n\t<li class='bookmarked_course'>";
@@ -20,7 +20,7 @@ if (!$this->bookmarked_courses->hasNext()) {
 		print "\n\t\t\t\t<button>X</button>";
 		print "\n\t\t\t</a>";
 		print "\n\t\t</div>";
-		
+
 		print "\n\t\t<form class='add_to_schedule_form' action='".$this->url(array('action' => 'add', 'term' => $this->termIdString))."' method='post'>";
 		print "\n\t\t<select name='schedule_id'>";
 		print "\n\t\t\t<option value=''>Add to schedule...</option>";
@@ -30,22 +30,22 @@ if (!$this->bookmarked_courses->hasNext()) {
 		print "\n\t\t</select>";
 		print "\n\t\t<input type='hidden' name='csrf_key' value='".$this->csrfKey()."' />";
 		print "\n\t\t</form>";
-		
+
 ?>
 		<div class="add_section_dialog section_dialog" title="Add which sections?" style='display: none'>
 			<form action="<?php print $this->url(array('action' => 'add', 'term' => $this->termIdString)); ?>" class="add_section_form" method="post">
-				<div class='section_set' style='display: none'>Choose a group: 
+				<div class='section_set' style='display: none'>Choose a group:
 					<select class="section_set" name="section_set">
 						<option value='' class='loading'>Loading...</option>
 					</select>
 				</div>
-				
+
 				<div class='section_types'>Choose one option of each type:
 					<ul class="section_types">
 						<li class='loading'>Loading...</li>
 					</ul>
 				</div>
-				
+
 				<input type='hidden' name='csrf_key' value='<?php print $this->csrfKey(); ?>' />
 				<input type='hidden' name='schedule_id' value='' />
 				<input type="submit" value="Add Sections"/>
@@ -53,9 +53,9 @@ if (!$this->bookmarked_courses->hasNext()) {
 			<input type='hidden' name='course_id' value="<?php print $this->getStringFromOsidId($course->getId()); ?>" />
 			<input type='hidden' name='section_lookup_url' value='<?php print $this->url(array('action' => 'sectionsforcourse', 'term' => $this->termIdString)); ?>' />
 		</div>
-		
+
 <?php
-		
+
 		print "\n\t</li>";
 	}
 ?>
@@ -64,13 +64,13 @@ if (!$this->bookmarked_courses->hasNext()) {
 
 <?php ob_start(); ?>
 
-	$(function() { // on DOM ready 
-		
+	$(function() { // on DOM ready
+
 		$("a.remove_course").click(function () {
 			if (confirm('Do you want to remove the bookmark for this course?')) {
 				var li = $(this).parents('li.bookmarked_course');
 				$.ajax({
-					url: $(this).attr('href'), 
+					url: $(this).attr('href'),
 					success: function () {
 						li.remove();
 					}
@@ -78,51 +78,51 @@ if (!$this->bookmarked_courses->hasNext()) {
 			}
 			return false;
 		});
-		
-		
+
+
 		/*********************************************************
 		 * Set up the add-sections dialog controls
 		 *********************************************************/
-		
+
 		$(".add_section_dialog").each(function () {
 			var form = $(this).siblings("form.add_to_schedule_form");
 			var addDialog = $(this).dialog({
-					autoOpen: false, 
-					width:  600, 
+					autoOpen: false,
+					width:  600,
 					modal: true,
 					close: function(event, ui) {
 						$(this).find("select.section_set").empty();
 					}
 				});
-			
+
 			form.data("addDialog", addDialog);
 		});
-		
+
 		$("form.add_to_schedule_form select").change(function () {
 			var form = $(this).parent("form");
 			var addDialog = form.data("addDialog");
 			var scheduleId = $(this).val();
 			$(this).val("");
-			
+
 			addDialog.find("select.section_set").empty();
 			getSectionSets(addDialog, scheduleId);
 			addDialog.dialog("open");
 		});
-		
+
 	});
-	
+
 	function getSectionSets (dialog, scheduleId) {
 		var lookupUrl = dialog.children("input[name=section_lookup_url]").val();
 		var courseId = dialog.children("input[name=course_id]").val();
-		
+
 		dialog.find("input[name=schedule_id]").val(scheduleId);
-		
+
 		$.getJSON(lookupUrl, {course: courseId, schedule_id: scheduleId}, function (data, textStatus) {
 			populateSectionSetSelect(dialog, scheduleId, data);
 			populateSectionTypes(dialog, scheduleId, dialog.find("select.section_set").val(), data);
 		});
 	}
-	
+
 	function populateSectionSetSelect(dialog, scheduleId, data) {
 		var selectList = dialog.find("select.section_set");
 		selectList.empty();
@@ -156,15 +156,15 @@ if (!$this->bookmarked_courses->hasNext()) {
 		var i = 0;
 		for (var linkTypeId in data[linkSetId]['types']) {
 			var sectionType = data[linkSetId]['types'][linkTypeId];
-			
+
 			var typeListItem = $('<li></li>');
 			typesList.append(typeListItem);
 			var typeList = $('<ul class="section_type"></ul>');
 			typeListItem.append(typeList);
-			
+
 			for (var j = 0; j < sectionType.length; j++) {
 				var section = sectionType[j];
-				
+
 				var item = $('<li class="section"></li>');
 				typeList.append(item);
 				var radio = $('<input type="radio" name="section_group_'+i+'" value="'+section.id+'"/>');
@@ -194,6 +194,6 @@ if (!$this->bookmarked_courses->hasNext()) {
 		}
 	}
 
-<?php 
+<?php
 
 $this->headScript()->appendScript(ob_get_clean());
