@@ -331,8 +331,15 @@ class CoursesController
 	}
 
 	/**
-	 * Search for courses
-	 * 
+	 * Build a list of courses associated with an instructor.
+	 *
+	 * The process is:
+	 *   1. Find sections taught by the instructor in the time-frame (default is past 4 years).
+	 *   3. For each section...
+	 *      a. Get the cross-listed sections from SSB_XLST
+	 *      b. Take the section plus its cross-listed sections, get their course
+	 *         entries and merge them into a single result.
+	 *
 	 * @return void
 	 * @access public
 	 * @since 6/15/09
@@ -342,8 +349,6 @@ class CoursesController
 		$this->_helper->viewRenderer->setNoRender();
 
 		if (!$this->_getParam('catalog')) {
-			$searchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSession();
-			$searchSession->useFederatedCourseCatalogView();
 			$offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSession();
 			$offeringSearchSession->useFederatedCourseCatalogView();
 
@@ -360,7 +365,6 @@ class CoursesController
 		} else {
 			try {
 				$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
-				$searchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
 				$offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
 
 				$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
@@ -384,14 +388,6 @@ class CoursesController
 
 		$instructorId = $this->_helper->osidId->fromString('resource/person/'.$instructor);
 		$searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'resources', null, array('catalog' => $this->_getParam('catalog'), 'resource' => 'resouce/person/'.$instructor)));
-		
-		// Fetch courses
-		$query = $searchSession->getCourseQuery();
-		
-		$instrctorRecord = $query->getCourseQueryRecord(new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:instructors"));
-		$instrctorRecord->matchInstructorId($instructorId, true);
-		
-		$courses = $searchSession->getCoursesByQuery($query);
 
 		$resourceLookup = $this->_helper->osid->getCourseManager()->getResourceManager()->getResourceLookupSession();
 		try {
@@ -403,8 +399,16 @@ class CoursesController
 
 			throw $e;
 		}
-		
-		$recentCourses = new Helper_RecentCourses_Instructor($courses, $offeringSearchSession, $instructorId);
+
+		// Fetch Offerings
+		$query = $offeringSearchSession->getCourseOfferingQuery();
+
+		$instructorRecord = $query->getCourseOfferingQueryRecord(new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:instructors"));
+		$instructorRecord->matchInstructorId($instructorId, true);
+
+		$courseOfferings = $offeringSearchSession->getCourseOfferingsByQuery($query);
+
+		$recentCourses = new Helper_RecentCourses_Instructor($courseOfferings);
 		if ($this->_getParam('cutoff')) {
 			$recentCourses->setRecentInterval(new DateInterval($this->_getParam('cutoff')));
 		}
@@ -422,7 +426,7 @@ class CoursesController
 	 * @access protected
 	 * @since 10/19/09
 	 */
-	protected function outputCourseFeed (Helper_RecentCourses_Abstract $recentCourses, $title, $url) {		
+	protected function outputCourseFeed (Helper_RecentCourses_Interface $recentCourses, $title, $url) {
 		// Set our cache-control headers since we will be flushing content soon.
 		$this->setCacheControlHeaders();
 		$this->getResponse()->sendHeaders();

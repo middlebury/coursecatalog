@@ -16,7 +16,9 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-abstract class Helper_RecentCourses_Abstract {
+abstract class Helper_RecentCourses_Abstract
+	implements Helper_RecentCourses_Interface
+{
 
 	protected $groups;
 	private $terms;
