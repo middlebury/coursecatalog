@@ -2,17 +2,17 @@
 /**
  * @since 11/16/09
  * @package catalog.library
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
- */ 
+ */
 
 /**
  * A helper for accessing recent courses for an instructor
- * 
+ *
  * @since 11/16/09
  * @package catalog.library
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
@@ -86,7 +86,7 @@ class Helper_RecentCourses_Instructor
 			$this->termsCache[$cacheKey] = $allTerms;	
 		}
 		return $this->termsCache[$cacheKey];
-	}
-}
 
-?>
+	}
+
+}
