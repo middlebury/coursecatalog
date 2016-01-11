@@ -2,24 +2,24 @@
 /**
  * @since 4/21/09
  * @package catalog.controllers
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
- */ 
+ */
 
 /**
  * A controller for working with courses
- * 
+ *
  * @since 4/21/09
  * @package catalog.controllers
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 class CoursesController
 	extends AbstractCatalogController
 {
-	
+
 	/**
      * Initialize object
      *
@@ -32,10 +32,10 @@ class CoursesController
 
 		parent::init();
 	}
-	
+
 	/**
 	 * Print out a list of all courses
-	 * 
+	 *
 	 * @return void
 	 * @access public
 	 * @since 4/21/09
@@ -50,18 +50,18 @@ class CoursesController
 			$this->view->title = 'Courses in All Catalogs';
 		}
 		$lookupSession->useFederatedCourseCatalogView();
-		
+
 		$this->view->courses = $lookupSession->getCourses();
-		
+
 		$this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
 		$this->view->headTitle($this->view->title);
-		
+
 		$this->view->menuIsCourses = true;
 	}
-	
+
 	/**
 	 * View a catalog details
-	 * 
+	 *
 	 * @return void
 	 * @access public
 	 * @since 4/21/09
@@ -71,23 +71,23 @@ class CoursesController
 		$lookupSession = $this->_helper->osid->getCourseManager()->getCourseLookupSession();
 		$lookupSession->useFederatedCourseCatalogView();
 		$this->view->course = $lookupSession->getCourse($id);
-		
+
 		// Load the topics into our view
  		$this->loadTopics($this->view->course->getTopics());
-		
+
 		// Set the selected Catalog Id.
 		$catalogSession = $this->_helper->osid->getCourseManager()->getCourseCatalogSession();
 		$catalogIds = $catalogSession->getCatalogIdsByCourse($id);
 		if ($catalogIds->hasNext()) {
 			$this->setSelectedCatalogId($catalogIds->getNextId());
 		}
-		
+
 		// Set the title
 		$this->view->title = $this->view->course->getDisplayName();
 		$this->view->headTitle($this->view->title);
-		
+
 		$this->view->menuIsCourses = true;
-		
+
 		// Alternates
  		if ($this->view->course->hasRecordType($this->alternateType)) {
  			$record = $this->view->course->getCourseRecord($this->alternateType);
@@ -95,14 +95,14 @@ class CoursesController
  				$this->view->alternates = $record->getAlternates();
  			}
  		}
-				
+
 		// Term
 		if ($this->_getParam('term')) {
 			$termId = $this->_helper->osidId->fromString($this->_getParam('term'));
 			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
 			$termLookupSession->useFederatedCourseCatalogView();
 			$this->view->term = $termLookupSession->getTerm($termId);
-			
+
 			$allParams = array();
 			$allParams['course'] = $this->_getParam('course');
 			if ($this->getSelectedCatalogId())
@@ -111,10 +111,10 @@ class CoursesController
 		} else {
 			$this->view->linkTermId = $this->_helper->osidTerms->getNextOrLatestTermId($this->getSelectedCatalogId());
 		}
-		
+
 		// Bookmarked Courses and Schedules
- 		$this->view->bookmarks_CourseId = $this->view->course->getId(); 
-				
+ 		$this->view->bookmarks_CourseId = $this->view->course->getId();
+
 		// offerings
 		$this->view->offeringsTitle = "Sections";
 		$offeringLookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
@@ -128,22 +128,22 @@ class CoursesController
 			$this->view->offerings = $offeringLookupSession->getCourseOfferingsForCourse($id);
 		}
 	}
-	
+
 	/**
 	 * Get an XML view of a course.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function viewxmlAction () {
 		$this->_helper->layout->disableLayout();
 		$this->getResponse()->setHeader('Content-Type', 'text/xml');
-		
+
 		$this->viewAction();
 	}
-	
+
 	/**
 	 * Search for courses
-	 * 
+	 *
 	 * @return void
 	 * @access public
 	 * @since 6/15/09
@@ -151,7 +151,7 @@ class CoursesController
 	public function searchxmlAction () {
 		$this->_helper->layout->disableLayout();
 		$this->_helper->viewRenderer->setNoRender();
-		
+
 		if (!$this->_getParam('catalog')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A catalog must be specified.";
@@ -169,10 +169,10 @@ class CoursesController
 			print "The catalog id specified was not found.";
 			exit;
 		}
-		
+
 		$keywords = trim($this->_getParam('keywords'));
 		$searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('search', 'offerings', null, array('catalog' => $this->_getParam('catalog'), 'keywords' => $keywords, 'submit' => 'Search')));
-		
+
 		header('Content-Type: text/xml');
 		print '<?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
@@ -183,7 +183,7 @@ class CoursesController
 		<lastBuildDate>'.date('r').'</lastBuildDate>
 		<generator>Course Catalog</generator>
 		<docs>http://blogs.law.harvard.edu/tech/rss</docs>
-		
+
 ';
 		$courses = array();
 		// Fetch courses
@@ -197,7 +197,7 @@ class CoursesController
 				new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard"),
 				true);
 			$offerings = $searchSession->getCourseOfferingsByQuery($query);
-			
+
 			while ($offerings->hasNext() && count($courses) <= 20) {
 				$offering = $offerings->getNextCourseOffering();
 				$courseIdString = $this->_helper->osidId->toString($offering->getCourseId());
@@ -210,42 +210,42 @@ class CoursesController
 				}
 			}
 		}
-		
+
 		// Print out courses as items.
 		foreach ($courses as $courseIdString => $course) {
 			print "\n\t\t<item>";
-			
+
 			print "\n\t\t\t<title>";
 			print htmlspecialchars($course->getDisplayName().' - '.$course->getTitle());
 			print "</title>";
-			
+
 			print "\n\t\t\t<link>";
 			print $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'courses', null, array('catalog' => $this->_getParam('catalog'), 'course' => $courseIdString)));
 			print "</link>";
-			
+
 			print "\n\t\t\t<guid isPermaLink='true'>";
 			print $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'courses', null, array('catalog' => $this->_getParam('catalog'), 'course' => $courseIdString)));
 			print "</guid>";
-			
+
 			print "\n\t\t\t<description><![CDATA[";
 			print $course->getDescription();
 			print "]]></description>";
 			print "\n\t\t\t<catalog:id>".$courseIdString."</catalog:id>";
-			
+
 			print "\n\t\t</item>";
 		}
-		
+
 		print '
 	</channel>
 </rss>';
 
 		exit;
 	}
-	
-	
+
+
 	/**
 	 * Search for courses
-	 * 
+	 *
 	 * @return void
 	 * @access public
 	 * @since 6/15/09
@@ -253,7 +253,7 @@ class CoursesController
 	public function topicxmlAction () {
 		$this->_helper->layout->disableLayout();
 		$this->_helper->viewRenderer->setNoRender();
-		
+
 		if (!$this->_getParam('catalog')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A catalog must be specified.";
@@ -262,7 +262,7 @@ class CoursesController
 		try {
 			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
 			$searchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
-			
+
 			$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 		} catch (osid_InvalidArgumentException $e) {
 			header('HTTP/1.1 400 Bad Request');
@@ -273,13 +273,13 @@ class CoursesController
 			print "The catalog id specified was not found.";
 			exit;
 		}
-		
+
 		if (!$this->_getParam('topic')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A topic must be specified.";
 			exit;
 		}
-		
+
 		$topicsIds = array();
 		if (is_array($this->_getParam('topic'))) {
 			foreach ($this->_getParam('topic') as $idString) {
@@ -288,17 +288,17 @@ class CoursesController
 		} else {
 			$topicIds[] = $this->_helper->osidId->fromString($this->_getParam('topic'));
 		}
-		
+
 		$searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('search', 'offerings', null, array()));
-		
+
 		// Fetch courses
 		$query = $searchSession->getCourseQuery();
-		
+
 		$topicRecord = $query->getCourseQueryRecord(new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:topic"));
 		foreach ($topicIds as $topicId) {
 			$topicRecord->matchTopicId($topicId, true);
 		}
-		
+
 		// Limit by location
 		$locationIds = array();
 		if (is_array($this->_getParam('location'))) {
@@ -312,27 +312,34 @@ class CoursesController
 		foreach ($locationIds as $locationId) {
 			$locationRecord->matchLocationId($locationId, true);
 		}
-		
+
 		// Limit to just active courses
 		$query->matchGenusType(new phpkit_type_URNInetType("urn:inet:middlebury.edu:status-active"), true);
-		
+
 		$courses = $searchSession->getCoursesByQuery($query);
-		
+
 		$topicLookup = $this->_helper->osid->getCourseManager()->getTopicLookupSession();
 		$topicLookup->useFederatedCourseCatalogView();
 		$topic = $topicLookup->getTopic($topicId);
-		
+
 		$recentCourses = new Helper_RecentCourses_Department($courses);
 		if ($this->_getParam('cutoff')) {
 			$recentCourses->setRecentInterval(new DateInterval($this->_getParam('cutoff')));
 		}
 		$this->outputCourseFeed($recentCourses, htmlentities('Courses in  '.$topic->getDisplayName()), $searchUrl);
-		
+
 	}
-	
+
 	/**
-	 * Search for courses
-	 * 
+	 * Build a list of courses associated with an instructor.
+	 *
+	 * The process is:
+	 *   1. Find sections taught by the instructor in the time-frame (default is past 4 years).
+	 *   3. For each section...
+	 *      a. Get the cross-listed sections from SSB_XLST
+	 *      b. Take the section plus its cross-listed sections, get their course
+	 *         entries and merge them into a single result.
+	 *
 	 * @return void
 	 * @access public
 	 * @since 6/15/09
@@ -340,18 +347,18 @@ class CoursesController
 	public function instructorxmlAction () {
 		$this->_helper->layout->disableLayout();
 		$this->_helper->viewRenderer->setNoRender();
-		
+
 		if (!$this->_getParam('catalog')) {
-			$searchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSession();
-			$searchSession->useFederatedCourseCatalogView();
 			$offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSession();
 			$offeringSearchSession->useFederatedCourseCatalogView();
-			
+			$courseLookupSession = $this->_helper->osid->getCourseManager()->getCourseLookupSession();
+			$courseLookupSession->useFederatedCourseCatalogView();
+
 			// Allow term current/past to be limited to a certain catalog while courses are fetched from many
 			if ($this->_getParam('term_catalog')) {
 				$catalogId = $this->_helper->osidId->fromString($this->_getParam('term_catalog'));
 				$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
-			} 
+			}
 			// fall back to terms from any catalog.
 			else {
 				$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
@@ -360,9 +367,9 @@ class CoursesController
 		} else {
 			try {
 				$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
-				$searchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
 				$offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
-				
+				$courseLookupSession = $this->_helper->osid->getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
+
 				$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 			} catch (osid_InvalidArgumentException $e) {
 				throw new osid_InvalidArgumentException("The catalog id specified was not of the correct format.");
@@ -371,28 +378,20 @@ class CoursesController
 				exit;
 			}
 		}
-		
+
 		$instructor = trim($this->_getParam('instructor'));
-		
+
 		if (!$instructor || !strlen($instructor)) {
 			// Make sure that this error response is cacheable.
 			$this->setCacheControlHeaders();
 			$this->getResponse()->sendHeaders();
-			
+
 			throw new InvalidArgumentException("An instructor must be specified.");
 		}
-		
+
 		$instructorId = $this->_helper->osidId->fromString('resource/person/'.$instructor);
 		$searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'resources', null, array('catalog' => $this->_getParam('catalog'), 'resource' => 'resouce/person/'.$instructor)));
-		
-		// Fetch courses
-		$query = $searchSession->getCourseQuery();
-		
-		$instrctorRecord = $query->getCourseQueryRecord(new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:instructors"));
-		$instrctorRecord->matchInstructorId($instructorId, true);
-		
-		$courses = $searchSession->getCoursesByQuery($query);
-		
+
 		$resourceLookup = $this->_helper->osid->getCourseManager()->getResourceManager()->getResourceLookupSession();
 		try {
 			$instructorResource = $resourceLookup->getResource($instructorId);
@@ -400,21 +399,29 @@ class CoursesController
 			// Make sure that this error response is cacheable.
 			$this->setCacheControlHeaders();
 			$this->getResponse()->sendHeaders();
-			
+
 			throw $e;
 		}
-		
-		$recentCourses = new Helper_RecentCourses_Instructor($courses, $offeringSearchSession, $instructorId);
+
+		// Fetch Offerings
+		$query = $offeringSearchSession->getCourseOfferingQuery();
+
+		$instructorRecord = $query->getCourseOfferingQueryRecord(new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:instructors"));
+		$instructorRecord->matchInstructorId($instructorId, true);
+
+		$courseOfferings = $offeringSearchSession->getCourseOfferingsByQuery($query);
+
+		$recentCourses = new Helper_RecentCourses_Instructor($courseOfferings, $courseLookupSession);
 		if ($this->_getParam('cutoff')) {
 			$recentCourses->setRecentInterval(new DateInterval($this->_getParam('cutoff')));
 		}
 		$this->outputCourseFeed($recentCourses, 'Courses taught by '.$instructorResource->getDisplayName(), $searchUrl);
-		
+
 	}
-	
+
 	/**
 	 * Output an RSS feed of courses from results
-	 * 
+	 *
 	 * @param Helper_RecentCourses_Abstract $recentCourses
 	 * @param string $title
 	 * @param string $url
@@ -422,15 +429,15 @@ class CoursesController
 	 * @access protected
 	 * @since 10/19/09
 	 */
-	protected function outputCourseFeed (Helper_RecentCourses_Abstract $recentCourses, $title, $url) {		
+	protected function outputCourseFeed (Helper_RecentCourses_Interface $recentCourses, $title, $url) {
 		// Set our cache-control headers since we will be flushing content soon.
 		$this->setCacheControlHeaders();
 		$this->getResponse()->sendHeaders();
-		
+
 		// Close the session before we send headers and content.
 		session_write_close();
-		
-		
+
+
 		header('Content-Type: text/xml');
 		print '<?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
@@ -441,9 +448,9 @@ class CoursesController
 		<lastBuildDate>'.date('r').'</lastBuildDate>
 		<generator>Course Catalog</generator>
 		<docs>http://blogs.law.harvard.edu/tech/rss</docs>
-		
+
 ';
-		
+
 		while (ob_get_level()) {
 			ob_end_flush();
 		}
@@ -453,26 +460,26 @@ class CoursesController
 		$currentTermId = $this->_helper->osidTerms->getCurrentTermId($this->termLookupSession->getCourseCatalogId());
 		$currentTerm = $this->termLookupSession->getTerm($currentTermId);
 		$currentEndTime = $this->DateTime_getTimestamp($currentTerm->getEndTime());
-		
+
 // 		print "<description><![CDATA[";
 // 		print ($courses->debug());
 // 		print "]]></description>";
-		
+
 		$catalogSession = $this->_helper->osid->getCourseManager()->getCourseCatalogSession();
 		$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
-		
+
 // 		foreach ($groups as $key => $group) {
 // 			print "\n$key";
 // 			foreach ($group as $course) {
 // 				print "\n\t".$this->_helper->osidId->toString($course->getId());
 // 			}
 // 		}
-		
+
 		foreach ($recentCourses->getPrimaryCourses() as $course) {
 			$courseIdString = $this->_helper->osidId->toString($course->getId());
-						
+
 			print "\n\t\t<item>";
-			
+
 			print "\n\t\t\t<title>";
 			$alternates = $recentCourses->getAlternatesForCourse($course);
 			$name = $course->getDisplayName();
@@ -481,7 +488,7 @@ class CoursesController
 			}
 			print htmlspecialchars($name.' - '.$course->getTitle());
 			print "</title>";
-			
+
 			print "\n\t\t\t<link>";
 			$catalog = $catalogSession->getCatalogIdsByCourse($course->getId());
 			if ($catalog->hasNext())
@@ -490,16 +497,16 @@ class CoursesController
 				$catalogIdString = null;
 			print $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'courses', null, array('catalog' => $catalogIdString, 'course' => $courseIdString)));
 			print "</link>";
-			
+
 			print "\n\t\t\t<guid isPermaLink='true'>";
 			print $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'courses', null, array('catalog' => $catalogIdString, 'course' => $courseIdString)));
 			print "</guid>";
-			
+
 			print "\n\t\t\t<description><![CDATA[";
 			print $course->getDescription();
 			print "]]></description>";
 			print "\n\t\t\t<catalog:id>".$courseIdString."</catalog:id>";
-			
+
 			$recentTerms = $recentCourses->getTermsForCourse($course);
 			if (count($recentTerms)) {
 				$termStrings = array();
@@ -515,7 +522,7 @@ class CoursesController
 					print ">".$term->getDisplayName()."</catalog:term>";
 				}
 			}
-			
+
 			$allTopics = $this->_helper->topics->topicListAsArray($course->getTopics());
 			$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
 			$topicTypeString = $this->_helper->osidType->toString($topicType);
@@ -526,7 +533,7 @@ class CoursesController
 				print $this->view->escape($topic->getDisplayName());
 				print "</catalog:topic> ";
 			}
-			
+
 			$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
 			$topicTypeString = $this->_helper->osidType->toString($topicType);
 			$topics = $this->_helper->topics->filterTopicsByType($allTopics, $topicType);
@@ -536,7 +543,7 @@ class CoursesController
 				print $this->view->escape($topic->getDisplayName());
 				print "</catalog:topic> ";
 			}
-			
+
 			$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
 			$topicTypeString = $this->_helper->osidType->toString($topicType);
 			$topics = $this->_helper->topics->filterTopicsByType($allTopics, $topicType);
@@ -546,33 +553,33 @@ class CoursesController
 				print $this->view->escape($topic->getDisplayName());
 				print "</catalog:topic> ";
 			}
-			
+
 			print "\n\t\t</item>";
 			flush();
 		}
-		
+
 		print '
 	</channel>
 </rss>';
 		exit;
 	}
-	
+
 	/**
 	 * Answer a list of all recent courses
-	 * 
+	 *
 	 * @return void
 	 * @access public
 	 * @since 6/15/09
 	 */
 	public function allrecentcoursesAction () {
 		$this->_helper->viewRenderer->setNoRender();
-		
+
 		if (!$this->_getParam('catalog')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A catalog must be specified.";
 			exit;
 		}
-		
+
 		$config = Zend_Registry::getInstance()->config;
 		if ($config->catalog->print_password && !$this->_getParam('password')) {
 			header('HTTP/1.1 400 Bad Request');
@@ -584,10 +591,10 @@ class CoursesController
 			print "Invalid password specified.";
 			exit;
 		}
-		
+
 		if ($config->catalog->print_max_exec_time)
 			ini_set('max_execution_time', $config->catalog->print_max_exec_time);
-		
+
 		try {
 			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
 			$this->courseSearchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
@@ -603,7 +610,7 @@ class CoursesController
 			print "The catalog id specified was not found.";
 			exit;
 		}
-		
+
 		try {
 			$this->selectedTerms = array();
 			// Get all offerings in the terms
@@ -616,7 +623,7 @@ class CoursesController
 			print "The term id specified was not of the correct format.";
 			exit;
 		}
-		
+
 		$sections = array();
 		foreach ($config->catalog->print_sections as $i => $sectionConf) {
 			$section = array('type' => $sectionConf->type);
@@ -643,23 +650,23 @@ class CoursesController
 			} else {
 				throw new InvalidArgumentException("catalog.print_sections.$i.type is '".$sectionConf->type."'. Must be one of h1, h2, page_content, or courses.");
 			}
-			
+
 			$sections[] = $section;
 		}
-		
+
 		$title = 'Course Catalog - ';
 		$title .= $this->courseSearchSession->getCourseCatalog()->getDisplayName();
 		$termNames = array();
-		foreach ($this->selectedTerms as $termId) {	
+		foreach ($this->selectedTerms as $termId) {
 			$termNames[] = $this->termLookupSession->getTerm($termId)->getDisplayName();
 		}
 		if (count($termNames)) {
 			$title .= ' - '.implode(', ', $termNames);
 		}
-		
+
 		header('Content-Type: text/html');
 		header('Content-Disposition: filename="AllCourses.html"');
-		print 
+		print
 '<html>
 <head>
 	<title>'.$title.'</title>
@@ -692,13 +699,13 @@ class CoursesController
 				default:
 					throw new Exception("Unknown section type ".$section['type']);
 			}
-			
+
 			while (ob_get_level()) {
 				ob_end_flush();
 			}
 			flush();
 		}
-		
+
 		print "\n<hr/>";
 		print "\n<h1>Other Courses</h1>";
 		print "\n<p>The following courses are listed in Banner but not included in the department and program listings above.</p>";
@@ -733,10 +740,10 @@ class CoursesController
 ';
 		exit;
 	}
-	
+
 	/**
 	 * Answer requirements text
-	 * 
+	 *
 	 * @param $url
 	 * @return string
 	 * @access protected
@@ -759,7 +766,7 @@ class CoursesController
 
 	/**
 	 * Print out the courses for a topic
-	 * 
+	 *
 	 * @param osid_id_Id $topicId
 	 * @return void
 	 * @access protected
@@ -769,7 +776,7 @@ class CoursesController
 		try {
 			$offeringQuery = $this->offeringSearchSession->getCourseOfferingQuery();
 			$offeringQuery->matchTopicId($topicId, true);
-			foreach ($this->selectedTerms as $termId) {	
+			foreach ($this->selectedTerms as $termId) {
 				$offeringQuery->matchTermId($termId, true);
 			}
 			$offerings = $this->offeringSearchSession->getCourseOfferingsByQuery($offeringQuery);
@@ -778,7 +785,7 @@ class CoursesController
 			print "The term ids specified were not found.";
 			exit;
 		}
-		
+
 		// Limit Courses to those offerings in the terms
 		$query = $this->courseSearchSession->getCourseQuery();
 		if ($offerings->hasNext()) {
@@ -794,32 +801,32 @@ class CoursesController
 		$order->ascend();
 		$search->orderCourseResults($order);
 		$courses = $this->courseSearchSession->getCoursesBySearch($query, $search);
-		
+
 		$i = 0;
 		while ($courses->hasNext()) {
 			$course = $courses->getNextCourse();
 			$i++;
-			
+
 			$courseIdString = $this->_helper->osidId->toString($course->getId());
 			$this->printedCourseIds[] = $courseIdString;
-			
+
 			$this->printCourse($course);
-			
+
 // 			if ($i > 10)
 // 				break;
 		}
-		
+
 	}
-	
+
 	/**
 	 * Print out a single course
-	 * 
+	 *
 	 * @param osid_course_Course $course
 	 * @return void
 	 * @access protected
 	 * @since 4/28/10
 	 */
-	protected function printCourse (osid_course_Course $course) {			
+	protected function printCourse (osid_course_Course $course) {
 		$description = $course->getDescription();
 		if (preg_match('#^<strong>([^\n\r]+)</strong>(?:\s*<br />(.*)|\s*)$#sm', $description, $matches)) {
 			$title = $matches[1];
@@ -830,7 +837,7 @@ class CoursesController
 		} else {
 			$title = htmlspecialchars($course->getTitle());
 		}
-		
+
 		$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
 		$termStrings = array();
 		if ($course->hasRecordType($termsType)) {
@@ -849,7 +856,7 @@ class CoursesController
 			} catch (osid_OperationFailedException $e) {
 			}
 		}
-		
+
 		$allTopics = $this->_helper->topics->topicListAsArray($course->getTopics());
 
 		$reqs = array();
@@ -859,7 +866,7 @@ class CoursesController
 		foreach ($topics as $topic) {
 			$reqs[] = $this->view->escape($topic->getDisplayName());
 		}
-		
+
 		/*********************************************************
 		 * Section descriptions
 		 *********************************************************/
@@ -868,7 +875,7 @@ class CoursesController
 		$offeringQuery->matchCourseId($course->getId(), true);
 		$offeringQuery->matchGenusType(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:offering/LCT"), true);
 		$offeringQuery->matchGenusType(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:offering/SEM"), true);
-		foreach ($this->selectedTerms as $termId) {	
+		foreach ($this->selectedTerms as $termId) {
 			$offeringQuery->matchTermId($termId, true);
 		}
 		$order = $this->offeringSearchSession->getCourseOfferingSearchOrder();
@@ -877,7 +884,7 @@ class CoursesController
 		$search = $this->offeringSearchSession->getCourseOfferingSearch();
 		$search->orderCourseOfferingResults($order);
 		$offerings = $this->offeringSearchSession->getCourseOfferingsBySearch($offeringQuery, $search);
-		
+
 		$sectionTerms = array();
 		$sectionDescriptions = array();
 		$sectionInstructors = array();
@@ -917,11 +924,11 @@ class CoursesController
 					}
 					array_multisort($instructorSortkeys, $instructorIds, $instructorNames);
 					foreach ($instructorIds as $i => $instructorId) {
-						$sectionInstructors[$termIdString]['instructors'][$instructorId] = $instructorNames[$i]; 
+						$sectionInstructors[$termIdString]['instructors'][$instructorId] = $instructorNames[$i];
 					}
 			}
 		}
-		
+
 		$sectionDescriptionsText = '';
 		// Replace the description with the one from the section if there is only one section.
 		if (count($sectionDescriptions) == 1 && count($termStrings) == 1) {
@@ -951,7 +958,7 @@ class CoursesController
 			$description .= $this->getInstructorText($sectionInstructors);
 			$description .= "</p>";
 		}
-		
+
 		/*********************************************************
 		 * Output
 		 *********************************************************/
@@ -960,9 +967,9 @@ class CoursesController
 		print " ".$title;
 		print " (".implode(", ", $termStrings).")";
 		print "</h2>";
-		
-		print $description;		
-		
+
+		print $description;
+
 		/*********************************************************
 		 * Crosslists
 		 *********************************************************/
@@ -975,7 +982,7 @@ class CoursesController
 // 						$alternates = $record->getAlternates();
 // 						while ($alternates->hasNext()) {
 // 							$alternate = $alternates->getNextCourse();
-// 							
+//
 // 							$altInSelectedTerms = false;
 // 							if ($alternate->hasRecordType($termsType)) {
 // 								$termsRecord = $alternate->getCourseRecord($termsType);
@@ -1005,16 +1012,16 @@ class CoursesController
 // 					print "</p>";
 // 				}
 // 			} catch (osid_NotFoundException $e) {
-// 			}			
+// 			}
 
 
-		
+
 		flush();
 	}
-	
+
 	/**
 	 * Answer an instructor listing string
-	 * 
+	 *
 	 * @param array $sectionInstructors
 	 * @param string $termIdString
 	 * @return string
@@ -1028,7 +1035,7 @@ class CoursesController
 			$termInfo['hash'] = implode(':', $ids);
 			$termInfo['instructorString'] = implode(', ', $termInfo['instructors']);
 		}
-		
+
 		// Use just the instructors of the term passed.
 		if ($termIdString) {
 			if (empty($sectionInstructors[$termIdString]['instructorString']))
@@ -1036,7 +1043,7 @@ class CoursesController
 			else
 				return ' ('.$sectionInstructors[$termIdString]['instructorString'].')';
 		}
-		
+
 		// For a course with just a single term, use that term's instructors
 		if (count($sectionInstructors) === 1) {
 			reset($sectionInstructors);
@@ -1046,7 +1053,7 @@ class CoursesController
 			else
 				return ' ('.$info['instructorString'].')';
 		}
-		
+
 		// For courses with multiple terms, first find out if the instructor list is always the same.
 		reset($sectionInstructors);
 		$firstTerm = current($sectionInstructors);
@@ -1073,7 +1080,7 @@ class CoursesController
 			return ' ('.implode('; ', $termStrings).')';
 		}
 	}
-	
+
 	function DateTime_getTimestamp($dt) {
 		$dtz_original = $dt -> getTimezone();
 		$dtz_utc = new DateTimeZone("UTC");
@@ -1088,5 +1095,3 @@ class CoursesController
 		return gmmktime($hour,$minute,$second,$month,$day,$year);
 	}
 }
-
-?>
