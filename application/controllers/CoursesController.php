@@ -351,6 +351,8 @@ class CoursesController
 		if (!$this->_getParam('catalog')) {
 			$offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSession();
 			$offeringSearchSession->useFederatedCourseCatalogView();
+			$courseLookupSession = $this->_helper->osid->getCourseManager()->getCourseLookupSession();
+			$courseLookupSession->useFederatedCourseCatalogView();
 
 			// Allow term current/past to be limited to a certain catalog while courses are fetched from many
 			if ($this->_getParam('term_catalog')) {
@@ -366,6 +368,7 @@ class CoursesController
 			try {
 				$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
 				$offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
+				$courseLookupSession = $this->_helper->osid->getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
 
 				$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 			} catch (osid_InvalidArgumentException $e) {
@@ -408,7 +411,7 @@ class CoursesController
 
 		$courseOfferings = $offeringSearchSession->getCourseOfferingsByQuery($query);
 
-		$recentCourses = new Helper_RecentCourses_Instructor($courseOfferings);
+		$recentCourses = new Helper_RecentCourses_Instructor($courseOfferings, $courseLookupSession);
 		if ($this->_getParam('cutoff')) {
 			$recentCourses->setRecentInterval(new DateInterval($this->_getParam('cutoff')));
 		}

@@ -23,6 +23,7 @@ class Helper_RecentCourses_Instructor
 	protected $groups = array();
 	protected $recentInterval;
 	protected $alternatesType;
+	protected $courseLookupSession;
 
 
 	/**
@@ -32,10 +33,11 @@ class Helper_RecentCourses_Instructor
 	 * @return void
 	 * @access public
 	 */
-	public function __construct (osid_course_CourseOfferingSearchResults $offerings) {
+	public function __construct (osid_course_CourseOfferingSearchResults $offerings, osid_course_CourseLookupSession $courseLookupSession) {
 		$this->recentInterval = new DateInterval('P4Y');
 		$this->alternatesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
 		$this->groupCourseOfferings($offerings);
+		$this->courseLookupSession = $courseLookupSession;
 	}
 
 	/**
@@ -58,7 +60,7 @@ class Helper_RecentCourses_Instructor
 	public function getPrimaryCourses () {
 		$courses = array();
 		foreach ($this->groups as $group) {
-			$courses[] = $group['primary_course'];
+			$courses[] = $this->courseLookupSession->getCourse($group['primary_course_id']);
 		}
 		return $courses;
 	}
@@ -74,6 +76,12 @@ class Helper_RecentCourses_Instructor
 		$idString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($course->getId());
 		if (!isset($this->groups[$idString])) {
 			throw new osid_NotFoundException("The course specified is not one of our primary courses.");
+		}
+		if (!isset($this->groups[$idString]['alternate_courses'])) {
+			$this->groups[$idString]['alternate_courses'] = array();
+			foreach ($this->groups[$idString]['alternate_course_ids'] as $id) {
+				$this->groups[$idString]['alternate_courses'][] = $this->courseLookupSession->getCourse($id);
+			}
 		}
 		return $this->groups[$idString]['alternate_courses'];
 	}
@@ -110,15 +118,15 @@ class Helper_RecentCourses_Instructor
 			$offering = $offerings->getNextCourseOffering();
 			if ($this->termIsRecent($offering->getTerm())) {
 
-				$course = $offering->getCourse();
-				$courseIdString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($course->getId());
+				$courseId = $offering->getCourseId();
+				$courseIdString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($courseId);
 				$termIdString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($offering->getTermId());
 
-				$groupAlternateCourses = array();
+				$groupAlternateCourseIds = array();
 				$groupTerms = array($termIdString => $offering->getTerm());
 				// Use the first offering's course as the primary by default. If a different cross-listed offering
 				// is the primary one, we'll use that key instead later.
-				$groupPrimaryCourse = $course;
+				$groupPrimaryCourseId = $courseId;
 
 				if ($offering->hasRecordType($this->alternatesType)) {
 					$alternatesRecord = $offering->getCourseOfferingRecord($this->alternatesType);
@@ -127,28 +135,28 @@ class Helper_RecentCourses_Instructor
 						$alternate = $alternates->getNextCourseOffering();
 						$alternateCourseId = $alternate->getCourseId();
 						$alternateCourseIdString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($alternateCourseId);
-						$groupAlternateCourses[$alternateCourseIdString] = $alternate->getCourse();
+						$groupAlternateCourseIds[$alternateCourseIdString] = $alternateCourseId;
 						// Reset the group key if the primary alternate is later in the search results.
 						if ($alternate->hasRecordType($this->alternatesType)) {
 							$alternateAltRecord = $alternate->getCourseOfferingRecord($this->alternatesType);
 							if ($alternateAltRecord->isPrimary()) {
-								$groupPrimaryCourse = $alternate->getCourse();
-								unset($groupAlternateCourses[$alternateCourseIdString]);
+								$groupPrimaryCourseId = $alternateCourseId;
+								unset($groupAlternateCourseIds[$alternateCourseIdString]);
 							}
 						}
 					}
 				}
 
-				$groupKey = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($groupPrimaryCourse->getId());
+				$groupKey = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($groupPrimaryCourseId);
 				// Add our group to our result list.
 				if (!isset($this->groups[$groupKey])) {
 					$this->groups[$groupKey] = array(
-						'primary_course' => $groupPrimaryCourse,
-						'alternate_courses' => array(),
+						'primary_course_id' => $groupPrimaryCourseId,
+						'alternate_course_ids' => array(),
 						'terms' => array(),
 					);
 				}
-				$this->groups[$groupKey]['alternate_courses'] = array_merge($this->groups[$groupKey]['alternate_courses'], $groupAlternateCourses);
+				$this->groups[$groupKey]['alternate_course_ids'] = array_merge($this->groups[$groupKey]['alternate_course_ids'], $groupAlternateCourseIds);
 				$this->groups[$groupKey]['terms'] = array_merge($this->groups[$groupKey]['terms'], $groupTerms);
 			}
 		}
