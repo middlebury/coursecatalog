@@ -98,6 +98,7 @@ class Helper_RecentCourses_Instructor
 		if (!isset($this->groups[$idString])) {
 			throw new osid_NotFoundException("The course specified is not one of our primary courses.");
 		}
+		ksort($this->groups[$idString]['terms']);
 		return $this->groups[$idString]['terms'];
 	}
 
