@@ -78,7 +78,8 @@ class banner_course_CourseOffering
 	
 	private $row;
 	private $session;
-	
+	private $raw_description;
+
 	/**
 	 * Constructor
 	 * 
@@ -110,11 +111,10 @@ class banner_course_CourseOffering
 		
 		$description = '';
 		if (!is_null($row['SCBDESC_TEXT_NARRATIVE']))
-			$description = banner_course_Course::convertDescription(trim($row['SCBDESC_TEXT_NARRATIVE']));
+			$this->setRawDescription($row['SCBDESC_TEXT_NARRATIVE']);
 		if (!is_null($row['SSBDESC_TEXT_NARRATIVE']))
-			$description = banner_course_Course::convertDescription(trim($row['SSBDESC_TEXT_NARRATIVE']));
-		$this->setDescription($description);
-		
+			$this->setRawDescription($row['SSBDESC_TEXT_NARRATIVE']);
+
 		$this->setGenusType(new phpkit_type_Type(
 			'urn', 										// namespace
 			$this->session->getIdAuthority(), 			// id authority
@@ -136,6 +136,41 @@ class banner_course_CourseOffering
 		$this->addProperties($properties, $this->identifiersType);
 	}
 	
+	/**
+	 * Gets the description associated with this instance of this OSID
+	 * object.
+	 *
+	 * @return the description
+	 * @compliance mandatory This method must be implemented.
+	 * @notes   A description is a string used for describing an object in
+	 *          human terms and may not have significance in the underlying
+	 *          system. A provider may wish to initialize the description
+	 *          based on one or more object attributes and/or treat it as an
+	 *          auxiliary piece of data that can be modified. A provider may
+	 *          also wish to translate the description into a specific locale
+	 *          using the Locale service.
+	 */
+	public function getDescription() {
+		$description = parent::getDescription();
+		if (empty($description) && !empty($this->raw_description)) {
+			$this->setDescription(banner_course_Course::convertDescription(trim($this->raw_description)));
+		}
+		return parent::getDescription();
+	}
+
+	/**
+	 * Set the description
+	 *
+	 * @param string $description
+	 * @return void
+	 * @access protected
+	 * @since 10/28/08
+	 */
+	protected function setRawDescription ($description) {
+		$this->raw_description = $description;
+		$this->setDescription('');
+	}
+
 	/**
 	 * Check the data row passed for all of our required fields
 	 * 

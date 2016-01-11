@@ -241,6 +241,8 @@ class banner_course_Course
 	}
 	private static $fsmParser;
 
+	private $raw_description;
+
 	/**
 	 * Constructor
 	 * 
@@ -258,7 +260,7 @@ class banner_course_Course
 		if (is_null($description))
 			$this->setDescription('');
 		else
-			$this->setDescription(self::convertDescription(trim($description)));
+			$this->setRawDescription($description);
 		$this->title = $title;
 		$this->credits = floatval($credits);
 		$this->topicIds = $topicIds;
@@ -283,6 +285,40 @@ class banner_course_Course
     	return $this->title;
     }
 
+	/**
+	 * Gets the description associated with this instance of this OSID
+	 * object.
+	 *
+	 * @return the description
+	 * @compliance mandatory This method must be implemented.
+	 * @notes   A description is a string used for describing an object in
+	 *          human terms and may not have significance in the underlying
+	 *          system. A provider may wish to initialize the description
+	 *          based on one or more object attributes and/or treat it as an
+	 *          auxiliary piece of data that can be modified. A provider may
+	 *          also wish to translate the description into a specific locale
+	 *          using the Locale service.
+	 */
+	public function getDescription() {
+		$description = parent::getDescription();
+		if (empty($description) && !empty($this->raw_description)) {
+			$this->setDescription(self::convertDescription(trim($this->raw_description)));
+		}
+		return parent::getDescription();
+	}
+
+	/**
+	 * Set the description
+	 *
+	 * @param string $description
+	 * @return void
+	 * @access protected
+	 * @since 10/28/08
+	 */
+	protected function setRawDescription ($description) {
+		$this->raw_description = $description;
+		$this->setDescription('');
+	}
 
     /**
      *  Gets the course number which is a label generally used to indedx the 
