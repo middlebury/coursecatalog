@@ -1,0 +1,32 @@
+[production]
+
+bannerTNS = "(DESCRIPTION =
+	(ADDRESS_LIST =
+		(ADDRESS = (PROTOCOL = TCP)(HOST = server.example.edu)(PORT = 15220))
+	)
+	(CONNECT_DATA =
+		(SERVICE_NAME = SOMETHING.BANNER.EXAMPLE.EDU)
+	)
+)"
+bannerUser = "RO_USER_NAME"
+bannerPassword = "password"
+
+tempMysqlHost		= "localhost"
+tempMysqlDatabase  = "catalog_temp"
+tempMysqlUser		= "testuser"
+tempMysqlPassword	= "testpassword"
+
+primaryMysqlHost		= "localhost"
+primaryMysqlDatabase   = "catalog"
+primaryMysqlUser		= "testuser"
+primaryMysqlPassword	= "testpassword"
+
+mysql = "/usr/bin/mysql"
+mysqldump = "/usr/bin/mysqldump"
+
+sendMailOnError = false
+errorMailFrom	= "admin@example.edu"
+errorMailTo[]	= "admin@example.edu"
+errorMailTo[]	= "admin2@example.edu"
+
+allowedBlckCodes[] = "CC"

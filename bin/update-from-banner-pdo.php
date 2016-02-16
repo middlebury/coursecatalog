@@ -3,27 +3,42 @@
 /*********************************************************
  * Config
  *********************************************************/
+$configFile = dirname(dirname(__FILE__)).'/update_config.ini';
+if (!file_exists($configFile)) {
+	throw new Exception('Config file "'.$configFile.'" does not exist.');
+}
+$config = parse_ini_file($configFile);
+if (!$config) {
+	throw new Exception('Config file "'.$configFile.'" could not be parsed or does not contain values.');
+}
+$requiredParams = array(
+	'bannerTNS',
+	'bannerUser',
+	'bannerPassword',
+	'primaryMysqlHost',
+	'primaryMysqlDatabase',
+	'primaryMysqlUser',
+	'primaryMysqlPassword',
+	'mysql',
+	'mysqldump',
+	'allowedBlckCodes',
+	// 'sendMailOnError',
+	// 'errorMailFrom',
+	// 'errorMailTo'
+);
+foreach ($requiredParams as $key) {
+	if (!isset($config[$key])) {
+		throw new Exception("Required configuration parameter, '$key' is missing from $configFile");
+	}
+}
 
-$bannerTNS = 
-"(DESCRIPTION =
-	(ADDRESS_LIST =
-		(ADDRESS = (PROTOCOL = TCP)(HOST = server.example.edu)(PORT = 15220))
-	)
-	(CONNECT_DATA =
-		(SERVICE_NAME = SOMETHING.BANNER.EXAMPLE.EDU)
-	)
-)";
+extract($config);
+
 $bannerDSN		= "oci:dbname=".$bannerTNS;
-$bannerUser 	= "RO_USER_NAME";
-$bannerPassword = "password";
 
-$mysqlDSN		= "mysql:dbname=courses_banner;host=examplemysqlhost";
-$mysqlUser		= "testuser";
-$mysqlPassword	= "testpassword";
-
-$sendMailOnError = false;
-$errorMailFrom	= "admin@example.edu";
-$errorMailTo	= array("admin@example.edu", "admin2@example.edu");
+$mysqlDSN		= "mysql:dbname=$primaryMysqlDatabase;host=$primaryMysqlHost";
+$mysqlUser		= $primaryMysqlUser;
+$mysqlPassword	= $primaryMysqlPassword;
 
 /*********************************************************
  * End - Config
@@ -35,20 +50,20 @@ function toMySQLDate($date) {
 }
 
 function sendExceptions($exceptions) {
-	global $sendMailOnError, $errorMailFrom, $errorMailTo;	
+	global $sendMailOnError, $errorMailFrom, $errorMailTo;
 	if(count($exceptions) > 0) {
 		$to = implode(", ", $errorMailTo);
 		$subject = "COURSE CATALOG: Yo dawg I heard you like errors!";
 		$message = "So I put some errors in your database update script so it can error while it updates the database!\n\n";
-		
+
 		foreach($exceptions as $exception) {
 			$message .= $exception . "\n\n";
 		}
-		
+
 		$headers = "From: ".$errorMailFrom."\r\n";
 		if ($sendMailOnError)
 			mail($to, $subject, $message, $headers);
-		
+
 		print_r($message);
 	}
 }
@@ -66,7 +81,7 @@ $banner; $mysql; $exceptions = array();
 try {
 	$banner = new PDO($bannerDSN, $bannerUser, $bannerPassword);
 	$banner->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	
+
 	$mysql = new PDO($mysqlDSN, $mysqlUser, $mysqlPassword, array(PDO::MYSQL_ATTR_MAX_BUFFER_SIZE => 1024*1024*100));
 	$mysql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(Exception $e) {
@@ -77,16 +92,16 @@ try {
 
 
 // GENERAL.GORINTG
- 
+
 try {
 	print "Updating GORINTG\t";
 	$mysql->beginTransaction();
 	$tgorintg = $mysql->prepare("TRUNCATE TABLE GORINTG");
 	$tgorintg->execute();
-	
+
 	$gorintg = $banner->prepare("SELECT * FROM GENERAL.GORINTG");
 	$gorintg->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO GORINTG (GORINTG_CODE, GORINTG_DESC, GORINTG_INTP_CODE, GORINTG_USER_ID, GORINTG_ACTIVITY_DATE, GORINTG_DATA_ORIGIN) VALUES (:GORINTG_CODE, :GORINTG_DESC, :GORINTG_INTP_CODE, :GORINTG_USER_ID, :GORINTG_ACTIVITY_DATE, :GORINTG_DATA_ORIGIN)");
 	while($row = $gorintg->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":GORINTG_CODE", $row->GORINTG_CODE);
@@ -97,7 +112,7 @@ try {
 		$insert->bindValue(":GORINTG_DATA_ORIGIN", $row->GORINTG_DATA_ORIGIN);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$gorintg->closeCursor();
 	print "...\tUpdated GORINTG\n";
@@ -105,19 +120,19 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // GENERAL.GTVDUNT
- 
+
 try {
 	print "Updating GTVDUNT\t";
 	$mysql->beginTransaction();
 	$tgtvdunt = $mysql->prepare("TRUNCATE TABLE GTVDUNT");
 	$tgtvdunt->execute();
-	
+
 	$gtvdunt = $banner->prepare("SELECT * FROM GENERAL.GTVDUNT");
 	$gtvdunt->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO GTVDUNT (GTVDUNT_CODE, GTVDUNT_DESC, GTVDUNT_NUMBER_OF_DAYS, GTVDUNT_ACTIVITY_DATE, GTVDUNT_USER_ID, GTVDUNT_VR_MSG_NO) VALUES (:GTVDUNT_CODE, :GTVDUNT_DESC, :GTVDUNT_NUMBER_OF_DAYS, :GTVDUNT_ACTIVITY_DATE, :GTVDUNT_USER_ID, :GTVDUNT_VR_MSG_NO)");
 	while($row = $gtvdunt->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":GTVDUNT_CODE", $row->GTVDUNT_CODE);
@@ -128,7 +143,7 @@ try {
 		$insert->bindValue(":GTVDUNT_VR_MSG_NO", $row->GTVDUNT_VR_MSG_NO);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$gtvdunt->closeCursor();
 	print "...\tUpdated GTVDUNT\n";
@@ -139,16 +154,16 @@ try {
 
 
 // GENERAL.GTVINSM
- 
+
 try {
 	print "Updating GTVINSM\t";
 	$mysql->beginTransaction();
 	$tgtvinsm = $mysql->prepare("TRUNCATE TABLE GTVINSM");
 	$tgtvinsm->execute();
-	
+
 	$gtvinsm = $banner->prepare("SELECT * FROM GENERAL.GTVINSM");
 	$gtvinsm->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO GTVINSM (GTVINSM_CODE, GTVINSM_DESC, GTVINSM_ACTIVITY_DATE, GTVINSM_USER_ID, GTVINSM_VR_MSG_NO) VALUES (:GTVINSM_CODE, :GTVINSM_DESC, :GTVINSM_ACTIVITY_DATE, :GTVINSM_USER_ID, :GTVINSM_VR_MSG_NO)");
 	while($row = $gtvinsm->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":GTVINSM_CODE", $row->GTVINSM_CODE);
@@ -158,7 +173,7 @@ try {
 		$insert->bindValue(":GTVINSM_VR_MSG_NO", $row->GTVINSM_VR_MSG_NO);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$gtvinsm->closeCursor();
 	print "...\tUpdated GTVINSM\n";
@@ -166,19 +181,19 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // GENERAL.GTVINTP
- 
+
 try {
 	print "Updating GTVINTP\t";
 	$mysql->beginTransaction();
 	$tgtvintp = $mysql->prepare("TRUNCATE TABLE GTVINTP");
 	$tgtvintp->execute();
-	
+
 	$gtvintp = $banner->prepare("SELECT * FROM GENERAL.GTVINTP");
 	$gtvintp->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO GTVINTP (GTVINTP_CODE, GTVINTP_DESC, GTVINTP_USER_ID, GTVINTP_ACTIVITY_DATE, GTVINTP_DATA_ORIGIN) VALUES (GTVINTP_CODE, GTVINTP_DESC, GTVINTP_USER_ID, GTVINTP_ACTIVITY_DATE, GTVINTP_DATA_ORIGIN)");
 	while($row = $gtvintp->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":GTVINTP_CODE", $row->GTVINTP_CODE);
@@ -188,7 +203,7 @@ try {
 		$insert->bindValue(":GTVINTP_DATA_ORIGIN", $row->GTVINTP_DATA_ORIGIN);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$gtvintp->closeCursor();
 	print "...\tUpdated GTVINTP\n";
@@ -196,16 +211,16 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // GENERAL.GTVMTYP
- 
+
 try {
 	print "Updating GTVMTYP\t";
 	$mysql->beginTransaction();
 	$tgtvmtyp = $mysql->prepare("TRUNCATE TABLE GTVMTYP");
 	$tgtvmtyp->execute();
-	
+
 	$gtvmtyp = $banner->prepare("SELECT * FROM GENERAL.GTVMTYP");
 	$gtvmtyp->execute();
 
@@ -219,7 +234,7 @@ try {
 		$insert->bindValue(":GTVMTYP_VR_MSG_NO", $row->GTVMTYP_VR_MSG_NO);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$gtvmtyp->closeCursor();
 	print "...\tUpdated GTVMTYP\n";
@@ -230,16 +245,16 @@ try {
 
 
 // GENERAL.GTVSCHS
- 
+
 try {
 	print "Updating GTVSCHS\t";
 	$mysql->beginTransaction();
 	$tgtvschs = $mysql->prepare("TRUNCATE TABLE GTVSCHS");
 	$tgtvschs->execute();
-	
+
 	$gtvschs = $banner->prepare("SELECT * FROM GENERAL.GTVSCHS");
 	$gtvschs->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO GTVSCHS (GTVSCHS_CODE, GTVSCHS_DESC, GTVSCHS_SYSTEM_REQ_IND, GTVSCHS_ACTIVITY_DATE) VALUES (:GTVSCHS_CODE, :GTVSCHS_DESC, :GTVSCHS_SYSTEM_REQ_IND, :GTVSCHS_ACTIVITY_DATE)");
 	while($row = $gtvschs->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":GTVSCHS_CODE", $row->GTVSCHS_CODE);
@@ -248,7 +263,7 @@ try {
 		$insert->bindValue(":GTVSCHS_ACTIVITY_DATE", toMySQLDate($row->GTVSCHS_ACTIVITY_DATE));
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$gtvschs->closeCursor();
 	print "...\tUpdated GTVSCHS\n";
@@ -256,19 +271,19 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN.SCBCRSE
- 
+
 try {
 	print "Updating SCBCRSE\t";
 	$mysql->beginTransaction();
 	$tscbcrse = $mysql->prepare("TRUNCATE TABLE SCBCRSE");
 	$tscbcrse->execute();
-	
+
 	$scbcrse = $banner->prepare("SELECT * FROM SATURN.SCBCRSE");
 	$scbcrse->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO SCBCRSE (SCBCRSE_SUBJ_CODE, SCBCRSE_CRSE_NUMB, SCBCRSE_EFF_TERM, SCBCRSE_COLL_CODE, SCBCRSE_DIVS_CODE, SCBCRSE_DEPT_CODE, SCBCRSE_CSTA_CODE, SCBCRSE_TITLE, SCBCRSE_CIPC_CODE, SCBCRSE_CREDIT_HR_IND, SCBCRSE_CREDIT_HR_LOW, SCBCRSE_CREDIT_HR_HIGH, SCBCRSE_LEC_HR_IND, SCBCRSE_LEC_HR_LOW, SCBCRSE_LEC_HR_HIGH, SCBCRSE_LAB_HR_IND, SCBCRSE_LAB_HR_LOW, SCBCRSE_LAB_HR_HIGH, SCBCRSE_OTH_HR_IND, SCBCRSE_OTH_HR_LOW, SCBCRSE_OTH_HR_HIGH, SCBCRSE_BILL_HR_IND, SCBCRSE_BILL_HR_LOW, SCBCRSE_BILL_HR_HIGH, SCBCRSE_APRV_CODE, SCBCRSE_REPEAT_LIMIT, SCBCRSE_PWAV_CODE, SCBCRSE_TUIW_IND, SCBCRSE_ADD_FEES_IND, SCBCRSE_ACTIVITY_DATE, SCBCRSE_CONT_HR_LOW, SCBCRSE_CONT_HR_IND, SCBCRSE_CONT_HR_HIGH, SCBCRSE_CEU_IND, SCBCRSE_REPS_CODE, SCBCRSE_MAX_RPT_UNITS, SCBCRSE_CAPP_PREREQ_TEST_IND, SCBCRSE_DUNT_CODE, SCBCRSE_NUMBER_OF_UNITS, SCBCRSE_DATA_ORIGIN, SCBCRSE_USER_ID) VALUES (:SCBCRSE_SUBJ_CODE, :SCBCRSE_CRSE_NUMB, :SCBCRSE_EFF_TERM,	:SCBCRSE_COLL_CODE,	:SCBCRSE_DIVS_CODE,	:SCBCRSE_DEPT_CODE,	:SCBCRSE_CSTA_CODE,	:SCBCRSE_TITLE,	:SCBCRSE_CIPC_CODE,	:SCBCRSE_CREDIT_HR_IND,	:SCBCRSE_CREDIT_HR_LOW,	:SCBCRSE_CREDIT_HR_HIGH, :SCBCRSE_LEC_HR_IND,:SCBCRSE_LEC_HR_LOW, :SCBCRSE_LEC_HR_HIGH,	:SCBCRSE_LAB_HR_IND, :SCBCRSE_LAB_HR_LOW, :SCBCRSE_LAB_HR_HIGH, :SCBCRSE_OTH_HR_IND, :SCBCRSE_OTH_HR_LOW, :SCBCRSE_OTH_HR_HIGH, :SCBCRSE_BILL_HR_IND, :SCBCRSE_BILL_HR_LOW, :SCBCRSE_BILL_HR_HIGH, :SCBCRSE_APRV_CODE, :SCBCRSE_REPEAT_LIMIT, :SCBCRSE_PWAV_CODE, :SCBCRSE_TUIW_IND, :SCBCRSE_ADD_FEES_IND, :SCBCRSE_ACTIVITY_DATE, :SCBCRSE_CONT_HR_LOW, :SCBCRSE_CONT_HR_IND, :SCBCRSE_CONT_HR_HIGH, :SCBCRSE_CEU_IND, :SCBCRSE_REPS_CODE, :SCBCRSE_MAX_RPT_UNITS, :SCBCRSE_CAPP_PREREQ_TEST_IND, :SCBCRSE_DUNT_CODE, :SCBCRSE_NUMBER_OF_UNITS, :SCBCRSE_DATA_ORIGIN, :SCBCRSE_USER_ID)");
 	while($row = $scbcrse->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":SCBCRSE_SUBJ_CODE", $row->SCBCRSE_SUBJ_CODE);
@@ -314,7 +329,7 @@ try {
 		$insert->bindValue(":SCBCRSE_USER_ID", $row->SCBCRSE_USER_ID);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$scbcrse->closeCursor();
 	print "...\tUpdated SCBCRSE\n";
@@ -324,16 +339,16 @@ try {
 }
 
 // SATURN.SCBDESC
- 
+
 try {
 	print "Updating SCBDESC\t";
 	$mysql->beginTransaction();
 	$tSCBDESC = $mysql->prepare("TRUNCATE TABLE SCBDESC");
 	$tSCBDESC->execute();
-	
+
 	$SCBDESC = $banner->prepare("SELECT SCBDESC_SUBJ_CODE, SCBDESC_CRSE_NUMB, SCBDESC_TERM_CODE_EFF, SCBDESC_ACTIVITY_DATE, SCBDESC_USER_ID, SCBDESC_TEXT_NARRATIVE, SCBDESC_TERM_CODE_END FROM SATURN.SCBDESC");
 	$SCBDESC->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO SCBDESC (SCBDESC_SUBJ_CODE, SCBDESC_CRSE_NUMB, SCBDESC_TERM_CODE_EFF, SCBDESC_ACTIVITY_DATE, SCBDESC_USER_ID, SCBDESC_TEXT_NARRATIVE, SCBDESC_TERM_CODE_END) VALUES (:SCBDESC_SUBJ_CODE, :SCBDESC_CRSE_NUMB, :SCBDESC_TERM_CODE_EFF, :SCBDESC_ACTIVITY_DATE, :SCBDESC_USER_ID, :SCBDESC_TEXT_NARRATIVE, :SCBDESC_TERM_CODE_END)");
 	while($row = $SCBDESC->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":SCBDESC_SUBJ_CODE", $row->SCBDESC_SUBJ_CODE);
@@ -348,7 +363,7 @@ try {
 		$insert->bindValue(":SCBDESC_TERM_CODE_END", $row->SCBDESC_TERM_CODE_END);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$SCBDESC->closeCursor();
 	print "...\tUpdated SCBDESC\n";
@@ -359,16 +374,16 @@ try {
 }
 
 // SATURN.SSBXLST
- 
+
 try {
 	print "Updating SSBXLST\t";
 	$mysql->beginTransaction();
 	$tSSBXLST = $mysql->prepare("TRUNCATE TABLE SSBXLST");
 	$tSSBXLST->execute();
-	
+
 	$SSBXLST = $banner->prepare("SELECT * FROM SATURN.SSBXLST");
 	$SSBXLST->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO SSBXLST (SSBXLST_TERM_CODE, SSBXLST_XLST_GROUP, SSBXLST_DESC, SSBXLST_MAX_ENRL, SSBXLST_ENRL, SSBXLST_SEATS_AVAIL, SSBXLST_ACTIVITY_DATE) VALUES (:SSBXLST_TERM_CODE, :SSBXLST_XLST_GROUP, :SSBXLST_DESC, :SSBXLST_MAX_ENRL, :SSBXLST_ENRL, :SSBXLST_SEATS_AVAIL, :SSBXLST_ACTIVITY_DATE)");
 	while($row = $SSBXLST->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":SSBXLST_TERM_CODE", $row->SSBXLST_TERM_CODE);
@@ -380,7 +395,7 @@ try {
 		$insert->bindValue(":SSBXLST_ACTIVITY_DATE", toMySQLDate($row->SSBXLST_ACTIVITY_DATE));
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$SSBXLST->closeCursor();
 	print "...\tUpdated SSBXLST\n";
@@ -391,16 +406,16 @@ try {
 }
 
 // SATURN.SSRXLST
- 
+
 try {
 	print "Updating SSRXLST\t";
 	$mysql->beginTransaction();
 	$tSSRXLST = $mysql->prepare("TRUNCATE TABLE SSRXLST");
 	$tSSRXLST->execute();
-	
+
 	$SSRXLST = $banner->prepare("SELECT * FROM SATURN.SSRXLST");
 	$SSRXLST->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO SSRXLST (SSRXLST_TERM_CODE, SSRXLST_CRN, SSRXLST_XLST_GROUP, SSRXLST_ACTIVITY_DATE) VALUES (:SSRXLST_TERM_CODE, :SSRXLST_CRN, :SSRXLST_XLST_GROUP, :SSRXLST_ACTIVITY_DATE)");
 	while($row = $SSRXLST->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":SSRXLST_TERM_CODE", $row->SSRXLST_TERM_CODE);
@@ -409,7 +424,7 @@ try {
 		$insert->bindValue(":SSRXLST_ACTIVITY_DATE", toMySQLDate($row->SSRXLST_ACTIVITY_DATE));
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$SSRXLST->closeCursor();
 	print "...\tUpdated SSRXLST\n";
@@ -417,15 +432,15 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 // SATURN.SIRASGN
- 
+
 try {
 	print "Updating SIRASGN\t";
 	$mysql->beginTransaction();
 	$tsirasgn = $mysql->prepare("TRUNCATE TABLE SIRASGN");
 	$tsirasgn->execute();
-	
+
 	$sirasgn = $banner->prepare("SELECT * FROM SATURN.SIRASGN");
 	$sirasgn->execute();
 
@@ -450,7 +465,7 @@ try {
 		$insert->bindValue(":SIRASGN_USER_ID", $row->SIRASGN_USER_ID);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$sirasgn->closeCursor();
 	print "...\tUpdated SIRASGN\n";
@@ -461,16 +476,16 @@ try {
 
 
 // SATURN.SSBSECT
- 
+
 try {
 	print "Updating SSBSECT\t";
 	$mysql->beginTransaction();
 	$tssbsect = $mysql->prepare("TRUNCATE TABLE SSBSECT");
 	$tssbsect->execute();
-	
+
 	$ssbsect = $banner->prepare("SELECT * FROM SATURN.SSBSECT");
 	$ssbsect->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO SSBSECT (SSBSECT_TERM_CODE, SSBSECT_CRN, SSBSECT_PTRM_CODE, SSBSECT_SUBJ_CODE, SSBSECT_CRSE_NUMB, SSBSECT_SEQ_NUMB, SSBSECT_SSTS_CODE, SSBSECT_SCHD_CODE, SSBSECT_CAMP_CODE, SSBSECT_CRSE_TITLE, SSBSECT_CREDIT_HRS, SSBSECT_BILL_HRS, SSBSECT_GMOD_CODE, SSBSECT_SAPR_CODE, SSBSECT_SESS_CODE, SSBSECT_LINK_IDENT, SSBSECT_PRNT_IND, SSBSECT_GRADABLE_IND, SSBSECT_TUIW_IND, SSBSECT_REG_ONEUP, SSBSECT_PRIOR_ENRL, SSBSECT_PROJ_ENRL, SSBSECT_MAX_ENRL, SSBSECT_ENRL, SSBSECT_SEATS_AVAIL, SSBSECT_TOT_CREDIT_HRS, SSBSECT_CENSUS_ENRL, SSBSECT_CENSUS_ENRL_DATE, SSBSECT_ACTIVITY_DATE, SSBSECT_PTRM_START_DATE, SSBSECT_PTRM_END_DATE, SSBSECT_PTRM_WEEKS, SSBSECT_RESERVED_IND, SSBSECT_WAIT_CAPACITY, SSBSECT_WAIT_COUNT, SSBSECT_WAIT_AVAIL, SSBSECT_LEC_HR, SSBSECT_LAB_HR, SSBSECT_OTH_HR, SSBSECT_CONT_HR, SSBSECT_ACCT_CODE, SSBSECT_ACCL_CODE, SSBSECT_CENSUS_2_DATE, SSBSECT_ENRL_CUT_OFF_DATE, SSBSECT_ACAD_CUT_OFF_DATE, SSBSECT_DROP_CUT_OFF_DATE, SSBSECT_CENSUS_2_ENRL, SSBSECT_VOICE_AVAIL, SSBSECT_CAPP_PREREQ_TEST_IND, SSBSECT_GSCH_NAME, SSBSECT_BEST_OF_COMP, SSBSECT_SUBSET_OF_COMP, SSBSECT_INSM_CODE, SSBSECT_REG_FROM_DATE, SSBSECT_REG_TO_DATE, SSBSECT_LEARNER_REGSTART_FDATE, SSBSECT_LEARNER_REGSTART_TDATE, SSBSECT_DUNT_CODE, SSBSECT_NUMBER_OF_UNITS, SSBSECT_NUMBER_OF_EXTENSIONS, SSBSECT_DATA_ORIGIN, SSBSECT_USER_ID, SSBSECT_INTG_CDE) VALUES (:SSBSECT_TERM_CODE, :SSBSECT_CRN, :SSBSECT_PTRM_CODE, :SSBSECT_SUBJ_CODE, :SSBSECT_CRSE_NUMB, :SSBSECT_SEQ_NUMB, :SSBSECT_SSTS_CODE, :SSBSECT_SCHD_CODE, :SSBSECT_CAMP_CODE, :SSBSECT_CRSE_TITLE, :SSBSECT_CREDIT_HRS, :SSBSECT_BILL_HRS, :SSBSECT_GMOD_CODE, :SSBSECT_SAPR_CODE, :SSBSECT_SESS_CODE, :SSBSECT_LINK_IDENT, :SSBSECT_PRNT_IND, :SSBSECT_GRADABLE_IND, :SSBSECT_TUIW_IND, :SSBSECT_REG_ONEUP, :SSBSECT_PRIOR_ENRL, :SSBSECT_PROJ_ENRL, :SSBSECT_MAX_ENRL, :SSBSECT_ENRL, :SSBSECT_SEATS_AVAIL, :SSBSECT_TOT_CREDIT_HRS, :SSBSECT_CENSUS_ENRL, :SSBSECT_CENSUS_ENRL_DATE, :SSBSECT_ACTIVITY_DATE, :SSBSECT_PTRM_START_DATE, :SSBSECT_PTRM_END_DATE, :SSBSECT_PTRM_WEEKS, :SSBSECT_RESERVED_IND, :SSBSECT_WAIT_CAPACITY, :SSBSECT_WAIT_COUNT, :SSBSECT_WAIT_AVAIL, :SSBSECT_LEC_HR, :SSBSECT_LAB_HR, :SSBSECT_OTH_HR, :SSBSECT_CONT_HR, :SSBSECT_ACCT_CODE, :SSBSECT_ACCL_CODE, :SSBSECT_CENSUS_2_DATE, :SSBSECT_ENRL_CUT_OFF_DATE, :SSBSECT_ACAD_CUT_OFF_DATE, :SSBSECT_DROP_CUT_OFF_DATE, :SSBSECT_CENSUS_2_ENRL, :SSBSECT_VOICE_AVAIL, :SSBSECT_CAPP_PREREQ_TEST_IND, :SSBSECT_GSCH_NAME, :SSBSECT_BEST_OF_COMP, :SSBSECT_SUBSET_OF_COMP, :SSBSECT_INSM_CODE, :SSBSECT_REG_FROM_DATE, :SSBSECT_REG_TO_DATE, :SSBSECT_LEARNER_REGSTART_FDATE, :SSBSECT_LEARNER_REGSTART_TDATE, :SSBSECT_DUNT_CODE, :SSBSECT_NUMBER_OF_UNITS, :SSBSECT_NUMBER_OF_EXTENSIONS, :SSBSECT_DATA_ORIGIN, :SSBSECT_USER_ID, :SSBSECT_INTG_CDE)");
 	while($row = $ssbsect->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":SSBSECT_TERM_CODE", $row->SSBSECT_TERM_CODE);
@@ -538,7 +553,7 @@ try {
 		$insert->bindValue(":SSBSECT_INTG_CDE", $row->SSBSECT_INTG_CDE);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$ssbsect->closeCursor();
 	print "...\tUpdated SSBSECT\n";
@@ -549,16 +564,16 @@ try {
 
 
 // SATURN.SSRATTR
- 
+
 try {
 	print "Updating SSRATTR\t";
 	$mysql->beginTransaction();
 	$tssrattr = $mysql->prepare("TRUNCATE TABLE SSRATTR");
 	$tssrattr->execute();
-	
+
 	$ssrattr = $banner->prepare("SELECT * FROM SATURN.SSRATTR");
 	$ssrattr->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO SSRATTR (SSRATTR_TERM_CODE, SSRATTR_CRN, SSRATTR_ATTR_CODE, SSRATTR_ACTIVITY_DATE) VALUES (:SSRATTR_TERM_CODE, :SSRATTR_CRN, :SSRATTR_ATTR_CODE, :SSRATTR_ACTIVITY_DATE)");
 	while($row = $ssrattr->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":SSRATTR_TERM_CODE", $row->SSRATTR_TERM_CODE);
@@ -567,7 +582,7 @@ try {
 		$insert->bindValue(":SSRATTR_ACTIVITY_DATE", toMySQLDate($row->SSRATTR_ACTIVITY_DATE));
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$ssrattr->closeCursor();
 	print "...\tUpdated SSRATTR\n";
@@ -584,7 +599,7 @@ try {
 	$mysql->beginTransaction();
 	$tssrmeet = $mysql->prepare("TRUNCATE TABLE SSRMEET");
 	$tssrmeet->execute();
-	
+
 	$ssrmeet = $banner->prepare("SELECT * FROM SATURN.SSRMEET");
 	$ssrmeet->execute();
 
@@ -622,7 +637,7 @@ try {
 		$insert->bindValue(":SSRMEET_USER_ID", $row->SSRMEET_USER_ID);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$ssrmeet->closeCursor();
 	print "...\tUpdated SSRMEET\n";
@@ -633,16 +648,16 @@ try {
 
 
 // SATURN.STVACYR
- 
+
 try {
 	print "Updating STVACYR\t";
 	$mysql->beginTransaction();
 	$tstvacyr = $mysql->prepare("TRUNCATE TABLE STVACYR");
 	$tstvacyr->execute();
-	
+
 	$stvacyr = $banner->prepare("SELECT * FROM SATURN.STVACYR");
 	$stvacyr->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO STVACYR (STVACYR_CODE, STVACYR_DESC, STVACYR_ACTIVITY_DATE, STVACYR_SYSREQ_IND) VALUES (:STVACYR_CODE, :STVACYR_DESC, :STVACYR_ACTIVITY_DATE, :STVACYR_SYSREQ_IND)");
 	while($row = $stvacyr->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":STVACYR_CODE", $row->STVACYR_CODE);
@@ -651,7 +666,7 @@ try {
 		$insert->bindValue(":STVACYR_SYSREQ_IND", $row->STVACYR_SYSREQ_IND);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$stvacyr->closeCursor();
 	print "...\tUpdated STVACYR\n";
@@ -659,16 +674,16 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN.STVAPRV
- 
+
 try {
 	print "Updating STVAPRV\t";
 	$mysql->beginTransaction();
 	$tstvaprv = $mysql->prepare("TRUNCATE TABLE STVAPRV");
 	$tstvaprv->execute();
-	
+
 	$stvaprv = $banner->prepare("SELECT * FROM SATURN.STVAPRV");
 	$stvaprv->execute();
 
@@ -679,7 +694,7 @@ try {
 		$insert->bindValue(":STVAPRV_ACTIVITY_DATE", toMySQLDate($row->STVAPRV_ACTIVITY_DATE));
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$stvaprv->closeCursor();
 	print "...\tUpdated STVAPRV\n";
@@ -687,16 +702,16 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN.STVASTY
- 
+
 try {
 	print "Updating STVASTY\t";
 	$mysql->beginTransaction();
 	$tstvasty = $mysql->prepare("TRUNCATE TABLE STVASTY");
 	$tstvasty->execute();
-	
+
 	$stvasty = $banner->prepare("SELECT * FROM SATURN.STVASTY");
 	$stvasty->execute();
 
@@ -707,7 +722,7 @@ try {
 		$insert->bindValue(":STVASTY_ACTIVITY_DATE", toMySQLDate($row->STVASTY_ACTIVITY_DATE));
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$stvasty->closeCursor();
 	print "...\tUpdated STVASTY\n";
@@ -715,19 +730,19 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN.STVATTR
- 
+
 try {
 	print "Updating STVATTR\t";
 	$mysql->beginTransaction();
 	$tstvattr = $mysql->prepare("TRUNCATE TABLE STVATTR");
 	$tstvattr->execute();
-	
+
 	$stvattr = $banner->prepare("SELECT * FROM SATURN.STVATTR");
 	$stvattr->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO STVATTR (STVATTR_CODE, STVATTR_DESC, STVATTR_ACTIVITY_DATE) VALUES (:STVATTR_CODE, :STVATTR_DESC, :STVATTR_ACTIVITY_DATE)");
 	while($row = $stvattr->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":STVATTR_CODE", $row->STVATTR_CODE);
@@ -735,7 +750,7 @@ try {
 		$insert->bindValue(":STVATTR_ACTIVITY_DATE", $row->STVATTR_ACTIVITY_DATE);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$stvattr->closeCursor();
 	print "...\tUpdated STVATTR\n";
@@ -743,19 +758,19 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN.STVBLDG
- 
+
 try {
 	print "Updating STVBLDG\t";
 	$mysql->beginTransaction();
 	$tstvbldg = $mysql->prepare("TRUNCATE TABLE STVBLDG");
 	$tstvbldg->execute();
-	
+
 	$stvbldg = $banner->prepare("SELECT * FROM SATURN.STVBLDG");
 	$stvbldg->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO STVBLDG (STVBLDG_CODE, STVBLDG_DESC, STVBLDG_ACTIVITY_DATE, STVBLDG_VR_MSG_NO) VALUES (:STVBLDG_CODE, :STVBLDG_DESC, :STVBLDG_ACTIVITY_DATE, :STVBLDG_VR_MSG_NO)");
 	while($row = $stvbldg->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":STVBLDG_CODE", $row->STVBLDG_CODE);
@@ -764,7 +779,7 @@ try {
 		$insert->bindValue(":STVBLDG_VR_MSG_NO", $row->STVBLDG_VR_MSG_NO);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$stvbldg->closeCursor();
 	print "...\tUpdated STVBLDG\n";
@@ -772,19 +787,19 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN.STVCAMP
- 
+
 try {
 	print "Updating STVCAMP\t";
 	$mysql->beginTransaction();
 	$tstvcamp = $mysql->prepare("TRUNCATE TABLE STVCAMP");
 	$tstvcamp->execute();
-	
+
 	$stvcamp = $banner->prepare("SELECT * FROM SATURN.STVCAMP");
 	$stvcamp->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO STVCAMP (STVCAMP_CODE, STVCAMP_DESC, STVCAMP_ACTIVITY_DATE, STVCAMP_DICD_CODE) VALUES (:STVCAMP_CODE, :STVCAMP_DESC, :STVCAMP_ACTIVITY_DATE, :STVCAMP_DICD_CODE)");
 	while($row = $stvcamp->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":STVCAMP_CODE", $row->STVCAMP_CODE);
@@ -793,7 +808,7 @@ try {
 		$insert->bindValue(":STVCAMP_DICD_CODE", $row->STVCAMP_DICD_CODE);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$stvcamp->closeCursor();
 	print "...\tUpdated STVCAMP\n";
@@ -801,19 +816,19 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN.STVCIPC
- 
+
 try {
 	print "Updating STVCIPC\t";
 	$mysql->beginTransaction();
 	$tstvcipc = $mysql->prepare("TRUNCATE TABLE STVCIPC");
 	$tstvcipc->execute();
-	
+
 	$stvcipc = $banner->prepare("SELECT * FROM SATURN.STVCIPC");
 	$stvcipc->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO STVCIPC (STVCIPC_CODE, STVCIPC_DESC, STVCIPC_ACTIVITY_DATE, STVCIPC_CIPC_A_IND, STVCIPC_CIPC_B_IND, STVCIPC_CIPC_C_IND, STVCIPC_SP04_PROGRAM_CDE) VALUES (:STVCIPC_CODE, :STVCIPC_DESC, :STVCIPC_ACTIVITY_DATE, :STVCIPC_CIPC_A_IND, :STVCIPC_CIPC_B_IND, :STVCIPC_CIPC_C_IND, :STVCIPC_SP04_PROGRAM_CDE)");
 	while($row = $stvcipc->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":STVCIPC_CODE", $row->STVCIPC_CODE);
@@ -825,7 +840,7 @@ try {
 		$insert->bindValue(":STVCIPC_SP04_PROGRAM_CDE", $row->STVCIPC_SP04_PROGRAM_CDE);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$stvcipc->closeCursor();
 	print "...\tUpdated STVCIPC\n";
@@ -833,19 +848,19 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN.STVCOLL
- 
+
 try {
 	print "Updating STVCOLL\t";
 	$mysql->beginTransaction();
 	$tstvcoll = $mysql->prepare("TRUNCATE TABLE STVCOLL");
 	$tstvcoll->execute();
-	
+
 	$stvcoll = $banner->prepare("SELECT * FROM SATURN.STVCOLL");
 	$stvcoll->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO STVCOLL (STVCOLL_CODE, STVCOLL_DESC, STVCOLL_ADDR_STREET_LINE1, STVCOLL_ADDR_STREET_LINE2, STVCOLL_ADDR_STREET_LINE3, STVCOLL_ADDR_CITY, STVCOLL_ADDR_STATE, STVCOLL_ADDR_COUNTRY, STVCOLL_ADDR_ZIP_CODE, STVCOLL_ACTIVITY_DATE, STVCOLL_SYSTEM_REQ_IND, STVCOLL_VR_MSG_NO, STVCOLL_STATSCAN_CDE3, STVCOLL_DICD_CODE) VALUES (:STVCOLL_CODE, :STVCOLL_DESC, :STVCOLL_ADDR_STREET_LINE1, :STVCOLL_ADDR_STREET_LINE2, :STVCOLL_ADDR_STREET_LINE3, :STVCOLL_ADDR_CITY, :STVCOLL_ADDR_STATE, :STVCOLL_ADDR_COUNTRY, :STVCOLL_ADDR_ZIP_CODE, :STVCOLL_ACTIVITY_DATE, :STVCOLL_SYSTEM_REQ_IND, :STVCOLL_VR_MSG_NO, :STVCOLL_STATSCAN_CDE3, :STVCOLL_DICD_CODE)");
 	while($row = $stvcoll->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":STVCOLL_CODE", $row->STVCOLL_CODE);
@@ -864,7 +879,7 @@ try {
 		$insert->bindValue(":STVCOLL_DICD_CODE", $row->STVCOLL_DICD_CODE);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$stvcoll->closeCursor();
 	print "...\tUpdated STVCOLL\n";
@@ -875,16 +890,16 @@ try {
 
 
 // SATURN.STVCOMT
- 
+
 try {
 	print "Updating STVCOMT\t";
 	$mysql->beginTransaction();
 	$tstvcomt = $mysql->prepare("TRUNCATE TABLE STVCOMT");
 	$tstvcomt->execute();
-	
+
 	$stvcomt = $banner->prepare("SELECT * FROM SATURN.STVCOMT");
 	$stvcomt->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO STVCOMT (STVCOMT_CODE, STVCOMT_DESC, STVCOMT_TRANS_PRINT, STVCOMT_ACTIVITY_DATE) VALUES (:STVCOMT_CODE, :STVCOMT_DESC, :STVCOMT_TRANS_PRINT, :STVCOMT_ACTIVITY_DATE)");
 	while($row = $stvcomt->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":STVCOMT_CODE", $row->STVCOMT_CODE);
@@ -893,7 +908,7 @@ try {
 		$insert->bindValue(":STVCOMT_ACTIVITY_DATE", toMySQLDate($row->STVCOMT_ACTIVITY_DATE));
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$stvcomt->closeCursor();
 	print "...\tUpdated STVCOMT\n";
@@ -901,20 +916,20 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN.STVCSTA
- 
+
 try {
 	print "Updating STVCSTA\t";
 	$mysql->beginTransaction();
 	$tstvcsta = $mysql->prepare("TRUNCATE TABLE STVCSTA");
 	$tstvcsta->execute();
-	
+
 	$stvcsta = $banner->prepare("SELECT * FROM SATURN.STVCSTA");
 	$stvcsta->execute();
 
-	$insert = $mysql->prepare("INSERT INTO STVCSTA (STVCSTA_CODE, STVCSTA_DESC, STVCSTA_ACTIVITY_DATE, STVCSTA_ACTIVE_IND) VALUES (:STVCSTA_CODE, :STVCSTA_DESC, :STVCSTA_ACTIVITY_DATE, :STVCSTA_ACTIVE_IND)");	
+	$insert = $mysql->prepare("INSERT INTO STVCSTA (STVCSTA_CODE, STVCSTA_DESC, STVCSTA_ACTIVITY_DATE, STVCSTA_ACTIVE_IND) VALUES (:STVCSTA_CODE, :STVCSTA_DESC, :STVCSTA_ACTIVITY_DATE, :STVCSTA_ACTIVE_IND)");
 	while($row = $stvcsta->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":STVCSTA_CODE", $row->STVCSTA_CODE);
 		$insert->bindValue(":STVCSTA_DESC", $row->STVCSTA_DESC);
@@ -922,7 +937,7 @@ try {
 		$insert->bindValue(":STVCSTA_ACTIVE_IND", $row->STVCSTA_ACTIVE_IND);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$stvcsta->closeCursor();
 	print "...\tUpdated STVCSTA\n";
@@ -930,16 +945,16 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN.STVDEPT
- 
+
 try {
 	print "Updating STVDEPT\t";
 	$mysql->beginTransaction();
 	$tstvdept = $mysql->prepare("TRUNCATE TABLE STVDEPT");
 	$tstvdept->execute();
-	
+
 	$stvdept = $banner->prepare("SELECT * FROM SATURN.STVDEPT");
 	$stvdept->execute();
 
@@ -952,7 +967,7 @@ try {
 		$insert->bindValue(":STVDEPT_VR_MSG_NO", $row->STVDEPT_VR_MSG_NO);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$stvdept->closeCursor();
 	print "...\tUpdated STVDEPT\n";
@@ -960,7 +975,7 @@ try {
 	$exceptions[] = $e->toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN.STVDIVS
 
@@ -969,10 +984,10 @@ try {
 	$mysql->beginTransaction();
 	$tstvdivs = $mysql->prepare("TRUNCATE TABLE STVDIVS");
 	$tstvdivs->execute();
-	
+
 	$stvdivs = $banner->prepare("SELECT * FROM SATURN.STVDIVS");
 	$stvdivs->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO STVDIVS (STVDIVS_CODE, STVDIVS_DESC, STVDIVS_ACTIVITY_DATE) VALUES (:STVDIVS_CODE, :STVDIVS_DESC, :STVDIVS_ACTIVITY_DATE)");
 	while($row = $stvdivs->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":STVDIVS_CODE", $row->STVDIVS_CODE);
@@ -988,20 +1003,20 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
-	
+
+
 
 // SATURN.STVFCNT
- 
+
 try {
 	print "Updating STVFCNT\t";
 	$mysql->beginTransaction();
 	$tstvfcnt = $mysql->prepare("TRUNCATE TABLE STVFCNT");
 	$tstvfcnt->execute();
-	
+
 	$stvfcnt = $banner->prepare("SELECT * FROM SATURN.STVFCNT");
 	$stvfcnt->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO STVFCNT (STVFCNT_CODE, STVFCNT_DESC, STVFCNT_ACTIVITY_DATE) VALUES (:STVFCNT_CODE, :STVFCNT_DESC, :STVFCNT_ACTIVITY_DATE)");
 	while($row = $stvfcnt->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":STVFCNT_CODE", $row->STVFCNT_CODE);
@@ -1009,7 +1024,7 @@ try {
 		$insert->bindValue(":STVFCNT_ACTIVITY_DATE", toMySQLDate($row->STVFCNT_ACTIVITY_DATE));
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$stvfcnt->closeCursor();
 	print "...\tUpdated STVFCNT\n";
@@ -1017,16 +1032,16 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN.STVPWAV
- 
+
 try {
 	print "Updating STVPWAV\t";
 	$mysql->beginTransaction();
 	$tstvpwav = $mysql->prepare("TRUNCATE TABLE STVPWAV");
 	$tstvpwav->execute();
-	
+
 	$stvpwav = $banner->prepare("SELECT * FROM SATURN.STVPWAV");
 	$stvpwav->execute();
 
@@ -1037,7 +1052,7 @@ try {
 		$insert->bindValue(":STVPWAV_ACTIVITY_DATE", toMySQLDate($row->STVPWAV_ACTIVITY_DATE));
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$stvpwav->closeCursor();
 	print "...\tUpdated STVPWAV\n";
@@ -1045,19 +1060,19 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN.STVREPS
- 
+
 try {
 	print "Updating STVREPS\t";
 	$mysql->beginTransaction();
 	$tstvreps = $mysql->prepare("TRUNCATE TABLE STVREPS");
 	$tstvreps->execute();
-	
+
 	$stvreps = $banner->prepare("SELECT * FROM SATURN.STVREPS");
 	$stvreps->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO STVREPS (STVREPS_CODE, STVREPS_DESC, STVREPS_ACTIVITY_DATE) VALUES (:STVREPS_CODE, :STVREPS_DESC, :STVREPS_ACTIVITY_DATE)");
 	while($row = $stvreps->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":STVREPS_CODE", $row->STVREPS_CODE);
@@ -1065,7 +1080,7 @@ try {
 		$insert->bindValue(":STVREPS_ACTIVITY_DATE", toMySQLDate($row->STVREPS_ACTIVITY_DATE));
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$stvreps->closeCursor();
 	print "...\tUpdated STVREPS\n";
@@ -1073,19 +1088,19 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN.STVSCHD
- 
+
 try {
 	print "Updating STVSCHD\t";
 	$mysql->beginTransaction();
 	$tstvschd = $mysql->prepare("TRUNCATE TABLE STVSCHD");
 	$tstvschd->execute();
-	
+
 	$stvschd = $banner->prepare("SELECT * FROM STVSCHD");
 	$stvschd->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO STVSCHD (STVSCHD_CODE, STVSCHD_DESC, STVSCHD_ACTIVITY_DATE, STVSCHD_INSTRUCT_METHOD, STVSCHD_COOP_IND, STVSCHD_AUTO_SCHEDULER_IND, STVSCHD_INSM_CODE, STVSCHD_VR_MSG_NO) VALUES (:STVSCHD_CODE, :STVSCHD_DESC, :STVSCHD_ACTIVITY_DATE, :STVSCHD_INSTRUCT_METHOD, :STVSCHD_COOP_IND, :STVSCHD_AUTO_SCHEDULER_IND, :STVSCHD_INSM_CODE, :STVSCHD_VR_MSG_NO)");
 	while($row = $stvschd->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":STVSCHD_CODE", $row->STVSCHD_CODE);
@@ -1098,7 +1113,7 @@ try {
 		$insert->bindValue(":STVSCHD_VR_MSG_NO", $row->STVSCHD_VR_MSG_NO);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$stvschd->closeCursor();
 	print "...\tUpdated STVSCHD\n";
@@ -1106,19 +1121,19 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN.STVSUBJ
- 
+
 try {
 	print "Updating STVSUBJ\t";
 	$mysql->beginTransaction();
 	$tstvsubj = $mysql->prepare("TRUNCATE TABLE STVSUBJ");
 	$tstvsubj->execute();
-	
+
 	$stvsubj = $banner->prepare("SELECT * FROM STVSUBJ");
 	$stvsubj->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO STVSUBJ (STVSUBJ_CODE, STVSUBJ_DESC, STVSUBJ_ACTIVITY_DATE, STVSUBJ_VR_MSG_NO, STVSUBJ_DISP_WEB_IND) VALUES (:STVSUBJ_CODE, :STVSUBJ_DESC, :STVSUBJ_ACTIVITY_DATE, :STVSUBJ_VR_MSG_NO, :STVSUBJ_DISP_WEB_IND)");
 	while($row = $stvsubj->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":STVSUBJ_CODE", $row->STVSUBJ_CODE);
@@ -1128,7 +1143,7 @@ try {
 		$insert->bindValue(":STVSUBJ_DISP_WEB_IND", $row->STVSUBJ_DISP_WEB_IND);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$stvsubj->closeCursor();
 	print "...\tUpdated STVSUBJ\n";
@@ -1136,19 +1151,19 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN.STVTERM
- 
+
 try {
 	print "Updating STVTERM\t";
 	$mysql->beginTransaction();
 	$tstvterm = $mysql->prepare("TRUNCATE TABLE STVTERM");
 	$tstvterm->execute();
-	
+
 	$stvterm = $banner->prepare("SELECT * FROM STVTERM");
 	$stvterm->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO STVTERM (STVTERM_CODE, STVTERM_DESC, STVTERM_START_DATE, STVTERM_END_DATE, STVTERM_FA_PROC_YR, STVTERM_ACTIVITY_DATE, STVTERM_FA_TERM, STVTERM_FA_PERIOD, STVTERM_FA_END_PERIOD, STVTERM_ACYR_CODE, STVTERM_HOUSING_START_DATE, STVTERM_HOUSING_END_DATE, STVTERM_SYSTEM_REQ_IND, STVTERM_TRMT_CODE) VALUES (:STVTERM_CODE, :STVTERM_DESC, :STVTERM_START_DATE, :STVTERM_END_DATE, :STVTERM_FA_PROC_YR, :STVTERM_ACTIVITY_DATE, :STVTERM_FA_TERM, :STVTERM_FA_PERIOD, :STVTERM_FA_END_PERIOD, :STVTERM_ACYR_CODE, :STVTERM_HOUSING_START_DATE, :STVTERM_HOUSING_END_DATE, :STVTERM_SYSTEM_REQ_IND, :STVTERM_TRMT_CODE)");
 	while($row = $stvterm->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":STVTERM_CODE", $row->STVTERM_CODE);
@@ -1167,7 +1182,7 @@ try {
 		$insert->bindValue(":STVTERM_TRMT_CODE", $row->STVTERM_TRMT_CODE);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$stvterm->closeCursor();
 	print "...\tUpdated STVTERM\n";
@@ -1175,19 +1190,19 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN.STVTRMT
- 
+
 try {
 	print "Updating STVTRMT\t";
 	$mysql->beginTransaction();
 	$tstvtrmt = $mysql->prepare("TRUNCATE TABLE STVTRMT");
 	$tstvtrmt->execute();
-	
+
 	$stvtrmt = $banner->prepare("SELECT * FROM STVTRMT");
 	$stvtrmt->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO STVTRMT (STVTRMT_CODE, STVTRMT_DESC, STVTRMT_ACTIVITY_DATE) VALUES (:STVTRMT_CODE, :STVTRMT_DESC, :STVTRMT_ACTIVITY_DATE)");
 	while($row = $stvtrmt->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":STVTRMT_CODE", $row->STVTRMT_CODE);
@@ -1195,7 +1210,7 @@ try {
 		$insert->bindValue(":STVTRMT_ACTIVITY_DATE", toMySQLDate($row->STVTRMT_ACTIVITY_DATE));
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$stvtrmt->closeCursor();
 	print "...\tUpdated STVTRMT\n";
@@ -1203,19 +1218,19 @@ try {
 	$exceptions[] = $e->__toString();
 	$mysql->rollBack();
 }
-	
+
 
 // SATURN_MIDD.SYVINST
- 
+
 try {
 	print "Updating SYVINST\t";
 	$mysql->beginTransaction();
 	$tsyvinst = $mysql->prepare("TRUNCATE TABLE SYVINST");
 	$tsyvinst->execute();
-	
+
 	$syvinst = $banner->prepare("SELECT * FROM SATURN_MIDD.SYVINST");
 	$syvinst->execute();
-	
+
 	$insert = $mysql->prepare("INSERT INTO SYVINST (SYVINST_TERM_CODE, SYVINST_CRN, SYVINST_PIDM, SYVINST_LAST_NAME, SYVINST_FIRST_NAME, WEB_ID) VALUES (:SYVINST_TERM_CODE, :SYVINST_CRN, :SYVINST_PIDM, :SYVINST_LAST_NAME, :SYVINST_FIRST_NAME, :WEB_ID)");
 	while($row = $syvinst->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
 		$insert->bindValue(":SYVINST_TERM_CODE", $row->SYVINST_TERM_CODE);
@@ -1226,7 +1241,7 @@ try {
 		$insert->bindValue(":WEB_ID", $row->WEB_ID);
 		$insert->execute();
 	}
-	
+
 	$mysql->commit();
 	$syvinst->closeCursor();
 	print "...\tUpdated SYVINST\n";
@@ -1241,9 +1256,9 @@ try {
 	$mysql->beginTransaction();
 	$ttermcat = $mysql->prepare("TRUNCATE TABLE catalog_term");
 	$ttermcat->execute();
-	
+
 	$searches = $mysql->query("SELECT * FROM catalog_term_match")->fetchAll();
-	
+
 	$itermcat = $mysql->prepare("
 INSERT INTO
 	catalog_term
@@ -1260,16 +1275,16 @@ WHERE
 
 	foreach ($searches as $search) {
 		$itermcat->execute(array(
-			':catalog_id' => $search['catalog_id'], 
+			':catalog_id' => $search['catalog_id'],
 			':term_code_match' => $search['term_code_match'],
 			':term_display_label' => $search['term_display_label']
 		));
 	}
 
 	$mysql->commit();
-	
+
 	print "...\tUpdated derived table: catalog_term\n";
-	
+
 	// Rebuild our "materialized views"
 	require_once(dirname(__FILE__).'/../application/library/harmoni/SQLUtils.php');
 	$mysql->beginTransaction();
