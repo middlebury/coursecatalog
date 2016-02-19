@@ -8,7 +8,7 @@ authType = none
 cas.host = login.middlebury.edu
 cas.port = 443
 cas.path = /cas
-cas.server_cert = 
+cas.server_cert =
 
 masquerade.enabled = 0
 ; To support admins masquerading as other users, specify a directory service
@@ -28,14 +28,14 @@ schedules.email.send_mail_as = catalog@example.edu
 ;schedules.email.allowed_groups[] = "CN=institution,OU=General,OU=Groups,DC=middlebury,DC=edu"
 
 ; Administrators
-admin.administrator_ids = 
+admin.administrator_ids =
 
 ; Number of seconds, for the Cache-Control header.
 cache_control.max_age = 3600
 ; Number of seconds, for the Expires header, may be positive or negative
 cache_control.expiration_offset = 3600
 
-; database to use for storing user bookmarks and schedules. 
+; database to use for storing user bookmarks and schedules.
 ; This may be the same or different from the database that holds the exported
 ; Banner data.
 resources.db.adapter         = pdo_mysql
@@ -48,16 +48,16 @@ resources.db.params.dbname   = dbname
 ; Allowed values:
 ;	banner_course_CourseManager
 ;	apc_course_CourseManager
-; 
-; The banner_course_CourseManager is the default implementation. 
-; 
+;
+; The banner_course_CourseManager is the default implementation.
+;
 ; The apc_course_CourseManager provides a caching layer for better performance, requires APC support.
 ; Be sure to clear the apc cache by loading http://catalog.example.edu/utils/clearcache?key=xxxxxx your nightly sync.
 osid.course_impl = banner_course_CourseManager
 
 ; This key will be used to validate cache-clearing requests when accessing the utils/clearcache action
 ; http://catalog.example.edu/utils/clearcache?key=xxxxxx
-; 
+;
 ; Note, you must set a key for cache-clearing to be allowed.
 osid.apc.clear_cache_key = ""
 
@@ -65,7 +65,7 @@ osid.apc.clear_cache_key = ""
 resources.layout.layout = midd
 
 ; Custom layouts to use for some catalogs
-; 
+;
 ; Each entry must have a catalog Id and a layout.
 catalog.layouts.MIIS.catalog_id = "urn:inet:middlebury.edu:catalog/MIIS"
 catalog.layouts.MIIS.layout = "miis"
@@ -498,9 +498,9 @@ phpSettings.display_errors = 1
 
 [development : production]
 phpSettings.display_startup_errors = 1
-phpSettings.display_errors = 1 
+phpSettings.display_errors = 1
 
-; database to use for storing user bookmarks and schedules. 
+; database to use for storing user bookmarks and schedules.
 ; This may be the same or different from the database that holds the exported
 ; Banner data.
 resources.db.adapter         = pdo_mysql
@@ -513,9 +513,9 @@ resources.db.params.dbname   = afranco_catalog
 ; Allowed values:
 ;	banner_course_CourseManager
 ;	apc_course_CourseManager
-; 
-; The banner_course_CourseManager is the default implementation. 
-; 
+;
+; The banner_course_CourseManager is the default implementation.
+;
 ; The apc_course_CourseManager provides a caching layer for better performance, requires APC support.
 ; Be sure to clear the apc cache by loading http://catalog.example.edu/utils/clearcache?key=xxxxxx your nightly sync.
 osid.course_impl = apc_course_CourseManager
