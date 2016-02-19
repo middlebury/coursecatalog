@@ -17,6 +17,7 @@ masquerade.enabled = 0
 masquerade.type = CasDirectory
 masquerade.CasDirectory.url = https://login.middlebury.edu/directory/
 masquerade.CasDirectory.extra_params = "ADMIN_ACCESS=passkey"
+masquerade.CasDirectory.headers[] = "ADMIN_ACCESS: passkey"
 
 ; Enable or disable emailing of schedules.
 schedules.email.enabled = false

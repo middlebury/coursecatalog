@@ -152,10 +152,31 @@ class Auth_Action_Helper_CasDirectory
 				'id'		=> $userId,
 			), $extraParams);
 		$url = $config->masquerade->CasDirectory->url.'?'.http_build_query($params);
-		$doc = new DomDocument;
-		if (!$doc->load($url))
+
+		$headers = array("User-Agent: Drupal CAS-MM-Sync");
+		if (!empty($config->masquerade->CasDirectory->headers)) {
+			foreach ($config->masquerade->CasDirectory->headers as $header) {
+				if (!preg_match('/.+:.+/', $header))
+					throw new Exception('Each element of masquerade.CasDirectory.headers[] must be a "key: value" string.');
+				$headers[] = $header;
+			}
+		}
+		foreach ($headers as $k => $v) {
+			$headers[$k] = rtrim($v)."\r\n";
+		}
+		$opts = array(
+			'http' => array(
+				'header' => implode("", $headers),
+			)
+		);
+		$context = stream_context_create($opts);
+		$xmlstring = file_get_contents($url, false, $context);
+		if (empty($xmlstring))
 			throw new Exception("Could not load user information.");
-		
+		$doc = new DomDocument;
+		if (!$doc->loadXML($xmlstring))
+			throw new Exception("Could not parse user information.");
+
 		$xpath = new DOMXPath($doc);
 		$xpath->registerNamespace('cas', 'http://www.yale.edu/tp/cas');
 
