@@ -23,6 +23,7 @@ class CatalogSync_Syncer_Oci
 {
 	protected $banner_config;
 	protected $banner_connection;
+	protected $allowedBlckCodes = array();
 
 	/**
 	 * Configure this sync instance
@@ -34,6 +35,16 @@ class CatalogSync_Syncer_Oci
 	public function configure (Zend_Config $config) {
 		parent::configure($config);
 		$this->banner_config = $this->validateBannerConfig($config->source_banner_db, 'source_banner_db');
+
+		// Configure our block codes to import.
+		if (!empty($config->allowedBlckCodes)) {
+			foreach ($config->allowedBlckCodes as $code) {
+				if (!is_string($code)) {
+					throw new Exception('allowedBlckCodes[] must be an array of strings in the config.');
+				}
+				$this->allowedBlckCodes[] = $code;
+			}
+		}
 
 		/**
 		 * Custom Error handler function to throw exceptions on any PHP
@@ -686,9 +697,9 @@ class CatalogSync_Syncer_Oci
 		$tssrblck->execute();
 
 		$query = "SELECT * FROM SATURN.SSRBLCK";
-		if (count($allowedBlckCodes)) {
+		if (count($this->allowedBlckCodes)) {
 			$codes = array();
-			foreach ($allowedBlckCodes as $code) {
+			foreach ($this->allowedBlckCodes as $code) {
 				$codes[] = "'".$code."'";
 			}
 			$query .= " WHERE SSRBLCK_BLCK_CODE IN (".implode(', ', $codes).")";
@@ -859,9 +870,9 @@ class CatalogSync_Syncer_Oci
 		$tstvblck->execute();
 
 		$query = "SELECT * FROM SATURN.STVBLCK";
-		if (count($allowedBlckCodes)) {
+		if (count($this->allowedBlckCodes)) {
 			$codes = array();
-			foreach ($allowedBlckCodes as $code) {
+			foreach ($this->allowedBlckCodes as $code) {
 				$codes[] = "'".$code."'";
 			}
 			$query .= " WHERE STVBLCK_CODE IN (".implode(', ', $codes).")";
