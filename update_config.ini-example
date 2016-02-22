@@ -1,5 +1,45 @@
 [production]
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; New values
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+sync_class = CatalogSync_Syncer_OciWithCache
+
+source_banner_db.tns = "(DESCRIPTION =
+	(ADDRESS_LIST =
+		(ADDRESS = (PROTOCOL = TCP)(HOST = server.example.edu)(PORT = 15220))
+	)
+	(CONNECT_DATA =
+		(SERVICE_NAME = SOMETHING.BANNER.EXAMPLE.EDU)
+	)
+)"
+source_banner_db.username = "RO_USER_NAME"
+source_banner_db.password = "password"
+
+temp_db.type = "mysql"
+temp_db.host = "localhost"
+temp_db.database = "catalog_temp"
+temp_db.username = "testuser"
+temp_db.password = "testpassword"
+
+destination_db.type = "mysql"
+destination_db.host = "localhost"
+destination_db.database = "catalog"
+destination_db.username = "testuser"
+destination_db.password = "testpassword"
+
+mysql = "/usr/bin/mysql"
+mysqldump = "/usr/bin/mysqldump"
+
+allowedBlckCodes[] = "CC"
+
+error_mail_from = "noreply@example.edu"
+error_mail_to[] = "admin1@example.edu"
+error_mail_to[] = "admin2@example.edu"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Old values
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 bannerTNS = "(DESCRIPTION =
 	(ADDRESS_LIST =
 		(ADDRESS = (PROTOCOL = TCP)(HOST = server.example.edu)(PORT = 15220))
