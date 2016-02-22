@@ -164,10 +164,10 @@ class CatalogSync_Syncer_Oci
 	 */
 	public function copy () {
 		$target_db = $this->getCopyTargetDatabase();
+		$target_db->beginTransaction();
 
 		// GENERAL.GORINTG
 		print "Updating GORINTG\t";
-		$target_db->beginTransaction();
 		$tgorintg = $target_db->prepare("TRUNCATE TABLE GORINTG");
 		$tgorintg->execute();
 
@@ -184,7 +184,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($gorintg);
 		print "...\tUpdated GORINTG\n";
 
@@ -192,7 +191,6 @@ class CatalogSync_Syncer_Oci
 
 		// GENERAL.GTVDUNT
 		print "Updating GTVDUNT\t";
-		$target_db->beginTransaction();
 		$tgtvdunt = $target_db->prepare("TRUNCATE TABLE GTVDUNT");
 		$tgtvdunt->execute();
 
@@ -209,7 +207,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($gtvdunt);
 		print "...\tUpdated GTVDUNT\n";
 
@@ -217,7 +214,6 @@ class CatalogSync_Syncer_Oci
 
 		// GENERAL.GTVINSM
 		print "Updating GTVINSM\t";
-		$target_db->beginTransaction();
 		$tgtvinsm = $target_db->prepare("TRUNCATE TABLE GTVINSM");
 		$tgtvinsm->execute();
 
@@ -233,7 +229,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($gtvinsm);
 		print "...\tUpdated GTVINSM\n";
 
@@ -241,7 +236,6 @@ class CatalogSync_Syncer_Oci
 
 		// GENERAL.GTVINTP
 		print "Updating GTVINTP\t";
-		$target_db->beginTransaction();
 		$tgtvintp = $target_db->prepare("TRUNCATE TABLE GTVINTP");
 		$tgtvintp->execute();
 
@@ -257,7 +251,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($gtvintp);
 		print "...\tUpdated GTVINTP\n";
 
@@ -265,7 +258,6 @@ class CatalogSync_Syncer_Oci
 
 		// GENERAL.GTVMTYP
 		print "Updating GTVMTYP\t";
-		$target_db->beginTransaction();
 		$tgtvmtyp = $target_db->prepare("TRUNCATE TABLE GTVMTYP");
 		$tgtvmtyp->execute();
 
@@ -282,7 +274,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($gtvmtyp);
 		print "...\tUpdated GTVMTYP\n";
 
@@ -290,7 +281,6 @@ class CatalogSync_Syncer_Oci
 
 		// GENERAL.GTVSCHS
 		print "Updating GTVSCHS\t";
-		$target_db->beginTransaction();
 		$tgtvschs = $target_db->prepare("TRUNCATE TABLE GTVSCHS");
 		$tgtvschs->execute();
 
@@ -305,7 +295,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($gtvschs);
 		print "...\tUpdated GTVSCHS\n";
 
@@ -313,7 +302,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.SCBCRSE
 		print "Updating SCBCRSE\t";
-		$target_db->beginTransaction();
 		$tscbcrse = $target_db->prepare("TRUNCATE TABLE SCBCRSE");
 		$tscbcrse->execute();
 
@@ -365,14 +353,12 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($scbcrse);
 		print "...\tUpdated SCBCRSE\n";
 
 
 		// SATURN.SCBDESC
 		print "Updating SCBDESC\t";
-		$target_db->beginTransaction();
 		$tSCBDESC = $target_db->prepare("TRUNCATE TABLE SCBDESC");
 		$tSCBDESC->execute();
 
@@ -395,7 +381,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($SCBDESC);
 		print "...\tUpdated SCBDESC\n";
 
@@ -403,7 +388,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.SCRATTR
 		print "Updating SCRATTR\t";
-		$target_db->beginTransaction();
 		$tSCRATTR = $target_db->prepare("TRUNCATE TABLE SCRATTR");
 		$tSCRATTR->execute();
 
@@ -419,7 +403,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($SCRATTR);
 		print "...\tUpdated SCRATTR\n";
 
@@ -427,7 +410,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.SCREQIV
 		print "Updating SCREQIV\t";
-		$target_db->beginTransaction();
 		$tSCREQIV = $target_db->prepare("TRUNCATE TABLE SCREQIV");
 		$tSCREQIV->execute();
 
@@ -446,14 +428,12 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($SCREQIV);
 		print "...\tUpdated SCREQIV\n";
 
 
 		// SATURN.SCRLEVL
 		print "Updating SCRLEVL\t";
-		$target_db->beginTransaction();
 		$tSCRLEVL = $target_db->prepare("TRUNCATE TABLE SCRLEVL");
 		$tSCRLEVL->execute();
 
@@ -469,14 +449,12 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($SCRLEVL);
 		print "...\tUpdated SCRLEVL\n";
 
 
 		// SATURN.SSBXLST
 		print "Updating SSBXLST\t";
-		$target_db->beginTransaction();
 		$tSSBXLST = $target_db->prepare("TRUNCATE TABLE SSBXLST");
 		$tSSBXLST->execute();
 
@@ -494,14 +472,12 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($SSBXLST);
 		print "...\tUpdated SSBXLST\n";
 
 
 		// SATURN.SSRXLST
 		print "Updating SSRXLST\t";
-		$target_db->beginTransaction();
 		$tSSRXLST = $target_db->prepare("TRUNCATE TABLE SSRXLST");
 		$tSSRXLST->execute();
 
@@ -516,14 +492,12 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($SSRXLST);
 		print "...\tUpdated SSRXLST\n";
 
 
 		// SATURN.SIRASGN
 		print "Updating SIRASGN\t";
-		$target_db->beginTransaction();
 		$tsirasgn = $target_db->prepare("TRUNCATE TABLE SIRASGN");
 		$tsirasgn->execute();
 
@@ -551,14 +525,12 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($sirasgn);
 		print "...\tUpdated SIRASGN\n";
 
 
 		// SATURN.SSBDESC
 		print "Updating SSBDESC\t";
-		$target_db->beginTransaction();
 		$tSSBDESC = $target_db->prepare("TRUNCATE TABLE SSBDESC");
 		$tSSBDESC->execute();
 
@@ -579,7 +551,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($SSBDESC);
 		print "...\tUpdated SSBDESC\n";
 
@@ -587,7 +558,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.SSBSECT
 		print "Updating SSBSECT\t";
-		$target_db->beginTransaction();
 		$tssbsect = $target_db->prepare("TRUNCATE TABLE SSBSECT");
 		$tssbsect->execute();
 
@@ -661,7 +631,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($ssbsect);
 		print "...\tUpdated SSBSECT\n";
 
@@ -669,7 +638,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.SSRATTR
 		print "Updating SSRATTR\t";
-		$target_db->beginTransaction();
 		$tssrattr = $target_db->prepare("TRUNCATE TABLE SSRATTR");
 		$tssrattr->execute();
 
@@ -684,7 +652,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($ssrattr);
 		print "...\tUpdated SSRATTR\n";
 
@@ -692,7 +659,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.SSRBLCK
 		print "Updating SSRBLCK\t";
-		$target_db->beginTransaction();
 		$tssrblck = $target_db->prepare("TRUNCATE TABLE SSRBLCK");
 		$tssrblck->execute();
 
@@ -719,7 +685,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($ssrblck);
 		print "...\tUpdated SSRBLCK\n";
 
@@ -727,7 +692,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.SSRMEET
 		print "Updating SSRMEET\t";
-		$target_db->beginTransaction();
 		$tssrmeet = $target_db->prepare("TRUNCATE TABLE SSRMEET");
 		$tssrmeet->execute();
 
@@ -768,7 +732,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($ssrmeet);
 		print "...\tUpdated SSRMEET\n";
 
@@ -776,7 +739,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVACYR
 		print "Updating STVACYR\t";
-		$target_db->beginTransaction();
 		$tstvacyr = $target_db->prepare("TRUNCATE TABLE STVACYR");
 		$tstvacyr->execute();
 
@@ -791,7 +753,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvacyr);
 		print "...\tUpdated STVACYR\n";
 
@@ -799,7 +760,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVAPRV
 		print "Updating STVAPRV\t";
-		$target_db->beginTransaction();
 		$tstvaprv = $target_db->prepare("TRUNCATE TABLE STVAPRV");
 		$tstvaprv->execute();
 
@@ -813,7 +773,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvaprv);
 		print "...\tUpdated STVAPRV\n";
 
@@ -821,7 +780,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVASTY
 		print "Updating STVASTY\t";
-		$target_db->beginTransaction();
 		$tstvasty = $target_db->prepare("TRUNCATE TABLE STVASTY");
 		$tstvasty->execute();
 
@@ -835,7 +793,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvasty);
 		print "...\tUpdated STVASTY\n";
 
@@ -843,7 +800,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVATTR
 		print "Updating STVATTR\t";
-		$target_db->beginTransaction();
 		$tstvattr = $target_db->prepare("TRUNCATE TABLE STVATTR");
 		$tstvattr->execute();
 
@@ -857,7 +813,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvattr);
 		print "...\tUpdated STVATTR\n";
 
@@ -865,7 +820,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVBLCK
 		print "Updating STVBLCK\t";
-		$target_db->beginTransaction();
 		$tstvblck = $target_db->prepare("TRUNCATE TABLE STVBLCK");
 		$tstvblck->execute();
 
@@ -887,7 +841,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvblck);
 		print "...\tUpdated STVBLCK\n";
 
@@ -895,7 +848,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVBLDG
 		print "Updating STVBLDG\t";
-		$target_db->beginTransaction();
 		$tstvbldg = $target_db->prepare("TRUNCATE TABLE STVBLDG");
 		$tstvbldg->execute();
 
@@ -910,7 +862,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvbldg);
 		print "...\tUpdated STVBLDG\n";
 
@@ -918,7 +869,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVCAMP
 		print "Updating STVCAMP\t";
-		$target_db->beginTransaction();
 		$tstvcamp = $target_db->prepare("TRUNCATE TABLE STVCAMP");
 		$tstvcamp->execute();
 
@@ -933,7 +883,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvcamp);
 		print "...\tUpdated STVCAMP\n";
 
@@ -941,7 +890,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVCIPC
 		print "Updating STVCIPC\t";
-		$target_db->beginTransaction();
 		$tstvcipc = $target_db->prepare("TRUNCATE TABLE STVCIPC");
 		$tstvcipc->execute();
 
@@ -959,7 +907,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvcipc);
 		print "...\tUpdated STVCIPC\n";
 
@@ -967,7 +914,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVCOLL
 		print "Updating STVCOLL\t";
-		$target_db->beginTransaction();
 		$tstvcoll = $target_db->prepare("TRUNCATE TABLE STVCOLL");
 		$tstvcoll->execute();
 
@@ -992,7 +938,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvcoll);
 		print "...\tUpdated STVCOLL\n";
 
@@ -1000,7 +945,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVCOMT
 		print "Updating STVCOMT\t";
-		$target_db->beginTransaction();
 		$tstvcomt = $target_db->prepare("TRUNCATE TABLE STVCOMT");
 		$tstvcomt->execute();
 
@@ -1015,7 +959,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvcomt);
 		print "...\tUpdated STVCOMT\n";
 
@@ -1023,7 +966,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVCSTA
 		print "Updating STVCSTA\t";
-		$target_db->beginTransaction();
 		$tstvcsta = $target_db->prepare("TRUNCATE TABLE STVCSTA");
 		$tstvcsta->execute();
 
@@ -1038,7 +980,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvcsta);
 		print "...\tUpdated STVCSTA\n";
 
@@ -1046,7 +987,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVDEPT
 		print "Updating STVDEPT\t";
-		$target_db->beginTransaction();
 		$tstvdept = $target_db->prepare("TRUNCATE TABLE STVDEPT");
 		$tstvdept->execute();
 
@@ -1062,7 +1002,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvdept);
 		print "...\tUpdated STVDEPT\n";
 
@@ -1070,7 +1009,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVDIVS
 		print "Updating STVDIVS\t";
-		$target_db->beginTransaction();
 		$tstvdivs = $target_db->prepare("TRUNCATE TABLE STVDIVS");
 		$tstvdivs->execute();
 
@@ -1084,7 +1022,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvdivs);
 		print "...\tUpdated STVDIVS\n";
 
@@ -1093,7 +1030,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVFCNT
 		print "Updating STVFCNT\t";
-		$target_db->beginTransaction();
 		$tstvfcnt = $target_db->prepare("TRUNCATE TABLE STVFCNT");
 		$tstvfcnt->execute();
 
@@ -1107,14 +1043,12 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvfcnt);
 		print "...\tUpdated STVFCNT\n";
 
 
 		// SATURN.STVLEVL
 		print "Updating STVLEVL\t";
-		$target_db->beginTransaction();
 		$tstvlevl = $target_db->prepare("TRUNCATE TABLE STVLEVL");
 		$tstvlevl->execute();
 
@@ -1133,14 +1067,12 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvlevl);
 		print "...\tUpdated STVLEVL\n";
 
 
 		// SATURN.STVMEET
 		print "Updating STVMEET\t";
-		$target_db->beginTransaction();
 		$tSTVMEET = $target_db->prepare("TRUNCATE TABLE STVMEET");
 		$tSTVMEET->execute();
 
@@ -1162,7 +1094,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($STVMEET);
 		print "...\tUpdated STVMEET\n";
 
@@ -1170,7 +1101,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVPWAV
 		print "Updating STVPWAV\t";
-		$target_db->beginTransaction();
 		$tstvpwav = $target_db->prepare("TRUNCATE TABLE STVPWAV");
 		$tstvpwav->execute();
 
@@ -1184,7 +1114,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvpwav);
 		print "...\tUpdated STVPWAV\n";
 
@@ -1192,7 +1121,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVREPS
 		print "Updating STVREPS\t";
-		$target_db->beginTransaction();
 		$tstvreps = $target_db->prepare("TRUNCATE TABLE STVREPS");
 		$tstvreps->execute();
 
@@ -1206,7 +1134,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvreps);
 		print "...\tUpdated STVREPS\n";
 
@@ -1214,7 +1141,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVSCHD
 		print "Updating STVSCHD\t";
-		$target_db->beginTransaction();
 		$tstvschd = $target_db->prepare("TRUNCATE TABLE STVSCHD");
 		$tstvschd->execute();
 
@@ -1233,7 +1159,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvschd);
 		print "...\tUpdated STVSCHD\n";
 
@@ -1241,7 +1166,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVSUBJ
 		print "Updating STVSUBJ\t";
-		$target_db->beginTransaction();
 		$tstvsubj = $target_db->prepare("TRUNCATE TABLE STVSUBJ");
 		$tstvsubj->execute();
 
@@ -1257,7 +1181,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvsubj);
 		print "...\tUpdated STVSUBJ\n";
 
@@ -1265,7 +1188,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVTERM
 		print "Updating STVTERM\t";
-		$target_db->beginTransaction();
 		$tstvterm = $target_db->prepare("TRUNCATE TABLE STVTERM");
 		$tstvterm->execute();
 
@@ -1290,7 +1212,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvterm);
 		print "...\tUpdated STVTERM\n";
 
@@ -1298,7 +1219,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN.STVTRMT
 		print "Updating STVTRMT\t";
-		$target_db->beginTransaction();
 		$tstvtrmt = $target_db->prepare("TRUNCATE TABLE STVTRMT");
 		$tstvtrmt->execute();
 
@@ -1312,7 +1232,6 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($stvtrmt);
 		print "...\tUpdated STVTRMT\n";
 
@@ -1320,7 +1239,6 @@ class CatalogSync_Syncer_Oci
 
 		// SATURN_MIDD.SYVINST
 		print "Updating SYVINST\t";
-		$target_db->beginTransaction();
 		$tsyvinst = $target_db->prepare("TRUNCATE TABLE SYVINST");
 		$tsyvinst->execute();
 
@@ -1337,9 +1255,10 @@ class CatalogSync_Syncer_Oci
 			$insert->execute();
 		}
 
-		$target_db->commit();
 		oci_free_statement($syvinst);
 		print "...\tUpdated SYVINST\n";
+
+		$target_db->commit();
 	}
 
 }
