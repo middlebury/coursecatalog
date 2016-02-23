@@ -104,10 +104,14 @@ class CatalogSync_Director
 		if (empty($this->config->error_mail_to)) {
 			return;
 		}
-		if (is_array($this->config->error_mail_to)) {
-			$to = implode(", ", $this->config->error_mail_to);
-		} else {
+		if (is_string($this->config->error_mail_to)) {
 			$to = $this->config->error_mail_to;
+		} else {
+			$error_mail_to = array();
+			foreach ($this->config->error_mail_to as $email) {
+				$error_mail_to[] = $email;
+			}
+			$to = implode(", ", $error_mail_to);
 		}
 		$subject = "COURSE CATALOG: Synchonization Exception";
 		$message = "The following errors occurred during database synchronization:\n\n";
