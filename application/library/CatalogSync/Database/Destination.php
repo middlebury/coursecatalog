@@ -17,6 +17,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 interface CatalogSync_Database_Destination
+	extends CatalogSync_Database
 {
 
 	/**
@@ -34,6 +35,14 @@ interface CatalogSync_Database_Destination
 	 * @access public
 	 */
 	public function commit ();
+
+	/**
+	 * Roll back an open transaction.
+	 *
+	 * @return boolean
+	 * @access public
+	 */
+	public function rollBack ();
 
 	/**
 	 * Truncate a table.

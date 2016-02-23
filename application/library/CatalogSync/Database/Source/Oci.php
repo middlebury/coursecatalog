@@ -20,15 +20,72 @@ class CatalogSync_Database_Source_Oci
  	implements CatalogSync_Database_Source
 {
 
+	protected $config;
 	protected $handle;
+	protected $name;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param resource $handle
+	 * @param string $name
 	 */
-	public function __construct($handle) {
-		$this->handle = $handle;
+	public function __construct($name) {
+		$this->name = $name;
+	}
+
+	/**
+	 * Configure this sync instance
+	 *
+	 * @param Zend_Config $config
+	 * @return void
+	 * @access public
+	 */
+	public function configure (Zend_Config $config) {
+		$this->config = $this->validateConfig($config);
+	}
+
+	/**
+	 * Validate options for a banner configuration.
+	 *
+	 * @param Zend_Config $config
+	 * @return Zend_Config
+	 */
+	protected function validateConfig(Zend_Config $config) {
+		// Check our configuration
+		if (empty($config->tns)) {
+			throw new Exception($this->name.'.tns must be specified in the config.');
+		}
+		if (empty($config->username)) {
+			throw new Exception($this->name.'.username must be specified in the config.');
+		}
+		if (empty($config->password)) {
+			$config->password = '';
+		}
+		return $config;
+	}
+
+	/**
+	 * Set up connections to our source and destination.
+	 *
+	 * @return void
+	 * @access public
+	 */
+	public function connect () {
+		$this->handle = oci_connect($this->config->username, $this->config->password, $this->config->tns, "UTF8");
+		if (!$this->handle) {
+			$error = oci_error();
+			throw new Exception('Oracle connect failed with message: '.$error['message'], $error['code']);
+		}
+	}
+
+	/**
+	 * Disconnect from our databases
+	 *
+	 * @return void
+	 * @access public
+	 */
+	public function disconnect () {
+		oci_close($this->handle);
 	}
 
 	/**

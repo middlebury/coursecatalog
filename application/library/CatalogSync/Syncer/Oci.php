@@ -21,8 +21,7 @@ class CatalogSync_Syncer_Oci
 	extends CatalogSync_Syncer_PdoMysqlDestination
 	implements CatalogSync_Syncer_Interface
 {
-	protected $banner_config;
-	protected $banner_connection;
+	protected $source_db;
 	protected $allowedBlckCodes = array();
 
 	/**
@@ -34,7 +33,8 @@ class CatalogSync_Syncer_Oci
 	 */
 	public function configure (Zend_Config $config) {
 		parent::configure($config);
-		$this->banner_config = $this->validateBannerConfig($config->source_banner_db, 'source_banner_db');
+		$this->source_db = new CatalogSync_Database_Source_Oci('source_banner_db');
+		$this->source_db->configure($config->source_banner_db);
 
 		// Configure our block codes to import.
 		if (!empty($config->allowedBlckCodes)) {
@@ -64,26 +64,6 @@ class CatalogSync_Syncer_Oci
 	}
 
 	/**
-	 * Validate options for a banner configuration.
-	 *
-	 * @param Zend_Config $config
-	 * @return Zend_Config
-	 */
-	protected function validateBannerConfig(Zend_Config $config, $name = '') {
-		// Check our configuration
-		if (empty($config->tns)) {
-			throw new Exception($name.'.tns must be specified in the config.');
-		}
-		if (empty($config->username)) {
-			throw new Exception($name.'.username must be specified in the config.');
-		}
-		if (empty($config->password)) {
-			$config->password = '';
-		}
-		return $config;
-	}
-
-	/**
 	 * Set up connections to our source and destination.
 	 *
 	 * @return void
@@ -93,11 +73,7 @@ class CatalogSync_Syncer_Oci
 		parent::connect();
 
 		// Connect to Banner
-		$this->banner_connection = oci_connect($this->banner_config->username, $this->banner_config->password, $this->banner_config->tns, "UTF8");
-		if (!$this->banner_connection) {
-			$error = oci_error();
-			throw new Exception('Oracle connect failed with message: '.$error['message'], $error['code']);
-		}
+		$this->source_db->connect();
 	}
 
 	/**
@@ -108,7 +84,7 @@ class CatalogSync_Syncer_Oci
 	 */
 	public function disconnect () {
 		parent::disconnect();
-		oci_close($this->banner_connection);
+		$this->source_db->disconnect();
 	}
 
 	/**
@@ -118,7 +94,7 @@ class CatalogSync_Syncer_Oci
 	 * @access public
 	 */
 	protected function getCopySourceDatabase () {
-		return new CatalogSync_Database_Source_Oci($this->banner_connection);
+		return $this->source_db;
 	}
 
 	/**

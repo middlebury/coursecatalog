@@ -17,6 +17,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 interface CatalogSync_Database_Source
+	extends CatalogSync_Database
 {
 
 	/**
@@ -29,7 +30,5 @@ interface CatalogSync_Database_Source
 	 * @access public
 	 */
 	public function query ($table, array $columns = array(), $where = '');
-
-
 
 }

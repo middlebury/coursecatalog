@@ -22,7 +22,6 @@ abstract class CatalogSync_Syncer_PdoMysqlDestination
 {
 
 	protected $destination_db;
-	protected $destination_db_config;
 
 	/**
 	 * Configure this sync instance
@@ -32,44 +31,8 @@ abstract class CatalogSync_Syncer_PdoMysqlDestination
 	 * @access public
 	 */
 	public function configure (Zend_Config $config) {
-		$this->destination_db_config = $this->validatePdoConfig($config->destination_db, 'destination_db');
-	}
-
-	/**
-	 * Validate options for a PDO configuration.
-	 *
-	 * @param Zend_Config $config
-	 * @return Zend_Config
-	 */
-	protected function validatePdoConfig(Zend_Config $config, $name = '') {
-		// Check our configuration
-		if (empty($config->type)) {
-			throw new Exception($name.'.type must be specified in the config.');
-		}
-		if (empty($config->host)) {
-			throw new Exception($name.'.host must be specified in the config.');
-		}
-		if (empty($config->database)) {
-			throw new Exception($name.'.database must be specified in the config.');
-		}
-		if (empty($config->username)) {
-			throw new Exception($name.'.username must be specified in the config.');
-		}
-		if (empty($config->password)) {
-			$config->password = '';
-		}
-		return $config;
-	}
-
-	/**
-	 * Answer a Pdo instance based on configuration parameters.
-	 *
-	 * @param Zend_Config $config
-	 * @return PDO
-	 */
-	protected function createPdo(Zend_Config $config) {
-		$dsn = $config->type.':host='.$config->host.';dbname='.$config->database;
-		return new Pdo($dsn, $config->username, $config->password, $this->getDestDatabaseOptions($config->type));
+		$this->destination_db = new CatalogSync_Database_Destination_Pdo('destination_db');
+		$this->destination_db->configure($config->destination_db);
 	}
 
 	/**
@@ -96,27 +59,7 @@ abstract class CatalogSync_Syncer_PdoMysqlDestination
 	 * @access public
 	 */
 	public function connect () {
-		$this->destination_db = $this->createPdo($this->destination_db_config);
-	}
-
-	/**
-	 * Answer some database options for our connection.
-	 *
-	 * @param string $type
-	 * @return array
-	 */
-	protected function getDestDatabaseOptions($type) {
-		$options = array();
-		// $options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
-		// The libmysql driver needs to allocate a buffer bigger than the expected data
-		if (defined('PDO::MYSQL_ATTR_MAX_BUFFER_SIZE') && $type == 'mysql') {
-			$options[PDO::MYSQL_ATTR_MAX_BUFFER_SIZE] = 1024*1024*100;
-		}
-		// The mysqlnd driver on the other hand allocates buffers as big as needed.
-		else {
-			// nothing needed.
-		}
-		return $options;
+		$this->destination_db->connect();
 	}
 
 	/**
@@ -126,15 +69,17 @@ abstract class CatalogSync_Syncer_PdoMysqlDestination
 	 * @access public
 	 */
 	public function updateDerived () {
+		$pdo = $this->destination_db->getPdo();
+
 		// Build derived table for easier term-catalog lookups
 		print "Updating derived tables\t";
-		$this->destination_db->beginTransaction();
-		$ttermcat = $this->destination_db->prepare("TRUNCATE TABLE catalog_term");
+		$pdo->beginTransaction();
+		$ttermcat = $pdo->prepare("TRUNCATE TABLE catalog_term");
 		$ttermcat->execute();
 
-		$searches = $this->destination_db->query("SELECT * FROM catalog_term_match")->fetchAll();
+		$searches = $pdo->query("SELECT * FROM catalog_term_match")->fetchAll();
 
-		$itermcat = $this->destination_db->prepare("
+		$itermcat = $pdo->prepare("
 			INSERT INTO
 				catalog_term
 				(catalog_id, term_code, term_display_label)
@@ -160,7 +105,7 @@ abstract class CatalogSync_Syncer_PdoMysqlDestination
 
 		// Delete terms that have no sections in them.
 		print "Removing empty terms\t";
-		$this->destination_db->query(
+		$pdo->query(
 			"CREATE TEMPORARY TABLE empty_terms
 			SELECT
 				term_code
@@ -172,18 +117,18 @@ abstract class CatalogSync_Syncer_PdoMysqlDestination
 			GROUP BY
 				term_code
 			");
-				$this->destination_db->query(
+				$pdo->query(
 			"DELETE FROM catalog_term
 			WHERE
 				term_code IN (SELECT term_code FROM empty_terms)
 			");
 
-		$this->destination_db->query("DROP TEMPORARY TABLE empty_terms");
+		$pdo->query("DROP TEMPORARY TABLE empty_terms");
 		print "...\tRemoved empty terms from derived table: catalog_term\n";
 
 		// Delete terms that are manually inactivated.
 		print "Removing deactivated terms\t";
-		$this->destination_db->query(
+		$pdo->query(
 			"DELETE FROM
 				catalog_term
 			WHERE
@@ -194,10 +139,10 @@ abstract class CatalogSync_Syncer_PdoMysqlDestination
 		// Rebuild our "materialized views"
 		require_once(dirname(__FILE__).'/../../harmoni/SQLUtils.php');
 		print "Updating materialized views\t";
-		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/../../banner/sql/create_views.sql', $this->destination_db);
+		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/../../banner/sql/create_views.sql', $pdo);
 		print "...\tUpdated materialized views\n";
 
-		$this->destination_db->commit();
+		$pdo->commit();
 	}
 
 	/**
@@ -207,7 +152,7 @@ abstract class CatalogSync_Syncer_PdoMysqlDestination
 	 * @access public
 	 */
 	public function disconnect () {
-		$this->destination_db = null;
+		$this->destination_db->disconnect();
 	}
 
 }

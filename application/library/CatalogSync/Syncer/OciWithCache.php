@@ -22,8 +22,10 @@ class CatalogSync_Syncer_OciWithCache
 	extends CatalogSync_Syncer_Oci
 	implements CatalogSync_Syncer_Interface
 {
-	protected $temp_db_config;
+
 	protected $temp_db;
+	protected $temp_db_config;
+	protected $destination_db_config;
 
 	/**
 	 * Configure this sync instance
@@ -34,14 +36,19 @@ class CatalogSync_Syncer_OciWithCache
 	 */
 	public function configure (Zend_Config $config) {
 		parent::configure($config);
-		$this->temp_db_config = $this->validatePdoConfig($config->temp_db, 'temp_db');
+		$this->temp_db = new CatalogSync_Database_Destination_Pdo('temp_db');
+		$this->temp_db->configure($config->temp_db);
 
+		// Store our configurations for use with shell commands.
+		$this->temp_db_config = $this->temp_db->validateConfig($config->temp_db);
+		$this->destination_db_config = $this->destination_db->validateConfig($config->destination_db);
+
+		// Configure paths to shell commands.
 		if (!empty($config->mysqldump)) {
 			$this->mysqldump = $config->mysqldump;
 		} else {
 			$this->mysqldump = 'mysqldump';
 		}
-
 		if (!empty($config->mysql)) {
 			$this->mysql = $config->mysql;
 		} else {
@@ -57,7 +64,7 @@ class CatalogSync_Syncer_OciWithCache
 	 */
 	public function connect () {
 		parent::connect();
-		$this->temp_db = $this->createPdo($this->temp_db_config);
+		$this->temp_db->connect();
 	}
 
 	/**
@@ -67,7 +74,7 @@ class CatalogSync_Syncer_OciWithCache
 	 * @access public
 	 */
 	protected function getCopyTargetDatabase () {
-		return new CatalogSync_Database_Destination_Pdo($this->temp_db);
+		return $this->temp_db;
 	}
 
 	/**
@@ -186,6 +193,6 @@ class CatalogSync_Syncer_OciWithCache
 	 */
 	public function disconnect () {
 		parent::disconnect();
-		$this->temp_db = null;
+		$this->temp_db->disconnect();
 	}
 }
