@@ -86,34 +86,4 @@ class CatalogSync_Syncer_Oci
 		return $this->source_db;
 	}
 
-	/**
-	 * Answer the database we should copy into during copy.
-	 *
-	 * @return CatalogSync_Database_Destination
-	 * @access public
-	 */
-	protected function getCopyTargetDatabase () {
-		return new CatalogSync_Database_Destination_Pdo($this->destination_db);
-	}
-
-	/**
-	 * Take actions before copying data.
-	 *
-	 * @return void
-	 * @access public
-	 */
-	public function preCopy () {
-		// Nothing to do.
-	}
-
-	/**
-	 * Take actions after copying data.
-	 *
-	 * @return void
-	 * @access public
-	 */
-	public function postCopy () {
-		// Nothing to do.
-	}
-
 }

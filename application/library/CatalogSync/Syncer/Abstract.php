@@ -167,6 +167,36 @@ abstract class CatalogSync_Syncer_Abstract
 	}
 
 	/**
+	 * Answer the database we should copy into during copy.
+	 *
+	 * @return CatalogSync_Database_Destination
+	 * @access public
+	 */
+	protected function getCopyTargetDatabase () {
+		return new CatalogSync_Database_Destination_Pdo($this->destination_db);
+	}
+
+	/**
+	 * Take actions before copying data.
+	 *
+	 * @return void
+	 * @access public
+	 */
+	public function preCopy () {
+		// Override if needed.
+	}
+
+	/**
+	 * Take actions after copying data.
+	 *
+	 * @return void
+	 * @access public
+	 */
+	public function postCopy () {
+		// Override if needed.
+	}
+
+	/**
 	 * Copy data.
 	 *
 	 * @return void
