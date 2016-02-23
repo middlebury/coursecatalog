@@ -63,11 +63,11 @@ class CatalogSync_Syncer_OciWithCache
 	/**
 	 * Answer the database we should copy into during copy.
 	 *
-	 * @return PDO
+	 * @return CatalogSync_Database_Destination
 	 * @access public
 	 */
 	protected function getCopyTargetDatabase () {
-		return $this->temp_db;
+		return new CatalogSync_Database_Destination_Pdo($this->temp_db);
 	}
 
 	/**
