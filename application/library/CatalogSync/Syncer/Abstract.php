@@ -173,7 +173,7 @@ abstract class CatalogSync_Syncer_Abstract
 	 * @access public
 	 */
 	protected function getCopyTargetDatabase () {
-		return new CatalogSync_Database_Destination_Pdo($this->destination_db);
+		return $this->destination_db;
 	}
 
 	/**
