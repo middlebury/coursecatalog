@@ -17,7 +17,7 @@
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-interface CatalogSync_Syncer_Interface
+interface CatalogSync_Syncer
 {
 
 	/**

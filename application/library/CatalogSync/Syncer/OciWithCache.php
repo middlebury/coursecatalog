@@ -20,7 +20,7 @@
  */
 class CatalogSync_Syncer_OciWithCache
 	extends CatalogSync_Syncer_Oci
-	implements CatalogSync_Syncer_Interface
+	implements CatalogSync_Syncer
 {
 
 	protected $temp_db;

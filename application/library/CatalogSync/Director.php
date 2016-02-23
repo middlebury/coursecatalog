@@ -33,8 +33,8 @@ class CatalogSync_Director
 		$this->config = $this->validateConfig($config);
 		$sync_class = $this->config->sync_class;
 		$this->sync = new $sync_class();
-		if (!$this->sync instanceof CatalogSync_Syncer_Interface) {
-			throw new Exception("sync_class ".$sync_class." doesn't implement the required CatalogSync_Syncer_Interface.");
+		if (!$this->sync instanceof CatalogSync_Syncer) {
+			throw new Exception("sync_class ".$sync_class." doesn't implement the required CatalogSync_Syncer.");
 		}
 		$this->sync->configure($this->config);
 	}

@@ -18,7 +18,7 @@
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-abstract class CatalogSync_Syncer_PdoMysqlDestination
+abstract class CatalogSync_Syncer_Abstract
 {
 
 	protected $destination_db;

@@ -18,8 +18,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 class CatalogSync_Syncer_Oci
-	extends CatalogSync_Syncer_PdoMysqlDestination
-	implements CatalogSync_Syncer_Interface
+	extends CatalogSync_Syncer_Abstract
+	implements CatalogSync_Syncer
 {
 	protected $source_db;
 
@@ -115,5 +115,5 @@ class CatalogSync_Syncer_Oci
 	public function postCopy () {
 		// Nothing to do.
 	}
-	
+
 }
