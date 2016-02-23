@@ -78,58 +78,6 @@ class CatalogSync_Syncer_OciWithCache
 	}
 
 	/**
-	 * Answer a list of the Banner tables.
-	 *
-	 * @return array
-	 */
-	protected function getBannerTables() {
-		return array(
-			'GORINTG',
-			'GTVDUNT',
-			'GTVINSM',
-			'GTVINTP',
-			'GTVMTYP',
-			'GTVSCHS',
-			'SCBCRSE',
-			'SCBDESC',
-			'SCRATTR',
-			'SCREQIV',
-			'SCRLEVL',
-			'SIRASGN',
-			'SSBDESC',
-			'SSBSECT',
-			'SSBXLST',
-			'SSRATTR',
-			'SSRBLCK',
-			'SSRMEET',
-			'SSRXLST',
-			'STVACYR',
-			'STVAPRV',
-			'STVASTY',
-			'STVATTR',
-			'STVBLCK',
-			'STVBLDG',
-			'STVCAMP',
-			'STVCIPC',
-			'STVCOLL',
-			'STVCOMT',
-			'STVCSTA',
-			'STVDEPT',
-			'STVDIVS',
-			'STVFCNT',
-			'STVLEVL',
-			'STVMEET',
-			'STVPWAV',
-			'STVREPS',
-			'STVSCHD',
-			'STVSUBJ',
-			'STVTERM',
-			'STVTRMT',
-			'SYVINST',
-			);
-	}
-
-	/**
 	 * Take actions before copying data.
 	 *
 	 * @return void
@@ -195,4 +143,57 @@ class CatalogSync_Syncer_OciWithCache
 		parent::disconnect();
 		$this->temp_db->disconnect();
 	}
+
+	/**
+	 * Answer a list of the Banner tables.
+	 *
+	 * @return array
+	 */
+	protected function getBannerTables() {
+		return array(
+			'GORINTG',
+			'GTVDUNT',
+			'GTVINSM',
+			'GTVINTP',
+			'GTVMTYP',
+			'GTVSCHS',
+			'SCBCRSE',
+			'SCBDESC',
+			'SCRATTR',
+			'SCREQIV',
+			'SCRLEVL',
+			'SIRASGN',
+			'SSBDESC',
+			'SSBSECT',
+			'SSBXLST',
+			'SSRATTR',
+			'SSRBLCK',
+			'SSRMEET',
+			'SSRXLST',
+			'STVACYR',
+			'STVAPRV',
+			'STVASTY',
+			'STVATTR',
+			'STVBLCK',
+			'STVBLDG',
+			'STVCAMP',
+			'STVCIPC',
+			'STVCOLL',
+			'STVCOMT',
+			'STVCSTA',
+			'STVDEPT',
+			'STVDIVS',
+			'STVFCNT',
+			'STVLEVL',
+			'STVMEET',
+			'STVPWAV',
+			'STVREPS',
+			'STVSCHD',
+			'STVSUBJ',
+			'STVTERM',
+			'STVTRMT',
+			'SYVINST',
+			);
+	}
+
 }
