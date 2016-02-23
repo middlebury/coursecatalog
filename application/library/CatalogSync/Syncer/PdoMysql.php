@@ -32,7 +32,7 @@ class CatalogSync_Syncer_PdoMysql
 	 */
 	public function configure (Zend_Config $config) {
 		parent::configure($config);
-		$this->source_db = new CatalogSync_Database_Source_Pdo('source_mysql_db');
+		$this->source_db = new CatalogSync_Database_Source_PdoMysql('source_mysql_db');
 		$this->source_db->configure($config->source_mysql_db);
 	}
 

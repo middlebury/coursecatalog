@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
-class CatalogSync_Database_Statement_Select_Pdo
+class CatalogSync_Database_Statement_Select_PdoMysql
 	implements CatalogSync_Database_Statement_Select
 {
 

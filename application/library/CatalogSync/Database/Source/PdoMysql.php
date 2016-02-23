@@ -16,7 +16,7 @@
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class CatalogSync_Database_Source_Pdo
+class CatalogSync_Database_Source_PdoMysql
 	extends CatalogSync_Database_PdoAbstract
 	implements CatalogSync_Database_Source
 {
@@ -62,7 +62,7 @@ class CatalogSync_Database_Source_Pdo
 		$statement = $this->pdo->query($query);
 
 		// Return our Select object that can handle converting results.
-		return new CatalogSync_Database_Statement_Select_Pdo($statement);
+		return new CatalogSync_Database_Statement_Select_PdoMysql($statement);
 	}
 
 
