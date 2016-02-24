@@ -52,7 +52,7 @@ class CatalogSync_Database_Statement_Select_PdoMysql
 			throw new Exception('Cannot fetch without a statement. Maybe it was already closed?');
 		}
 		// Fetch
-		$row = $this->statement->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT);
+		$row = $this->statement->fetch(PDO::FETCH_OBJ, PDO::FETCH_ORI_NEXT);
 		// End of results
 		if (!$row) {
 			return false;
