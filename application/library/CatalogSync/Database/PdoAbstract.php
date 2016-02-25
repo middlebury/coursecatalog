@@ -105,7 +105,7 @@ class CatalogSync_Database_PdoAbstract
 	 */
 	protected function getDatabaseOptions($type) {
 		$options = array();
-		// $options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+		$options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 		// The libmysql driver needs to allocate a buffer bigger than the expected data
 		if (defined('PDO::MYSQL_ATTR_MAX_BUFFER_SIZE') && $type == 'mysql') {
 			$options[PDO::MYSQL_ATTR_MAX_BUFFER_SIZE] = 1024*1024*100;
