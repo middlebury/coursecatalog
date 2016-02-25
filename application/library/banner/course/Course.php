@@ -88,7 +88,7 @@ class banner_course_Course
 				$start = strpos($output, $match[0]);
 
 				// Case with leading protocol://
-				if ($match[2])
+				if (!empty($match[2]))
 					$link = '<a href="'.$match[0].'">'.$match[0].'</a>';
 				// just www.example.edu
 				else
