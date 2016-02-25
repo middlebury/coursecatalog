@@ -59,7 +59,7 @@ class CatalogSync_Database_Destination_Pdo
 	 * @access public
 	 */
 	public function truncate ($table) {
-		$statement = $this->pdo->prepare("TRUNCATE TABLE $table");
+		$statement = $this->pdo->prepare("DELETE FROM $table");
 		$statement->execute();
 	}
 

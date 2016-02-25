@@ -85,7 +85,7 @@ abstract class CatalogSync_Syncer_Abstract
 		// Build derived table for easier term-catalog lookups
 		print "Updating derived tables\t";
 		$pdo->beginTransaction();
-		$ttermcat = $pdo->prepare("TRUNCATE TABLE catalog_term");
+		$ttermcat = $pdo->prepare("DELETE FROM catalog_term");
 		$ttermcat->execute();
 
 		$searches = $pdo->query("SELECT * FROM catalog_term_match")->fetchAll();
@@ -147,13 +147,13 @@ abstract class CatalogSync_Syncer_Abstract
 			");
 		print "...\tRemoved deactivated terms from derived table: catalog_term\n";
 
+		$pdo->commit();
+
 		// Rebuild our "materialized views"
 		require_once(dirname(__FILE__).'/../../harmoni/SQLUtils.php');
 		print "Updating materialized views\t";
 		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/../../banner/sql/create_views.sql', $pdo);
 		print "...\tUpdated materialized views\n";
-
-		$pdo->commit();
 	}
 
 	/**
