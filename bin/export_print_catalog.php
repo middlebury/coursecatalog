@@ -2,7 +2,7 @@
 <?php
 
 $myDir = dirname(__FILE__);
-$destRoot = '/tmp/archive';
+$destRoot = '/var/www/archive';
 
 $jobs = array(
 	'MCUG-2010-2011' => array(
@@ -11,7 +11,43 @@ $jobs = array(
 	),
 	'MCUG-2011-2012' => array(
 		'dest_dir'	=> 'MCUG/2011-2012',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201190&term[]=term%2F201210&term[]=term%2F201220',
+		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201190&term[]=term%2F201220',
+	),
+	'MCUG-Winter-2012' => array(
+		'dest_dir'	=> 'MCUG/Winter-2012',
+		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201210',
+	),
+	'MCUG-2012-2013' => array(
+		'dest_dir'	=> 'MCUG/2012-2013',
+		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201290&term[]=term%2F201320',
+	),
+	'MCUG-Winter-2013' => array(
+		'dest_dir'	=> 'MCUG/Winter-2013',
+		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201310',
+	),
+	'MCUG-2013-2014' => array(
+		'dest_dir'	=> 'MCUG/2013-2014',
+		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201390&term[]=term%2F201420',
+	),
+	'MCUG-Winter-2014' => array(
+		'dest_dir'	=> 'MCUG/Winter-2014',
+		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201410',
+	),
+	'MCUG-2014-2015' => array(
+		'dest_dir'	=> 'MCUG/2014-2015',
+		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201490&term[]=term%2F201520',
+	),
+	'MCUG-Winter-2015' => array(
+		'dest_dir'	=> 'MCUG/Winter-2015',
+		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201510',
+	),
+	'MCUG-2015-2016' => array(
+		'dest_dir'	=> 'MCUG/2015-2016',
+		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201590&term[]=term%2F201620',
+	),
+	'MCUG-2016-2017' => array(
+		'dest_dir'	=> 'MCUG/2016-2017',
+		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201690&term[]=term%2F201720',
 	),
 );
 
