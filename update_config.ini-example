@@ -1,10 +1,31 @@
 [production]
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; New values
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+error_mail_from = "noreply@example.edu"
+error_mail_to[] = "admin1@example.edu"
+error_mail_to[] = "admin2@example.edu"
+
+allowedBlckCodes[] = "CC"
+
+destination_db.type = "mysql"
+destination_db.host = "localhost"
+destination_db.database = "catalog"
+destination_db.username = "testuser"
+destination_db.password = "testpassword"
+
 sync_class = CatalogSync_Syncer_OciWithCache
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Used by sync_class = CatalogSync_Syncer_PdoMysql
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+source_mysql_db.type = "mysql"
+source_mysql_db.host = "mysql.example.edu"
+source_mysql_db.database = "BannerSelect_CourseCatalog"
+source_mysql_db.username = ""
+source_mysql_db.password = ""
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Used by sync_class = CatalogSync_Syncer_Oci
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 source_banner_db.tns = "(DESCRIPTION =
 	(ADDRESS_LIST =
 		(ADDRESS = (PROTOCOL = TCP)(HOST = server.example.edu)(PORT = 15220))
@@ -16,57 +37,14 @@ source_banner_db.tns = "(DESCRIPTION =
 source_banner_db.username = "RO_USER_NAME"
 source_banner_db.password = "password"
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Used by sync_class = CatalogSync_Syncer_OciWithCache
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 temp_db.type = "mysql"
 temp_db.host = "localhost"
 temp_db.database = "catalog_temp"
 temp_db.username = "testuser"
 temp_db.password = "testpassword"
 
-destination_db.type = "mysql"
-destination_db.host = "localhost"
-destination_db.database = "catalog"
-destination_db.username = "testuser"
-destination_db.password = "testpassword"
-
 mysql = "/usr/bin/mysql"
 mysqldump = "/usr/bin/mysqldump"
-
-allowedBlckCodes[] = "CC"
-
-error_mail_from = "noreply@example.edu"
-error_mail_to[] = "admin1@example.edu"
-error_mail_to[] = "admin2@example.edu"
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Old values
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-bannerTNS = "(DESCRIPTION =
-	(ADDRESS_LIST =
-		(ADDRESS = (PROTOCOL = TCP)(HOST = server.example.edu)(PORT = 15220))
-	)
-	(CONNECT_DATA =
-		(SERVICE_NAME = SOMETHING.BANNER.EXAMPLE.EDU)
-	)
-)"
-bannerUser = "RO_USER_NAME"
-bannerPassword = "password"
-
-tempMysqlHost		= "localhost"
-tempMysqlDatabase  = "catalog_temp"
-tempMysqlUser		= "testuser"
-tempMysqlPassword	= "testpassword"
-
-primaryMysqlHost		= "localhost"
-primaryMysqlDatabase   = "catalog"
-primaryMysqlUser		= "testuser"
-primaryMysqlPassword	= "testpassword"
-
-mysql = "/usr/bin/mysql"
-mysqldump = "/usr/bin/mysqldump"
-
-sendMailOnError = false
-errorMailFrom	= "admin@example.edu"
-errorMailTo[]	= "admin@example.edu"
-errorMailTo[]	= "admin2@example.edu"
-
-allowedBlckCodes[] = "CC"
