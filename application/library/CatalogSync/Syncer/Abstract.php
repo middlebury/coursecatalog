@@ -1018,6 +1018,8 @@ abstract class CatalogSync_Syncer_Abstract
 		$select->convertDate("STVTERM_START_DATE");
 		$select->convertDate("STVTERM_END_DATE");
 		$select->convertDate("STVTERM_ACTIVITY_DATE");
+		$select->convertDate("STVTERM_HOUSING_START_DATE");
+		$select->convertDate("STVTERM_HOUSING_END_DATE");
 		$insert->insertAll($select);
 		print "...\tUpdated STVTERM\n";
 
