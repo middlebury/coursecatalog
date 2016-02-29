@@ -106,18 +106,7 @@ class CatalogSync_Database_Statement_Select_PdoMysql
 	 * @access public
 	 */
 	public function convertBin2Hex ($column) {
-		$this->column_conversions[$column] = 'bin2Hex';
-	}
-
-	/**
-	 * Convert an Oracle binary column to a hex representation.
-	 *
-	 * @param mixed $value
-	 * @return string
-	 * @access protected
-	 */
-	protected function bin2Hex($value) {
-		return bin2hex($value);
+		// Do nothing -- data should already be converted.
 	}
 
 }
