@@ -18,6 +18,13 @@ defined('APPLICATION_ENV')
 	|| define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
 $config = new Zend_Config_Ini($configFile, APPLICATION_ENV);
 
+// Set a memory limit for this operation if one is configured.
+// This can allow this upgrade script to consume more memory than other operations.
+if (!empty($config->memory_limit)) {
+	ini_set('memory_limit', $config->memory_limit);
+}
+
+// Run the sync.
 try {
 	$director = new CatalogSync_Director($config);
 	$director->sync();

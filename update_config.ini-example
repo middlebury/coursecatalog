@@ -12,6 +12,8 @@ destination_db.database = "catalog"
 destination_db.username = "testuser"
 destination_db.password = "testpassword"
 
+memory_limit = "1024M"
+
 sync_class = CatalogSync_Syncer_OciWithCache
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
