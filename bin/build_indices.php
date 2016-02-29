@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 $GLOBALS['start_time'] = microtime();
 require_once(dirname(__FILE__) . '/../application/autoload.php');
@@ -7,25 +8,25 @@ set_exception_handler(array('harmoni_ErrorHandler', 'handleException'));
 try {
 	$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(BASE_PATH.'/configuration.plist');
 	$courseManager = $runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
-	
+
 	if (!$courseManager->supportsCourseOfferingSearch()) {
 		print "\nCourseOfferingSearch is unsupported. Not building indices.\n";
 		exit(1);
 	}
-	
+
 	$searchSession = $courseManager->getCourseOfferingSearchSession();
 	if (!method_exists($searchSession, 'buildIndex')) {
 		print "\nCourseOfferingSearch does not support the buildIndex() method. Not building indices.\n";
 		exit(2);
 	}
-	
+
 	$minMemory = '300M';
 	$minBytes = asBytes($minMemory);
 	$currentBytes = asBytes(ini_get('memory_limit'));
 	if ($currentBytes < $minBytes) {
 		ini_set('memory_limit', $minMemory);
 	}
-	
+
 	$searchSession->buildIndex(true);
 
 // Handle certain types of uncaught exceptions specially. In particular,
@@ -42,7 +43,7 @@ try {
 } catch (UnknownIdException $e) {
 	ErrorPrinter::handleException($e, 404);
 }
-// Default 
+// Default
 catch (Exception $e) {
 	ErrorPrinter::handleException($e, 500);
 }
