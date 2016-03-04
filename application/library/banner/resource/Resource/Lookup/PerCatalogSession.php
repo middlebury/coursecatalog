@@ -290,6 +290,8 @@ WHERE
 		WHERE
 			".$this->getCatalogWhereTerms()."
 	)
+  AND SSBSECT_SSTS_CODE = 'A'
+  AND SSBSECT_PRNT_IND != 'N'
 ";
 			self::$getPersonResource_stmt = $this->manager->getDB()->prepare($query);
 		}
@@ -341,6 +343,8 @@ WHERE
 		WHERE
 			".$this->getCatalogWhereTerms()."
 	)
+  AND SSBSECT_SSTS_CODE = 'A'
+  AND SSBSECT_PRNT_IND != 'N'
 GROUP BY WEB_ID
 ";
 			self::$getPersonResources_stmt = $this->manager->getDB()->prepare($query);
@@ -390,6 +394,8 @@ WHERE
 		WHERE
 			".$this->getCatalogWhereTerms()."
 	)
+  AND SSBSECT_SSTS_CODE = 'A'
+  AND SSBSECT_PRNT_IND != 'N'
 GROUP BY STVBLDG_CODE
 ";
 			self::$getBuildingResource_stmt = $this->manager->getDB()->prepare($query);
@@ -442,6 +448,8 @@ WHERE
 		WHERE
 			".$this->getCatalogWhereTerms()."
 	)
+  AND SSBSECT_SSTS_CODE = 'A'
+  AND SSBSECT_PRNT_IND != 'N'
 GROUP BY STVBLDG_CODE
 ";
 			self::$getBuildingResources_stmt = $this->manager->getDB()->prepare($query);
@@ -553,6 +561,8 @@ WHERE
 		WHERE
 			".$this->getCatalogWhereTerms()."
 	)
+  AND SSBSECT_SSTS_CODE = 'A'
+  AND SSBSECT_PRNT_IND != 'N'
 GROUP BY
 	STVBLDG_CODE, SSRMEET_ROOM_CODE
 ";

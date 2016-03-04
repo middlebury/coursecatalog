@@ -116,35 +116,79 @@ abstract class CatalogSync_Syncer_Abstract
 
 		// Delete terms that have no sections in them.
 		print "Removing empty terms\t";
+
+		// We can't rely on our view to be created yet, so built the most recent version of
+		// course rows data into a temporary table.
+		$pdo->query("CREATE TEMPORARY TABLE temp_scbcrse_recent
+		SELECT
+			crse1.*,
+			IF (SCREQIV_SUBJ_CODE_EQIV IS NULL, 0, 1) AS has_alternates
+		FROM
+			SCBCRSE AS crse1
+
+			-- 'Outer self exclusion join' to fetch only the most recent SCBCRSE row.
+			LEFT JOIN SCBCRSE AS crse2
+				ON (crse1.SCBCRSE_SUBJ_CODE = crse2.SCBCRSE_SUBJ_CODE
+					AND crse1.SCBCRSE_CRSE_NUMB = crse2.SCBCRSE_CRSE_NUMB
+					-- If crse2 is effective after crse1, a join will be successfull and crse2 non-null.
+					-- On the latest crse1, crse2 will be null.
+					AND crse1.SCBCRSE_EFF_TERM < crse2.SCBCRSE_EFF_TERM)
+			LEFT JOIN SCREQIV
+				ON (crse1.SCBCRSE_SUBJ_CODE = SCREQIV_SUBJ_CODE
+					AND crse1.SCBCRSE_CRSE_NUMB = SCREQIV_CRSE_NUMB)
+
+		WHERE
+
+			-- Clause for the 'outer self exclusion join'
+			crse2.SCBCRSE_SUBJ_CODE IS NULL");
+
 		$pdo->query(
-			"CREATE TEMPORARY TABLE empty_terms
+			"CREATE TEMPORARY TABLE temp_section_catalog
 			SELECT
-				term_code
+				catalog_id, SSBSECT_TERM_CODE AS term_code, COUNT(SSBSECT_CRN) AS num_sections
 			FROM
-				`catalog_term`
-				LEFT JOIN SSBSECT ON term_code = SSBSECT_TERM_CODE
+				course_catalog_college
+				LEFT JOIN temp_scbcrse_recent ON (coll_code = SCBCRSE_COLL_CODE)
+				LEFT JOIN SSBSECT c ON (SCBCRSE_SUBJ_CODE = SSBSECT_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SSBSECT_CRSE_NUMB)
 			WHERE
-				SSBSECT_CRN IS NULL
-			GROUP BY
-				term_code
+				coll_code IS NOT NULL
+				AND SSBSECT_SSTS_CODE = 'A'
+				AND SSBSECT_PRNT_IND != 'N'
+			GROUP BY coll_code, SSBSECT_TERM_CODE
 			");
-				$pdo->query(
+		$empty_term_results = $pdo->query(
+			"SELECT
+				t.catalog_id,
+				t.term_code
+			FROM
+				catalog_term t
+				LEFT JOIN temp_section_catalog s ON (t.catalog_id = s.catalog_id AND t.term_code = s.term_code)
+			WHERE
+				s.num_sections IS NULL
+			");
+		$delete = $pdo->prepare(
 			"DELETE FROM catalog_term
 			WHERE
-				term_code IN (SELECT term_code FROM empty_terms)
-			");
-
-		$pdo->query("DROP TEMPORARY TABLE empty_terms");
+				catalog_id = ?
+				AND term_code = ?");
+		foreach ($empty_term_results->fetchAll(PDO::FETCH_OBJ) as $term) {
+			$delete->execute(array($term->catalog_id, $term->term_code));
+		}
+		$pdo->query("DROP TEMPORARY TABLE temp_scbcrse_recent");
+		$pdo->query("DROP TEMPORARY TABLE temp_section_catalog");
 		print "...\tRemoved empty terms from derived table: catalog_term\n";
 
 		// Delete terms that are manually inactivated.
 		print "Removing deactivated terms\t";
-		$pdo->query(
-			"DELETE FROM
-				catalog_term
-			WHERE
-				term_code IN (SELECT term_code FROM catalog_term_inactive)
+		$deactivated_term_results = $pdo->query(
+			"SELECT
+				*
+			FROM
+				catalog_term_inactive
 			");
+		foreach ($deactivated_term_results->fetchAll(PDO::FETCH_OBJ) as $term) {
+			$delete->execute(array($term->catalog_id, $term->term_code));
+		}
 		print "...\tRemoved deactivated terms from derived table: catalog_term\n";
 
 		$pdo->commit();

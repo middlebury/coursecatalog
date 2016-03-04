@@ -68,14 +68,15 @@ abstract class banner_course_Topic_AbstractList
 	STVATTR_CODE AS id,
 	STVATTR_DESC AS display_name
 FROM 
-	catalog_term
-	INNER JOIN SSBSECT ON term_code = SSBSECT_TERM_CODE 
+	course_catalog_college
+	INNER JOIN ssbsect_scbcrse ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
 	INNER JOIN SSRATTR ON (SSBSECT_TERM_CODE = SSRATTR_TERM_CODE AND SSBSECT_CRN = SSRATTR_CRN)
 	INNER JOIN STVATTR ON SSRATTR_ATTR_CODE = STVATTR_CODE
 WHERE
 	".$this->getAllRequirementWhereTerms()."
 	AND ".$this->getCatalogWhereTerms('req')."
-	AND SSBSECT_PRNT_IND = 'Y'
+	AND SSBSECT_SSTS_CODE = 'A'
+	AND SSBSECT_PRNT_IND != 'N'
 GROUP BY STVATTR_CODE)
 ";
 		}
@@ -87,14 +88,15 @@ GROUP BY STVATTR_CODE)
 	STVLEVL_CODE AS id,
 	STVLEVL_DESC AS display_name
 FROM 
-	catalog_term
-	INNER JOIN SSBSECT ON term_code = SSBSECT_TERM_CODE 
+	course_catalog_college
+	INNER JOIN ssbsect_scbcrse ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
 	INNER JOIN scrlevl_recent ON (SSBSECT_SUBJ_CODE = SCRLEVL_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCRLEVL_CRSE_NUMB)
 	INNER JOIN STVLEVL ON SCRLEVL_LEVL_CODE = STVLEVL_CODE
 WHERE
 	".$this->getAllLevelWhereTerms()."
 	AND ".$this->getCatalogWhereTerms('level')."
-	AND SSBSECT_PRNT_IND = 'Y'
+	AND SSBSECT_SSTS_CODE = 'A'
+	AND SSBSECT_PRNT_IND != 'N'
 GROUP BY STVLEVL_CODE)
 ";
 		}
@@ -106,14 +108,15 @@ GROUP BY STVLEVL_CODE)
 	STVBLCK_CODE AS id,
 	STVBLCK_DESC AS display_name
 FROM
-	catalog_term
-	INNER JOIN SSBSECT ON term_code = SSBSECT_TERM_CODE
+	course_catalog_college
+	INNER JOIN ssbsect_scbcrse ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
 	INNER JOIN SSRBLCK ON (SSBSECT_TERM_CODE = SSRBLCK_TERM_CODE AND SSBSECT_CRN = SSRBLCK_CRN)
 	INNER JOIN STVBLCK ON SSRBLCK_BLCK_CODE = STVBLCK_CODE
 WHERE
 	".$this->getAllBlockWhereTerms()."
 	AND ".$this->getCatalogWhereTerms('block')."
-	AND SSBSECT_PRNT_IND = 'Y'
+	AND SSBSECT_SSTS_CODE = 'A'
+	AND SSBSECT_PRNT_IND != 'N'
 GROUP BY STVBLCK_CODE)
 ";
 		}
@@ -125,14 +128,14 @@ GROUP BY STVBLCK_CODE)
 	STVDIVS_CODE AS id,
 	STVDIVS_DESC AS display_name
 FROM 
-	catalog_term
-	INNER JOIN SSBSECT ON term_code = SSBSECT_TERM_CODE  
-	INNER JOIN SCBCRSE ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
+	course_catalog_college
+	INNER JOIN ssbsect_scbcrse ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
 	INNER JOIN STVDIVS ON SCBCRSE_DIVS_CODE = STVDIVS_CODE
 WHERE
 	".$this->getAllDivisionWhereTerms()."
 	AND ".$this->getCatalogWhereTerms('div')."
-	AND SSBSECT_PRNT_IND = 'Y'
+	AND SSBSECT_SSTS_CODE = 'A'
+	AND SSBSECT_PRNT_IND != 'N'
 GROUP BY SCBCRSE_DIVS_CODE)
 ";
 		}
@@ -144,14 +147,14 @@ GROUP BY SCBCRSE_DIVS_CODE)
 	STVDEPT_CODE AS id,
 	STVDEPT_DESC AS display_name
 FROM 
-	catalog_term
-	INNER JOIN SSBSECT ON term_code = SSBSECT_TERM_CODE  
-	INNER JOIN SCBCRSE ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
+	course_catalog_college
+	INNER JOIN ssbsect_scbcrse ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
 	INNER JOIN STVDEPT ON SCBCRSE_DEPT_CODE = STVDEPT_CODE
 WHERE
 	".$this->getAllDepartmentWhereTerms()."
 	AND ".$this->getCatalogWhereTerms('dep')."
-	AND SSBSECT_PRNT_IND = 'Y'
+	AND SSBSECT_SSTS_CODE = 'A'
+	AND SSBSECT_PRNT_IND != 'N'
 GROUP BY SCBCRSE_DEPT_CODE)
 ";
 		}
@@ -163,15 +166,15 @@ GROUP BY SCBCRSE_DEPT_CODE)
 	STVSUBJ_CODE AS id,
 	STVSUBJ_DESC AS display_name
 FROM 
-	catalog_term
-	INNER JOIN SSBSECT ON term_code = SSBSECT_TERM_CODE  
-	INNER JOIN SCBCRSE ON (SSBSECT_SUBJ_CODE = SCBCRSE_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCBCRSE_CRSE_NUMB)
+	course_catalog_college
+	INNER JOIN ssbsect_scbcrse ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
 	INNER JOIN STVSUBJ ON SCBCRSE_SUBJ_CODE = STVSUBJ_CODE
 WHERE
 	".$this->getAllSubjectWhereTerms()."
 	AND ".$this->getCatalogWhereTerms('sub')."
 	AND STVSUBJ_DISP_WEB_IND = 'Y'
-	AND SSBSECT_PRNT_IND = 'Y'
+	AND SSBSECT_SSTS_CODE = 'A'
+	AND SSBSECT_PRNT_IND != 'N'
 GROUP BY SCBCRSE_SUBJ_CODE)
 ";
 		}
