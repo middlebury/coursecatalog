@@ -54,6 +54,7 @@ class AdminController
 				throw new PermissionDeniedException('Invalid CSRF Key. Please log in again.');
 			
 			// Verify that this is a valid term.
+			$catalog = $this->_getParam('catalog');
 			$term = $this->_getParam('term');
 			$verifyStmt = $db->prepare("SELECT COUNT(*) FROM STVTERM WHERE STVTERM_CODE = ?");
 			$verifyStmt->execute(array($term));
@@ -64,13 +65,13 @@ class AdminController
 			
 			// Disable the term
 			if ($this->_getParam('disabled') == 'true') {
-				$visibilityStmt = $db->prepare('INSERT INTO catalog_term_inactive VALUES (?);');	
+				$visibilityStmt = $db->prepare('INSERT INTO catalog_term_inactive (catalog_id, term_code) VALUES (?, ?);');
 			}
 			// Enable the term
 			else {
-				$visibilityStmt = $db->prepare('DELETE FROM catalog_term_inactive WHERE term_code=?;');
+				$visibilityStmt = $db->prepare('DELETE FROM catalog_term_inactive WHERE catalog_id = ? AND term_code = ?;');
 			}
-			$visibilityStmt->execute(array($term));
+			$visibilityStmt->execute(array($catalog, $term));
 		}
 		
 		$searches = $db->query("SELECT * FROM catalog_term_match")->fetchAll();
@@ -98,7 +99,7 @@ class AdminController
 	count(SSBSECT_CRN) AS num_sections
 FROM
 	(\n".$union."\n\t) AS t
-	LEFT JOIN catalog_term_inactive i ON STVTERM_CODE = i.term_code
+	LEFT JOIN catalog_term_inactive i ON (STVTERM_CODE = i.term_code AND i.catalog_id = ?)
 	LEFT JOIN ssbsect_scbcrse s ON (STVTERM_CODE = SSBSECT_TERM_CODE
 		AND SCBCRSE_COLL_CODE IN (
 			SELECT coll_code
@@ -124,7 +125,7 @@ ORDER BY
 		else
 			$catalog = $this->view->catalogs[0];
 		
-		$stmt->execute(array($catalog, $catalog));
+		$stmt->execute(array($catalog, $catalog, $catalog));
 		$this->view->catalog = $catalog;
 		$this->view->terms = $stmt->fetchAll();
 	}

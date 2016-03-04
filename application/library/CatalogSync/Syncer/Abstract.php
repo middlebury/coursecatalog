@@ -180,12 +180,15 @@ abstract class CatalogSync_Syncer_Abstract
 
 		// Delete terms that are manually inactivated.
 		print "Removing deactivated terms\t";
-		$pdo->query(
-			"DELETE FROM
-				catalog_term
-			WHERE
-				term_code IN (SELECT term_code FROM catalog_term_inactive)
+		$deactivated_term_results = $pdo->query(
+			"SELECT
+				*
+			FROM
+				catalog_term_inactive
 			");
+		foreach ($deactivated_term_results->fetchAll(PDO::FETCH_OBJ) as $term) {
+			$delete->execute(array($term->catalog_id, $term->term_code));
+		}
 		print "...\tRemoved deactivated terms from derived table: catalog_term\n";
 
 		$pdo->commit();
