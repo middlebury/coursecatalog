@@ -99,7 +99,15 @@ class AdminController
 FROM
 	(\n".$union."\n\t) AS t
 	LEFT JOIN catalog_term_inactive i ON STVTERM_CODE = i.term_code
-	LEFT JOIN SSBSECT s ON STVTERM_CODE = SSBSECT_TERM_CODE
+	LEFT JOIN ssbsect_scbcrse s ON (STVTERM_CODE = SSBSECT_TERM_CODE
+		AND SCBCRSE_COLL_CODE IN (
+			SELECT coll_code
+			FROM course_catalog_college
+			WHERE catalog_id = ?
+		)
+		AND SSBSECT_SSTS_CODE = 'A'
+		AND SSBSECT_PRNT_IND != 'N'
+		)
 WHERE
 	catalog = ?
 GROUP BY
@@ -116,7 +124,7 @@ ORDER BY
 		else
 			$catalog = $this->view->catalogs[0];
 		
-		$stmt->execute(array($catalog));
+		$stmt->execute(array($catalog, $catalog));
 		$this->view->catalog = $catalog;
 		$this->view->terms = $stmt->fetchAll();
 	}
