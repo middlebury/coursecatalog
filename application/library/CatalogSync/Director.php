@@ -61,6 +61,22 @@ class CatalogSync_Director
 	}
 
 	/**
+	 * Only updated the derived tables with existing data.
+	 * Sometimes useful for fixing interim data errors.
+	 */
+	public function updateDerived () {
+		try {
+			$this->sync->connect();
+			$this->sync->updateDerived();
+			$this->sync->disconnect();
+		} catch (Exception $e) {
+			$this->sync->rollback();
+			$this->sendException($e);
+			throw $e;
+		}
+	}
+
+	/**
 	 * Validate our configuration.
 	 *
 	 * @param Zend_Config $config
