@@ -154,7 +154,7 @@ abstract class CatalogSync_Syncer_Abstract
 				coll_code IS NOT NULL
 				AND SSBSECT_SSTS_CODE = 'A'
 				AND SSBSECT_PRNT_IND != 'N'
-			GROUP BY coll_code, SSBSECT_TERM_CODE
+			GROUP BY catalog_id, coll_code, SSBSECT_TERM_CODE
 			");
 		$empty_term_results = $pdo->query(
 			"SELECT

@@ -109,11 +109,13 @@ class banner_course_CourseOffering
 			.'-'.$row['term_display_label']
 			.substr($row['STVTERM_START_DATE'], 2, 2));
 
-		$description = '';
-		if (!is_null($row['SCBDESC_TEXT_NARRATIVE']))
-			$this->setRawDescription($row['SCBDESC_TEXT_NARRATIVE']);
 		if (!is_null($row['SSBDESC_TEXT_NARRATIVE']))
 			$this->setRawDescription($row['SSBDESC_TEXT_NARRATIVE']);
+		else if (!is_null($row['SCBDESC_TEXT_NARRATIVE']))
+			$this->setRawDescription($row['SCBDESC_TEXT_NARRATIVE']);
+		else
+			$this->setDescription('');
+
 
 		$this->setGenusType(new phpkit_type_Type(
 			'urn', 										// namespace
