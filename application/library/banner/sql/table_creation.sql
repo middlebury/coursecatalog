@@ -72,13 +72,13 @@ CREATE TABLE IF NOT EXISTS `course_catalog_college` (
 --
 
 CREATE TABLE IF NOT EXISTS `GORINTG` (
-  `GORINTG_CODE` varchar(5) NOT NULL default '' COMMENT 'INTEGRATION CODE: User Defined Integration Code that is used with external partner.',
+  `GORINTG_INTEGRATION_CDE` varchar(5) NOT NULL default '' COMMENT 'INTEGRATION CODE: User Defined Integration Code that is used with external partner.',
   `GORINTG_DESC` varchar(30) NOT NULL default '' COMMENT 'Description: User Description of the Integration Code.',
   `GORINTG_INTP_CODE` varchar(5) NOT NULL default '' COMMENT 'INTEGRATION PARTNER SYSTEM CODE: Code defined on GTVINTP that associates with the User Integration Code.',
   `GORINTG_USER_ID` varchar(30) NOT NULL default '' COMMENT 'USER ID: The unique identification of the user.',
   `GORINTG_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'ACTIVITY DATE: The date that the information for the row was inserted or updated in the GORINTG table.',
   `GORINTG_DATA_ORIGIN` varchar(30) default NULL COMMENT 'DATA ORIGIN: Source system that created or updated the row',
-  PRIMARY KEY  (`GORINTG_CODE`)
+  PRIMARY KEY  (`GORINTG_INTEGRATION_CDE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Integration Partner System Rule Table.';
 
 -- --------------------------------------------------------

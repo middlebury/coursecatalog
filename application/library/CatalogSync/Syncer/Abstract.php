@@ -255,7 +255,7 @@ abstract class CatalogSync_Syncer_Abstract
 		print "Updating GORINTG\t";
 		$target_db->truncate("GORINTG");
 		$insert = $target_db->prepareInsert("GORINTG", array(
-				"GORINTG_CODE",
+				"GORINTG_INTEGRATION_CDE",
 				"GORINTG_DESC",
 				"GORINTG_INTP_CODE",
 				"GORINTG_USER_ID",
