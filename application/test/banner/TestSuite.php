@@ -19,12 +19,22 @@ class banner_TestSuite extends PHPUnit_Framework_TestSuite
 	protected function setUp()
 	{
 		$this->setMemoryLimit();
-		$this->loadBannerDb();
+		try {
+			$this->loadBannerDb();
+		} catch (Exception $e) {
+			print $e->getMessage()."\n";
+			throw $e;
+		}
 	}
 
 	protected function tearDown()
 	{
-		$this->emptyBannerDbAndClose();
+		try {
+			$this->emptyBannerDbAndClose();
+		} catch (Exception $e) {
+			print $e->getMessage()."\n";
+			throw $e;
+		}
 		$this->resetMemoryLimit();
 	}
 
