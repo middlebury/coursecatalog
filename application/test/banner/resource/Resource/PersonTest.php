@@ -183,7 +183,7 @@ class banner_resource_Resource_PersonTest
      */
     public function testGetDisplayName()
     {
-        $this->assertEquals('Dr. Thaddeus P.M. O\'Brien III, Ph.D.', $this->names->getDisplayName());
+        $this->assertEquals('Dr. Thaddeus Peter Michael O\'Brien III, Ph.D.', $this->names->getDisplayName());
         $this->assertEquals('Howard Jones', $this->names2->getDisplayName());
     }
     
