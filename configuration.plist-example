@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -8,13 +8,13 @@
 	<true/>
 	<key>urn:inet:middlebury.edu:config:banner_course/pdo_driver_options</key>
 	<dict>
-<!-- 
+<!--
 		<key>PDO::ATTR_PERSISTENT</key>
 		<true/>
  -->
-<!-- 
- 		<key>PDO::MYSQL_ATTR_INIT_COMMAND</key>
- 		<string>SET NAMES utf8</string>
+<!--
+		<key>PDO::MYSQL_ATTR_INIT_COMMAND</key>
+		<string>SET NAMES utf8</string>
  -->
 	</dict>
 	<key>urn:inet:middlebury.edu:config:banner_course/pdo_dsn</key>
@@ -23,7 +23,7 @@
 	<string>testpassword</string>
 	<key>urn:inet:middlebury.edu:config:banner_course/pdo_username</key>
 	<string>testuser</string>
-	
+
 	<key>urn:inet:middlebury.edu:config:apc_course/impl_class_name</key>
 	<string>banner_course_CourseManager</string>
 </dict>

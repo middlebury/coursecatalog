@@ -8,14 +8,14 @@ class banner_course_CourseOffering_Search_SessionTest
 	extends phpkit_test_phpunit_AbstractOsidSessionTest
 {
 /**
-     * @var    banner_course_CourseCatalog_Lookup_Session
-     * @access protected
-     */
-    protected $session;
-    
-    /**
+	 * @var    banner_course_CourseCatalog_Lookup_Session
+	 * @access protected
+	 */
+	protected $session;
+
+	/**
 	 * Answer the session object to test
-	 * 
+	 *
 	 * @return osid_OsidSession
 	 * @access protected
 	 * @since 4/15/09
@@ -23,11 +23,11 @@ class banner_course_CourseOffering_Search_SessionTest
 	protected function getSession () {
 		return $this->session;
 	}
-	
+
 	static $runtimeManager;
 	static $courseManager;
 
-	public static function setUpBeforeClass() 
+	public static function setUpBeforeClass()
 	{
 		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../../../').'/configuration.plist');
 		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
@@ -35,273 +35,272 @@ class banner_course_CourseOffering_Search_SessionTest
 
 	public static function tearDownAfterClass()
 	{
-	    self::$courseManager->shutdown();
-	    self::$runtimeManager->shutdown();
+		self::$courseManager->shutdown();
+		self::$runtimeManager->shutdown();
 	}
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     *
-     * @access protected
-     */
-    protected function setUp()
-    {
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
-        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
-        $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
-        
-        $this->session = self::$courseManager->getCourseOfferingSearchSessionForCatalog($this->mcugId);
-        
-        $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
-        $this->mathId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/MATH0300');
-        $this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHEM0104');
-        
-       	$this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/90143');
-       	$this->geolOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200420/20663');
-        $this->unknownOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/178293/2101');
-        
-        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200890');
-        
-        $this->physDeptTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/PHYS');
-        $this->chemDeptTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/CHEM');
-        $this->physSubjTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/PHYS');
-        $this->chemSubjTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/CHEM');
-        $this->dedReqTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/DED');
-        $this->sciReqTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/SCI');
-        
-        $this->unknownType = new phpkit_type_URNInetType("urn:inet:osid.org:unknown_type");
-    	
-        $this->generaNoneType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:none");
-        $this->secondaryType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:secondary");
-        $this->undergraduateType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:undergraduate");
-        
-        $this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
-    }
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 *
+	 * @access protected
+	 */
+	protected function setUp()
+	{
+		$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
+		$this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
+		$this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     *
-     * @access protected
-     */
-    protected function tearDown()
-    {
-    }
+		$this->session = self::$courseManager->getCourseOfferingSearchSessionForCatalog($this->mcugId);
+
+		$this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
+		$this->mathId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/MATH0300');
+		$this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHEM0104');
+
+		$this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/90143');
+		$this->geolOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200420/20663');
+		$this->unknownOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/178293/2101');
+
+		$this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200890');
+
+		$this->physDeptTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/PHYS');
+		$this->chemDeptTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/CHEM');
+		$this->physSubjTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/PHYS');
+		$this->chemSubjTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/CHEM');
+		$this->dedReqTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/DED');
+		$this->sciReqTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/SCI');
+
+		$this->unknownType = new phpkit_type_URNInetType("urn:inet:osid.org:unknown_type");
+
+		$this->generaNoneType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:none");
+		$this->secondaryType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:secondary");
+		$this->undergraduateType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:undergraduate");
+
+		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
+	}
+
+	/**
+	 * Tears down the fixture, for example, closes a network connection.
+	 * This method is called after a test is executed.
+	 *
+	 * @access protected
+	 */
+	protected function tearDown()
+	{
+	}
 
    /**
-     * 
-     */
-    public function testGetCourseCatalogId()
-    {
-        $this->assertInstanceOf('osid_id_Id', $this->session->getCourseCatalogId());
-        $this->assertTrue($this->mcugId->isEqual($this->session->getCourseCatalogId()));
-    }
+	 *
+	 */
+	public function testGetCourseCatalogId()
+	{
+		$this->assertInstanceOf('osid_id_Id', $this->session->getCourseCatalogId());
+		$this->assertTrue($this->mcugId->isEqual($this->session->getCourseCatalogId()));
+	}
 
-    /**
-     * 
-     */
-    public function testGetCourseCatalog()
-    {
-        $this->assertInstanceOf('osid_course_CourseCatalog', $this->session->getCourseCatalog());
-        $this->assertTrue($this->mcugId->isEqual($this->session->getCourseCatalog()->getId()));
-    }
+	/**
+	 *
+	 */
+	public function testGetCourseCatalog()
+	{
+		$this->assertInstanceOf('osid_course_CourseCatalog', $this->session->getCourseCatalog());
+		$this->assertTrue($this->mcugId->isEqual($this->session->getCourseCatalog()->getId()));
+	}
 
-    /**
-     * 
-     */
-    public function testCanSearchCourseOfferings()
-    {
-        $this->assertTrue($this->session->canSearchCourseOfferings());
-    }
+	/**
+	 *
+	 */
+	public function testCanSearchCourseOfferings()
+	{
+		$this->assertTrue($this->session->canSearchCourseOfferings());
+	}
 
-    /**
-     * @todo Implement testUseFederatedCourseCatalogView().
-     */
-    public function testUseFederatedCourseCatalogView()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
+	/**
+	 * @todo Implement testUseFederatedCourseCatalogView().
+	 */
+	public function testUseFederatedCourseCatalogView()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+		'This test has not been implemented yet.'
+		);
+	}
 
-    /**
-     * @todo Implement testUseIsolatedCourseCatalogView().
-     */
-    public function testUseIsolatedCourseCatalogView()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
+	/**
+	 * @todo Implement testUseIsolatedCourseCatalogView().
+	 */
+	public function testUseIsolatedCourseCatalogView()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+		'This test has not been implemented yet.'
+		);
+	}
 
-    /**
-     * 
-     */
-    public function testGetCourseOfferingQuery()
-    {
-        $this->assertInstanceOf('osid_course_CourseOfferingQuery', $this->session->getCourseOfferingQuery());
-    }
+	/**
+	 *
+	 */
+	public function testGetCourseOfferingQuery()
+	{
+		$this->assertInstanceOf('osid_course_CourseOfferingQuery', $this->session->getCourseOfferingQuery());
+	}
 
-    /**
-     * 
-     */
-    public function testGetCourseOfferingsByQuery()
-    {
-    	$query = $this->session->getCourseOfferingQuery();
-    	$query->matchDisplayName('PHYS0201*', $this->wildcardStringMatchType, true);
-    	
-        $offerings = $this->session->getCourseOfferingsByQuery($query);
+	/**
+	 *
+	 */
+	public function testGetCourseOfferingsByQuery()
+	{
+		$query = $this->session->getCourseOfferingQuery();
+		$query->matchDisplayName('PHYS0201*', $this->wildcardStringMatchType, true);
+
+		$offerings = $this->session->getCourseOfferingsByQuery($query);
 //         print $offerings->debug();
-       	$this->assertInstanceOf('osid_course_CourseOfferingList', $offerings);
-       	$this->assertEquals(7, $offerings->available());
-       	$this->assertInstanceOf('osid_course_CourseOffering', $offerings->getNextCourseOffering());
-    }
+		$this->assertInstanceOf('osid_course_CourseOfferingList', $offerings);
+		$this->assertEquals(7, $offerings->available());
+		$this->assertInstanceOf('osid_course_CourseOffering', $offerings->getNextCourseOffering());
+	}
 
-    /**
-     * 
-     */
-    public function testGetCourseOfferingSearch()
-    {
-        $this->assertInstanceOf('osid_course_CourseOfferingSearch', $this->session->getCourseOfferingSearch());
-    }
+	/**
+	 *
+	 */
+	public function testGetCourseOfferingSearch()
+	{
+		$this->assertInstanceOf('osid_course_CourseOfferingSearch', $this->session->getCourseOfferingSearch());
+	}
 
-    /**
-     * 
-     */
-    public function testGetCourseOfferingSearchOrder()
-    {
-        $this->assertInstanceOf('osid_course_CourseOfferingSearchOrder', $this->session->getCourseOfferingSearchOrder());
-    }
+	/**
+	 *
+	 */
+	public function testGetCourseOfferingSearchOrder()
+	{
+		$this->assertInstanceOf('osid_course_CourseOfferingSearchOrder', $this->session->getCourseOfferingSearchOrder());
+	}
 
-    /**
-     * @todo Implement testGetCourseOfferingsBySearch().
-     */
-    public function testGetCourseOfferingsBySearch()
-    {
-        $query = $this->session->getCourseOfferingQuery();
+	/**
+	 * @todo Implement testGetCourseOfferingsBySearch().
+	 */
+	public function testGetCourseOfferingsBySearch()
+	{
+		$query = $this->session->getCourseOfferingQuery();
 //     	$query->matchDisplayName('PH*', $this->wildcardStringMatchType, true);
-    	
-    	$query->matchDisplayName('*201*', $this->wildcardStringMatchType, true);
-    	
-    	$search = $this->session->getCourseOfferingSearch();
-    	$search->limitResultSet(1, 3);
-    	
-        $results = $this->session->getCourseOfferingsBySearch($query, $search);
-       	$this->assertInstanceOf('osid_course_CourseOfferingSearchResults', $results);
+
+		$query->matchDisplayName('*201*', $this->wildcardStringMatchType, true);
+
+		$search = $this->session->getCourseOfferingSearch();
+		$search->limitResultSet(1, 3);
+
+		$results = $this->session->getCourseOfferingsBySearch($query, $search);
+		$this->assertInstanceOf('osid_course_CourseOfferingSearchResults', $results);
 //        	print $results->debug();
-       	$this->assertEquals(7, $results->getResultSize());
-       	
-       	$offerings = $results->getCourseOfferings();
-       	$this->assertEquals(3, $offerings->available());
-       	$this->assertInstanceOf('osid_course_CourseOffering', $offerings->getNextCourseOffering());
-    }
-    
-    /**
-     * @todo Implement testGetCourseOfferingsBySearch().
-     */
-    public function testGetCourseOfferingsBySearchWithOrder()
-    {
-        $query = $this->session->getCourseOfferingQuery();
-    	
-    	$query->matchTermId($this->termId, true);
-    	
-    	$search = $this->session->getCourseOfferingSearch();
-    	
-    	$order = $this->session->getCourseOfferingSearchOrder();
-    	$order->orderByTitle();
-    	$order->ascend();
-    	$search->orderCourseOfferingResults($order);
-    	
-    	// Set up our first result set.
-        $results = $this->session->getCourseOfferingsBySearch($query, $search);
-       	$this->assertInstanceOf('osid_course_CourseOfferingSearchResults', $results);
+		$this->assertEquals(7, $results->getResultSize());
+
+		$offerings = $results->getCourseOfferings();
+		$this->assertEquals(3, $offerings->available());
+		$this->assertInstanceOf('osid_course_CourseOffering', $offerings->getNextCourseOffering());
+	}
+
+	/**
+	 * @todo Implement testGetCourseOfferingsBySearch().
+	 */
+	public function testGetCourseOfferingsBySearchWithOrder()
+	{
+		$query = $this->session->getCourseOfferingQuery();
+
+		$query->matchTermId($this->termId, true);
+
+		$search = $this->session->getCourseOfferingSearch();
+
+		$order = $this->session->getCourseOfferingSearchOrder();
+		$order->orderByTitle();
+		$order->ascend();
+		$search->orderCourseOfferingResults($order);
+
+		// Set up our first result set.
+		$results = $this->session->getCourseOfferingsBySearch($query, $search);
+		$this->assertInstanceOf('osid_course_CourseOfferingSearchResults', $results);
 //        	print $results->debug();
-       	$this->assertEquals(9, $results->getResultSize());
-       	
-       	$offerings = $results->getCourseOfferings();
-       	$this->assertEquals(9, $offerings->available());
-       	$firstTitles = array();
-       	while ($offerings->hasNext()) {
-       		$firstTitles[] = $offerings->getNextCourseOffering()->getTitle();
-       	}
-       	
-       	// Set up our second result-set.
-       	$order->descend();
-       	$search->orderCourseOfferingResults($order);
-       	
-       	$results = $this->session->getCourseOfferingsBySearch($query, $search);
-       	$this->assertInstanceOf('osid_course_CourseOfferingSearchResults', $results);
+		$this->assertEquals(9, $results->getResultSize());
+
+		$offerings = $results->getCourseOfferings();
+		$this->assertEquals(9, $offerings->available());
+		$firstTitles = array();
+		while ($offerings->hasNext()) {
+			$firstTitles[] = $offerings->getNextCourseOffering()->getTitle();
+		}
+
+		// Set up our second result-set.
+		$order->descend();
+		$search->orderCourseOfferingResults($order);
+
+		$results = $this->session->getCourseOfferingsBySearch($query, $search);
+		$this->assertInstanceOf('osid_course_CourseOfferingSearchResults', $results);
 //        	print $results->debug();
-       	$this->assertEquals(9, $results->getResultSize());
-       	
-       	$offerings = $results->getCourseOfferings();
-       	$this->assertEquals(9, $offerings->available());
-       	$secondTitles = array();
-       	while ($offerings->hasNext()) {
-       		$secondTitles[] = $offerings->getNextCourseOffering()->getTitle();
-       	}
-       	$secondTitles = array_reverse($secondTitles);
-       	
-       	// Check that the titles match
-       	foreach ($firstTitles as $key => $val) {
-       		$this->assertEquals($val, $secondTitles[$key]);
-       	}
-    }
-    
-    /**
-     * @todo Implement testGetCourseOfferingsBySearch().
-     */
-    public function testGetCourseOfferingsBySearchWithKeywordAndOrder()
-    {
-        $query = $this->session->getCourseOfferingQuery();
-    	
-    	$query->matchKeyword('Chem*', $this->wildcardStringMatchType, true);
-    	$query->matchTermId($this->termId, true);
-    	
-    	$search = $this->session->getCourseOfferingSearch();
-    	
-    	$order = $this->session->getCourseOfferingSearchOrder();
-    	$order->orderByTitle();
-    	$order->ascend();
-    	$search->orderCourseOfferingResults($order);
-    	
-    	// Set up our first result set.
-        $results = $this->session->getCourseOfferingsBySearch($query, $search);
-       	$this->assertInstanceOf('osid_course_CourseOfferingSearchResults', $results);
+		$this->assertEquals(9, $results->getResultSize());
+
+		$offerings = $results->getCourseOfferings();
+		$this->assertEquals(9, $offerings->available());
+		$secondTitles = array();
+		while ($offerings->hasNext()) {
+			$secondTitles[] = $offerings->getNextCourseOffering()->getTitle();
+		}
+		$secondTitles = array_reverse($secondTitles);
+
+		// Check that the titles match
+		foreach ($firstTitles as $key => $val) {
+			$this->assertEquals($val, $secondTitles[$key]);
+		}
+	}
+
+	/**
+	 * @todo Implement testGetCourseOfferingsBySearch().
+	 */
+	public function testGetCourseOfferingsBySearchWithKeywordAndOrder()
+	{
+		$query = $this->session->getCourseOfferingQuery();
+
+		$query->matchKeyword('Chem*', $this->wildcardStringMatchType, true);
+		$query->matchTermId($this->termId, true);
+
+		$search = $this->session->getCourseOfferingSearch();
+
+		$order = $this->session->getCourseOfferingSearchOrder();
+		$order->orderByTitle();
+		$order->ascend();
+		$search->orderCourseOfferingResults($order);
+
+		// Set up our first result set.
+		$results = $this->session->getCourseOfferingsBySearch($query, $search);
+		$this->assertInstanceOf('osid_course_CourseOfferingSearchResults', $results);
 //        	print $results->debug();
-       	$this->assertEquals(4, $results->getResultSize());
-       	
-       	$offerings = $results->getCourseOfferings();
-       	$this->assertEquals(4, $offerings->available());
-       	$firstTitles = array();
-       	while ($offerings->hasNext()) {
-       		$firstTitles[] = $offerings->getNextCourseOffering()->getTitle();
-       	}
-       	
-       	// Set up our second result-set.
-       	$order->descend();
-       	$search->orderCourseOfferingResults($order);
-       	
-       	$results = $this->session->getCourseOfferingsBySearch($query, $search);
-       	$this->assertInstanceOf('osid_course_CourseOfferingSearchResults', $results);
+		$this->assertEquals(4, $results->getResultSize());
+
+		$offerings = $results->getCourseOfferings();
+		$this->assertEquals(4, $offerings->available());
+		$firstTitles = array();
+		while ($offerings->hasNext()) {
+			$firstTitles[] = $offerings->getNextCourseOffering()->getTitle();
+		}
+
+		// Set up our second result-set.
+		$order->descend();
+		$search->orderCourseOfferingResults($order);
+
+		$results = $this->session->getCourseOfferingsBySearch($query, $search);
+		$this->assertInstanceOf('osid_course_CourseOfferingSearchResults', $results);
 //        	print $results->debug();
-       	$this->assertEquals(4, $results->getResultSize());
-       	
-       	$offerings = $results->getCourseOfferings();
-       	$this->assertEquals(4, $offerings->available());
-       	$secondTitles = array();
-       	while ($offerings->hasNext()) {
-       		$secondTitles[] = $offerings->getNextCourseOffering()->getTitle();
-       	}
-       	$secondTitles = array_reverse($secondTitles);
-       	
-       	// Check that the titles match
-       	foreach ($firstTitles as $key => $val) {
-       		$this->assertEquals($val, $secondTitles[$key]);
-       	}
-    }
+		$this->assertEquals(4, $results->getResultSize());
+
+		$offerings = $results->getCourseOfferings();
+		$this->assertEquals(4, $offerings->available());
+		$secondTitles = array();
+		while ($offerings->hasNext()) {
+			$secondTitles[] = $offerings->getNextCourseOffering()->getTitle();
+		}
+		$secondTitles = array_reverse($secondTitles);
+
+		// Check that the titles match
+		foreach ($firstTitles as $key => $val) {
+			$this->assertEquals($val, $secondTitles[$key]);
+		}
+	}
 }
-?>

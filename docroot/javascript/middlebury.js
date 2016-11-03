@@ -32,7 +32,7 @@ jq14(function($) { // on DOM ready
 			self.removeClass('active')
 		},500));
 	});
-	
+
 	// Quickaccess (on gateway pages)
 	if($('.quickaccess').length) { // if quickaccess and quickaccess.js are present
 		$.ajaxSetup({cache:true});
@@ -49,7 +49,7 @@ jq14(function($) { // on DOM ready
 		if(!footerPanel.is(':visible')) {
 			li.addClass('active');
 			var fromTop = $(this).offset().top;
-			footerPanel.slideDown(1000);	
+			footerPanel.slideDown(1000);
 			$('html,body').animate({scrollTop:(fromTop+330-windowHeight)+'px'},1100);
 		} else {
 			if(li.is('.active')) {
@@ -60,23 +60,23 @@ jq14(function($) { // on DOM ready
 			} else {
 				$('#footer .quick_footer').removeClass('active');
 				li.addClass('active');
-			}	
+			}
 		}
 		return false;
 	});
 	initVideos();
 });
- 
+
 function nudgeFooter() {
 	var $ = jq14,
 		footer = $('#footer').css('visibility','visible');
 		windowHeight = $(window).height(), // get the window height
-		bodyHeight = footer.css('margin-top',30).offset().top+30; // the bottom of the footer is the bottom of the body; ignore the footer panel	
+		bodyHeight = footer.css('margin-top',30).offset().top+30; // the bottom of the footer is the bottom of the body; ignore the footer panel
 	if(bodyHeight<windowHeight) {
 		footer.css('margin-top',Math.max(30,windowHeight-bodyHeight+30)+'px');
 	}
 }
- 
+
 function initVideos() {
 	var $ = jq14,
 		videos = $('.open_video');
@@ -103,16 +103,16 @@ function initVideos() {
 				});
 			});
 		}
-		if(!window.swfobject) $.getScript('http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',function() { attachClick(); }); // grab swfObject, then attachClick 
+		if(!window.swfobject) $.getScript('http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js',function() { attachClick(); }); // grab swfObject, then attachClick
 		else attachClick();
 	}
 }
- 
+
 jq14.fn.extend({ // add jQuery plugins
 	inlineLabel: function(style,text) { // places labels inside of text inputs
 		var $ = jq14;
 		if(typeof style !='string') { // if no style is specified (including empty strings)
-			style ='inline_label'; // the default CSS class for placeholder text	
+			style ='inline_label'; // the default CSS class for placeholder text
 		}
 		text = text || $('label[for='+this.attr('id')+']').hide().text(); // if text is not specified, use the label text
 		var self = this,

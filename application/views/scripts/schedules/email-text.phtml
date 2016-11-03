@@ -10,12 +10,12 @@ foreach ($offerings as $offering) {
 	$paddingString = str_repeat(' ', strlen($nameAndSeparator));
 	print "\n".$nameAndSeparator;
 	print str_replace("\n", "\n".$paddingString, $offering->getTitle());
-		
+
 	if ($this->schedule->hasCollisions($offering->getId()))
 		print "\n\t** conflicting **";
-	
+
 	print "\n\t".str_replace("\n", "\n\t", $offering->getScheduleInfo());
 	print "\n\t".str_replace("\n", "\n\t", $offering->getLocationInfo());
-	
+
 	print "\n";
 }

@@ -51,7 +51,7 @@ class Helper_RecentCourses_Instructor
 		$this->recentInterval = $interval;
 	}
 
-  /**
+	/**
 	 * Answer an array of primary courses.
 	 *
 	 * @return array
@@ -65,7 +65,7 @@ class Helper_RecentCourses_Instructor
 		return $courses;
 	}
 
-  /**
+	/**
 	 * Answer an array of alternate courses for a primary course.
 	 *
 	 * @param osid_id_Id $courseId
@@ -86,7 +86,7 @@ class Helper_RecentCourses_Instructor
 		return $this->groups[$idString]['alternate_courses'];
 	}
 
-  /**
+	/**
 	 * Answer an array of terms from primary or alternate courses given a primary id.
 	 *
 	 * @param osid_course_Course $course
@@ -108,13 +108,13 @@ class Helper_RecentCourses_Instructor
 	 *********************************************************/
 
 	/**
- 	 * Group our course offerings
- 	 *
- 	 * @param osid_course_CourseOfferingSearchResults $offerings
- 	 * @return null
- 	 * @access protected
- 	 */
- 	protected function groupCourseOfferings (osid_course_CourseOfferingSearchResults $offerings) {
+	 * Group our course offerings
+	 *
+	 * @param osid_course_CourseOfferingSearchResults $offerings
+	 * @return null
+	 * @access protected
+	 */
+	protected function groupCourseOfferings (osid_course_CourseOfferingSearchResults $offerings) {
 		while ($offerings->hasNext()) {
 			$offering = $offerings->getNextCourseOffering();
 			if ($this->termIsRecent($offering->getTerm())) {

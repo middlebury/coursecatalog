@@ -2,17 +2,17 @@
 /**
  * @since 4/13/09
  * @package banner.course
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
- */ 
+ */
 
 /**
  * An iterator for retrieving all courses from a catalog
- * 
+ *
  * @since 4/13/09
  * @package banner.course
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
@@ -23,7 +23,7 @@ class banner_course_CourseOffering_Lookup_ByTopicList
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param PDO $db
 	 * @param banner_course_CourseOffering_SessionInterface $session
 	 * @param osid_id_Id $catalogDatabaseId
@@ -34,13 +34,13 @@ class banner_course_CourseOffering_Lookup_ByTopicList
 	 */
 	public function __construct (PDO $db, banner_course_CourseOffering_SessionInterface $session, osid_id_Id $catalogId, osid_id_Id $topicId) {
 		$this->topicId = $topicId;
-		
+
 		parent::__construct($db, $session, $catalogId);
 	}
-		
+
 	/**
 	 * Answer the input parameters
-	 * 
+	 *
 	 * @return array
 	 * @access protected
 	 * @since 4/17/09
@@ -50,25 +50,25 @@ class banner_course_CourseOffering_Lookup_ByTopicList
 		$value = $this->session->getTopicLookupSession()->getTopicValue($this->topicId);
 		switch ($type) {
 			case 'subject':
-   				return array(':subject_code' => $value);
-   			case 'department':
-   				return array(':department_code' => $value);
-   			case 'division':
-   				return array(':division_code' => $value);
-   			case 'requirement':
-   				return array(':requirement_code' => $value);
-   			case 'level':
-   				return array(':level_code' => $value);
+				return array(':subject_code' => $value);
+			case 'department':
+				return array(':department_code' => $value);
+			case 'division':
+				return array(':division_code' => $value);
+			case 'requirement':
+				return array(':requirement_code' => $value);
+			case 'level':
+				return array(':level_code' => $value);
 			case 'block':
 				return array(':block_code' => $value);
-   			default:
-   				throw new osid_NotFoundException('No topic found with category '.$type);
+			default:
+				throw new osid_NotFoundException('No topic found with category '.$type);
 		}
 	}
-	
+
 	/**
 	 * Answer additional where terms. E.g. 'SSRMEET_MON_DAY = true AND SSRMEET_TUE_DAY = false'
-	 * 
+	 *
 	 * @return array
 	 * @access protected
 	 * @since 4/17/09
@@ -78,24 +78,24 @@ class banner_course_CourseOffering_Lookup_ByTopicList
 		switch ($type) {
 			case 'subject':
 				return 'SSBSECT_SUBJ_CODE = :subject_code';
-   			case 'department':
-   				return 'SCBCRSE_DEPT_CODE = :department_code';
-   			case 'division':
-   				return 'SCBCRSE_DIVS_CODE = :division_code';
-   			case 'requirement':
-   				return 'SSRATTR_ATTR_CODE = :requirement_code';
-   			case 'level':
-   				return 'SCRLEVL_LEVL_CODE = :level_code';
+			case 'department':
+				return 'SCBCRSE_DEPT_CODE = :department_code';
+			case 'division':
+				return 'SCBCRSE_DIVS_CODE = :division_code';
+			case 'requirement':
+				return 'SSRATTR_ATTR_CODE = :requirement_code';
+			case 'level':
+				return 'SCRLEVL_LEVL_CODE = :level_code';
 			case 'block':
 				return 'SSRBLCK_BLCK_CODE = :block_code';
-   			default:
-   				throw new osid_NotFoundException('No topic found with category '.$type);
+			default:
+				throw new osid_NotFoundException('No topic found with category '.$type);
 		}
 	}
-	
+
 	/**
 	 * Answer any additional table join clauses to use
-	 * 
+	 *
 	 * @return string
 	 * @access protected
 	 * @since 4/29/09
@@ -111,5 +111,3 @@ class banner_course_CourseOffering_Lookup_ByTopicList
 			return '';
 	}
 }
-
-?>

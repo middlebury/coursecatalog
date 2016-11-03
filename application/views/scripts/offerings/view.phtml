@@ -22,7 +22,7 @@ $termUrl = $this->url(array(
 						'term'			=> $this->getStringFromOsidId($term->getId()),
 						'offering'		=> null
 					));
-$offeringParams = array(	
+$offeringParams = array(
 						'controller' 	=> 'offerings',
 						'action'		=> 'view',
 						'course'		=> null
@@ -147,7 +147,7 @@ if (!empty($this->levelTopics)) {
 
 if (isset($this->alternates)) {
 	$alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
-	
+
 	print "\n\t\t<dt>Cross-Listed As:</dt>";
 	print "\n\t\t<dd>";
 	while ($this->alternates->hasNext()) {
@@ -170,7 +170,7 @@ if (isset($this->alternates)) {
 $availabilityLink = $this->getAvailabilityLink($this->offering);
 if (!empty($availabilityLink)) {
 	print "\n\t\t<dt>Availability:</dt>";
-	print "\n\t\t<dd>";	
+	print "\n\t\t<dd>";
 	print $availabilityLink;
 	print "\n\t\t</dd>";
 }

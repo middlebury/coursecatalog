@@ -9,8 +9,8 @@ while ($this->menuCatalogs->hasNext()) {
 		print "\n\t\t\t\t\t\t\t\t\t<a class=\"\" href=\"";
 		print $this->url(
 					array(
-						'controller' => 'catalogs', 
-						'action' => 'view', 
+						'controller' => 'catalogs',
+						'action' => 'view',
 						'catalog' => $this->getStringFromOsidId($catalog->getId())),
 					null,
 					true);
@@ -19,6 +19,6 @@ while ($this->menuCatalogs->hasNext()) {
 	}
 }
 
-?> 
+?>
 
 								</ul>

@@ -24,7 +24,7 @@ foreach ($this->catalogs as $catalog) {
 	</tr>
 </thead>
 <tbody>
-		
+
 <?php
 foreach ($this->terms as $term) {
 	$numSections = intval($term['num_sections']);
@@ -34,7 +34,7 @@ foreach ($this->terms as $term) {
 	print "\n\t\t<td class='code'>".$term['STVTERM_CODE']."</td>";
 	print "\n\t\t<td class='desc'>".$term['STVTERM_DESC']."</td>";
 	print "\n\t\t<td class='num_sections'>".$numSections."</td>";
-	
+
 	print "\n\t\t<td class='disable'>";
 	print "\n\t\t\t<form action='".$this->url()."' method='post'>";
 	print "\n\t\t\t<input type='hidden' name='catalog' value='".$this->catalog."' />";
@@ -49,7 +49,7 @@ foreach ($this->terms as $term) {
 	print " Disabled?</label>";
 	print "\n\t\t\t</form>";
 	print "\n\t\t</td>";
-	
+
 	print "\n\t\t<td class='is_active'>";
 	if ($active) {
 		print "Yes";
@@ -61,7 +61,7 @@ foreach ($this->terms as $term) {
 			print "Zero sections. ";
 	}
 	print "\n\t\t</td>";
-	
+
 	print "\n\t</tr>";
 }
 ?>

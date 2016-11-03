@@ -7,15 +7,15 @@
 class banner_course_TermTest
 	extends phpkit_test_phpunit_AbstractOsidObjectTest
 {
-    /**
-     * @var    banner_course_Term
-     * @access protected
-     */
-    protected $object;
-    
-    /**
+	/**
+	 * @var    banner_course_Term
+	 * @access protected
+	 */
+	protected $object;
+
+	/**
 	 * Answer the Object to test
-	 * 
+	 *
 	 * @return osid_OsidObject
 	 * @access protected
 	 * @since 4/15/09
@@ -23,11 +23,11 @@ class banner_course_TermTest
 	protected function getObject () {
 		return $this->object;
 	}
-	
+
 	static $runtimeManager;
 	static $courseManager;
 
-	public static function setUpBeforeClass() 
+	public static function setUpBeforeClass()
 	{
 		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../').'/configuration.plist');
 		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
@@ -35,105 +35,104 @@ class banner_course_TermTest
 
 	public static function tearDownAfterClass()
 	{
-	    self::$courseManager->shutdown();
-	    self::$runtimeManager->shutdown();
+		self::$courseManager->shutdown();
+		self::$runtimeManager->shutdown();
 	}
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     *
-     * @access protected
-     */
-    protected function setUp()
-    {
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
-        $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
-        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200890');
-        
-        $this->session = self::$courseManager->getTermLookupSessionForCatalog($this->mcugId);
-        $this->object = $this->session->getTerm($this->termId);
-    }
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     *
-     * @access protected
-     */
-    protected function tearDown()
-    {
-    }
-	
 	/**
-     *
-     */
-    public function testDisplayName()
-    {
-        $this->assertEquals('Fall 2008', $this->object->getDisplayName());
-    }
-	
-    /**
-     *
-     */
-    public function testGetDisplayLabel()
-    {
-        $this->assertEquals('Fall 2008', $this->object->getDisplayLabel());
-    }
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 *
+	 * @access protected
+	 */
+	protected function setUp()
+	{
+		$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
+		$this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
+		$this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200890');
 
-    /**
-     * 
-     */
-    public function testGetStartTime()
-    {
-        $date = $this->object->getStartTime();
-        $this->assertInstanceOf('DateTime', $date);
-        $this->assertEquals(new DateTime('2008-09-08'), $date);
-    }
+		$this->session = self::$courseManager->getTermLookupSessionForCatalog($this->mcugId);
+		$this->object = $this->session->getTerm($this->termId);
+	}
 
-    /**
-     * 
-     */
-    public function testGetEndTime()
-    {
-        $date = $this->object->getEndTime();
-        $this->assertInstanceOf('DateTime', $date);
-        $this->assertEquals(new DateTime('2008-12-16'), $date);
-    }
+	/**
+	 * Tears down the fixture, for example, closes a network connection.
+	 * This method is called after a test is executed.
+	 *
+	 * @access protected
+	 */
+	protected function tearDown()
+	{
+	}
 
-    /**
-     * 
-     */
-    public function testHasCalendar()
-    {
-        $this->assertFalse($this->object->hasCalendar());
-    }
+	/**
+	 *
+	 */
+	public function testDisplayName()
+	{
+		$this->assertEquals('Fall 2008', $this->object->getDisplayName());
+	}
 
-    /**
-     * @expectedException osid_IllegalStateException
-     */
-    public function testGetCalendarId()
-    {
-        $this->object->getCalendarId();
-    }
+	/**
+	 *
+	 */
+	public function testGetDisplayLabel()
+	{
+		$this->assertEquals('Fall 2008', $this->object->getDisplayLabel());
+	}
 
-    /**
-     * @expectedException osid_IllegalStateException
-     */
-    public function testGetCalendar()
-    {
-        $this->object->getCalendar();
-    }
+	/**
+	 *
+	 */
+	public function testGetStartTime()
+	{
+		$date = $this->object->getStartTime();
+		$this->assertInstanceOf('DateTime', $date);
+		$this->assertEquals(new DateTime('2008-09-08'), $date);
+	}
 
-    /**
-     *
-     */
-    public function testGetTermRecord()
-    {
-        $types = $this->object->getRecordTypes();
-    	while ($types->hasNext()) {
-	        $this->assertInstanceOf('osid_course_CourseRecord', $this->object->getTermRecord($types->getNextType()));
-	    }
-    }
+	/**
+	 *
+	 */
+	public function testGetEndTime()
+	{
+		$date = $this->object->getEndTime();
+		$this->assertInstanceOf('DateTime', $date);
+		$this->assertEquals(new DateTime('2008-12-16'), $date);
+	}
+
+	/**
+	 *
+	 */
+	public function testHasCalendar()
+	{
+		$this->assertFalse($this->object->hasCalendar());
+	}
+
+	/**
+	 * @expectedException osid_IllegalStateException
+	 */
+	public function testGetCalendarId()
+	{
+		$this->object->getCalendarId();
+	}
+
+	/**
+	 * @expectedException osid_IllegalStateException
+	 */
+	public function testGetCalendar()
+	{
+		$this->object->getCalendar();
+	}
+
+	/**
+	 *
+	 */
+	public function testGetTermRecord()
+	{
+		$types = $this->object->getRecordTypes();
+		while ($types->hasNext()) {
+			$this->assertInstanceOf('osid_course_CourseRecord', $this->object->getTermRecord($types->getNextType()));
+		}
+	}
 }
-?>

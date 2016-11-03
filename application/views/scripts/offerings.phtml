@@ -13,7 +13,7 @@ if (isset($this->term)) {
 	print "\n\t<h2>".$this->offeringsTitle."</h2>";
 }
 
-$offeringParams = array(	
+$offeringParams = array(
 					'controller' 	=> 'offerings',
 					'action'		=> 'view',
 					'course'		=> null,
@@ -26,17 +26,17 @@ while ($this->offerings->hasNext()) {
 		$currentTerm = $offering->getTerm();
 		print "\n<h4>".$currentTerm->getDisplayName()."</h4>";
 	}
-	
+
 	$offeringParams['offering'] = $this->getStringFromOsidId($offering->getId());
-	
+
 	if (isset($this->offering) && $offering->getId()->isEqual($this->offering->getId()))
 		print "\n\t<div class='selected_offering'>";
 	else
 		print "\n\t<div>";
-	
+
 	print "<a class='offering_link' href='".$this->url($offeringParams)."'>".$this->escape($offering->getDisplayName())."</a>";
 	print " <span class='type'>".$this->escape($offering->getGenusType()->getDisplayName())."</span>";
-	
+
 	if (!isset($this->hideOfferingInstructors) || !$this->hideOfferingInstructors) {
 		if ($offering->hasRecordType($instructorsType)) {
 			$instructorsRecord = $offering->getCourseOfferingRecord($instructorsType);

@@ -6,16 +6,16 @@
  */
 class banner_course_Topic_Search_OrderTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @var    banner_course_Topic_Search_Order
-     * @access protected
-     */
-    protected $object;
-    
-    static $runtimeManager;
+	/**
+	 * @var    banner_course_Topic_Search_Order
+	 * @access protected
+	 */
+	protected $object;
+
+	static $runtimeManager;
 	static $courseManager;
 
-	public static function setUpBeforeClass() 
+	public static function setUpBeforeClass()
 	{
 		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../../../').'/configuration.plist');
 		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
@@ -23,92 +23,91 @@ class banner_course_Topic_Search_OrderTest extends PHPUnit_Framework_TestCase
 
 	public static function tearDownAfterClass()
 	{
-	    self::$courseManager->shutdown();
-	    self::$runtimeManager->shutdown();
+		self::$courseManager->shutdown();
+		self::$runtimeManager->shutdown();
 	}
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     *
-     * @access protected
-     */
-    protected function setUp()
-    {
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 *
+	 * @access protected
+	 */
+	protected function setUp()
+	{
 		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
-        
-    	$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
-        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
 
-	 	$this->session = self::$courseManager->getTopicSearchSessionForCatalog($this->mcugId);
-        $this->object = $this->session->getTopicSearchOrder();
-        
-        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200820');
+		$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
+		$this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
+
+		$this->session = self::$courseManager->getTopicSearchSessionForCatalog($this->mcugId);
+		$this->object = $this->session->getTopicSearchOrder();
+
+		$this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200820');
 
 		$this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
 
-        $this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
-        $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
-        $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
-        $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
-    }
+		$this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
+		$this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
+		$this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
+		$this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
+	}
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     *
-     * @access protected
-     */
-    protected function tearDown()
-    {
-    }
+	/**
+	 * Tears down the fixture, for example, closes a network connection.
+	 * This method is called after a test is executed.
+	 *
+	 * @access protected
+	 */
+	protected function tearDown()
+	{
+	}
 
-    /**
-     * 
-     */
-    public function testAscend()
-    {
-        $this->object->ascend();
-    }
+	/**
+	 *
+	 */
+	public function testAscend()
+	{
+		$this->object->ascend();
+	}
 
-    /**
-     * 
-     */
-    public function testDescend()
-    {
-        $this->object->descend();
-    }
+	/**
+	 *
+	 */
+	public function testDescend()
+	{
+		$this->object->descend();
+	}
 
-    /**
-     * 
-     */
-    public function testOrderByDisplayName()
-    {
-        $this->object->orderByDisplayName();
-    }
+	/**
+	 *
+	 */
+	public function testOrderByDisplayName()
+	{
+		$this->object->orderByDisplayName();
+	}
 
-    /**
-     * 
-     */
-    public function testOrderByGenusType()
-    {
-        $this->object->orderByGenusType();
-    }
+	/**
+	 *
+	 */
+	public function testOrderByGenusType()
+	{
+		$this->object->orderByGenusType();
+	}
 
-    /**
-     * 
-     */
-    public function testHasRecordType()
-    {
-        $this->assertFalse($this->object->hasRecordType($this->termType));
-    }
+	/**
+	 *
+	 */
+	public function testHasRecordType()
+	{
+		$this->assertFalse($this->object->hasRecordType($this->termType));
+	}
 
-    /**
-     * @expectedException osid_UnsupportedException
-     */
-    public function testGetTopicSearchOrderRecord()
-    {
-        $this->object->getTopicSearchOrderRecord($this->termType);
-    }
+	/**
+	 * @expectedException osid_UnsupportedException
+	 */
+	public function testGetTopicSearchOrderRecord()
+	{
+		$this->object->getTopicSearchOrderRecord($this->termType);
+	}
 }
-?>

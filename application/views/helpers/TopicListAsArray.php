@@ -2,9 +2,9 @@
 
 /**
  * A helper to Answer an array containing the list items.
- * 
+ *
  * @since 6/9/10
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
@@ -13,7 +13,7 @@ class Catalog_View_Helper_TopicListAsArray
 {
 	/**
 	 * Answer an array containing the list items.
-	 * 
+	 *
 	 * @param osid_course_TopicList $topicList
 	 * @return array
 	 * @access public
@@ -23,5 +23,3 @@ class Catalog_View_Helper_TopicListAsArray
 		return Zend_Controller_Action_HelperBroker::getStaticHelper('Topics')->topicListAsArray($topicList);
 	}
 }
-
-?>

@@ -59,8 +59,8 @@ class banner_TestSuite extends PHPUnit_Framework_TestSuite
 		$searchSession->buildIndex(false);
 
 		if (method_exists($db, 'resetCounters')) {
-		   $db->resetCounters();
-		   $db->recordDuplicates();
+		$db->resetCounters();
+		$db->recordDuplicates();
 		}
 	}
 

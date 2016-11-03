@@ -1,24 +1,24 @@
 <?php
 /**
  * @since 8/11/10
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
- */ 
+ */
 
 /**
  * A cachable object
- * 
+ *
  * @since 8/11/10
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 abstract class apc_Cachable {
-		
+
 	/**
 	 * Contructor
-	 * 
+	 *
 	 * @param string $collectionId
 	 * @return void
 	 * @access protected
@@ -27,16 +27,16 @@ abstract class apc_Cachable {
 	protected function __construct ($idString, $collectionId = null) {
 		if (!$collectionId)
 			$collectionId = get_class($this);
-		
+
 		$this->collectionId = $collectionId;
 		$this->idString = $idString;
 	}
 	private $collectionId;
 	private $idString;
-	
+
 	/**
 	 * Answer data from the cache or NULL if not available.
-	 * 
+	 *
 	 * @param string $key
 	 * @return mixed
 	 * @access protected
@@ -48,10 +48,10 @@ abstract class apc_Cachable {
 			return null;
 		return $result;
 	}
-	
+
 	/**
 	 * Set data into the cache and return the data.
-	 * 
+	 *
 	 * @param string $key
 	 * @param mixed $value
 	 * @return mixed
@@ -62,10 +62,10 @@ abstract class apc_Cachable {
 		$success = apc_store($this->hash($key), $value);
 		return $value;
 	}
-	
+
 	/**
 	 * Answer data from the cache or NULL if not available.
-	 * 
+	 *
 	 * @param string $key
 	 * @return mixed
 	 * @access protected
@@ -77,10 +77,10 @@ abstract class apc_Cachable {
 			return null;
 		return unserialize($result);
 	}
-	
+
 	/**
 	 * Set data into the cache and return the data.
-	 * 
+	 *
 	 * @param string $key
 	 * @param mixed $value
 	 * @return mixed
@@ -91,10 +91,10 @@ abstract class apc_Cachable {
 		$success = apc_store($this->hash($key), serialize($value));
 		return $value;
 	}
-	
+
 	/**
 	 * Delete an item from cache.
-	 * 
+	 *
 	 * @param string $key
 	 * @return void
 	 * @access protected
@@ -103,10 +103,10 @@ abstract class apc_Cachable {
 	protected function cacheDelete ($key) {
 		apc_delete($this->hash($key));
 	}
-	
+
 	/**
 	 * Hash a key into a per-instance value.
-	 * 
+	 *
 	 * @param string $key
 	 * @return string
 	 * @access private
@@ -115,7 +115,5 @@ abstract class apc_Cachable {
 	private function hash ($key) {
 		return $this->collectionId.':'.$this->idString.':'.$key;
 	}
-	
-}
 
-?>
+}

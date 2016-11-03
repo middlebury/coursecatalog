@@ -6,16 +6,16 @@
  */
 class banner_course_Topic_Search_QueryTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @var    banner_course_Topic_Search_Query
-     * @access protected
-     */
-    protected $object;
-    
-    static $runtimeManager;
+	/**
+	 * @var    banner_course_Topic_Search_Query
+	 * @access protected
+	 */
+	protected $object;
+
+	static $runtimeManager;
 	static $courseManager;
 
-	public static function setUpBeforeClass() 
+	public static function setUpBeforeClass()
 	{
 		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../../../').'/configuration.plist');
 		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
@@ -23,332 +23,331 @@ class banner_course_Topic_Search_QueryTest extends PHPUnit_Framework_TestCase
 
 	public static function tearDownAfterClass()
 	{
-	    self::$courseManager->shutdown();
-	    self::$runtimeManager->shutdown();
+		self::$courseManager->shutdown();
+		self::$runtimeManager->shutdown();
 	}
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     *
-     * @access protected
-     */
-    protected function setUp()
-    {
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 *
+	 * @access protected
+	 */
+	protected function setUp()
+	{
 		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
-        
-    	$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
-        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
 
-	 	$this->session = self::$courseManager->getTopicSearchSessionForCatalog($this->mcugId);
-        $this->object = $this->session->getTopicQuery();
-        
-        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200820');
+		$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
+		$this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
+
+		$this->session = self::$courseManager->getTopicSearchSessionForCatalog($this->mcugId);
+		$this->object = $this->session->getTopicQuery();
+
+		$this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200820');
 
 		$this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
 
-        $this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
-        $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
-        $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
-        $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
-        $this->levelType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
-        $this->blockType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block");
+		$this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
+		$this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
+		$this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
+		$this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
+		$this->levelType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
+		$this->blockType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block");
 
-    }
+	}
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     *
-     * @access protected
-     */
-    protected function tearDown()
-    {
-    }
+	/**
+	 * Tears down the fixture, for example, closes a network connection.
+	 * This method is called after a test is executed.
+	 *
+	 * @access protected
+	 */
+	protected function tearDown()
+	{
+	}
 
-    /**
-     * 
-     */
-    public function testGetStringMatchTypes()
-    {
-        $types = $this->object->getStringMatchTypes();
-        $this->assertInstanceOf('osid_type_TypeList', $types);
-        $this->assertEquals(1, $types->available());
-        $this->assertTrue($this->wildcardStringMatchType->isEqual($types->getNextType()));
-    }
+	/**
+	 *
+	 */
+	public function testGetStringMatchTypes()
+	{
+		$types = $this->object->getStringMatchTypes();
+		$this->assertInstanceOf('osid_type_TypeList', $types);
+		$this->assertEquals(1, $types->available());
+		$this->assertTrue($this->wildcardStringMatchType->isEqual($types->getNextType()));
+	}
 
-    /**
-     * 
-     */
-    public function testSupportsStringMatchType()
-    {
-        $this->assertTrue($this->object->supportsStringMatchType($this->wildcardStringMatchType));
-    }
+	/**
+	 *
+	 */
+	public function testSupportsStringMatchType()
+	{
+		$this->assertTrue($this->object->supportsStringMatchType($this->wildcardStringMatchType));
+	}
 
-    /**
-     * 
-     */
-    public function testMatchKeyword()
-    {
-        $this->object->matchDisplayName('Physics', $this->wildcardStringMatchType, true);
-        
-        $topics = $this->session->getTopicsByQuery($this->object);
-		$this->assertEquals(2, $topics->available());
-    }
+	/**
+	 *
+	 */
+	public function testMatchKeyword()
+	{
+		$this->object->matchDisplayName('Physics', $this->wildcardStringMatchType, true);
 
-    /**
-     * 
-     */
-    public function testMatchDisplayName()
-    {
-       $this->object->matchDisplayName('Physics', $this->wildcardStringMatchType, true);
-
-        $params = $this->object->getRequirementParameters();
-        $this->assertEquals('Physics', $params[0]);
-        $this->assertEquals(1, count($params));
-        $params = $this->object->getLevelParameters();
-        $this->assertEquals('Physics', $params[0]);
-        $params = $this->object->getBlockParameters();
-        $this->assertEquals('Physics', $params[0]);
-        $this->assertEquals(1, count($params));
-        $this->assertEquals(1, count($params));
-        $params = $this->object->getDivisionParameters();
-        $this->assertEquals('Physics', $params[0]);
-        $this->assertEquals(1, count($params));
-        $params = $this->object->getDepartmentParameters();
-        $this->assertEquals('Physics', $params[0]);
-        $this->assertEquals(1, count($params));
-        $params = $this->object->getSubjectParameters();
-        $this->assertEquals('Physics', $params[0]);
-        $this->assertEquals(1, count($params));
-        
-        
-        $this->assertEquals('(STVATTR_DESC LIKE(?))', $this->object->getRequirementWhereClause());
-        $this->assertEquals('(STVLEVL_DESC LIKE(?))', $this->object->getLevelWhereClause());
-        $this->assertEquals('(STVBLCK_DESC LIKE(?))', $this->object->getBlockWhereClause());
-        $this->assertEquals('(STVDIVS_DESC LIKE(?))', $this->object->getDivisionWhereClause());
-        $this->assertEquals('(STVDEPT_DESC LIKE(?))', $this->object->getDepartmentWhereClause());
-        $this->assertEquals('(STVSUBJ_DESC LIKE(?))', $this->object->getSubjectWhereClause());
-		
 		$topics = $this->session->getTopicsByQuery($this->object);
 		$this->assertEquals(2, $topics->available());
-    }
-    
-    public function testMatchAll() {
-    	$topics = $this->session->getTopicsByQuery($this->object);
+	}
+
+	/**
+	 *
+	 */
+	public function testMatchDisplayName()
+	{
+		$this->object->matchDisplayName('Physics', $this->wildcardStringMatchType, true);
+
+		$params = $this->object->getRequirementParameters();
+		$this->assertEquals('Physics', $params[0]);
+		$this->assertEquals(1, count($params));
+		$params = $this->object->getLevelParameters();
+		$this->assertEquals('Physics', $params[0]);
+		$params = $this->object->getBlockParameters();
+		$this->assertEquals('Physics', $params[0]);
+		$this->assertEquals(1, count($params));
+		$this->assertEquals(1, count($params));
+		$params = $this->object->getDivisionParameters();
+		$this->assertEquals('Physics', $params[0]);
+		$this->assertEquals(1, count($params));
+		$params = $this->object->getDepartmentParameters();
+		$this->assertEquals('Physics', $params[0]);
+		$this->assertEquals(1, count($params));
+		$params = $this->object->getSubjectParameters();
+		$this->assertEquals('Physics', $params[0]);
+		$this->assertEquals(1, count($params));
+
+
+		$this->assertEquals('(STVATTR_DESC LIKE(?))', $this->object->getRequirementWhereClause());
+		$this->assertEquals('(STVLEVL_DESC LIKE(?))', $this->object->getLevelWhereClause());
+		$this->assertEquals('(STVBLCK_DESC LIKE(?))', $this->object->getBlockWhereClause());
+		$this->assertEquals('(STVDIVS_DESC LIKE(?))', $this->object->getDivisionWhereClause());
+		$this->assertEquals('(STVDEPT_DESC LIKE(?))', $this->object->getDepartmentWhereClause());
+		$this->assertEquals('(STVSUBJ_DESC LIKE(?))', $this->object->getSubjectWhereClause());
+
+		$topics = $this->session->getTopicsByQuery($this->object);
+		$this->assertEquals(2, $topics->available());
+	}
+
+	public function testMatchAll() {
+		$topics = $this->session->getTopicsByQuery($this->object);
 		$this->assertEquals(14, $topics->available());
 // 		print "\n";
 // 		while ($topics->hasNext())
 // 			print "\n".$topics->getNextTopic()->getId()->getIdentifier();
 // 		print "\n";
-    }
+	}
 
-    /**
-     * 
-     */
-    public function testMatchDescription()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
+	/**
+	 *
+	 */
+	public function testMatchDescription()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+		'This test has not been implemented yet.'
+		);
+	}
 
-    /**
-     * 
-     */
-    public function testMatchAnyDescription()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
+	/**
+	 *
+	 */
+	public function testMatchAnyDescription()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+		'This test has not been implemented yet.'
+		);
+	}
 
-    /**
-     * 
-     */
-    public function testMatchDepartmentGenusType()
-    {
-    	$this->object->matchGenusType($this->departmentType, true);
-        $topics = $this->session->getTopicsByQuery($this->object);
+	/**
+	 *
+	 */
+	public function testMatchDepartmentGenusType()
+	{
+		$this->object->matchGenusType($this->departmentType, true);
+		$topics = $this->session->getTopicsByQuery($this->object);
 		$this->assertEquals(4, $topics->available());
-    }
-    
-    /**
-     * 
-     */
-    public function testMatchDivisionGenusType()
-    {
-    	$this->object->matchGenusType($this->divisionType, true);
-        $topics = $this->session->getTopicsByQuery($this->object);
+	}
+
+	/**
+	 *
+	 */
+	public function testMatchDivisionGenusType()
+	{
+		$this->object->matchGenusType($this->divisionType, true);
+		$topics = $this->session->getTopicsByQuery($this->object);
 		$this->assertEquals(2, $topics->available());
-    }
-    
-    /**
-     * 
-     */
-    public function testMatchSubjectGenusType()
-    {
-    	$this->object->matchGenusType($this->subjectType, true);
-        $topics = $this->session->getTopicsByQuery($this->object);
+	}
+
+	/**
+	 *
+	 */
+	public function testMatchSubjectGenusType()
+	{
+		$this->object->matchGenusType($this->subjectType, true);
+		$topics = $this->session->getTopicsByQuery($this->object);
 		$this->assertEquals(4, $topics->available());
-    }
-    
-    /**
-     * 
-     */
-    public function testMatchRequirementGenusType()
-    {
-    	$this->object->matchGenusType($this->requirementType, true);
-        $topics = $this->session->getTopicsByQuery($this->object);
+	}
+
+	/**
+	 *
+	 */
+	public function testMatchRequirementGenusType()
+	{
+		$this->object->matchGenusType($this->requirementType, true);
+		$topics = $this->session->getTopicsByQuery($this->object);
 		$this->assertEquals(2, $topics->available());
-    }
-    
-    /**
-     * 
-     */
-    public function testMatchLevelGenusType()
-    {
-    	$this->object->matchGenusType($this->levelType, true);
-        $topics = $this->session->getTopicsByQuery($this->object);
-		$this->assertEquals(1, $topics->available());
-    }
-    
-    /**
-     * 
-     */
-    public function testMatchBlockGenusType()
-    {
-    	$this->object->matchGenusType($this->blockType, true);
-        $topics = $this->session->getTopicsByQuery($this->object);
-		$this->assertEquals(1, $topics->available());
-    }
-    
-    /**
-     * 
-     */
-    public function testMatchMultipleGenusTypes()
-    {
-    	$this->object->matchGenusType($this->requirementType, true);
-    	$this->object->matchGenusType($this->departmentType, true);
-        $topics = $this->session->getTopicsByQuery($this->object);
-		$this->assertEquals(6, $topics->available());
-    }
+	}
 
-    /**
-     * 
-     */
-    public function testMatchParentGenusType()
-    {
-        $this->object->matchParentGenusType($this->requirementType, true);
-        $topics = $this->session->getTopicsByQuery($this->object);
+	/**
+	 *
+	 */
+	public function testMatchLevelGenusType()
+	{
+		$this->object->matchGenusType($this->levelType, true);
+		$topics = $this->session->getTopicsByQuery($this->object);
+		$this->assertEquals(1, $topics->available());
+	}
+
+	/**
+	 *
+	 */
+	public function testMatchBlockGenusType()
+	{
+		$this->object->matchGenusType($this->blockType, true);
+		$topics = $this->session->getTopicsByQuery($this->object);
+		$this->assertEquals(1, $topics->available());
+	}
+
+	/**
+	 *
+	 */
+	public function testMatchMultipleGenusTypes()
+	{
+		$this->object->matchGenusType($this->requirementType, true);
+		$this->object->matchGenusType($this->departmentType, true);
+		$topics = $this->session->getTopicsByQuery($this->object);
+		$this->assertEquals(6, $topics->available());
+	}
+
+	/**
+	 *
+	 */
+	public function testMatchParentGenusType()
+	{
+		$this->object->matchParentGenusType($this->requirementType, true);
+		$topics = $this->session->getTopicsByQuery($this->object);
 		$this->assertEquals(2, $topics->available());
-    }
+	}
 
-    /**
-     * 
-     */
-    public function testMatchRecordType()
-    {
-        $this->object->matchRecordType($this->requirementType, true);
-        $topics = $this->session->getTopicsByQuery($this->object);
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-    }
+	/**
+	 *
+	 */
+	public function testMatchRecordType()
+	{
+		$this->object->matchRecordType($this->requirementType, true);
+		$topics = $this->session->getTopicsByQuery($this->object);
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+	}
 
-    /**
-     * 
-     */
-    public function testHasRecordType()
-    {
-        $this->assertInternalType('boolean', $this->object->hasRecordType($this->requirementType));
-    }
+	/**
+	 *
+	 */
+	public function testHasRecordType()
+	{
+		$this->assertInternalType('boolean', $this->object->hasRecordType($this->requirementType));
+	}
 
-    /**
-     * 
-     */
-    public function testMatchCourseOfferingId()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
+	/**
+	 *
+	 */
+	public function testMatchCourseOfferingId()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+		'This test has not been implemented yet.'
+		);
+	}
 
-    /**
-     * 
-     */
-    public function testSupportsCourseOfferingQuery()
-    {
-        $this->assertFalse($this->object->supportsCourseOfferingQuery());
-    }
+	/**
+	 *
+	 */
+	public function testSupportsCourseOfferingQuery()
+	{
+		$this->assertFalse($this->object->supportsCourseOfferingQuery());
+	}
 
-    /**
-     * @expectedException osid_UnimplementedException
-     */
-    public function testGetCourseOfferingQuery()
-    {
-        $this->object->getCourseOfferingQuery();
-    }
+	/**
+	 * @expectedException osid_UnimplementedException
+	 */
+	public function testGetCourseOfferingQuery()
+	{
+		$this->object->getCourseOfferingQuery();
+	}
 
-    /**
-     * 
-     */
-    public function testMatchAnyCourseOffering()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
+	/**
+	 *
+	 */
+	public function testMatchAnyCourseOffering()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+		'This test has not been implemented yet.'
+		);
+	}
 
-    /**
-     * 
-     */
-    public function testMatchCourseCatalogId()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
+	/**
+	 *
+	 */
+	public function testMatchCourseCatalogId()
+	{
+		// Remove the following lines when you implement this test.
+		$this->markTestIncomplete(
+		'This test has not been implemented yet.'
+		);
+	}
 
-    /**
-     * 
-     */
-    public function testSupportsCourseCatalogQuery()
-    {
-        $this->assertFalse($this->object->supportsCourseCatalogQuery());
-    }
+	/**
+	 *
+	 */
+	public function testSupportsCourseCatalogQuery()
+	{
+		$this->assertFalse($this->object->supportsCourseCatalogQuery());
+	}
 
-    /**
-     * @expectedException osid_UnimplementedException
-     */
-    public function testGetCourseCatalogQuery()
-    {
-        $this->assertFalse($this->object->getCourseCatalogQuery());
-    }
+	/**
+	 * @expectedException osid_UnimplementedException
+	 */
+	public function testGetCourseCatalogQuery()
+	{
+		$this->assertFalse($this->object->getCourseCatalogQuery());
+	}
 
-    /**
-     * 
-     */
-    public function testGetTopicQueryRecord()
-    {
-        $termRecord = $this->object->getTopicQueryRecord($this->termType);
-        $this->assertInstanceOf('middlebury_course_Topic_Search_TermQueryRecord', $termRecord);
-    }
-    
-    /**
-     * 
-     */
-    public function testMatchTerm()
-    {
-        $termRecord = $this->object->getTopicQueryRecord($this->termType);
-        $termRecord->matchTermId($this->termId, true);
-        $topics = $this->session->getTopicsByQuery($this->object);
+	/**
+	 *
+	 */
+	public function testGetTopicQueryRecord()
+	{
+		$termRecord = $this->object->getTopicQueryRecord($this->termType);
+		$this->assertInstanceOf('middlebury_course_Topic_Search_TermQueryRecord', $termRecord);
+	}
+
+	/**
+	 *
+	 */
+	public function testMatchTerm()
+	{
+		$termRecord = $this->object->getTopicQueryRecord($this->termType);
+		$termRecord->matchTermId($this->termId, true);
+		$topics = $this->session->getTopicsByQuery($this->object);
 		$this->assertEquals(6, $topics->available());
-    }
-    
-    
+	}
+
+
 }
-?>

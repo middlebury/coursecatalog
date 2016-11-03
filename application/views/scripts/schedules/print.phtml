@@ -1,13 +1,13 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+		"http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
 <html>
 <head>
 	<title><?php print $this->escape($this->schedule->getName()); ?></title>
-	
+
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/base/jquery-ui.css" type="text/css" media="all" />
-	
+
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
 
 	<link rel="stylesheet" media="all" type="text/css" href="<?php echo $this->url(array(), null, true) ?>2d/StyleSheets/CatalogStyles.css" />
 
@@ -18,24 +18,24 @@
 		.wc-time-slots .wc-today { background-color: #FFF; }
 		.wc-header .wc-today { font-weight: normal; }
 	</style>
-	
-    <script type="text/javascript" src="<?php print $this->url(array(), null, true).'javascript/jquery-week-calendar/libs/date.js'; ?>"></script>
-    <script type="text/javascript" src="<?php print $this->url(array(), null, true).'javascript/jquery-week-calendar/jquery.weekcalendar.js'; ?>"></script>
-    <script type="text/javascript" src="<?php print $this->url(array(), null, true).'javascript/schedule.js'; ?>"></script>
-    
+
+	<script type="text/javascript" src="<?php print $this->url(array(), null, true).'javascript/jquery-week-calendar/libs/date.js'; ?>"></script>
+	<script type="text/javascript" src="<?php print $this->url(array(), null, true).'javascript/jquery-week-calendar/jquery.weekcalendar.js'; ?>"></script>
+	<script type="text/javascript" src="<?php print $this->url(array(), null, true).'javascript/schedule.js'; ?>"></script>
+
 	<script type="text/javascript">
 	// <![CDATA[
-	
-		$(function() { // on DOM ready 
-			
+
+		$(function() { // on DOM ready
+
 			renderSchedule($("#calendar"), $('#calendar input[name=jsonUrl]').val(), 13, 11);
-			
+
 		});
-	
+
 	// ]]>
 	</script>
-	
-	
+
+
 	<style type="text/css">
 		div.schedule li.offering div.offering_name {
 			width: 120px;
@@ -44,11 +44,11 @@
 			width: 250px;
 			height: 3em;
 		}
-		
+
 		div.schedule li.offering div.location, div.schedule li.offering div.time {
 			white-space: nowrap;
 		}
-		
+
 		div.schedule li.offering {
 			border-top: 1px dotted;
 			padding: 5px;
@@ -58,19 +58,19 @@
 			padding: 5px;
 			page-break-inside: avoid;
 		}
-		
+
 		.wc-cal-event {
 			color: #000;
 		}
-		
+
 		body {
 			font-size: 12px;
 		}
-		
+
 		div.schedule {
 			border: none;
 		}
-		
+
 	</style>
 </head>
 <?php
@@ -87,7 +87,7 @@ $offeringHeight = $numOfferings * 40;
 
 <div class='schedule'>
 
-<h1><?php print $this->escape($this->schedule->getName()); ?></h1> 
+<h1><?php print $this->escape($this->schedule->getName()); ?></h1>
 <!-- <?php print ' &nbsp; '.($hourHeight);  print ' + '.($offeringHeight); print ' = '.($offeringHeight + $hourHeight); ?>
  -->
 
@@ -112,27 +112,27 @@ if (!count($offerings)) {
 }
 foreach ($offerings as $offering) {
 	print "\n\t\t\t<li class='offering'>";
-	
+
 	print "\n\t\t<div class='offering_name'>";
 	print "\n\t\t\t<a href='".$this->url(array('controller' => 'offerings', 'action' => 'view', 'offering' => $this->getStringFromOsidId($offering->getId())))."' target='_blank'>";
 	print $this->escape($offering->getDisplayName());
 	print "</a>";
 	print "\n\t\t</div>";
-	
+
 	print "\n\t\t<div class='separator'> - </div>";
-	
+
 	print "\n\t\t<div class='offering_title'>";
 	print "\n\t\t\t<a href='".$this->url(array('controller' => 'offerings', 'action' => 'view', 'offering' => $this->getStringFromOsidId($offering->getId())))."' target='_blank'>";
 	print nl2br($this->escape($offering->getTitle()));
 	print "</a>";
 	print "\n\t\t</div>";
-	
+
 	print "\n\t\t<div class='time";
 	if ($this->schedule->hasCollisions($offering->getId()))
 		print ' conflicting';
 	print "'>".$this->formatScheduleInfo($offering->getScheduleInfo())."</div>";
 	print "\n\t\t<div class='location'>".nl2br($this->escape($offering->getLocationInfo()))."</div>";
-	
+
 	print "\n\t\t\t</li>";
 }
 print "\n\t\t</ul>";

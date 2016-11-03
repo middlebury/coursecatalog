@@ -6,13 +6,13 @@
 
 <?php if ($this->pageCount): ?>
 <div class="paginationControl search_results_item_pagination">
-<?php echo $this->firstItemNumber; ?> - <?php echo $this->lastItemNumber; ?> 
+<?php echo $this->firstItemNumber; ?> - <?php echo $this->lastItemNumber; ?>
 of <?php echo $this->totalItemCount; ?>
 
 <!-- First page link -->
 <?php if (isset($this->previous)): ?>
   <a href="<?php echo $this->url(array_merge($this->search_params, array('page' => $this->first))); ?>">
-    First
+	First
   </a> |
 <?php else: ?>
   <span class="disabled">First</span> |
@@ -21,7 +21,7 @@ of <?php echo $this->totalItemCount; ?>
 <!-- Previous page link -->
 <?php if (isset($this->previous)): ?>
   <a href="<?php echo $this->url(array_merge($this->search_params, array('page' => $this->previous))); ?>">
-    &lt; Previous
+	&lt; Previous
   </a> |
 <?php else: ?>
   <span class="disabled">&lt; Previous</span> |
@@ -30,7 +30,7 @@ of <?php echo $this->totalItemCount; ?>
 <!-- Next page link -->
 <?php if (isset($this->next)): ?>
   <a href="<?php echo $this->url(array_merge($this->search_params, array('page' => $this->next))); ?>">
-    Next &gt;
+	Next &gt;
   </a> |
 <?php else: ?>
   <span class="disabled">Next &gt;</span> |
@@ -39,7 +39,7 @@ of <?php echo $this->totalItemCount; ?>
 <!-- Last page link -->
 <?php if (isset($this->next)): ?>
   <a href="<?php echo $this->url(array_merge($this->search_params, array('page' => $this->last))); ?>">
-    Last
+	Last
   </a>
 <?php else: ?>
   <span class="disabled">Last</span>
@@ -47,4 +47,3 @@ of <?php echo $this->totalItemCount; ?>
 
 </div>
 <?php endif; ?>
-

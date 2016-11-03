@@ -2,17 +2,17 @@
 /**
  * @since 4/20/09
  * @package catalog.controllers
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
- */ 
+ */
 
 /**
  * A controller for accessing catalogs
- * 
+ *
  * @since 4/20/09
  * @package catalog.controllers
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
@@ -22,10 +22,10 @@ class CatalogsController
 	public function indexAction () {
 		$this->_forward('list');
 	}
-	
+
 	/**
 	 * Print out a list of all catalogs
-	 * 
+	 *
 	 * @return void
 	 * @access public
 	 * @since 4/21/09
@@ -33,26 +33,26 @@ class CatalogsController
 	public function listAction() {
 		$lookupSession = $this->_helper->osid->getCourseManager()->getCourseCatalogLookupSession();
 		$this->view->catalogs = $lookupSession->getCourseCatalogs();
-		
+
 		$this->view->title = 'Available Catalogs';
 		$this->view->headTitle($this->view->title);
-    }
-    
-    /**
-     * Print out an XML list of all catalogs
-     * 
-     * @return void
-     */
-    public function listxmlAction () {
-    	$this->_helper->layout->disableLayout();
+	}
+
+	/**
+	 * Print out an XML list of all catalogs
+	 *
+	 * @return void
+	 */
+	public function listxmlAction () {
+		$this->_helper->layout->disableLayout();
 		$this->getResponse()->setHeader('Content-Type', 'text/xml');
-		
-    	$this->listAction();
-    }
-	
+
+		$this->listAction();
+	}
+
 	/**
 	 * View a catalog details
-	 * 
+	 *
 	 * @return void
 	 * @access public
 	 * @since 4/21/09
@@ -71,33 +71,31 @@ class CatalogsController
 		if (!isset($termId)) {
 			$termId = $this->_helper->osidTerms->getNextOrLatestTermId($catalogId);
 		}
-		
+
 		$this->_forward('search', 'Offerings', null, array(
 				'catalog'	=> $this->_helper->osidId->toString($catalogId),
 				'term' 		=> $this->_helper->osidId->toString($termId)
 			));
 	}
-	
+
 	/**
 	 * Print out an XML listing of a catalog
-	 * 
+	 *
 	 * @return void
 	 */
 	public function viewxmlAction () {
 		$this->_helper->layout->disableLayout();
 		$this->getResponse()->setHeader('Content-Type', 'text/xml');
-		
+
 		$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
-		
+
 		$lookupSession = $this->_helper->osid->getCourseManager()->getCourseCatalogLookupSession();
 		$catalog = $lookupSession->getCourseCatalog($catalogId);
 		$this->view->catalogs = new phpkit_course_ArrayCourseCatalogList(array($catalog));
-		
+
 		$this->view->title = 'Catalog Details';
 		$this->view->headTitle($this->view->title);
-		
+
 		$this->render('catalogs/listxml', null, true);
 	}
 }
-
-?>

@@ -7,15 +7,15 @@
 class banner_course_Topic_Lookup_SessionTest
 	extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @var    banner_course_CourseCatalog_Lookup_Session
-     * @access protected
-     */
-    protected $session;
-    
-    /**
+	/**
+	 * @var    banner_course_CourseCatalog_Lookup_Session
+	 * @access protected
+	 */
+	protected $session;
+
+	/**
 	 * Answer the session object to test
-	 * 
+	 *
 	 * @return osid_OsidSession
 	 * @access protected
 	 * @since 4/15/09
@@ -23,11 +23,11 @@ class banner_course_Topic_Lookup_SessionTest
 	protected function getSession () {
 		return $this->session;
 	}
-	
+
 	static $runtimeManager;
 	static $courseManager;
 
-	public static function setUpBeforeClass() 
+	public static function setUpBeforeClass()
 	{
 		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../../../').'/configuration.plist');
 		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
@@ -35,422 +35,421 @@ class banner_course_Topic_Lookup_SessionTest
 
 	public static function tearDownAfterClass()
 	{
-	    self::$courseManager->shutdown();
-	    self::$runtimeManager->shutdown();
+		self::$courseManager->shutdown();
+		self::$runtimeManager->shutdown();
 	}
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     *
-     * @access protected
-     */
-    protected function setUp()
-    {
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
-        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
-        $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
-        
-        $this->session = self::$courseManager->getTopicLookupSessionForCatalog($this->mcugId);
-        
-        $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
-        $this->geolId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/GEOL0300');
-        $this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHEM0104');
-        
-        $this->physSubjId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/PHYS');
-        $this->geolSubjId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/GEOL');
-        $this->chemSubjId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/CHEM');
-        
-        $this->physDeptId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/PHYS');
-        $this->geolDeptId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/GEOL');
-        $this->chemDeptId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/CHEM');
-        
-        
-        $this->dedReqId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/DED');
-        $this->sciReqId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/SCI');
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 *
+	 * @access protected
+	 */
+	protected function setUp()
+	{
+		$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
+		$this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
+		$this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
 
-        $this->ugLevelId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/level/UG');
+		$this->session = self::$courseManager->getTopicLookupSessionForCatalog($this->mcugId);
 
-        $this->ccBlockId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/block/CC');
-        
-        $this->nsciDivId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/division/NSCI');
-        $this->artsDivId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/division/ARTS');
-        
-        $this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
-        $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
-        $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
-        $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
-        $this->levelType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
-        $this->blockType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block");
-        
-       	$this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200893/90143');
-       	$this->geolOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200420/20663');
-        $this->unknownOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/178293/2101');
-        
-        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200893');
-        
-        $this->unknownType = new phpkit_type_URNInetType("urn:inet:osid.org:unknown_type");
-    	
-        $this->generaNoneType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:none");
-        $this->secondaryType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:secondary");
-        $this->undergraduateType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:undergraduate");
-    }
+		$this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
+		$this->geolId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/GEOL0300');
+		$this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHEM0104');
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     *
-     * @access protected
-     */
-    protected function tearDown()
-    {
-    }
+		$this->physSubjId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/PHYS');
+		$this->geolSubjId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/GEOL');
+		$this->chemSubjId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/CHEM');
 
-    /**
-     * 
-     */
-    public function testGetCourseCatalogId()
-    {
-        $this->assertInstanceOf('osid_id_Id', $this->session->getCourseCatalogId());
-        $this->assertTrue($this->mcugId->isEqual($this->session->getCourseCatalogId()));
-    }
+		$this->physDeptId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/PHYS');
+		$this->geolDeptId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/GEOL');
+		$this->chemDeptId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/CHEM');
 
-    /**
-     * 
-     */
-    public function testGetCourseCatalog()
-    {
-        $this->assertInstanceOf('osid_course_CourseCatalog', $this->session->getCourseCatalog());
-        $this->assertTrue($this->mcugId->isEqual($this->session->getCourseCatalog()->getId()));
-    }
 
-    /**
-     * 
-     */
-    public function testCanLookupTopics()
-    {
-        $this->assertTrue($this->session->canLookupTopics());
-    }
+		$this->dedReqId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/DED');
+		$this->sciReqId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/SCI');
 
-    /**
-     * 
-     */
-    public function testUseComparativeTopicView()
-    {
-       $this->session->useComparativeTopicView();
-       $topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
-        				$this->geolSubjId, $this->physDeptId, $this->unknownId)));
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertEquals(2, $topics->available());
-    }
+		$this->ugLevelId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/level/UG');
 
-    /**
-     * Should thrown osid_NotFoundExceptions for unknown results.
-     * @expectedException osid_NotFoundException
-     */
-    public function testUsePlenaryTopicView()
-    {
-        $this->session->usePlenaryTopicView();
-        $topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
-        				$this->geolSubjId, $this->physDeptId, $this->unknownId)));
-    }
+		$this->ccBlockId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/block/CC');
 
-    /**
-     * 
-     */
-    public function testUseFederatedCourseCatalogView()
-    {
-        $this->session->useFederatedCourseCatalogView();
-        
-        $this->session->useComparativeTopicView();
-     	$topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
-        				$this->geolSubjId, $this->physDeptId, $this->unknownId)));
-       	$this->assertEquals(2, $topics->available());
-       	
-       	$this->session->usePlenaryTopicView();
-       	try {
-       		$topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
-        				$this->geolSubjId, $this->physDeptId, $this->unknownId)));
-       		$this->fail('should have thrown an osid_NotFoundException.');
-       	} catch (osid_NotFoundException $e) {
-       		$this->assertTrue(true);
-       	}
-    }
+		$this->nsciDivId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/division/NSCI');
+		$this->artsDivId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/division/ARTS');
 
-    /**
-     * 
-     */
-    public function testUseIsolatedCourseCatalogView()
-    {
-        $this->session->useIsolatedCourseCatalogView();
-        
-        $this->session->useComparativeTopicView();
-     	$topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
-        				$this->geolSubjId, $this->physDeptId, $this->unknownId)));
-       	$this->assertEquals(2, $topics->available());
-       	
-       	$this->session->usePlenaryTopicView();
-       	try {
-       		$topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
-        				$this->geolSubjId, $this->physDeptId, $this->unknownId)));
-       		$this->fail('should have thrown an osid_NotFoundException.');
-       	} catch (osid_NotFoundException $e) {
-       		$this->assertTrue(true);
-        }
-        
-        $topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
-        				$this->geolSubjId, $this->physDeptId)));
-       	$this->assertEquals(2, $topics->available());
-    }
+		$this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
+		$this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
+		$this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
+		$this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
+		$this->levelType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
+		$this->blockType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block");
 
-    /**
-     * 
-     */
-    public function testGetTopic()
-    {
-        $this->assertInstanceOf('osid_course_Topic', $this->session->getTopic($this->physSubjId));
-        $this->assertInstanceOf('osid_course_Topic', $this->session->getTopic($this->chemDeptId));
-        $this->assertInstanceOf('osid_course_Topic', $this->session->getTopic($this->dedReqId));
-        $this->assertInstanceOf('osid_course_Topic', $this->session->getTopic($this->nsciDivId));
-    }
+		$this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200893/90143');
+		$this->geolOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200420/20663');
+		$this->unknownOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/178293/2101');
 
-    /**
-     * 
-     */
-    public function testGetTopicsByIds()
-    {
-        $topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
-        				$this->geolSubjId, $this->physDeptId, $this->sciReqId, $this->nsciDivId)));
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertTrue($topics->hasNext());
-        $this->assertEquals(4, $topics->available());
-        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
-        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
-        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
-        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
-        $this->assertFalse($topics->hasNext());
-        $this->assertEquals(0, $topics->available());
-    }
+		$this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200893');
 
-    /**
-     * 
-     */
-    public function testGetTopicsByRequirementGenusType()
-    {
-        $topics = $this->session->getTopicsByGenusType($this->requirementType);
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertTrue($topics->hasNext());
-        $this->assertEquals(2, $topics->available());
-        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
-        $this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->requirementType));
-    }
-    
-    /**
-     * 
-     */
-    public function testGetTopicsByLevelGenusType()
-    {
-        $topics = $this->session->getTopicsByGenusType($this->levelType);
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertTrue($topics->hasNext());
-        $this->assertEquals(1, $topics->available());
-        $topic = $topics->getNextTopic();
-        $this->assertInstanceOf('osid_course_Topic', $topic);
-        $this->assertTrue($topic->getGenusType()->isEqual($this->levelType));
-    }
-    
-    /**
-     * 
-     */
-    public function testGetTopicsByBlockGenusType()
-    {
-        $topics = $this->session->getTopicsByGenusType($this->blockType);
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertTrue($topics->hasNext());
-        $this->assertEquals(1, $topics->available());
-        $topic = $topics->getNextTopic();
-        $this->assertInstanceOf('osid_course_Topic', $topic);
-        $this->assertTrue($topic->getGenusType()->isEqual($this->blockType));
-    }
-    
-    
-    /**
-     * 
-     */
-    public function testGetTopicsByDepartmentGenusType()
-    {    
-        $topics = $this->session->getTopicsByGenusType($this->departmentType);
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertTrue($topics->hasNext());
-        $this->assertEquals(4, $topics->available());
-        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
-        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
-        $this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->departmentType));
-        
-    }
-    
-    /**
-     * 
-     */
-    public function testGetTopicsBySubjectGenusType()
-    { 
-        $topics = $this->session->getTopicsByGenusType($this->subjectType);
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertTrue($topics->hasNext());
-        $this->assertEquals(4, $topics->available());
-        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
-        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
-        $this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->subjectType));
-        
-    }
-    
-    /**
-     * 
-     */
-    public function testGetTopicsByDivisionGenusType()
-    { 
-        $topics = $this->session->getTopicsByGenusType($this->divisionType);
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertTrue($topics->hasNext());
-        $this->assertEquals(2, $topics->available());
-        $topic = $topics->getNextTopic();
-        $this->assertInstanceOf('osid_course_Topic', $topic);
-        $this->assertTrue($topic->getGenusType()->isEqual($this->divisionType));
-        
-    }
-    
-    /**
-     * 
-     */
-    public function testGetTopicsByOtherGenusType()
-    { 
-        $topics = $this->session->getTopicsByGenusType($this->generaNoneType);
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertFalse($topics->hasNext());
-        
-        $topics = $this->session->getTopicsByGenusType($this->unknownType);
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertFalse($topics->hasNext());
-    }
+		$this->unknownType = new phpkit_type_URNInetType("urn:inet:osid.org:unknown_type");
 
-    /**
-     * 
-     */
-    public function testGetTopicsByRequirementParentGenusType()
-    {
-        $topics = $this->session->getTopicsByParentGenusType($this->requirementType);
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertTrue($topics->hasNext());
-        $this->assertEquals(2, $topics->available());
-        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
-        $this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->requirementType));
-     }
-     
-    /**
-     * 
-     */
-    public function testGetTopicsByLevelParentGenusType()
-    {
-        $topics = $this->session->getTopicsByParentGenusType($this->levelType);
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertTrue($topics->hasNext());
-        $this->assertEquals(1, $topics->available());
-        $topic = $topics->getNextTopic();
-        $this->assertInstanceOf('osid_course_Topic', $topic);
-        $this->assertTrue($topic->getGenusType()->isEqual($this->levelType));
-     }
-    
-    /**
-     * 
-     */
-    public function testGetTopicsByBlockParentGenusType()
-    {
-        $topics = $this->session->getTopicsByParentGenusType($this->blockType);
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertTrue($topics->hasNext());
-        $this->assertEquals(1, $topics->available());
-        $topic = $topics->getNextTopic();
-        $this->assertInstanceOf('osid_course_Topic', $topic);
-        $this->assertTrue($topic->getGenusType()->isEqual($this->blockType));
-     }
+		$this->generaNoneType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:none");
+		$this->secondaryType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:secondary");
+		$this->undergraduateType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:undergraduate");
+	}
 
-    /**
-     * 
-     */
-    public function testGetTopicsByDepartmentParentGenusType()
-    {   
-        $topics = $this->session->getTopicsByParentGenusType($this->departmentType);
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertTrue($topics->hasNext());
-        $this->assertEquals(4, $topics->available());
-        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
-        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
-        $this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->departmentType));
-     }
+	/**
+	 * Tears down the fixture, for example, closes a network connection.
+	 * This method is called after a test is executed.
+	 *
+	 * @access protected
+	 */
+	protected function tearDown()
+	{
+	}
 
-    /**
-     * 
-     */
-    public function testGetTopicsBySubjectParentGenusType()
-    {    
-        $topics = $this->session->getTopicsByParentGenusType($this->subjectType);
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertTrue($topics->hasNext());
-        $this->assertEquals(4, $topics->available());
-        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
-        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
-        $this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->subjectType));
-     }
-     
-    /**
-     * 
-     */
-    public function testGetTopicsByDivisionParentGenusType()
-    {    
-        $topics = $this->session->getTopicsByParentGenusType($this->divisionType);
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertTrue($topics->hasNext());
-        $this->assertEquals(2, $topics->available());
-        $topic = $topics->getNextTopic();
-        $this->assertInstanceOf('osid_course_Topic', $topic);
-        $this->assertTrue($topic->getGenusType()->isEqual($this->divisionType));
-     }
+	/**
+	 *
+	 */
+	public function testGetCourseCatalogId()
+	{
+		$this->assertInstanceOf('osid_id_Id', $this->session->getCourseCatalogId());
+		$this->assertTrue($this->mcugId->isEqual($this->session->getCourseCatalogId()));
+	}
 
-    /**
-     * 
-     */
-    public function testGetTopicsByOtherParentGenusType()
-    {    
-        $topics = $this->session->getTopicsByParentGenusType($this->generaNoneType);
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertFalse($topics->hasNext());
-        
-        $topics = $this->session->getTopicsByParentGenusType($this->unknownType);
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertFalse($topics->hasNext());
-    }
+	/**
+	 *
+	 */
+	public function testGetCourseCatalog()
+	{
+		$this->assertInstanceOf('osid_course_CourseCatalog', $this->session->getCourseCatalog());
+		$this->assertTrue($this->mcugId->isEqual($this->session->getCourseCatalog()->getId()));
+	}
 
-    /**
-     * 
-     */
-    public function testGetTopicsByRecordType()
-    {
-        $topics = $this->session->getTopicsByRecordType($this->unknownType);
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertFalse($topics->hasNext());
-    }
+	/**
+	 *
+	 */
+	public function testCanLookupTopics()
+	{
+		$this->assertTrue($this->session->canLookupTopics());
+	}
 
-    /**
-     * 
-     */
-    public function testGetTopics()
-    {
-        $topics = $this->session->getTopics();
-        $this->assertInstanceOf('osid_course_TopicList', $topics);
-        $this->assertTrue($topics->hasNext());
-        $this->assertEquals(14, $topics->available());
-        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
-        $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
-    }
+	/**
+	 *
+	 */
+	public function testUseComparativeTopicView()
+	{
+	$this->session->useComparativeTopicView();
+	$topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
+						$this->geolSubjId, $this->physDeptId, $this->unknownId)));
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertEquals(2, $topics->available());
+	}
+
+	/**
+	 * Should thrown osid_NotFoundExceptions for unknown results.
+	 * @expectedException osid_NotFoundException
+	 */
+	public function testUsePlenaryTopicView()
+	{
+		$this->session->usePlenaryTopicView();
+		$topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
+						$this->geolSubjId, $this->physDeptId, $this->unknownId)));
+	}
+
+	/**
+	 *
+	 */
+	public function testUseFederatedCourseCatalogView()
+	{
+		$this->session->useFederatedCourseCatalogView();
+
+		$this->session->useComparativeTopicView();
+		$topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
+						$this->geolSubjId, $this->physDeptId, $this->unknownId)));
+		$this->assertEquals(2, $topics->available());
+
+		$this->session->usePlenaryTopicView();
+		try {
+			$topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
+						$this->geolSubjId, $this->physDeptId, $this->unknownId)));
+			$this->fail('should have thrown an osid_NotFoundException.');
+		} catch (osid_NotFoundException $e) {
+			$this->assertTrue(true);
+		}
+	}
+
+	/**
+	 *
+	 */
+	public function testUseIsolatedCourseCatalogView()
+	{
+		$this->session->useIsolatedCourseCatalogView();
+
+		$this->session->useComparativeTopicView();
+		$topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
+						$this->geolSubjId, $this->physDeptId, $this->unknownId)));
+		$this->assertEquals(2, $topics->available());
+
+		$this->session->usePlenaryTopicView();
+		try {
+			$topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
+						$this->geolSubjId, $this->physDeptId, $this->unknownId)));
+			$this->fail('should have thrown an osid_NotFoundException.');
+		} catch (osid_NotFoundException $e) {
+			$this->assertTrue(true);
+		}
+
+		$topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
+						$this->geolSubjId, $this->physDeptId)));
+		$this->assertEquals(2, $topics->available());
+	}
+
+	/**
+	 *
+	 */
+	public function testGetTopic()
+	{
+		$this->assertInstanceOf('osid_course_Topic', $this->session->getTopic($this->physSubjId));
+		$this->assertInstanceOf('osid_course_Topic', $this->session->getTopic($this->chemDeptId));
+		$this->assertInstanceOf('osid_course_Topic', $this->session->getTopic($this->dedReqId));
+		$this->assertInstanceOf('osid_course_Topic', $this->session->getTopic($this->nsciDivId));
+	}
+
+	/**
+	 *
+	 */
+	public function testGetTopicsByIds()
+	{
+		$topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
+						$this->geolSubjId, $this->physDeptId, $this->sciReqId, $this->nsciDivId)));
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertTrue($topics->hasNext());
+		$this->assertEquals(4, $topics->available());
+		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+		$this->assertFalse($topics->hasNext());
+		$this->assertEquals(0, $topics->available());
+	}
+
+	/**
+	 *
+	 */
+	public function testGetTopicsByRequirementGenusType()
+	{
+		$topics = $this->session->getTopicsByGenusType($this->requirementType);
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertTrue($topics->hasNext());
+		$this->assertEquals(2, $topics->available());
+		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+		$this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->requirementType));
+	}
+
+	/**
+	 *
+	 */
+	public function testGetTopicsByLevelGenusType()
+	{
+		$topics = $this->session->getTopicsByGenusType($this->levelType);
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertTrue($topics->hasNext());
+		$this->assertEquals(1, $topics->available());
+		$topic = $topics->getNextTopic();
+		$this->assertInstanceOf('osid_course_Topic', $topic);
+		$this->assertTrue($topic->getGenusType()->isEqual($this->levelType));
+	}
+
+	/**
+	 *
+	 */
+	public function testGetTopicsByBlockGenusType()
+	{
+		$topics = $this->session->getTopicsByGenusType($this->blockType);
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertTrue($topics->hasNext());
+		$this->assertEquals(1, $topics->available());
+		$topic = $topics->getNextTopic();
+		$this->assertInstanceOf('osid_course_Topic', $topic);
+		$this->assertTrue($topic->getGenusType()->isEqual($this->blockType));
+	}
+
+
+	/**
+	 *
+	 */
+	public function testGetTopicsByDepartmentGenusType()
+	{
+		$topics = $this->session->getTopicsByGenusType($this->departmentType);
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertTrue($topics->hasNext());
+		$this->assertEquals(4, $topics->available());
+		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+		$this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->departmentType));
+
+	}
+
+	/**
+	 *
+	 */
+	public function testGetTopicsBySubjectGenusType()
+	{
+		$topics = $this->session->getTopicsByGenusType($this->subjectType);
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertTrue($topics->hasNext());
+		$this->assertEquals(4, $topics->available());
+		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+		$this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->subjectType));
+
+	}
+
+	/**
+	 *
+	 */
+	public function testGetTopicsByDivisionGenusType()
+	{
+		$topics = $this->session->getTopicsByGenusType($this->divisionType);
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertTrue($topics->hasNext());
+		$this->assertEquals(2, $topics->available());
+		$topic = $topics->getNextTopic();
+		$this->assertInstanceOf('osid_course_Topic', $topic);
+		$this->assertTrue($topic->getGenusType()->isEqual($this->divisionType));
+
+	}
+
+	/**
+	 *
+	 */
+	public function testGetTopicsByOtherGenusType()
+	{
+		$topics = $this->session->getTopicsByGenusType($this->generaNoneType);
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertFalse($topics->hasNext());
+
+		$topics = $this->session->getTopicsByGenusType($this->unknownType);
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertFalse($topics->hasNext());
+	}
+
+	/**
+	 *
+	 */
+	public function testGetTopicsByRequirementParentGenusType()
+	{
+		$topics = $this->session->getTopicsByParentGenusType($this->requirementType);
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertTrue($topics->hasNext());
+		$this->assertEquals(2, $topics->available());
+		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+		$this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->requirementType));
+	}
+
+	/**
+	 *
+	 */
+	public function testGetTopicsByLevelParentGenusType()
+	{
+		$topics = $this->session->getTopicsByParentGenusType($this->levelType);
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertTrue($topics->hasNext());
+		$this->assertEquals(1, $topics->available());
+		$topic = $topics->getNextTopic();
+		$this->assertInstanceOf('osid_course_Topic', $topic);
+		$this->assertTrue($topic->getGenusType()->isEqual($this->levelType));
+	}
+
+	/**
+	 *
+	 */
+	public function testGetTopicsByBlockParentGenusType()
+	{
+		$topics = $this->session->getTopicsByParentGenusType($this->blockType);
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertTrue($topics->hasNext());
+		$this->assertEquals(1, $topics->available());
+		$topic = $topics->getNextTopic();
+		$this->assertInstanceOf('osid_course_Topic', $topic);
+		$this->assertTrue($topic->getGenusType()->isEqual($this->blockType));
+	}
+
+	/**
+	 *
+	 */
+	public function testGetTopicsByDepartmentParentGenusType()
+	{
+		$topics = $this->session->getTopicsByParentGenusType($this->departmentType);
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertTrue($topics->hasNext());
+		$this->assertEquals(4, $topics->available());
+		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+		$this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->departmentType));
+	}
+
+	/**
+	 *
+	 */
+	public function testGetTopicsBySubjectParentGenusType()
+	{
+		$topics = $this->session->getTopicsByParentGenusType($this->subjectType);
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertTrue($topics->hasNext());
+		$this->assertEquals(4, $topics->available());
+		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+		$this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->subjectType));
+	}
+
+	/**
+	 *
+	 */
+	public function testGetTopicsByDivisionParentGenusType()
+	{
+		$topics = $this->session->getTopicsByParentGenusType($this->divisionType);
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertTrue($topics->hasNext());
+		$this->assertEquals(2, $topics->available());
+		$topic = $topics->getNextTopic();
+		$this->assertInstanceOf('osid_course_Topic', $topic);
+		$this->assertTrue($topic->getGenusType()->isEqual($this->divisionType));
+	}
+
+	/**
+	 *
+	 */
+	public function testGetTopicsByOtherParentGenusType()
+	{
+		$topics = $this->session->getTopicsByParentGenusType($this->generaNoneType);
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertFalse($topics->hasNext());
+
+		$topics = $this->session->getTopicsByParentGenusType($this->unknownType);
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertFalse($topics->hasNext());
+	}
+
+	/**
+	 *
+	 */
+	public function testGetTopicsByRecordType()
+	{
+		$topics = $this->session->getTopicsByRecordType($this->unknownType);
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertFalse($topics->hasNext());
+	}
+
+	/**
+	 *
+	 */
+	public function testGetTopics()
+	{
+		$topics = $this->session->getTopics();
+		$this->assertInstanceOf('osid_course_TopicList', $topics);
+		$this->assertTrue($topics->hasNext());
+		$this->assertEquals(14, $topics->available());
+		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
+	}
 }
-?>

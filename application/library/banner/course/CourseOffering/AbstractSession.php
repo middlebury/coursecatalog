@@ -2,29 +2,29 @@
 /**
  * @since 4/16/09
  * @package banner.course
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
- */ 
+ */
 
 /**
  * This interface defines a few methods to allow course offering objects to get back to
  * other data from sessions such as terms and courses.
- * 
+ *
  * @since 4/16/09
  * @package banner.course
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 abstract class banner_course_CourseOffering_AbstractSession
 	extends banner_course_AbstractSession
-	implements banner_course_CourseOffering_SessionInterface 
+	implements banner_course_CourseOffering_SessionInterface
 {
-	
+
 	/**
 	 * Answer a list of instructors for the course offering id passed
-	 * 
+	 *
 	 * @param osid_id_Id $offeringId
 	 * @return osid_id_IdList
 	 * @access public
@@ -37,10 +37,10 @@ abstract class banner_course_CourseOffering_AbstractSession
 		}
 		return new phpkit_id_ArrayIdList($ids);
 	}
-	
+
 	/**
 	 * Answer a list of instructors for the course offering id passed
-	 * 
+	 *
 	 * @param osid_id_Id $offeringId
 	 * @return osid_resource_ResourceList
 	 * @access public
@@ -57,10 +57,10 @@ abstract class banner_course_CourseOffering_AbstractSession
 		}
 		return new phpkit_resource_ArrayResourceList($people);
 	}
-	
+
 	/**
 	 * Answer the instructor data rows for an offering id
-	 * 
+	 *
 	 * @param osid_id_Id $offeringId
 	 * @return array
 	 * @access private
@@ -74,11 +74,11 @@ abstract class banner_course_CourseOffering_AbstractSession
 		));
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}
-	
+
 	private static $instructorsForOffering_stmt;
 	/**
 	 * Answer the instructors statement
-	 * 
+	 *
 	 * @return PDOStatement
 	 * @access private
 	 * @since 5/1/09
@@ -106,11 +106,11 @@ ORDER BY
 		}
 		return self::$instructorsForOffering_stmt;
 	}
-	
+
 	private static $alternatesForOffering_stmt;
 	/**
 	 * Answer the alternate course-offering ids
-	 * 
+	 *
 	 * @param osid_id_Id $offeringId
 	 * @return PDOStatement
 	 * @access public
@@ -124,13 +124,13 @@ SELECT
 FROM
 	SSRXLST
 WHERE
-	SSRXLST_XLST_GROUP IN 
-		(SELECT 
-			SSRXLST_XLST_GROUP 
-		FROM 
-			SSRXLST 
-		WHERE 
-			SSRXLST_TERM_CODE = :term_code 
+	SSRXLST_XLST_GROUP IN
+		(SELECT
+			SSRXLST_XLST_GROUP
+		FROM
+			SSRXLST
+		WHERE
+			SSRXLST_TERM_CODE = :term_code
 			AND SSRXLST_CRN = :crn
 		)
 	AND SSRXLST_TERM_CODE = :term_code_2
@@ -146,28 +146,28 @@ WHERE
 		));
 		$rows = self::$alternatesForOffering_stmt->fetchAll(PDO::FETCH_ASSOC);
 		self::$alternatesForOffering_stmt->closeCursor();
-		
+
 		$ids = array();
 		foreach ($rows as $row) {
 			$ids[] = $this->getOfferingIdFromTermCodeAndCrn($row['SSRXLST_TERM_CODE'], $row['SSRXLST_CRN']);
 		}
-		
+
 		return new phpkit_id_ArrayIdList($ids);
 	}
-	
+
 	private static $requirementTopics_stmt;
-    /**
-     * Answer the requirement topic ids for a given course offering id.
-     * 
-     * @param string osid_id_Id $courseOfferingId
-     * @return array of osid_id_Id objects
-     * @access public
-     * @since 4/27/09
-     */
-    public function getRequirementTopicIdsForCourseOffering (osid_id_Id $courseOfferingId) {
-    	if (!isset(self::$requirementTopics_stmt)) {
-    		$query = "
-SELECT 
+	/**
+	 * Answer the requirement topic ids for a given course offering id.
+	 *
+	 * @param string osid_id_Id $courseOfferingId
+	 * @return array of osid_id_Id objects
+	 * @access public
+	 * @since 4/27/09
+	 */
+	public function getRequirementTopicIdsForCourseOffering (osid_id_Id $courseOfferingId) {
+		if (!isset(self::$requirementTopics_stmt)) {
+			$query = "
+SELECT
 	SSRATTR_ATTR_CODE
 FROM
 	SSRATTR
@@ -177,7 +177,7 @@ WHERE
 ";
 			self::$requirementTopics_stmt = $this->manager->getDB()->prepare($query);
 		}
-		
+
 		$parameters = array(
 				':term_code' => $this->getTermCodeFromOfferingId($courseOfferingId),
 				':crn' => $this->getCrnFromOfferingId($courseOfferingId)
@@ -186,24 +186,24 @@ WHERE
 		$topicIds = array();
 		while ($row = self::$requirementTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
 			$topicIds[] = $this->getOsidIdFromString($row['SSRATTR_ATTR_CODE'], 'topic/requirement/');
-    	}
-    	self::$requirementTopics_stmt->closeCursor();
-    	return $topicIds;
-    }
-    
-    private static $levelTopics_stmt;
-    /**
-     * Answer the level topic ids for a given course offering id.
-     * 
-     * @param string osid_id_Id $courseOfferingId
-     * @return array of osid_id_Id objects
-     * @access public
-     * @since 4/27/09
-     */
-    public function getLevelTopicIdsForCourseOffering (osid_id_Id $courseOfferingId) {
-    	if (!isset(self::$levelTopics_stmt)) {
-    		$query = "
-SELECT 
+		}
+		self::$requirementTopics_stmt->closeCursor();
+		return $topicIds;
+	}
+
+	private static $levelTopics_stmt;
+	/**
+	 * Answer the level topic ids for a given course offering id.
+	 *
+	 * @param string osid_id_Id $courseOfferingId
+	 * @return array of osid_id_Id objects
+	 * @access public
+	 * @since 4/27/09
+	 */
+	public function getLevelTopicIdsForCourseOffering (osid_id_Id $courseOfferingId) {
+		if (!isset(self::$levelTopics_stmt)) {
+			$query = "
+SELECT
 	SCRLEVL_LEVL_CODE
 FROM
 	SSBSECT
@@ -214,7 +214,7 @@ WHERE
 ";
 			self::$levelTopics_stmt = $this->manager->getDB()->prepare($query);
 		}
-		
+
 		$parameters = array(
 				':term_code' => $this->getTermCodeFromOfferingId($courseOfferingId),
 				':crn' => $this->getCrnFromOfferingId($courseOfferingId)
@@ -223,21 +223,21 @@ WHERE
 		$topicIds = array();
 		while ($row = self::$levelTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
 			$topicIds[] = $this->getOsidIdFromString($row['SCRLEVL_LEVL_CODE'], 'topic/level/');
-    	}
-    	self::$levelTopics_stmt->closeCursor();
-    	return $topicIds;
-    }
-    
-    private static $blockTopics_stmt;
-    /**
-     * Answer the block topic ids for a given course offering id.
-     *
-     * @param string osid_id_Id $courseOfferingId
-     * @return array of osid_id_Id objects
-     * @access public
-     * @since 4/27/09
-     */
-    public function getBlockTopicIdsForCourseOffering (osid_id_Id $courseOfferingId) {
+		}
+		self::$levelTopics_stmt->closeCursor();
+		return $topicIds;
+	}
+
+	private static $blockTopics_stmt;
+	/**
+	 * Answer the block topic ids for a given course offering id.
+	 *
+	 * @param string osid_id_Id $courseOfferingId
+	 * @return array of osid_id_Id objects
+	 * @access public
+	 * @since 4/27/09
+	 */
+	public function getBlockTopicIdsForCourseOffering (osid_id_Id $courseOfferingId) {
 	if (!isset(self::$blockTopics_stmt)) {
 		$query = "
 SELECT
@@ -262,21 +262,21 @@ WHERE
 	}
 	self::$blockTopics_stmt->closeCursor();
 	return $topicIds;
-    }
+	}
 
-    private static $meetingRows_stmt;
-    /**
-     * Answer all meeting rows for a course offering.
-     * 
-     * @param string osid_id_Id $courseOfferingId
-     * @return array
-     * @access public
-     * @since 6/10/09
-     */
-    public function getCourseOfferingMeetingRows (osid_id_Id $courseOfferingId) {
-    	if (!isset(self::$meetingRows_stmt)) {
-    		$query = "
-SELECT 
+	private static $meetingRows_stmt;
+	/**
+	 * Answer all meeting rows for a course offering.
+	 *
+	 * @param string osid_id_Id $courseOfferingId
+	 * @return array
+	 * @access public
+	 * @since 6/10/09
+	 */
+	public function getCourseOfferingMeetingRows (osid_id_Id $courseOfferingId) {
+		if (!isset(self::$meetingRows_stmt)) {
+			$query = "
+SELECT
 	SSRMEET_BLDG_CODE,
 	SSRMEET_ROOM_CODE,
 	SSRMEET_BEGIN_TIME,
@@ -300,15 +300,13 @@ WHERE
 ";
 			self::$meetingRows_stmt = $this->manager->getDB()->prepare($query);
 		}
-		
+
 		$parameters = array(
 				':term_code' => $this->getTermCodeFromOfferingId($courseOfferingId),
 				':crn' => $this->getCrnFromOfferingId($courseOfferingId)
 			);
 		self::$meetingRows_stmt->execute($parameters);
 		return self::$meetingRows_stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-	
-}
+	}
 
-?>
+}

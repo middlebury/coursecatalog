@@ -2,18 +2,18 @@
 /**
  * @since 4/27/09
  * @package PDODebug
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
- */ 
+ */
 
 /**
  * This class is an extension of the PDO object that will log debugging information
  * about the number of statements prepared and executed.
- * 
+ *
  * @since 4/27/09
  * @package PDODebug
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
@@ -25,19 +25,19 @@ class PDODebug_PDO
 	public $execs = 0;
 	public $queries = 0;
 	public $cursorsClosed = 0;
-	
+
 	private $checkForDuplicatePreparation = false;
 	private $preparedQueries = array();
 	private $duplicateQueries = array();
-	
+
 	public function __construct($dsn, $username="", $password="", $driver_options=array()) {
 		parent::__construct($dsn, $username, $password, $driver_options);
 		$this->setAttribute(PDO::ATTR_STATEMENT_CLASS, array('PDODebug_PDOStatement', array($this)));
 	}
-	
+
 	/**
-	 *  Execute an SQL statement and return the number of affected rows 
-	 * 
+	 *  Execute an SQL statement and return the number of affected rows
+	 *
 	 * @param string $statement
 	 * @return int
 	 * @access public
@@ -47,10 +47,10 @@ class PDODebug_PDO
 		$this->execs++;
 		return parent::exec($statement);
 	}
-	
+
 	/**
-	 * Executes an SQL statement, returning a result set as a PDOStatement object 
-	 * 
+	 * Executes an SQL statement, returning a result set as a PDOStatement object
+	 *
 	 * @param string $statement
 	 * @param optional int $fetchType
 	 * @param optional mixed $arg3
@@ -63,10 +63,10 @@ class PDODebug_PDO
 		$this->queries++;
 		return parent::query($statement, $fetchType, $arg3, $ctorargs);
 	}
-	
+
 	/**
 	 * Prepare a statement
-	 * 
+	 *
 	 * @param string $statement
 	 * @param optional array $driver_options
 	 * @return PDOStatement
@@ -87,10 +87,10 @@ class PDODebug_PDO
 		}
 		return parent::prepare($statement, $driver_options);
 	}
-	
+
 	/**
 	 * Reset counters
-	 * 
+	 *
 	 * @return void
 	 * @access public
 	 * @since 4/27/09
@@ -104,10 +104,10 @@ class PDODebug_PDO
 		$this->preparedQueries = array();
 		$this->duplicateQueries = array();
 	}
-	
+
 	/**
 	 * Answer an array of all counter values
-	 * 
+	 *
 	 * @return array
 	 * @access public
 	 * @since 4/27/09
@@ -121,10 +121,10 @@ class PDODebug_PDO
 				'PDOStatement::closeCursor()'	=> $this->cursorsClosed
 			);
 	}
-	
+
 	/**
 	 * Set this connection to record duplicate query preparations.
-	 * 
+	 *
 	 * @return void
 	 * @access public
 	 * @since 4/28/09
@@ -132,10 +132,10 @@ class PDODebug_PDO
 	public function recordDuplicates () {
 		$this->checkForDuplicatePreparation = true;
 	}
-	
+
 	/**
 	 * Answer an array of all duplicate queries
-	 * 
+	 *
 	 * @return array
 	 * @access public
 	 * @since 4/28/09
@@ -146,5 +146,3 @@ class PDODebug_PDO
 		return $this->duplicateQueries;
 	}
 }
-
-?>

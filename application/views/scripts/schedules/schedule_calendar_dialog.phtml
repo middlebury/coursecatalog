@@ -16,8 +16,8 @@ if (!defined('CALENDAR_DIALOG_JS_ADDED')) {
 	ob_start();
 ?>
 
-	$(function() { // on DOM ready 
-		
+	$(function() { // on DOM ready
+
 		/*********************************************************
 		 * Calendar controls
 		 *********************************************************/
@@ -33,31 +33,31 @@ if (!defined('CALENDAR_DIALOG_JS_ADDED')) {
 		$this->headScript()->appendFile($this->url(array(), null, true).'javascript/schedule.js');
 
 		?>
-		
+
 		$(".calendar").each(function() {
 			var button = $(this).siblings(".calendar_button");
 			var calendar = $(this).dialog({
-					autoOpen: false, 
-					width:  900, 
+					autoOpen: false,
+					width:  900,
 					modal: true,
 					position: 'top'
 				});
-			
+
 			button.data("calendar", calendar);
 		});
 		$(".calendar_button").click(function(){
 			var jsonUrl = $(this).attr('href');
 			var calendar = $(this).data('calendar');
 			calendar.dialog("open");
-			
+
 			if (!calendar.data('initialized')) {
 				renderSchedule(calendar, jsonUrl);
 				calendar.data('initialized', true);
 			}
-			
+
 			return false;
 		});
-		
+
 	});
 
 

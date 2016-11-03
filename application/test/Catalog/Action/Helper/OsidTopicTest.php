@@ -7,65 +7,64 @@
 class Catalog_Action_Helper_OsidTopicTest extends PHPUnit_Framework_TestCase
 {
 
-    /**
-     * Sets up the fixture, for example, opens a network connection.
-     * This method is called before a test is executed.
-     *
-     * @access protected
-     */
-    protected function setUp()
-    {
-    	$this->osidHelper = new Catalog_Action_Helper_Osid();
-    	Zend_Controller_Action_HelperBroker::addHelper($this->osidHelper);
-    	$this->osidIdHelper = new Catalog_Action_Helper_OsidId();
-    	Zend_Controller_Action_HelperBroker::addHelper($this->osidIdHelper);
-    	$this->osidTopicHelper = new Catalog_Action_Helper_Topics();
-    	Zend_Controller_Action_HelperBroker::addHelper($this->osidTopicHelper);
-    	
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
-        
-        $this->topicLookup = $this->osidHelper->getCourseManager()->getTopicLookupSessionForCatalog($this->mcugId);
-    }
+	/**
+	 * Sets up the fixture, for example, opens a network connection.
+	 * This method is called before a test is executed.
+	 *
+	 * @access protected
+	 */
+	protected function setUp()
+	{
+		$this->osidHelper = new Catalog_Action_Helper_Osid();
+		Zend_Controller_Action_HelperBroker::addHelper($this->osidHelper);
+		$this->osidIdHelper = new Catalog_Action_Helper_OsidId();
+		Zend_Controller_Action_HelperBroker::addHelper($this->osidIdHelper);
+		$this->osidTopicHelper = new Catalog_Action_Helper_Topics();
+		Zend_Controller_Action_HelperBroker::addHelper($this->osidTopicHelper);
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     *
-     * @access protected
-     */
-    protected function tearDown()
-    {
-    }
+		$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
 
-    /**
-     * 
-     */
-    public function testTopicListAsArray()
-    {
-        $topics = $this->topicLookup->getTopics();
-        $numTopics = $topics->available();
-        $topicArray = $this->osidTopicHelper->topicListAsArray($topics);
-        $this->assertInternalType('array', $topicArray);
-        $this->assertEquals($numTopics, count($topicArray));
-        $this->assertInstanceOf('osid_course_Topic', $topicArray[0]);
-    }
+		$this->topicLookup = $this->osidHelper->getCourseManager()->getTopicLookupSessionForCatalog($this->mcugId);
+	}
 
-    /**
-     * 
-     */
-    public function testFilterTopicsByType()
-    {
-        $topics = $this->topicLookup->getTopics();
-        $numTopics = $topics->available();
-        $topicArray = $this->osidTopicHelper->topicListAsArray($topics);
-        
-        $subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
+	/**
+	 * Tears down the fixture, for example, closes a network connection.
+	 * This method is called after a test is executed.
+	 *
+	 * @access protected
+	 */
+	protected function tearDown()
+	{
+	}
 
-        $filteredTopics = $this->osidTopicHelper->filterTopicsByType($topicArray, $subjectType);
-        $this->assertInternalType('array', $filteredTopics);
-        $this->assertLessThan($numTopics, count($filteredTopics));
-        $this->assertEquals(4, count($filteredTopics));
-        $this->assertInstanceOf('osid_course_Topic', $filteredTopics[0]);
-    }
+	/**
+	 *
+	 */
+	public function testTopicListAsArray()
+	{
+		$topics = $this->topicLookup->getTopics();
+		$numTopics = $topics->available();
+		$topicArray = $this->osidTopicHelper->topicListAsArray($topics);
+		$this->assertInternalType('array', $topicArray);
+		$this->assertEquals($numTopics, count($topicArray));
+		$this->assertInstanceOf('osid_course_Topic', $topicArray[0]);
+	}
+
+	/**
+	 *
+	 */
+	public function testFilterTopicsByType()
+	{
+		$topics = $this->topicLookup->getTopics();
+		$numTopics = $topics->available();
+		$topicArray = $this->osidTopicHelper->topicListAsArray($topics);
+
+		$subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
+
+		$filteredTopics = $this->osidTopicHelper->filterTopicsByType($topicArray, $subjectType);
+		$this->assertInternalType('array', $filteredTopics);
+		$this->assertLessThan($numTopics, count($filteredTopics));
+		$this->assertEquals(4, count($filteredTopics));
+		$this->assertInstanceOf('osid_course_Topic', $filteredTopics[0]);
+	}
 }
-?>

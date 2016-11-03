@@ -5,8 +5,8 @@
 						if (!empty($this->menuCatalogSelected)) {
 							$searchUrl = $this->url(
 								array(
-									'controller' => 'catalogs', 
-									'action' => 'view', 
+									'controller' => 'catalogs',
+									'action' => 'view',
 									'catalog' => $this->getStringFromOsidId($this->menuCatalogSelected->getId()),
 									'term' => $this->termIdString,
 								),
@@ -14,12 +14,12 @@
 								true);
 							print "\n\t\t\t\t\t\t &raquo; ";
 							print "<a class=\"\" href=\"".$searchUrl."\">".$this->escape($this->menuCatalogSelected->getDisplayName())."</a>";
-							
+
 							if (!empty($this->course)) {
 								print "\n\t\t\t\t\t\t &raquo; ";
 								print $this->escape($this->course->getDisplayName());
 							}
-							
+
 							if (!empty($this->offering)) {
 								print "\n\t\t\t\t\t\t &raquo; ";
 								print $this->escape($this->offering->getDisplayName());

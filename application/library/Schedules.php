@@ -2,25 +2,25 @@
 /**
  * @since 7/29/10
  * @package catalog.schedules
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
- */ 
+ */
 
 /**
  * The Schedules class provides access to a list of user-created schedules.
- * 
+ *
  * @since 7/29/10
  * @package catalog.schedules
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 class Schedules {
-		
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param Zend_Db_Adapter_Abstract $db
 	 * @param string $userId
 	 * @param osid_course_CourseManager $courseManager
@@ -31,19 +31,19 @@ class Schedules {
 	public function __construct (Zend_Db_Adapter_Abstract $db, $userId, osid_course_CourseManager $courseManager) {
 		if (!strlen($userId))
 			throw new InvalidArgumentException('No $userId passed.');
-		
+
 		$this->db = $db;
 		$this->userId = $userId;
 		$this->courseManager = $courseManager;
 	}
-	
+
 	private $db;
 	private $userId;
 	private $courseManager;
-	
+
 	/**
 	 * Create a schedule
-	 * 
+	 *
 	 * @param osid_id_Id $termId
 	 * @return Schedule
 	 * @access public
@@ -62,10 +62,10 @@ class Schedules {
 		$id = $this->db->lastInsertId();
 		return new Schedule($id, $this->db, $this->userId, $this->courseManager, $name, $termId);
 	}
-	
+
 	/**
 	 * Delete a schedule.
-	 * 
+	 *
 	 * @param string $scheduleId
 	 * @return void
 	 * @access public
@@ -78,10 +78,10 @@ class Schedules {
 			$this->userId
 		));
 	}
-	
+
 	/**
 	 * Answer a schedule by Id
-	 * 
+	 *
 	 * @param string $scheduleId
 	 * @return Schedule
 	 * @access public
@@ -99,10 +99,10 @@ class Schedules {
 		return new Schedule($rows[0]['id'], $this->db, $this->userId, $this->courseManager, $rows[0]['name'], new phpkit_id_Id($rows[0]['term_id_authority'], $rows[0]['term_id_namespace'], $rows[0]['term_id_keyword']));
 
 	}
-	
+
 	/**
 	 * Answer all schedules for the current user
-	 * 
+	 *
 	 * @return array of Schedule objects
 	 * @access public
 	 * @since 8/2/10
@@ -112,17 +112,17 @@ class Schedules {
 		$stmt->execute(array(
 			$this->userId
 		));
-		
+
 		$schedules = array();
 		foreach ($stmt->fetchAll() as $row) {
 			$schedules[] = new Schedule($row['id'], $this->db, $this->userId, $this->courseManager, $row['name'], new phpkit_id_Id($row['term_id_authority'], $row['term_id_namespace'], $row['term_id_keyword']));
 		}
 		return $schedules;
 	}
-	
+
 	/**
 	 * Answer schedules for the current user for a given term.
-	 * 
+	 *
 	 * @param osid_id_Id $termId
 	 * @return array of Schedule objects
 	 * @access public
@@ -136,7 +136,7 @@ class Schedules {
 			$termId->getAuthority(),
 			$termId->getIdentifierNamespace()
 		));
-		
+
 		$schedules = array();
 		foreach ($stmt->fetchAll() as $row) {
 			$schedules[] = new Schedule($row['id'], $this->db, $this->userId, $this->courseManager, $row['name'], new phpkit_id_Id($row['term_id_authority'], $row['term_id_namespace'], $row['term_id_keyword']));
@@ -144,5 +144,3 @@ class Schedules {
 		return $schedules;
 	}
 }
-
-?>

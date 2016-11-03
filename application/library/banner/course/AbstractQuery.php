@@ -2,33 +2,33 @@
 /**
  * @since 6/11/09
  * @package banner.course
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
- */ 
+ */
 
 /**
  * This is an abstract query class that provides common functions for search Querys.
- * 
+ *
  * @since 6/11/09
  * @package banner.course
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 abstract class banner_course_AbstractQuery {
-	
+
 	private $clauseSets;
 	private $parameters;
 	private $additionalTableJoins;
 	private $stringMatchTypes;
 	protected $session;
 	private $recordTypes;
-	
-	
+
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param banner_course_CourseOffering_AbstractSession $session
 	 * @return void
 	 * @access public
@@ -36,17 +36,17 @@ abstract class banner_course_AbstractQuery {
 	 */
 	public function __construct (banner_course_AbstractSession $session) {
 		$this->session = $session;
-		
+
 		$this->clauseSets = array();
 		$this->parameters = array();
 		$this->additionalTableJoins = array();
 		$this->stringMatchTypes = array();
-		$this->recordTypes = array();		
+		$this->recordTypes = array();
 	}
-	
+
 	/**
 	 * Enable a string-match type as supported.
-	 * 
+	 *
 	 * @param osid_type_Type $type
 	 * @return void
 	 * @access protected
@@ -55,15 +55,15 @@ abstract class banner_course_AbstractQuery {
 	protected function addStringMatchType (osid_type_Type $type) {
 		$this->stringMatchTypes[] = $type;
 	}
-	
+
 	/**
 	 * Add a clause. All clauses in the same set will be OR'ed, sets will be AND'ed.
-	 * 
-	 * @param string $set 
+	 *
+	 * @param string $set
 	 * @param string $where A where clause with parameters in '?' form.
 	 * @param array $parameters An indexed array of parameters
-     * @param boolean $match <code> true </code> for a positive match, <code> 
-     *          false </code> for a negative match 
+	 * @param boolean $match <code> true </code> for a positive match, <code>
+	 *          false </code> for a negative match
 	 * @return void
 	 * @access protected
 	 * @since 5/20/09
@@ -75,23 +75,23 @@ abstract class banner_course_AbstractQuery {
 		if ($numParams != count($parameters))
 			throw new osid_InvalidArgumentException('The number of \'?\'s must match the number of parameters.');
 		if (!is_bool($match))
-    		throw new osid_InvalidArgumentException("\$match '$match' must be a boolean.");
-		
+			throw new osid_InvalidArgumentException("\$match '$match' must be a boolean.");
+
 		if (!isset($this->clauseSets[$set]))
 			$this->clauseSets[$set] = array();
 		if (!isset($this->parameters[$set]))
 			$this->parameters[$set] = array();
-		
+
 		if ($match)
 			$this->clauseSets[$set][] = $where;
 		else
 			$this->clauseSets[$set][] = 'NOT '.$where;
 		$this->parameters[$set][] = $parameters;
 	}
-	
+
 	/**
 	 * Add a table join
-	 * 
+	 *
 	 * @param string $joinClause
 	 * @return void
 	 * @access protected
@@ -101,10 +101,10 @@ abstract class banner_course_AbstractQuery {
 		if (!in_array($joinClause, $this->additionalTableJoins))
 			$this->additionalTableJoins[] = $joinClause;
 	}
-	
+
 	/**
 	 * Answer the clause sets
-	 * 
+	 *
 	 * @return array
 	 * @access protected
 	 * @since 6/11/09
@@ -112,10 +112,10 @@ abstract class banner_course_AbstractQuery {
 	protected function getClauseSets () {
 		return $this->clauseSets;
 	}
-	
+
 	/**
 	 * Answer the SQL WHERE clause that reflects our current state
-	 * 
+	 *
 	 * @return string
 	 * @access public
 	 * @since 5/20/09
@@ -125,13 +125,13 @@ abstract class banner_course_AbstractQuery {
 		foreach ($this->getClauseSets() as $set) {
 			$sets[] = '('.implode("\n\t\tOR ", $set).')';
 		}
-		
+
 		return implode("\n\tAND ", $sets);
 	}
-	
+
 	/**
 	 * Answer the array of parameters that matches our current state
-	 * 
+	 *
 	 * @return array
 	 * @access public
 	 * @since 5/20/09
@@ -143,13 +143,13 @@ abstract class banner_course_AbstractQuery {
 				$params = array_merge($params, $clauseParams);
 			}
 		}
-		
+
 		return $params;
 	}
-	
+
 	/**
 	 * Answer an array of additional columns to return.
-	 * 
+	 *
 	 * @return array
 	 * @access public
 	 * @since 6/10/09
@@ -157,10 +157,10 @@ abstract class banner_course_AbstractQuery {
 	public function getAdditionalColumns () {
 		return array();
 	}
-	
+
 	/**
 	 * Answer an array column/direction terms for a SQL ORDER BY clause
-	 * 
+	 *
 	 * @return array
 	 * @access public
 	 * @since 5/28/09
@@ -168,10 +168,10 @@ abstract class banner_course_AbstractQuery {
 	public function getOrderByTerms () {
 		return array();
 	}
-	
+
 	/**
 	 * Answer any additional table join clauses to use
-	 * 
+	 *
 	 * @return string
 	 * @access public
 	 * @since 4/29/09
@@ -179,47 +179,47 @@ abstract class banner_course_AbstractQuery {
 	public function getAdditionalTableJoins () {
 		return $this->additionalTableJoins;
 	}
-	
+
 /*********************************************************
  * Methods from osid_OsidQuery
  *********************************************************/
 
 	/**
-     *  Gets the string matching types supported. A string match type 
-     *  specifies the syntax of the string query, such as matching a word or 
-     *  including a wildcard or regular expression. 
-     *
-     *  @return object osid_type_TypeList a list containing the supported 
-     *          string match types 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function getStringMatchTypes() {
-    	return new phpkit_type_ArrayTypeList($this->stringMatchTypes);
-    }
+	 *  Gets the string matching types supported. A string match type
+	 *  specifies the syntax of the string query, such as matching a word or
+	 *  including a wildcard or regular expression.
+	 *
+	 *  @return object osid_type_TypeList a list containing the supported
+	 *          string match types
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getStringMatchTypes() {
+		return new phpkit_type_ArrayTypeList($this->stringMatchTypes);
+	}
 
 
-    /**
-     *  Tests if the given string matching type is supported. 
-     *
-     *  @param object osid_type_Type $searchType a <code> Type </code> 
-     *          indicating a string match type 
-     *  @return boolean <code> true </code> if the given Type is supported, 
-     *          <code> false </code> otherwise 
-     *  @throws osid_NullArgumentException null argument provided 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function supportsStringMatchType(osid_type_Type $searchType) {
-    	foreach ($this->stringMatchTypes as $type) {
-    		if ($searchType->isEqual($type))
-    			return true;
-    	}
-    	return false;
-    }
-	
-	
+	/**
+	 *  Tests if the given string matching type is supported.
+	 *
+	 *  @param object osid_type_Type $searchType a <code> Type </code>
+	 *          indicating a string match type
+	 *  @return boolean <code> true </code> if the given Type is supported,
+	 *          <code> false </code> otherwise
+	 *  @throws osid_NullArgumentException null argument provided
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function supportsStringMatchType(osid_type_Type $searchType) {
+		foreach ($this->stringMatchTypes as $type) {
+			if ($searchType->isEqual($type))
+				return true;
+		}
+		return false;
+	}
+
+
 	/**
 	 * Add a record type to our supported list
-	 * 
+	 *
 	 * @param osid_type_Type $recordType
 	 * @return void
 	 * @access protected
@@ -228,51 +228,49 @@ abstract class banner_course_AbstractQuery {
 	protected function addSupportedRecordType (osid_type_Type $recordType) {
 		$this->recordTypes[] = $recordType;
 	}
-	
+
 	/**
-     *  Tests if this search order supports the given record <code> Type. 
-     *  </code> The given record type may be supported by the object through 
-     *  interface/type inheritence. This method should be checked before 
-     *  retrieving the record interface. 
-     *
-     *  @param object osid_type_Type $recordType a type 
-     *  @return boolean <code> true </code> if an order record of the given 
-     *          record <code> Type </code> is available, <code> false </code> 
-     *          otherwise 
-     *  @throws osid_NullArgumentException <code> recordType </code> is <code> 
-     *          null </code> 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function hasRecordType(osid_type_Type $recordType) {
-    	foreach ($this->recordTypes as $type) {
-    		if ($type->isEqual($recordType))
-    			return true;
-    	}
-    	return false;
-    }
-    
+	 *  Tests if this search order supports the given record <code> Type.
+	 *  </code> The given record type may be supported by the object through
+	 *  interface/type inheritence. This method should be checked before
+	 *  retrieving the record interface.
+	 *
+	 *  @param object osid_type_Type $recordType a type
+	 *  @return boolean <code> true </code> if an order record of the given
+	 *          record <code> Type </code> is available, <code> false </code>
+	 *          otherwise
+	 *  @throws osid_NullArgumentException <code> recordType </code> is <code>
+	 *          null </code>
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function hasRecordType(osid_type_Type $recordType) {
+		foreach ($this->recordTypes as $type) {
+			if ($type->isEqual($recordType))
+				return true;
+		}
+		return false;
+	}
+
 /*********************************************************
  * Methods From osid_course_*QueryRecord
  *********************************************************/
-    
-    /**
-     *  Tests if the given type is implemented by this record. Other types 
-     *  than that directly indicated by <code> getType() </code> may be 
-     *  supported through an inheritance scheme where the given type specifies 
-     *  a record that is a parent interface of the interface specified by 
-     *  <code> getType(). </code> 
-     *
-     *  @param object osid_type_Type $recordType a type 
-     *  @return boolean <code> true </code> if the given record <code> Type 
-     *          </code> is implemented by this record, <code> false </code> 
-     *          otherwise 
-     *  @throws osid_NullArgumentException <code> recordType </code> is <code> 
-     *          null </code> 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function implementsRecordType(osid_type_Type $recordType) {
-    	return $this->hasRecordType($recordType);
-    }
-}
 
-?>
+	/**
+	 *  Tests if the given type is implemented by this record. Other types
+	 *  than that directly indicated by <code> getType() </code> may be
+	 *  supported through an inheritance scheme where the given type specifies
+	 *  a record that is a parent interface of the interface specified by
+	 *  <code> getType(). </code>
+	 *
+	 *  @param object osid_type_Type $recordType a type
+	 *  @return boolean <code> true </code> if the given record <code> Type
+	 *          </code> is implemented by this record, <code> false </code>
+	 *          otherwise
+	 *  @throws osid_NullArgumentException <code> recordType </code> is <code>
+	 *          null </code>
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function implementsRecordType(osid_type_Type $recordType) {
+		return $this->hasRecordType($recordType);
+	}
+}

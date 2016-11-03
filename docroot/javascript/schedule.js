@@ -3,18 +3,18 @@ function renderSchedule(calendarJQ, jsonUrl, timeslotHeight, textSize) {
 		timeslotHeight = 20;
 	if (!textSize)
 		textSize = 13;
-	
+
 	var year = new Date().getFullYear();
 	var month = new Date().getMonth();
 	var day = new Date().getDate();
-	
+
 	var startHour = new Number(calendarJQ.find('input:hidden[name=start_hour]').val());
 	var endHour = new Number(calendarJQ.find('input:hidden[name=end_hour]').val());
-	
+
 	// 4 timeslots per hour, 20 height per slot.
 	// Add on the approximate size of the header.
-	var scheduleHeight = ((endHour - startHour + 1) * 4 * timeslotHeight) + 70; 
-	
+	var scheduleHeight = ((endHour - startHour + 1) * 4 * timeslotHeight) + 70;
+
 	var daysToShow = 7;
 	var firstDayOfWeek = 0;
 	if (calendarJQ.find('input:hidden[name=show_sunday]').val() == 'no') {
@@ -24,7 +24,7 @@ function renderSchedule(calendarJQ, jsonUrl, timeslotHeight, textSize) {
 	if (calendarJQ.find('input:hidden[name=show_saturday]').val() == 'no') {
 		daysToShow--;
 	}
-	
+
 	calendarJQ.weekCalendar({
 		date:new Date(year, month, day, 9),
 		readonly: true,
@@ -58,7 +58,7 @@ function renderSchedule(calendarJQ, jsonUrl, timeslotHeight, textSize) {
 		},
 		data: jsonUrl
 	});
-	
+
 	calendarJQ.find('td.wc-day-column-header').each(function() {
 		$(this).html($(this).html().replace(/<.*$/, ''));
 	});

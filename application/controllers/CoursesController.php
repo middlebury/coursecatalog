@@ -21,13 +21,13 @@ class CoursesController
 {
 
 	/**
-     * Initialize object
-     *
-     * Called from {@link __construct()} as final step of object instantiation.
-     *
-     * @return void
-     */
-    public function init() {
+	 * Initialize object
+	 *
+	 * Called from {@link __construct()} as final step of object instantiation.
+	 *
+	 * @return void
+	 */
+	public function init() {
 		$this->alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
 
 		parent::init();
@@ -73,7 +73,7 @@ class CoursesController
 		$this->view->course = $lookupSession->getCourse($id);
 
 		// Load the topics into our view
- 		$this->loadTopics($this->view->course->getTopics());
+		 $this->loadTopics($this->view->course->getTopics());
 
 		// Set the selected Catalog Id.
 		$catalogSession = $this->_helper->osid->getCourseManager()->getCourseCatalogSession();
@@ -89,12 +89,12 @@ class CoursesController
 		$this->view->menuIsCourses = true;
 
 		// Alternates
- 		if ($this->view->course->hasRecordType($this->alternateType)) {
- 			$record = $this->view->course->getCourseRecord($this->alternateType);
- 			if ($record->hasAlternates()) {
- 				$this->view->alternates = $record->getAlternates();
- 			}
- 		}
+		 if ($this->view->course->hasRecordType($this->alternateType)) {
+			 $record = $this->view->course->getCourseRecord($this->alternateType);
+			 if ($record->hasAlternates()) {
+				 $this->view->alternates = $record->getAlternates();
+			 }
+		 }
 
 		// Term
 		if ($this->_getParam('term')) {
@@ -113,7 +113,7 @@ class CoursesController
 		}
 
 		// Bookmarked Courses and Schedules
- 		$this->view->bookmarks_CourseId = $this->view->course->getId();
+		 $this->view->bookmarks_CourseId = $this->view->course->getId();
 
 		// offerings
 		$this->view->offeringsTitle = "Sections";
@@ -709,12 +709,12 @@ class CoursesController
 		print "\n<hr/>";
 		print "\n<h1>Other Courses</h1>";
 		print "\n<p>The following courses are listed in Banner but not included in the department and program listings above.</p>";
-		
+
 		flush();
-		
+
 		// Get all Offerings for the selected terms
 		$offeringQuery = $this->offeringSearchSession->getCourseOfferingQuery();
-		foreach ($this->selectedTerms as $termId) {	
+		foreach ($this->selectedTerms as $termId) {
 			$offeringQuery->matchTermId($termId, true);
 		}
 		$offerings = $this->offeringSearchSession->getCourseOfferingsByQuery($offeringQuery);
@@ -732,7 +732,7 @@ class CoursesController
 		foreach ($coursesNotPrinted as $course) {
 			$this->printCourse($course);
 		}
-		
+
 		print '
 
 </body>

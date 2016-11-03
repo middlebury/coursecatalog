@@ -20,7 +20,7 @@ if (!$hasSunday) {
 }
 if (!$hasSaturday) {
 	$numDays--;
-	$endDay = 5;	
+	$endDay = 5;
 }
 
 
@@ -40,13 +40,13 @@ $fontFile = "/usr/share/fonts/bitstream-vera/Vera.ttf";
 $im = ImageCreateTrueColor($width, $height);
 
 // Set colors
-$black = ImageColorAllocate($im, 0, 0, 0); 
-$white = ImageColorAllocate($im, 255, 255, 255); 
-$orange = ImageColorAllocate($im, 255, 200, 0); 
-$yellow = ImageColorAllocate($im, 255, 255, 0); 
-$tan = ImageColorAllocate($im, 255, 255, 190); 
-$ltgrey = ImageColorAllocate($im, 235, 235, 235); 
-$grey = ImageColorAllocate($im, 200, 200, 200); 
+$black = ImageColorAllocate($im, 0, 0, 0);
+$white = ImageColorAllocate($im, 255, 255, 255);
+$orange = ImageColorAllocate($im, 255, 200, 0);
+$yellow = ImageColorAllocate($im, 255, 255, 0);
+$tan = ImageColorAllocate($im, 255, 255, 190);
+$ltgrey = ImageColorAllocate($im, 235, 235, 235);
+$grey = ImageColorAllocate($im, 200, 200, 200);
 $dkgrey = ImageColorAllocate($im, 140, 140, 140);
 $blue = ImageColorAllocate($im, 0, 90, 207);
 $red = ImageColorAllocate($im, 255, 50, 50);
@@ -91,13 +91,13 @@ for ($d = $startDay; $d < $numDays; $d++) {
 $days = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
 for ($d = $startDay; $d <= $endDay; $d++) {
 	$label = $days[$d];
-	
+
 	$dayPosition = $d - $startDay;
 	$left = $timeWidth + ($dayWidth * $dayPosition);
 	$size = 24;
 	$bb = imagettfbbox($size, 0, $fontFile, $label);
 	$textWidth = $bb[2] - $bb[0];
-	ImageTTFText($im, $size, 0, $left + (($dayWidth - $textWidth)/2), $headerHeight - 5, $black, $fontFile, $label); 
+	ImageTTFText($im, $size, 0, $left + (($dayWidth - $textWidth)/2), $headerHeight - 5, $black, $fontFile, $label);
 }
 
 // Hour Labels
@@ -109,14 +109,14 @@ for($i = 0; $i < $hoursToShow; $i++) {
 		$hourString = '12:00 pm';
 	else
 		$hourString = ($hour - 12).':00 pm';
-	
+
 	$size = 12;
 	$bb = imagettfbbox($size, 0, $fontFile, $hourString);
 	$textWidth = $bb[2] - $bb[0];
 	$textHeight = $bb[1] - $bb[5];
 	$top = $headerHeight + ($hourHeight * $i) + $textHeight + intval(($hourHeight - $textHeight)/2);
 	$left = $timeWidth - $textWidth - 10;
-	ImageTTFText($im, $size, 0, $left, $top, $black, $fontFile, $hourString); 
+	ImageTTFText($im, $size, 0, $left, $top, $black, $fontFile, $hourString);
 }
 
 /*********************************************************
@@ -134,13 +134,13 @@ foreach ($this->events as $event) {
 	$dayPosition = $event['dayOfWeek'] - $startDay;
 	$left = $timeWidth + ($dayWidth * $dayPosition) + 1;		// 1px margin
 	$right = $left + $dayWidth - 2;	// 1px margin
-	
+
 	$top = timePosition($gridStartTime, $hourHeight, $event['startTime']) + $headerHeight;
 	$bottom = timePosition($gridStartTime, $hourHeight, $event['endTime']) + $headerHeight;
-	
+
 	imagefilledrectangle($im, $left, $top, $right, $bottom, $eventColor);
 	imagerectangle($im, $left, $top, $right, $bottom, $eventBorderColor);
-	
+
 	$start = Time::withSeconds($event['startTime']);
 	$end = Time::withSeconds($event['endTime']);
 	$string = $start->hour12().':'.str_pad($start->minute(), 2, '0', STR_PAD_LEFT).'-'.$end->hour12().':'.str_pad($end->minute(), 2, '0', STR_PAD_LEFT);
@@ -151,7 +151,7 @@ foreach ($this->events as $event) {
 	$textTop = $top + $textHeight + 3;
 	$textLeft = $left + (($dayWidth - $textWidth)/2);
 	ImageTTFText($im, $size, 0, $textLeft, $textTop, $black, $fontFile, $string);
-	
+
 	$size = 10;
 	$bb = imagettfbbox($size, 0, $fontFile, $event['name']);
 	$textWidth = $bb[2] - $bb[0];
@@ -159,7 +159,7 @@ foreach ($this->events as $event) {
 	$textTop = $top + $textHeight + 16;
 	$textLeft = $left + (($dayWidth - $textWidth)/2);
 	ImageTTFText($im, $size, 0, $textLeft, $textTop, $black, $fontFile, $event['name']);
-	
+
 	$size = 10;
 	$bb = imagettfbbox($size, 0, $fontFile, $event['location']);
 	$textWidth = $bb[2] - $bb[0];

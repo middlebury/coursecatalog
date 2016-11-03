@@ -1,11 +1,11 @@
 <?php
 $this->headScript()->appendScript("
-	$(function() { // on DOM ready 
-		
+	$(function() { // on DOM ready
+
 		$('#schedules_term_choice select').change(function () {
 			window.location = $(this).val();
 		});
-		
+
 	});
 ");
 $this->headTitle('Schedule Planner');

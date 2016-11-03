@@ -56,7 +56,7 @@ $jobName = array_shift($argv);
 if (count($argv) || !isset($jobs[$jobName])) {
 	print "Usage:
 	$cmd <job>
-	
+
 Where job is one of:
 	".implode("\n\t", array_keys($jobs))."\n\n";
 	return 1;
@@ -94,7 +94,7 @@ $exports = explode("\n", trim(shell_exec('ls -1t '.escapeshellarg($htmlRoot))));
 array_shift($exports);
 if (count($exports)) {
 	$diff = trim(shell_exec('diff '.escapeshellarg($htmlPath).' '.escapeshellarg($htmlRoot.'/'.$exports[0])));
-	
+
 	// Delete our current export if it is the same as the last one.
 	// This way we only keep versions that contain changes.
 	if (!strlen($diff)) {
@@ -152,15 +152,15 @@ if (!symlink($pdfPath, $linkPath)) {
 $linkName = str_replace('/', '-', $job['dest_dir']).'_latest.html';
 $linkPath = $jobRoot.'/'.$linkName;
 if (file_exists($linkPath)) {
-    if (!unlink($linkPath)) {
-        file_put_contents('php://stderr', "Error deleting latest link: $linkPath\n");
-        return 4;
-    }
+	if (!unlink($linkPath)) {
+		file_put_contents('php://stderr', "Error deleting latest link: $linkPath\n");
+		return 4;
+	}
 }
 if (!symlink($htmlPath, $linkPath)) {
-    file_put_contents('php://stderr', "Error creating latest link: $linkPath\n");                                    
-    return 5;                                                                                                        
-} 
+	file_put_contents('php://stderr', "Error creating latest link: $linkPath\n");
+	return 5;
+}
 
 // Success
 return 0;

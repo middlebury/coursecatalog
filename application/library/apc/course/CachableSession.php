@@ -1,26 +1,26 @@
 <?php
 /**
  * @since 8/11/10
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
- */ 
+ */
 
 /**
  * A cachable object
- * 
+ *
  * @since 8/11/10
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 abstract class apc_course_CachableSession
 	extends apc_course_AbstractSession
 {
-		
+
 	/**
 	 * Contructor
-	 * 
+	 *
 	 * @param osid_course_CourseManager $manager
 	 * @return void
 	 * @access public
@@ -28,19 +28,19 @@ abstract class apc_course_CachableSession
 	 */
 	public function __construct (osid_course_CourseManager $manager) {
 		parent::__construct($manager);
-				
+
 		$this->collectionId = get_class($this);
-		
+
 		$catalogId = $this->getCourseCatalogId();
-		
+
 		$this->idString = $catalogId->getIdentifierNamespace().':'.$catalogId->getAuthority().':'.$catalogId->getIdentifier();
 	}
 	private $collectionId;
 	private $idString;
-	
+
 	/**
 	 * Answer data from the cache or NULL if not available.
-	 * 
+	 *
 	 * @param string $key
 	 * @return mixed
 	 * @access protected
@@ -52,10 +52,10 @@ abstract class apc_course_CachableSession
 			return null;
 		return $result;
 	}
-	
+
 	/**
 	 * Set data into the cache and return the data.
-	 * 
+	 *
 	 * @param string $key
 	 * @param mixed $value
 	 * @return mixed
@@ -66,10 +66,10 @@ abstract class apc_course_CachableSession
 		$success = apc_store($this->hash($key), $value);
 		return $value;
 	}
-	
+
 	/**
 	 * Answer data from the cache or NULL if not available.
-	 * 
+	 *
 	 * @param string $key
 	 * @return mixed
 	 * @access protected
@@ -81,10 +81,10 @@ abstract class apc_course_CachableSession
 			return null;
 		return unserialize($result);
 	}
-	
+
 	/**
 	 * Set data into the cache and return the data.
-	 * 
+	 *
 	 * @param string $key
 	 * @param mixed $value
 	 * @return mixed
@@ -95,10 +95,10 @@ abstract class apc_course_CachableSession
 		$success = apc_store($this->hash($key), serialize($value));
 		return $value;
 	}
-	
+
 	/**
 	 * Delete an item from cache.
-	 * 
+	 *
 	 * @param string $key
 	 * @return void
 	 * @access protected
@@ -107,10 +107,10 @@ abstract class apc_course_CachableSession
 	protected function cacheDelete ($key) {
 		apc_delete($this->hash($key));
 	}
-	
+
 	/**
 	 * Hash a key into a per-instance value.
-	 * 
+	 *
 	 * @param string $key
 	 * @return string
 	 * @access private
@@ -119,7 +119,5 @@ abstract class apc_course_CachableSession
 	private function hash ($key) {
 		return $this->collectionId.':'.$this->idString.':'.$key;
 	}
-	
-}
 
-?>
+}

@@ -23,9 +23,9 @@
  * @package banner.resource
  */
 class banner_resource_Resource_Person
-    extends phpkit_AbstractOsidObject
-    implements osid_resource_Resource,
-    middlebury_resource_Resource_PersonNamesRecord
+	extends phpkit_AbstractOsidObject
+	implements osid_resource_Resource,
+	middlebury_resource_Resource_PersonNamesRecord
 {
 	/**
 	 * Constructor
@@ -79,78 +79,78 @@ class banner_resource_Resource_Person
 		$this->setGenusType(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/person"));
 	}
 
-    /**
-     *  Tests if this resource is a group. A resource that is a group can be
-     *  used in the group sessions.
-     *
-     *  @return boolean <code> true </code> if this resource is a group,
-     *          <code> false </code> otherwise
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function isGroup() {
-    	return false;
-    }
+	/**
+	 *  Tests if this resource is a group. A resource that is a group can be
+	 *  used in the group sessions.
+	 *
+	 *  @return boolean <code> true </code> if this resource is a group,
+	 *          <code> false </code> otherwise
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function isGroup() {
+		return false;
+	}
 
 
-    /**
-     *  Gets the record corresponding to the given <code> Resource </code>
-     *  record <code> Type. </code> This method must be used to retrieve an
-     *  object implementing the requested record interface along with all of
-     *  its ancestor interfaces. The <code> resourceRecordType </code> may be
-     *  the <code> Type </code> returned in <code> getRecordTypes() </code> or
-     *  any of its parents in a <code> Type </code> hierarchy where <code>
-     *  hasRecordType(resourceRecordType) </code> is <code> true </code> .
-     *
-     *  @param object osid_type_Type $resourceRecordType the resource record
-     *          type
-     *  @return object osid_resource_ResourceRecord the resource record
-     *  @throws osid_NullArgumentException <code> resourceRecordType </code>
-     *          is <code> null </code>
-     *  @throws osid_OperationFailedException unable to complete request
-     *  @throws osid_PermissionDeniedException authorization failure occurred
-     *  @throws osid_UnsupportedException <code>
-     *          hasRecordType(resourceRecordType) </code> is <code> false
-     *          </code>
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getResourceRecord(osid_type_Type $resourceRecordType) {
-    	if ($resourceRecordType->isEqual($this->namesType))
-    		return $this;
+	/**
+	 *  Gets the record corresponding to the given <code> Resource </code>
+	 *  record <code> Type. </code> This method must be used to retrieve an
+	 *  object implementing the requested record interface along with all of
+	 *  its ancestor interfaces. The <code> resourceRecordType </code> may be
+	 *  the <code> Type </code> returned in <code> getRecordTypes() </code> or
+	 *  any of its parents in a <code> Type </code> hierarchy where <code>
+	 *  hasRecordType(resourceRecordType) </code> is <code> true </code> .
+	 *
+	 *  @param object osid_type_Type $resourceRecordType the resource record
+	 *          type
+	 *  @return object osid_resource_ResourceRecord the resource record
+	 *  @throws osid_NullArgumentException <code> resourceRecordType </code>
+	 *          is <code> null </code>
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @throws osid_PermissionDeniedException authorization failure occurred
+	 *  @throws osid_UnsupportedException <code>
+	 *          hasRecordType(resourceRecordType) </code> is <code> false
+	 *          </code>
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getResourceRecord(osid_type_Type $resourceRecordType) {
+		if ($resourceRecordType->isEqual($this->namesType))
+			return $this;
 
-    	throw new osid_UnsupportedException("ResourceRecordType passed is not supported.");
-    }
+		throw new osid_UnsupportedException("ResourceRecordType passed is not supported.");
+	}
 
 /*********************************************************
  * Resource Record
  *********************************************************/
- 	/**
-     *  Tests if the given type is implemented by this record. Other types
-     *  than that directly indicated by <code> getType() </code> may be
-     *  supported through an inheritance scheme where the given type specifies
-     *  a record that is a parent interface of the interface specified by
-     *  <code> getType(). </code>
-     *
-     *  @param object osid_type_Type $recordType a type
-     *  @return boolean <code> true </code> if the given record <code> Type
-     *          </code> is implemented by this record, <code> false </code>
-     *          otherwise
-     *  @throws osid_NullArgumentException <code> recordType </code> is <code>
-     *          null </code>
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function implementsRecordType(osid_type_Type $recordType) {
-    	return ($recordType->isEqual($this->namesType));
-    }
+	/**
+	 *  Tests if the given type is implemented by this record. Other types
+	 *  than that directly indicated by <code> getType() </code> may be
+	 *  supported through an inheritance scheme where the given type specifies
+	 *  a record that is a parent interface of the interface specified by
+	 *  <code> getType(). </code>
+	 *
+	 *  @param object osid_type_Type $recordType a type
+	 *  @return boolean <code> true </code> if the given record <code> Type
+	 *          </code> is implemented by this record, <code> false </code>
+	 *          otherwise
+	 *  @throws osid_NullArgumentException <code> recordType </code> is <code>
+	 *          null </code>
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function implementsRecordType(osid_type_Type $recordType) {
+		return ($recordType->isEqual($this->namesType));
+	}
 
 	/**
-     *  Gets the <code> Resource </code> from which this record originated.
-     *
-     *  @return object osid_resource_Resource the resource
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getResource() {
-    	return $this;
-    }
+	 *  Gets the <code> Resource </code> from which this record originated.
+	 *
+	 *  @return object osid_resource_Resource the resource
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getResource() {
+		return $this;
+	}
 
 /*********************************************************
  * Person Names Record
@@ -230,7 +230,7 @@ class banner_resource_Resource_Person
 		return $this->prefixTitle;
 	}
 
-    /**
+	/**
 	 * Gets any title of a person that would appear after their name. E.g. 'Ph.D.',
 	 * 'Esquire', etc.
 	 *

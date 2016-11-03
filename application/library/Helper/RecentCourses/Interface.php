@@ -18,7 +18,7 @@
  */
 interface Helper_RecentCourses_Interface {
 
-  /**
+	/**
 	 * Set the duration considered recent by a DateInterval object.
 	 *
 	 * @param DateInterval $interval
@@ -27,7 +27,7 @@ interface Helper_RecentCourses_Interface {
 	 */
 	public function setRecentInterval (DateInterval $interval);
 
-  /**
+	/**
 	 * Answer an array of primary courses.
 	 *
 	 * @return array
@@ -35,7 +35,7 @@ interface Helper_RecentCourses_Interface {
 	 */
 	public function getPrimaryCourses ();
 
-  /**
+	/**
 	 * Answer an array of alternate courses for a primary course.
 	 *
 	 * @param osid_id_Id $courseId
@@ -44,7 +44,7 @@ interface Helper_RecentCourses_Interface {
 	 */
 	public function getAlternatesForCourse (osid_course_Course $course);
 
-  /**
+	/**
 	 * Answer an array of terms from primary or alternate courses given a primary id.
 	 *
 	 * @param osid_course_Course $course

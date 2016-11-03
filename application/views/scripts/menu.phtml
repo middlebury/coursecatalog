@@ -1,14 +1,14 @@
-						
+
 						<ul class="menu">
 							<li class="leaf">
-								<a href="<?php echo $this->url(array('controller' => 'catalogs', 'action' => 'list'), null, true) ?>">All Catalogs</a>
+								<a href="<?php echo $this->url(array('controller' => 'catalogs', 'action' => 'list'), null, true) ?>	">All Catalogs</a>
 							</li>
 
-	<?php if ($this->menuCatalogSelected) { 
+	<?php if ($this->menuCatalogSelected) {
 		$searchUrl = $this->url(
 			array(
-				'controller' => 'offerings', 
-				'action' => 'search', 
+				'controller' => 'offerings',
+				'action' => 'search',
 				'catalog' => $this->getStringFromOsidId($this->menuCatalogSelected->getId()),
 				'term' => $this->termIdString,
 			),
@@ -21,7 +21,7 @@
 									<li class="leaf<?php if ($this->menuIsSearch) { print " here"; } ?>">
 										<a href="<?php echo $searchUrl; ?>" class="<?php if ($this->menuIsSearch) { print " active"; } ?>">Search</a>
 									</li>
-									
+
 									<?php
 									$config = Zend_Registry::getInstance()->config;
 									if (!empty($config->catalog->menu_links)) {
@@ -38,17 +38,15 @@
 									?>
 								</ul>
 							</li>
- 	<?php } ?>
+	 <?php } ?>
 
 	<?php if ($this->isAuthenticationEnabled()) { ?>
-				
+
 							<li class="leaf<?php if ($this->menuIsSchedule) { print " here"; } ?>">
 								<a href="<?php echo $this->url(array('controller' => 'schedules', 'catalog' => $this->catalogIdString,
 								'term' => $this->termIdString), null, true) ?>">My Schedule Planner</a>
 							</li>
-		
+
 	<?php } ?>
 
 						</ul>
-
-						

@@ -2,17 +2,17 @@
 /**
  * @since 4/13/09
  * @package banner.course
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
- */ 
+ */
 
 /**
  * An iterator for retrieving all courses from a catalog
- * 
+ *
  * @since 4/13/09
  * @package banner.course
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
@@ -27,7 +27,7 @@ abstract class banner_course_Course_AbstractList
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param PDO $db
 	 * @param banner_course_CourseOffering_SessionInterface $session
 	 * @param optional osid_id_Id $catalogDatabaseId
@@ -38,13 +38,13 @@ abstract class banner_course_Course_AbstractList
 	public function __construct (PDO $db, banner_course_AbstractSession $session, osid_id_Id $catalogId = null) {
 		$this->session = $session;
 		$this->catalogId = $catalogId;
-		
+
 		parent::__construct($db, $this->getQuery(), $this->getAllInputParameters());
 	}
-	
+
 	/**
 	 * Answer a debugging string.
-	 * 
+	 *
 	 * @return string
 	 * @access public
 	 * @since 5/27/09
@@ -52,10 +52,10 @@ abstract class banner_course_Course_AbstractList
 	public function debug () {
 		return "\n\n".get_class($this)."\nQuery:\n".$this->getQuery()."\nParameters:\n".print_r($this->getAllInputParameters(), true);
 	}
-	
+
 	/**
 	 * Answer the query
-	 * 
+	 *
 	 * @return string
 	 * @access protected
 	 * @since 4/17/09
@@ -63,13 +63,13 @@ abstract class banner_course_Course_AbstractList
 	protected function getQuery () {
 		return "
 SELECT
-	SCBCRSE_SUBJ_CODE , 
-	SCBCRSE_CRSE_NUMB , 
-	SCBCRSE_EFF_TERM , 
-	SCBCRSE_COLL_CODE , 
-	SCBCRSE_DIVS_CODE , 
-	SCBCRSE_DEPT_CODE , 
-	SCBCRSE_CSTA_CODE , 
+	SCBCRSE_SUBJ_CODE ,
+	SCBCRSE_CRSE_NUMB ,
+	SCBCRSE_EFF_TERM ,
+	SCBCRSE_COLL_CODE ,
+	SCBCRSE_DIVS_CODE ,
+	SCBCRSE_DEPT_CODE ,
+	SCBCRSE_CSTA_CODE ,
 	SCBCRSE_TITLE ,
 	SCBCRSE_CREDIT_HR_HIGH,
 	SCBDESC_TEXT_NARRATIVE,
@@ -93,10 +93,10 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 ".$this->getLimitClause()."
 ";
 	}
-	
+
 	/**
 	 * Answer a string to append to the column list of additional columns.
-	 * 
+	 *
 	 * @return string
 	 * @access protected
 	 * @since 6/10/09
@@ -109,10 +109,10 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 			return '';
 		}
 	}
-	
+
 	/**
 	 * Answer the input parameters
-	 * 
+	 *
 	 * @return array
 	 * @access protected
 	 * @since 4/17/09
@@ -123,10 +123,10 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 			$params[':catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
 		return $params;
 	}
-	
+
 	/**
 	 * Answer a where clause
-	 * 
+	 *
 	 * @return string
 	 * @access protected
 	 * @since 4/20/09
@@ -145,10 +145,10 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 		else
 			return 'TRUE'.$activeWhere;
 	}
-	
+
 	/**
 	 * Answer the catalog where terms
-	 * 
+	 *
 	 * @return string
 	 * @access private
 	 * @since 4/20/09
@@ -159,10 +159,10 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 		else
 			return 'catalog_id = :catalog_id';
 	}
-	
+
 	/**
 	 * Answer any additional table join clauses to use
-	 * 
+	 *
 	 * @return string
 	 * @access protected
 	 * @since 4/29/09
@@ -170,10 +170,10 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 	protected function getAdditionalTableJoins () {
 		return '';
 	}
-	
+
 	/**
 	 * Answer the ORDER BY clause to use
-	 * 
+	 *
 	 * @return string
 	 * @access protected
 	 * @since 5/28/09
@@ -181,12 +181,12 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 	protected function getOrderByClause () {
 		return 'ORDER BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB';
 	}
-	
+
 	/**
 	 * Answer the LIMIT clause to use
-	 * 
+	 *
 	 * Override this method in child classes to add functionality.
-	 * 
+	 *
 	 * @return string
 	 * @access protected
 	 * @since 5/28/09
@@ -194,12 +194,12 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 	protected function getLimitClause () {
 		return '';
 	}
-	
+
 	/**
 	 * Answer an array of additional columns to return.
 	 *
 	 * Override this method in child classes to add functionality.
-	 * 
+	 *
 	 * @return array
 	 * @access protected
 	 * @since 6/10/09
@@ -207,37 +207,37 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 	protected function getAdditionalColumns () {
 		return array();
 	}
-	
+
 	/**
 	 * Answer the input parameters
-	 * 
+	 *
 	 * @return array
 	 * @access protected
 	 * @since 4/17/09
 	 */
 	abstract protected function getInputParameters ();
-	
+
 	/**
 	 * Answer additional where terms. E.g. 'SSRMEET_MON_DAY = true AND SSRMEET_TUE_DAY = false'
-	 * 
+	 *
 	 * @return array
 	 * @access protected
 	 * @since 4/17/09
 	 */
 	abstract protected function getWhereTerms();
-	
+
 	/**
 	 * Include inactive courses in the list.
-	 * 
+	 *
 	 * @return void
 	 */
 	protected function includeInactive () {
 		$this->activeOnly = FALSE;
 	}
-		
+
 	/**
 	 * Answer an object from a result row
-	 * 
+	 *
 	 * @param array $row
 	 * @return mixed
 	 * @access protected
@@ -248,7 +248,7 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 					$this->session->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'], 'course/'),
 					$row['SCBCRSE_SUBJ_CODE'].' '.$row['SCBCRSE_CRSE_NUMB'],
 					((is_null($row['SCBDESC_TEXT_NARRATIVE']))?'':$row['SCBDESC_TEXT_NARRATIVE']),	// Description
-					$row['SCBCRSE_TITLE'], 
+					$row['SCBCRSE_TITLE'],
 					$row['SCBCRSE_CREDIT_HR_HIGH'],
 					array(
 						$this->session->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'], 'topic/subject/'),
@@ -258,44 +258,42 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 					$row['has_alternates'],
 					$this->session);
 	}
-	
+
 	/**
-     *  Gets the next <code> Course </code> in this list. 
-     *
-     *  @return object osid_course_Course the next <code> Course </code> in 
-     *          this list. The <code> hasNext() </code> method should be used 
-     *          to test that a next <code> Course </code> is available before 
-     *          calling this method. 
-     *  @throws osid_IllegalStateException no more elements available in this 
-     *          list or this list has been closed 
-     *  @throws osid_OperationFailedException unable to complete request 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function getNextCourse() {
-    	return $this->next();
-    }
+	 *  Gets the next <code> Course </code> in this list.
+	 *
+	 *  @return object osid_course_Course the next <code> Course </code> in
+	 *          this list. The <code> hasNext() </code> method should be used
+	 *          to test that a next <code> Course </code> is available before
+	 *          calling this method.
+	 *  @throws osid_IllegalStateException no more elements available in this
+	 *          list or this list has been closed
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getNextCourse() {
+		return $this->next();
+	}
 
 
-    /**
-     *  Gets the next set of <code> Course </code> elements in this list. The 
-     *  specified amount must be less than or equal to the return from <code> 
-     *  available(). </code> 
-     *
-     *  @param integer $n the number of <code> Course </code> elements 
-     *          requested which must be less than or equal to <code> 
-     *          available() </code> 
-     *  @return array of osid_course_Course objects  an array of <code> Course 
-     *          </code> elements. <code> </code> The length of the array is 
-     *          less than or equal to the number specified. 
-     *  @throws osid_IllegalStateException no more elements available in this 
-     *          list or this list has been closed 
-     *  @throws osid_OperationFailedException unable to complete request 
-     *  @throws osid_NullArgumentException null argument provided 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function getNextCourses($n) {
-    	return $this->getNext($n);
-    }
+	/**
+	 *  Gets the next set of <code> Course </code> elements in this list. The
+	 *  specified amount must be less than or equal to the return from <code>
+	 *  available(). </code>
+	 *
+	 *  @param integer $n the number of <code> Course </code> elements
+	 *          requested which must be less than or equal to <code>
+	 *          available() </code>
+	 *  @return array of osid_course_Course objects  an array of <code> Course
+	 *          </code> elements. <code> </code> The length of the array is
+	 *          less than or equal to the number specified.
+	 *  @throws osid_IllegalStateException no more elements available in this
+	 *          list or this list has been closed
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @throws osid_NullArgumentException null argument provided
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getNextCourses($n) {
+		return $this->getNext($n);
+	}
 }
-
-?>

@@ -2,40 +2,40 @@
 /**
  * @since 2/21/08
  * @package segue
- * 
+ *
  * @copyright Copyright &copy; 2007, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  *
  * @version $Id: SegueErrorPrinter.class.php,v 1.3 2008/03/21 18:00:43 adamfranco Exp $
- */ 
+ */
 
 /**
  * An ErrorPrinter for custom error pages
- * 
+ *
  * @since 2/21/08
  * @package segue
- * 
+ *
  * @copyright Copyright &copy; 2007, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  *
  * @version $Id: SegueErrorPrinter.class.php,v 1.3 2008/03/21 18:00:43 adamfranco Exp $
  */
 class ErrorPrinter {
-	
+
 	/**
- 	 * @var object  $instance;  
- 	 * @access private
- 	 * @since 10/10/07
- 	 * @static
- 	 */
- 	private static $instance;
+	 * @var object  $instance;
+	 * @access private
+	 * @since 10/10/07
+	 * @static
+	 */
+	private static $instance;
 
 	/**
 	 * This class implements the Singleton pattern. There is only ever
-	 * one instance of the this class and it is accessed only via the 
+	 * one instance of the this class and it is accessed only via the
 	 * ClassName::instance() method.
-	 * 
-	 * @return object 
+	 *
+	 * @return object
 	 * @access public
 	 * @since 5/26/05
 	 * @static
@@ -43,20 +43,20 @@ class ErrorPrinter {
 	public static function instance () {
 		if (!isset(self::$instance))
 			self::$instance = new ErrorPrinter;
-		
+
 		return self::$instance;
 	}
-	
+
 	/**
-	 * @var array $userAgentFilters;  
+	 * @var array $userAgentFilters;
 	 * @access private
 	 * @since 2/26/08
 	 */
 	private $userAgentFilters;
-	
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @return void
 	 * @access private
 	 * @since 2/26/08
@@ -64,13 +64,13 @@ class ErrorPrinter {
 	private function __construct () {
 		$this->userAgentFilters = array();
 	}
-	
+
 	/**
 	 * Add a user agent string and an array of matching codes. If the user agent
 	 * matches the string and the code or exception class is in the list, the exception
-	 * will not be logged. This can be used to prevent misbehaving bots and web 
+	 * will not be logged. This can be used to prevent misbehaving bots and web
 	 * crawlers from filling the logs with repeated invalid requests.
-	 * 
+	 *
 	 * @param string $userAgent
 	 * @param optional array $codesOrExceptionClasses If empty, no matches to the user agent will be logged.
 	 * @return void
@@ -80,17 +80,17 @@ class ErrorPrinter {
 	public function addUserAgentFilter ($userAgent, $codesOrExceptionClasses = array()) {
 		$userAgent = trim($userAgent);
 // 		ArgumentValidator::validate($userAgent, NonzeroLengthStringValidatorRule::getRule());
-// 		ArgumentValidator::validate($codesOrExceptionClasses, 	
+// 		ArgumentValidator::validate($codesOrExceptionClasses,
 // 			ArrayValidatorRuleWithRule::getRule(OrValidatorRule::getRule(
 // 				NonzeroLengthStringValidatorRule::getRule(),
 // 				IntegerValidatorRule::getRule())));
-		
+
 		$this->userAgentFilters[$userAgent] = $codesOrExceptionClasses;
 	}
-	
+
 	/**
 	 * Answer true if the Exception should be logged
-	 * 
+	 *
 	 * @param object Exception $e
 	 * @param int $code
 	 * @return boolean
@@ -109,13 +109,13 @@ class ErrorPrinter {
 					return false;
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Handle an Exception
-	 * 
+	 *
 	 * @param object Exception $e
 	 * @parma int $code The HTTP status code to use.
 	 * @return void
@@ -127,10 +127,10 @@ class ErrorPrinter {
 		$printer = self::instance();
 		$printer->handleAnException($e, $code);
 	}
-	
+
 	/**
 	 * Handle an Exception
-	 * 
+	 *
 	 * @param object Exception $e
 	 * @parma int $code The HTTP status code to use.
 	 * @return void
@@ -145,10 +145,10 @@ class ErrorPrinter {
 		if ($this->shouldLogException($e, $code))
 			error_log($e->getMessage());
 	}
-	
+
 	/**
 	 * Handle an exception and the provide a redirect to another page.
-	 * 
+	 *
 	 * @param object Exception $e
 	 * @parma int $code The HTTP status code to use.
 	 * @param string $additionalHtml
@@ -159,22 +159,22 @@ class ErrorPrinter {
 	public function handExceptionWithRedirect (Exception $e, $code, $additionalHtml) {
 // 		ArgumentValidator::validate($code, IntegerValidatorRule::getRule());
 // 		ArgumentValidator::validate($additionalHtml, StringValidatorRule::getRule());
-		
+
 		if (!headers_sent())
 			header('HTTP/1.1 '.$code.' '.self::getCodeString($code));
-		
+
 		ob_start();
 		print "\n\t\t<p>".$additionalHtml."</p>";
 		$this->printException($e, $code, ob_get_clean());
-		
+
 		if ($this->shouldLogException($e, $code))
 			error_log($e->getMessage());
 	}
-	
+
 	/**
 	 * Print out a custom error page for an exception with the HTTP status code
 	 * specified
-	 * 
+	 *
 	 * @param object Exception $e
 	 * @param int $code
 	 * @return void
@@ -185,8 +185,8 @@ class ErrorPrinter {
 		// Debugging mode for development, rethrow the exception
 		if (ini_get('display_errors') && preg_match('/on|1/i', ini_get('display_errors'))) {
 			throw $e;
-		} 
-		
+		}
+
 		// Normal production case
 		else {
 			$message = strip_tags($e->getMessage());
@@ -197,7 +197,7 @@ class ErrorPrinter {
 			else
 				$logMessage = '';
 			print <<< END
-<html>	
+<html>
 	<head>
 		<title>$code $codeString</title>
 		<style>
@@ -205,21 +205,21 @@ class ErrorPrinter {
 				background-color: #FFF8C6;
 				font-family: Verdana, sans-serif;
 			}
-			
+
 			.header {
 				height: 65px;
 				border-bottom: 1px dotted #333;
 			}
 			.segue_name {
-				font-family: Tahoma, sans-serif; 
-				font-variant: small-caps; 
+				font-family: Tahoma, sans-serif;
+				font-variant: small-caps;
 				font-weight: bold;
 				font-size: 60px;
 				color: #333333;
-				
+
 				float: left;
 			}
-			
+
 			.error {
 				font-size: 20px;
 				font-weight: bold;
@@ -227,16 +227,16 @@ class ErrorPrinter {
 				margin-top: 40px;
 				margin-left: 20px;
 			}
-			
+
 			blockquote {
- 				margin-bottom: 50px;
+				margin-bottom: 50px;
 				clear: both;
 			}
 		</style>
 	</head>
 	<body>
 		<div class='header'>
-			<div class='segue_name'>Catalog</div> 
+			<div class='segue_name'>Catalog</div>
 			<div class='error'>$errorString</div>
 		</div>
 		<blockquote>
@@ -251,10 +251,10 @@ class ErrorPrinter {
 END;
 		}
 	}
-	
+
 	/**
 	 * Answer a string that matches the HTTP error code given.
-	 * 
+	 *
 	 * @param int $code
 	 * @return string
 	 * @access public
@@ -301,7 +301,7 @@ END;
 				return _('Expectation Failed');
 			case ($code > 400 && $code < 500):
 				return _('Client Error');
-			
+
 			case 500:
 				return _('Internal Server Error');
 			case 501:
@@ -313,16 +313,16 @@ END;
 			case 505:
 				return _('Gateway Timeout');
 			case 505:
-				return _('HTTP Version Not Supported');		
-			
+				return _('HTTP Version Not Supported');
+
 			case ($code > 500 && $code < 600):
 				return _('Server Error');
-			
+
 			default:
 				return _('Error');
 		}
 	}
-	
+
 }
 
 /**

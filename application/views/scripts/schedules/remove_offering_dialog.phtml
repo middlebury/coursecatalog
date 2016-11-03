@@ -10,19 +10,19 @@ $scheduleTermIdString = $this->getStringFromOsidId($this->schedule->getTermId())
 <button class='change_sections_button'>Change sections</button>
 <div class="change_section_dialog section_dialog" title="Include which sections?" style='display: none'>
 	<form action="<?php print $this->url(array('action' => 'add', 'term' => $scheduleTermIdString)); ?>" class="add_section_form" method="post">
-		
-		<div class='section_set' style='display: none'>Choose a group: 
+
+		<div class='section_set' style='display: none'>Choose a group:
 			<select class="section_set" name="section_set">
 				<option value='' class='loading'>Loading...</option>
 			</select>
 		</div>
-		
+
 		<div class='section_types'>Choose one option of each type:
 			<ul class="section_types">
 				<li class='loading'>Loading...</li>
 			</ul>
 		</div>
-		
+
 		<input type='hidden' name='csrf_key' value='<?php print $this->csrfKey(); ?>' />
 		<input type='hidden' name='schedule_id' value='<?php print $this->schedule->getId(); ?>' />
 		<input type="submit" value="Save Changes"/>
@@ -55,58 +55,58 @@ if (!defined('REMOVE_OFFERING_DIALOG_JS_ADDED')) {
 	ob_start();
 ?>
 
-	$(function() { // on DOM ready 
-		
+	$(function() { // on DOM ready
+
 		/*********************************************************
 		 * Remove dialog controls
 		 *********************************************************/
 		$(".remove_dialog").each(function() {
 			var button = $(this).siblings(".remove_button");
 			var removeDialog = $(this).dialog({
-					autoOpen: false, 
-					width:  600, 
+					autoOpen: false,
+					width:  600,
 					modal: true,
 					position: 'top'
 				});
-			
+
 			button.data("removeDialog", removeDialog);
 		});
-		
+
 		$(".remove_button").click(function(){
 			var removeDialog = $(this).data('removeDialog');
 			removeDialog.dialog("open");
 		});
-		
+
 		$(".remove_dialog .cancel").click(function() {
 			$(this).parent().dialog('close');
 		});
-		
+
 		$(".change_section_dialog").each(function () {
 			var button = $(this).siblings(".change_sections_button");
 			var addDialog = $(this).dialog({
-					autoOpen: false, 
-					width:  600, 
+					autoOpen: false,
+					width:  600,
 					modal: true,
 					close: function(event, ui) {
 						$(this).find("ul.section_sets").empty();
 					}
 				});
-			
+
 			button.data("addDialog", addDialog);
 		});
-		
+
 		$(".change_sections_button").click(function () {
 			var removeDialog = $(this).parent();
 			removeDialog.dialog("close");
-			
+
 			var addDialog = $(this).data("addDialog");
 			var scheduleId = addDialog.find("input[name=schedule_id]").val();
-						
+
 			addDialog.find("ul.section_sets").empty();
 			getSectionSets(addDialog, scheduleId);
 			addDialog.dialog("open");
 		});
-		
+
 	});
 
 

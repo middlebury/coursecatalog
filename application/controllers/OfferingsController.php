@@ -2,33 +2,33 @@
 /**
  * @since 4/21/09
  * @package catalog.controllers
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
- */ 
+ */
 
 /**
  * A controller for working with courses
- * 
+ *
  * @since 4/21/09
  * @package catalog.controllers
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 class OfferingsController
 	extends AbstractCatalogController
 {
-	
+
 	/**
-     * Initialize object
-     *
-     * Called from {@link __construct()} as final step of object instantiation.
-     *
-     * @return void
-     */
-    public function init() {
-    	$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
+	 * Initialize object
+	 *
+	 * Called from {@link __construct()} as final step of object instantiation.
+	 *
+	 * @return void
+	 */
+	public function init() {
+		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
 		$this->booleanStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:boolean");
 		$this->instructorType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 		$this->enrollmentType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:enrollment');
@@ -37,22 +37,22 @@ class OfferingsController
 		$this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 
 		parent::init();
-		
+
 		$this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
-        $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
-        $this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
-        $this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
-        $this->levelType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
-        $this->blockType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block");
-        
+		$this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
+		$this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
+		$this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
+		$this->levelType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
+		$this->blockType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block");
+
 		$this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
 
 		$this->campusType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/campus");
 	}
-	
+
 	/**
 	 * Print out a list of all courses
-	 * 
+	 *
 	 * @return void
 	 * @access public
 	 * @since 4/21/09
@@ -67,7 +67,7 @@ class OfferingsController
 			$this->view->title = 'All Catalogs';
 		}
 		$lookupSession->useFederatedCourseCatalogView();
-		
+
 		// Add our parameters to the search query
 		if ($this->_getParam('term')) {
 			if ($this->_getParam('term') == 'CURRENT') {
@@ -75,35 +75,35 @@ class OfferingsController
 			} else {
 				$termId = $this->_helper->osidId->fromString($this->_getParam('term'));
 			}
-			
+
 			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
 			$termLookupSession->useFederatedCourseCatalogView();
-			
+
 			$this->view->term = $termLookupSession->getTerm($termId);
-			
+
 			$this->view->offerings = $lookupSession->getCourseOfferingsByTerm($this->view->term->getId());
 		} else {
 			$this->view->offerings = $lookupSession->getCourseOfferings();
 		}
-		
+
 		$this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
 		$this->view->headTitle($this->view->title);
-		
+
 		$this->view->menuIsOfferings = true;
-		
+
 		$this->view->offeringsTitle = "Sections";
-		
+
 		// Don't do the work to display instructors if we have a very large number of
 		// offerings.
 		if ($this->view->offerings->available() > 200)
 			$this->view->hideOfferingInstructors = true;
-		
+
 		$this->render('offerings', null, true);
 	}
-	
+
 	/**
 	 * Answer search results as an xml feed.
-	 * 
+	 *
 	 * @return void
 	 * @access public
 	 * @since 10/21/09
@@ -111,10 +111,10 @@ class OfferingsController
 	public function searchxmlAction () {
 		$this->_helper->layout->disableLayout();
 		$this->getResponse()->setHeader('Content-Type', 'text/xml');
-		
+
 		$this->searchAction();
 		$this->view->sections = $this->searchSession->getCourseOfferingsByQuery($this->query);
-		
+
 		// Set the next and previous terms
 		if (isset($this->view->term)) {
 			$terms = $this->termLookupSession->getTerms();
@@ -131,21 +131,21 @@ class OfferingsController
 			}
 		}
 		// Reset the terms list as due to caching, we will have just wiped out the statement above.
-		// 
+		//
 		// It would be better to fix this in the banner_course_CachingPdoQueryList, but
 		// I haven't yet figured out how to determine if a result cursor
 		// has been closed or not. See:
-		// 
+		//
 		// http://stackoverflow.com/questions/1608427/how-can-i-determine-if-a-pdo-statement-cursor-is-closed
 		$this->view->terms = $this->termLookupSession->getTerms();
-		
+
 		$this->view->feedTitle = 'Course Offering Results';
 		$this->postDispatch();
 	}
-	
+
 	/**
 	 * Display a search form and search results
-	 * 
+	 *
 	 * @return void
 	 * @access public
 	 * @since 6/1/09
@@ -169,12 +169,12 @@ class OfferingsController
 		}
 		$termLookupSession->useFederatedCourseCatalogView();
 		$offeringSearchSession->useFederatedCourseCatalogView();
-		
-		
+
+
 	/*********************************************************
 	 * Build option lists for the search form
 	 *********************************************************/
-	 			
+
 		// Term
 		if ($this->_getParam('term') == 'ANY') {
 			// Don't set a term
@@ -189,93 +189,93 @@ class OfferingsController
 		} else {
 			$termId = $this->_helper->osidId->fromString($this->_getParam('term'));
 		}
-		
-	 	
+
+
 		// Topics
-	 	$topicQuery = $topicSearchSession->getTopicQuery();
-	 	$topicQuery->matchGenusType($this->departmentType, true);
-	 	if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
-	 		$record = $topicQuery->getTopicQueryRecord($this->termType);
-	 		$record->matchTermId($termId, true);
-	 	}
+		$topicQuery = $topicSearchSession->getTopicQuery();
+		$topicQuery->matchGenusType($this->departmentType, true);
+		if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+			$record = $topicQuery->getTopicQueryRecord($this->termType);
+			$record->matchTermId($termId, true);
+		}
 		$search = $topicSearchSession->getTopicSearch();
 		$order = $topicSearchSession->getTopicSearchOrder();
 		$order->orderByDisplayName();
 		$search->orderTopicResults($order);
 		$searchResults = $topicSearchSession->getTopicsBySearch($topicQuery, $search);
 		$this->view->departments = $searchResults->getTopics();
-		
+
 		$topicQuery = $topicSearchSession->getTopicQuery();
-	 	$topicQuery->matchGenusType($this->subjectType, true);
-	 	if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
-	 		$record = $topicQuery->getTopicQueryRecord($this->termType);
-	 		$record->matchTermId($termId, true);
-	 	}
+		$topicQuery->matchGenusType($this->subjectType, true);
+		if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+			$record = $topicQuery->getTopicQueryRecord($this->termType);
+			$record->matchTermId($termId, true);
+		}
 		$search = $topicSearchSession->getTopicSearch();
 		$order = $topicSearchSession->getTopicSearchOrder();
 		$order->orderByDisplayName();
 		$search->orderTopicResults($order);
 		$searchResults = $topicSearchSession->getTopicsBySearch($topicQuery, $search);
 		$this->view->subjects = $searchResults->getTopics();
-		
+
 		$topicQuery = $topicSearchSession->getTopicQuery();
-	 	$topicQuery->matchGenusType($this->divisionType, true);
-	 	if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
-	 		$record = $topicQuery->getTopicQueryRecord($this->termType);
-	 		$record->matchTermId($termId, true);
-	 	}
+		$topicQuery->matchGenusType($this->divisionType, true);
+		if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+			$record = $topicQuery->getTopicQueryRecord($this->termType);
+			$record->matchTermId($termId, true);
+		}
 		$this->view->divisions = $topicSearchSession->getTopicsByQuery($topicQuery);
-		
+
 		$topicQuery = $topicSearchSession->getTopicQuery();
-	 	$topicQuery->matchGenusType($this->requirementType, true);
-	 	if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
-	 		$record = $topicQuery->getTopicQueryRecord($this->termType);
-	 		$record->matchTermId($termId, true);
-	 	}
+		$topicQuery->matchGenusType($this->requirementType, true);
+		if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+			$record = $topicQuery->getTopicQueryRecord($this->termType);
+			$record->matchTermId($termId, true);
+		}
 		$this->view->requirements = $topicSearchSession->getTopicsByQuery($topicQuery);
-		
+
 		$topicQuery = $topicSearchSession->getTopicQuery();
-	 	$topicQuery->matchGenusType($this->levelType, true);
-	 	if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
-	 		$record = $topicQuery->getTopicQueryRecord($this->termType);
-	 		$record->matchTermId($termId, true);
-	 	}
+		$topicQuery->matchGenusType($this->levelType, true);
+		if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+			$record = $topicQuery->getTopicQueryRecord($this->termType);
+			$record->matchTermId($termId, true);
+		}
 		$this->view->levels = $topicSearchSession->getTopicsByQuery($topicQuery);
-		
+
 		$topicQuery = $topicSearchSession->getTopicQuery();
-	 	$topicQuery->matchGenusType($this->blockType, true);
-	 	if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
-	 		$record = $topicQuery->getTopicQueryRecord($this->termType);
-	 		$record->matchTermId($termId, true);
-	 	}
+		$topicQuery->matchGenusType($this->blockType, true);
+		if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+			$record = $topicQuery->getTopicQueryRecord($this->termType);
+			$record->matchTermId($termId, true);
+		}
 		$this->view->blocks = $topicSearchSession->getTopicsByQuery($topicQuery);
-		
+
 		$this->view->genusTypes = $offeringLookupSession->getCourseOfferingGenusTypes();
-		
+
 		// Campuses -- only include if we have more than one.
 		$campuses = $resourceLookupSession->getResourcesByGenusType($this->campusType);
 		if ($campuses->hasNext() && $campuses->getNextResource() && $campuses->hasNext()) {
 			$this->view->campuses = $resourceLookupSession->getResourcesByGenusType($this->campusType);
 		}
-		
+
 	/*********************************************************
 	 * Set up and run our search query.
 	 *********************************************************/
-	
+
 		$query = $offeringSearchSession->getCourseOfferingQuery();
 		$search = $offeringSearchSession->getCourseOfferingSearch();
 		$this->view->searchParams = array();
-		
+
 		// Make our session and query available to the XML version of this action.
 		$this->termLookupSession = $termLookupSession;
 		$this->view->terms = $termLookupSession->getTerms();
-		
+
 		// Add our parameters to the search query
 		if (isset($termId)) {
 			$this->view->searchParams['term'] = $this->_getParam('term');
-			
+
 			$query->matchTermId($termId, true);
-			
+
 			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
 			$termLookupSession->useFederatedCourseCatalogView();
 			$this->view->term = $termLookupSession->getTerm($termId);
@@ -283,13 +283,13 @@ class OfferingsController
 
 			$this->view->title .= " ".$this->view->term->getDisplayName();
 		}
-		
+
 		if ($this->_getParam('department')) {
 			if (is_array($this->_getParam('department')))
 				$departments = $this->_getParam('department');
 			else
 				$departments = array($this->_getParam('department'));
-			
+
 			foreach ($departments as $idString) {
 				$id = $this->_helper->osidId->fromString($idString);
 				$query->matchTopicId($id, true);
@@ -297,16 +297,16 @@ class OfferingsController
 				if (!isset($this->view->selectedDepartmentId))
 					$this->view->selectedDepartmentId = $id;
 			}
-			
+
 			$this->view->searchParams['department'] = $departments;
 		}
-		
+
 		if ($this->_getParam('subject')) {
 			if (is_array($this->_getParam('subject')))
 				$subjects = $this->_getParam('subject');
 			else
 				$subjects = array($this->_getParam('subject'));
-			
+
 			foreach ($subjects as $idString) {
 				$id = $this->_helper->osidId->fromString($idString);
 				$query->matchTopicId($id, true);
@@ -314,16 +314,16 @@ class OfferingsController
 				if (!isset($this->view->selectedSubjectId))
 					$this->view->selectedSubjectId = $id;
 			}
-			
+
 			$this->view->searchParams['subject'] = $subjects;
 		}
-		
+
 		if ($this->_getParam('division')) {
 			if (is_array($this->_getParam('division')))
 				$divisions = $this->_getParam('division');
 			else
 				$divisions = array($this->_getParam('division'));
-			
+
 			foreach ($divisions as $idString) {
 				$id = $this->_helper->osidId->fromString($idString);
 				$query->matchTopicId($id, true);
@@ -331,74 +331,74 @@ class OfferingsController
 				if (!isset($this->view->selectedDivisionId))
 					$this->view->selectedDivisionId = $id;
 			}
-			
+
 			$this->view->searchParams['division'] = $divisions;
 		}
-			
+
 		$this->view->selectedRequirementIds = array();
 		if ($this->_getParam('requirement') && count($this->_getParam('requirement'))) {
 			if (is_array($this->_getParam('requirement')))
 				$requirements = $this->_getParam('requirement');
 			else
 				$requirements = array($this->_getParam('requirement'));
-			
+
 			foreach ($requirements as $idString) {
 				$id = $this->_helper->osidId->fromString($idString);
 				$query->matchTopicId($id, true);
 				$this->view->selectedRequirementIds[] = $id;
 			}
-			
+
 			$this->view->searchParams['requirement'] = $requirements;
 		}
-		
+
 		$this->view->selectedLevelIds = array();
 		if ($this->_getParam('level') && count($this->_getParam('level'))) {
 			if (is_array($this->_getParam('level')))
 				$levels = $this->_getParam('level');
 			else
 				$levels = array($this->_getParam('level'));
-			
+
 			foreach ($levels as $idString) {
 				$id = $this->_helper->osidId->fromString($idString);
 				$query->matchTopicId($id, true);
 				$this->view->selectedLevelIds[] = $id;
 			}
-			
+
 			$this->view->searchParams['level'] = $levels;
 		}
-		
+
 		$this->view->selectedBlockIds = array();
 		if ($this->_getParam('block') && count($this->_getParam('block'))) {
 			if (is_array($this->_getParam('block')))
 				$blocks = $this->_getParam('block');
 			else
 				$blocks = array($this->_getParam('block'));
-			
+
 			foreach ($blocks as $idString) {
 				$id = $this->_helper->osidId->fromString($idString);
 				$query->matchTopicId($id, true);
 				$this->view->selectedBlockIds[] = $id;
 			}
-			
+
 			$this->view->searchParams['block'] = $blocks;
 		}
-		
+
 		$this->view->selectedGenusTypes = array();
 		if ($this->_getParam('type') && count($this->_getParam('type'))) {
 			if (is_array($this->_getParam('type')))
 				$genusTypes = $this->_getParam('type');
 			else
 				$genusTypes = array($this->_getParam('type'));
-			
+
 			foreach ($genusTypes as $typeString) {
 				$genusType = $this->_helper->osidType->fromString($typeString);
 				$query->matchGenusType($genusType, true);
 				$this->view->selectedGenusTypes[] = $genusType;
 			}
-			
+
 			$this->view->searchParams['type'] = $genusTypes;
 		}
-		
+
 		// Campuses
 		$this->view->selectedCampusIds = array();
 		if ($this->_getParam('location') && count($this->_getParam('location'))) {
@@ -406,57 +406,57 @@ class OfferingsController
 				$campuses = $this->_getParam('location');
 			else
 				$campuses = array($this->_getParam('location'));
-			
+
 			foreach ($campuses as $idString) {
 				$id = $this->_helper->osidId->fromString($idString);
 				$query->matchLocationId($id, true);
 				$this->view->selectedCampusIds[] = $id;
 			}
-			
+
 			$this->view->searchParams['location'] = $campuses;
 		}
-		
-		
+
+
 		// Set the default selection to lecture/seminar if the is a new search
 		if (!$this->_getParam('search') && !count($this->view->selectedGenusTypes)) {
 			$this->view->selectedGenusTypes = $this->_helper->osidTypes->getDefaultGenusTypes();
 		}
-		
+
 		if ($query->hasRecordType($this->weeklyScheduleType)) {
 			$queryRecord = $query->getCourseOfferingQueryRecord($this->weeklyScheduleType);
-			
+
 			if ($this->_getParam('days') && count($this->_getParam('days'))) {
 				if (is_array($this->_getParam('days')))
 					$days = $this->_getParam('days');
 				else
 					$days = array($this->_getParam('days'));
-					
+
 				if (!in_array('sunday', $days))
 					$queryRecord->matchMeetsSunday(false);
-				
+
 				if (!in_array('monday', $days))
 					$queryRecord->matchMeetsMonday(false);
-				
+
 				if (!in_array('tuesday', $days))
 					$queryRecord->matchMeetsTuesday(false);
-				
+
 				if (!in_array('wednesday', $days))
 					$queryRecord->matchMeetsWednesday(false);
-				
+
 				if (!in_array('thursday', $days))
 					$queryRecord->matchMeetsThursday(false);
-				
+
 				if (!in_array('friday', $days))
 					$queryRecord->matchMeetsFriday(false);
-				
+
 				if (!in_array('saturday', $days))
 					$queryRecord->matchMeetsSaturday(false);
-				
+
 				$this->view->searchParams['days'] = $days;
 			} else {
 				$this->view->searchParams['days'] = array();
 			}
-			
+
 			if ($this->_getParam('time_start') || $this->_getParam('time_end')) {
 				$start = intval($this->_getParam('time_start'));
 				$end = intval($this->_getParam('time_end'));
@@ -465,7 +465,7 @@ class OfferingsController
 				}
 				if ($start > 0 || $end < 86400)
 					$queryRecord->matchMeetingTime($start, $end, true);
-				
+
 				$this->view->timeStart = $start;
 				$this->view->timeEnd = $end;
 				$this->view->searchParams['time_start'] = $start;
@@ -475,7 +475,7 @@ class OfferingsController
 				$this->view->timeEnd = 86400;
 			}
 		}
-		
+
 		if ($this->_getParam('keywords')) {
 			$query->matchKeyword($this->_getParam('keywords'), $this->booleanStringMatchType, true);
 			$this->view->keywords = $this->_getParam('keywords');
@@ -483,7 +483,7 @@ class OfferingsController
 		} else {
 			$this->view->keywords = '';
 		}
-		
+
 		if ($this->_getParam('instructor')) {
 			if ($query->hasRecordType($this->instructorType)) {
 				$queryRecord = $query->getCourseOfferingQueryRecord($this->instructorType);
@@ -491,7 +491,7 @@ class OfferingsController
 			}
 			$this->view->searchParams['instructor'] = $this->_getParam('instructor');
 		}
-		
+
 		if ($this->_getParam('enrollable')) {
 			if ($query->hasRecordType($this->enrollmentType)) {
 				$queryRecord = $query->getCourseOfferingQueryRecord($this->enrollmentType);
@@ -499,33 +499,33 @@ class OfferingsController
 			}
 			$this->view->searchParams['enrollable'] = $this->_getParam('enrollable');
 		}
-		
+
 		// Make our session and query available to the XML version of this action.
 		$this->searchSession = $offeringSearchSession;
 		$this->query = $query;
-		
+
 		// Run the query if submitted.
 		if ($this->_getParam('search')) {
 			$this->view->searchParams['search'] = $this->_getParam('search');
 			$this->view->paginator = new Zend_Paginator(new Paginator_Adaptor_CourseOfferingSearch($offeringSearchSession, $query));
 			$this->view->paginator->setCurrentPageNumber($this->_getParam('page'));
 		}
-			
+
 	/*********************************************************
 	 * Options for output
 	 *********************************************************/
-	 	
-		
+
+
 		$this->setSelectedCatalogId($offeringSearchSession->getCourseCatalogId());
 		$this->view->headTitle($this->view->title);
-		
+
 		$this->view->menuIsSearch = true;
-	
+
 	}
-	
+
 	/**
 	 * View a catalog details
-	 * 
+	 *
 	 * @return void
 	 * @access public
 	 * @since 4/21/09
@@ -535,50 +535,48 @@ class OfferingsController
 		$lookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
 		$lookupSession->useFederatedCourseCatalogView();
 		$this->view->offering = $lookupSession->getCourseOffering($id);
- 		
- 		// Load the topics into our view
- 		$this->loadTopics($this->view->offering->getTopics());
-		
+
+		// Load the topics into our view
+		$this->loadTopics($this->view->offering->getTopics());
+
 		// Set the selected Catalog Id.
 		$catalogSession = $this->_helper->osid->getCourseManager()->getCourseOfferingCatalogSession();
 		$catalogIds = $catalogSession->getCatalogIdsByCourseOffering($id);
 		if ($catalogIds->hasNext()) {
 			$this->setSelectedCatalogId($catalogIds->getNextId());
 		}
-		
+
 		// Set the title
 		$this->view->title = $this->view->offering->getDisplayName();
 		$this->view->headTitle($this->view->title);
-		
+
 		// Term
 		$this->view->term = $this->view->offering->getTerm();
-		
+
 		// Other offerings
 		$this->view->offeringsTitle = "All Sections";
- 		$this->view->offerings = $lookupSession->getCourseOfferingsByTermForCourse(
- 			$this->view->offering->getTermId(),
- 			$this->view->offering->getCourseId()
- 		);
- 		
- 		// Alternates
- 		if ($this->view->offering->hasRecordType($this->alternateType)) {
- 			
- 			$record = $this->view->offering->getCourseOfferingRecord($this->alternateType);
- 			if ($record->hasAlternates()) {
- 				$this->view->alternates = $record->getAlternates();
- 			}
- 		}
- 		
- 		// Bookmarked Courses and Schedules
- 		$this->view->bookmarks_CourseId = $this->view->offering->getCourseId(); 		
- 		
- 		$this->render();
- 		
- 		$this->render('offerings', null, true);
- 		
- 		$this->view->menuIsOfferings = true;
+		$this->view->offerings = $lookupSession->getCourseOfferingsByTermForCourse(
+			$this->view->offering->getTermId(),
+			$this->view->offering->getCourseId()
+		);
+
+		// Alternates
+		if ($this->view->offering->hasRecordType($this->alternateType)) {
+
+			$record = $this->view->offering->getCourseOfferingRecord($this->alternateType);
+			if ($record->hasAlternates()) {
+				$this->view->alternates = $record->getAlternates();
+			}
+		}
+
+		// Bookmarked Courses and Schedules
+		$this->view->bookmarks_CourseId = $this->view->offering->getCourseId();
+
+		$this->render();
+
+		$this->render('offerings', null, true);
+
+		$this->view->menuIsOfferings = true;
 	}
 
 }
-
-?>

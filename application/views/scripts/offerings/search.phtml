@@ -9,10 +9,10 @@ $this->headScript()->appendScript(
 	$('document').ready(function() {
 		$('div.description').expander({
 			slicePoint:       140,  // default is 100
-			expandPrefix:     '... ', // text to come before the expand link  
+			expandPrefix:     '... ', // text to come before the expand link
 			expandText:         'read more', // default is 'read more...'
 			userCollapseText: '[collapse]'  // default is '[collapse expanded text]'
-    	});
+		});
 	});
 	",
 	'text/javascript'
@@ -104,7 +104,7 @@ $i = 0;
 while ($this->requirements->hasNext()) {
 	if (!($i % 5))
 		print "\n\t\t\t</div>\n\t\t\t<div class='requirement_group'>";
-	
+
 	$topic = $this->requirements->getNextTopic();
 	print "\n\t\t\t\t<input type='checkbox' name='requirement[]' value='";
 	print $this->getStringFromOsidId($topic->getId());
@@ -116,14 +116,14 @@ while ($this->requirements->hasNext()) {
 		}
 	}
 	print "/><label>".$this->escape($topic->getDisplayName())."</label><br/>";
-	
+
 	$i++;
 }
 ?>
 				</div>
 			</td>
 		</tr>
-<?php	} ?>		
+<?php	} ?>
 		<tr>
 			<th>Keywords:</th>
 			<td>
@@ -131,26 +131,26 @@ while ($this->requirements->hasNext()) {
 				<div class='help_text'>By default results only have to match one of the supplied keywords. Use a plus (+) before a word to require it or a minus (-) to exclude it. Use an asterisk (*) as a wildcard.</div>
 			</td>
 		</tr>
-		
+
 <?php if (isset($this->searchParams['days'])) { ?>
 		<tr>
 			<th>Days of the week:</th>
 			<td>
-				<label><input type='checkbox' name='days[]' value='sunday' <?php if (in_array('sunday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Sunday</label> 
-				<label><input type='checkbox' name='days[]' value='monday' <?php if (in_array('monday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Monday</label> 
-				<label><input type='checkbox' name='days[]' value='tuesday' <?php if (in_array('tuesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Tuesday</label> 
-				<label><input type='checkbox' name='days[]' value='wednesday' <?php if (in_array('wednesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Wednesday</label> 
-				<label><input type='checkbox' name='days[]' value='thursday' <?php if (in_array('thursday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Thursday</label> 
-				<label><input type='checkbox' name='days[]' value='friday' <?php if (in_array('friday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Friday</label> 
-				<label><input type='checkbox' name='days[]' value='saturday' <?php if (in_array('saturday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Saturday</label> 
+				<label><input type='checkbox' name='days[]' value='sunday' <?php if (in_array('sunday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Sunday</label>
+				<label><input type='checkbox' name='days[]' value='monday' <?php if (in_array('monday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Monday</label>
+				<label><input type='checkbox' name='days[]' value='tuesday' <?php if (in_array('tuesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Tuesday</label>
+				<label><input type='checkbox' name='days[]' value='wednesday' <?php if (in_array('wednesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Wednesday</label>
+				<label><input type='checkbox' name='days[]' value='thursday' <?php if (in_array('thursday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Thursday</label>
+				<label><input type='checkbox' name='days[]' value='friday' <?php if (in_array('friday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Friday</label>
+				<label><input type='checkbox' name='days[]' value='saturday' <?php if (in_array('saturday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Saturday</label>
 				<div class='help_text'>Leave all unchecked if no preference.</div>
 			</td>
 		</tr>
-		
+
 		<tr>
 			<th>Time:</th>
 			<td>
-				<label>From 
+				<label>From
 				<select name='time_start' class='time_select'>
 					<option value='0'<?php if (!$this->timeStart) { print  " selected='selected'"; } ?>>Any Time</option>
 <?php
@@ -161,10 +161,10 @@ while ($this->requirements->hasNext()) {
 		print ">".$this->getTimeString($i)."</option>";
 	}
 ?>
-				</select> 
+				</select>
 				</label>
-				
-				<label>To 
+
+				<label>To
 				<select name='time_end' class='time_select'>
 <?php
 	for ($i = 1800; $i < 86400; $i = $i + 1800) {
@@ -175,11 +175,11 @@ while ($this->requirements->hasNext()) {
 	}
 ?>
 				<option value='86400'<?php if ($this->timeEnd == 86400) { print  " selected='selected'"; } ?>>Any Time</option>
-				</select> 
+				</select>
 				</label>
 			</td>
 		</tr>
-		
+
 		<tr>
 			<th>Type:</th>
 			<td>
@@ -190,7 +190,7 @@ $i = 0;
 while ($this->genusTypes->hasNext()) {
 	if (!($i % 5))
 		print "\n\t\t\t</div>\n\t\t\t<div class='requirement_group'>";
-	
+
 	$type = $this->genusTypes->getNextType();
 	print "\n\t\t\t\t<input type='checkbox' name='type[]' value='";
 	print $this->getStringFromOsidType($type);
@@ -202,14 +202,14 @@ while ($this->genusTypes->hasNext()) {
 		}
 	}
 	print "/><label>".$this->escape($type->getDisplayName())."</label><br/>";
-	
+
 	$i++;
 }
 ?>
 				</div>
 			</td>
 		</tr>
-		
+
 <?php	if ($this->blocks->hasNext()) { ?>
 		<tr>
 			<th>Additional Details:</th>
@@ -221,7 +221,7 @@ $i = 0;
 while ($this->blocks->hasNext()) {
 	if (!($i % 5))
 		print "\n\t\t\t</div>\n\t\t\t<div class='requirement_group'>";
-	
+
 	$topic = $this->blocks->getNextTopic();
 	print "\n\t\t\t\t<input type='checkbox' name='block[]' value='";
 	print $this->getStringFromOsidId($topic->getId());
@@ -233,15 +233,15 @@ while ($this->blocks->hasNext()) {
 		}
 	}
 	print "/><label>".$this->escape($topic->getDisplayName())."</label><br/>";
-	
+
 	$i++;
 }
 ?>
 				</div>
 			</td>
 		</tr>
-<?php	} ?>		
-		
+<?php	} ?>
+
 		<tr>
 			<th>Level:</th>
 			<td>
@@ -252,7 +252,7 @@ $i = 0;
 while ($this->levels->hasNext()) {
 	if (!($i % 5))
 		print "\n\t\t\t</div>\n\t\t\t<div class='requirement_group'>";
-	
+
 	$topic = $this->levels->getNextTopic();
 	print "\n\t\t\t\t<input type='checkbox' name='level[]' value='";
 	print $this->getStringFromOsidId($topic->getId());
@@ -264,7 +264,7 @@ while ($this->levels->hasNext()) {
 		}
 	}
 	print "/><label>".$this->escape($topic->getDisplayName())."</label><br/>";
-	
+
 	$i++;
 }
 ?>
@@ -285,12 +285,12 @@ $i = 0;
 while ($this->campuses->hasNext()) {
 	if (!($i % 5))
 		print "\n\t\t\t</div>\n\t\t\t<div class='requirement_group'>";
-	
+
 	$campus = $this->campuses->getNextResource();
 	print "\n\t\t\t\t<input type='checkbox' name='location[]' value='";
 	print $this->getStringFromOsidId($campus->getId());
 	print "'";
-	
+
 	foreach ($this->selectedCampusIds as $selectedId) {
 		if ($campus->getId()->isEqual($selectedId)) {
 			print " checked='checked'";
@@ -298,7 +298,7 @@ while ($this->campuses->hasNext()) {
 		}
 	}
 	print "/><label>".$this->escape($campus->getDisplayName())."</label><br/>";
-	
+
 	$i++;
 }
 ?>
@@ -320,7 +320,7 @@ while ($this->campuses->hasNext()) {
 /*********************************************************
  * Search results
  *********************************************************/
-if (isset($this->paginator)) { 
+if (isset($this->paginator)) {
 
 ?>
 <h2>Results</h2>
@@ -336,8 +336,8 @@ print $this->paginationControl($this->paginator, 'Sliding', 'ItemPaginationContr
 	<tbody>
 <?php
 	$alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
-	
-	foreach ($this->paginator as $section) { 
+
+	foreach ($this->paginator as $section) {
 		$offeringParams = array(
 							'controller'	=> 'offerings',
 							'action'		=> 'view',
@@ -363,7 +363,7 @@ print $this->paginationControl($this->paginator, 'Sliding', 'ItemPaginationContr
 						'offering'		=> null,
 						'term'			=> $this->getStringFromOsidId($term->getId())
 					);
-		
+
 		// Topics
 		$allTopics = $this->topicListAsArray($section->getTopics());
 ?>
@@ -373,7 +373,7 @@ print $this->paginationControl($this->paginator, 'Sliding', 'ItemPaginationContr
 <?php
 
 if ($section->hasRecordType($alternateType)) {
-	$record = $section->getCourseOfferingRecord($alternateType);	
+	$record = $section->getCourseOfferingRecord($alternateType);
 	if ($record->hasAlternates()) {
 		if ($record->isPrimary()) {
 			print " * ";
@@ -451,13 +451,13 @@ if (!empty($topics)) {
 
 			</td>
 			<td class='column2'>
-				<?php 
+				<?php
 				$this->bookmarks_CourseId = $section->getCourseId();
 				$this->bookmarks_IsCourseSaved = false;
-				print $this->render('schedules/bookmark_control.phtml'); 
+				print $this->render('schedules/bookmark_control.phtml');
 				?>
 				<div class='title'><?php print nl2br($this->escape($section->getTitle())); ?></div>
-				<div class='description'><?php print $section->getDescription(); ?></div>				
+				<div class='description'><?php print $section->getDescription(); ?></div>
 <?php
 print "\n\t<dl>";
 
@@ -503,7 +503,7 @@ print "\n\t\t<dd>".$this->formatScheduleInfo($section->getScheduleInfo())."</dd>
 $availabilityLink = $this->getAvailabilityLink($section);
 if (!empty($availabilityLink)) {
 	print "\n\t\t<dt>Availability:</dt>";
-	print "\n\t\t<dd>";	
+	print "\n\t\t<dd>";
 	print $availabilityLink;
 	print "\n\t\t</dd>";
 }

@@ -7,7 +7,7 @@ function printTerm(Zend_View $view, osid_course_Term $term, $label = 'term', $ta
 					'term'			=> $view->getStringFromOsidId($term->getId()),
 					'offering'		=> null
 				)));
-	
+
 	$start_date = $term->getStartTime()->format('Y-m-d');
 	$end_date = $term->getEndTime()->format('Y-m-d');
 	// PHP >= 5.3
@@ -15,7 +15,7 @@ function printTerm(Zend_View $view, osid_course_Term $term, $label = 'term', $ta
 //	$weeks = ceil($span->days / 7);
 	// PHP < 5.3
 	$weeks = ceil(abs($term->getEndTime()->format('U') - $term->getStartTime()->format('U'))/60/60/24/7);
-	
+
 	print "\n".$tabs."<catalog:".$label." id=\"".$view->getStringFromOsidId($term->getId())."\" href=\"".$termUrl."\" start_date=\"".$start_date."\" end_date=\"".$end_date."\" weeks=\"".$weeks."\">";
 	print $view->escape($term->getDisplayName());
 	print "</catalog:".$label."> ";
@@ -39,7 +39,7 @@ if (isset($this->term))
 if (isset($this->nextTerm))
 	printTerm($this, $this->nextTerm, 'next_term', "\t\t");
 
-	
+
 if (isset($this->terms)) {
 	print "\n\t\t<catalog:all_terms>";
 	while ($this->terms->hasNext()) {
@@ -47,14 +47,14 @@ if (isset($this->terms)) {
 	}
 	print "\n\t\t</catalog:all_terms>";
 }
-	
+
 print "\n";
 
 $alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
 
-while ($this->sections->hasNext()) { 
+while ($this->sections->hasNext()) {
 	$section = $this->sections->getNextCourseOffering();
-	
+
 	$offeringParams = array(
 						'controller'	=> 'offerings',
 						'action'		=> 'view',
@@ -73,7 +73,7 @@ while ($this->sections->hasNext()) {
 					'offering'		=> null,
 					'term'			=> $this->getStringFromOsidId($term->getId())
 				);
-	
+
 	// Topics
 	$allTopics = $this->topicListAsArray($section->getTopics());
 ?>

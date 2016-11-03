@@ -2,17 +2,17 @@
 /**
  * @since 4/13/09
  * @package banner.course
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
- */ 
+ */
 
 /**
  * An iterator for retrieving all topics from a catalog
- * 
+ *
  * @since 4/13/09
  * @package banner.course
- * 
+ *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
@@ -26,7 +26,7 @@ abstract class banner_course_Topic_AbstractList
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param PDO $db
 	 * @param banner_course_CourseOffering_SessionInterface $session
 	 * @param optional osid_id_Id $catalogDatabaseId
@@ -37,13 +37,13 @@ abstract class banner_course_Topic_AbstractList
 	public function __construct (PDO $db, banner_course_SessionInterface $session, osid_id_Id $catalogId = null) {
 		$this->session = $session;
 		$this->catalogId = $catalogId;
-		
+
 		parent::__construct($db, $this->getQuery(), $this->getAllInputParameters());
 	}
 
 	/**
 	 * Answer a debugging string.
-	 * 
+	 *
 	 * @return string
 	 * @access public
 	 * @since 5/27/09
@@ -51,10 +51,10 @@ abstract class banner_course_Topic_AbstractList
 	public function debug () {
 		return "\n\n".get_class($this)."\nQuery:\n".$this->getQuery()."\nParameters:\n".print_r($this->getAllInputParameters(), true);
 	}
-	
+
 	/**
 	 * Answer the query
-	 * 
+	 *
 	 * @return string
 	 * @access protected
 	 * @since 4/17/09
@@ -63,11 +63,11 @@ abstract class banner_course_Topic_AbstractList
 		$subqueries = array();
 		if ($this->includeRequirements()) {
 			$subqueries[] = "
-(SELECT 
+(SELECT
 	'requirement' AS type,
 	STVATTR_CODE AS id,
 	STVATTR_DESC AS display_name
-FROM 
+FROM
 	course_catalog_college
 	INNER JOIN ssbsect_scbcrse ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
 	INNER JOIN SSRATTR ON (SSBSECT_TERM_CODE = SSRATTR_TERM_CODE AND SSBSECT_CRN = SSRATTR_CRN)
@@ -80,14 +80,14 @@ WHERE
 GROUP BY STVATTR_CODE)
 ";
 		}
-		
+
 		if ($this->includeLevels()) {
 			$subqueries[] = "
-(SELECT 
+(SELECT
 	'level' AS type,
 	STVLEVL_CODE AS id,
 	STVLEVL_DESC AS display_name
-FROM 
+FROM
 	course_catalog_college
 	INNER JOIN ssbsect_scbcrse ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
 	INNER JOIN scrlevl_recent ON (SSBSECT_SUBJ_CODE = SCRLEVL_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCRLEVL_CRSE_NUMB)
@@ -100,7 +100,7 @@ WHERE
 GROUP BY STVLEVL_CODE)
 ";
 		}
-		
+
 		if ($this->includeBlocks()) {
 			$subqueries[] = "
 (SELECT
@@ -123,11 +123,11 @@ GROUP BY STVBLCK_CODE)
 
 		if ($this->includeDivisions()) {
 			$subqueries[] = "
-(SELECT 
+(SELECT
 	'division' AS type,
 	STVDIVS_CODE AS id,
 	STVDIVS_DESC AS display_name
-FROM 
+FROM
 	course_catalog_college
 	INNER JOIN ssbsect_scbcrse ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
 	INNER JOIN STVDIVS ON SCBCRSE_DIVS_CODE = STVDIVS_CODE
@@ -139,14 +139,14 @@ WHERE
 GROUP BY SCBCRSE_DIVS_CODE)
 ";
 		}
-		
+
 		if ($this->includeDepartments()) {
 			$subqueries[] = "
-(SELECT 
+(SELECT
 	'department' AS type,
 	STVDEPT_CODE AS id,
 	STVDEPT_DESC AS display_name
-FROM 
+FROM
 	course_catalog_college
 	INNER JOIN ssbsect_scbcrse ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
 	INNER JOIN STVDEPT ON SCBCRSE_DEPT_CODE = STVDEPT_CODE
@@ -158,14 +158,14 @@ WHERE
 GROUP BY SCBCRSE_DEPT_CODE)
 ";
 		}
-	
+
 		if ($this->includeSubjects()) {
 			$subqueries[] = "
-(SELECT 
+(SELECT
 	'subject' AS type,
 	STVSUBJ_CODE AS id,
 	STVSUBJ_DESC AS display_name
-FROM 
+FROM
 	course_catalog_college
 	INNER JOIN ssbsect_scbcrse ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
 	INNER JOIN STVSUBJ ON SCBCRSE_SUBJ_CODE = STVSUBJ_CODE
@@ -178,16 +178,16 @@ WHERE
 GROUP BY SCBCRSE_SUBJ_CODE)
 ";
 		}
-	
+
 		return implode("\nUNION\n", $subqueries)
 			."\n".$this->getOrderByClause()
 			."\n".$this->getLimitClause()
 			."\n";
 	}
-	
+
 	/**
 	 * Answer the input parameters
-	 * 
+	 *
 	 * @return array
 	 * @access protected
 	 * @since 4/17/09
@@ -210,10 +210,10 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 		}
 		return $params;
 	}
-	
+
 	/**
 	 * Answer a where clause
-	 * 
+	 *
 	 * @return string
 	 * @access private
 	 * @since 4/20/09
@@ -225,10 +225,10 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 		else
 			return 'TRUE';
 	}
-	
+
 	/**
 	 * Answer a where clause
-	 * 
+	 *
 	 * @return string
 	 * @access private
 	 * @since 4/20/09
@@ -240,10 +240,10 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 		else
 			return 'TRUE';
 	}
-	
+
 	/**
 	 * Answer a where clause
-	 * 
+	 *
 	 * @return string
 	 * @access private
 	 * @since 4/20/09
@@ -270,10 +270,10 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 		else
 			return 'TRUE';
 	}
-	
+
 	/**
 	 * Answer a where clause
-	 * 
+	 *
 	 * @return string
 	 * @access private
 	 * @since 4/20/09
@@ -285,10 +285,10 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 		else
 			return 'TRUE';
 	}
-	
+
 	/**
 	 * Answer a where clause
-	 * 
+	 *
 	 * @return string
 	 * @access private
 	 * @since 4/20/09
@@ -300,10 +300,10 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 		else
 			return 'TRUE';
 	}
-	
+
 	/**
 	 * Answer the catalog where terms
-	 * 
+	 *
 	 * @param string $prefix
 	 * @return string
 	 * @access private
@@ -315,10 +315,10 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 		else
 			return 'catalog_id = :'.$prefix.'_catalog_id';
 	}
-	
+
 	/**
 	 * Answer the ORDER BY clause to use
-	 * 
+	 *
 	 * @return string
 	 * @access protected
 	 * @since 5/28/09
@@ -326,12 +326,12 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 	protected function getOrderByClause () {
 		return '';
 	}
-	
+
 	/**
 	 * Answer the LIMIT clause to use
-	 * 
+	 *
 	 * Override this method in child classes to add functionality.
-	 * 
+	 *
 	 * @return string
 	 * @access protected
 	 * @since 5/28/09
@@ -339,12 +339,12 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 	protected function getLimitClause () {
 		return '';
 	}
-	
+
 	/**
 	 * Answer an array of additional columns to return.
 	 *
 	 * Override this method in child classes to add functionality.
-	 * 
+	 *
 	 * @return array
 	 * @access protected
 	 * @since 6/10/09
@@ -352,37 +352,37 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 	protected function getAdditionalColumns () {
 		return array();
 	}
-	
+
 	/**
 	 * Answer the input parameters
-	 * 
+	 *
 	 * @return array
 	 * @access protected
 	 * @since 4/17/09
 	 */
 	abstract protected function getInputParameters ();
-	
+
 	/**
 	 * Answer additional where terms. E.g. 'SSRMEET_MON_DAY = true AND SSRMEET_TUE_DAY = false'
-	 * 
+	 *
 	 * @return array
 	 * @access protected
 	 * @since 4/17/09
 	 */
 	abstract protected function getRequirementWhereTerms();
-	
+
 	/**
 	 * Answer additional where terms. E.g. 'SSRMEET_MON_DAY = true AND SSRMEET_TUE_DAY = false'
-	 * 
+	 *
 	 * @return array
 	 * @access protected
 	 * @since 4/17/09
 	 */
 	abstract protected function getLevelWhereTerms();
-	
+
 	/**
 	 * Answer additional where terms. E.g. 'SSRMEET_MON_DAY = true AND SSRMEET_TUE_DAY = false'
-	 * 
+	 *
 	 * @return array
 	 * @access protected
 	 * @since 4/17/09
@@ -397,43 +397,43 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 	 * @since 4/17/09
 	 */
 	abstract protected function getDivisionWhereTerms();
-	
+
 	/**
 	 * Answer additional where terms. E.g. 'SSRMEET_MON_DAY = true AND SSRMEET_TUE_DAY = false'
-	 * 
+	 *
 	 * @return array
 	 * @access protected
 	 * @since 4/17/09
 	 */
 	abstract protected function getDepartmentWhereTerms();
-	
+
 	/**
 	 * Answer additional where terms. E.g. 'SSRMEET_MON_DAY = true AND SSRMEET_TUE_DAY = false'
-	 * 
+	 *
 	 * @return array
 	 * @access protected
 	 * @since 4/17/09
 	 */
 	abstract protected function getSubjectWhereTerms();
-	
+
 	/**
 	 * Answer true if requirement topics should be included
-	 * 
+	 *
 	 * @return boolean
 	 * @access protected
 	 * @since 6/12/09
 	 */
 	abstract protected function includeRequirements ();
-	
+
 	/**
 	 * Answer true if level topics should be included
-	 * 
+	 *
 	 * @return boolean
 	 * @access protected
 	 * @since 6/12/09
 	 */
 	abstract protected function includeLevels ();
-	
+
 	/**
 	 * Answer true if block topics should be included
 	 *
@@ -445,34 +445,34 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 
 	/**
 	 * Answer true if division topics should be included
-	 * 
+	 *
 	 * @return boolean
 	 * @access protected
 	 * @since 6/12/09
 	 */
 	abstract protected function includeDivisions ();
-	
+
 	/**
 	 * Answer true if department topics should be included
-	 * 
+	 *
 	 * @return boolean
 	 * @access protected
 	 * @since 6/12/09
 	 */
 	abstract protected function includeDepartments ();
-	
+
 	/**
 	 * Answer true if subject topics should be included
-	 * 
+	 *
 	 * @return boolean
 	 * @access protected
 	 * @since 6/12/09
 	 */
 	abstract protected function includeSubjects ();
-		
+
 	/**
 	 * Answer an object from a result row
-	 * 
+	 *
 	 * @param array $row
 	 * @return mixed
 	 * @access protected
@@ -486,44 +486,42 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 			new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/'.$row['type'])
 		);
 	}
-	
-	    /**
-     *  Gets the next <code> Topic </code> in this list. 
-     *
-     *  @return object osid_course_Topic the next <code> Topic </code> in this 
-     *          list. The <code> hasNext() </code> method should be used to 
-     *          test that a next <code> Topic </code> is available before 
-     *          calling this method. 
-     *  @throws osid_IllegalStateException no more elements available in this 
-     *          list or this list has been closed 
-     *  @throws osid_OperationFailedException unable to complete request 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function getNextTopic() {
-    	return $this->next();
-    }
+
+		/**
+	 *  Gets the next <code> Topic </code> in this list.
+	 *
+	 *  @return object osid_course_Topic the next <code> Topic </code> in this
+	 *          list. The <code> hasNext() </code> method should be used to
+	 *          test that a next <code> Topic </code> is available before
+	 *          calling this method.
+	 *  @throws osid_IllegalStateException no more elements available in this
+	 *          list or this list has been closed
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getNextTopic() {
+		return $this->next();
+	}
 
 
-    /**
-     *  Gets the next set of <code> Topic </code> elements in this list. The 
-     *  specified amount must be less than or equal to the return from <code> 
-     *  available(). </code> 
-     *
-     *  @param integer $n the number of <code> Topic </code> elements 
-     *          requested which must be less than or equal to <code> 
-     *          available() </code> 
-     *  @return array of osid_course_Topic objects  an array of <code> Topic 
-     *          </code> elements. <code> </code> The length of the array is 
-     *          less than or equal to the number specified. 
-     *  @throws osid_IllegalStateException no more elements available in this 
-     *          list or this list has been closed 
-     *  @throws osid_OperationFailedException unable to complete request 
-     *  @throws osid_NullArgumentException null argument provided 
-     *  @compliance mandatory This method must be implemented. 
-     */
-    public function getNextTopics($n) {
-    	return $this->getNext($n);
-    }   
+	/**
+	 *  Gets the next set of <code> Topic </code> elements in this list. The
+	 *  specified amount must be less than or equal to the return from <code>
+	 *  available(). </code>
+	 *
+	 *  @param integer $n the number of <code> Topic </code> elements
+	 *          requested which must be less than or equal to <code>
+	 *          available() </code>
+	 *  @return array of osid_course_Topic objects  an array of <code> Topic
+	 *          </code> elements. <code> </code> The length of the array is
+	 *          less than or equal to the number specified.
+	 *  @throws osid_IllegalStateException no more elements available in this
+	 *          list or this list has been closed
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @throws osid_NullArgumentException null argument provided
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getNextTopics($n) {
+		return $this->getNext($n);
+	}
 }
-
-?>

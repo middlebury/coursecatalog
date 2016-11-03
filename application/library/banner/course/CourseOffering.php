@@ -16,10 +16,10 @@
  * @package banner.course
  */
 class banner_course_CourseOffering
-    extends phpkit_AbstractOsidObject
-    implements osid_course_CourseOffering,
-    middlebury_course_CourseOffering_InstructorsRecord,
-    middlebury_course_CourseOffering_AlternatesRecord,
+	extends phpkit_AbstractOsidObject
+	implements osid_course_CourseOffering,
+	middlebury_course_CourseOffering_InstructorsRecord,
+	middlebury_course_CourseOffering_AlternatesRecord,
 	middlebury_course_CourseOffering_LinkRecord,
 	middlebury_course_CourseOffering_BannerIdentifiersRecord
 {
@@ -182,11 +182,11 @@ class banner_course_CourseOffering
 	 * @since 4/16/09
 	 */
 	protected function checkRow (array $row) {
-		 foreach (self::$requiredFields as $field) {
-		 	if (!array_key_exists($field, $row)) {
-		 		throw new osid_OperationFailedException("Required field, $field not found in data row.");
-		 	}
-		 }
+		foreach (self::$requiredFields as $field) {
+			if (!array_key_exists($field, $row)) {
+				throw new osid_OperationFailedException("Required field, $field not found in data row.");
+			}
+		}
 	}
 
 	/**
@@ -214,149 +214,149 @@ class banner_course_CourseOffering
  *********************************************************/
 
 
-    /**
-     *  Gets the formal title of this course. It may be the same as the
-     *  display name or it may be used to more formally label the course. A
-     *  display name might be Physics 102 where the title is Introduction to
-     *  Electromagentism.
-     *
-     *  @return string the course title
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getTitle() {
-    	$title = '';
+	/**
+	 *  Gets the formal title of this course. It may be the same as the
+	 *  display name or it may be used to more formally label the course. A
+	 *  display name might be Physics 102 where the title is Introduction to
+	 *  Electromagentism.
+	 *
+	 *  @return string the course title
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getTitle() {
+		$title = '';
 
-    	if (isset($this->row['SCBCRSE_TITLE']) && strlen($this->row['SCBCRSE_TITLE']))
-    		$title .= $this->row['SCBCRSE_TITLE']."\n";
+		if (isset($this->row['SCBCRSE_TITLE']) && strlen($this->row['SCBCRSE_TITLE']))
+			$title .= $this->row['SCBCRSE_TITLE']."\n";
 
-    	if (isset($this->row['SSBSECT_CRSE_TITLE']) && strlen($this->row['SSBSECT_CRSE_TITLE']))
-    		$title .= $this->row['SSBSECT_CRSE_TITLE'];
+		if (isset($this->row['SSBSECT_CRSE_TITLE']) && strlen($this->row['SSBSECT_CRSE_TITLE']))
+			$title .= $this->row['SSBSECT_CRSE_TITLE'];
 
-    	$title = trim($title);
+		$title = trim($title);
 
-    	if (strlen($title))
-    		return $title;
+		if (strlen($title))
+			return $title;
 
-    	try {
-    		return $this->getCourse()->getTitle();
-    	} catch (osid_NotFoundException $e) {
-    		return '';
-    	}
-    }
-
-
-    /**
-     *  Gets the course number which is a label generally used to indedx the
-     *  course in a catalog, such as T101 or 16.004.
-     *
-     *  @return string the course number
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getNumber() {
-    	return $this->getDisplayName();
-    }
+		try {
+			return $this->getCourse()->getTitle();
+		} catch (osid_NotFoundException $e) {
+			return '';
+		}
+	}
 
 
-    /**
-     *  Gets the number of credits in this course.
-     *
-     *  @return float the number of credits
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getCredits() {
-    	if (isset($this->row['SSBSECT_CREDIT_HRS']) && strlen($this->row['SSBSECT_CREDIT_HRS']))
-    		return floatval($this->row['SSBSECT_CREDIT_HRS']);
-    	else
-    		return $this->getCourse()->getCredits();
-    }
+	/**
+	 *  Gets the course number which is a label generally used to indedx the
+	 *  course in a catalog, such as T101 or 16.004.
+	 *
+	 *  @return string the course number
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getNumber() {
+		return $this->getDisplayName();
+	}
 
 
-    /**
-     *  Gets the an informational string for the course prerequisites.
-     *
-     *  @return string the prerequisites
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getPrereqInfo() {
-    	return '';
-    }
+	/**
+	 *  Gets the number of credits in this course.
+	 *
+	 *  @return float the number of credits
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getCredits() {
+		if (isset($this->row['SSBSECT_CREDIT_HRS']) && strlen($this->row['SSBSECT_CREDIT_HRS']))
+			return floatval($this->row['SSBSECT_CREDIT_HRS']);
+		else
+			return $this->getCourse()->getCredits();
+	}
 
 
-    /**
-     *  Gets the canonical course <code> Id </code> associated with this
-     *  course offering.
-     *
-     *  @return object osid_id_Id the course <code> Id </code>
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getCourseId() {
-    	return $this->session->getCourseIdFromSubjectAndNumber($this->row['SSBSECT_SUBJ_CODE'], $this->row['SSBSECT_CRSE_NUMB']);
-    }
+	/**
+	 *  Gets the an informational string for the course prerequisites.
+	 *
+	 *  @return string the prerequisites
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getPrereqInfo() {
+		return '';
+	}
 
 
-    /**
-     *  Gets the canonical course associated with this course offering.
-     *
-     *  @return object osid_course_Course the course
-     *  @throws osid_OperationFailedException unable to complete request
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getCourse() {
-    	if (!isset($this->course)) {
-    		try {
-	    		$this->course = $this->session->getCourseLookupSession()->getCourse($this->getCourseId());
-	    	} catch (osid_NotFoundException $e) {
-	    		throw new osid_OperationFailedException($e->getMessage(), $e->getCode());
-	    	}
-    	}
-    	return $this->course;
-    }
+	/**
+	 *  Gets the canonical course <code> Id </code> associated with this
+	 *  course offering.
+	 *
+	 *  @return object osid_id_Id the course <code> Id </code>
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getCourseId() {
+		return $this->session->getCourseIdFromSubjectAndNumber($this->row['SSBSECT_SUBJ_CODE'], $this->row['SSBSECT_CRSE_NUMB']);
+	}
+
+
+	/**
+	 *  Gets the canonical course associated with this course offering.
+	 *
+	 *  @return object osid_course_Course the course
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getCourse() {
+		if (!isset($this->course)) {
+			try {
+				$this->course = $this->session->getCourseLookupSession()->getCourse($this->getCourseId());
+			} catch (osid_NotFoundException $e) {
+				throw new osid_OperationFailedException($e->getMessage(), $e->getCode());
+			}
+		}
+		return $this->course;
+	}
 
 	private $course;
 
-    /**
-     *  Gets the <code> Id </code> of the <code> Term </code> of this
-     *  offering.
-     *
-     *  @return object osid_id_Id the <code> Term </code> <code> Id </code>
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getTermId() {
+	/**
+	 *  Gets the <code> Id </code> of the <code> Term </code> of this
+	 *  offering.
+	 *
+	 *  @return object osid_id_Id the <code> Term </code> <code> Id </code>
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getTermId() {
 		return $this->getOsidIdFromString($this->row['SSBSECT_TERM_CODE'], 'term/');
-    }
+	}
 
 
-    /**
-     *  Gets the <code> Term </code> of this offering.
-     *
-     *  @return object osid_course_Term the term
-     *  @throws osid_OperationFailedException unable to complete request
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getTerm() {
-    	return $this->session->getTermLookupSession()->getTerm($this->getTermId());
-    }
+	/**
+	 *  Gets the <code> Term </code> of this offering.
+	 *
+	 *  @return object osid_course_Term the term
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getTerm() {
+		return $this->session->getTermLookupSession()->getTerm($this->getTermId());
+	}
 
-    /**
-     *  WARNING: This method was not in the OSID trunk as of 2009-04-27. A
-     *  ticket requesting the addition of this method is available at:
-     *  http://oki.assembla.com/spaces/osid-dev/tickets/18-osid-course---No-way-to-map-Topics-to-Courses-or-CourseOfferings-
-     *  Gets a list of the <code> Id </code> s of the <code> Topic </code> s
-     *  this offering is associated with.
-     *
-     *  @return object osid_id_IdList the <code> Topic </code> <code> Id
-     *          </code> s
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getTopicIds() {
-    	if (!isset($this->topicIds)) {
-	    	$this->topicIds = array();
-	    	if ($this->row['SCBCRSE_DEPT_CODE'])
-	    		$this->topicIds[] = $this->getOsidIdFromString($this->row['SCBCRSE_DEPT_CODE'], 'topic/department/');
-	    	if ($this->row['SSBSECT_SUBJ_CODE'])
-	    		$this->topicIds[] = $this->getOsidIdFromString($this->row['SSBSECT_SUBJ_CODE'], 'topic/subject/');
-	    	if ($this->row['SCBCRSE_DIVS_CODE'])
-	    		$this->topicIds[] = $this->getOsidIdFromString($this->row['SCBCRSE_DIVS_CODE'], 'topic/division/');
+	/**
+	 *  WARNING: This method was not in the OSID trunk as of 2009-04-27. A
+	 *  ticket requesting the addition of this method is available at:
+	 *  http://oki.assembla.com/spaces/osid-dev/tickets/18-osid-course---No-way-to-map-Topics-to-Courses-or-CourseOfferings-
+	 *  Gets a list of the <code> Id </code> s of the <code> Topic </code> s
+	 *  this offering is associated with.
+	 *
+	 *  @return object osid_id_IdList the <code> Topic </code> <code> Id
+	 *          </code> s
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getTopicIds() {
+		if (!isset($this->topicIds)) {
+			$this->topicIds = array();
+			if ($this->row['SCBCRSE_DEPT_CODE'])
+				$this->topicIds[] = $this->getOsidIdFromString($this->row['SCBCRSE_DEPT_CODE'], 'topic/department/');
+			if ($this->row['SSBSECT_SUBJ_CODE'])
+				$this->topicIds[] = $this->getOsidIdFromString($this->row['SSBSECT_SUBJ_CODE'], 'topic/subject/');
+			if ($this->row['SCBCRSE_DIVS_CODE'])
+				$this->topicIds[] = $this->getOsidIdFromString($this->row['SCBCRSE_DIVS_CODE'], 'topic/division/');
 
 		$this->topicIds = array_merge(
 			$this->topicIds,
@@ -364,111 +364,111 @@ class banner_course_CourseOffering
 			$this->session->getLevelTopicIdsForCourseOffering($this->getId()),
 			$this->session->getBlockTopicIdsForCourseOffering($this->getId())
 		);
-	    }
-	    return new phpkit_id_ArrayIdList($this->topicIds);
-    }
+		}
+		return new phpkit_id_ArrayIdList($this->topicIds);
+	}
 	private $topicIds;
 
-    /**
-     *  WARNING: This method was not in the OSID trunk as of 2009-04-27. A
-     *  ticket requesting the addition of this method is available at:
-     *  http://oki.assembla.com/spaces/osid-dev/tickets/18-osid-course---No-way-to-map-Topics-to-Courses-or-CourseOfferings-
-     *  Gets the <code> Topic </code> s this offering is associated with.
-     *
-     *  @return object osid_course_TopicList the topics
-     *  @throws osid_OperationFailedException unable to complete request
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getTopics() {
-    	$topicLookup = $this->session->getTopicLookupSession();
-    	$topicLookup->useComparativeTopicView();
-    	return $topicLookup->getTopicsByIds($this->getTopicIds());
-    }
+	/**
+	 *  WARNING: This method was not in the OSID trunk as of 2009-04-27. A
+	 *  ticket requesting the addition of this method is available at:
+	 *  http://oki.assembla.com/spaces/osid-dev/tickets/18-osid-course---No-way-to-map-Topics-to-Courses-or-CourseOfferings-
+	 *  Gets the <code> Topic </code> s this offering is associated with.
+	 *
+	 *  @return object osid_course_TopicList the topics
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getTopics() {
+		$topicLookup = $this->session->getTopicLookupSession();
+		$topicLookup->useComparativeTopicView();
+		return $topicLookup->getTopicsByIds($this->getTopicIds());
+	}
 
 
-    /**
-     *  Gets a string describing the location of this course offering.
-     *
-     *  @return string location info
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getLocationInfo() {
-    	$campus = $this->row['STVCAMP_DESC'];
+	/**
+	 *  Gets a string describing the location of this course offering.
+	 *
+	 *  @return string location info
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getLocationInfo() {
+		$campus = $this->row['STVCAMP_DESC'];
 
-    	$parts = array();
-    	foreach ($this->getMeetingRows() as $row) {
-    		if ($this->row['SSRMEET_ROOM_CODE'] || $row['SSRMEET_ROOM_CODE'] || $row['STVBLDG_DESC'])
-		    	$parts[] = $row['SSRMEET_BLDG_CODE'].' ' .$row['SSRMEET_ROOM_CODE']
-    		.' ('.$row['STVBLDG_DESC'].')';
-    	}
-
-
-
-    	if (count($parts))
-	    	return $campus." Campus: ".implode(", ", $parts);
-	    else
-	    	return $campus;
-    }
+		$parts = array();
+		foreach ($this->getMeetingRows() as $row) {
+			if ($this->row['SSRMEET_ROOM_CODE'] || $row['SSRMEET_ROOM_CODE'] || $row['STVBLDG_DESC'])
+				$parts[] = $row['SSRMEET_BLDG_CODE'].' ' .$row['SSRMEET_ROOM_CODE']
+			.' ('.$row['STVBLDG_DESC'].')';
+		}
 
 
-    /**
-     *  Tests if this course offering has an associated location resource.
-     *
-     *  @return boolean <code> true </code> if this course offering has a
-     *          location resource, <code> false </code> otherwise
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function hasLocation() {
-    	return ($this->row['SSRMEET_BLDG_CODE'] && $this->row['SSRMEET_ROOM_CODE']);
-    }
+
+		if (count($parts))
+			return $campus." Campus: ".implode(", ", $parts);
+		else
+			return $campus;
+	}
 
 
-    /**
-     *  Gets the <code> Id </code> of the <code> Resource </code> representing
-     *  the location of this course offering.
-     *
-     *  @return object osid_id_Id the location
-     *  @throws osid_IllegalStateException <code> hasLocation() </code> is
-     *          <code> false </code>
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getLocationId() {
-    	return $this->getOsidIdFromString(
-    		$this->row['SSRMEET_BLDG_CODE'].'/'.$this->row['SSRMEET_ROOM_CODE'],
-    		'resource/place/room/');
-    }
+	/**
+	 *  Tests if this course offering has an associated location resource.
+	 *
+	 *  @return boolean <code> true </code> if this course offering has a
+	 *          location resource, <code> false </code> otherwise
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function hasLocation() {
+		return ($this->row['SSRMEET_BLDG_CODE'] && $this->row['SSRMEET_ROOM_CODE']);
+	}
 
 
-    /**
-     *  Gets the <code> Resource </code> representing the location of this
-     *  offering.
-     *
-     *  @return object osid_resource_Resource the location
-     *  @throws osid_IllegalStateException <code> hasLocation() </code> is
-     *          <code> false </code>
-     *  @throws osid_OperationFailedException unable to complete request
-     *  @throws osid_PermissionDeniedException authorization failure
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getLocation() {
-    	try {
-	    	return $this->session->getResourceLookupSession()->getResource($this->getLocationId());
-	    } catch (osid_NotFoundException $e) {
-	    	throw new osid_OperationFailedException($e->getMessage());
-	    }
-    }
+	/**
+	 *  Gets the <code> Id </code> of the <code> Resource </code> representing
+	 *  the location of this course offering.
+	 *
+	 *  @return object osid_id_Id the location
+	 *  @throws osid_IllegalStateException <code> hasLocation() </code> is
+	 *          <code> false </code>
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getLocationId() {
+		return $this->getOsidIdFromString(
+			$this->row['SSRMEET_BLDG_CODE'].'/'.$this->row['SSRMEET_ROOM_CODE'],
+			'resource/place/room/');
+	}
 
 
-    /**
-     *  Gets a string describing the schedule of this course offering.
-     *
-     *  @return string schedule info
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getScheduleInfo() {
-    	$parts = array();
-    	$rows = $this->getMeetingRows();
-    	foreach ($rows as $row) {
+	/**
+	 *  Gets the <code> Resource </code> representing the location of this
+	 *  offering.
+	 *
+	 *  @return object osid_resource_Resource the location
+	 *  @throws osid_IllegalStateException <code> hasLocation() </code> is
+	 *          <code> false </code>
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @throws osid_PermissionDeniedException authorization failure
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getLocation() {
+		try {
+			return $this->session->getResourceLookupSession()->getResource($this->getLocationId());
+		} catch (osid_NotFoundException $e) {
+			throw new osid_OperationFailedException($e->getMessage());
+		}
+	}
+
+
+	/**
+	 *  Gets a string describing the schedule of this course offering.
+	 *
+	 *  @return string schedule info
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getScheduleInfo() {
+		$parts = array();
+		$rows = $this->getMeetingRows();
+		foreach ($rows as $row) {
 			$days = array();
 			if ($row['SSRMEET_SUN_DAY'])
 				$days[] = 'Sunday';
@@ -502,163 +502,163 @@ class banner_course_CourseOffering
 		}
 
 		if (count($parts))
-	    	return implode("\n", $parts);
-	    else
-	    	return "Unknown";
-    }
+			return implode("\n", $parts);
+		else
+			return "Unknown";
+	}
 
-    /**
-     * Convert a 24-hour time into a 12-hour time
-     *
-     * @param string $time
-     * @return string
-     * @access protected
-     * @since 4/16/09
-     */
-    protected function as12HourTime ($time) {
-    	$parts = strptime($time, '%H%M');
-    	return date('g:ia', mktime($parts['tm_hour'], $parts['tm_min']));
-    }
-
-
-    /**
-     *  Tests if this course offering has an associated calendar.
-     *
-     *  @return boolean <code> true </code> if this course offering has a
-     *          calendar, <code> false </code> otherwise
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function hasCalendar() {
-    	return false;
-    }
+	/**
+	 * Convert a 24-hour time into a 12-hour time
+	 *
+	 * @param string $time
+	 * @return string
+	 * @access protected
+	 * @since 4/16/09
+	 */
+	protected function as12HourTime ($time) {
+		$parts = strptime($time, '%H%M');
+		return date('g:ia', mktime($parts['tm_hour'], $parts['tm_min']));
+	}
 
 
-    /**
-     *  Gets the calendar for this course offering. Schedule items are
-     *  associated with this calendar through the available Scheduling
-     *  manager.
-     *
-     *  @return object osid_id_Id <code> Id </code> of a <code> </code>
-     *          calendar
-     *  @throws osid_IllegalStateException <code> hasCalendar() </code> is
-     *          <code> false </code>
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getCalendarId() {
-    	throw new osid_IllegalStateException('This version of the OSID does not support Learning Objectives');
-    	return $this->getOsidIdFromString(
-    		$this->row['SSBSECT_TERM_CODE'].'/'.$this->row['SSBSECT_CRN'],
-    		'CourseSchedule/');
-    }
+	/**
+	 *  Tests if this course offering has an associated calendar.
+	 *
+	 *  @return boolean <code> true </code> if this course offering has a
+	 *          calendar, <code> false </code> otherwise
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function hasCalendar() {
+		return false;
+	}
 
 
-    /**
-     *  Gets the calendar for this course offering, which may be a root in a
-     *  calendar hierarchy.
-     *
-     *  @return object osid_calendaring_Calendar a calendar
-     *  @throws osid_IllegalStateException <code> hasCalendar() </code> is
-     *          <code> false </code>
-     *  @throws osid_OperationFailedException unable to complete request
-     *  @throws osid_PermissionDeniedException authorization failure
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getCalendar() {
-    	throw new osid_IllegalStateException('This version of the OSID does not support Calendering');
-    	return $this->session->getCalendarLookupSession()->getResource($this->getCalendarId());
-    }
+	/**
+	 *  Gets the calendar for this course offering. Schedule items are
+	 *  associated with this calendar through the available Scheduling
+	 *  manager.
+	 *
+	 *  @return object osid_id_Id <code> Id </code> of a <code> </code>
+	 *          calendar
+	 *  @throws osid_IllegalStateException <code> hasCalendar() </code> is
+	 *          <code> false </code>
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getCalendarId() {
+		throw new osid_IllegalStateException('This version of the OSID does not support Learning Objectives');
+		return $this->getOsidIdFromString(
+			$this->row['SSBSECT_TERM_CODE'].'/'.$this->row['SSBSECT_CRN'],
+			'CourseSchedule/');
+	}
 
 
-    /**
-     *  Tests if this course offering has an associated learning objective.
-     *
-     *  @return boolean <code> true </code> if this course offering has a
-     *          learning objective, <code> false </code> otherwise
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function hasLearningObjective() {
-    	return false;
-    }
+	/**
+	 *  Gets the calendar for this course offering, which may be a root in a
+	 *  calendar hierarchy.
+	 *
+	 *  @return object osid_calendaring_Calendar a calendar
+	 *  @throws osid_IllegalStateException <code> hasCalendar() </code> is
+	 *          <code> false </code>
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @throws osid_PermissionDeniedException authorization failure
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getCalendar() {
+		throw new osid_IllegalStateException('This version of the OSID does not support Calendering');
+		return $this->session->getCalendarLookupSession()->getResource($this->getCalendarId());
+	}
 
 
-    /**
-     *  Gets the root node of a learning objective map for this course
-     *  offering.
-     *
-     *  @return object osid_id_Id <code> Id </code> of a <code> l </code>
-     *          earning <code> Objective </code>
-     *  @throws osid_IllegalStateException <code> hasLearningObjective()
-     *          </code> is <code> false </code>
-     *  @compliance mandatory This method is must be implemented.
-     */
-    public function getLearningObjectiveId() {
-    	throw new osid_IllegalStateException('This version of the OSID does not support Learning Objectives');
-    	throw new osid_UnimplementedException();
-    }
+	/**
+	 *  Tests if this course offering has an associated learning objective.
+	 *
+	 *  @return boolean <code> true </code> if this course offering has a
+	 *          learning objective, <code> false </code> otherwise
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function hasLearningObjective() {
+		return false;
+	}
 
 
-    /**
-     *  Gets the root node of a learning objective map for this course
-     *  offering.
-     *
-     *  @return object osid_learning_Objective the returned learning <code>
-     *          Objective </code>
-     *  @throws osid_IllegalStateException <code> hasLearningObjective()
-     *          </code> is <code> false </code>
-     *  @throws osid_OperationFailedException unable to complete request
-     *  @throws osid_PermissionDeniedException authorization failure
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getLearningObjective() {
-    	throw new osid_IllegalStateException('This version of the OSID does not support Learning Objectives');
-    	throw new osid_UnimplementedException();
-    }
+	/**
+	 *  Gets the root node of a learning objective map for this course
+	 *  offering.
+	 *
+	 *  @return object osid_id_Id <code> Id </code> of a <code> l </code>
+	 *          earning <code> Objective </code>
+	 *  @throws osid_IllegalStateException <code> hasLearningObjective()
+	 *          </code> is <code> false </code>
+	 *  @compliance mandatory This method is must be implemented.
+	 */
+	public function getLearningObjectiveId() {
+		throw new osid_IllegalStateException('This version of the OSID does not support Learning Objectives');
+		throw new osid_UnimplementedException();
+	}
 
 
-    /**
-     *  Gets an external resource, such as a class web site, associated with
-     *  this offering.
-     *
-     *  @return string a URL string
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getURL() {
-    	return '';
-    }
+	/**
+	 *  Gets the root node of a learning objective map for this course
+	 *  offering.
+	 *
+	 *  @return object osid_learning_Objective the returned learning <code>
+	 *          Objective </code>
+	 *  @throws osid_IllegalStateException <code> hasLearningObjective()
+	 *          </code> is <code> false </code>
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @throws osid_PermissionDeniedException authorization failure
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getLearningObjective() {
+		throw new osid_IllegalStateException('This version of the OSID does not support Learning Objectives');
+		throw new osid_UnimplementedException();
+	}
 
 
-    /**
-     *  Gets the record corresponding to the given <code> CourseOffering
-     *  </code> record <code> Type. </code> This method must be used to
-     *  retrieve an object implementing the requested record interface along
-     *  with all of its ancestor interfaces. The <code>
-     *  courseOfferingRecordType </code> may be the <code> Type </code>
-     *  returned in <code> getRecordTypes() </code> or any of its parents in a
-     *  <code> Type </code> hierarchy where <code>
-     *  hasRecordType(courseOfferingRecordType) </code> is <code> true </code>
-     *  .
-     *
-     *  @param object osid_type_Type $courseOfferingRecordType the type of
-     *          course offering record to retrieve
-     *  @return object osid_course_CourseOfferingRecord the course offering
-     *          record
-     *  @throws osid_NullArgumentException <code> courseOfferingRecordType
-     *          </code> is <code> null </code>
-     *  @throws osid_OperationFailedException unable to complete request
-     *  @throws osid_PermissionDeniedException authorization failure occurred
-     *  @throws osid_UnsupportedException <code>
-     *          hasRecordType(courseOfferingRecordType) </code> is <code>
-     *          false </code>
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getCourseOfferingRecord(osid_type_Type $courseOfferingRecordType) {
-    	if ($this->hasRecordType($courseOfferingRecordType))
-    		return $this;
+	/**
+	 *  Gets an external resource, such as a class web site, associated with
+	 *  this offering.
+	 *
+	 *  @return string a URL string
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getURL() {
+		return '';
+	}
 
-    	throw new osid_UnsupportedException('Record type is not supported.');
-    }
 
-    /**
+	/**
+	 *  Gets the record corresponding to the given <code> CourseOffering
+	 *  </code> record <code> Type. </code> This method must be used to
+	 *  retrieve an object implementing the requested record interface along
+	 *  with all of its ancestor interfaces. The <code>
+	 *  courseOfferingRecordType </code> may be the <code> Type </code>
+	 *  returned in <code> getRecordTypes() </code> or any of its parents in a
+	 *  <code> Type </code> hierarchy where <code>
+	 *  hasRecordType(courseOfferingRecordType) </code> is <code> true </code>
+	 *  .
+	 *
+	 *  @param object osid_type_Type $courseOfferingRecordType the type of
+	 *          course offering record to retrieve
+	 *  @return object osid_course_CourseOfferingRecord the course offering
+	 *          record
+	 *  @throws osid_NullArgumentException <code> courseOfferingRecordType
+	 *          </code> is <code> null </code>
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @throws osid_PermissionDeniedException authorization failure occurred
+	 *  @throws osid_UnsupportedException <code>
+	 *          hasRecordType(courseOfferingRecordType) </code> is <code>
+	 *          false </code>
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getCourseOfferingRecord(osid_type_Type $courseOfferingRecordType) {
+		if ($this->hasRecordType($courseOfferingRecordType))
+			return $this;
+
+		throw new osid_UnsupportedException('Record type is not supported.');
+	}
+
+	/**
 	 * Answer an Id object from a string database Id
 	 *
 	 * @param string $databaseId
@@ -676,64 +676,64 @@ class banner_course_CourseOffering
 /*********************************************************
  * Record support
  *********************************************************/
- 	/**
-     *  Tests if the given type is implemented by this record. Other types
-     *  than that directly indicated by <code> getType() </code> may be
-     *  supported through an inheritance scheme where the given type specifies
-     *  a record that is a parent interface of the interface specified by
-     *  <code> getType(). </code>
-     *
-     *  @param object osid_type_Type $recordType a type
-     *  @return boolean <code> true </code> if the given record <code> Type
-     *          </code> is implemented by this record, <code> false </code>
-     *          otherwise
-     *  @throws osid_NullArgumentException <code> recordType </code> is <code>
-     *          null </code>
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function implementsRecordType(osid_type_Type $recordType) {
-    	return $this->hasRecordType($recordType);
-    }
+	/**
+	 *  Tests if the given type is implemented by this record. Other types
+	 *  than that directly indicated by <code> getType() </code> may be
+	 *  supported through an inheritance scheme where the given type specifies
+	 *  a record that is a parent interface of the interface specified by
+	 *  <code> getType(). </code>
+	 *
+	 *  @param object osid_type_Type $recordType a type
+	 *  @return boolean <code> true </code> if the given record <code> Type
+	 *          </code> is implemented by this record, <code> false </code>
+	 *          otherwise
+	 *  @throws osid_NullArgumentException <code> recordType </code> is <code>
+	 *          null </code>
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function implementsRecordType(osid_type_Type $recordType) {
+		return $this->hasRecordType($recordType);
+	}
 
-    /**
-     *  Gets the <code> CourseOffering </code> from which this record
-     *  originated.
-     *
-     *  @return object osid_course_CourseOffering the course offering
-     *  @compliance mandatory This method must be implemented.
-     */
-    public function getCourseOffering() {
-    	return $this;
-    }
+	/**
+	 *  Gets the <code> CourseOffering </code> from which this record
+	 *  originated.
+	 *
+	 *  @return object osid_course_CourseOffering the course offering
+	 *  @compliance mandatory This method must be implemented.
+	 */
+	public function getCourseOffering() {
+		return $this;
+	}
 
 /*********************************************************
  * InstructorsRecord support
  *********************************************************/
 
 	/**
-     *  Gets the Ids of the instructors associated with this course offering
-     *
-     *  @return object osid_id_IdList the list of instructor ids.
-     *  @compliance mandatory This method must be implemented.
-     *  @throws osid_OperationFailedException unable to complete request
-     *  @throws osid_PermissionDeniedException authorization failure
-     */
-    public function getInstructorIds() {
-    	return $this->session->getInstructorIdsForOffering($this->getId());
-    }
+	 *  Gets the Ids of the instructors associated with this course offering
+	 *
+	 *  @return object osid_id_IdList the list of instructor ids.
+	 *  @compliance mandatory This method must be implemented.
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @throws osid_PermissionDeniedException authorization failure
+	 */
+	public function getInstructorIds() {
+		return $this->session->getInstructorIdsForOffering($this->getId());
+	}
 
-    /**
-     *  Gets the <code> Resources </code> representing the instructors associated
-     *  with this course offering.
-     *
-     *  @return object osid_resource_ResourceList the list of instructors.
-     *  @compliance mandatory This method must be implemented.
-     *  @throws osid_OperationFailedException unable to complete request
-     *  @throws osid_PermissionDeniedException authorization failure
-     */
-    public function getInstructors() {
-    	return $this->session->getInstructorsForOffering($this->getId());
-    }
+	/**
+	 *  Gets the <code> Resources </code> representing the instructors associated
+	 *  with this course offering.
+	 *
+	 *  @return object osid_resource_ResourceList the list of instructors.
+	 *  @compliance mandatory This method must be implemented.
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @throws osid_PermissionDeniedException authorization failure
+	 */
+	public function getInstructors() {
+		return $this->session->getInstructorsForOffering($this->getId());
+	}
 
 /*********************************************************
  * LinkRecord support
@@ -796,54 +796,54 @@ class banner_course_CourseOffering
 /*********************************************************
  * AlternatesRecord support
  *********************************************************/
- 	/**
+	/**
 	 * Tests if this course offering has any alternate course offerings.
 	 *
 	 * @return boolean <code> true </code> if this course offering has any
-     *          alternates, <code> false </code> otherwise
+	 *          alternates, <code> false </code> otherwise
 	 * @access public
-     * @compliance mandatory This method must be implemented.
+	 * @compliance mandatory This method must be implemented.
 	 */
 	public function hasAlternates () {
 		return (strlen($this->row['SSRXLST_XLST_GROUP']) > 0);
 	}
 
 	/**
-     *  Gets the Ids of any alternate course offerings
-     *
-     *  @return object osid_id_IdList the list of alternate ids.
-     *  @compliance mandatory This method must be implemented.
-     *  @throws osid_OperationFailedException unable to complete request
-     *  @throws osid_PermissionDeniedException authorization failure
-     */
-    public function getAlternateIds() {
-    	if (!$this->hasAlternates())
-    		return new phpkit_EmptyList('osid_id_IdList');
+	 *  Gets the Ids of any alternate course offerings
+	 *
+	 *  @return object osid_id_IdList the list of alternate ids.
+	 *  @compliance mandatory This method must be implemented.
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @throws osid_PermissionDeniedException authorization failure
+	 */
+	public function getAlternateIds() {
+		if (!$this->hasAlternates())
+			return new phpkit_EmptyList('osid_id_IdList');
 
-    	return $this->session->getAlternateIdsForOffering($this->getId());
-    }
+		return $this->session->getAlternateIdsForOffering($this->getId());
+	}
 
-    /**
-     *  Gets the alternate <code> CourseOfferings </code>.
-     *
-     *  @return object osid_course_CourseOfferingList The list of alternates.
-     *  @compliance mandatory This method must be implemented.
-     *  @throws osid_OperationFailedException unable to complete request
-     *  @throws osid_PermissionDeniedException authorization failure
-     */
-    public function getAlternates() {
-    	$lookupSession = $this->session->getCourseOfferingLookupSession();
-    	return $lookupSession->getCourseOfferingsByIds($this->getAlternateIds());
-    }
+	/**
+	 *  Gets the alternate <code> CourseOfferings </code>.
+	 *
+	 *  @return object osid_course_CourseOfferingList The list of alternates.
+	 *  @compliance mandatory This method must be implemented.
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @throws osid_PermissionDeniedException authorization failure
+	 */
+	public function getAlternates() {
+		$lookupSession = $this->session->getCourseOfferingLookupSession();
+		return $lookupSession->getCourseOfferingsByIds($this->getAlternateIds());
+	}
 
-    /**
+	/**
 	 * Answer <code> true </code> if this course is the primary version in a group of
 	 * alternates.
 	 *
 	 *  @return boolean
-     *  @compliance mandatory This method must be implemented.
-     *  @throws osid_OperationFailedException unable to complete request
-     *  @throws osid_PermissionDeniedException authorization failure
+	 *  @compliance mandatory This method must be implemented.
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @throws osid_PermissionDeniedException authorization failure
 	 */
 	public function isPrimary () {
 		return (intval($this->row['SSBSECT_MAX_ENRL']) > 0);
@@ -854,417 +854,417 @@ class banner_course_CourseOffering
  *********************************************************/
 
 	/**
-     *  Answers the term-code of the Course Offering.
-     *
-     *  @return string The term-code.
-     *  @compliance mandatory This method must be implemented.
-     *  @throws osid_OperationFailedException unable to complete request
-     *  @throws osid_PermissionDeniedException authorization failure
-     */
-    public function getTermCode() {
-    	return $this->row['SSBSECT_TERM_CODE'];
-    }
+	 *  Answers the term-code of the Course Offering.
+	 *
+	 *  @return string The term-code.
+	 *  @compliance mandatory This method must be implemented.
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @throws osid_PermissionDeniedException authorization failure
+	 */
+	public function getTermCode() {
+		return $this->row['SSBSECT_TERM_CODE'];
+	}
 
-    /**
-     *  Answers the Course Reference Number (CRN) of a course.
-     *
-     *  @return string The Course Reference Number (CRN)
-     *  @compliance mandatory This method must be implemented.
-     *  @throws osid_OperationFailedException unable to complete request
-     *  @throws osid_PermissionDeniedException authorization failure
-     */
-    public function getCourseReferenceNumber() {
-    	return $this->row['SSBSECT_CRN'];
-    }
+	/**
+	 *  Answers the Course Reference Number (CRN) of a course.
+	 *
+	 *  @return string The Course Reference Number (CRN)
+	 *  @compliance mandatory This method must be implemented.
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @throws osid_PermissionDeniedException authorization failure
+	 */
+	public function getCourseReferenceNumber() {
+		return $this->row['SSBSECT_CRN'];
+	}
 
 /*********************************************************
  * WeeklyScheduleRecord support
  *********************************************************/
 
- 	/**
-     * Answer true if this CourseOffering meets on Sunday
-     *
-     * @return boolean
-     * @access public
-     * @compliance mandatory This method must be implemented.
-     */
-    public function meetsOnSunday () {
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_SUN_DAY']))
-    			return true;
-    	}
+	/**
+	 * Answer true if this CourseOffering meets on Sunday
+	 *
+	 * @return boolean
+	 * @access public
+	 * @compliance mandatory This method must be implemented.
+	 */
+	public function meetsOnSunday () {
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_SUN_DAY']))
+				return true;
+		}
 		return false;
 	}
 
-    /**
-     * Answer time the meeting starts on Sunday
-     *
-     * @return array An array of start-times whose order matches those returned by getSundayEndTimes()
+	/**
+	 * Answer time the meeting starts on Sunday
+	 *
+	 * @return array An array of start-times whose order matches those returned by getSundayEndTimes()
 	 *		Times are  in seconds from midnight Sunday morning.
-     * @compliance mandatory This method must be implemented.
-     * @throws osid_IllegalStateException <code>meetsOnSunday()</code> is <code>false</code>
-     * @access public
-     * @since 6/10/09
-     */
-    public function getSundayStartTimes () {
-    	$times = array();
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_SUN_DAY']))
-    			$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
-    	}
-		return $times;
-	}
-
-    /**
-     * Answer time the meeting ends on Sunday
-     *
-     * @return array An array of end-times whose order matches those returned by getSundayStartTimes()
-	 *		Times are  in seconds from midnight Sunday morning.
-     * @compliance mandatory This method must be implemented.
-     * @throws osid_IllegalStateException <code>meetsOnSunday()</code> is <code>false</code>
-     * @access public
-     * @since 6/10/09
-     */
-    public function getSundayEndTimes () {
-    	$times = array();
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_SUN_DAY']))
-    			$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
-    	}
-		return $times;
-	}
-
-    /**
-     * Answer true if this CourseOffering meets on Monday
-     *
-     * @return boolean
-     * @access public
-     * @compliance mandatory This method must be implemented.
-     */
-    public function meetsOnMonday () {
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_MON_DAY']))
-    			return true;
-    	}
-		return false;
-	}
-
-    /**
-     * Answer time the meeting starts on Monday
-     *
-     * @return array An array of start-times whose order matches those returned by getMondayEndTimes()
-	 *		Times are  in seconds from midnight Monday morning.
-     * @compliance mandatory This method must be implemented.
-     * @throws osid_IllegalStateException <code>meetsOnMonday()</code> is <code>false</code>
-     * @access public
-     * @since 6/10/09
-     */
-    public function getMondayStartTimes () {
-    	$times = array();
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_MON_DAY']))
-    			$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
-    	}
-		return $times;
-	}
-
-    /**
-     * Answer time the meeting ends on Monday
-     *
-     * @return array An array of end-times whose order matches those returned by getMondayStartTimes()
-	 *		Times are  in seconds from midnight Monday morning.
-     * @compliance mandatory This method must be implemented.
-     * @throws osid_IllegalStateException <code>meetsOnMonday()</code> is <code>false</code>
-     * @access public
-     * @since 6/10/09
-     */
-    public function getMondayEndTimes () {
-    	$times = array();
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_MON_DAY']))
-    			$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
-    	}
-		return $times;
-	}
-
-    /**
-     * Answer true if this CourseOffering meets on Tuesday
-     *
-     * @return boolean
-     * @access public
-     * @compliance mandatory This method must be implemented.
-     */
-    public function meetsOnTuesday () {
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_TUE_DAY']))
-    			return true;
-    	}
-		return false;
-	}
-
-    /**
-     * Answer time the meeting starts on Tuesday
-     *
-     * @return array An array of start-times whose order matches those returned by getTuesdayEndTimes()
-	 *		Times are  in seconds from midnight Tuesday morning.
-     * @compliance mandatory This method must be implemented.
-     * @throws osid_IllegalStateException <code>meetsOnTuesday()</code> is <code>false</code>
-     * @access public
-     * @since 6/10/09
-     */
-    public function getTuesdayStartTimes () {
-    	$times = array();
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_TUE_DAY']))
-    			$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
-    	}
-		return $times;
-	}
-
-    /**
-     * Answer time the meeting ends on Tuesday
-     *
-     * @return array An array of end-times whose order matches those returned by getTuesdayStartTimes()
-	 *		Times are  in seconds from midnight Tuesday morning.
-     * @compliance mandatory This method must be implemented.
-     * @throws osid_IllegalStateException <code>meetsOnTuesday()</code> is <code>false</code>
-     * @access public
-     * @since 6/10/09
-     */
-    public function getTuesdayEndTimes () {
-    	$times = array();
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_TUE_DAY']))
-    			$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
-    	}
+	 * @compliance mandatory This method must be implemented.
+	 * @throws osid_IllegalStateException <code>meetsOnSunday()</code> is <code>false</code>
+	 * @access public
+	 * @since 6/10/09
+	 */
+	public function getSundayStartTimes () {
+		$times = array();
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_SUN_DAY']))
+				$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
+		}
 		return $times;
 	}
 
 	/**
-     * Answer true if this CourseOffering meets on Wednesday
-     *
-     * @return boolean
-     * @access public
-     * @compliance mandatory This method must be implemented.
-     */
-    public function meetsOnWednesday () {
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_WED_DAY']))
-    			return true;
-    	}
+	 * Answer time the meeting ends on Sunday
+	 *
+	 * @return array An array of end-times whose order matches those returned by getSundayStartTimes()
+	 *		Times are  in seconds from midnight Sunday morning.
+	 * @compliance mandatory This method must be implemented.
+	 * @throws osid_IllegalStateException <code>meetsOnSunday()</code> is <code>false</code>
+	 * @access public
+	 * @since 6/10/09
+	 */
+	public function getSundayEndTimes () {
+		$times = array();
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_SUN_DAY']))
+				$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
+		}
+		return $times;
+	}
+
+	/**
+	 * Answer true if this CourseOffering meets on Monday
+	 *
+	 * @return boolean
+	 * @access public
+	 * @compliance mandatory This method must be implemented.
+	 */
+	public function meetsOnMonday () {
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_MON_DAY']))
+				return true;
+		}
 		return false;
 	}
 
-    /**
-     * Answer time the meeting starts on Wednesday
-     *
-     * @return array An array of start-times whose order matches those returned by getWednesdayEndTimes()
+	/**
+	 * Answer time the meeting starts on Monday
+	 *
+	 * @return array An array of start-times whose order matches those returned by getMondayEndTimes()
+	 *		Times are  in seconds from midnight Monday morning.
+	 * @compliance mandatory This method must be implemented.
+	 * @throws osid_IllegalStateException <code>meetsOnMonday()</code> is <code>false</code>
+	 * @access public
+	 * @since 6/10/09
+	 */
+	public function getMondayStartTimes () {
+		$times = array();
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_MON_DAY']))
+				$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
+		}
+		return $times;
+	}
+
+	/**
+	 * Answer time the meeting ends on Monday
+	 *
+	 * @return array An array of end-times whose order matches those returned by getMondayStartTimes()
+	 *		Times are  in seconds from midnight Monday morning.
+	 * @compliance mandatory This method must be implemented.
+	 * @throws osid_IllegalStateException <code>meetsOnMonday()</code> is <code>false</code>
+	 * @access public
+	 * @since 6/10/09
+	 */
+	public function getMondayEndTimes () {
+		$times = array();
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_MON_DAY']))
+				$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
+		}
+		return $times;
+	}
+
+	/**
+	 * Answer true if this CourseOffering meets on Tuesday
+	 *
+	 * @return boolean
+	 * @access public
+	 * @compliance mandatory This method must be implemented.
+	 */
+	public function meetsOnTuesday () {
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_TUE_DAY']))
+				return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Answer time the meeting starts on Tuesday
+	 *
+	 * @return array An array of start-times whose order matches those returned by getTuesdayEndTimes()
+	 *		Times are  in seconds from midnight Tuesday morning.
+	 * @compliance mandatory This method must be implemented.
+	 * @throws osid_IllegalStateException <code>meetsOnTuesday()</code> is <code>false</code>
+	 * @access public
+	 * @since 6/10/09
+	 */
+	public function getTuesdayStartTimes () {
+		$times = array();
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_TUE_DAY']))
+				$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
+		}
+		return $times;
+	}
+
+	/**
+	 * Answer time the meeting ends on Tuesday
+	 *
+	 * @return array An array of end-times whose order matches those returned by getTuesdayStartTimes()
+	 *		Times are  in seconds from midnight Tuesday morning.
+	 * @compliance mandatory This method must be implemented.
+	 * @throws osid_IllegalStateException <code>meetsOnTuesday()</code> is <code>false</code>
+	 * @access public
+	 * @since 6/10/09
+	 */
+	public function getTuesdayEndTimes () {
+		$times = array();
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_TUE_DAY']))
+				$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
+		}
+		return $times;
+	}
+
+	/**
+	 * Answer true if this CourseOffering meets on Wednesday
+	 *
+	 * @return boolean
+	 * @access public
+	 * @compliance mandatory This method must be implemented.
+	 */
+	public function meetsOnWednesday () {
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_WED_DAY']))
+				return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Answer time the meeting starts on Wednesday
+	 *
+	 * @return array An array of start-times whose order matches those returned by getWednesdayEndTimes()
 	 *		Times are  in seconds from midnight Wednesday morning.
-     * @compliance mandatory This method must be implemented.
-     * @throws osid_IllegalStateException <code>meetsOnWednesday()</code> is <code>false</code>
-     * @access public
-     * @since 6/10/09
-     */
-    public function getWednesdayStartTimes () {
-    	$times = array();
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_WED_DAY']))
-    			$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
-    	}
+	 * @compliance mandatory This method must be implemented.
+	 * @throws osid_IllegalStateException <code>meetsOnWednesday()</code> is <code>false</code>
+	 * @access public
+	 * @since 6/10/09
+	 */
+	public function getWednesdayStartTimes () {
+		$times = array();
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_WED_DAY']))
+				$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
+		}
 		return $times;
 	}
 
-    /**
-     * Answer time the meeting ends on Wednesday
-     *
-     * @return array An array of end-times whose order matches those returned by getWednesdayStartTimes()
+	/**
+	 * Answer time the meeting ends on Wednesday
+	 *
+	 * @return array An array of end-times whose order matches those returned by getWednesdayStartTimes()
 	 *		Times are  in seconds from midnight Wednesday morning.
-     * @compliance mandatory This method must be implemented.
-     * @throws osid_IllegalStateException <code>meetsOnWednesday()</code> is <code>false</code>
-     * @access public
-     * @since 6/10/09
-     */
-    public function getWednesdayEndTimes () {
-    	$times = array();
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_WED_DAY']))
-    			$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
-    	}
+	 * @compliance mandatory This method must be implemented.
+	 * @throws osid_IllegalStateException <code>meetsOnWednesday()</code> is <code>false</code>
+	 * @access public
+	 * @since 6/10/09
+	 */
+	public function getWednesdayEndTimes () {
+		$times = array();
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_WED_DAY']))
+				$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
+		}
 		return $times;
 	}
 
-    /**
-     * Answer true if this CourseOffering meets on Thursday
-     *
-     * @return boolean
-     * @access public
-     * @compliance mandatory This method must be implemented.
-     */
-    public function meetsOnThursday () {
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_THU_DAY']))
-    			return true;
-    	}
+	/**
+	 * Answer true if this CourseOffering meets on Thursday
+	 *
+	 * @return boolean
+	 * @access public
+	 * @compliance mandatory This method must be implemented.
+	 */
+	public function meetsOnThursday () {
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_THU_DAY']))
+				return true;
+		}
 		return false;
 	}
 
-    /**
-     * Answer time the meeting starts on Thursday
-     *
-     * @return array An array of start-times whose order matches those returned by getThursdayEndTimes()
+	/**
+	 * Answer time the meeting starts on Thursday
+	 *
+	 * @return array An array of start-times whose order matches those returned by getThursdayEndTimes()
 	 *		Times are  in seconds from midnight Thursday morning.
-     * @compliance mandatory This method must be implemented.
-     * @throws osid_IllegalStateException <code>meetsOnThursday()</code> is <code>false</code>
-     * @access public
-     * @since 6/10/09
-     */
-    public function getThursdayStartTimes () {
-    	$times = array();
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_THU_DAY']))
-    			$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
-    	}
+	 * @compliance mandatory This method must be implemented.
+	 * @throws osid_IllegalStateException <code>meetsOnThursday()</code> is <code>false</code>
+	 * @access public
+	 * @since 6/10/09
+	 */
+	public function getThursdayStartTimes () {
+		$times = array();
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_THU_DAY']))
+				$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
+		}
 		return $times;
 	}
 
-    /**
-     * Answer time the meeting ends on Thursday
-     *
-     * @return array An array of end-times whose order matches those returned by getThursdayStartTimes()
+	/**
+	 * Answer time the meeting ends on Thursday
+	 *
+	 * @return array An array of end-times whose order matches those returned by getThursdayStartTimes()
 	 *		Times are  in seconds from midnight Thursday morning.
-     * @compliance mandatory This method must be implemented.
-     * @throws osid_IllegalStateException <code>meetsOnThursday()</code> is <code>false</code>
-     * @access public
-     * @since 6/10/09
-     */
-    public function getThursdayEndTimes () {
-    	$times = array();
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_THU_DAY']))
-    			$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
-    	}
+	 * @compliance mandatory This method must be implemented.
+	 * @throws osid_IllegalStateException <code>meetsOnThursday()</code> is <code>false</code>
+	 * @access public
+	 * @since 6/10/09
+	 */
+	public function getThursdayEndTimes () {
+		$times = array();
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_THU_DAY']))
+				$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
+		}
 		return $times;
 	}
 
-    /**
-     * Answer true if this CourseOffering meets on Friday
-     *
-     * @return boolean
-     * @access public
-     * @compliance mandatory This method must be implemented.
-     */
-    public function meetsOnFriday () {
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_FRI_DAY']))
-    			return true;
-    	}
+	/**
+	 * Answer true if this CourseOffering meets on Friday
+	 *
+	 * @return boolean
+	 * @access public
+	 * @compliance mandatory This method must be implemented.
+	 */
+	public function meetsOnFriday () {
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_FRI_DAY']))
+				return true;
+		}
 		return false;
 	}
 
-    /**
-     * Answer time the meeting starts on Friday
-     *
-     * @return array An array of start-times whose order matches those returned by getFridayEndTimes()
+	/**
+	 * Answer time the meeting starts on Friday
+	 *
+	 * @return array An array of start-times whose order matches those returned by getFridayEndTimes()
 	 *		Times are  in seconds from midnight Friday morning.
-     * @compliance mandatory This method must be implemented.
-     * @throws osid_IllegalStateException <code>meetsOnFriday()</code> is <code>false</code>
-     * @access public
-     * @since 6/10/09
-     */
-    public function getFridayStartTimes () {
-    	$times = array();
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_FRI_DAY']))
-    			$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
-    	}
+	 * @compliance mandatory This method must be implemented.
+	 * @throws osid_IllegalStateException <code>meetsOnFriday()</code> is <code>false</code>
+	 * @access public
+	 * @since 6/10/09
+	 */
+	public function getFridayStartTimes () {
+		$times = array();
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_FRI_DAY']))
+				$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
+		}
 		return $times;
 	}
 
-    /**
-     * Answer time the meeting ends on Friday
-     *
-     * @return array An array of end-times whose order matches those returned by getFridayStartTimes()
+	/**
+	 * Answer time the meeting ends on Friday
+	 *
+	 * @return array An array of end-times whose order matches those returned by getFridayStartTimes()
 	 *		Times are  in seconds from midnight Friday morning.
-     * @compliance mandatory This method must be implemented.
-     * @throws osid_IllegalStateException <code>meetsOnFriday()</code> is <code>false</code>
-     * @access public
-     * @since 6/10/09
-     */
-    public function getFridayEndTimes () {
-    	$times = array();
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_FRI_DAY']))
-    			$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
-    	}
+	 * @compliance mandatory This method must be implemented.
+	 * @throws osid_IllegalStateException <code>meetsOnFriday()</code> is <code>false</code>
+	 * @access public
+	 * @since 6/10/09
+	 */
+	public function getFridayEndTimes () {
+		$times = array();
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_FRI_DAY']))
+				$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
+		}
 		return $times;
 	}
 
-    /**
-     * Answer true if this CourseOffering meets on Saturday
-     *
-     * @return boolean
-     * @access public
-     * @compliance mandatory This method must be implemented.
-     */
-    public function meetsOnSaturday () {
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_SAT_DAY']))
-    			return true;
-    	}
+	/**
+	 * Answer true if this CourseOffering meets on Saturday
+	 *
+	 * @return boolean
+	 * @access public
+	 * @compliance mandatory This method must be implemented.
+	 */
+	public function meetsOnSaturday () {
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_SAT_DAY']))
+				return true;
+		}
 		return false;
 	}
 
-    /**
-     * Answer time the meeting starts on Saturday
-     *
-     * @return array An array of start-times whose order matches those returned by getSaturdayEndTimes()
+	/**
+	 * Answer time the meeting starts on Saturday
+	 *
+	 * @return array An array of start-times whose order matches those returned by getSaturdayEndTimes()
 	 *		Times are  in seconds from midnight Saturday morning.
-     * @compliance mandatory This method must be implemented.
-     * @throws osid_IllegalStateException <code>meetsOnSaturday()</code> is <code>false</code>
-     * @access public
-     * @since 6/10/09
-     */
-    public function getSaturdayStartTimes () {
-    	$times = array();
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_SAT_DAY']))
-    			$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
-    	}
+	 * @compliance mandatory This method must be implemented.
+	 * @throws osid_IllegalStateException <code>meetsOnSaturday()</code> is <code>false</code>
+	 * @access public
+	 * @since 6/10/09
+	 */
+	public function getSaturdayStartTimes () {
+		$times = array();
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_SAT_DAY']))
+				$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
+		}
 		return $times;
 	}
 
-    /**
-     * Answer time the meeting ends on Saturday
-     *
-     * @return array An array of end-times whose order matches those returned by getSaturdayStartTimes()
+	/**
+	 * Answer time the meeting ends on Saturday
+	 *
+	 * @return array An array of end-times whose order matches those returned by getSaturdayStartTimes()
 	 *		Times are  in seconds from midnight Saturday morning.
-     * @compliance mandatory This method must be implemented.
-     * @throws osid_IllegalStateException <code>meetsOnSaturday()</code> is <code>false</code>
-     * @access public
-     * @since 6/10/09
-     */
-    public function getSaturdayEndTimes () {
-    	$times = array();
-    	foreach ($this->getMeetingRows() as $row) {
-    		if (strlen($row['SSRMEET_SAT_DAY']))
-    			$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
-    	}
+	 * @compliance mandatory This method must be implemented.
+	 * @throws osid_IllegalStateException <code>meetsOnSaturday()</code> is <code>false</code>
+	 * @access public
+	 * @since 6/10/09
+	 */
+	public function getSaturdayEndTimes () {
+		$times = array();
+		foreach ($this->getMeetingRows() as $row) {
+			if (strlen($row['SSRMEET_SAT_DAY']))
+				$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
+		}
 		return $times;
 	}
 
 
-    /**
-     * Answer the number of seconds since midnight for a time-string from our db
-     *
-     * @param string $timeString
-     * @return integer
-     * @access protected
-     * @since 6/10/09
-     */
-    protected function asSeconds ($timeString) {
-    	$parts = strptime($timeString, '%H%M');
-    	return (intval($parts['tm_hour']) * 3600) + (intval($parts['tm_min']) * 60);
-    }
+	/**
+	 * Answer the number of seconds since midnight for a time-string from our db
+	 *
+	 * @param string $timeString
+	 * @return integer
+	 * @access protected
+	 * @since 6/10/09
+	 */
+	protected function asSeconds ($timeString) {
+		$parts = strptime($timeString, '%H%M');
+		return (intval($parts['tm_hour']) * 3600) + (intval($parts['tm_min']) * 60);
+	}
 
 
 /*********************************************************
