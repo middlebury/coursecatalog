@@ -4,7 +4,7 @@
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<?php echo $this->headTitle() ?>
 
-	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/themes/base/jquery-ui.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/themes/base/jquery-ui.css" type="text/css" media="all" />
 
     <link rel="stylesheet" href="//cdn.middlebury.edu/middlebury.edu/2010/css/midd.css">
     <link rel="shortcut icon" href="//cdn.middlebury.edu/middlebury.edu/2010/images/midd_favicon.ico">
@@ -24,8 +24,8 @@
 	<link rel="stylesheet" media="screen" type="text/css" href="<?php echo $this->url(array(), null, true) ?>2d/StyleSheets/CatalogStyles.css" />
 	<link rel="stylesheet" media="screen" type="text/css" href="<?php echo $this->url(array(), null, true) ?>StyleSheets/midd/Styles.css" />
 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
 
 	<?php echo $this->headLink() ?>
 	<?php echo $this->headScript() ?>
@@ -33,6 +33,15 @@
 </head>
 
 <body class="midd_department">
+    <!-- Google Tag Manager -->
+    <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-NB55WH"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-NB55WH');</script>
+    <!-- End Google Tag Manager -->
     <a href="#midd_content" class="skiplink">Skip to content</a>
     <header class="container">
 <!--
@@ -170,10 +179,5 @@
     </footer>
     <div id="midd_footer_panel" class="footer_panel"></div>
     <script src="//cdn.middlebury.edu/middlebury.edu/2010/js/midd.js"></script>
-    <script type="text/javascript">
-    <!--//--><![CDATA[//><!--
-    var _gaq = _gaq || [];_gaq.push(["_setAccount", "UA-993303-1"]);_gaq.push(["_setDomainName", ".middlebury.edu"]);_gaq.push(["_trackPageview"]);(function() {var ga = document.createElement("script");ga.type = "text/javascript";ga.async = true;ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(ga, s);})();
-    //--><!]]>
-    </script>
   </body>
 </html>

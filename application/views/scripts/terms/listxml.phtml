@@ -1,0 +1,29 @@
+<?php
+
+print '<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0" xmlns:term="http://www.middlebury.edu/course_catalog">
+	<channel>
+		<title>'.$this->title.'</title>
+		<link>'.$this->pathAsAbsoluteUrl($this->url()).'</link>
+		<lastBuildDate>'.date('r').'</lastBuildDate>
+		<generator>Course Catalog</generator>
+		<docs>http://blogs.law.harvard.edu/tech/rss</docs>
+';
+
+$params = array(	'controller' 	=> 'terms',
+					'action'		=> 'view');
+
+while ($this->terms->hasNext()) {
+	$term = $this->terms->getNextTerm();
+	print "\n\t\t<item>";
+	print "\n\t\t\t<title>".$this->escape($term->getDisplayName())."</title>";
+	$params['term'] = $this->getStringFromOsidId($term->getId());
+	print "\n\t\t\t<link>".$this->pathAsAbsoluteUrl($this->url($params))."</link>";
+	print "\n\t\t\t<description><![CDATA[".$term->getDescription()."]]></description>";
+	print "\n\t\t\t<term:id>".$this->getStringFromOsidId($term->getId())."</term:id>";
+	print "\n\t\t</item>";
+}
+?>
+
+	</channel>
+</rss>
