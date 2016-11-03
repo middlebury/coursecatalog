@@ -9,10 +9,16 @@ DROP VIEW IF EXISTS scbcrse_scbdesc_recent;
 DROP VIEW IF EXISTS scbcrse_recent;
 
 
-DROP TABLE IF EXISTS course_catalog_college;
+DROP TABLE IF EXISTS catalog_campus;
 DROP TABLE IF EXISTS catalog_term;
+DROP TABLE IF EXISTS catalog_term_inactive;
 DROP TABLE IF EXISTS catalog_term_match;
 DROP TABLE IF EXISTS course_catalog;
+DROP TABLE IF EXISTS course_catalog_college;
+DROP TABLE IF EXISTS user_catalog;
+DROP TABLE IF EXISTS user_savedcourses;
+DROP TABLE IF EXISTS user_schedules;
+DROP TABLE IF EXISTS user_schedule_offerings;
 DROP TABLE IF EXISTS GORINTG;
 DROP TABLE IF EXISTS GTVDUNT;
 DROP TABLE IF EXISTS GTVINSM;
