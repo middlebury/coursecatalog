@@ -56,11 +56,13 @@ WHERE
 			SSBSECT_TERM_CODE
 		FROM
 			SSBSECT
+			INNER JOIN catalog_term ON SSBSECT_TERM_CODE = catalog_term.term_code
+			INNER JOIN course_catalog ON catalog_term.catalog_id = course_catalog.catalog_id
 		WHERE
 			SSBSECT_SUBJ_CODE = :subj_code
 			AND SSBSECT_CRSE_NUMB = :crse_numb
 			AND SSBSECT_SSTS_CODE = 'A'
-			AND SSBSECT_PRNT_IND != 'N'
+			AND (course_catalog.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != course_catalog.prnt_ind_to_exclude)
 		GROUP BY SSBSECT_TERM_CODE
 	)
 GROUP BY STVTERM_CODE

@@ -278,7 +278,8 @@ class banner_resource_Resource_Lookup_PerCatalogSession
 FROM
 	SYVINST
 	INNER JOIN ssbsect_scbcrse ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)
-
+	INNER JOIN course_catalog_college ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
+	INNER JOIN course_catalog ON course_catalog_college.catalog_id = course_catalog.catalog_id
 WHERE
 	WEB_ID = :webid
 
@@ -291,7 +292,7 @@ WHERE
 			".$this->getCatalogWhereTerms()."
 	)
   AND SSBSECT_SSTS_CODE = 'A'
-  AND SSBSECT_PRNT_IND != 'N'
+  AND (course_catalog.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != course_catalog.prnt_ind_to_exclude)
 ";
 			self::$getPersonResource_stmt = $this->manager->getDB()->prepare($query);
 		}
@@ -333,6 +334,8 @@ WHERE
 FROM
 	ssbsect_scbcrse
 	INNER JOIN SYVINST ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)
+	INNER JOIN course_catalog_college ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
+	INNER JOIN course_catalog ON course_catalog_college.catalog_id = course_catalog.catalog_id
 WHERE
 
 	SCBCRSE_COLL_CODE IN (
@@ -344,7 +347,7 @@ WHERE
 			".$this->getCatalogWhereTerms()."
 	)
   AND SSBSECT_SSTS_CODE = 'A'
-  AND SSBSECT_PRNT_IND != 'N'
+  AND (course_catalog.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != course_catalog.prnt_ind_to_exclude)
 GROUP BY WEB_ID
 ";
 			self::$getPersonResources_stmt = $this->manager->getDB()->prepare($query);
@@ -383,6 +386,8 @@ FROM
 	ssbsect_scbcrse
 	INNER JOIN SSRMEET ON (SSRMEET_TERM_CODE = SSBSECT_TERM_CODE AND SSRMEET_CRN = SSBSECT_CRN)
 	INNER JOIN STVBLDG ON SSRMEET_BLDG_CODE = STVBLDG_CODE
+	INNER JOIN course_catalog_college ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
+	INNER JOIN course_catalog ON course_catalog_college.catalog_id = course_catalog.catalog_id
 WHERE
 	STVBLDG_CODE = :code
 
@@ -395,7 +400,7 @@ WHERE
 			".$this->getCatalogWhereTerms()."
 	)
   AND SSBSECT_SSTS_CODE = 'A'
-  AND SSBSECT_PRNT_IND != 'N'
+  AND (course_catalog.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != course_catalog.prnt_ind_to_exclude)
 GROUP BY STVBLDG_CODE
 ";
 			self::$getBuildingResource_stmt = $this->manager->getDB()->prepare($query);
@@ -439,6 +444,8 @@ FROM
 	ssbsect_scbcrse
 	INNER JOIN SSRMEET ON (SSRMEET_TERM_CODE = SSBSECT_TERM_CODE AND SSRMEET_CRN = SSBSECT_CRN)
 	INNER JOIN STVBLDG ON SSRMEET_BLDG_CODE = STVBLDG_CODE
+	INNER JOIN course_catalog_college ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
+	INNER JOIN course_catalog ON course_catalog_college.catalog_id = course_catalog.catalog_id
 WHERE
 	SCBCRSE_COLL_CODE IN (
 		SELECT
@@ -449,7 +456,7 @@ WHERE
 			".$this->getCatalogWhereTerms()."
 	)
   AND SSBSECT_SSTS_CODE = 'A'
-  AND SSBSECT_PRNT_IND != 'N'
+  AND (course_catalog.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != course_catalog.prnt_ind_to_exclude)
 GROUP BY STVBLDG_CODE
 ";
 			self::$getBuildingResources_stmt = $this->manager->getDB()->prepare($query);
@@ -488,6 +495,8 @@ GROUP BY STVBLDG_CODE
 	STVBLDG_DESC
 FROM
 	ssbsect_scbcrse
+	INNER JOIN course_catalog_college ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
+	INNER JOIN course_catalog ON course_catalog_college.catalog_id = course_catalog.catalog_id
 	INNER JOIN SSRMEET ON (SSRMEET_TERM_CODE = SSBSECT_TERM_CODE AND SSRMEET_CRN = SSBSECT_CRN)
 	LEFT JOIN STVBLDG ON SSRMEET_BLDG_CODE = STVBLDG_CODE
 WHERE
@@ -501,6 +510,7 @@ WHERE
 		WHERE
 			".$this->getCatalogWhereTerms()."
 	)
+	AND (course_catalog.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != course_catalog.prnt_ind_to_exclude)
 GROUP BY
 	STVBLDG_CODE, SSRMEET_ROOM_CODE
 ";
@@ -549,6 +559,8 @@ GROUP BY
 	STVBLDG_DESC
 FROM
 	ssbsect_scbcrse
+	INNER JOIN course_catalog_college ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
+	INNER JOIN course_catalog ON course_catalog_college.catalog_id = course_catalog.catalog_id
 	INNER JOIN SSRMEET ON (SSRMEET_TERM_CODE = SSBSECT_TERM_CODE AND SSRMEET_CRN = SSBSECT_CRN)
 	LEFT JOIN STVBLDG ON SSRMEET_BLDG_CODE = STVBLDG_CODE
 WHERE
@@ -562,7 +574,7 @@ WHERE
 			".$this->getCatalogWhereTerms()."
 	)
   AND SSBSECT_SSTS_CODE = 'A'
-  AND SSBSECT_PRNT_IND != 'N'
+  AND (course_catalog.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != course_catalog.prnt_ind_to_exclude)
 GROUP BY
 	STVBLDG_CODE, SSRMEET_ROOM_CODE
 ";

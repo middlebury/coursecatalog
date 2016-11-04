@@ -48,13 +48,13 @@ INSERT INTO `catalog_term_match` (`catalog_id`, `term_code_match`, `term_display
 -- Dumping data for table `course_catalog`
 --
 
-INSERT INTO `course_catalog` (`catalog_id`, `catalog_title`) VALUES
-('BLSE', 'Bread Loaf School of English'),
-('MCLS', 'Middlebury College Language Schools'),
-('MCSA', 'Middlebury College Schools Abroad'),
-('MCUG', 'Middlebury College'),
-('MIIS', 'Monterey Institute of International Studies'),
-('MMLA', 'Middlebury Monterey Language Academy');
+INSERT INTO `course_catalog` (`catalog_id`, `catalog_title`, `prnt_ind_to_exclude`) VALUES
+('BLSE', 'Bread Loaf School of English', NULL),
+('MCLS', 'Middlebury College Language Schools', NULL),
+('MCSA', 'Middlebury College Schools Abroad', NULL),
+('MCUG', 'Middlebury College', 'N'),
+('MIIS', 'Monterey Institute of International Studies', NULL),
+('MMLA', 'Middlebury Monterey Language Academy', NULL);
 
 --
 -- Dumping data for table `course_catalog_college`

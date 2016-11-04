@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS `catalog_term_match` (
 CREATE TABLE IF NOT EXISTS `course_catalog` (
   `catalog_id` varchar(10) NOT NULL COMMENT 'An identifier for the catalog.',
   `catalog_title` varchar(100) NOT NULL COMMENT 'A title for the catalog, will be displayed in drop-down menus and headings.',
+  `prnt_ind_to_exclude` CHAR(1) NULL DEFAULT NULL COMMENT 'Sections with a print indicator matching this value will be excluded from the catalog. If NULL, all will be included.',
   `current_term` varchar(6) default NULL,
   PRIMARY KEY  (`catalog_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='A listing of catalogs, each of which may be made up several ';

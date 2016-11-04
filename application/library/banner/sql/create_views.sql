@@ -294,11 +294,14 @@ DROP VIEW IF EXISTS catalog_campus;
 DROP TABLE IF EXISTS catalog_campus;
 CREATE TABLE catalog_campus
 SELECT
-	catalog_id,
+	course_catalog_college.catalog_id AS catalog_id,
 	STVCAMP_CODE,
 	STVCAMP_DESC
 FROM
 	ssbsect_scbcrse
 	INNER JOIN course_catalog_college ON SCBCRSE_COLL_CODE = coll_code
+	INNER JOIN course_catalog ON course_catalog_college.catalog_id = course_catalog.catalog_id
 	INNER JOIN STVCAMP ON SSBSECT_CAMP_CODE = STVCAMP_CODE
-GROUP BY catalog_id, STVCAMP_CODE;
+WHERE
+	course_catalog.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != course_catalog.prnt_ind_to_exclude
+GROUP BY course_catalog_college.catalog_id, STVCAMP_CODE;

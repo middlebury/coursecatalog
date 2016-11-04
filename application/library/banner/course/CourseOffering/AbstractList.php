@@ -100,7 +100,9 @@ SELECT
 	SSRXLST_XLST_GROUP
 FROM
 	ssbsect_scbcrse_scbdesc
-	LEFT JOIN catalog_term ON SSBSECT_TERM_CODE = catalog_term.term_code
+	INNER JOIN catalog_term ON SSBSECT_TERM_CODE = catalog_term.term_code
+	INNER JOIN course_catalog_college ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
+	INNER JOIN course_catalog ON course_catalog_college.catalog_id = course_catalog.catalog_id
 	LEFT JOIN STVTERM ON SSBSECT_TERM_CODE = STVTERM_CODE
 	LEFT JOIN SSBDESC ON (SSBSECT_TERM_CODE = SSBDESC_TERM_CODE AND SSBSECT_CRN = SSBDESC_CRN)
 	LEFT JOIN SSRMEET ON (SSBSECT_TERM_CODE = SSRMEET_TERM_CODE AND SSBSECT_CRN = SSRMEET_CRN)
@@ -128,7 +130,7 @@ WHERE
 			".$this->getCatalogWhereTerms2()."
 	)
 	AND SSBSECT_SSTS_CODE = 'A'
-	AND SSBSECT_PRNT_IND != 'N'
+	AND (course_catalog.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != course_catalog.prnt_ind_to_exclude)
 
 GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 ".$this->getOrderByClause()."

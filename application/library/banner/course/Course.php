@@ -668,13 +668,15 @@ class banner_course_Course
 "SELECT
 	SSBSECT_LINK_IDENT
 FROM
-	SSBSECT
+	ssbsect_scbcrse
+	INNER JOIN course_catalog_college ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
+	INNER JOIN course_catalog ON course_catalog_college.catalog_id = course_catalog.catalog_id
 WHERE
 	SSBSECT_SUBJ_CODE = ?
 	AND SSBSECT_CRSE_NUMB = ?
 	AND SSBSECT_TERM_CODE = ?
 	AND SSBSECT_SSTS_CODE = 'A'
-	AND SSBSECT_PRNT_IND != 'N'
+	AND (course_catalog.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != course_catalog.prnt_ind_to_exclude)
 GROUP BY
 	SSBSECT_LINK_IDENT
 ORDER BY
