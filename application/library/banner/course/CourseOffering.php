@@ -134,6 +134,9 @@ class banner_course_CourseOffering
 
 		$properties = array();
 		$properties[] = new phpkit_Property('Course Reference Number', 'CRN', 'An number that uniquely identifies a section within a term.', $row['SSBSECT_CRN']);
+		$properties[] = new phpkit_Property('Subject Code', 'Subject Code', 'The subject code of the course this section is an offering of.', $row['SSBSECT_SUBJ_CODE']);
+		$properties[] = new phpkit_Property('Course Number', 'Course Number', 'The number of the course this section is an offering of.', $row['SSBSECT_CRSE_NUMB']);
+		$properties[] = new phpkit_Property('Section Identifier', 'Section Identifier', 'The section identifier for this section.', $row['SSBSECT_SEQ_NUMB']);
 // 		$properties[] = new phpkit_Property('Term Code', 'Term Code', 'An code that identifies the term a section is associated with.', $row['SSBSECT_TERM_CODE']);
 		$this->addProperties($properties, $this->identifiersType);
 	}
