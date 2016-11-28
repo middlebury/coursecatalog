@@ -418,11 +418,10 @@ GROUP BY STVBLDG_CODE
 		if (!$row['STVBLDG_CODE'])
 			throw new osid_NotFoundException("Could not find a resource  matching the building code ".$this->getDatabaseIdString($resourceId, 'resource/place/building/').".");
 
-		return new banner_resource_Resource_Place(
+		return new banner_resource_Resource_Building(
 					$this->getOsidIdFromString($row['STVBLDG_CODE'], 'resource/place/building/'),
 					$row['STVBLDG_DESC'],
-					$row['STVBLDG_CODE'],
-					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/building")
+					$row['STVBLDG_CODE']
 			);
 	}
 
@@ -466,11 +465,10 @@ GROUP BY STVBLDG_CODE
 
 		$resources = array();
 		while ($row = self::$getBuildingResources_stmt->fetch(PDO::FETCH_ASSOC)) {
-			$resources[] = new banner_resource_Resource_Place(
+			$resources[] = new banner_resource_Resource_Building(
 					$this->getOsidIdFromString($row['STVBLDG_CODE'], 'resource/place/building/'),
 					$row['STVBLDG_DESC'],
-					$row['STVBLDG_CODE'],
-					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/building")
+					$row['STVBLDG_CODE']
 				);
 		}
 		self::$getBuildingResources_stmt->closeCursor();
@@ -534,11 +532,11 @@ GROUP BY
 		if (!$row['STVBLDG_CODE'])
 			throw new osid_NotFoundException("Could not find a resource  matching the room code ".$this->getDatabaseIdString($resourceId, 'resource/place/room/').".");
 
-		return new banner_resource_Resource_Place(
+		return new banner_resource_Resource_Room(
 					$this->getOsidIdFromString($row['STVBLDG_CODE'].'/'.$row['SSRMEET_ROOM_CODE'], 'resource/place/room/'),
-					$row['STVBLDG_DESC'].' '.$row['SSRMEET_ROOM_CODE'],
-					$row['STVBLDG_CODE'].' '.$row['SSRMEET_ROOM_CODE'],
-					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/room")
+					$row['STVBLDG_DESC'],
+					$row['STVBLDG_CODE'],
+					$row['SSRMEET_ROOM_CODE']
 			);
 	}
 
@@ -585,11 +583,11 @@ GROUP BY
 
 		$resources = array();
 		while ($row = self::$getRoomResources_stmt->fetch(PDO::FETCH_ASSOC)) {
-			$resources[] = new banner_resource_Resource_Place(
+			$resources[] = new banner_resource_Resource_Room(
 					$this->getOsidIdFromString($row['STVBLDG_CODE'].'/'.$row['SSRMEET_ROOM_CODE'], 'resource/place/room/'),
-					$row['STVBLDG_DESC'].' '.$row['SSRMEET_ROOM_CODE'],
-					$row['STVBLDG_CODE'].' '.$row['SSRMEET_ROOM_CODE'],
-					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:resource/place/room")
+					$row['STVBLDG_DESC'],
+					$row['STVBLDG_CODE'],
+					$row['SSRMEET_ROOM_CODE']
 				);
 		}
 		self::$getRoomResources_stmt->closeCursor();
