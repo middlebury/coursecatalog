@@ -69,14 +69,38 @@ class JsonController
 	public function areasAction () {
 		if ($this->_getParam('catalog')) {
 			$catalogId = $this->_helper->osidId->fromString("catalog/".$this->_getParam('catalog'));
-			$lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+			$topicSearchSession = $this->_helper->osid->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
 		} else {
-			$lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSession();
+			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
+			$topicSearchSession = $this->_helper->osid->getCourseManager()->getTopicSearchSession();
 		}
-		$lookupSession->useFederatedCourseCatalogView();
+		$termLookupSession->useFederatedCourseCatalogView();
+		$topicSearchSession->useFederatedCourseCatalogView();
+
+		if (empty($this->_getParam('code'))) {
+			throw new InvalidArgumentException('Missing the "code" parameter.');
+		}
+		$termId = $this->_helper->osidId->fromString("term/".$this->_getParam('code'));
+		$term = $termLookupSession->getTerm($termId);
 
 		$genera = "topic/subject";
-		$topics = $lookupSession->getTopicsByGenusType($this->_helper->osidType->fromString("genera:".$genera));
+		$generaType = $this->_helper->osidType->fromString("genera:".$genera);
+		$termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
+
+		$topicQuery = $topicSearchSession->getTopicQuery();
+		$topicQuery->matchGenusType($generaType, true);
+		if (isset($termId) && $topicQuery->hasRecordType($termType)) {
+			$record = $topicQuery->getTopicQueryRecord($termType);
+			$record->matchTermId($termId, true);
+		}
+		$search = $topicSearchSession->getTopicSearch();
+		$order = $topicSearchSession->getTopicSearchOrder();
+		$order->orderByDisplayName();
+		$search->orderTopicResults($order);
+		$searchResults = $topicSearchSession->getTopicsBySearch($topicQuery, $search);
+		$topics = $searchResults->getTopics();
+
 		$result = array('areas' => array());
 		while ($topics->hasNext()) {
 			$topic = $topics->getNextTopic();
