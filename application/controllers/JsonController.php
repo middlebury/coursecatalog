@@ -58,7 +58,7 @@ class JsonController
 		}
 		if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
 			print json_encode($result, JSON_PRETTY_PRINT);
-		else {
+		} else {
 			print json_encode($result);
 		}
 	}
@@ -115,7 +115,7 @@ class JsonController
 		}
 		if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
 			print json_encode($result, JSON_PRETTY_PRINT);
-		else {
+		} else {
 			print json_encode($result);
 		}
 	}
@@ -215,7 +215,7 @@ class JsonController
 		}
 		if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
 			print json_encode($result, JSON_PRETTY_PRINT);
-		else {
+		} else {
 			print json_encode($result);
 		}
 	}
