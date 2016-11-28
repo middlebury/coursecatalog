@@ -87,4 +87,100 @@ class JsonController
 		}
 		print json_encode($result, JSON_PRETTY_PRINT);
 	}
+
+	/**
+	 * Print out a list of all "courses" in a given "code" (term) and "area" (subject/department).
+	 * Kurogo Docs: https://support.modolabs.com/support/solutions/articles/5000659620
+	 *
+	 * @return void
+	 * @access public
+	 */
+	public function catalogAction () {
+		if ($this->_getParam('catalog')) {
+			$catalogId = $this->_helper->osidId->fromString("catalog/".$this->_getParam('catalog'));
+			$searchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
+			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+			$topicLookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+			$offeringLookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
+		} else {
+			$searchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSession();
+			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
+			$topicLookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSession();
+			$offeringLookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
+		}
+		$searchSession->useFederatedCourseCatalogView();
+		$termLookupSession->useFederatedCourseCatalogView();
+		$topicLookupSession->useFederatedCourseCatalogView();
+		$offeringLookupSession->useFederatedCourseCatalogView();
+
+		// Validate our arguments.
+		$genera = "topic/subject";
+		if (empty($this->_getParam('area'))) {
+			throw new InvalidArgumentException('Missing the "area" parameter.');
+		}
+		$topicId = $this->_helper->osidId->fromString($genera."/".$this->_getParam('area'));
+		$topic = $topicLookupSession->getTopic($topicId);
+		if (empty($this->_getParam('code'))) {
+			throw new InvalidArgumentException('Missing the "code" parameter.');
+		}
+		$termId = $this->_helper->osidId->fromString("term/".$this->_getParam('code'));
+		$term = $termLookupSession->getTerm($termId);
+
+		// Build the query.
+		$query = $searchSession->getCourseQuery();
+		$topicQueryRecord = $query->getCourseQueryRecord(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:topic'));
+		$topicQueryRecord->matchTopicId($topicId, true);
+		$termQueryRecord = $query->getCourseQueryRecord(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:topic'));
+		$termQueryRecord->matchTermId($termId, true);
+
+		$courses = $searchSession->getCoursesByQuery($query);
+		$result = array('courses' => array());
+		while ($courses->hasNext()) {
+			$course = $courses->getNextCourse();
+			preg_match('/^(.+) (.+)$/', $course->getNumber(), $number_matches);
+			$courseResult = array(
+				'title' => $course->getTitle(),
+				'description' => $course->getDescription(),
+				'subject' => $number_matches[1],
+				'courseNumber' => $number_matches[2],
+				'sections' => array(),
+			);
+			// Add the sections.
+			$offerings = $offeringLookupSession->getCourseOfferingsByTermForCourse($termId, $course->getId());
+			while ($offerings->hasNext()) {
+				$offering = $offerings->getNextCourseOffering();
+				$bannerIdentifiersRecord = $offering->getCourseOfferingRecord(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers'));
+				$sectionResult = array(
+					'crn' => $bannerIdentifiersRecord->getCourseReferenceNumber(),
+					'courseSection' => $offering->getNumber(),
+					'schedule' => $offering->getScheduleInfo(),
+				);
+				// Instructors.
+				$instructorsRecord = $offering->getCourseOfferingRecord(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors'));
+				$instructors = $instructorsRecord->getInstructors();
+				$instructorsResult = array();
+				while ($instructors->hasNext()) {
+					$instructor = $instructors->getNextResource();
+					$instructorsResult[] = $instructor->getDisplayName();
+				}
+				if (!empty($instructorsResult)) {
+					$sectionResult['instructor'] = implode(', ', $instructorsResult);
+				}
+				// Location.
+				if ($offering->hasLocation()) {
+					$location = $offering->getLocation();
+					$locationRecord = $location->getResourceRecord(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:location'));
+					$sectionResult['building'] = $locationRecord->getBuildingDisplayName();
+					if ($locationRecord->getRoom()) {
+						$sectionResult['room'] = $locationRecord->getRoom();
+					}
+				}
+
+				$courseResult['sections'][] = $sectionResult;
+			}
+
+			$result['courses'][] = $courseResult;
+		}
+		print json_encode($result, JSON_PRETTY_PRINT);
+	}
 }
