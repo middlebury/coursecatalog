@@ -78,7 +78,7 @@ class JsonController
 		$termLookupSession->useFederatedCourseCatalogView();
 		$topicSearchSession->useFederatedCourseCatalogView();
 
-		if (empty($this->_getParam('code'))) {
+		if ($this->_getParam('code')) {
 			throw new InvalidArgumentException('Missing the "code" parameter.');
 		}
 		$termId = $this->_helper->osidId->fromString("term/".$this->_getParam('code'));
@@ -139,12 +139,12 @@ class JsonController
 
 		// Validate our arguments.
 		$genera = "topic/subject";
-		if (empty($this->_getParam('area'))) {
+		if ($this->_getParam('area')) {
 			throw new InvalidArgumentException('Missing the "area" parameter.');
 		}
 		$topicId = $this->_helper->osidId->fromString($genera."/".$this->_getParam('area'));
 		$topic = $topicLookupSession->getTopic($topicId);
-		if (empty($this->_getParam('code'))) {
+		if ($this->_getParam('code')) {
 			throw new InvalidArgumentException('Missing the "code" parameter.');
 		}
 		$termId = $this->_helper->osidId->fromString("term/".$this->_getParam('code'));
