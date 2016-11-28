@@ -56,7 +56,11 @@ class JsonController
 				'description' => $term->getDisplayName(),
 			);
 		}
-		print json_encode($result, JSON_PRETTY_PRINT);
+		if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
+			print json_encode($result, JSON_PRETTY_PRINT);
+		else {
+			print json_encode($result);
+		}
 	}
 
 	/**
@@ -109,7 +113,11 @@ class JsonController
 				'name' => $topic->getDisplayName(),
 			);
 		}
-		print json_encode($result, JSON_PRETTY_PRINT);
+		if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
+			print json_encode($result, JSON_PRETTY_PRINT);
+		else {
+			print json_encode($result);
+		}
 	}
 
 	/**
@@ -205,6 +213,10 @@ class JsonController
 
 			$result['courses'][] = $courseResult;
 		}
-		print json_encode($result, JSON_PRETTY_PRINT);
+		if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
+			print json_encode($result, JSON_PRETTY_PRINT);
+		else {
+			print json_encode($result);
+		}
 	}
 }
