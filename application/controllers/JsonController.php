@@ -58,4 +58,33 @@ class JsonController
 		}
 		print json_encode($result, JSON_PRETTY_PRINT);
 	}
+
+	/**
+	 * Print out a list of all "areas" which correspond to departments / programs.
+	 * Kurogo Docs: https://support.modolabs.com/support/solutions/articles/5000659608
+	 *
+	 * @return void
+	 * @access public
+	 */
+	public function areasAction () {
+		if ($this->_getParam('catalog')) {
+			$catalogId = $this->_helper->osidId->fromString("catalog/".$this->_getParam('catalog'));
+			$lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+		} else {
+			$lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSession();
+		}
+		$lookupSession->useFederatedCourseCatalogView();
+
+		$genera = "topic/subject";
+		$topics = $lookupSession->getTopicsByGenusType($this->_helper->osidType->fromString("genera:".$genera));
+		$result = array('areas' => array());
+		while ($topics->hasNext()) {
+			$topic = $topics->getNextTopic();
+			$result['areas'][] = array(
+				'area' => preg_replace('/^'.str_replace('/', '\/', $genera).'\//', '', $topic->getId()->getIdentifier()),
+				'name' => $topic->getDisplayName(),
+			);
+		}
+		print json_encode($result, JSON_PRETTY_PRINT);
+	}
 }
