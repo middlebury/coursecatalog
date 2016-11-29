@@ -29,3 +29,23 @@ $router->addRoute('kurogo_catalog',
 		)
 	)
 );
+$router->addRoute('kurogo_search',
+	new Zend_Controller_Router_Route(
+		'api/json/:catalog/catalog/:code/search/:keyword',
+		array(
+			'controller' => 'json',
+			'action'     => 'search',
+			'keyword'    => '',
+		)
+	)
+);
+$router->addRoute('kurogo_area_search',
+	new Zend_Controller_Router_Route(
+		'api/json/:catalog/catalog/:code/:area/search/:keyword',
+		array(
+			'controller' => 'json',
+			'action'     => 'search',
+			'keyword'    => '',
+		)
+	)
+);
