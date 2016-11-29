@@ -165,7 +165,7 @@ class JsonController
 		$query = $searchSession->getCourseQuery();
 		$topicQueryRecord = $query->getCourseQueryRecord(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:topic'));
 		$topicQueryRecord->matchTopicId($topicId, true);
-		$termQueryRecord = $query->getCourseQueryRecord(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:topic'));
+		$termQueryRecord = $query->getCourseQueryRecord(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:term'));
 		$termQueryRecord->matchTermId($termId, true);
 
 		$courses = $searchSession->getCoursesByQuery($query);
