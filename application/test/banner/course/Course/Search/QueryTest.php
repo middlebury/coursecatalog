@@ -654,9 +654,6 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
 		$params = $this->object->getParameters();
 		$this->assertEquals('200890', $params[0]);
 		$this->assertEquals('90143', $params[1]);
-		$this->assertFalse(isset($params[2]));
-
-		$this->assertEquals('((SSBSECT_TERM_CODE = ? AND SSBSECT_CRN = ?))', $this->object->getWhereClause());
 
 		$courses = $this->session->getCoursesByQuery($this->object);
 // 		print $courses->debug();
@@ -678,9 +675,8 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
 		$params = $this->object->getParameters();
 		$this->assertEquals('200890', $params[0]);
 		$this->assertEquals('90143', $params[1]);
-		$this->assertFalse(isset($params[2]));
 
-		$this->assertEquals('(NOT (SSBSECT_TERM_CODE = ? AND SSBSECT_CRN = ?))', $this->object->getWhereClause());
+		$this->assertStringStartsWith('(NOT (SSBSECT_TERM_CODE = ? AND SSBSECT_CRN = ?))', $this->object->getWhereClause());
 
 		$courses = $this->session->getCoursesByQuery($this->object);
 		print $courses->debug();
@@ -710,10 +706,7 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
 	{
 		$this->object->matchAnyCourseOffering(true);
 
-		$params = $this->object->getParameters();
-		$this->assertEquals(0, count($params));
-
-		$this->assertEquals('(SSBSECT_TERM_CODE IS NOT NULL)', $this->object->getWhereClause());
+		$this->assertStringStartsWith('(SSBSECT_TERM_CODE IS NOT NULL)', $this->object->getWhereClause());
 
 		$courses = $this->session->getCoursesByQuery($this->object);
 // 		print $courses->debug();
@@ -900,9 +893,8 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
 
 		$params = $this->object->getParameters();
 		$this->assertEquals('WEBID1000002', $params[0]);
-		$this->assertFalse(isset($params[1]));
 
-		$this->assertEquals('(WEB_ID = ?)', $this->object->getWhereClause());
+		$this->assertStringStartsWith('(WEB_ID = ?)', $this->object->getWhereClause());
 
 		$courses = $this->session->getCoursesByQuery($this->object);
 // 		print $courses->debug();
@@ -919,9 +911,8 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
 
 		$params = $this->object->getParameters();
 		$this->assertEquals('WEBID1000003', $params[0]);
-		$this->assertFalse(isset($params[1]));
 
-		$this->assertEquals('(WEB_ID = ?)', $this->object->getWhereClause());
+		$this->assertStringStartsWith('(WEB_ID = ?)', $this->object->getWhereClause());
 
 		$courses = $this->session->getCoursesByQuery($this->object);
 // 		print $courses->debug();
@@ -940,9 +931,8 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
 		$params = $this->object->getParameters();
 		$this->assertEquals('WEBID1000002', $params[0]);
 		$this->assertEquals('WEBID1000003', $params[1]);
-		$this->assertFalse(isset($params[2]));
 
-		$this->assertEquals("(WEB_ID = ?\n\t\tOR WEB_ID = ?)", $this->object->getWhereClause());
+		$this->assertStringStartsWith("(WEB_ID = ?\n\t\tOR WEB_ID = ?)", $this->object->getWhereClause());
 
 		$courses = $this->session->getCoursesByQuery($this->object);
 // 		print $courses->debug();
@@ -959,9 +949,8 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
 
 		$params = $this->object->getParameters();
 		$this->assertEquals('WEBID1000004', $params[0]);
-		$this->assertFalse(isset($params[1]));
 
-		$this->assertEquals('(WEB_ID = ?)', $this->object->getWhereClause());
+		$this->assertStringStartsWith('(WEB_ID = ?)', $this->object->getWhereClause());
 
 		$courses = $this->session->getCoursesByQuery($this->object);
 // 		print $courses->debug();
@@ -1010,9 +999,8 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
 
 		$params = $this->object->getParameters();
 		$this->assertEquals('M', $params[0]);
-		$this->assertFalse(isset($params[1]));
 
-		$this->assertEquals('(SSBSECT_CAMP_CODE = ?)', $this->object->getWhereClause());
+		$this->assertStringStartsWith('(SSBSECT_CAMP_CODE = ?)', $this->object->getWhereClause());
 
 		$courses = $this->session->getCoursesByQuery($this->object);
 // 		print $courses->debug();
@@ -1029,9 +1017,8 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
 
 		$params = $this->object->getParameters();
 		$this->assertEquals('BL', $params[0]);
-		$this->assertFalse(isset($params[1]));
 
-		$this->assertEquals('(SSBSECT_CAMP_CODE = ?)', $this->object->getWhereClause());
+		$this->assertStringStartsWith('(SSBSECT_CAMP_CODE = ?)', $this->object->getWhereClause());
 
 		$courses = $this->session->getCoursesByQuery($this->object);
 // 		print $courses->debug();
@@ -1050,9 +1037,8 @@ class banner_course_Course_Search_QueryTest extends PHPUnit_Framework_TestCase
 		$params = $this->object->getParameters();
 		$this->assertEquals('M', $params[0]);
 		$this->assertEquals('BL', $params[1]);
-		$this->assertFalse(isset($params[2]));
 
-		$this->assertEquals("(SSBSECT_CAMP_CODE = ?\n\t\tOR SSBSECT_CAMP_CODE = ?)", $this->object->getWhereClause());
+		$this->assertStringStartsWith("(SSBSECT_CAMP_CODE = ?\n\t\tOR SSBSECT_CAMP_CODE = ?)", $this->object->getWhereClause());
 
 		$courses = $this->session->getCoursesByQuery($this->object);
 // 		print $courses->debug();
