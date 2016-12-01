@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 class JsonController
-	extends Zend_Controller_Action
+	extends AbstractCatalogController
 {
 	/**
 	 * Initialize our view with common properties
