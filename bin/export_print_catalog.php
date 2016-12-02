@@ -128,7 +128,7 @@ $pdfPath = $pdfRoot.'/'.$pdfName;
 $command = "htmldoc --titlefile ".escapeshellarg($titlePath)." --toclevels 1 --book -f ".escapeshellarg($pdfPath)." ".escapeshellarg($htmlPath).' 2>&1';
 exec($command, $output, $return);
 if ($return) {
-	file_put_contents('php://stderr', "Error running command:\n\n\t$command\n$output\n");
+	file_put_contents('php://stderr', "Error running command:\n\n\t$command\n".implode("\n", $output)."\n");
 	unlink($titlePath);
 	return 3;
 }
