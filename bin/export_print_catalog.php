@@ -49,6 +49,10 @@ $jobs = array(
 		'dest_dir'	=> 'MCUG/2016-2017',
 		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201690&term[]=term%2F201720',
 	),
+	'MCUG-2017-2018' => array(
+		'dest_dir'	=> 'MCUG/2017-2018',
+		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201790&term[]=term%2F201820',
+	),
 );
 
 $cmd = array_shift($argv);
