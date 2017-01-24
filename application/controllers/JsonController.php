@@ -42,15 +42,29 @@ class JsonController
 		if ($this->_getParam('catalog')) {
 			$catalogId = $this->_helper->osidId->fromString("catalog/".$this->_getParam('catalog'));
 			$lookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+			$currentTermId = $this->_helper->osidTerms->getNextOrLatestTermId($catalogId);
 		} else {
 			$lookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
+			$currentTermId = null;
 		}
 		$lookupSession->useFederatedCourseCatalogView();
 
 		$terms = $lookupSession->getTerms();
 		$result = array('terms' => array());
+		// If we have a currentTermId, put it first.
+		if ($currentTermId) {
+			$term = $lookupSession->getTerm($currentTermId);
+			$result['terms'][] = array(
+				'code' => preg_replace('/^term\//', '', $term->getId()->getIdentifier()),
+				'description' => $term->getDisplayName(),
+			);
+		}
 		while ($terms->hasNext()) {
 			$term = $terms->getNextTerm();
+			// Skip the current term if it is already added to the list.
+			if ($currentTermId && $currentTermId->isEqual($term->getId())) {
+				continue;
+			}
 			$result['terms'][] = array(
 				'code' => preg_replace('/^term\//', '', $term->getId()->getIdentifier()),
 				'description' => $term->getDisplayName(),
