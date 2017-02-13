@@ -310,6 +310,44 @@ CREATE TABLE IF NOT EXISTS `SIRASGN` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `SOBPTRM`
+--
+
+CREATE TABLE IF NOT EXISTS `SOBPTRM` (
+  `SOBPTRM_TERM_CODE` varchar(6) NOT NULL COMMENT 'This field identifies the term code associated with the entries on the Term     Control Form (SOATERM).',
+  `SOBPTRM_PTRM_CODE` varchar(3) NOT NULL COMMENT 'This field identifies the Part of Term Code for the Term in the Key Block of    the Term Control Form (SOATERM).  At least one Part of Term Code must have a    value of 1-Full Term.',
+  `SOBPTRM_DESC` varchar(30) DEFAULT NULL COMMENT 'This field identifies the description for the Part of Term Code in the Base     Part of Term Block.',
+  `SOBPTRM_START_DATE` date DEFAULT NULL COMMENT 'This field identifies the calender start date for the Part of Term  in the      Base Part of Term Block.',
+  `SOBPTRM_END_DATE` date DEFAULT NULL COMMENT 'This field identifies the calender end date for the Part of Term in the Base    Part of Term Block.',
+  `SOBPTRM_REG_ALLOWED` char(1) DEFAULT NULL COMMENT 'This field identifies whether on-line registration is allowed for the Part      of Term.  This field is not displayed.',
+  `SOBPTRM_WEEKS` int(11) DEFAULT NULL COMMENT 'This field indicates the number of weeks for the Part of Term on the Term       Control Form (SOATERM).',
+  `SOBPTRM_CENSUS_DATE` date DEFAULT NULL COMMENT 'This field indicates the census date for the Part of Term Code.  This date      controls how the census date field on the Schedule Form (SSASECT) is updated.',
+  `SOBPTRM_ACTIVITY_DATE` date NOT NULL COMMENT 'This field indicates the last date the SOBPTRM record was updated.',
+  `SOBPTRM_SECT_OVER_IND` char(1) DEFAULT NULL COMMENT 'This field indicates whether the Start and End dates for a Part of Term can     be updated on the Section Form (SSASECT).',
+  `SOBPTRM_CENSUS_2_DATE` date DEFAULT NULL COMMENT 'The second census date',
+  `SOBPTRM_MGRD_WEB_UPD_IND` char(1) NOT NULL DEFAULT 'N' COMMENT 'Field used to control access to the Mid Term Grade Worksheet page in the Faculty Web product',
+  `SOBPTRM_FGRD_WEB_UPD_IND` char(1) NOT NULL DEFAULT 'N' COMMENT 'Field used to control access to the Final Grade Worksheet page in the Faculty Web product',
+  `SOBPTRM_WAITLST_WEB_DISP_IND` char(1) NOT NULL DEFAULT 'N' COMMENT 'Field used to controlaccess to the Wait List Display page in the Faculty Web product',
+  `SOBPTRM_INCOMPLETE_EXT_DATE` date DEFAULT NULL COMMENT 'INCOMPLETE DEFAULT EXTENSION DATE: Date to identify when the default final grade will be applied to academic history if coursework is incomplete.',
+  `SOBPTRM_SURROGATE_ID` int(11) DEFAULT NULL COMMENT 'SURROGATE ID: Immutable unique key',
+  `SOBPTRM_VERSION` int(11) DEFAULT NULL COMMENT 'VERSION: Optimistic lock token.',
+  `SOBPTRM_USER_ID` varchar(30) DEFAULT NULL COMMENT 'USER ID: The user ID of the person who inserted or last updated this record.',
+  `SOBPTRM_DATA_ORIGIN` varchar(30) DEFAULT NULL COMMENT 'DATA ORIGIN: Source system that created or updated the data.',
+  `SOBPTRM_VPDI_CODE` varchar(6) DEFAULT NULL COMMENT 'VPDI CODE: Multi-entity processing code.',
+  `SOBPTRM_FINAL_GRDE_PUB_DATE` date DEFAULT NULL COMMENT 'FINAL GRDE PUB DATE: Final grade publication date.',
+  `SOBPTRM_DET_GRDE_PUB_DATE` date DEFAULT NULL COMMENT 'DET GRDE PUB DATE: Detailed grade publication date.',
+  `SOBPTRM_REAS_GRDE_PUB_DATE` date DEFAULT NULL COMMENT 'REAS GRDE PUB DATE: Reassessment grade publication date.',
+  `SOBPTRM_REAS_DET_GRDE_PUB_DATE` date DEFAULT NULL COMMENT 'REAS DET GRDE PUB DATE: Reassessment detailed grade publication date.',
+  `SOBPTRM_SCORE_OPEN_DATE` date DEFAULT NULL COMMENT 'SCORE OPEN DATE: Score open date.',
+  `SOBPTRM_SCORE_CUTOFF_DATE` date DEFAULT NULL COMMENT 'SCORE CUTOFF DATE: Score cutoff date.',
+  `SOBPTRM_REAS_SCORE_OPEN_DATE` date DEFAULT NULL COMMENT 'REAS SCORE OPEN DATE: Reassessment score open date.',
+  `SOBPTRM_REAS_SCORE_CUTOFF_DATE` date DEFAULT NULL COMMENT 'REAS SCORE CUTOFF DATE: Reassessment score cutoff date.',
+  PRIMARY KEY (`SOBPTRM_TERM_CODE`,`SOBPTRM_PTRM_CODE`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Section Part-of-Term Validation Table';
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `SSBDESC`
 --
 
@@ -748,6 +786,25 @@ CREATE TABLE IF NOT EXISTS `STVMEET` (
   `STVMEET_ACTIVITY_DATE` date NOT NULL COMMENT 'This field identifies the most recent date a record was created or updated.',
   PRIMARY KEY  (`STVMEET_CODE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Meeting Time Code Validation Table';
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `STVPTRM`
+--
+
+CREATE TABLE IF NOT EXISTS `STVPTRM` (
+  `STVPTRM_CODE` varchar(3) COLLATE utf8_bin NOT NULL COMMENT 'This field identifies the part of term code referenced in the Class Schedule,   Registration and Acad. Hist. Modules.  Reqd. value:  1 - Full Term.',
+  `STVPTRM_DESC` varchar(30) COLLATE utf8_bin NOT NULL COMMENT 'This field specifies the part of term associated with the part of term code.',
+  `STVPTRM_ACTIVITY_DATE` date DEFAULT NULL COMMENT 'This field identifies the most recent date a record was created or updated.',
+  `STVPTRM_SYSTEM_REQ_IND` char(1) COLLATE utf8_bin DEFAULT NULL COMMENT 'System Required Indicator',
+  `STVPTRM_SURROGATE_ID` int(11) DEFAULT NULL COMMENT 'SURROGATE ID: Immutable unique key',
+  `STVPTRM_VERSION` int(11) DEFAULT NULL COMMENT 'VERSION: Optimistic lock token.',
+  `STVPTRM_USER_ID` varchar(30) COLLATE utf8_bin DEFAULT NULL COMMENT 'USER ID: The user ID of the person who inserted or last updated this record.',
+  `STVPTRM_DATA_ORIGIN` varchar(30) COLLATE utf8_bin DEFAULT NULL COMMENT 'DATA ORIGIN: Source system that created or updated the data.',
+  `STVPTRM_VPDI_CODE` varchar(6) COLLATE utf8_bin DEFAULT NULL COMMENT 'VPDI CODE: Multi-entity processing code.',
+  PRIMARY KEY (`STVPTRM_CODE`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Part-of-Term Validation Table';
 
 -- --------------------------------------------------------
 
