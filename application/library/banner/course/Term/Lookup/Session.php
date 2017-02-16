@@ -303,7 +303,7 @@ ORDER BY STVTERM_CODE DESC, SOBPTRM_PTRM_CODE ASC
 		self::$getPartOfTerm_stmts[$catalogWhere]->closeCursor();
 
 		if (!$row['STVTERM_CODE'])
-			throw new osid_NotFoundException("Could not find a term matching the term code $termCode and part-or-term code $pTermCode.");
+			throw new osid_NotFoundException("Could not find a term matching the term code $termCode and part-of-term code $pTermCode.");
 
 		$desc = $row['STVTERM_DESC'];
 		if (!empty($row['SOBPTRM_DESC'])) {
