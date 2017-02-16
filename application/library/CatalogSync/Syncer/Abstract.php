@@ -489,6 +489,57 @@ abstract class CatalogSync_Syncer_Abstract
 		$insert->insertAll($select);
 		print "...\tUpdated SCRLEVL\n";
 
+		// SATURN.SOBPTRM
+		print "Updating SOBPTRM\t";
+		$target_db->truncate("SOBPTRM");
+		$insert = $target_db->prepareInsert("SOBPTRM", array(
+				"SOBPTRM_TERM_CODE",
+				"SOBPTRM_PTRM_CODE",
+				"SOBPTRM_DESC",
+				"SOBPTRM_START_DATE",
+				"SOBPTRM_END_DATE",
+				"SOBPTRM_REG_ALLOWED",
+				"SOBPTRM_WEEKS",
+				"SOBPTRM_CENSUS_DATE",
+				"SOBPTRM_ACTIVITY_DATE",
+				"SOBPTRM_SECT_OVER_IND",
+				"SOBPTRM_CENSUS_2_DATE",
+				"SOBPTRM_MGRD_WEB_UPD_IND",
+				"SOBPTRM_FGRD_WEB_UPD_IND",
+				"SOBPTRM_WAITLST_WEB_DISP_IND",
+				"SOBPTRM_INCOMPLETE_EXT_DATE",
+				"SOBPTRM_SURROGATE_ID",
+				"SOBPTRM_VERSION",
+				"SOBPTRM_USER_ID",
+				"SOBPTRM_DATA_ORIGIN",
+				"SOBPTRM_VPDI_CODE",
+				"SOBPTRM_FINAL_GRDE_PUB_DATE",
+				"SOBPTRM_DET_GRDE_PUB_DATE",
+				"SOBPTRM_REAS_GRDE_PUB_DATE",
+				"SOBPTRM_REAS_DET_GRDE_PUB_DATE",
+				"SOBPTRM_SCORE_OPEN_DATE",
+				"SOBPTRM_SCORE_CUTOFF_DATE",
+				"SOBPTRM_REAS_SCORE_OPEN_DATE",
+				"SOBPTRM_REAS_SCORE_CUTOFF_DATE",
+			));
+		$select = $source_db->query("SATURN.SOBPTRM");
+		$select->convertDate("SOBPTRM_START_DATE");
+		$select->convertDate("SOBPTRM_END_DATE");
+		$select->convertDate("SOBPTRM_CENSUS_DATE");
+		$select->convertDate("SOBPTRM_ACTIVITY_DATE");
+		$select->convertDate("SOBPTRM_CENSUS_2_DATE");
+		$select->convertDate("SOBPTRM_INCOMPLETE_EXT_DATE");
+		$select->convertDate("SOBPTRM_FINAL_GRDE_PUB_DATE");
+		$select->convertDate("SOBPTRM_DET_GRDE_PUB_DATE");
+		$select->convertDate("SOBPTRM_REAS_GRDE_PUB_DATE");
+		$select->convertDate("SOBPTRM_REAS_DET_GRDE_PUB_DATE");
+		$select->convertDate("SOBPTRM_SCORE_OPEN_DATE");
+		$select->convertDate("SOBPTRM_SCORE_CUTOFF_DATE");
+		$select->convertDate("SOBPTRM_REAS_SCORE_OPEN_DATE");
+		$select->convertDate("SOBPTRM_REAS_SCORE_CUTOFF_DATE");
+		$insert->insertAll($select);
+		print "...\tUpdated SOBPTRM\n";
+
 		// SATURN.SSBXLST
 		print "Updating SSBXLST\t";
 		$target_db->truncate("SSBXLST");
@@ -979,6 +1030,25 @@ abstract class CatalogSync_Syncer_Abstract
 		$select->convertDate("STVMEET_ACTIVITY_DATE");
 		$insert->insertAll($select);
 		print "...\tUpdated STVMEET\n";
+
+		// SATURN.STVPTRM
+		print "Updating STVPTRM\t";
+		$target_db->truncate("STVPTRM");
+		$insert = $target_db->prepareInsert("STVPTRM", array(
+				"STVPTRM_CODE",
+				"STVPTRM_DESC",
+				"STVPTRM_ACTIVITY_DATE",
+				"STVPTRM_SYSTEM_REQ_IND",
+				"STVPTRM_SURROGATE_ID",
+				"STVPTRM_VERSION",
+				"STVPTRM_USER_ID",
+				"STVPTRM_DATA_ORIGIN",
+				"STVPTRM_VPDI_CODE",
+			));
+		$select = $source_db->query("SATURN.STVPTRM");
+		$select->convertDate("STVPTRM_ACTIVITY_DATE");
+		$insert->insertAll($select);
+		print "...\tUpdated STVPTRM\n";
 
 		// SATURN.STVPWAV
 		print "Updating STVPWAV\t";

@@ -649,9 +649,22 @@ class banner_course_CourseOffering_Search_Query
 	 *  @compliance mandatory This method must be implemented.
 	 */
 	public function matchTermId(osid_id_Id $termId, $match) {
-		$this->addClause('term_id', 'SSBSECT_TERM_CODE = ?',
-			array($this->session->getTermCodeFromTermId($termId)),
-			$match);
+		try {
+			$partOfTerm = $this->session->getPartOfTermCodeFromTermId($termId);
+		} catch (osid_NotFoundException $e) {
+			$partOfTerm = NULL;
+		}
+		if (is_null($partOfTerm)) {
+			$this->addClause('term_id', 'SSBSECT_TERM_CODE = ?',
+				array($this->session->getTermCodeFromTermId($termId)),
+				$match);
+		} else {
+			$this->addClause('term_id', '(SSBSECT_TERM_CODE = ? AND SSBSECT_PTRM_CODE = ?)',
+				array(
+					$this->session->getTermCodeFromTermId($termId),
+					$partOfTerm,
+				), $match);
+		}
 	}
 
 

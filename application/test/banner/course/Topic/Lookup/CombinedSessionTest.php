@@ -293,7 +293,7 @@ class banner_course_Topic_Lookup_CombinedSessionTest
 		$topics = $this->session->getTopicsByGenusType($this->subjectType);
 		$this->assertInstanceOf('osid_course_TopicList', $topics);
 		$this->assertTrue($topics->hasNext());
-		$this->assertEquals(4, $topics->available());
+		$this->assertEquals(5, $topics->available());
 		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
 		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
 		$this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->subjectType));
@@ -308,7 +308,7 @@ class banner_course_Topic_Lookup_CombinedSessionTest
 		$topics = $this->session->getTopicsByGenusType($this->divisionType);
 		$this->assertInstanceOf('osid_course_TopicList', $topics);
 		$this->assertTrue($topics->hasNext());
-		$this->assertEquals(2, $topics->available());
+		$this->assertEquals(3, $topics->available());
 		$topic = $topics->getNextTopic();
 		$this->assertInstanceOf('osid_course_Topic', $topic);
 		$this->assertTrue($topic->getGenusType()->isEqual($this->divisionType));
@@ -378,7 +378,7 @@ class banner_course_Topic_Lookup_CombinedSessionTest
 		$topics = $this->session->getTopicsByParentGenusType($this->subjectType);
 		$this->assertInstanceOf('osid_course_TopicList', $topics);
 		$this->assertTrue($topics->hasNext());
-		$this->assertEquals(4, $topics->available());
+		$this->assertEquals(5, $topics->available());
 		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
 		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
 		$this->assertTrue($topics->getNextTopic()->getGenusType()->isEqual($this->subjectType));
@@ -392,7 +392,7 @@ class banner_course_Topic_Lookup_CombinedSessionTest
 		$topics = $this->session->getTopicsByParentGenusType($this->divisionType);
 		$this->assertInstanceOf('osid_course_TopicList', $topics);
 		$this->assertTrue($topics->hasNext());
-		$this->assertEquals(2, $topics->available());
+		$this->assertEquals(3, $topics->available());
 		$topic = $topics->getNextTopic();
 		$this->assertInstanceOf('osid_course_Topic', $topic);
 		$this->assertTrue($topic->getGenusType()->isEqual($this->divisionType));
@@ -430,7 +430,7 @@ class banner_course_Topic_Lookup_CombinedSessionTest
 		$topics = $this->session->getTopics();
 		$this->assertInstanceOf('osid_course_TopicList', $topics);
 		$this->assertTrue($topics->hasNext());
-		$this->assertEquals(14, $topics->available());
+		$this->assertEquals(17, $topics->available());
 		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
 		$this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
 	}

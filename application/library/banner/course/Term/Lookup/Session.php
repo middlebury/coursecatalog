@@ -159,7 +159,6 @@ class banner_course_Term_Lookup_Session
 		$this->useIsolatedView();
 	}
 
-	private static $getTerm_stmts = array();
 	/**
 	 *  Gets the <code> Term </code> specified by its <code> Id. </code> In
 	 *  plenary mode, the exact <code> Id </code> is found or a <code>
@@ -181,6 +180,30 @@ class banner_course_Term_Lookup_Session
 	 */
 	public function getTerm(osid_id_Id $termId) {
 		$idString = $this->getDatabaseIdString($termId, 'term/');
+		if (!preg_match('/^([0-9]{6})(?:\/([a-z0-9]{1,3}))?$/i', $idString, $matches))
+			throw new osid_NotFoundException('Term id component \''.$idString.'\' could not be converted to a term code.');
+
+		if (empty($matches[2])) {
+			return $this->getBaseTerm($idString);
+		} else {
+			return $this->getPartOfTerm($matches[1], $matches[2]);
+		}
+	}
+
+	private static $getTerm_stmts = array();
+	/**
+	 * Answer a base term that doesn't have a part-of-term designator.
+	 *
+	 * @param string $idString The term id.
+	 *  @return object osid_course_Term the term
+	 *  @throws osid_NotFoundException <code> termId </code> not found
+	 *  @throws osid_NullArgumentException <code> termId </code> is <code>
+	 *          null </code>
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @throws osid_PermissionDeniedException authorization failure
+	 *  @throws osid_IllegalStateException this session has been closed
+	 */
+	protected function getBaseTerm($idString) {
 		if (!preg_match('/^([0-9]{6})$/', $idString))
 			throw new osid_NotFoundException('Term id component \''.$idString.'\' could not be converted to a term code.');
 
@@ -221,6 +244,87 @@ ORDER BY STVTERM_CODE DESC
 					$row['STVTERM_DESC'],
 					$row['STVTERM_START_DATE'],
 					$row['STVTERM_END_DATE']);
+	}
+
+	private static $getPartOfTerm_stmts = array();
+	/**
+	 * Answer a base term that doesn't have a part-of-term designator.
+	 *
+	 * @param string $idString The term id.
+	 *  @return object osid_course_Term the term
+	 *  @throws osid_NotFoundException <code> termId </code> not found
+	 *  @throws osid_NullArgumentException <code> termId </code> is <code>
+	 *          null </code>
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @throws osid_PermissionDeniedException authorization failure
+	 *  @throws osid_IllegalStateException this session has been closed
+	 */
+	protected function getPartOfTerm($termCode, $pTermCode) {
+		if (!preg_match('/^([0-9]{6})$/', $termCode))
+			throw new osid_NotFoundException('Term id component \''.$termCode.'\' could not be converted to a term code.');
+			if (!preg_match('/^([a-z0-9]{1,3})$/i', $pTermCode))
+				throw new osid_NotFoundException('Part-of-Term id component \''.$pTermCode.'\' could not be converted to a code.');
+
+		$catalogWhere = $this->getCatalogWhereTerms();
+		if (!isset(self::$getPartOfTerm_stmts[$catalogWhere])) {
+			$query =
+"SELECT
+	STVTERM_CODE,
+	STVTERM_DESC,
+	STVTERM_START_DATE,
+	STVTERM_END_DATE,
+	SOBPTRM_PTRM_CODE,
+	SOBPTRM_DESC,
+	SOBPTRM_START_DATE,
+	SOBPTRM_END_DATE
+FROM
+	STVTERM
+	INNER JOIN SOBPTRM ON STVTERM_CODE = SOBPTRM_TERM_CODE
+	INNER JOIN STVPTRM ON SOBPTRM_PTRM_CODE = STVPTRM_CODE
+	LEFT JOIN catalog_term ON STVTERM_CODE = term_code
+WHERE
+	STVTERM_CODE = :term_code
+	AND SOBPTRM_PTRM_CODE = :pterm_code
+	AND ".$this->getCatalogWhereTerms()."
+ORDER BY STVTERM_CODE DESC, SOBPTRM_PTRM_CODE ASC
+";
+			self::$getPartOfTerm_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
+		}
+
+		$parameters = array_merge(
+			array(
+				':term_code' => $termCode,
+				':pterm_code' => $pTermCode,
+			),
+			$this->getCatalogParameters());
+		self::$getPartOfTerm_stmts[$catalogWhere]->execute($parameters);
+
+		$row = self::$getPartOfTerm_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
+		self::$getPartOfTerm_stmts[$catalogWhere]->closeCursor();
+
+		if (!$row['STVTERM_CODE'])
+			throw new osid_NotFoundException("Could not find a term matching the term code $termCode and part-or-term code $pTermCode.");
+
+		$desc = $row['STVTERM_DESC'];
+		if (!empty($row['SOBPTRM_DESC'])) {
+			$desc .= ', '.$row['SOBPTRM_DESC'];
+		}
+		if (!empty($row['SOBPTRM_START_DATE'])) {
+			$startDate = $row['SOBPTRM_START_DATE'];
+		} else {
+			$startDate = $row['STVTERM_START_DATE'];
+		}
+		if (!empty($row['SOBPTRM_END_DATE'])) {
+			$endDate = $row['SOBPTRM_END_DATE'];
+		} else {
+			$endDate = $row['STVTERM_END_DATE'];
+		}
+
+		return new banner_course_Term(
+					$this->getOsidIdFromString($row['STVTERM_CODE'].'/'.$row['SOBPTRM_PTRM_CODE'], 'term/'),
+					$desc,
+					$startDate,
+					$endDate);
 	}
 
 	/**

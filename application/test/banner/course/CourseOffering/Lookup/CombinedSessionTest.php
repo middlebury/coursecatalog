@@ -473,7 +473,7 @@ class banner_course_CourseOffering_Lookup_CombinedSessionTest
 		$offerings = $this->session->getCourseOfferings();
 
 		$this->assertInstanceOf('osid_course_CourseOfferingList', $offerings);
-		$this->assertEquals(94, $offerings->available());
+		$this->assertEquals(95, $offerings->available());
 
 		$this->assertTrue($offerings->hasNext());
 		$this->assertInstanceOf('osid_course_CourseOffering', $offerings->getNextCourseOffering());
