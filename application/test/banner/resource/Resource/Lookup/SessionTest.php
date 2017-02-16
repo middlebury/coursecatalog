@@ -210,7 +210,7 @@ class banner_resource_Resource_Lookup_SessionTest
 	{
 		$resources = $this->session->getResourcesByParentGenusType($this->placeType);
 		$this->assertInstanceOf('osid_resource_ResourceList', $resources);
-		$this->assertEquals(12, $resources->available());
+		$this->assertEquals(13, $resources->available());
 		$this->assertTrue($resources->hasNext());
 
 	}
@@ -222,7 +222,7 @@ class banner_resource_Resource_Lookup_SessionTest
 	{
 		$resources = $this->session->getResourcesByGenusType($this->campusType);
 		$this->assertInstanceOf('osid_resource_ResourceList', $resources);
-		$this->assertEquals(2, $resources->available());
+		$this->assertEquals(3, $resources->available());
 	}
 
 	/**
@@ -278,7 +278,7 @@ class banner_resource_Resource_Lookup_SessionTest
 		$resources = $this->session->getResources();
 		$this->assertInstanceOf('osid_resource_ResourceList', $resources);
 		$this->assertTrue($resources->hasNext());
-		$this->assertEquals(26, $resources->available());
+		$this->assertEquals(27, $resources->available());
 		$this->assertInstanceOf('osid_resource_Resource', $resources->getNextResource());
 	}
 }

@@ -256,7 +256,7 @@ class banner_course_Term_Lookup_CombinedSessionTest
 	{
 		$terms = $this->session->getTerms();
 		$this->assertInstanceOf('osid_course_TermList', $terms);
-		$this->assertEquals(13, $terms->available());
+		$this->assertEquals(14, $terms->available());
 		$this->assertInstanceOf('osid_course_Term', $terms->getNextTerm());
 		$this->assertInstanceOf('osid_course_Term', $terms->getNextTerm());
 	}
