@@ -48,14 +48,17 @@ class banner_course_PartOfTermCourseOfferingTest
 	protected function setUp()
 	{
 
+
 		$this->mclsCatalogId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCLS');
 		$this->hebmCourseId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/HEBM5642');
 		$this->hebmOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/201690/92587');
 		$this->mcugCatalogId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
 		$this->physCourseId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
-		$this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/90143');
+		$this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200390/90260');
+		$this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
 
 		$this->session = self::$courseManager->getCourseOfferingLookupSessionForCatalog($this->mclsCatalogId);
+		$this->searchSession = self::$courseManager->getCourseOfferingSearchSessionForCatalog($this->mclsCatalogId);
 		$this->object = $this->session->getCourseOffering($this->hebmOfferingId);
 
 		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
@@ -113,6 +116,9 @@ class banner_course_PartOfTermCourseOfferingTest
 		$this->assertEquals(new DateTime('2016-12-07'), $term->getEndTime());
 	}
 
+	/**
+	 * Offerings are part of their base term, even if they have a part-of-term
+	 */
 	public function testOfferingFoundInBaseTerm()
 	{
 		$offerings = $this->session->getCourseOfferingsByTermForCourse(new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/201690'), $this->hebmCourseId);
@@ -121,6 +127,9 @@ class banner_course_PartOfTermCourseOfferingTest
 		$this->assertTrue($this->hebmOfferingId->isEqual($offering->getId()));
 	}
 
+	/**
+	 * Offerings should also be found in their part-of-term when that is the term-id.
+	 */
 	public function testOfferingFoundInPartOfTerm()
 	{
 		$offerings = $this->session->getCourseOfferingsByTermForCourse(new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/201690/HBM'), $this->hebmCourseId);
@@ -129,4 +138,68 @@ class banner_course_PartOfTermCourseOfferingTest
 		$this->assertTrue($this->hebmOfferingId->isEqual($offering->getId()));
 	}
 
+	/**
+	 * Offerings are part of their base term, even if they have a part-of-term
+	 */
+	public function testOfferingSearchBaseTerm() {
+		$query = $this->searchSession->getCourseOfferingQuery();
+		$query->matchTermId(new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/201690'), true);
+		$offerings = $this->searchSession->getCourseOfferingsByQuery($query);
+		$this->assertTrue($offerings->hasNext());
+		$offering = $offerings->getNextCourseOffering();
+		$this->assertTrue($this->hebmOfferingId->isEqual($offering->getId()));
+	}
+
+	/**
+	 * Offerings should also be found in their part-of-term when that is the term-id.
+	 */
+	public function testOfferingSearchPartOfTerm() {
+		$query = $this->searchSession->getCourseOfferingQuery();
+		$query->matchTermId(new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/201690/HBM'), true);
+		$offerings = $this->searchSession->getCourseOfferingsByQuery($query);
+		$this->assertTrue($offerings->hasNext());
+		$offering = $offerings->getNextCourseOffering();
+		$this->assertTrue($this->hebmOfferingId->isEqual($offering->getId()));
+	}
+
+	/**
+	 * Test with another offering. Offerings are part of their base term, even if they have a part-of-term
+	 */
+	public function testOfferingSearchBaseTermUg() {
+		$this->searchSession = self::$courseManager->getCourseOfferingSearchSessionForCatalog($this->mcugCatalogId);
+
+		$query = $this->searchSession->getCourseOfferingQuery();
+		$query->matchTermId(new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200390'), true);
+		$query->matchCourseId($this->physId, true);
+		$offerings = $this->searchSession->getCourseOfferingsByQuery($query);
+		$this->assertTrue($offerings->hasNext());
+		$offering = $offerings->getNextCourseOffering();
+		$this->assertTrue($this->physOfferingId->isEqual($offering->getId()));
+	}
+
+	/**
+	 * Test with another offering, part-of-term = 1. Offerings should also be found in their part-of-term when that is the term-id.
+	 */
+	public function testOfferingSearchPartOfTermUg1() {
+		$this->searchSession = self::$courseManager->getCourseOfferingSearchSessionForCatalog($this->mcugCatalogId);
+		$query = $this->searchSession->getCourseOfferingQuery();
+		$query->matchTermId(new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200390/1'), true);
+		$query->matchCourseId($this->physId, true);
+		$offerings = $this->searchSession->getCourseOfferingsByQuery($query);
+		$this->assertTrue($offerings->hasNext());
+		$offering = $offerings->getNextCourseOffering();
+		$this->assertTrue($this->physOfferingId->isEqual($offering->getId()));
+	}
+
+	/**
+	 * UG offerings should not be in HBM part-of-term. Offerings should also be found in their part-of-term when that is the term-id.
+	 */
+	public function testOfferingSearchPartOfTermUgHbm() {
+		$this->searchSession = self::$courseManager->getCourseOfferingSearchSessionForCatalog($this->mcugCatalogId);
+		$query = $this->searchSession->getCourseOfferingQuery();
+		$query->matchTermId(new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200390/HBM'), true);
+		$query->matchCourseId($this->physId, true);
+		$offerings = $this->searchSession->getCourseOfferingsByQuery($query);
+		$this->assertFalse($offerings->hasNext());
+	}
 }

@@ -186,6 +186,21 @@ abstract class banner_course_AbstractSession
 	}
 
 	/**
+	 * Answer a part-of-term code from an id.
+	 *
+	 * @param osid_id_Id $id
+	 * @return string
+	 * @access public
+	 * @since 4/17/09
+	 */
+	public function getPartOfTermCodeFromTermId (osid_id_Id $id) {
+		$string = $this->getDatabaseIdString($id, 'term/');
+		if (!preg_match('#^([0-9]{6})(?:/(.{1,3}))$#', $string, $matches))
+			throw new osid_NotFoundException("String '$string' cannot be converted into a valid part-of-term code.");
+		return $matches[2];
+	}
+
+	/**
 	 * Answer the schedule code from a genus type
 	 *
 	 * @param osid_type_Type $genusType
