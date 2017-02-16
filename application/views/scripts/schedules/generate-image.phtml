@@ -35,7 +35,12 @@ $height = 800;
 if ($this->height)
 	$height = $this->height;
 
-$fontFile = "/usr/share/fonts/bitstream-vera/Vera.ttf";
+if (empty($this->fontFile)) {
+	throw new Exception("No font-file configured.");
+}
+if (!file_exists($this->fontFile)) {
+	throw new Exception("Font-file missing, not found at ".$this->fontFile);
+}
 
 $im = ImageCreateTrueColor($width, $height);
 
@@ -95,9 +100,9 @@ for ($d = $startDay; $d <= $endDay; $d++) {
 	$dayPosition = $d - $startDay;
 	$left = $timeWidth + ($dayWidth * $dayPosition);
 	$size = 24;
-	$bb = imagettfbbox($size, 0, $fontFile, $label);
+	$bb = imagettfbbox($size, 0, $this->fontFile, $label);
 	$textWidth = $bb[2] - $bb[0];
-	ImageTTFText($im, $size, 0, $left + (($dayWidth - $textWidth)/2), $headerHeight - 5, $black, $fontFile, $label);
+	ImageTTFText($im, $size, 0, $left + (($dayWidth - $textWidth)/2), $headerHeight - 5, $black, $this->fontFile, $label);
 }
 
 // Hour Labels
@@ -111,12 +116,12 @@ for($i = 0; $i < $hoursToShow; $i++) {
 		$hourString = ($hour - 12).':00 pm';
 
 	$size = 12;
-	$bb = imagettfbbox($size, 0, $fontFile, $hourString);
+	$bb = imagettfbbox($size, 0, $this->fontFile, $hourString);
 	$textWidth = $bb[2] - $bb[0];
 	$textHeight = $bb[1] - $bb[5];
 	$top = $headerHeight + ($hourHeight * $i) + $textHeight + intval(($hourHeight - $textHeight)/2);
 	$left = $timeWidth - $textWidth - 10;
-	ImageTTFText($im, $size, 0, $left, $top, $black, $fontFile, $hourString);
+	ImageTTFText($im, $size, 0, $left, $top, $black, $this->fontFile, $hourString);
 }
 
 /*********************************************************
@@ -145,28 +150,28 @@ foreach ($this->events as $event) {
 	$end = Time::withSeconds($event['endTime']);
 	$string = $start->hour12().':'.str_pad($start->minute(), 2, '0', STR_PAD_LEFT).'-'.$end->hour12().':'.str_pad($end->minute(), 2, '0', STR_PAD_LEFT);
 	$size = 10;
-	$bb = imagettfbbox($size, 0, $fontFile, $string);
+	$bb = imagettfbbox($size, 0, $this->fontFile, $string);
 	$textWidth = $bb[2] - $bb[0];
 	$textHeight = $bb[1] - $bb[5];
 	$textTop = $top + $textHeight + 3;
 	$textLeft = $left + (($dayWidth - $textWidth)/2);
-	ImageTTFText($im, $size, 0, $textLeft, $textTop, $black, $fontFile, $string);
+	ImageTTFText($im, $size, 0, $textLeft, $textTop, $black, $this->fontFile, $string);
 
 	$size = 10;
-	$bb = imagettfbbox($size, 0, $fontFile, $event['name']);
+	$bb = imagettfbbox($size, 0, $this->fontFile, $event['name']);
 	$textWidth = $bb[2] - $bb[0];
 	$textHeight = $bb[1] - $bb[5];
 	$textTop = $top + $textHeight + 16;
 	$textLeft = $left + (($dayWidth - $textWidth)/2);
-	ImageTTFText($im, $size, 0, $textLeft, $textTop, $black, $fontFile, $event['name']);
+	ImageTTFText($im, $size, 0, $textLeft, $textTop, $black, $this->fontFile, $event['name']);
 
 	$size = 10;
-	$bb = imagettfbbox($size, 0, $fontFile, $event['location']);
+	$bb = imagettfbbox($size, 0, $this->fontFile, $event['location']);
 	$textWidth = $bb[2] - $bb[0];
 	$textHeight = $bb[1] - $bb[5];
 	$textTop = $top + $textHeight +$textHeight + 20;
 	$textLeft = $left + (($dayWidth - $textWidth)/2);
-	ImageTTFText($im, $size, 0, $textLeft, $textTop, $black, $fontFile, $event['location']);
+	ImageTTFText($im, $size, 0, $textLeft, $textTop, $black, $this->fontFile, $event['location']);
 
 }
 

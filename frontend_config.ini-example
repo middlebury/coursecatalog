@@ -28,6 +28,9 @@ schedules.email.send_mail_as = catalog@example.edu
 ; Enable emailing from only some groups
 ;schedules.email.allowed_groups[] = "CN=institution,OU=General,OU=Groups,DC=middlebury,DC=edu"
 
+; Font to use when rendering schedule images.
+schedules.image.font_file = /usr/share/fonts/dejavu/DejaVuSans.ttf
+
 ; Administrators
 admin.administrator_ids =
 

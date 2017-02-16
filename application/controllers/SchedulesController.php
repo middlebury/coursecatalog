@@ -576,6 +576,9 @@ class SchedulesController
 	protected function initializeScheduleImage () {
 		$this->initializeSchedule();
 
+		$config = Zend_Registry::getInstance()->config;
+		$this->view->fontFile = $config->schedules->image->font_file;
+
 		$this->view->events = $this->view->schedule->getWeeklyEvents();
 
 		$this->view->minTime = $this->view->schedule->getEarliestTime();
