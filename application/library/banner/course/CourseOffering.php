@@ -32,6 +32,7 @@ class banner_course_CourseOffering
 	private static $requiredFields = array(
 			'SSBSECT_TERM_CODE',
 			'SSBSECT_CRN',
+			'SSBSECT_PTRM_CODE',
 			'SSBSECT_SUBJ_CODE',
 			'SSBSECT_CRSE_NUMB',
 			'SSBSECT_SEQ_NUMB',
@@ -137,6 +138,7 @@ class banner_course_CourseOffering
 		$properties[] = new phpkit_Property('Subject Code', 'Subject Code', 'The subject code of the course this section is an offering of.', $row['SSBSECT_SUBJ_CODE']);
 		$properties[] = new phpkit_Property('Course Number', 'Course Number', 'The number of the course this section is an offering of.', $row['SSBSECT_CRSE_NUMB']);
 		$properties[] = new phpkit_Property('Section Identifier', 'Section Identifier', 'The section identifier for this section.', $row['SSBSECT_SEQ_NUMB']);
+		// $properties[] = new phpkit_Property('Part-of-Term Code', 'Part-of-Term Code', 'An code that identifies the part of the term a section is associated with.', $row['SSBSECT_PTRM_CODE']);
 // 		$properties[] = new phpkit_Property('Term Code', 'Term Code', 'An code that identifies the term a section is associated with.', $row['SSBSECT_TERM_CODE']);
 		$this->addProperties($properties, $this->identifiersType);
 	}
@@ -325,7 +327,11 @@ class banner_course_CourseOffering
 	 *  @compliance mandatory This method must be implemented.
 	 */
 	public function getTermId() {
-		return $this->getOsidIdFromString($this->row['SSBSECT_TERM_CODE'], 'term/');
+		$termCode = $this->row['SSBSECT_TERM_CODE'];
+		if (!empty($this->row['SSBSECT_PTRM_CODE']) && $this->row['SSBSECT_PTRM_CODE'] != 1) {
+			$termCode .= '/'.$this->row['SSBSECT_PTRM_CODE'];
+		}
+		return $this->getOsidIdFromString($termCode, 'term/');
 	}
 
 

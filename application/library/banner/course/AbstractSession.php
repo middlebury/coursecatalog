@@ -180,7 +180,7 @@ abstract class banner_course_AbstractSession
 	 */
 	public function getTermCodeFromTermId (osid_id_Id $id) {
 		$string = $this->getDatabaseIdString($id, 'term/');
-		if (!preg_match('#^([0-9]{6})$#', $string, $matches))
+		if (!preg_match('#^([0-9]{6})(?:/(.{1,3}))?$#', $string, $matches))
 			throw new osid_NotFoundException("String '$string' cannot be converted into a valid term code.");
 		return $matches[1];
 	}
