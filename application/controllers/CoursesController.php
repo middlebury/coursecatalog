@@ -674,25 +674,69 @@ class CoursesController
 </head>
 <body>
 
+	<nav class="toc">
+		<h1>Table of Contents</h1>
+		<ul class="toc-list">
 ';
-		$this->printedCourseIds = array();
+		// Navigation
+		$inH1 = false;
+		$inH2 = false;
 		foreach ($sections as $section) {
 			switch ($section['type']) {
 				case 'h1':
-					print "\n<h1>".htmlspecialchars($section['text'])."</h1>";
+					if ($inH1) {
+						if ($inH2) {
+							print "\n\t\t</ul>";
+							$inH2 = false;
+						}
+						print "</li>";
+					}
+					$inH1 = true;
+					print "\n\t<li><a href='#".$this->_textToLink($section['text'])."'>".htmlspecialchars($section['text'])."</a>";
 					break;
 				case 'h2':
-					print "\n<h2>".htmlspecialchars($section['text'])."</h2>";
+					if (!$inH2) {
+						print "\n\t\t<ul>";
+						$inH2 = true;
+					}
+					print "\n\t\t\t<li><a href='#".$this->_textToLink($section['text'])."'>".htmlspecialchars($section['text'])."</a></li>";
+					break;
+			}
+		}
+		print "</li>";
+		print "\n\t\t</ul>";
+		print "\n\t</nav>";
+
+		// Content
+		$this->printedCourseIds = array();
+		$inProgram = false;
+		foreach ($sections as $section) {
+			switch ($section['type']) {
+				case 'h1':
+					if ($inProgram) {
+						print "\n</section>";
+					}
+					print "\n<section class='program'>";
+					$inProgram = true;
+					print "<a name='".$this->_textToLink($section['text'])."'></a>";
+					print "\n\t<h1>".htmlspecialchars($section['text'])."</h1>";
+					break;
+				case 'h2':
+					print "<a name='".$this->_textToLink($section['text'])."'></a>";
+					print "\n\t<h2>".htmlspecialchars($section['text'])."</h2>";
 					break;
 				case 'text':
-					print "\n".$section['text']."";
+					print "\n\t".$section['text']."";
 					break;
 				case 'page_content':
-					print "\n\t";
+					print "\n\t<article class='requirements'>";
 					print $this->getRequirements($section['url']);
+					print "\n\t</article>";
 					break;
 				case 'courses':
+					print "\n\t<section class='courses'>";
 					$this->printCourses($section['id']);
+					print "\n\t</section>";
 					break;
 				default:
 					throw new Exception("Unknown section type ".$section['type']);
@@ -703,6 +747,7 @@ class CoursesController
 			}
 			flush();
 		}
+		print "\n</section>";
 
 		print "\n<hr/>";
 		print "\n<h1>Other Courses</h1>";
@@ -710,26 +755,26 @@ class CoursesController
 
 		flush();
 
-		// Get all Offerings for the selected terms
-		$offeringQuery = $this->offeringSearchSession->getCourseOfferingQuery();
-		foreach ($this->selectedTerms as $termId) {
-			$offeringQuery->matchTermId($termId, true);
-		}
-		$offerings = $this->offeringSearchSession->getCourseOfferingsByQuery($offeringQuery);
-		// If the course Id wasn't printed, add it to a to-print array
-		$coursesNotPrinted = array();
-		while ($offerings->hasNext()) {
-			$offering = $offerings->getNextCourseOffering();
-			$courseIdString = $this->_helper->osidId->toString($offering->getCourseId());
-			if (!in_array($courseIdString, $this->printedCourseIds)) {
-				$coursesNotPrinted[$courseIdString] = $offering->getCourse();
-			}
-		}
-		// Print a list of courses not printed
-		ksort($coursesNotPrinted);
-		foreach ($coursesNotPrinted as $course) {
-			$this->printCourse($course);
-		}
+		// // Get all Offerings for the selected terms
+		// $offeringQuery = $this->offeringSearchSession->getCourseOfferingQuery();
+		// foreach ($this->selectedTerms as $termId) {
+		// 	$offeringQuery->matchTermId($termId, true);
+		// }
+		// $offerings = $this->offeringSearchSession->getCourseOfferingsByQuery($offeringQuery);
+		// // If the course Id wasn't printed, add it to a to-print array
+		// $coursesNotPrinted = array();
+		// while ($offerings->hasNext()) {
+		// 	$offering = $offerings->getNextCourseOffering();
+		// 	$courseIdString = $this->_helper->osidId->toString($offering->getCourseId());
+		// 	if (!in_array($courseIdString, $this->printedCourseIds)) {
+		// 		$coursesNotPrinted[$courseIdString] = $offering->getCourse();
+		// 	}
+		// }
+		// // Print a list of courses not printed
+		// ksort($coursesNotPrinted);
+		// foreach ($coursesNotPrinted as $course) {
+		// 	$this->printCourse($course);
+		// }
 
 		print '
 
@@ -943,7 +988,7 @@ class CoursesController
 					$desc = $course->getDescription();
 				else
 					$desc = $sectionDescriptions[$i];
-				$description .= "\n\t<h3>".$sectionTerms[$i]."</h3>";
+				$description .= "\n\t<h4>".$sectionTerms[$i]."</h4>";
 				$description .= "\n\t<p>".$desc;
 				$description .= " <strong>".implode (", ", $reqs)."</strong>";
 				$description .= $this->getInstructorText($sectionInstructors, $i);
@@ -960,13 +1005,15 @@ class CoursesController
 		/*********************************************************
 		 * Output
 		 *********************************************************/
-		print "\n\t<h2>";
+		print "\n\t\t<article class='course'>";
+		print "\n\t\t\t<h3>";
 		print htmlspecialchars($course->getDisplayName());
 		print " ".$title;
 		print " (".implode(", ", $termStrings).")";
-		print "</h2>";
+		print "</h3>";
 
 		print $description;
+		print "\n\t\t</article>";
 
 		/*********************************************************
 		 * Crosslists
@@ -1091,5 +1138,9 @@ class CoursesController
 		$second = intval($dt -> format("s"));
 		$dt -> setTimezone($dtz_original);
 		return gmmktime($hour,$minute,$second,$month,$day,$year);
+	}
+
+	function _textToLink($text) {
+		return preg_replace('/[^a-z0-9.:]+/i', '-', $text);
 	}
 }

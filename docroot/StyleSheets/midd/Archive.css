@@ -1,3 +1,18 @@
 br {
 	mso-data-placement:same-cell;
 }
+.courses {
+	margin-top: 4em;
+	margin-bottom: 4em;
+}
+@media print {
+	body {
+		font-size: 11pt;
+	}
+	.program {
+		page-break-before: always;
+	}
+	.course {
+		page-break-inside: avoid;
+	}
+}
