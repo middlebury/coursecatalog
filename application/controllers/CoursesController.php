@@ -670,9 +670,7 @@ class CoursesController
 '<html>
 <head>
 	<title>'.$title.'</title>
-	<style>
-		br { mso-data-placement:same-cell; }
-	</style>
+	<link rel="stylesheet" href="'.$this->view->baseUrl('/StyleSheets/midd/Archive.css').'" media="all"/>
 </head>
 <body>
 

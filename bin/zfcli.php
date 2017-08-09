@@ -15,6 +15,7 @@ try {
 			'verbose|v' => 'Verbose messages will be dumped to the default output.',
 			'development|d' => 'Enables development mode.',
 			'params|p=s' => 'A query string of parameters.',
+			'baseurl|b=s' => 'The base URL to use for output.',
 		)
 	);
 	$opts->parse();
@@ -36,6 +37,10 @@ if(isset($opts->a)) {
 
 	$request = new Zend_Controller_Request_Simple($action,$controller,$module, $params);
 	$front = Zend_Controller_Front::getInstance();
+
+	if(isset($opts->b)) {
+		$front->setBaseUrl($opts->b);
+	}
 
 	$front->setRequest($request);
 	$front->setRouter(new Webf_Controller_Router_Cli());

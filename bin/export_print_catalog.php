@@ -85,7 +85,11 @@ $htmlName = $fileBase.'.html';
 $htmlPath = $htmlRoot.'/'.$htmlName;
 
 // Generate the export.
-$command = $myDir.'/zfcli.php -a courses.allrecentcourses -p '.escapeshellarg($job['params']).' > '.$htmlPath;
+$base = '';
+if (getenv('CATALOG_BASE_URL')) {
+	$base = '-b '.getenv('CATALOG_BASE_URL');
+}
+$command = $myDir.'/zfcli.php '.$base.' -a courses.allrecentcourses -p '.escapeshellarg($job['params']).' > '.$htmlPath;
 exec($command, $output, $return);
 if ($return) {
 	file_put_contents('php://stderr', "Error running command:\n\n\t$command\n");
