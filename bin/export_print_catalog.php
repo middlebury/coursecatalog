@@ -2,7 +2,7 @@
 <?php
 
 $myDir = dirname(__FILE__);
-$destRoot = '/var/www/archive';
+$destRoot = 'docroot/archive';
 
 $jobs = array(
 	'MCUG-2010-2011' => array(
