@@ -572,8 +572,6 @@ class CoursesController
 	 * @since 6/15/09
 	 */
 	public function allrecentcoursesAction () {
-		$this->_helper->viewRenderer->setNoRender();
-
 		if (!$this->_getParam('catalog')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A catalog must be specified.";
@@ -663,125 +661,28 @@ class CoursesController
 		if (count($termNames)) {
 			$title .= ' - '.implode(', ', $termNames);
 		}
-
-		header('Content-Type: text/html');
-		header('Content-Disposition: filename="AllCourses.html"');
-		print
-'<html>
-<head>
-	<title>'.$title.'</title>
-	<link rel="stylesheet" href="'.$this->view->baseUrl('/StyleSheets/midd/Archive.css').'" media="all"/>
-</head>
-<body>
-
-	<nav class="toc">
-		<h1>Table of Contents</h1>
-		<ul class="toc-list">
-';
-		// Navigation
-		$inH1 = false;
-		$inH2 = false;
-		foreach ($sections as $section) {
+		$this->view->title = $title;
+		$this->view->sections = $sections;
+		foreach ($this->view->sections as $key => &$section) {
 			switch ($section['type']) {
 				case 'h1':
-					if ($inH1) {
-						if ($inH2) {
-							print "\n\t\t</ul>";
-							$inH2 = false;
-						}
-						print "</li>";
-					}
-					$inH1 = true;
-					print "\n\t<li><a href='#".$this->_textToLink($section['text'])."'>".htmlspecialchars($section['text'])."</a>";
 					break;
 				case 'h2':
-					if (!$inH2) {
-						print "\n\t\t<ul>";
-						$inH2 = true;
-					}
-					print "\n\t\t\t<li><a href='#".$this->_textToLink($section['text'])."'>".htmlspecialchars($section['text'])."</a></li>";
-					break;
-			}
-		}
-		print "</li>";
-		print "\n\t\t</ul>";
-		print "\n\t</nav>";
-
-		// Content
-		$this->printedCourseIds = array();
-		$inProgram = false;
-		foreach ($sections as $section) {
-			switch ($section['type']) {
-				case 'h1':
-					if ($inProgram) {
-						print "\n</section>";
-					}
-					print "\n<section class='program'>";
-					$inProgram = true;
-					print "<a name='".$this->_textToLink($section['text'])."'></a>";
-					print "\n\t<h1>".htmlspecialchars($section['text'])."</h1>";
-					break;
-				case 'h2':
-					print "<a name='".$this->_textToLink($section['text'])."'></a>";
-					print "\n\t<h2>".htmlspecialchars($section['text'])."</h2>";
 					break;
 				case 'text':
-					print "\n\t".$section['text']."";
 					break;
 				case 'page_content':
-					print "\n\t<article class='requirements'>";
-					print $this->getRequirements($section['url']);
-					print "\n\t</article>";
+					$section['content'] = $this->getRequirements($section['url']);
 					break;
 				case 'courses':
-					print "\n\t<section class='courses'>";
+					ob_start();
 					$this->printCourses($section['id']);
-					print "\n\t</section>";
+					$section['courses'] = ob_get_clean();
 					break;
 				default:
 					throw new Exception("Unknown section type ".$section['type']);
 			}
-
-			while (ob_get_level()) {
-				ob_end_flush();
-			}
-			flush();
 		}
-		print "\n</section>";
-
-		print "\n<hr/>";
-		print "\n<h1>Other Courses</h1>";
-		print "\n<p>The following courses are listed in Banner but not included in the department and program listings above.</p>";
-
-		flush();
-
-		// // Get all Offerings for the selected terms
-		// $offeringQuery = $this->offeringSearchSession->getCourseOfferingQuery();
-		// foreach ($this->selectedTerms as $termId) {
-		// 	$offeringQuery->matchTermId($termId, true);
-		// }
-		// $offerings = $this->offeringSearchSession->getCourseOfferingsByQuery($offeringQuery);
-		// // If the course Id wasn't printed, add it to a to-print array
-		// $coursesNotPrinted = array();
-		// while ($offerings->hasNext()) {
-		// 	$offering = $offerings->getNextCourseOffering();
-		// 	$courseIdString = $this->_helper->osidId->toString($offering->getCourseId());
-		// 	if (!in_array($courseIdString, $this->printedCourseIds)) {
-		// 		$coursesNotPrinted[$courseIdString] = $offering->getCourse();
-		// 	}
-		// }
-		// // Print a list of courses not printed
-		// ksort($coursesNotPrinted);
-		// foreach ($coursesNotPrinted as $course) {
-		// 	$this->printCourse($course);
-		// }
-
-		print '
-
-</body>
-</html>
-';
-		exit;
 	}
 
 	/**

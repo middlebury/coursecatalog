@@ -1,0 +1,39 @@
+<?php
+$this->headLink(array('rel' => 'stylesheet', 'href' => $this->baseUrl('/StyleSheets/midd/Archive.css'), 'media' => 'all'));
+
+print $this->partial('courses/section_nav.phtml', array('sections' => $this->sections));
+
+$inProgram = false;
+foreach ($this->sections as $section) {
+	switch ($section['type']) {
+		case 'h1':
+			if ($inProgram) {
+				print "\n</section>";
+			}
+			print "\n<section class='program'>";
+			$inProgram = true;
+			print "<a name='".$this->textToLink($section['text'])."'></a>";
+			print "\n\t<h1>".htmlspecialchars($section['text'])."</h1>";
+			break;
+		case 'h2':
+			print "<a name='".$this->textToLink($section['text'])."'></a>";
+			print "\n\t<h2>".htmlspecialchars($section['text'])."</h2>";
+			break;
+		case 'text':
+			print "\n\t".$section['text']."";
+			break;
+		case 'page_content':
+			print "\n\t<article class='requirements'>";
+			print $section['content'];
+			print "\n\t</article>";
+			break;
+		case 'courses':
+			print "\n\t<section class='courses'>";
+			print $section['courses'];
+			print "\n\t</section>";
+			break;
+		default:
+			throw new Exception("Unknown section type ".$section['type']);
+	}
+}
+print "\n</section>";
