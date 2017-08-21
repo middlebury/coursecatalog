@@ -29,7 +29,9 @@ foreach ($this->sections as $section) {
 			break;
 		case 'courses':
 			print "\n\t<section class='courses'>";
-			print $section['courses'];
+			foreach ($section['courses'] as $course) {
+				print $this->partial('courses/list_item.phtml', array('course' => $course));
+			}
 			print "\n\t</section>";
 			break;
 		default:

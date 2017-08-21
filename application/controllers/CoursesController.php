@@ -675,9 +675,7 @@ class CoursesController
 					$section['content'] = $this->getRequirements($section['url']);
 					break;
 				case 'courses':
-					ob_start();
-					$this->printCourses($section['id']);
-					$section['courses'] = ob_get_clean();
+					$section['courses'] = $this->getCourses($section['id']);
 					break;
 				default:
 					throw new Exception("Unknown section type ".$section['type']);
@@ -716,19 +714,14 @@ class CoursesController
 	 * @access protected
 	 * @since 4/26/10
 	 */
-	protected function printCourses (osid_id_Id $topicId) {
-		try {
-			$offeringQuery = $this->offeringSearchSession->getCourseOfferingQuery();
-			$offeringQuery->matchTopicId($topicId, true);
-			foreach ($this->selectedTerms as $termId) {
-				$offeringQuery->matchTermId($termId, true);
-			}
-			$offerings = $this->offeringSearchSession->getCourseOfferingsByQuery($offeringQuery);
-		} catch (osid_NotFoundException $e) {
-			header('HTTP/1.1 404 Not Found');
-			print "The term ids specified were not found.";
-			exit;
+	protected function getCourses (osid_id_Id $topicId) {
+		$topic_courses = array();
+		$offeringQuery = $this->offeringSearchSession->getCourseOfferingQuery();
+		$offeringQuery->matchTopicId($topicId, true);
+		foreach ($this->selectedTerms as $termId) {
+			$offeringQuery->matchTermId($termId, true);
 		}
+		$offerings = $this->offeringSearchSession->getCourseOfferingsByQuery($offeringQuery);
 
 		// Limit Courses to those offerings in the terms
 		$query = $this->courseSearchSession->getCourseQuery();
@@ -754,12 +747,12 @@ class CoursesController
 			$courseIdString = $this->_helper->osidId->toString($course->getId());
 			$this->printedCourseIds[] = $courseIdString;
 
-			$this->printCourse($course);
+			$topic_courses[] = $this->getCourseData($course);
 
 // 			if ($i > 10)
 // 				break;
 		}
-
+		return $topic_courses;
 	}
 
 	/**
@@ -770,16 +763,19 @@ class CoursesController
 	 * @access protected
 	 * @since 4/28/10
 	 */
-	protected function printCourse (osid_course_Course $course) {
-		$description = $course->getDescription();
-		if (preg_match('#^<strong>([^\n\r]+)</strong>(?:\s*<br />(.*)|\s*)$#sm', $description, $matches)) {
-			$title = $matches[1];
+	protected function getCourseData (osid_course_Course $course) {
+		$data = new stdClass();
+		$data->sections = array();
+		$data->display_name = $course->getDisplayName();
+		$data->description = $course->getDescription();
+		if (preg_match('#^<strong>([^\n\r]+)</strong>(?:\s*<br />(.*)|\s*)$#sm', $data->description, $matches)) {
+			$data->title = $matches[1];
 			if (isset($matches[2]))
-				$description = trim($matches[2]);
+				$data->description = trim($matches[2]);
 			else
-				$description = '';
+				$data->description = '';
 		} else {
-			$title = htmlspecialchars($course->getTitle());
+			$data->title = htmlspecialchars($course->getTitle());
 		}
 
 		$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
@@ -800,6 +796,7 @@ class CoursesController
 			} catch (osid_OperationFailedException $e) {
 			}
 		}
+		$data->term_strings = $termStrings;
 
 		$allTopics = $this->_helper->topics->topicListAsArray($course->getTopics());
 
@@ -810,6 +807,7 @@ class CoursesController
 		foreach ($topics as $topic) {
 			$reqs[] = $this->view->escape($topic->getDisplayName());
 		}
+		$data->requirements = $reqs;
 
 		/*********************************************************
 		 * Section descriptions
@@ -872,49 +870,31 @@ class CoursesController
 					}
 			}
 		}
+		$data->instructors = $this->getInstructorText($sectionInstructors);
 
 		$sectionDescriptionsText = '';
 		// Replace the description with the one from the section if there is only one section.
 		if (count($sectionDescriptions) == 1 && count($termStrings) == 1) {
 			reset($sectionDescriptions);
-			$description = current($sectionDescriptions);
-			$description .= " <strong>".implode (", ", $reqs)."</strong>";
-			$description .= $this->getInstructorText($sectionInstructors);
+			$data->description = current($sectionDescriptions);
+
 		}
 		// If there are multiple section descriptions, print them separately
 		else if (count($sectionDescriptions)) {
-			$description = '';
+			$data->description = '';
 			foreach ($termStrings as $i => $desc) {
+				$section_data = new stdClass;
 				if (empty($sectionDescriptions[$i]))
-					$desc = $course->getDescription();
+					$section_data->description = $course->getDescription();
 				else
-					$desc = $sectionDescriptions[$i];
-				$description .= "\n\t<h4>".$sectionTerms[$i]."</h4>";
-				$description .= "\n\t<p>".$desc;
-				$description .= " <strong>".implode (", ", $reqs)."</strong>";
-				$description .= $this->getInstructorText($sectionInstructors, $i);
-				$description .= "</p>";
+					$section_data->description = $sectionDescriptions[$i];
+				$section_data->term = $sectionTerms[$i];
+				$section_data->instructors = $this->getInstructorText($sectionInstructors, $i);
+				$data->sections[] = $section_data;
 			}
 		}
-		else {
-			$description = "\n\t<p>".$description;
-			$description .=  " <strong>".implode (", ", $reqs)."</strong>";
-			$description .= $this->getInstructorText($sectionInstructors);
-			$description .= "</p>";
-		}
 
-		/*********************************************************
-		 * Output
-		 *********************************************************/
-		print "\n\t\t<article class='course'>";
-		print "\n\t\t\t<h3>";
-		print htmlspecialchars($course->getDisplayName());
-		print " ".$title;
-		print " (".implode(", ", $termStrings).")";
-		print "</h3>";
-
-		print $description;
-		print "\n\t\t</article>";
+		return $data;
 
 		/*********************************************************
 		 * Crosslists
