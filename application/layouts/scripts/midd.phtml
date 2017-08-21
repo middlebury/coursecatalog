@@ -21,8 +21,8 @@
 	<meta name="description" content="middlebury college" />
 	<meta name="robots" content="all" />
 
-	<link rel="stylesheet" media="screen" type="text/css" href="<?php echo $this->url(array(), null, true) ?>2d/StyleSheets/CatalogStyles.css" />
-	<link rel="stylesheet" media="screen" type="text/css" href="<?php echo $this->url(array(), null, true) ?>StyleSheets/midd/Styles.css" />
+	<link rel="stylesheet" media="screen" type="text/css" href="<?php echo $this->baseUrl("/2d/StyleSheets/CatalogStyles.css") ?>" />
+	<link rel="stylesheet" media="screen" type="text/css" href="<?php echo $this->baseUrl("/StyleSheets/midd/Styles.css") ?>" />
 
 	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/jquery-ui.min.js"></script>
@@ -79,7 +79,7 @@
 	<article id="midd_content" class="pagecontent container">
 		<section class="banner">
 		<a href="<?php echo $this->url(array(), null, true) ?>">
-			<img src="<?php echo $this->url(array(), null, true) ?>images/catalog_header.jpg" alt="header image"/>
+			<img src="<?php echo $this->baseUrl("/images/catalog_header.jpg") ?>" alt="header image"/>
 		</a>
 		</section>
 		<nav class="left">
