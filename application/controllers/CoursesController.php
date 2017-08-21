@@ -848,26 +848,15 @@ class CoursesController
 						'label' => $term->getDisplayName(),
 						'instructors' => array(),
 					);
-					$instructorNames = array();
-					$instructorIds = array();
-					$instructorSortkeys = array();
-					while($instructors->hasNext()) {
-						$instructor = $instructors->getNextResource();
-						$instructorIdString = $this->_helper->osidId->toString($instructor->getId());
-						$instructorIds[] = $instructorIdString;
-						if ($instructor->hasRecordType($namesType)) {
-							$nameRecord = $instructor->getResourceRecord($namesType);
-							$instructorNames[] = substr($nameRecord->getGivenName(), 0, 1).'. '.$nameRecord->getSurname();
-							$instructorSortkeys[] = $nameRecord->getSurname().' '.$nameRecord->getGivenName();
-						} else {
-							$instructorNames[] = $instructor->getDisplayName();
-							$instructorSortkeys[] = $instructor->getDisplayName();
-						}
+				while($instructors->hasNext()) {
+					$instructor = $instructors->getNextResource();
+					$instructorIdString = $this->_helper->osidId->toString($instructor->getId());
+					$sectionInstructors[$termIdString]['instructors'][$instructorIdString] = $instructor->getDisplayName();
+					if ($instructor->hasRecordType($namesType)) {
+						$nameRecord = $instructor->getResourceRecord($namesType);
+						$sectionInstructors[$termIdString]['instructors'][$instructorIdString] = substr($nameRecord->getGivenName(), 0, 1).'. '.$nameRecord->getSurname();
 					}
-					array_multisort($instructorSortkeys, $instructorIds, $instructorNames);
-					foreach ($instructorIds as $i => $instructorId) {
-						$sectionInstructors[$termIdString]['instructors'][$instructorId] = $instructorNames[$i];
-					}
+				}
 			}
 		}
 		$data->instructors = $this->getInstructorText($sectionInstructors);
