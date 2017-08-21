@@ -15,9 +15,10 @@ if (empty($this->course->sections)) {
 		print "\n\t\t\t<div class='course_section'>";
 		print "\n\t\t\t\t<h4>".$section->term."</h4>";
 		print "\n\t\t\t\t<p>".$section->description;
-		print "\n\t\t\t\t<span class='course_requirements'>".implode (", ", $this->course->requirements)."</span>";
-		print "\n\t\t\t\t<span class='course_instructors'>".$section->instructors."</span>";
-		print "\n\t\t\t</p>";
+		print "\n\t\t\t\t\t<span class='course_requirements'>".implode (", ", $this->course->requirements)."</span>";
+		print "\n\t\t\t\t\t<span class='course_instructors'>".$section->instructors."</span>";
+		print "\n\t\t\t\t</p>";
+		print "\n\t\t\t</div>";
 	}
 }
 print "\n\t\t</article>";
