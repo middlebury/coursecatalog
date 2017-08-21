@@ -7,16 +7,16 @@ print " (".implode(", ", array_values($this->course->term_strings)).")";
 print "</h3> ";
 if (empty($this->course->sections)) {
 	print "\n\t\t\t<p>".$this->course->description;
-	print "\n\t\t\t\t<span class='requirements'>".implode (", ", $this->course->requirements)."</span>";
-	print "\n\t\t\t\t<span class='instructors'>".$this->course->instructors."</span>";
+	print "\n\t\t\t\t<span class='course_requirements'>".implode (", ", $this->course->requirements)."</span>";
+	print "\n\t\t\t\t<span class='course_instructors'>".$this->course->instructors."</span>";
 	print "\n\t\t\t</p>";
 } else {
 	foreach ($this->course->sections as $section) {
 		print "\n\t\t\t<div class='course_section'>";
 		print "\n\t\t\t\t<h4>".$section->term."</h4>";
 		print "\n\t\t\t\t<p>".$section->description;
-		print "\n\t\t\t\t<span class='requirements'>".implode (", ", $this->course->requirements)."</span>";
-		print "\n\t\t\t\t<span class='instructors'>".$section->instructors."</span>";
+		print "\n\t\t\t\t<span class='course_requirements'>".implode (", ", $this->course->requirements)."</span>";
+		print "\n\t\t\t\t<span class='course_instructors'>".$section->instructors."</span>";
 		print "\n\t\t\t</p>";
 	}
 }
