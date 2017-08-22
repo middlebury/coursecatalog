@@ -52,8 +52,12 @@ a.local_anchor {
 	margin-bottom: 0.25em;
 	font-size: 1.3em;
 }
-.course p {
+.course .course_description {
 	margin-top: 0.25em;
+	display: inline;
+}
+.course .course_requirements, .course .course_instructors {
+	display: inline;
 }
 .course_section {
 	margin-bottom: 2em;
