@@ -11,6 +11,7 @@ br {
 }
 .courses {
 	margin-top: 6em;
+	margin-bottom: 6em;
 	/*border-top: 1px solid #777;*/
 }
 .course {
