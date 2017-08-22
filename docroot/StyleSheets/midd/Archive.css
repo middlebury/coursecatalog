@@ -9,6 +9,14 @@
 br {
 	mso-data-placement:same-cell;
 }
+.print_button {
+	float: right;
+	margin: 0 2em 2em 2em;
+	border-bottom: none;
+}
+.print_button:hover {
+	border-bottom: none;
+}
 .courses {
 	margin-top: 6em;
 	margin-bottom: 6em;
@@ -73,7 +81,7 @@ a.local_anchor {
 
 /* Print-specific styles */
 @media print {
-	.skiplink, .navigation, .search, .wordmark, .banner, .left, .breadcrumb, #breadcrumb, .footer {
+	.skiplink, .navigation, .search, .wordmark, .banner, .left, .breadcrumb, #breadcrumb, .footer, .print_button {
 		display: none;
 	}
 	body {

@@ -2,6 +2,7 @@
 $this->headLink(array('rel' => 'stylesheet', 'href' => $this->baseUrl('/StyleSheets/midd/Archive.css'), 'media' => 'all'));
 
 print "\n<a name='top' class='local_anchor'></a>";
+print "\n<a class='print_button' href='javascript:window.print();'><button>Print...</button></a>";
 print $this->partial('courses/section_nav.phtml', array('sections' => $this->sections));
 
 $inProgram = false;
