@@ -246,7 +246,7 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
 	final protected function getObjectFromRow (array $row) {
 		return new banner_course_Course(
 					$this->session->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'], 'course/'),
-					$row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'],
+					$row['SCBCRSE_SUBJ_CODE']." ".$row['SCBCRSE_CRSE_NUMB'],
 					((is_null($row['SCBDESC_TEXT_NARRATIVE']))?'':$row['SCBDESC_TEXT_NARRATIVE']),	// Description
 					$row['SCBCRSE_TITLE'],
 					$row['SCBCRSE_CREDIT_HR_HIGH'],

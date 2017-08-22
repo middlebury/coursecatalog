@@ -238,7 +238,7 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 
 		return new banner_course_Course(
 					$this->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'], 'course/'),
-					$row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'],
+					$row['SCBCRSE_SUBJ_CODE']." ".$row['SCBCRSE_CRSE_NUMB'],
 					((is_null($row['SCBDESC_TEXT_NARRATIVE']))?'':$row['SCBDESC_TEXT_NARRATIVE']),	// Description
 					$row['SCBCRSE_TITLE'],
 					$row['SCBCRSE_CREDIT_HR_HIGH'],
