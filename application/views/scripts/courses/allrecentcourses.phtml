@@ -19,6 +19,7 @@ foreach ($this->sections as $section) {
 			break;
 		case 'h2':
 			print "<a name='".$this->textToLink($section['text'])."'></a>";
+			print "<a href='#top' class='jump_link'>&uarr; Top</a>";
 			print "\n\t<h2>".htmlspecialchars($section['text'])."</h2>";
 			break;
 		case 'text':

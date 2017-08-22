@@ -30,6 +30,10 @@ br {
 .toc {
 	margin-bottom: 3em;
 }
+.jump_link {
+	display: inline-block;
+	margin-bottom: 0.5em;
+}
 .program h1 {
 	margin-top: 0.25em;
 }
