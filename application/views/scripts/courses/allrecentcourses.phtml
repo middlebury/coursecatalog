@@ -1,6 +1,7 @@
 <?php
 $this->headLink(array('rel' => 'stylesheet', 'href' => $this->baseUrl('/StyleSheets/midd/Archive.css'), 'media' => 'all'));
 
+print "\n<a name='top'></a>";
 print $this->partial('courses/section_nav.phtml', array('sections' => $this->sections));
 
 $inProgram = false;
@@ -13,6 +14,7 @@ foreach ($this->sections as $section) {
 			print "\n<section class='program'>";
 			$inProgram = true;
 			print "<a name='".$this->textToLink($section['text'])."'></a>";
+			print "<a href='#top' class='jump_link'>&uarr; Top</a>";
 			print "\n\t<h1>".htmlspecialchars($section['text'])."</h1>";
 			break;
 		case 'h2':
