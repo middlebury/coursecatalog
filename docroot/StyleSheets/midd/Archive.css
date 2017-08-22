@@ -10,8 +10,8 @@ br {
 	mso-data-placement:same-cell;
 }
 .courses {
-	margin-top: 3em;
-	border-top: 1px solid #aaa;
+	margin-top: 6em;
+	/*border-top: 1px solid #777;*/
 }
 .course {
 	margin-top: 3em;
@@ -36,6 +36,23 @@ br {
 }
 .program h1 {
 	margin-top: 0.25em;
+	font-size: 1.6em;
+}
+.course h3 {
+	border-bottom: 1px solid #aaa;
+	padding-bottom: 0.25em;
+	margin-bottom: 0.25em;
+	font-size: 1.3em;
+}
+.course p {
+	margin-top: 0.25em;
+}
+.course_section {
+	margin-bottom: 2em;
+}
+.course_section h4 {
+	margin-bottom: 0.1em;
+	font-size: 1.1em;
 }
 
 /* Print-specific styles */
@@ -46,36 +63,10 @@ br {
 	body {
 		font-size: 10pt;
 	}
-	h1 {
-		font-size: 18pt
-	}
-	h2 {
-		font-size: 14pt
-	}
-	h3 {
-		font-size: 12pt
-	}
-	h4 {
-		font-size: 11pt
-	}
 	.program {
 		page-break-before: always;
 	}
 	.course {
 		page-break-inside: avoid;
-	}
-	.course h3 {
-		border-bottom: 1px solid #777;
-		padding-bottom: 5px;
-		margin-bottom: 6px;
-	}
-	.course p {
-		margin-top: 6px;
-	}
-	.course_section {
-		margin-bottom: 2em;
-	}
-	.course_section h4 {
-		margin-bottom: 2px;
 	}
 }
