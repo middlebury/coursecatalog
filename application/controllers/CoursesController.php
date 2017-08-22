@@ -765,6 +765,8 @@ class CoursesController
 	 */
 	protected function getCourseData (osid_course_Course $course) {
 		$data = new stdClass();
+		$data->id = $this->_helper->osidId->toString($course->getId());
+		$data->anchor = str_replace('/','_', $data->id);
 		$data->sections = array();
 		$data->display_name = $course->getDisplayName();
 		$data->description = $course->getDescription();
@@ -883,55 +885,55 @@ class CoursesController
 			}
 		}
 
-		return $data;
-
 		/*********************************************************
 		 * Crosslists
 		 *********************************************************/
-// 			$altNames = array();
-// 			$alternateType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
-// 			try {
-// 				if ($course->hasRecordType($this->alternateType)) {
-// 					$record = $course->getCourseRecord($this->alternateType);
-// 					if ($record->hasAlternates()) {
-// 						$alternates = $record->getAlternates();
-// 						while ($alternates->hasNext()) {
-// 							$alternate = $alternates->getNextCourse();
-//
-// 							$altInSelectedTerms = false;
-// 							if ($alternate->hasRecordType($termsType)) {
-// 								$termsRecord = $alternate->getCourseRecord($termsType);
-// 								try {
-// 									$terms = $termsRecord->getTerms();
-// 									while ($terms->hasNext() && !$altInSelectedTerms) {
-// 										$term = $terms->getNextTerm();
-// 										// See if the term is in one of our chosen terms
-// 										foreach ($this->selectedTerms as $selectedTermId) {
-// 											if ($selectedTermId->isEqual($term->getId())) {
-// 												$altInSelectedTerms = true;
-// 												break;
-// 											}
-// 										}
-// 									}
-// 								} catch (osid_OperationFailedException $e) {
-// 								}
-// 							}
-// 							if ($altInSelectedTerms)
-// 								$altNames[] = htmlspecialchars($alternate->getDisplayName());
-// 						}
-// 					}
-// 				}
-// 				if (count($altNames)) {
-// 					print "\n\t<p><strong>Crosslists:</strong> ";
-// 					print implode(", ", $altNames);
-// 					print "</p>";
-// 				}
-// 			} catch (osid_NotFoundException $e) {
-// 			}
+		$data->alternates = array();
+		$alternateType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
+		try {
+			if ($course->hasRecordType($this->alternateType)) {
+				$record = $course->getCourseRecord($this->alternateType);
+				if ($record->hasAlternates()) {
+					$alternates = $record->getAlternates();
+					while ($alternates->hasNext()) {
+						$alternate = $alternates->getNextCourse();
 
+						$altInSelectedTerms = false;
+						if ($alternate->hasRecordType($termsType)) {
+							$termsRecord = $alternate->getCourseRecord($termsType);
+							try {
+								$terms = $termsRecord->getTerms();
+								while ($terms->hasNext() && !$altInSelectedTerms) {
+									$term = $terms->getNextTerm();
+									// See if the term is in one of our chosen terms
+									foreach ($this->selectedTerms as $selectedTermId) {
+										if ($selectedTermId->isEqual($term->getId())) {
+											$altInSelectedTerms = true;
+											break;
+										}
+									}
+								}
+							} catch (osid_OperationFailedException $e) {
+							}
+						}
+						if ($altInSelectedTerms) {
+							$alt_data = new stdClass();
+							$alt_data->display_name = $alternate->getDisplayName();
+							$alt_data->id = $this->_helper->osidId->toString($alternate->getId());
+							$alt_data->anchor = str_replace('/','_', $alt_data->id);
+							if ($alternate->hasRecordType($this->alternateType)) {
+								$alt_record = $alternate->getCourseRecord($this->alternateType);
+								$alt_data->is_primary = $alt_record->isPrimary();
+							}
+							$data->alternates[] = $alt_data;
+						}
+					}
+				}
+			}
+		} catch (osid_NotFoundException $e) {
+		}
 
-
-		flush();
+		return $data;
 	}
 
 	/**

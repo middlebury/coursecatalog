@@ -27,6 +27,14 @@ br {
 .banner, .breadcrumb, #breadcrumb {
 	display: none;
 }
+a.local_anchor {
+	display: block;
+	height: 0px;
+	text-decoration: none;
+	padding: 0;
+	margin: 0;
+	border: none;
+}
 .toc {
 	margin-bottom: 3em;
 }
@@ -53,6 +61,9 @@ br {
 .course_section h4 {
 	margin-bottom: 0.1em;
 	font-size: 1.1em;
+}
+.course .alternates {
+	margin-top: 0.3em;
 }
 
 /* Print-specific styles */

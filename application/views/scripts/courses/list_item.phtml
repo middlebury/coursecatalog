@@ -1,24 +1,39 @@
 <?php
 print "\n\t\t<article class='course'>";
+print "\n\t\t\t<a name='".$this->course->anchor."' class='local_anchor'></a>"; // Anchor for cross-lists.
 print "\n\t\t\t<h3>";
-print htmlspecialchars($this->course->display_name);
-print " ".$this->course->title;
+print $this->escape($this->course->display_name);
+print " ".$this->escape($this->course->title);
 print " (".implode(", ", array_values($this->course->term_strings)).")";
 print "</h3> ";
 if (empty($this->course->sections)) {
-	print "\n\t\t\t<p>".$this->course->description;
+	print "\n\t\t\t".$this->course->description;
 	print "\n\t\t\t\t<span class='course_requirements'>".implode (", ", $this->course->requirements)."</span>";
-	print "\n\t\t\t\t<span class='course_instructors'>".$this->course->instructors."</span>";
-	print "\n\t\t\t</p>";
+	print "\n\t\t\t\t<span class='course_instructors'>".$this->escape($this->course->instructors)."</span>";
 } else {
 	foreach ($this->course->sections as $section) {
 		print "\n\t\t\t<div class='course_section'>";
-		print "\n\t\t\t\t<h4>".$section->term."</h4>";
-		print "\n\t\t\t\t<p>".$section->description;
+		print "\n\t\t\t\t<h4>".$this->escape($section->term)."</h4>";
+		print "\n\t\t\t\t".$this->escape($section->description);
 		print "\n\t\t\t\t\t<span class='course_requirements'>".implode (", ", $this->course->requirements)."</span>";
-		print "\n\t\t\t\t\t<span class='course_instructors'>".$section->instructors."</span>";
-		print "\n\t\t\t\t</p>";
+		print "\n\t\t\t\t\t<span class='course_instructors'>".$this->escape($section->instructors)."</span>";
+		print "\n\t\t\t\t";
 		print "\n\t\t\t</div>";
 	}
+}
+if (!empty($this->course->alternates)) {
+	print "\n\t\t\t<div class='alternates'>Cross-listed as: ";
+	foreach ($this->course->alternates as $alternate) {
+		print "\n\t\t\t\t<a class='alternate' href='#".$alternate->anchor."'";
+		if ($alternate->is_primary) {
+			print " title='Primary course'";
+		}
+		print ">".$this->escape($alternate->display_name);
+		if ($alternate->is_primary) {
+			print " <span class='primary_ind'>*</span>";
+		}
+		print "</a> ";
+	}
+	print "\n\t\t\t</div>";
 }
 print "\n\t\t</article>";
