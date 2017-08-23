@@ -681,6 +681,8 @@ class CoursesController
 					throw new Exception("Unknown section type ".$section['type']);
 			}
 		}
+
+		$this->_helper->layout()->setLayout('minimal');
 	}
 
 	/**
