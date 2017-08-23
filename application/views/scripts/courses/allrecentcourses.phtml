@@ -1,45 +1,49 @@
 <?php
 $this->headLink(array('rel' => 'stylesheet', 'href' => $this->baseUrl('/StyleSheets/midd/Archive.css'), 'media' => 'all'));
 
-print "\n<a name='top' class='local_anchor'></a>";
-print "\n<a class='print_button' href='javascript:window.print();'><button>Print...</button></a>";
+print "\n<section class='catalog'>";
+print "\n\t<header class='catalog_header'>";
+print "\n\t\t<a name='top' class='local_anchor'></a>";
+print "\n\t\t<a class='print_button' href='javascript:window.print();'><button>Print...</button></a>";
 print $this->partial('courses/section_nav.phtml', array('sections' => $this->sections));
+print "\n\t</header>";
 
 $inProgram = false;
 foreach ($this->sections as $section) {
 	switch ($section['type']) {
 		case 'h1':
 			if ($inProgram) {
-				print "\n</section>";
+				print "\n\t</section>";
 			}
-			print "\n<section class='program'>";
+			print "\n\t<section class='program'>";
 			$inProgram = true;
-			print "<a name='".$this->textToLink($section['text'])."' class='local_anchor'></a>";
-			print "<a href='#top' class='jump_link'>&uarr; Top</a>";
-			print "\n\t<h1>".htmlspecialchars($section['text'])."</h1>";
+			print "\n\t\t<a name='".$this->textToLink($section['text'])."' class='local_anchor'></a>";
+			print "\n\t\t<a href='#top' class='jump_link'>&uarr; Top</a>";
+			print "\n\t\t<h1>".htmlspecialchars($section['text'])."</h1>";
 			break;
 		case 'h2':
-			print "<a name='".$this->textToLink($section['text'])."' class='local_anchor'></a>";
-			print "<a href='#top' class='jump_link'>&uarr; Top</a>";
-			print "\n\t<h2>".htmlspecialchars($section['text'])."</h2>";
+			print "\n\t\t<a name='".$this->textToLink($section['text'])."' class='local_anchor'></a>";
+			print "\n\t\t<a href='#top' class='jump_link'>&uarr; Top</a>";
+			print "\n\t\t<h2>".htmlspecialchars($section['text'])."</h2>";
 			break;
 		case 'text':
-			print "\n\t".$section['text']."";
+			print "\n\t\t".$section['text']."";
 			break;
 		case 'page_content':
-			print "\n\t<article class='requirements'>";
+			print "\n\t\t<article class='requirements'>";
 			print $section['content'];
-			print "\n\t</article>";
+			print "\n\t\t</article>";
 			break;
 		case 'courses':
-			print "\n\t<section class='courses'>";
+			print "\n\t\t<section class='courses'>";
 			foreach ($section['courses'] as $course) {
 				print $this->partial('courses/list_item.phtml', array('course' => $course));
 			}
-			print "\n\t</section>";
+			print "\n\t\t</section>";
 			break;
 		default:
 			throw new Exception("Unknown section type ".$section['type']);
 	}
 }
+print "\n\t</section>";
 print "\n</section>";
