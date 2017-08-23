@@ -662,6 +662,7 @@ class CoursesController
 			$title .= ' - '.implode(', ', $termNames);
 		}
 		$this->view->title = $title;
+		$this->view->headTitle($title);
 		$this->view->sections = $sections;
 		foreach ($this->view->sections as $key => &$section) {
 			switch ($section['type']) {
