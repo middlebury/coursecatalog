@@ -5,7 +5,7 @@ print "\n<section class='catalog'>";
 print "\n\t<header class='catalog_header'>";
 print "\n\t\t<a name='top' class='local_anchor'></a>";
 print "\n\t\t<h1>".$this->escape($this->title)."</h1>";
-print "\n\t\t<a class='print_button' href='javascript:window.print();'><button>Print...</button></a>";
+print "\n\t\t<button class='print_button' onclick='javascript:window.print();'>Print...</button>";
 print $this->partial('courses/section_nav.phtml', array('sections' => $this->sections));
 print "\n\t</header>";
 
