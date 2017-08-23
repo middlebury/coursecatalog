@@ -1,96 +1,14 @@
 /* Theme/wrapper styles */
+.banner, .breadcrumb, #breadcrumb {
+	display: none;
+}
 @media screen {
 	.main {
 		max-width: 900px;
 	}
 }
-
-/* Archive styles */
-br {
-	mso-data-placement:same-cell;
-}
-.print_button {
-	float: right;
-	margin: 0 2em 2em 2em;
-	border-bottom: none;
-}
-.print_button:hover {
-	border-bottom: none;
-}
-.courses {
-	margin-top: 6em;
-	margin-bottom: 6em;
-	/*border-top: 1px solid #777;*/
-}
-.course {
-	margin-top: 3em;
-	margin-bottom: 3em;
-}
-.course_requirements {
-	font-weight: bold;
-}
-.course_instructors {
-	font-style: italic;
-}
-
-.banner, .breadcrumb, #breadcrumb {
-	display: none;
-}
-a.local_anchor {
-	display: block;
-	height: 0px;
-	text-decoration: none;
-	padding: 0;
-	margin: 0;
-	border: none;
-}
-.toc {
-	margin-bottom: 3em;
-}
-.jump_link {
-	display: inline-block;
-	margin-bottom: 0.5em;
-}
-.program h1 {
-	margin-top: 0.25em;
-	font-size: 1.6em;
-}
-.course h3 {
-	border-bottom: 1px solid #aaa;
-	padding-bottom: 0.25em;
-	margin-bottom: 0.25em;
-	font-size: 1.3em;
-}
-.course .course_description {
-	margin-top: 0.25em;
-	display: inline;
-}
-.course .course_requirements, .course .course_instructors {
-	display: inline;
-}
-.course_section {
-	margin-bottom: 2em;
-}
-.course_section h4 {
-	margin-bottom: 0.1em;
-	font-size: 1.1em;
-}
-.course .alternates {
-	margin-top: 0.3em;
-}
-
-/* Print-specific styles */
 @media print {
-	.skiplink, .navigation, .search, .wordmark, .banner, .left, .breadcrumb, #breadcrumb, .footer, .print_button {
+	.skiplink, .navigation, .search, .wordmark, .banner, .left, .breadcrumb, #breadcrumb, .footer {
 		display: none;
-	}
-	body {
-		font-size: 10pt;
-	}
-	.program {
-		page-break-before: always;
-	}
-	.course {
-		page-break-inside: avoid;
 	}
 }
