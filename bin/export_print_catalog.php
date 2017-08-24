@@ -6,7 +6,12 @@ require_once(dirname(__FILE__) . '/../application/autoload.php');
 $config = new Zend_Config_Ini(BASE_PATH.'/archive_config.ini', APPLICATION_ENV);
 
 $myDir = dirname(__FILE__);
-$destRoot = 'docroot/archives';
+
+if (empty($config->catalog->archive_root)) {
+	print "Invalid configuration: catalog.archive_root must be defined in archive_config.ini";
+	return 3;
+}
+$destRoot = $config->catalog->archive_root;
 
 $cmd = array_shift($argv);
 $jobName = array_shift($argv);

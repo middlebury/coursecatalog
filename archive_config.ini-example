@@ -2,6 +2,7 @@
 ; Configuration for the print-catalog content.
 catalog.print_exec_time = 3600
 catalog.print_password = ""
+catalog.archive_root = 'docroot/archives'
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Archive export jobs.
