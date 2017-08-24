@@ -24,6 +24,16 @@ $router->addRoute('archive_view',
 		'archive/%s/%s'
 	)
 );
+$router->addRoute('archive_generate',
+	new Zend_Controller_Router_Route(
+		'archive/generate',
+		array(
+			'controller' => 'archive',
+			'action'     => 'generate'
+		)
+	)
+);
+
 
 // Add custom routes for the Kurogo JSON API.
 $router->addRoute('kurogo_terms',
