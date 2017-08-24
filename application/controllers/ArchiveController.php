@@ -71,7 +71,11 @@ class ArchiveController
 		$url = rtrim('archive/'.$request->getParam('path'), '/');
 		foreach (scandir($target) as $file) {
 			if (!preg_match('/^\./', $file)) {
-				$label = $file;
+				if (!empty($config->catalog->archive_folder_aliases->$file)) {
+					$label = $config->catalog->archive_folder_aliases->$file;
+				} else {
+					$label = $file;
+				}
 				if (is_dir($target.'/'.$file)) {
 					$label .= '/';
 				}
@@ -85,7 +89,12 @@ class ArchiveController
 		foreach (explode('/', $request->getParam('path')) as $dir) {
 			if (!empty($dir)) {
 				$url .= '/'.$dir;
-				$this->view->breadcrumb[$this->view->baseUrl($url)] = $dir;
+				if (!empty($config->catalog->archive_folder_aliases->$dir)) {
+					$label = $config->catalog->archive_folder_aliases->$dir;
+				} else {
+					$label = $dir;
+				}
+				$this->view->breadcrumb[$this->view->baseUrl($url)] = $label;
 			}
 		};
 	}
@@ -138,7 +147,12 @@ class ArchiveController
 		$this->view->breadcrumb[$this->view->baseUrl($url)] = 'Catalog Archives';
 		foreach (explode('/', $request->getParam('path')) as $dir) {
 			$url .= '/'.$dir;
-			$this->view->breadcrumb[$this->view->baseUrl($url)] = $dir;
+			if (!empty($config->catalog->archive_folder_aliases->$dir)) {
+				$label = $config->catalog->archive_folder_aliases->$dir;
+			} else {
+				$label = $dir;
+			}
+			$this->view->breadcrumb[$this->view->baseUrl($url)] = $label;
 		};
 		$url .= '/'.$request->getParam('file');
 		$this->view->breadcrumb[$this->view->baseUrl($url)] = pathinfo($request->getParam('file'), PATHINFO_FILENAME);

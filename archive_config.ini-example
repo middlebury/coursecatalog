@@ -4,6 +4,8 @@ catalog.print_exec_time = 3600
 catalog.print_password = ""
 catalog.archive_root = 'docroot/archives'
 
+catalog.archive_folder_aliases.MCUG = 'Middlebury College'
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Archive export jobs.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
