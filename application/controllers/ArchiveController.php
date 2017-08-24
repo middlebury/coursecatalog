@@ -54,9 +54,40 @@ class ArchiveController
 	 * @since 4/21/09
 	 */
 	public function viewAction () {
+		$config = Zend_Registry::getInstance()->config;
 		$request = $this->getRequest();
-		var_dump($request->getParam('path'));
-		var_dump($request->getParam('file'));
+		if (empty($config->catalog->archive_root)) {
+			throw new Exception('Invalid configuration: catalog.archive_root must be defined.');
+		}
+		$archive_root = $config->catalog->archive_root;
+		// Relative paths should be relative to our installation directory.
+		if (!preg_match('#^/#', $archive_root)) {
+			$archive_root = BASE_PATH .'/'.$archive_root;
+		}
+		$archive_root = realpath($archive_root);
+		if (!$archive_root) {
+			throw new Exception('Invalid configuration: catalog.archive_root is invalid.');
+		}
+		$target = $archive_root.'/'.$request->getParam('path').'/'.$request->getParam('file');
+		// Verify that our target file is really in our root and not trying to
+		// access other parts of our file-system or remote URLs.
+		$target = realpath($target);
+		if (!$target) {
+			throw new InvalidArgumentException('The target path is invalid.');
+		}
+		if (strpos($target, $archive_root) !== 0) {
+			throw new InvalidArgumentException('The target path must be located within catalog.archive_root.');
+		}
+
+		$doc = new DOMDocument();
+		libxml_use_internal_errors(true); // Don't print errors related to HTML5 enties.
+		$doc->loadHTML(file_get_contents($target));
+		libxml_use_internal_errors(false);
+		$xpath = new DOMXPath($doc);
+		$this->view->headTitle($xpath->query('/html/head/title')->item(0)->nodeValue);
+		foreach ($xpath->query('/html/body')->item(0)->childNodes as $node) {
+			$this->view->body .= $doc->saveHTML($node);
+		}
 	}
 
 
