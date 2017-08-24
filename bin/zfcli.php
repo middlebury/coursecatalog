@@ -62,7 +62,12 @@ if(isset($opts->a)) {
 	defined('APPLICATION_ENV')
 		|| define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
 	$registry = Zend_Registry::getInstance();
-	$registry->config = new Zend_Config_Ini(BASE_PATH.'/frontend_config.ini', APPLICATION_ENV);
+	$registry->config = new Zend_Config_Ini(BASE_PATH.'/frontend_config.ini', APPLICATION_ENV, array('allowModifications' => true));
+	// Add our archive-specific config if it exists.
+	if (file_exists(BASE_PATH.'/archive_config.ini')) {
+		$registry->config->merge(new Zend_Config_Ini(BASE_PATH.'/archive_config.ini', APPLICATION_ENV));
+	}
+	$registry->config->setReadOnly();
 
 	foreach ($registry->config->phpSettings as $key => $value) {
 		$key = empty($prefix) ? $key : $prefix . $key;

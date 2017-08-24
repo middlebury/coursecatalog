@@ -1,0 +1,39 @@
+[production]
+; Configuration for the print-catalog content.
+catalog.print_exec_time = 3600
+catalog.print_password = ""
+
+; Configuration for the print-catalog content.
+catalog.print_sections.5.type = h1
+catalog.print_sections.5.text = "American Studies"
+catalog.print_sections.6.type = page_content
+catalog.print_sections.6.url = "http://www.middlebury.edu/academics/amst/requirements"
+catalog.print_sections.7.type = courses
+catalog.print_sections.7.id = "topic/department/AMST"
+catalog.print_sections.63.type = h1
+catalog.print_sections.63.text = "History of Art & Architecture"
+catalog.print_sections.64a1.type = h2
+catalog.print_sections.64a1.text = "Art History"
+catalog.print_sections.64a2.type = page_content
+catalog.print_sections.64a2.url = "http://www.middlebury.edu/academics/harc/requirements"
+catalog.print_sections.64b1.type = h2
+catalog.print_sections.64b1.text = "Museum Studies"
+;catalog.print_sections.64b2.type = page_content
+;catalog.print_sections.64b2.url = "http://www.middlebury.edu/academics/harc/architectural-studies/requirements"
+catalog.print_sections.64c1.type = h2
+catalog.print_sections.64c1.text = "Architectural Studies Program"
+catalog.print_sections.64c2.type = page_content
+catalog.print_sections.64c2.url = "http://www.middlebury.edu/academics/harc/architectural-studies/requirements"
+catalog.print_sections.65.type = courses
+catalog.print_sections.65.id = "topic/department/HARC"
+
+
+[staging : production]
+
+[testing : production]
+phpSettings.display_startup_errors = 1
+phpSettings.display_errors = 1
+
+[development : production]
+phpSettings.display_startup_errors = 1
+phpSettings.display_errors = 1
