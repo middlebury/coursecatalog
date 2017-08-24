@@ -29,8 +29,8 @@ class ArchiveController
 	 */
 	public function init() {
 		$this->alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
-
 		parent::init();
+		$this->_helper->layout()->setLayout('midd_archive');
 	}
 
 	/**

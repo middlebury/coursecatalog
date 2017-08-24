@@ -1,7 +1,4 @@
 /* Theme/wrapper styles */
-.banner, .breadcrumb, #breadcrumb {
-	display: none;
-}
 @media screen {
 	.main {
 		max-width: 900px;
