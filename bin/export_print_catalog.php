@@ -30,15 +30,10 @@ Where job is one of:
 $job = $config->catalog->archive_jobs->$jobName;
 $jobRoot = $destRoot.'/'.$job->dest_dir;
 $htmlRoot = $jobRoot.'/html';
-$pdfRoot = $jobRoot.'/pdf';
 
 if (!file_exists($htmlRoot)) {
 	if (!mkdir($htmlRoot, 0775, true))
 		file_put_contents('php://stderr', "Unable to create destination directory '$htmlRoot'.\n");
-}
-if (!file_exists($pdfRoot)) {
-	if (!mkdir($pdfRoot, 0775, true))
-		file_put_contents('php://stderr', "Unable to create destination directory '$pdfRoot'.\n");
 }
 
 $fileBase = str_replace('/', '-', $job->dest_dir).'_snapshot-'.date('Y-m-d');
@@ -68,7 +63,7 @@ if (count($exports)) {
 	// This way we only keep versions that contain changes.
 	if (!strlen($diff)) {
 		unlink($htmlPath);
-		file_put_contents('php://stderr', "New version is the same as the last. Not generating the pdf.\n");
+		file_put_contents('php://stderr', "New version is the same as the last.\n");
 		return 0;
 	}
 }
