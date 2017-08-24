@@ -29,7 +29,12 @@ a.local_anchor {
 	margin: 0;
 	border: none;
 }
+.generated_date {
+	font-style: italic;
+	font-size: smaller;
+}
 .toc {
+	margin-top: 2em;
 	margin-bottom: 3em;
 }
 .jump_link {
