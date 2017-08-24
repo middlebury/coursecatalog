@@ -120,7 +120,7 @@ if (file_exists($linkPath)) {
 		return 4;
 	}
 }
-if (!symlink($htmlPath, $linkPath)) {
+if (!symlink('html/'.$htmlName, $linkPath)) {
 	file_put_contents('php://stderr', "Error creating latest link: $linkPath\n");
 	return 5;
 }
