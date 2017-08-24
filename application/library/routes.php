@@ -7,7 +7,7 @@ $router->addRoute('archive_list',
 		'archive/(.+)',
 		array(
 			'controller' => 'archive',
-			'action'     => 'list'
+			'action'     => 'index'
 		),
 		array(1 => 'path'),
 		'archive/%s'

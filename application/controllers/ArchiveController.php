@@ -40,10 +40,54 @@ class ArchiveController
 	 * @access public
 	 * @since 4/21/09
 	 */
-	public function listAction () {
+	public function indexAction () {
 		$request = $this->getRequest();
-		var_dump($request->getParam('path'));
+		$config = Zend_Registry::getInstance()->config;
+		$request = $this->getRequest();
+		if (empty($config->catalog->archive_root)) {
+			throw new Exception('Invalid configuration: catalog.archive_root must be defined.');
+		}
+		$archive_root = $config->catalog->archive_root;
+		// Relative paths should be relative to our installation directory.
+		if (!preg_match('#^/#', $archive_root)) {
+			$archive_root = BASE_PATH .'/'.$archive_root;
+		}
+		$archive_root = realpath($archive_root);
+		if (!$archive_root) {
+			throw new Exception('Invalid configuration: catalog.archive_root is invalid.');
+		}
+		$target = $archive_root.'/'.$request->getParam('path');
+		// Verify that our target file is really in our root and not trying to
+		// access other parts of our file-system or remote URLs.
+		$target = realpath($target);
+		if (!$target) {
+			throw new InvalidArgumentException('The target path is invalid.');
+		}
+		if (strpos($target, $archive_root) !== 0) {
+			throw new InvalidArgumentException('The target path must be located within catalog.archive_root.');
+		}
 
+		$this->view->children = array();
+		$url = rtrim('archive/'.$request->getParam('path'), '/');
+		foreach (scandir($target) as $file) {
+			if (!preg_match('/^\./', $file)) {
+				$label = $file;
+				if (is_dir($target.'/'.$file)) {
+					$label .= '/';
+				}
+				$this->view->children[$this->view->baseUrl($url.'/'.$file)] = $label;
+			}
+		}
+
+		$this->view->breadcrumb = array();
+		$url = 'archive';
+		$this->view->breadcrumb[$this->view->baseUrl($url)] = 'Catalog Archives';
+		foreach (explode('/', $request->getParam('path')) as $dir) {
+			if (!empty($dir)) {
+				$url .= '/'.$dir;
+				$this->view->breadcrumb[$this->view->baseUrl($url)] = $dir;
+			}
+		};
 	}
 
 	/**
