@@ -107,6 +107,7 @@
 		</nav>
 		<section class="page">
 			<div id="body">
+				<?php print $this->render('archive/breadcrumb.phtml', array('breadcrumb' => $this->breadcrumb)); ?>
 				<!--CONTENT GOES HERE-->
 				<?php echo $this->layout()->content ?>
 				<!--CONTENT GOES HERE-->

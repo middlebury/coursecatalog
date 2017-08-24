@@ -88,6 +88,16 @@ class ArchiveController
 		foreach ($xpath->query('/html/body')->item(0)->childNodes as $node) {
 			$this->view->body .= $doc->saveHTML($node);
 		}
+
+		$this->view->breadcrumb = array();
+		$url = 'archive';
+		$this->view->breadcrumb[$this->view->baseUrl($url)] = 'Catalog Archives';
+		foreach (explode('/', $request->getParam('path')) as $dir) {
+			$url .= '/'.$dir;
+			$this->view->breadcrumb[$this->view->baseUrl($url)] = $dir;
+		};
+		$url .= '/'.$request->getParam('file');
+		$this->view->breadcrumb[$this->view->baseUrl($url)] = pathinfo($request->getParam('file'), PATHINFO_FILENAME);
 	}
 
 
