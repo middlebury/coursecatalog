@@ -1,73 +1,29 @@
 #!/usr/bin/env php
 <?php
+// Define application environment
+defined('APPLICATION_ENV') || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
+require_once(dirname(__FILE__) . '/../application/autoload.php');
+$config = new Zend_Config_Ini(BASE_PATH.'/archive_config.ini', APPLICATION_ENV);
 
 $myDir = dirname(__FILE__);
-$destRoot = 'docroot/archive';
-
-$jobs = array(
-	'MCUG-2010-2011' => array(
-		'dest_dir'	=> 'MCUG/2010-2011',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201090&term[]=term%2F201110&term[]=term%2F201120',
-	),
-	'MCUG-2011-2012' => array(
-		'dest_dir'	=> 'MCUG/2011-2012',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201190&term[]=term%2F201220',
-	),
-	'MCUG-Winter-2012' => array(
-		'dest_dir'	=> 'MCUG/Winter-2012',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201210',
-	),
-	'MCUG-2012-2013' => array(
-		'dest_dir'	=> 'MCUG/2012-2013',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201290&term[]=term%2F201320',
-	),
-	'MCUG-Winter-2013' => array(
-		'dest_dir'	=> 'MCUG/Winter-2013',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201310',
-	),
-	'MCUG-2013-2014' => array(
-		'dest_dir'	=> 'MCUG/2013-2014',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201390&term[]=term%2F201420',
-	),
-	'MCUG-Winter-2014' => array(
-		'dest_dir'	=> 'MCUG/Winter-2014',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201410',
-	),
-	'MCUG-2014-2015' => array(
-		'dest_dir'	=> 'MCUG/2014-2015',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201490&term[]=term%2F201520',
-	),
-	'MCUG-Winter-2015' => array(
-		'dest_dir'	=> 'MCUG/Winter-2015',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201510',
-	),
-	'MCUG-2015-2016' => array(
-		'dest_dir'	=> 'MCUG/2015-2016',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201590&term[]=term%2F201620',
-	),
-	'MCUG-2016-2017' => array(
-		'dest_dir'	=> 'MCUG/2016-2017',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201690&term[]=term%2F201720',
-	),
-	'MCUG-2017-2018' => array(
-		'dest_dir'	=> 'MCUG/2017-2018',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201790&term[]=term%2F201820',
-	),
-);
+$destRoot = 'docroot/archives';
 
 $cmd = array_shift($argv);
 $jobName = array_shift($argv);
-if (count($argv) || !isset($jobs[$jobName])) {
+if (count($argv) || !isset($config->catalog->archive_jobs->$jobName)) {
 	print "Usage:
 	$cmd <job>
 
 Where job is one of:
-	".implode("\n\t", array_keys($jobs))."\n\n";
+	".implode("\n\t", array_keys($config->catalog->archive_jobs->toArray()))."\n\n";
+	if ($jobName && !isset($config->catalog->archive_jobs->$jobName)) {
+		print "Error: Unknown job '$jobName'.\n";
+	}
 	return 1;
 }
 
-$job = $jobs[$jobName];
-$jobRoot = $destRoot.'/'.$job['dest_dir'];
+$job = $config->catalog->archive_jobs->$jobName;
+$jobRoot = $destRoot.'/'.$job->dest_dir;
 $htmlRoot = $jobRoot.'/html';
 $pdfRoot = $jobRoot.'/pdf';
 
@@ -80,7 +36,7 @@ if (!file_exists($pdfRoot)) {
 		file_put_contents('php://stderr', "Unable to create destination directory '$pdfRoot'.\n");
 }
 
-$fileBase = str_replace('/', '-', $job['dest_dir']).'_snapshot-'.date('Y-m-d');
+$fileBase = str_replace('/', '-', $job->dest_dir).'_snapshot-'.date('Y-m-d');
 $htmlName = $fileBase.'.html';
 $htmlPath = $htmlRoot.'/'.$htmlName;
 
@@ -89,7 +45,7 @@ $base = '';
 if (getenv('CATALOG_BASE_URL')) {
 	$base = '-b '.getenv('CATALOG_BASE_URL');
 }
-$command = $myDir.'/zfcli.php '.$base.' -a courses.allrecentcourses -p '.escapeshellarg($job['params']).' > '.$htmlPath;
+$command = $myDir.'/zfcli.php '.$base.' -a courses.allrecentcourses -p '.escapeshellarg($job->params).' > '.$htmlPath;
 exec($command, $output, $return);
 if ($return) {
 	file_put_contents('php://stderr', "Error running command:\n\n\t$command\n");
@@ -112,7 +68,7 @@ if (count($exports)) {
 	}
 }
 
-$linkName = str_replace('/', '-', $job['dest_dir']).'_latest.html';
+$linkName = str_replace('/', '-', $job->dest_dir).'_latest.html';
 $linkPath = $jobRoot.'/'.$linkName;
 if (file_exists($linkPath)) {
 	if (!unlink($linkPath)) {
