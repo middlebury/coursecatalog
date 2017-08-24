@@ -3,6 +3,9 @@
 	.main {
 		max-width: 900px;
 	}
+	.left {
+		width: 204px;
+	}
 }
 @media print {
 	.skiplink, .navigation, .search, .wordmark, .banner, .left, .breadcrumb, #breadcrumb, .footer {
