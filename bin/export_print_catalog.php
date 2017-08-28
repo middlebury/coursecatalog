@@ -42,8 +42,8 @@ $htmlPath = $htmlRoot.'/'.$htmlName;
 
 // Generate the export.
 $base = '';
-if (getenv('CATALOG_BASE_URL')) {
-	$base = '-b '.getenv('CATALOG_BASE_URL');
+if (!empty($config->catalog->archive->url_base)) {
+	$base = '-b '.escapeshellarg($config->catalog->archive->url_base);
 }
 $command = $myDir.'/zfcli.php '.$base.' -a archive.generate -p '.escapeshellarg($job->params).' > '.$htmlPath;
 exec($command, $output, $return);
