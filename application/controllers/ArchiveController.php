@@ -489,7 +489,7 @@ class ArchiveController
 					$section_data->description = $course->getDescription();
 				else
 					$section_data->description = $sectionDescriptions[$i];
-				$section_data->term = $sectionTerms[$i];
+				$section_data->term = $termStrings[$i];
 				$section_data->instructors = $this->getInstructorText($sectionInstructors, $i);
 				$data->sections[] = $section_data;
 			}
