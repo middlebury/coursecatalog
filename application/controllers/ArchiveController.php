@@ -340,7 +340,7 @@ class ArchiveController
 				$query->matchCourseOfferingId($offerings->getNextCourseOffering()->getId(), true);
 			}
 		} else {
-			return;
+			return array();
 		}
 		$search = $this->courseSearchSession->getCourseSearch();
 		$order = $this->courseSearchSession->getCourseSearchOrder();
