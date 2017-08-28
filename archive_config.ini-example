@@ -4,6 +4,8 @@ catalog.print_exec_time = 3600
 catalog.print_password = ""
 catalog.archive_root = 'docroot/archives'
 catalog.archive.url_base = ""
+; Allow up to 2 minutes to fetch requirements pages.
+catalog.archive.requirements_fetch_timeout = 120
 
 catalog.archive_folder_aliases.MCUG = 'Middlebury College'
 

@@ -217,6 +217,18 @@ class ArchiveController
 			exit;
 		}
 
+		// Increase the timeout when loading requirements documents:
+		if (!empty($config->catalog->archive->requirements_fetch_timeout)) {
+			$options = [
+			  'http' => [
+			    'method' => 'GET',
+			    'timeout' => $config->catalog->archive->requirements_fetch_timeout
+			  ]
+			];
+			$context = stream_context_create($options);
+			libxml_set_streams_context($context);
+		}
+
 		$sections = array();
 		foreach ($config->catalog->print_sections as $i => $sectionConf) {
 			$section = array('type' => $sectionConf->type);
