@@ -524,7 +524,11 @@ class ArchiveController
 				foreach ($termSectionData['sections'] as $hash => $section) {
 					$section_data = new stdClass;
 					$section_data->description = $section['description'];
-					$section_data->instructors = '('.implode(', ', $section['instructors']).')';
+					if (count($section['instructors'])) {
+						$section_data->instructors = '('.implode(', ', $section['instructors']).')';
+					} else {
+						$section_data->instructors = '';
+					}
 					$term_data->sections[] = $section_data;
 				}
 			}
