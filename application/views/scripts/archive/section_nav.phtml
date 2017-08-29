@@ -1,0 +1,32 @@
+
+		<nav class="toc">
+			<ul class="toc-list">
+
+<?php
+	$inH1 = false;
+	$inH2 = false;
+	foreach ($this->sections as $section) {
+		switch ($section['type']) {
+			case 'h1':
+				if ($inH1) {
+					if ($inH2) {
+						print "\n\t\t\t\t\t</ul>\n\t\t\t\t";
+						$inH2 = false;
+					}
+					print "</li>";
+				}
+				$inH1 = true;
+				print "\n\t\t\t\t<li><a href='#".$this->textToLink($section['text'])."'>".htmlspecialchars($section['text'])."</a>";
+				break;
+			case 'h2':
+				if (!$inH2) {
+					print "\n\t\t\t\t\t<ul>";
+					$inH2 = true;
+				}
+				print "\n\t\t\t\t\t\t<li><a href='#".$this->textToLink($section['text'])."'>".htmlspecialchars($section['text'])."</a></li>";
+				break;
+		}
+	}
+?></li>
+			</ul>
+		</nav>

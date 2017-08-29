@@ -63,4 +63,13 @@ interface middlebury_course_CourseOffering_BannerIdentifiersRecord
 	 */
 	public function getCourseReferenceNumber();
 
+	/**
+	 *  Answers the Sequence Number of a course section.
+	 *
+	 *  @return string The sequence number.
+	 *  @compliance mandatory This method must be implemented.
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @throws osid_PermissionDeniedException authorization failure
+	 */
+	public function getSequenceNumber();
 }

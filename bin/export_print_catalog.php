@@ -1,91 +1,61 @@
 #!/usr/bin/env php
 <?php
+// Define application environment
+defined('APPLICATION_ENV') || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
+require_once(dirname(__FILE__) . '/../application/autoload.php');
+$config = new Zend_Config_Ini(BASE_PATH.'/archive_config.ini', APPLICATION_ENV);
 
 $myDir = dirname(__FILE__);
-$destRoot = '/var/www/archive';
 
-$jobs = array(
-	'MCUG-2010-2011' => array(
-		'dest_dir'	=> 'MCUG/2010-2011',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201090&term[]=term%2F201110&term[]=term%2F201120',
-	),
-	'MCUG-2011-2012' => array(
-		'dest_dir'	=> 'MCUG/2011-2012',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201190&term[]=term%2F201220',
-	),
-	'MCUG-Winter-2012' => array(
-		'dest_dir'	=> 'MCUG/Winter-2012',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201210',
-	),
-	'MCUG-2012-2013' => array(
-		'dest_dir'	=> 'MCUG/2012-2013',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201290&term[]=term%2F201320',
-	),
-	'MCUG-Winter-2013' => array(
-		'dest_dir'	=> 'MCUG/Winter-2013',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201310',
-	),
-	'MCUG-2013-2014' => array(
-		'dest_dir'	=> 'MCUG/2013-2014',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201390&term[]=term%2F201420',
-	),
-	'MCUG-Winter-2014' => array(
-		'dest_dir'	=> 'MCUG/Winter-2014',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201410',
-	),
-	'MCUG-2014-2015' => array(
-		'dest_dir'	=> 'MCUG/2014-2015',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201490&term[]=term%2F201520',
-	),
-	'MCUG-Winter-2015' => array(
-		'dest_dir'	=> 'MCUG/Winter-2015',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201510',
-	),
-	'MCUG-2015-2016' => array(
-		'dest_dir'	=> 'MCUG/2015-2016',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201590&term[]=term%2F201620',
-	),
-	'MCUG-2016-2017' => array(
-		'dest_dir'	=> 'MCUG/2016-2017',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201690&term[]=term%2F201720',
-	),
-	'MCUG-2017-2018' => array(
-		'dest_dir'	=> 'MCUG/2017-2018',
-		'params'	=> 'catalog=catalog%2FMCUG&password=LetMePrintPlease&term[]=term%2F201790&term[]=term%2F201820',
-	),
-);
+if (empty($config->catalog->archive_root)) {
+	print "Invalid configuration: catalog.archive_root must be defined in archive_config.ini";
+	return 3;
+}
+$destRoot = $config->catalog->archive_root;
 
+$verbose = false;
 $cmd = array_shift($argv);
 $jobName = array_shift($argv);
-if (count($argv) || !isset($jobs[$jobName])) {
+if ($jobName == '-v') {
+	$verbose = true;
+	$jobName = array_shift($argv);
+}
+if (count($argv) || !isset($config->catalog->archive_jobs->$jobName)) {
 	print "Usage:
-	$cmd <job>
+	$cmd [-v] <job>
 
 Where job is one of:
-	".implode("\n\t", array_keys($jobs))."\n\n";
+	".implode("\n\t", array_keys($config->catalog->archive_jobs->toArray()))."\n\n";
+	print "Options:\n\t-v Verbose output.\n";
+	if ($jobName && !isset($config->catalog->archive_jobs->$jobName)) {
+		print "Error: Unknown job '$jobName'.\n";
+	}
 	return 1;
 }
 
-$job = $jobs[$jobName];
-$jobRoot = $destRoot.'/'.$job['dest_dir'];
+$job = $config->catalog->archive_jobs->$jobName;
+$jobRoot = $destRoot.'/'.$job->dest_dir;
 $htmlRoot = $jobRoot.'/html';
-$pdfRoot = $jobRoot.'/pdf';
 
 if (!file_exists($htmlRoot)) {
 	if (!mkdir($htmlRoot, 0775, true))
 		file_put_contents('php://stderr', "Unable to create destination directory '$htmlRoot'.\n");
 }
-if (!file_exists($pdfRoot)) {
-	if (!mkdir($pdfRoot, 0775, true))
-		file_put_contents('php://stderr', "Unable to create destination directory '$pdfRoot'.\n");
-}
 
-$fileBase = str_replace('/', '-', $job['dest_dir']).'_snapshot-'.date('Y-m-d');
+$fileBase = str_replace('/', '-', $job->dest_dir).'_snapshot-'.date('Y-m-d');
 $htmlName = $fileBase.'.html';
 $htmlPath = $htmlRoot.'/'.$htmlName;
 
+$params = array();
+parse_str($job->params, $params);
+$params['verbose'] = $verbose;
+
 // Generate the export.
-$command = $myDir.'/zfcli.php -a courses.allrecentcourses -p '.escapeshellarg($job['params']).' > '.$htmlPath;
+$base = '';
+if (!empty($config->catalog->archive->url_base)) {
+	$base = '-b '.escapeshellarg($config->catalog->archive->url_base);
+}
+$command = $myDir.'/zfcli.php '.$base.' -a archive.generate -p '.escapeshellarg(http_build_query($params)).' > '.$htmlPath;
 exec($command, $output, $return);
 if ($return) {
 	file_put_contents('php://stderr', "Error running command:\n\n\t$command\n");
@@ -103,44 +73,12 @@ if (count($exports)) {
 	// This way we only keep versions that contain changes.
 	if (!strlen($diff)) {
 		unlink($htmlPath);
-		file_put_contents('php://stderr', "New version is the same as the last. Not generating the pdf.\n");
+		file_put_contents('php://stderr', "New version is the same as the last.\n");
 		return 0;
 	}
 }
 
-// Generate a title file
-$titlePath = $htmlRoot.'/title.html';
-$titleLine = strip_tags(shell_exec('head '.escapeshellarg($htmlPath).' | grep '.escapeshellarg('<title>')));
-$titles = explode(' - ', $titleLine);
-ob_start();
-print "<html>
-<body>
-<h1>&nbsp;</h1>
-<h1>&nbsp;</h1>
-<h1>&nbsp;</h1>
-<h1>&nbsp;</h1>
-";
-foreach ($titles as $title)
-	print "\n<center><h1>".trim($title)."</h1></center>";
-print "\n</body>\n</html>";
-file_put_contents($titlePath, ob_get_clean());
-
-
-// If we have a new export, convert it to a PDF.
-$pdfName = $fileBase.'.pdf';
-$pdfPath = $pdfRoot.'/'.$pdfName;
-$command = "htmldoc --titlefile ".escapeshellarg($titlePath)." --toclevels 1 --book -f ".escapeshellarg($pdfPath)." ".escapeshellarg($htmlPath).' 2>&1';
-exec($command, $output, $return);
-if ($return) {
-	file_put_contents('php://stderr', "Error running command:\n\n\t$command\n".implode("\n", $output)."\n");
-	unlink($titlePath);
-	return 3;
-}
-
-unlink($titlePath);
-
-// Update the symbolic link to the latest snapshot.
-$linkName = str_replace('/', '-', $job['dest_dir']).'_latest.pdf';
+$linkName = str_replace('/', '-', $job->dest_dir).'_latest.html';
 $linkPath = $jobRoot.'/'.$linkName;
 if (file_exists($linkPath)) {
 	if (!unlink($linkPath)) {
@@ -148,20 +86,7 @@ if (file_exists($linkPath)) {
 		return 4;
 	}
 }
-if (!symlink($pdfPath, $linkPath)) {
-	file_put_contents('php://stderr', "Error creating latest link: $linkPath\n");
-	return 5;
-}
-
-$linkName = str_replace('/', '-', $job['dest_dir']).'_latest.html';
-$linkPath = $jobRoot.'/'.$linkName;
-if (file_exists($linkPath)) {
-	if (!unlink($linkPath)) {
-		file_put_contents('php://stderr', "Error deleting latest link: $linkPath\n");
-		return 4;
-	}
-}
-if (!symlink($htmlPath, $linkPath)) {
+if (!symlink('html/'.$htmlName, $linkPath)) {
 	file_put_contents('php://stderr', "Error creating latest link: $linkPath\n");
 	return 5;
 }

@@ -1,7 +1,41 @@
 <?php
+$router = Zend_Controller_Front::getInstance()->getRouter();
+
+// Archive viewing and browsing.
+$router->addRoute('archive_list',
+	new Zend_Controller_Router_Route_Regex(
+		'archive/(.+)',
+		array(
+			'controller' => 'archive',
+			'action'     => 'index'
+		),
+		array(1 => 'path'),
+		'archive/%s'
+	)
+);
+$router->addRoute('archive_view',
+	new Zend_Controller_Router_Route_Regex(
+		'archive/([\w-/_]+)/([^/]+\.html)',
+		array(
+			'controller' => 'archive',
+			'action'     => 'view'
+		),
+		array(1 => 'path', 2 => 'file'),
+		'archive/%s/%s'
+	)
+);
+$router->addRoute('archive_generate',
+	new Zend_Controller_Router_Route(
+		'archive/generate',
+		array(
+			'controller' => 'archive',
+			'action'     => 'generate'
+		)
+	)
+);
+
 
 // Add custom routes for the Kurogo JSON API.
-$router = Zend_Controller_Front::getInstance()->getRouter();
 $router->addRoute('kurogo_terms',
 	new Zend_Controller_Router_Route(
 		'api/json/:catalog/terms',

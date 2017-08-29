@@ -15,6 +15,7 @@ try {
 			'verbose|v' => 'Verbose messages will be dumped to the default output.',
 			'development|d' => 'Enables development mode.',
 			'params|p=s' => 'A query string of parameters.',
+			'baseurl|b=s' => 'The base URL to use for output.',
 		)
 	);
 	$opts->parse();
@@ -37,6 +38,10 @@ if(isset($opts->a)) {
 	$request = new Zend_Controller_Request_Simple($action,$controller,$module, $params);
 	$front = Zend_Controller_Front::getInstance();
 
+	if(isset($opts->b)) {
+		$front->setBaseUrl($opts->b);
+	}
+
 	$front->setRequest($request);
 	$front->setRouter(new Webf_Controller_Router_Cli());
 
@@ -57,7 +62,12 @@ if(isset($opts->a)) {
 	defined('APPLICATION_ENV')
 		|| define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
 	$registry = Zend_Registry::getInstance();
-	$registry->config = new Zend_Config_Ini(BASE_PATH.'/frontend_config.ini', APPLICATION_ENV);
+	$registry->config = new Zend_Config_Ini(BASE_PATH.'/frontend_config.ini', APPLICATION_ENV, array('allowModifications' => true));
+	// Add our archive-specific config if it exists.
+	if (file_exists(BASE_PATH.'/archive_config.ini')) {
+		$registry->config->merge(new Zend_Config_Ini(BASE_PATH.'/archive_config.ini', APPLICATION_ENV));
+	}
+	$registry->config->setReadOnly();
 
 	foreach ($registry->config->phpSettings as $key => $value) {
 		$key = empty($prefix) ? $key : $prefix . $key;
