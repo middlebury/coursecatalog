@@ -886,6 +886,18 @@ class banner_course_CourseOffering
 		return $this->row['SSBSECT_CRN'];
 	}
 
+	/**
+	 *  Answers the Sequence Number of a course section.
+	 *
+	 *  @return string The sequence number.
+	 *  @compliance mandatory This method must be implemented.
+	 *  @throws osid_OperationFailedException unable to complete request
+	 *  @throws osid_PermissionDeniedException authorization failure
+	 */
+	public function getSequenceNumber() {
+		return $this->row['SSBSECT_SEQ_NUMB'];
+	}
+
 /*********************************************************
  * WeeklyScheduleRecord support
  *********************************************************/

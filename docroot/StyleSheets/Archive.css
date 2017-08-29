@@ -68,6 +68,10 @@ a.local_anchor {
 .course .alternates {
 	margin-top: 0.3em;
 }
+.course_section .course_section_numbers {
+	font-style: italic;
+	font-size: 0.9em;
+}
 .message {
 	border: 1px solid #777;
 	background-color: #ddd;

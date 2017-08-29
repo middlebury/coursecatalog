@@ -16,6 +16,14 @@ if (empty($this->course->terms)) {
 		print "\n\t\t\t\t<h4>".$this->escape($term->label)."</h4>";
 		foreach ($term->sections as $section) {
 			print "\n\t\t\t\t<div class='course_section'>";
+			if (!empty($section->section_numbers)) {
+				print "\n\t\t\t\t\t<div class='course_section_numbers'>Section";
+				if (count($section->section_numbers) > 1) {
+					print "s";
+				}
+				print " ".implode(', ', $section->section_numbers);
+				print "</div>";
+			}
 			print "\n\t\t\t\t\t<div class='course_description'>".$section->description."</div>";
 			print "\n\t\t\t\t\t<div class='course_requirements'>".implode (", ", $this->course->requirements)."</div>";
 			print "\n\t\t\t\t\t<div class='course_instructors'>".$this->escape($section->instructors)."</div>";

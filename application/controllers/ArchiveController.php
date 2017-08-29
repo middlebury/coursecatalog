@@ -460,6 +460,7 @@ class ArchiveController
 		$allSectionDescriptions = array();
 
 		$instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+		$identifiersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
 		$namesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:person_names');
 		while ($offerings->hasNext()) {
 			$offering = $offerings->getNextCourseOffering();
@@ -489,7 +490,12 @@ class ArchiveController
 				$sectionData[$termIdString]['sections'][$sectionDescriptionHash] = array(
 					'description' => $sectionDescription,
 					'instructors' => array(),
+					'section_numbers' => array(),
 				);
+			}
+			if ($offering->hasRecordType($identifiersType)) {
+				$identifiersRecord = $offering->getCourseOfferingRecord($identifiersType);
+				$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['section_numbers'][] = $identifiersRecord->getSequenceNumber();
 			}
 			if ($offering->hasRecordType($instructorsType)) {
 				$instructorsRecord = $offering->getCourseOfferingRecord($instructorsType);
@@ -524,6 +530,11 @@ class ArchiveController
 				foreach ($termSectionData['sections'] as $hash => $section) {
 					$section_data = new stdClass;
 					$section_data->description = $section['description'];
+					if (count($termSectionData['sections']) > 1) {
+						$section_data->section_numbers = $section['section_numbers'];
+					} else {
+						$section_data->section_numbers = array();
+					}
 					if (count($section['instructors'])) {
 						$section_data->instructors = '('.implode(', ', $section['instructors']).')';
 					} else {
