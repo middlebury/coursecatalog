@@ -13,14 +13,20 @@ if (empty($config->catalog->archive_root)) {
 }
 $destRoot = $config->catalog->archive_root;
 
+$verbose = false;
 $cmd = array_shift($argv);
 $jobName = array_shift($argv);
+if ($jobName == '-v') {
+	$verbose = true;
+	$jobName = array_shift($argv);
+}
 if (count($argv) || !isset($config->catalog->archive_jobs->$jobName)) {
 	print "Usage:
-	$cmd <job>
+	$cmd [-v] <job>
 
 Where job is one of:
 	".implode("\n\t", array_keys($config->catalog->archive_jobs->toArray()))."\n\n";
+	print "Options:\n\t-v Verbose output.\n";
 	if ($jobName && !isset($config->catalog->archive_jobs->$jobName)) {
 		print "Error: Unknown job '$jobName'.\n";
 	}
@@ -40,12 +46,16 @@ $fileBase = str_replace('/', '-', $job->dest_dir).'_snapshot-'.date('Y-m-d');
 $htmlName = $fileBase.'.html';
 $htmlPath = $htmlRoot.'/'.$htmlName;
 
+$params = array();
+parse_str($job->params, $params);
+$params['verbose'] = $verbose;
+
 // Generate the export.
 $base = '';
 if (!empty($config->catalog->archive->url_base)) {
 	$base = '-b '.escapeshellarg($config->catalog->archive->url_base);
 }
-$command = $myDir.'/zfcli.php '.$base.' -a archive.generate -p '.escapeshellarg($job->params).' > '.$htmlPath;
+$command = $myDir.'/zfcli.php '.$base.' -a archive.generate -p '.escapeshellarg(http_build_query($params)).' > '.$htmlPath;
 exec($command, $output, $return);
 if ($return) {
 	file_put_contents('php://stderr', "Error running command:\n\n\t$command\n");
