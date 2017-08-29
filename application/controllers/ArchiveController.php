@@ -429,6 +429,7 @@ class ArchiveController
 		$offeringQuery->matchCourseId($course->getId(), true);
 		$offeringQuery->matchGenusType(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:offering/LCT"), true);
 		$offeringQuery->matchGenusType(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:offering/SEM"), true);
+		$offeringQuery->matchGenusType(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:offering/IND"), true);
 		foreach ($this->selectedTerms as $termId) {
 			$offeringQuery->matchTermId($termId, true);
 		}
@@ -439,59 +440,82 @@ class ArchiveController
 		$search->orderCourseOfferingResults($order);
 		$offerings = $this->offeringSearchSession->getCourseOfferingsBySearch($offeringQuery, $search);
 
-		$sectionTerms = array();
-		$sectionDescriptions = array();
-		$sectionInstructors = array();
+		// each offering (section) may have the same or different title and description from other sections
+		// of the course. Group the sections by title/description and term so that
+		// any differences are properly represented while condensing as much as possible.
+		$sectionData = array();
+		$courseDescriptionHash = sha1($course->getDescription());
+		$allCourseInstructors = array();
+		$allSectionDescriptions = array();
+
 		$instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 		$namesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:person_names');
 		while ($offerings->hasNext()) {
 			$offering = $offerings->getNextCourseOffering();
 			$term = $offering->getTerm();
 			$termIdString = $this->_helper->osidId->toString($term->getId());
-			$sectionTerms[$termIdString] = $term->getDisplayName();
+			if (!isset($sectionData[$termIdString])) {
+				$sectionData[$termIdString] = array(
+					'label' => $term->getDisplayName(),
+					'sections' => array(),
+				);
+			}
+			if (!isset($allCourseInstructors[$termIdString])) {
+				$allCourseInstructors[$termIdString] = array(
+					'label' => $term->getDisplayName(),
+					'instructors' => array(),
+				);
+			}
 			if ($offering->getDescription() && $offering->getDescription() != $course->getDescription()) {
-				$sectionDescriptions[$termIdString] = $offering->getDescription();
+				$sectionDescriptionHash = sha1($offering->getDescription());
+				$sectionDescription = $offering->getDescription();
+			} else {
+				$sectionDescriptionHash = $courseDescriptionHash;
+				$sectionDescription = $course->getDescription();
+			}
+			$allSectionDescriptions[$sectionDescriptionHash] = $sectionDescription;
+			if (!isset($sectionData[$termIdString]['sections'][$sectionDescriptionHash])) {
+				$sectionData[$termIdString]['sections'][$sectionDescriptionHash] = array(
+					'description' => $sectionDescription,
+					'instructors' => array(),
+				);
 			}
 			if ($offering->hasRecordType($instructorsType)) {
 				$instructorsRecord = $offering->getCourseOfferingRecord($instructorsType);
 				$instructors = $instructorsRecord->getInstructors();
-				if (!isset($sectionInstructors[$termIdString]))
-					$sectionInstructors[$termIdString] = array(
-						'label' => $term->getDisplayName(),
-						'instructors' => array(),
-					);
 				while($instructors->hasNext()) {
 					$instructor = $instructors->getNextResource();
 					$instructorIdString = $this->_helper->osidId->toString($instructor->getId());
-					$sectionInstructors[$termIdString]['instructors'][$instructorIdString] = $instructor->getDisplayName();
+					$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['instructors'][$instructorIdString] = $instructor->getDisplayName();
+					$allCourseInstructors[$termIdString]['instructors'][$instructorIdString] = $sectionData[$termIdString]['sections'][$sectionDescriptionHash]['instructors'][$instructorIdString];
 					if ($instructor->hasRecordType($namesType)) {
 						$nameRecord = $instructor->getResourceRecord($namesType);
-						$sectionInstructors[$termIdString]['instructors'][$instructorIdString] = substr($nameRecord->getGivenName(), 0, 1).'. '.$nameRecord->getSurname();
+						$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['instructors'][$instructorIdString] = substr($nameRecord->getGivenName(), 0, 1).'. '.$nameRecord->getSurname();
+						$allCourseInstructors[$termIdString]['instructors'][$instructorIdString] = $sectionData[$termIdString]['sections'][$sectionDescriptionHash]['instructors'][$instructorIdString];
 					}
 				}
 			}
 		}
-		$data->instructors = $this->getInstructorText($sectionInstructors);
+		$data->instructors = $this->getInstructorText($allCourseInstructors);
 
 		$sectionDescriptionsText = '';
-		// Replace the description with the one from the section if there is only one section.
-		if (count($sectionDescriptions) == 1 && count($termStrings) == 1) {
-			reset($sectionDescriptions);
-			$data->description = current($sectionDescriptions);
-
+		// Replace the description with the one from the section[s] if there is only one section description and it is
+		// different from the course.
+		if (count($allSectionDescriptions) == 1 && key($allSectionDescriptions) != $courseDescriptionHash) {
+			$data->description = current($allSectionDescriptions);
 		}
 		// If there are multiple section descriptions, print them separately
-		else if (count($sectionDescriptions)) {
-			$data->description = '';
-			foreach ($termStrings as $i => $desc) {
-				$section_data = new stdClass;
-				if (empty($sectionDescriptions[$i]))
-					$section_data->description = $course->getDescription();
-				else
-					$section_data->description = $sectionDescriptions[$i];
-				$section_data->term = $termStrings[$i];
-				$section_data->instructors = $this->getInstructorText($sectionInstructors, $i);
-				$data->sections[] = $section_data;
+		else if (count($allSectionDescriptions) > 1) {
+			foreach ($sectionData as $termId => $termSectionData) {
+				$term_data = new stdClass;
+				$term_data->label = $termSectionData['label'];
+				$data->terms[] = $term_data;
+				foreach ($termSectionData['sections'] as $hash => $section) {
+					$section_data = new stdClass;
+					$section_data->description = $section['description'];
+					$section_data->instructors = '('.implode(', ', $section['instructors']).')';
+					$term_data->sections[] = $section_data;
+				}
 			}
 		}
 
