@@ -92,4 +92,7 @@ a.local_anchor {
 	.course {
 		page-break-inside: avoid;
 	}
+	.course_section {
+		page-break-inside: avoid;
+	}
 }
