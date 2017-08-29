@@ -13,13 +13,13 @@ catalog.archive_folder_aliases.MCUG = 'Middlebury College'
 ; Archive export jobs.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 catalog.archive_jobs.MCUG-2010-2011.dest_dir = 'MCUG/2010-2011'
-catalog.archive_jobs.MCUG-2010-2011.params = 'catalog=catalog%2FMCUG&password=password&term[]=term%2F201090&term[]=term%2F201110&term[]=term%2F201120'
+catalog.archive_jobs.MCUG-2010-2011.params = 'catalog=catalog%2FMCUG&term[]=term%2F201090&term[]=term%2F201110&term[]=term%2F201120'
 
 catalog.archive_jobs.MCUG-2011-2012.dest_dir = 'MCUG/2011-2012'
-catalog.archive_jobs.MCUG-2011-2012.params = 'catalog=catalog%2FMCUG&password=password&term[]=term%2F201190&term[]=term%2F201220'
+catalog.archive_jobs.MCUG-2011-2012.params = 'catalog=catalog%2FMCUG&term[]=term%2F201190&term[]=term%2F201220'
 
 catalog.archive_jobs.MCUG-Winter-2012.dest_dir = 'MCUG/Winter-2012'
-catalog.archive_jobs.MCUG-Winter-2012.params = 'catalog=catalog%2FMCUG&password=password&term[]=term%2F201210'
+catalog.archive_jobs.MCUG-Winter-2012.params = 'catalog=catalog%2FMCUG&term[]=term%2F201210'
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

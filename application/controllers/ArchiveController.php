@@ -41,7 +41,6 @@ class ArchiveController
 	 * @since 4/21/09
 	 */
 	public function indexAction () {
-		$request = $this->getRequest();
 		$config = Zend_Registry::getInstance()->config;
 		$request = $this->getRequest();
 		if (empty($config->catalog->archive_root)) {
@@ -174,15 +173,19 @@ class ArchiveController
 		}
 
 		$config = Zend_Registry::getInstance()->config;
-		if ($config->catalog->print_password && !$this->_getParam('password')) {
-			header('HTTP/1.1 400 Bad Request');
-			print "A password must be specified.";
-			exit;
-		}
-		if ($config->catalog->print_password && $this->_getParam('password') != $config->catalog->print_password) {
-			header('HTTP/1.1 400 Bad Request');
-			print "Invalid password specified.";
-			exit;
+		// Test for a password if we aren't run from the command-line to prevent
+		// overloading.
+		if (PHP_SAPI != 'cli') {
+			if ($config->catalog->print_password && !$this->_getParam('password')) {
+				header('HTTP/1.1 400 Bad Request');
+				print "A password must be specified.";
+				exit;
+			}
+			if ($config->catalog->print_password && $this->_getParam('password') != $config->catalog->print_password) {
+				header('HTTP/1.1 400 Bad Request');
+				print "Invalid password specified.";
+				exit;
+			}
 		}
 
 		if ($config->catalog->print_max_exec_time)
