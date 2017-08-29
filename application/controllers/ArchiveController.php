@@ -398,7 +398,7 @@ class ArchiveController
 			else
 				$data->description = '';
 		} else {
-			$data->title = htmlspecialchars($course->getTitle());
+			$data->title = $course->getTitle();
 		}
 
 		$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
