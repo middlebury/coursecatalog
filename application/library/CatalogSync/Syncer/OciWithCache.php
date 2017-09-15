@@ -84,6 +84,8 @@ class CatalogSync_Syncer_OciWithCache
 	 * @access public
 	 */
 	public function preCopy () {
+		parent::preCopy();
+
 		// Create the cache tables
 		// Copy the primary table definitions into our temporary database
 		$command = $this->mysqldump.' --add-drop-table --single-transaction --no-data '

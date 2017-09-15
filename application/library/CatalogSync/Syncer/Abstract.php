@@ -227,6 +227,7 @@ abstract class CatalogSync_Syncer_Abstract
 	 * @access public
 	 */
 	public function preCopy () {
+		$this->validateSource();
 		// Override if needed.
 	}
 
@@ -238,6 +239,23 @@ abstract class CatalogSync_Syncer_Abstract
 	 */
 	public function postCopy () {
 		// Override if needed.
+	}
+
+	/**
+	 * Validate that the source database has data.
+	 */
+	protected function validateSource() {
+		$source_db = $this->getCopySourceDatabase();
+		// Verify that we have data in several key tables.
+		if ($source_db->count('SSBSECT') < 1) {
+			throw new Exception('Source validation failed, SSBSECT has no rows.');
+		}
+		if ($source_db->count('SCBCRSE') < 1) {
+			throw new Exception('Source validation failed, SCBCRSE has no rows.');
+		}
+		if ($source_db->count('STVTERM') < 1) {
+			throw new Exception('Source validation failed, STVTERM has no rows.');
+		}
 	}
 
 	/**

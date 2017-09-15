@@ -65,6 +65,21 @@ class CatalogSync_Database_Source_PdoMysql
 		return new CatalogSync_Database_Statement_Select_PdoMysql($statement);
 	}
 
-
+	/**
+	 * Count results in a table
+	 *
+	 * @param string $table
+	 * @param optional string $where
+	 * @return int
+	 * @access public
+	 */
+	public function count ($table, $where = '') {
+		$query = "SELECT COUNT(*) as num_rows FROM $table";
+		if (!empty($where)) {
+			$query .= " $where";
+		}
+		// Parse and Execute the statement
+		return intval($this->pdo->query($query)->fetchColumn());
+	}
 
 }

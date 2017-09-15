@@ -123,6 +123,34 @@ class CatalogSync_Database_Source_Oci
 		return new CatalogSync_Database_Statement_Select_Oci($statement);
 	}
 
+	/**
+	 * Count results in a table
+	 *
+	 * @param string $table
+	 * @param optional string $where
+	 * @return int
+	 * @access public
+	 */
+	public function count ($table, $where = '') {
+		$query = "SELECT COUNT(*) as num_rows FROM $table";
+		if (!empty($where)) {
+			$query .= " $where";
+		}
 
+		// Parse and Execute the statement
+		$statement = oci_parse($this->handle, $query);
+		if ($error = oci_error($this->handle)) {
+			throw new Exception($error['message'], $error['code']);
+		}
+		oci_execute($statement);
+		if ($error = oci_error($this->handle)) {
+			throw new Exception($error['message'], $error['code']);
+		}
+
+		$result = new CatalogSync_Database_Statement_Select_Oci($statement);
+		$row = $result->fetch();
+		$result->closeCursor();
+		return intval($row->num_rows);
+	}
 
 }

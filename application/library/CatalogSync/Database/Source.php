@@ -31,4 +31,14 @@ interface CatalogSync_Database_Source
 	 */
 	public function query ($table, array $columns = array(), $where = '');
 
+	/**
+	 * Count results in a table
+	 *
+	 * @param string $table
+	 * @param optional string $where
+	 * @return int
+	 * @access public
+	 */
+	public function count ($table, $where = '');
+
 }
