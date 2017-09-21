@@ -100,6 +100,7 @@ class AdminController
 FROM
 	(\n".$union."\n\t) AS t
 	LEFT JOIN catalog_term_inactive i ON (STVTERM_CODE = i.term_code AND i.catalog_id = ?)
+	LEFT JOIN course_catalog c ON i.catalog_id = c.catalog_id
 	LEFT JOIN ssbsect_scbcrse s ON (STVTERM_CODE = SSBSECT_TERM_CODE
 		AND SCBCRSE_COLL_CODE IN (
 			SELECT coll_code
@@ -107,7 +108,7 @@ FROM
 			WHERE catalog_id = ?
 		)
 		AND SSBSECT_SSTS_CODE = 'A'
-		AND SSBSECT_PRNT_IND != 'N'
+		AND (c.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != c.prnt_ind_to_exclude)
 		)
 WHERE
 	catalog = ?

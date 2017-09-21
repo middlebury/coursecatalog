@@ -145,16 +145,17 @@ abstract class CatalogSync_Syncer_Abstract
 		$pdo->query(
 			"CREATE TEMPORARY TABLE temp_section_catalog
 			SELECT
-				catalog_id, SSBSECT_TERM_CODE AS term_code, COUNT(SSBSECT_CRN) AS num_sections
+				coll.catalog_id, SSBSECT_TERM_CODE AS term_code, COUNT(SSBSECT_CRN) AS num_sections
 			FROM
-				course_catalog_college
+				course_catalog_college coll
+				INNER JOIN course_catalog cat ON coll.catalog_id = cat.catalog_id
 				LEFT JOIN temp_scbcrse_recent ON (coll_code = SCBCRSE_COLL_CODE)
 				LEFT JOIN SSBSECT c ON (SCBCRSE_SUBJ_CODE = SSBSECT_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SSBSECT_CRSE_NUMB)
 			WHERE
 				coll_code IS NOT NULL
 				AND SSBSECT_SSTS_CODE = 'A'
-				AND SSBSECT_PRNT_IND != 'N'
-			GROUP BY catalog_id, coll_code, SSBSECT_TERM_CODE
+				AND (cat.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != cat.prnt_ind_to_exclude)
+			GROUP BY coll.catalog_id, coll_code, SSBSECT_TERM_CODE
 			");
 		$empty_term_results = $pdo->query(
 			"SELECT
