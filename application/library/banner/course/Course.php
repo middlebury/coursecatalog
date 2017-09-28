@@ -38,6 +38,11 @@ class banner_course_Course
 	 * @static
 	 */
 	public static function convertDescription ($description) {
+		// Trim leading/trailing line-breaks
+		$description = trim(preg_replace('/<br\/?>/i', "\n", $description));
+		// Trim off unclosed <p> tags at the end of the description.
+		$description = trim(preg_replace('/<p>$/si', '', $description));
+
 		$tmp = error_reporting();
 		error_reporting(E_WARNING);
 
