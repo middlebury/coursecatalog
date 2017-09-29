@@ -67,7 +67,8 @@ if ($return) {
 $exports = explode("\n", trim(shell_exec('ls -1t '.escapeshellarg($htmlRoot))));
 array_shift($exports);
 if (count($exports)) {
-	$diff = trim(shell_exec('diff '.escapeshellarg($htmlPath).' '.escapeshellarg($htmlRoot.'/'.$exports[0])));
+	// When doing the diff, Ignore (-I) our the generated_date timestamp line.
+	$diff = trim(shell_exec('diff -I generated_date '.escapeshellarg($htmlPath).' '.escapeshellarg($htmlRoot.'/'.$exports[0])));
 
 	// Delete our current export if it is the same as the last one.
 	// This way we only keep versions that contain changes.
