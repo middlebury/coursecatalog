@@ -324,8 +324,28 @@ class ArchiveController
 		ob_start();
 		foreach ($descriptions as $description) {
 			$body = $description->nodeValue;
-			$body = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $body); // Strip out none-printable characters.
-			print $body;
+			// Strip out none-printable characters.
+			$body = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $body);
+			// Parse the HTML
+			$html = new DOMDocument();
+			$html->loadHTML($body);
+			$htmlXPath = new DOMXPath($html);
+			// Only print out the inner-HTML of the body fields, excluding taxonomy
+			// terms and any other fields printed. Note that this is dependent
+			// on the Drupal markup and will need to be updated if that changes.
+			$bodies = $htmlXPath->query('//div[contains(@class, "field-name-body")]/div/div');
+			if ($bodies->length) {
+				foreach ($bodies as $domBody) {
+					foreach ($domBody->childNodes as $child) {
+						print $html->saveHTML($child);
+					}
+				}
+			}
+			// If we don't have any bodies or the markup changes, just use the full text.
+			else {
+				print $html->saveHTML();
+			}
+
 		}
 		return ob_get_clean();
 	}
