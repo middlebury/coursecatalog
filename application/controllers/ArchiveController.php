@@ -358,7 +358,7 @@ class ArchiveController
 		}
 		$search = $this->courseSearchSession->getCourseSearch();
 		$order = $this->courseSearchSession->getCourseSearchOrder();
-		$order->orderByDisplayName();
+		$order->orderByNumber();
 		$order->ascend();
 		$search->orderCourseResults($order);
 		$courses = $this->courseSearchSession->getCoursesBySearch($query, $search);
