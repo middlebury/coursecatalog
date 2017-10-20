@@ -528,6 +528,10 @@ class ArchiveController
 			}
 		}
 		$data->instructors = $this->getInstructorText($allCourseInstructors);
+		// Don't show an instructor list for "0500" "Independent Study" courses.
+		if (preg_match('/0500$/', $course->getNumber())) {
+			$data->instructors = '';
+		}
 
 		$sectionDescriptionsText = '';
 		// Replace the description with the one from the section[s] if there is only one section description and it is
