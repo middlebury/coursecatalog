@@ -394,15 +394,6 @@ class ArchiveController
 		$data->sections = array();
 		$data->display_name = $course->getDisplayName();
 		$data->description = $course->getDescription();
-		if (preg_match('#^<strong>([^\n\r]+)</strong>(?:\s*<br />(.*)|\s*)$#sm', $data->description, $matches)) {
-			$data->title = $matches[1];
-			if (isset($matches[2]))
-				$data->description = trim($matches[2]);
-			else
-				$data->description = '';
-		} else {
-			$data->title = $course->getTitle();
-		}
 
 		$termsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
 		$termStrings = array();
@@ -546,6 +537,18 @@ class ArchiveController
 					$term_data->sections[] = $section_data;
 				}
 			}
+		}
+
+		// Look for a longer title that exceeds the limits of the Banner title field
+		// injected into the description as a bold first line.
+		if (preg_match('#^<strong>([^\n\r]+)</strong>(?:\s*<br />(.*)|\s*)$#sm', $data->description, $matches)) {
+			$data->title = $matches[1];
+			if (isset($matches[2]))
+				$data->description = trim($matches[2]);
+			else
+				$data->description = '';
+		} else {
+			$data->title = $course->getTitle();
 		}
 
 		/*********************************************************
