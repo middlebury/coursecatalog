@@ -1,11 +1,14 @@
-
+<?php $numPerColumn = ceil(count($this->sections)/2); ?>
 		<nav class="toc">
-			<ul class="toc-list">
+			<ul class="toc-list column-1">
 
 <?php
 	$inH1 = false;
 	$inH2 = false;
+	$i = 0;
+	$column = 1;
 	foreach ($this->sections as $section) {
+		$i++;
 		switch ($section['type']) {
 			case 'h1':
 				if ($inH1) {
@@ -16,6 +19,11 @@
 					print "</li>";
 				}
 				$inH1 = true;
+				if ($i >= $numPerColumn && $column == 1) {
+					print "\n\t\t\t\t</ul>";
+					print "\n\t\t\t\t<ul class=\"toc-list column-2\">";
+					$column = 2;
+				}
 				print "\n\t\t\t\t<li><a href='#".$this->textToLink($section['text'])."'>".htmlspecialchars($section['text'])."</a>";
 				break;
 			case 'h2':
@@ -29,4 +37,5 @@
 	}
 ?></li>
 			</ul>
+			<div class="clearfix"></div>
 		</nav>

@@ -36,6 +36,15 @@ a.local_anchor {
 .toc {
 	margin-top: 2em;
 	margin-bottom: 3em;
+	clear: both;
+}
+ul.toc-list {
+	float: left;
+	width: 45%;
+}
+.clearfix {
+	height: 0px;
+	clear: both;
 }
 .jump_link {
 	display: inline-block;
@@ -94,5 +103,8 @@ a.local_anchor {
 	}
 	.course_section {
 		page-break-inside: avoid;
+	}
+	ul.toc-list {
+		width: 40%;
 	}
 }
