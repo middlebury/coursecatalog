@@ -7,9 +7,9 @@ print " ".$this->escape($this->course->title);
 print " (".implode(", ", array_values($this->course->term_strings)).")";
 print "</h3> ";
 if (empty($this->course->terms)) {
-	print "\n\t\t\t<div class='course_description'>".$this->course->description."</div>";
-	print "\n\t\t\t<div class='course_requirements'>".implode (", ", $this->course->requirements)."</div>";
-	print "\n\t\t\t<div class='course_instructors'>".$this->escape($this->course->instructors)."</div>";
+	print "\n\t\t\t<span class='course_description'>".$this->course->description."</span>";
+	print "\n\t\t\t<strong class='course_requirements'>".implode (", ", $this->course->requirements)."</strong>";
+	print "\n\t\t\t<em class='course_instructors'>".$this->escape($this->course->instructors)."</em>";
 } else {
 	foreach ($this->course->terms as $term) {
 		print "\n\t\t\t<div class='course_term'>";
@@ -24,9 +24,9 @@ if (empty($this->course->terms)) {
 				print " ".implode(', ', $section->section_numbers);
 				print "</div>";
 			}
-			print "\n\t\t\t\t\t<div class='course_description'>".$section->description."</div>";
-			print "\n\t\t\t\t\t<div class='course_requirements'>".implode (", ", $this->course->requirements)."</div>";
-			print "\n\t\t\t\t\t<div class='course_instructors'>".$this->escape($section->instructors)."</div>";
+			print "\n\t\t\t\t\t<span class='course_description'>".$section->description."</span>";
+			print "\n\t\t\t\t\t<strong class='course_requirements'>".implode (", ", $this->course->requirements)."</strong>";
+			print "\n\t\t\t\t\t<em class='course_instructors'>".$this->escape($section->instructors)."</em>";
 			print "\n\t\t\t</div>";
 		}
 		print "\n\t\t\t</div>";
