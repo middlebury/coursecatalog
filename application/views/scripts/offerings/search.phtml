@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 $this->headScript()->appendFile(
 	$this->url(array(), null, true).'javascript/jquery.expander.js',
@@ -37,7 +37,9 @@ $this->headScript()->appendScript(
 
 <form action="<?php print $this->url($formParams); ?>" method="get">
 	<table class='search_options'>
-
+		<tr>
+			<td colspan='2'><input type='submit' name='search' value='Search'/></td>
+		</tr>
 		<tr>
 			<th>By Term:</th>
 			<td>
