@@ -21,6 +21,7 @@ $this->headScript()->appendScript(
 	$formParams = array(
 							'controller'	=> 'offerings',
 							'action'		=> 'search',
+							'crn'			=> null,
 							'term'			=> null,
 							'department'	=> null,
 							'subject'		=> null,
@@ -39,6 +40,12 @@ $this->headScript()->appendScript(
 	<table class='search_options'>
 		<tr>
 			<td colspan='2'><input type='submit' name='search' value='Search'/></td>
+		</tr>
+		<tr>
+			<th>By CRN:</th>
+			<td>
+				<input class='text_input' type='text' name='crn' value='<?php print $this->crn; ?>' />
+			</td>
 		</tr>
 		<tr>
 			<th>By Term:</th>
