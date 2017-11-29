@@ -2,3 +2,4 @@ archive_config.ini
 frontend_config.ini
 configuration.plist
 update_config.ini
+catalog_prod.sql

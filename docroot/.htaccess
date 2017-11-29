@@ -1,5 +1,6 @@
 RewriteEngine On
-RewriteBase /~afranco/catalog
+SetEnv APPLICATION_ENV development
+RewriteBase /~gselover/catalog
 RewriteCond %{REQUEST_FILENAME} -s [OR]
 RewriteCond %{REQUEST_FILENAME} -l [OR]
 RewriteCond %{REQUEST_FILENAME} -f [OR]

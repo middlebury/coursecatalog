@@ -12,7 +12,7 @@ foreach ($offerings as $offering) {
 	print "\n\t\t<td style='border-top: 1px dotted; vertical-align: top; white-space: nowrap;'>";
 	print "\n\t\t\t<a href='".$this->url(array('controller' => 'offerings', 'action' => 'view', 'offering' => $this->getStringFromOsidId($offering->getId())))."' target='_blank'>";
 	print $this->escape($offering->getDisplayName());
-	print "</a>";
+	print "</a></br>CRN: ".$this->escape($offering->getCourseReferenceNumber());
 	print "\n\t\t</td>";
 
 	print "\n\t\t<td style='border-top: 1px dotted; vertical-align: top; white-space: nowrap;'>";
