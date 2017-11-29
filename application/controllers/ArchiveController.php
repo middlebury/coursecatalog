@@ -250,6 +250,11 @@ class ArchiveController
 					$section['url'] = $sectionConf->url;
 				else
 					throw new InvalidArgumentException("catalog.print_sections.$i.url is missing.");
+			} else if ($sectionConf->type == 'html') {
+				if (strlen(trim($sectionConf->text)))
+					$section['text'] = $sectionConf->text;
+				else
+					throw new InvalidArgumentException("catalog.print_sections.$i.text is missing.");
 			} else if ($sectionConf->type == 'courses') {
 				if (strlen(trim($sectionConf->id)))
 					$section['id'] = $this->_helper->osidId->fromString($sectionConf->id);
@@ -292,6 +297,8 @@ class ArchiveController
 				case 'h2':
 					break;
 				case 'text':
+					break;
+				case 'html':
 					break;
 				case 'page_content':
 					$section['content'] = $this->getRequirements($section['url']);
