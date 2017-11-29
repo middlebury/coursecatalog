@@ -565,6 +565,10 @@ class ArchiveController
 					} else {
 						$section_data->instructors = '';
 					}
+					// Don't show an instructor list for "INTD 0500" courses other than section-C.
+					if (preg_match('/^INTD\s*0500$/', $course->getNumber()) && $section['section_numbers'] != ['C']) {
+						$section_data->instructors = '';
+					}
 					$term_data->sections[] = $section_data;
 				}
 			}
