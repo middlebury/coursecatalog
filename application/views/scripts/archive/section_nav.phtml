@@ -11,6 +11,10 @@
 		$i++;
 		switch ($section['type']) {
 			case 'h1':
+				if (empty($section['toc_text']))
+					$title = $section['text'];
+				else
+					$title = $section['toc_text'];
 				if ($inH1) {
 					if ($inH2) {
 						print "\n\t\t\t\t\t</ul>\n\t\t\t\t";
@@ -24,14 +28,18 @@
 					print "\n\t\t\t\t<ul class=\"toc-list column-2\">";
 					$column = 2;
 				}
-				print "\n\t\t\t\t<li><a href='#".$this->textToLink($section['text'])."'>".htmlspecialchars($section['text'])."</a>";
+				print "\n\t\t\t\t<li><a href='#".$this->textToLink($section['text'])."'>".htmlspecialchars($title)."</a>";
 				break;
 			case 'h2':
+				if (empty($section['toc_text']))
+					$title = $section['text'];
+				else
+					$title = $section['toc_text'];
 				if (!$inH2) {
 					print "\n\t\t\t\t\t<ul>";
 					$inH2 = true;
 				}
-				print "\n\t\t\t\t\t\t<li><a href='#".$this->textToLink($section['text'])."'>".htmlspecialchars($section['text'])."</a></li>";
+				print "\n\t\t\t\t\t\t<li><a href='#".$this->textToLink($section['text'])."'>".htmlspecialchars($title)."</a></li>";
 				break;
 		}
 	}

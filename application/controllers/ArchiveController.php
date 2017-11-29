@@ -240,21 +240,35 @@ class ArchiveController
 					$section['text'] = $sectionConf->text;
 				else
 					throw new InvalidArgumentException("catalog.print_sections.$i.text is missing.");
+				if (!empty($sectionConf->toc_text))
+					$section['toc_text'] = $sectionConf->toc_text;
 			} else if ($sectionConf->type == 'h2') {
 				if (strlen(trim($sectionConf->text)))
 					$section['text'] = $sectionConf->text;
 				else
 					throw new InvalidArgumentException("catalog.print_sections.$i.text is missing.");
+				if (!empty($sectionConf->toc_text))
+					$section['toc_text'] = $sectionConf->toc_text;
 			} else if ($sectionConf->type == 'page_content') {
 				if (strlen(trim($sectionConf->url)))
 					$section['url'] = $sectionConf->url;
 				else
 					throw new InvalidArgumentException("catalog.print_sections.$i.url is missing.");
+			} else if ($sectionConf->type == 'html') {
+				if (strlen(trim($sectionConf->text)))
+					$section['text'] = $sectionConf->text;
+				else
+					throw new InvalidArgumentException("catalog.print_sections.$i.text is missing.");
 			} else if ($sectionConf->type == 'courses') {
 				if (strlen(trim($sectionConf->id)))
 					$section['id'] = $this->_helper->osidId->fromString($sectionConf->id);
 				else
 					throw new InvalidArgumentException("catalog.print_sections.$i.id is missing.");
+				if (!empty($sectionConf->number_filter))
+					$section['number_filter'] = $sectionConf->number_filter;
+				else {
+					$section['number_filter'] = null;
+				}
 			} else {
 				throw new InvalidArgumentException("catalog.print_sections.$i.type is '".$sectionConf->type."'. Must be one of h1, h2, page_content, or courses.");
 			}
@@ -293,11 +307,13 @@ class ArchiveController
 					break;
 				case 'text':
 					break;
+				case 'html':
+					break;
 				case 'page_content':
 					$section['content'] = $this->getRequirements($section['url']);
 					break;
 				case 'courses':
-					$section['courses'] = $this->getCourses($section['id']);
+					$section['courses'] = $this->getCourses($section['id'], $section['number_filter']);
 					break;
 				default:
 					throw new Exception("Unknown section type ".$section['type']);
@@ -354,11 +370,12 @@ class ArchiveController
 	 * Print out the courses for a topic
 	 *
 	 * @param osid_id_Id $topicId
+	 * @param optional string $number_filter A regular expression to filter out courses on.
 	 * @return void
 	 * @access protected
 	 * @since 4/26/10
 	 */
-	protected function getCourses (osid_id_Id $topicId) {
+	protected function getCourses (osid_id_Id $topicId, $number_filter = null) {
 		$topic_courses = array();
 		$offeringQuery = $this->offeringSearchSession->getCourseOfferingQuery();
 		$offeringQuery->matchTopicId($topicId, true);
@@ -387,6 +404,11 @@ class ArchiveController
 		while ($courses->hasNext()) {
 			$course = $courses->getNextCourse();
 			$i++;
+
+			// Filter out courses by number if needed.
+			if (!empty($number_filter) && preg_match($number_filter, $course->getNumber())) {
+				continue;
+			}
 
 			$courseIdString = $this->_helper->osidId->toString($course->getId());
 			$this->printedCourseIds[] = $courseIdString;
@@ -556,6 +578,10 @@ class ArchiveController
 					if (count($section['instructors'])) {
 						$section_data->instructors = '('.implode(', ', $section['instructors']).')';
 					} else {
+						$section_data->instructors = '';
+					}
+					// Don't show an instructor list for "INTD 0500" courses other than section-C.
+					if (preg_match('/^INTD\s*0500$/', $course->getNumber()) && $section['section_numbers'] != ['C']) {
 						$section_data->instructors = '';
 					}
 					$term_data->sections[] = $section_data;

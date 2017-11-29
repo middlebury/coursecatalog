@@ -31,6 +31,11 @@ foreach ($this->sections as $section) {
 		case 'text':
 			print "\n\t\t".$section['text']."";
 			break;
+		case 'html':
+			print "\n\t\t<article class='requirements'>";
+			print "\n\t\t".$section['text']."";
+			print "\n\t\t</article>";
+			break;
 		case 'page_content':
 			print "\n\t\t<article class='requirements'>";
 			print $section['content'];
