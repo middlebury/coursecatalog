@@ -240,11 +240,15 @@ class ArchiveController
 					$section['text'] = $sectionConf->text;
 				else
 					throw new InvalidArgumentException("catalog.print_sections.$i.text is missing.");
+				if (!empty($sectionConf->toc_text))
+					$section['toc_text'] = $sectionConf->toc_text;
 			} else if ($sectionConf->type == 'h2') {
 				if (strlen(trim($sectionConf->text)))
 					$section['text'] = $sectionConf->text;
 				else
 					throw new InvalidArgumentException("catalog.print_sections.$i.text is missing.");
+				if (!empty($sectionConf->toc_text))
+					$section['toc_text'] = $sectionConf->toc_text;
 			} else if ($sectionConf->type == 'page_content') {
 				if (strlen(trim($sectionConf->url)))
 					$section['url'] = $sectionConf->url;
