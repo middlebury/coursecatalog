@@ -341,7 +341,7 @@ class apc_course_CourseOffering
 
 
 	/**
-	 *  Gets the course number which is a label generally used to indedx the
+	 *  Gets the course number which is a label generally used to index the
 	 *  course in a catalog, such as T101 or 16.004.
 	 *
 	 *  @return string the course number
@@ -355,6 +355,20 @@ class apc_course_CourseOffering
 			return $val;
 	}
 
+	/**
+	 * Gets the Course Reference Number which is a label used to inidcate both
+	 * the course name and specific section, such as 70001.
+	 *
+	 * @return string the Course Reference Number
+	 * @compliance optional This method is not required in subclasses.
+	 */
+	 public function getCourseReferenceNumber() {
+		 $val = $this->cacheGetPlain('crn');
+		 if(is_null($val))
+		   return $this->cacheSetPlain('crn', $this->getOffering()->getCourseReferenceNumber());
+		 else
+		   return $val;
+	 }
 
 	/**
 	 *  Gets the number of credits in this course.

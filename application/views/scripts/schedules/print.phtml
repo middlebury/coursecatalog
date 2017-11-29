@@ -4,10 +4,10 @@
 <head>
 	<title><?php print $this->escape($this->schedule->getName()); ?></title>
 
-	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/base/jquery-ui.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/base/jquery-ui.css" type="text/css" media="all" />
 
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.min.js"></script>
 
 	<link rel="stylesheet" media="all" type="text/css" href="<?php echo $this->url(array(), null, true) ?>2d/StyleSheets/CatalogStyles.css" />
 
@@ -45,7 +45,7 @@
 			height: 3em;
 		}
 
-		div.schedule li.offering div.location, div.schedule li.offering div.time {
+		div.schedule li.offering div.location, div.schedule li.offering div.time div.crn {
 			white-space: nowrap;
 		}
 
@@ -126,6 +126,8 @@ foreach ($offerings as $offering) {
 	print nl2br($this->escape($offering->getTitle()));
 	print "</a>";
 	print "\n\t\t</div>";
+
+	print "\n\t\t<div class='crn'>CRN: ".$this->escape($offering->getCourseReferenceNumber())."</div>";
 
 	print "\n\t\t<div class='time";
 	if ($this->schedule->hasCollisions($offering->getId()))
