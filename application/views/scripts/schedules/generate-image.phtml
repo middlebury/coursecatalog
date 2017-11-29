@@ -169,9 +169,18 @@ foreach ($this->events as $event) {
 	$bb = imagettfbbox($size, 0, $this->fontFile, $event['location']);
 	$textWidth = $bb[2] - $bb[0];
 	$textHeight = $bb[1] - $bb[5];
-	$textTop = $top + $textHeight +$textHeight + 20;
+	$textTop = $top + $textHeight +$textHeight + 22;
 	$textLeft = $left + (($dayWidth - $textWidth)/2);
 	ImageTTFText($im, $size, 0, $textLeft, $textTop, $black, $this->fontFile, $event['location']);
+
+	$size = 10;
+	$bb = imagettfbbox($size, 0, $this->fontFile, $event['crn']);
+	$textWidth = $bb[2] - $bb[0];
+	$textHeight = $bb[1] - $bb[5];
+	//$textTop = $top + $textHeight +$textHeight + 34;
+	$textTop += 14;
+	$textLeft = $left + (($dayWidth - $textWidth)/3);
+	ImageTTFText($im, $size, 0, $textLeft, $textTop, $black, $this->fontFile, "CRN: ".$event['crn']);
 
 }
 
