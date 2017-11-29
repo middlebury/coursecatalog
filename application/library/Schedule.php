@@ -277,6 +277,7 @@ class Schedule {
 	 * @param string $name
 	 * @param string $offeringIdString
 	 * @param string $location
+	 * @param string $crn
 	 * @param int $dayOfWeek
 	 * @param array $startTimes
 	 * @param array $endTimes
@@ -284,7 +285,7 @@ class Schedule {
 	 * @access private
 	 * @since 8/5/10
 	 */
-	private function getDailyEvents ($name, $offeringIdString, $location, $dayOfWeek, array $startTimes, array $endTimes) {
+	private function getDailyEvents ($name, $offeringIdString, $location, $crn, $dayOfWeek, array $startTimes, array $endTimes) {
 		$events = array();
 		foreach ($startTimes as $i => $startTime) {
 			$events[] = array(
@@ -292,6 +293,7 @@ class Schedule {
 				'offeringId'	=> $offeringIdString,
 				'name'		=> $name,
 				'location'	=> $location,
+				'crn'	=> $crn,
 				'dayOfWeek'	=> $dayOfWeek,
 				'startTime' => $startTime,
 				'endTime'	=> $endTimes[$i],
@@ -318,6 +320,7 @@ class Schedule {
 		} else {
 			$location = '';
 		}
+		$crn = $offering->getCourseReferenceNumber();
 		try {
 			$rec = $offering->getCourseOfferingRecord($scheduleType);
 		} catch (osid_UnsupportedException $e) {
@@ -327,25 +330,25 @@ class Schedule {
 		$idString = $this->idToString($offering->getId());
 
 		if ($rec->meetsOnSunday()) {
-			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, 0, $rec->getSundayStartTimes(), $rec->getSundayEndTimes()));
+			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, $crn, 0, $rec->getSundayStartTimes(), $rec->getSundayEndTimes()));
 		}
 		if ($rec->meetsOnMonday()) {
-			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, 1, $rec->getMondayStartTimes(), $rec->getMondayEndTimes()));
+			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, $crn, 1, $rec->getMondayStartTimes(), $rec->getMondayEndTimes()));
 		}
 		if ($rec->meetsOnTuesday()) {
-			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, 2, $rec->getTuesdayStartTimes(), $rec->getTuesdayEndTimes()));
+			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, $crn, 2, $rec->getTuesdayStartTimes(), $rec->getTuesdayEndTimes()));
 		}
 		if ($rec->meetsOnWednesday()) {
-			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, 3, $rec->getWednesdayStartTimes(), $rec->getWednesdayEndTimes()));
+			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, $crn, 3, $rec->getWednesdayStartTimes(), $rec->getWednesdayEndTimes()));
 		}
 		if ($rec->meetsOnThursday()) {
-			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, 4, $rec->getThursdayStartTimes(), $rec->getThursdayEndTimes()));
+			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, $crn, 4, $rec->getThursdayStartTimes(), $rec->getThursdayEndTimes()));
 		}
 		if ($rec->meetsOnFriday()) {
-			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, 5, $rec->getFridayStartTimes(), $rec->getFridayEndTimes()));
+			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, $crn, 5, $rec->getFridayStartTimes(), $rec->getFridayEndTimes()));
 		}
 		if ($rec->meetsOnSaturday()) {
-			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, 6, $rec->getSaturdayStartTimes(), $rec->getSaturdayEndTimes()));
+			$events = array_merge($events, $this->getDailyEvents($name, $idString, $location, $crn, 6, $rec->getSaturdayStartTimes(), $rec->getSaturdayEndTimes()));
 		}
 
 		return $events;

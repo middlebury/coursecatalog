@@ -526,6 +526,9 @@ class SchedulesController
 			if ($event['location'])
 				$event['title'] .= '<br/>'.$event['location'];
 
+			if ($event['crn'])
+				$event['title'] .= " - CRN: ".$event['crn'];
+
 			$day = $thisWeek->asDateAndTime();
 			if ($event['dayOfWeek'])
 				$day = $day->plus(Duration::withDays($event['dayOfWeek']));
