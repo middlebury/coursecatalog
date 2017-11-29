@@ -260,6 +260,11 @@ class ArchiveController
 					$section['id'] = $this->_helper->osidId->fromString($sectionConf->id);
 				else
 					throw new InvalidArgumentException("catalog.print_sections.$i.id is missing.");
+				if (!empty($sectionConf->number_filter))
+					$section['number_filter'] = $sectionConf->number_filter;
+				else {
+					$section['number_filter'] = null;
+				}
 			} else {
 				throw new InvalidArgumentException("catalog.print_sections.$i.type is '".$sectionConf->type."'. Must be one of h1, h2, page_content, or courses.");
 			}
@@ -304,7 +309,7 @@ class ArchiveController
 					$section['content'] = $this->getRequirements($section['url']);
 					break;
 				case 'courses':
-					$section['courses'] = $this->getCourses($section['id']);
+					$section['courses'] = $this->getCourses($section['id'], $section['number_filter']);
 					break;
 				default:
 					throw new Exception("Unknown section type ".$section['type']);
@@ -361,11 +366,12 @@ class ArchiveController
 	 * Print out the courses for a topic
 	 *
 	 * @param osid_id_Id $topicId
+	 * @param optional string $number_filter A regular expression to filter out courses on.
 	 * @return void
 	 * @access protected
 	 * @since 4/26/10
 	 */
-	protected function getCourses (osid_id_Id $topicId) {
+	protected function getCourses (osid_id_Id $topicId, $number_filter = null) {
 		$topic_courses = array();
 		$offeringQuery = $this->offeringSearchSession->getCourseOfferingQuery();
 		$offeringQuery->matchTopicId($topicId, true);
@@ -394,6 +400,11 @@ class ArchiveController
 		while ($courses->hasNext()) {
 			$course = $courses->getNextCourse();
 			$i++;
+
+			// Filter out courses by number if needed.
+			if (!empty($number_filter) && preg_match($number_filter, $course->getNumber())) {
+				continue;
+			}
 
 			$courseIdString = $this->_helper->osidId->toString($course->getId());
 			$this->printedCourseIds[] = $courseIdString;
