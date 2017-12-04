@@ -127,7 +127,7 @@ class SchedulesController
 		$this->view->terms = array();
 		while ($terms->hasNext()) {
 			$term = $terms->getNextTerm();
-			$termCatalogId = $termCatalogSession->getCatalogIdsByTerm($term->getId())->getNextId();
+			$termCatalogId = $this->catalogId;
 			$this->view->terms[] = array(
 				'name'	=> $term->getDisplayName(),
 				'url'	=> $this->view->url(array(
