@@ -622,8 +622,8 @@ FROM (
 	WHERE
 		SCREQIV_SUBJ_CODE = :subj_code_0
 		AND SCREQIV_CRSE_NUMB = :crse_numb_0
-		AND SCREQIV_EFF_TERM >= :start_term_0
-		AND SCREQIV_EFF_TERM <= :end_term_0
+		AND SCREQIV_END_TERM >= :start_term_0
+		AND SCREQIV_START_TERM <= :end_term_0
 
 	UNION
 
@@ -637,8 +637,8 @@ FROM (
 	WHERE
 		SCREQIV_SUBJ_CODE_EQIV = :subj_code_1
 		AND SCREQIV_CRSE_NUMB_EQIV = :crse_numb_1
-		AND SCREQIV_EFF_TERM >= :start_term_1
-		AND SCREQIV_EFF_TERM <= :end_term_1
+		AND SCREQIV_END_TERM >= :start_term_1
+		AND SCREQIV_START_TERM <= :end_term_1
 
 	UNION
 
@@ -652,10 +652,10 @@ FROM (
 	WHERE
 		subj_code_1 = :subj_code_2
 		AND crse_numb_1 = :crse_numb_2
-		AND eff_term_a >= :start_term_2
-		AND eff_term_a <= :end_term_2
-		AND eff_term_b >= :start_term_3
-		AND eff_term_b <= :end_term_3
+		AND end_term_a >= :start_term_2
+		AND start_term_a <= :end_term_2
+		AND end_term_b >= :start_term_3
+		AND start_term_b <= :end_term_3
 
 	UNION
 
@@ -669,10 +669,10 @@ FROM (
 	WHERE
 		subj_code_1 = :subj_code_3
 		AND crse_numb_1 = :crse_numb_3
-		AND eff_term_a >= :start_term_4
-		AND eff_term_a <= :end_term_4
-		AND eff_term_b >= :start_term_5
-		AND eff_term_b <= :end_term_5
+		AND end_term_a >= :start_term_4
+		AND start_term_a <= :end_term_4
+		AND end_term_b >= :start_term_5
+		AND start_term_b <= :end_term_5
 
 	UNION
 
@@ -686,10 +686,10 @@ FROM (
 	WHERE
 		subj_code_2 = :subj_code_4
 		AND crse_numb_2 = :crse_numb_4
-		AND eff_term_a >= :start_term_6
-		AND eff_term_a <= :end_term_6
-		AND eff_term_b >= :start_term_7
-		AND eff_term_b <= :end_term_7
+		AND end_term_a >= :start_term_6
+		AND start_term_a <= :end_term_6
+		AND end_term_b >= :start_term_7
+		AND start_term_b <= :end_term_7
 
 	UNION
 
@@ -703,10 +703,10 @@ FROM (
 	WHERE
 		subj_code_2 = :subj_code_5
 		AND crse_numb_2 = :crse_numb_5
-		AND eff_term_a >= :start_term_8
-		AND eff_term_a <= :end_term_8
-		AND eff_term_b >= :start_term_9
-		AND eff_term_b <= :end_term_9
+		AND end_term_a >= :start_term_8
+		AND start_term_a <= :end_term_8
+		AND end_term_b >= :start_term_9
+		AND start_term_b <= :end_term_9
 
 	) as screquiv_combined
 

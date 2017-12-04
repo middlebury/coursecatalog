@@ -204,11 +204,15 @@ SELECT
 	equiv1.`SCREQIV_SUBJ_CODE` AS subj_code_1,
 	equiv1.`SCREQIV_CRSE_NUMB` AS crse_numb_1,
 	equiv1.`SCREQIV_EFF_TERM` AS eff_term_a,
+	equiv1.`SCREQIV_START_TERM` AS start_term_a,
+	equiv1.`SCREQIV_END_TERM` AS end_term_a,
 	equiv1.`SCREQIV_SUBJ_CODE_EQIV` AS subj_code_2,
 	equiv1.`SCREQIV_CRSE_NUMB_EQIV` AS crse_numb_2,
 	equiv2.`SCREQIV_SUBJ_CODE` AS subj_code_3,
 	equiv2.`SCREQIV_CRSE_NUMB` AS crse_numb_3,
 	equiv2.`SCREQIV_EFF_TERM` AS eff_term_b,
+	equiv2.`SCREQIV_START_TERM` AS start_term_b,
+	equiv2.`SCREQIV_END_TERM` AS end_term_b,
 	equiv2.`SCREQIV_SUBJ_CODE_EQIV` AS subj_code_4,
 	equiv2.`SCREQIV_CRSE_NUMB_EQIV` AS crse_numb_4
 FROM
