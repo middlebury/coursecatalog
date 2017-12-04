@@ -174,6 +174,22 @@ abstract class banner_AbstractSession
 	}
 
 	/**
+	 * Answer the term code from a Term id object
+	 *
+	 * @param osid_id_Id $id
+	 * @return string
+	 * @throws an osid_NotFoundException if the id cannot match.
+	 * @access public
+	 * @since 4/16/09
+	 */
+	public function getTermCodeFromTermId (osid_id_Id $id) {
+		$string = $this->getDatabaseIdString($id, 'term/');
+		if (!preg_match('#^([0-9]{6})$#', $string))
+			throw new osid_NotFoundException("String '$string' cannot be broken into a term-code");
+		return $string;
+	}
+
+	/**
 	 * Answer the term code from an id object
 	 *
 	 * @param osid_id_Id $id

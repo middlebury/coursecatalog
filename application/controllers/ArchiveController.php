@@ -209,11 +209,16 @@ class ArchiveController
 
 		try {
 			$this->selectedTerms = array();
+			$term_strings = array();
 			// Get all offerings in the terms
 			foreach ($this->_getParam('term') as $termIdString) {
+				$term_strings[] = $termIdString;
 				$termId = $this->_helper->osidId->fromString($termIdString);
 				$this->selectedTerms[] = $termId;
 			}
+			sort($term_strings);
+			$this->startTerm = $this->_helper->osidId->fromString($term_strings[0]);
+			$this->endTerm = $this->_helper->osidId->fromString(array_values(array_slice($term_strings, -1))[0]);
 		} catch (osid_InvalidArgumentException $e) {
 			header('HTTP/1.1 400 Bad Request');
 			print "The term id specified was not of the correct format.";
@@ -605,12 +610,12 @@ class ArchiveController
 		 * Crosslists
 		 *********************************************************/
 		$data->alternates = array();
-		$alternateType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:terms");
+		$alternateType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:alternates-in-terms");
 		try {
 			if ($course->hasRecordType($this->alternateType)) {
 				$record = $course->getCourseRecord($this->alternateType);
-				if ($record->hasAlternates()) {
-					$alternates = $record->getAlternates();
+				if ($record->hasAlternatesInTerms($this->startTerm, $this->endTerm)) {
+					$alternates = $record->getAlternatesInTerms($this->startTerm, $this->endTerm);
 					while ($alternates->hasNext()) {
 						$alternate = $alternates->getNextCourse();
 

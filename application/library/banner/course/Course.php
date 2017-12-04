@@ -274,6 +274,7 @@ class banner_course_Course
 
 		$this->addRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms'));
 		$this->addRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates'));
+		$this->addRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates-in-terms'));
 		$this->addRecordType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:link'));
 	}
 
@@ -575,6 +576,100 @@ class banner_course_Course
 
 		return false;
 	}
+
+	/*********************************************************
+	 * Methods from middlebury_course_Course_AlternatesInTermsRecord
+	 *********************************************************/
+
+
+		/**
+		 * Tests if this course has any alternate courses, effective between the terms specified (inclusive).
+		 *
+		 * @param osid_id_Id $startTerm
+		 * @param osid_id_Id $endTerm
+		 * @return boolean <code> true </code> if this course has any
+		 *          alternates, <code> false </code> otherwise
+		 * @access public
+		 * @compliance mandatory This method must be implemented.
+		 */
+		public function hasAlternatesInTerms (osid_id_Id $startTerm, osid_id_Id $endTerm) {
+			return (intval($this->hasAlternates) > 0);
+		}
+
+		/**
+		 *  Gets the Ids of any alternate courses effective between the terms specified (inclusive).
+		 *
+		 * @param osid_id_Id $startTerm
+		 * @param osid_id_Id $endTerm
+		 *  @return object osid_id_IdList the list of alternate ids.
+		 *  @compliance mandatory This method must be implemented.
+		 *  @throws osid_OperationFailedException unable to complete request
+		 *  @throws osid_PermissionDeniedException authorization failure
+		 */
+		public function getAlternateIdsInTerms(osid_id_Id $startTerm, osid_id_Id $endTerm) {
+			if (!$this->hasAlternatesInTerms($startTerm, $endTerm))
+				return new phpkit_EmptyList('osid_id_IdList');
+
+			return $this->session->getCourseLookupSession()->getAlternateIdsForCourseInTerms($this->getId(), $startTerm, $endTerm);
+		}
+
+		/**
+		 *  Gets the alternate <code> Courses </code>.
+		 *
+		 * @param osid_id_Id $startTerm
+		 * @param osid_id_Id $endTerm
+		 *  @return object osid_course_CourseList The list of alternates.
+		 *  @compliance mandatory This method must be implemented.
+		 *  @throws osid_OperationFailedException unable to complete request
+		 *  @throws osid_PermissionDeniedException authorization failure
+		 */
+		public function getAlternatesInTerms(osid_id_Id $startTerm, osid_id_Id $endTerm) {
+			$lookupSession = $this->session->getCourseLookupSession();
+			$lookupSession->useComparativeView();
+			return $lookupSession->getCoursesByIds($this->getAlternateIdsInTerms($startTerm, $endTerm));
+		}
+
+		/**
+		 * Answer <code> true </code> if this course is the primary version in a group of
+		 * alternates.
+		 *
+		 * @param osid_id_Id $startTerm
+		 * @param osid_id_Id $endTerm
+		 *  @return boolean
+		 *  @compliance mandatory This method must be implemented.
+		 *  @throws osid_OperationFailedException unable to complete request
+		 *  @throws osid_PermissionDeniedException authorization failure
+		 */
+		public function isPrimaryInTerms (osid_id_Id $startTerm, osid_id_Id $endTerm) {
+			// Get the most recent offereings for this course and its equivalents
+			$session = $this->session->getCourseOfferingSearchSession();
+			$query = $session->getCourseOfferingQuery();
+
+			$query->matchCourseId($this->getId(), true);
+			$alternateIds = $this->getAlternateIdsInTerms($startTerm, $endTerm);
+			while ($alternateIds->hasNext()) {
+				$query->matchCourseId($alternateIds->getNextId(), true);
+			}
+
+			$search = $session->getCourseOfferingSearch();
+			$order = $session->getCourseOfferingSearchOrder();
+			$order->orderByTerm();
+			$order->descend();
+			$search->orderCourseOfferingResults($order);
+
+			$offerings = $session->getCourseOfferingsBySearch($query, $search);
+			while ($offerings->hasNext()) {
+				$offering = $offerings->getNextCourseOffering();
+				if ($offering->isPrimary()) {
+					if ($offering->getCourseId()->isEqual($this->getId()))
+						return true;
+					else
+						return false;
+				}
+			}
+
+			return false;
+		}
 
 /*********************************************************
  * 	Methods from middlebury_course_Course_LinkRecord

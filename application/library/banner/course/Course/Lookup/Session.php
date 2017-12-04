@@ -558,7 +558,7 @@ ORDER BY eff_term DESC
 ";
 			self::$alternatesForCourse_stmt = $this->manager->getDB()->prepare($query);
 		}
-		self::$alternatesForCourse_stmt->execute(array(
+		$params = array(
 			':subj_code_0' => $this->getSubjectFromCourseId($courseId),
 			':crse_numb_0' => $this->getNumberFromCourseId($courseId),
 			':subj_code_1' => $this->getSubjectFromCourseId($courseId),
@@ -573,10 +573,193 @@ ORDER BY eff_term DESC
 			':crse_numb_5' => $this->getNumberFromCourseId($courseId),
 			':subj_code_6' => $this->getSubjectFromCourseId($courseId),
 			':crse_numb_6' => $this->getNumberFromCourseId($courseId)
-		));
+		);
+
+		self::$alternatesForCourse_stmt->execute($params);
 		$rows = self::$alternatesForCourse_stmt->fetchAll(PDO::FETCH_ASSOC);
 		self::$alternatesForCourse_stmt->closeCursor();
-// 		var_dump($rows);
+
+		$ids = array();
+		foreach ($rows as $row) {
+			$ids[] = $this->getCourseIdFromSubjectAndNumber($row['subj_code'], $row['crse_numb']);
+		}
+
+		return new phpkit_id_ArrayIdList($ids);
+	}
+
+	private static $alternatesForCourseInTerms_stmt;
+	/**
+	 * Answer the alternate course ids that are effive between the given start and end terms (inclusive).
+	 *
+	 * @param osid_id_Id $courseId
+	 * @param osid_id_Id $startTerm
+	 * @param osid_id_Id $endTerm
+	 * @return PDOStatement
+	 * @access public
+	 * @since 5/1/09
+	 */
+	public function getAlternateIdsForCourseInTerms (osid_id_Id $courseId, osid_id_Id $startTerm, osid_id_Id $endTerm) {
+		if (!isset(self::$alternatesForCourseInTerms_stmt)) {
+			$query = "
+SELECT
+	*
+FROM (
+
+-- Give three courses, A, B, C, they may be marked equivalent in 4 columns as any of
+--  1   2  3   4
+--  A = B, A = C
+--  A = B, B = C
+--  A = B, C = B
+--  A = B, C = A
+
+	-- Columns 1 => 2 as well as 3 => 4
+	SELECT
+		SCREQIV_SUBJ_CODE_EQIV AS subj_code,
+		SCREQIV_CRSE_NUMB_EQIV AS crse_numb,
+		SCREQIV_EFF_TERM AS eff_term
+	FROM
+		SCREQIV
+	WHERE
+		SCREQIV_SUBJ_CODE = :subj_code_0
+		AND SCREQIV_CRSE_NUMB = :crse_numb_0
+		AND SCREQIV_EFF_TERM >= :start_term_0
+		AND SCREQIV_EFF_TERM <= :end_term_0
+
+	UNION
+
+	-- Columns 1 <= 2 as well as 3 <= 4
+	SELECT
+		SCREQIV_SUBJ_CODE AS subj_code,
+		SCREQIV_CRSE_NUMB AS crse_numb,
+		SCREQIV_EFF_TERM  AS eff_term
+	FROM
+		SCREQIV
+	WHERE
+		SCREQIV_SUBJ_CODE_EQIV = :subj_code_1
+		AND SCREQIV_CRSE_NUMB_EQIV = :crse_numb_1
+		AND SCREQIV_EFF_TERM >= :start_term_1
+		AND SCREQIV_EFF_TERM <= :end_term_1
+
+	UNION
+
+	-- Columns 1 => 3
+	SELECT
+		subj_code_3 AS subj_code,
+		crse_numb_3 AS crse_numb,
+		GREATEST(eff_term_a, eff_term_b) AS eff_term
+	FROM
+		screqiv_2way
+	WHERE
+		subj_code_1 = :subj_code_2
+		AND crse_numb_1 = :crse_numb_2
+		AND eff_term_a >= :start_term_2
+		AND eff_term_a <= :end_term_2
+		AND eff_term_b >= :start_term_3
+		AND eff_term_b <= :end_term_3
+
+	UNION
+
+	-- Columns 1 => 4
+	SELECT
+		subj_code_4 AS subj_code,
+		crse_numb_4 AS crse_numb,
+		GREATEST(eff_term_a, eff_term_b) AS eff_term
+	FROM
+		screqiv_2way
+	WHERE
+		subj_code_1 = :subj_code_3
+		AND crse_numb_1 = :crse_numb_3
+		AND eff_term_a >= :start_term_4
+		AND eff_term_a <= :end_term_4
+		AND eff_term_b >= :start_term_5
+		AND eff_term_b <= :end_term_5
+
+	UNION
+
+	-- Columns 2 => 3
+	SELECT
+		subj_code_3 AS subj_code,
+		crse_numb_3 AS crse_numb,
+		GREATEST(eff_term_a, eff_term_b) AS eff_term
+	FROM
+		screqiv_2way
+	WHERE
+		subj_code_2 = :subj_code_4
+		AND crse_numb_2 = :crse_numb_4
+		AND eff_term_a >= :start_term_6
+		AND eff_term_a <= :end_term_6
+		AND eff_term_b >= :start_term_7
+		AND eff_term_b <= :end_term_7
+
+	UNION
+
+	-- Columns 2 => 4
+	SELECT
+		subj_code_4 AS subj_code,
+		crse_numb_4 AS crse_numb,
+		GREATEST(eff_term_a, eff_term_b) AS eff_term
+	FROM
+		screqiv_2way
+	WHERE
+		subj_code_2 = :subj_code_5
+		AND crse_numb_2 = :crse_numb_5
+		AND eff_term_a >= :start_term_8
+		AND eff_term_a <= :end_term_8
+		AND eff_term_b >= :start_term_9
+		AND eff_term_b <= :end_term_9
+
+	) as screquiv_combined
+
+WHERE
+	subj_code != :subj_code_6
+	OR crse_numb != :crse_numb_6
+GROUP BY
+	subj_code,
+	crse_numb
+ORDER BY eff_term DESC
+";
+			self::$alternatesForCourseInTerms_stmt = $this->manager->getDB()->prepare($query);
+		}
+		$params = array(
+			':subj_code_0' => $this->getSubjectFromCourseId($courseId),
+			':crse_numb_0' => $this->getNumberFromCourseId($courseId),
+			':subj_code_1' => $this->getSubjectFromCourseId($courseId),
+			':crse_numb_1' => $this->getNumberFromCourseId($courseId),
+			':subj_code_2' => $this->getSubjectFromCourseId($courseId),
+			':crse_numb_2' => $this->getNumberFromCourseId($courseId),
+			':subj_code_3' => $this->getSubjectFromCourseId($courseId),
+			':crse_numb_3' => $this->getNumberFromCourseId($courseId),
+			':subj_code_4' => $this->getSubjectFromCourseId($courseId),
+			':crse_numb_4' => $this->getNumberFromCourseId($courseId),
+			':subj_code_5' => $this->getSubjectFromCourseId($courseId),
+			':crse_numb_5' => $this->getNumberFromCourseId($courseId),
+			':subj_code_6' => $this->getSubjectFromCourseId($courseId),
+			':crse_numb_6' => $this->getNumberFromCourseId($courseId),
+			':start_term_0' => $this->getTermCodeFromTermId($startTerm),
+			':start_term_1' => $this->getTermCodeFromTermId($startTerm),
+			':start_term_2' => $this->getTermCodeFromTermId($startTerm),
+			':start_term_3' => $this->getTermCodeFromTermId($startTerm),
+			':start_term_4' => $this->getTermCodeFromTermId($startTerm),
+			':start_term_5' => $this->getTermCodeFromTermId($startTerm),
+			':start_term_6' => $this->getTermCodeFromTermId($startTerm),
+			':start_term_7' => $this->getTermCodeFromTermId($startTerm),
+			':start_term_8' => $this->getTermCodeFromTermId($startTerm),
+			':start_term_9' => $this->getTermCodeFromTermId($startTerm),
+			':end_term_0' => $this->getTermCodeFromTermId($endTerm),
+			':end_term_1' => $this->getTermCodeFromTermId($endTerm),
+			':end_term_2' => $this->getTermCodeFromTermId($endTerm),
+			':end_term_3' => $this->getTermCodeFromTermId($endTerm),
+			':end_term_4' => $this->getTermCodeFromTermId($endTerm),
+			':end_term_5' => $this->getTermCodeFromTermId($endTerm),
+			':end_term_6' => $this->getTermCodeFromTermId($endTerm),
+			':end_term_7' => $this->getTermCodeFromTermId($endTerm),
+			':end_term_8' => $this->getTermCodeFromTermId($endTerm),
+			':end_term_9' => $this->getTermCodeFromTermId($endTerm),
+		);
+
+		self::$alternatesForCourseInTerms_stmt->execute($params);
+		$rows = self::$alternatesForCourseInTerms_stmt->fetchAll(PDO::FETCH_ASSOC);
+		self::$alternatesForCourseInTerms_stmt->closeCursor();
 
 		$ids = array();
 		foreach ($rows as $row) {
