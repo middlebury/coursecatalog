@@ -477,9 +477,15 @@ FROM (
 		SCREQIV_EFF_TERM AS eff_term
 	FROM
 		screqiv_current
+		LEFT JOIN antirequisites a ON (
+			SCREQIV_SUBJ_CODE = a.subj_code
+			AND SCREQIV_CRSE_NUMB = a.crse_numb
+			AND SCREQIV_SUBJ_CODE_EQIV = a.subj_code_eqiv
+			AND SCREQIV_CRSE_NUMB_EQIV = a.crse_numb_eqiv)
 	WHERE
 		SCREQIV_SUBJ_CODE = :subj_code_0
 		AND SCREQIV_CRSE_NUMB = :crse_numb_0
+		AND a.subj_code IS NULL
 
 	UNION
 
@@ -490,9 +496,15 @@ FROM (
 		SCREQIV_EFF_TERM  AS eff_term
 	FROM
 		screqiv_current
+		LEFT JOIN antirequisites a ON (
+			SCREQIV_SUBJ_CODE = a.subj_code
+			AND SCREQIV_CRSE_NUMB = a.crse_numb
+			AND SCREQIV_SUBJ_CODE_EQIV = a.subj_code_eqiv
+			AND SCREQIV_CRSE_NUMB_EQIV = a.crse_numb_eqiv)
 	WHERE
 		SCREQIV_SUBJ_CODE_EQIV = :subj_code_1
 		AND SCREQIV_CRSE_NUMB_EQIV = :crse_numb_1
+		AND a.subj_code IS NULL
 
 	UNION
 
@@ -503,9 +515,15 @@ FROM (
 		GREATEST(eff_term_a, eff_term_b) AS eff_term
 	FROM
 		screqiv_2way
+		LEFT JOIN antirequisites a ON (
+			subj_code_1 = a.subj_code
+			AND crse_numb_1 = a.crse_numb
+			AND subj_code_2 = a.subj_code_eqiv
+			AND crse_numb_2 = a.crse_numb_eqiv)
 	WHERE
 		subj_code_1 = :subj_code_2
 		AND crse_numb_1 = :crse_numb_2
+		AND a.subj_code IS NULL
 
 	UNION
 
@@ -516,9 +534,15 @@ FROM (
 		GREATEST(eff_term_a, eff_term_b) AS eff_term
 	FROM
 		screqiv_2way
+		LEFT JOIN antirequisites a ON (
+			subj_code_1 = a.subj_code
+			AND crse_numb_1 = a.crse_numb
+			AND subj_code_2 = a.subj_code_eqiv
+			AND crse_numb_2 = a.crse_numb_eqiv)
 	WHERE
 		subj_code_1 = :subj_code_3
 		AND crse_numb_1 = :crse_numb_3
+		AND a.subj_code IS NULL
 
 	UNION
 
@@ -529,9 +553,15 @@ FROM (
 		GREATEST(eff_term_a, eff_term_b) AS eff_term
 	FROM
 		screqiv_2way
+		LEFT JOIN antirequisites a ON (
+			subj_code_1 = a.subj_code
+			AND crse_numb_1 = a.crse_numb
+			AND subj_code_2 = a.subj_code_eqiv
+			AND crse_numb_2 = a.crse_numb_eqiv)
 	WHERE
 		subj_code_2 = :subj_code_4
 		AND crse_numb_2 = :crse_numb_4
+		AND a.subj_code IS NULL
 
 	UNION
 
@@ -542,9 +572,15 @@ FROM (
 		GREATEST(eff_term_a, eff_term_b) AS eff_term
 	FROM
 		screqiv_2way
+		LEFT JOIN antirequisites a ON (
+			subj_code_1 = a.subj_code
+			AND crse_numb_1 = a.crse_numb
+			AND subj_code_2 = a.subj_code_eqiv
+			AND crse_numb_2 = a.crse_numb_eqiv)
 	WHERE
 		subj_code_2 = :subj_code_5
 		AND crse_numb_2 = :crse_numb_5
+		AND a.subj_code IS NULL
 
 	) as screquiv_combined
 
@@ -619,11 +655,17 @@ FROM (
 		SCREQIV_EFF_TERM AS eff_term
 	FROM
 		SCREQIV
+		LEFT JOIN antirequisites a ON (
+			SCREQIV_SUBJ_CODE = a.subj_code
+			AND SCREQIV_CRSE_NUMB = a.crse_numb
+			AND SCREQIV_SUBJ_CODE_EQIV = a.subj_code_eqiv
+			AND SCREQIV_CRSE_NUMB_EQIV = a.crse_numb_eqiv)
 	WHERE
 		SCREQIV_SUBJ_CODE = :subj_code_0
 		AND SCREQIV_CRSE_NUMB = :crse_numb_0
 		AND SCREQIV_END_TERM >= :start_term_0
 		AND SCREQIV_START_TERM <= :end_term_0
+		AND a.subj_code IS NULL
 
 	UNION
 
@@ -634,11 +676,17 @@ FROM (
 		SCREQIV_EFF_TERM  AS eff_term
 	FROM
 		SCREQIV
+		LEFT JOIN antirequisites a ON (
+			SCREQIV_SUBJ_CODE = a.subj_code
+			AND SCREQIV_CRSE_NUMB = a.crse_numb
+			AND SCREQIV_SUBJ_CODE_EQIV = a.subj_code_eqiv
+			AND SCREQIV_CRSE_NUMB_EQIV = a.crse_numb_eqiv)
 	WHERE
 		SCREQIV_SUBJ_CODE_EQIV = :subj_code_1
 		AND SCREQIV_CRSE_NUMB_EQIV = :crse_numb_1
 		AND SCREQIV_END_TERM >= :start_term_1
 		AND SCREQIV_START_TERM <= :end_term_1
+		AND a.subj_code IS NULL
 
 	UNION
 
@@ -649,6 +697,11 @@ FROM (
 		GREATEST(eff_term_a, eff_term_b) AS eff_term
 	FROM
 		screqiv_2way
+		LEFT JOIN antirequisites a ON (
+			subj_code_1 = a.subj_code
+			AND crse_numb_1 = a.crse_numb
+			AND subj_code_2 = a.subj_code_eqiv
+			AND crse_numb_2 = a.crse_numb_eqiv)
 	WHERE
 		subj_code_1 = :subj_code_2
 		AND crse_numb_1 = :crse_numb_2
@@ -656,6 +709,7 @@ FROM (
 		AND start_term_a <= :end_term_2
 		AND end_term_b >= :start_term_3
 		AND start_term_b <= :end_term_3
+		AND a.subj_code IS NULL
 
 	UNION
 
@@ -666,6 +720,11 @@ FROM (
 		GREATEST(eff_term_a, eff_term_b) AS eff_term
 	FROM
 		screqiv_2way
+		LEFT JOIN antirequisites a ON (
+			subj_code_1 = a.subj_code
+			AND crse_numb_1 = a.crse_numb
+			AND subj_code_2 = a.subj_code_eqiv
+			AND crse_numb_2 = a.crse_numb_eqiv)
 	WHERE
 		subj_code_1 = :subj_code_3
 		AND crse_numb_1 = :crse_numb_3
@@ -673,6 +732,7 @@ FROM (
 		AND start_term_a <= :end_term_4
 		AND end_term_b >= :start_term_5
 		AND start_term_b <= :end_term_5
+		AND a.subj_code IS NULL
 
 	UNION
 
@@ -683,6 +743,11 @@ FROM (
 		GREATEST(eff_term_a, eff_term_b) AS eff_term
 	FROM
 		screqiv_2way
+		LEFT JOIN antirequisites a ON (
+			subj_code_1 = a.subj_code
+			AND crse_numb_1 = a.crse_numb
+			AND subj_code_2 = a.subj_code_eqiv
+			AND crse_numb_2 = a.crse_numb_eqiv)
 	WHERE
 		subj_code_2 = :subj_code_4
 		AND crse_numb_2 = :crse_numb_4
@@ -690,6 +755,8 @@ FROM (
 		AND start_term_a <= :end_term_6
 		AND end_term_b >= :start_term_7
 		AND start_term_b <= :end_term_7
+		AND a.subj_code IS NULL
+
 
 	UNION
 
@@ -700,6 +767,11 @@ FROM (
 		GREATEST(eff_term_a, eff_term_b) AS eff_term
 	FROM
 		screqiv_2way
+		LEFT JOIN antirequisites a ON (
+			subj_code_1 = a.subj_code
+			AND crse_numb_1 = a.crse_numb
+			AND subj_code_2 = a.subj_code_eqiv
+			AND crse_numb_2 = a.crse_numb_eqiv)
 	WHERE
 		subj_code_2 = :subj_code_5
 		AND crse_numb_2 = :crse_numb_5
@@ -707,6 +779,7 @@ FROM (
 		AND start_term_a <= :end_term_8
 		AND end_term_b >= :start_term_9
 		AND start_term_b <= :end_term_9
+		AND a.subj_code IS NULL
 
 	) as screquiv_combined
 
@@ -760,6 +833,12 @@ ORDER BY eff_term DESC
 		self::$alternatesForCourseInTerms_stmt->execute($params);
 		$rows = self::$alternatesForCourseInTerms_stmt->fetchAll(PDO::FETCH_ASSOC);
 		self::$alternatesForCourseInTerms_stmt->closeCursor();
+
+		if ($this->getSubjectFromCourseId($courseId) == 'FREN' and in_array($this->getNumberFromCourseId($courseId), ['0101', '0102', '0103', '0105'])) {
+			ob_start();
+			print_r($rows);
+			file_put_contents('php://STDERR', ob_get_clean());
+		}
 
 		$ids = array();
 		foreach ($rows as $row) {

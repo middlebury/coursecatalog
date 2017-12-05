@@ -1,6 +1,22 @@
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `antirequisites`
+--
+
+CREATE TABLE IF NOT EXISTS `antirequisites` (
+  `subj_code` varchar(4) NOT NULL COMMENT 'Maps to SCREQIV_SUB_CODE',
+  `crse_numb` varchar(5) NOT NULL COMMENT 'Maps to SCREQIV_CRSE_NUMB',
+  `subj_code_eqiv` varchar(4) NOT NULL COMMENT 'Maps to SCREQIV_SUBJ_CODE_EQIV',
+  `crse_numb_eqiv` varchar(5) NOT NULL COMMENT 'Maps to SCREQIV_CRSE_NUMB_EQIV',
+  `added_by` varchar(100) NOT NULL COMMENT 'User who added this record.',
+  `added_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Date this record was added.',
+  `comments` text NOT NULL COMMENT 'Comments about this record.'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table for recording cross-lists that are antirequisites.';
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `catalog_term`
 --
 
