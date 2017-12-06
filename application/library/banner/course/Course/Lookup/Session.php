@@ -834,12 +834,6 @@ ORDER BY eff_term DESC
 		$rows = self::$alternatesForCourseInTerms_stmt->fetchAll(PDO::FETCH_ASSOC);
 		self::$alternatesForCourseInTerms_stmt->closeCursor();
 
-		if ($this->getSubjectFromCourseId($courseId) == 'FREN' and in_array($this->getNumberFromCourseId($courseId), ['0101', '0102', '0103', '0105'])) {
-			ob_start();
-			print_r($rows);
-			file_put_contents('php://STDERR', ob_get_clean());
-		}
-
 		$ids = array();
 		foreach ($rows as $row) {
 			$ids[] = $this->getCourseIdFromSubjectAndNumber($row['subj_code'], $row['crse_numb']);
