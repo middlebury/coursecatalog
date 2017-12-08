@@ -516,10 +516,14 @@ FROM (
 	FROM
 		screqiv_2way
 		LEFT JOIN antirequisites a ON (
-			subj_code_1 = a.subj_code
+			(subj_code_1 = a.subj_code
 			AND crse_numb_1 = a.crse_numb
 			AND subj_code_2 = a.subj_code_eqiv
 			AND crse_numb_2 = a.crse_numb_eqiv)
+			OR (subj_code_3 = a.subj_code
+			AND crse_numb_3 = a.crse_numb
+			AND subj_code_4 = a.subj_code_eqiv
+			AND crse_numb_4 = a.crse_numb_eqiv))
 	WHERE
 		subj_code_1 = :subj_code_2
 		AND crse_numb_1 = :crse_numb_2
@@ -535,10 +539,14 @@ FROM (
 	FROM
 		screqiv_2way
 		LEFT JOIN antirequisites a ON (
-			subj_code_1 = a.subj_code
+			(subj_code_1 = a.subj_code
 			AND crse_numb_1 = a.crse_numb
 			AND subj_code_2 = a.subj_code_eqiv
 			AND crse_numb_2 = a.crse_numb_eqiv)
+			OR (subj_code_3 = a.subj_code
+			AND crse_numb_3 = a.crse_numb
+			AND subj_code_4 = a.subj_code_eqiv
+			AND crse_numb_4 = a.crse_numb_eqiv))
 	WHERE
 		subj_code_1 = :subj_code_3
 		AND crse_numb_1 = :crse_numb_3
@@ -554,10 +562,14 @@ FROM (
 	FROM
 		screqiv_2way
 		LEFT JOIN antirequisites a ON (
-			subj_code_1 = a.subj_code
+			(subj_code_1 = a.subj_code
 			AND crse_numb_1 = a.crse_numb
 			AND subj_code_2 = a.subj_code_eqiv
 			AND crse_numb_2 = a.crse_numb_eqiv)
+			OR (subj_code_3 = a.subj_code
+			AND crse_numb_3 = a.crse_numb
+			AND subj_code_4 = a.subj_code_eqiv
+			AND crse_numb_4 = a.crse_numb_eqiv))
 	WHERE
 		subj_code_2 = :subj_code_4
 		AND crse_numb_2 = :crse_numb_4
@@ -573,10 +585,14 @@ FROM (
 	FROM
 		screqiv_2way
 		LEFT JOIN antirequisites a ON (
-			subj_code_1 = a.subj_code
+			(subj_code_1 = a.subj_code
 			AND crse_numb_1 = a.crse_numb
 			AND subj_code_2 = a.subj_code_eqiv
 			AND crse_numb_2 = a.crse_numb_eqiv)
+			OR (subj_code_3 = a.subj_code
+			AND crse_numb_3 = a.crse_numb
+			AND subj_code_4 = a.subj_code_eqiv
+			AND crse_numb_4 = a.crse_numb_eqiv))
 	WHERE
 		subj_code_2 = :subj_code_5
 		AND crse_numb_2 = :crse_numb_5
@@ -698,10 +714,14 @@ FROM (
 	FROM
 		screqiv_2way
 		LEFT JOIN antirequisites a ON (
-			subj_code_1 = a.subj_code
+			(subj_code_1 = a.subj_code
 			AND crse_numb_1 = a.crse_numb
 			AND subj_code_2 = a.subj_code_eqiv
 			AND crse_numb_2 = a.crse_numb_eqiv)
+			OR (subj_code_3 = a.subj_code
+			AND crse_numb_3 = a.crse_numb
+			AND subj_code_4 = a.subj_code_eqiv
+			AND crse_numb_4 = a.crse_numb_eqiv))
 	WHERE
 		subj_code_1 = :subj_code_2
 		AND crse_numb_1 = :crse_numb_2
@@ -721,10 +741,14 @@ FROM (
 	FROM
 		screqiv_2way
 		LEFT JOIN antirequisites a ON (
-			subj_code_1 = a.subj_code
+			(subj_code_1 = a.subj_code
 			AND crse_numb_1 = a.crse_numb
 			AND subj_code_2 = a.subj_code_eqiv
 			AND crse_numb_2 = a.crse_numb_eqiv)
+			OR (subj_code_3 = a.subj_code
+			AND crse_numb_3 = a.crse_numb
+			AND subj_code_4 = a.subj_code_eqiv
+			AND crse_numb_4 = a.crse_numb_eqiv))
 	WHERE
 		subj_code_1 = :subj_code_3
 		AND crse_numb_1 = :crse_numb_3
@@ -744,10 +768,14 @@ FROM (
 	FROM
 		screqiv_2way
 		LEFT JOIN antirequisites a ON (
-			subj_code_1 = a.subj_code
+			(subj_code_1 = a.subj_code
 			AND crse_numb_1 = a.crse_numb
 			AND subj_code_2 = a.subj_code_eqiv
 			AND crse_numb_2 = a.crse_numb_eqiv)
+			OR (subj_code_3 = a.subj_code
+			AND crse_numb_3 = a.crse_numb
+			AND subj_code_4 = a.subj_code_eqiv
+			AND crse_numb_4 = a.crse_numb_eqiv))
 	WHERE
 		subj_code_2 = :subj_code_4
 		AND crse_numb_2 = :crse_numb_4
@@ -768,10 +796,14 @@ FROM (
 	FROM
 		screqiv_2way
 		LEFT JOIN antirequisites a ON (
-			subj_code_1 = a.subj_code
+			(subj_code_1 = a.subj_code
 			AND crse_numb_1 = a.crse_numb
 			AND subj_code_2 = a.subj_code_eqiv
 			AND crse_numb_2 = a.crse_numb_eqiv)
+			OR (subj_code_3 = a.subj_code
+			AND crse_numb_3 = a.crse_numb
+			AND subj_code_4 = a.subj_code_eqiv
+			AND crse_numb_4 = a.crse_numb_eqiv))
 	WHERE
 		subj_code_2 = :subj_code_5
 		AND crse_numb_2 = :crse_numb_5
