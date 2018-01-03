@@ -24,7 +24,7 @@ class AdminController
 			throw new PermissionDeniedException('No admins are defined for this application.');
 		$admins = explode(',', $config->admin->administrator_ids);
 		if (!in_array($this->_helper->auth()->getUserId(), $admins))
-			throw new PermissionDeniedException('You are not authorized to administer this application.');
+			throw new PermissionDeniedException('You are not authorized to administer this application.' . $admins[1]);
 	}
 
 	/**
@@ -146,6 +146,10 @@ ORDER BY
 
 		$this->view->userId = $this->_helper->auth()->getUserId();
 		$this->view->userName = $this->_helper->auth()->getUserDisplayName();
+	}
+
+	public function exportAction()
+	{
 	}
 
 	/**
