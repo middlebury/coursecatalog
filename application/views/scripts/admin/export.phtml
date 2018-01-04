@@ -1,1 +1,13 @@
-Hola!
+<h1>Manage Export Configuration</h1>
+<div><a href="<?php print $this->url(array('action' => 'index')); ?>">&laquo; Back to Administration</a></div>
+
+<form action="<?php print $this->url(); ?>" method="get">
+	<select name='config' onchange="this.form.submit();">
+		<option value="select">Select a configuration</option>
+<?php
+foreach ($this->configs as $config) {
+	print "<option value='".$config['label']."'".(($config == $this->config)?' selected="selected"':'').">".$config['label']."</option>";
+}
+?>
+	</select>
+</form>

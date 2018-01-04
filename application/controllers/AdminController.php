@@ -150,6 +150,17 @@ ORDER BY
 
 	public function exportAction()
 	{
+		$db = Zend_Registry::get('db');
+
+		$this->view->configs = $db->query("SELECT * FROM archive_configurations")->fetchAll();
+
+		$this->view->config = NULL;
+		if ($this->_getParam('config')) {
+			foreach($this->view->configs as $config) {
+				if ($config['label'] === $this->_getParam('config'))
+					$this->view->config = $config;
+			}
+		}
 	}
 
 	/**
