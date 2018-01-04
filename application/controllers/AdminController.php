@@ -179,10 +179,10 @@ ORDER BY
 			$stmt = $db->prepare($query);
 			$stmt->execute(array($this->view->config['id']));
 			$this->view->latestRevision = $stmt->fetch();
-
-			$this->view->latestRevisionJsonData = json_decode($this->view->latestRevision['json_data'], true);
-			//var_dump($this->view->latestRevisionJsonData);
+			//var_dump($this->view->latestRevision['json_data']);
 			//die();
+			$this->view->latestRevisionJsonData = json_decode($this->view->latestRevision['json_data'], true);
+
 		}
 	}
 

@@ -21,7 +21,15 @@ class Zend_View_Helper_GenerateSectionInput
 	 * @since 1/4/17
 	 */
 	public function generateSectionInput ($type, $value) {
-		//return Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->fromString($idString);
-		return "<input value='yo'></input>";
+		switch ($type) {
+			case "h1":
+			case "h2":
+			case "page_content":
+				return "<input value='" . $value . "'></input>";
+			case "custom_text":
+				return "<textarea value='" . $value . "'>" . $value . "</textarea>";
+		}
+
+		return "Invalid section type!";
 	}
 }
