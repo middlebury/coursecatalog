@@ -194,10 +194,10 @@ class OfferingsController
 		// Topics
 		$topicQuery = $topicSearchSession->getTopicQuery();
 		$topicQuery->matchGenusType($this->departmentType, true);
-		if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
-			$record = $topicQuery->getTopicQueryRecord($this->termType);
-			$record->matchTermId($termId, true);
-		}
+		// if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+		// 	$record = $topicQuery->getTopicQueryRecord($this->termType);
+		// 	$record->matchTermId($termId, true);
+		// }
 		$search = $topicSearchSession->getTopicSearch();
 		$order = $topicSearchSession->getTopicSearchOrder();
 		$order->orderByDisplayName();
@@ -207,10 +207,10 @@ class OfferingsController
 
 		$topicQuery = $topicSearchSession->getTopicQuery();
 		$topicQuery->matchGenusType($this->subjectType, true);
-		if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
-			$record = $topicQuery->getTopicQueryRecord($this->termType);
-			$record->matchTermId($termId, true);
-		}
+		// if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+		// 	$record = $topicQuery->getTopicQueryRecord($this->termType);
+		// 	$record->matchTermId($termId, true);
+		// }
 		$search = $topicSearchSession->getTopicSearch();
 		$order = $topicSearchSession->getTopicSearchOrder();
 		$order->orderByDisplayName();

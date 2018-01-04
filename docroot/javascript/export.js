@@ -1,4 +1,6 @@
 /* Helper functions for catalog export configuration */
+
+// Update the input type of a section when user changes input type.
 function updateSection(sectionId) {
 
   // retrieve the newly selected Section Type

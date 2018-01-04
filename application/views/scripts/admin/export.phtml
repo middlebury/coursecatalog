@@ -54,14 +54,28 @@ foreach ($this->configs as $config) {
 						}
 						$sectionInput .= "
 						</optgroup>
-						<optgroup label='Departments'></optgroup>
+						<optgroup label='Departments'>";
+						while ($this->departments->hasNext()) {
+							$topic = $this->departments->getNextTopic();
+							$sectionInput .= "<option value='" . $this->getStringFromOsidId($topic->getId()) . "'";
+							if (isset($this->selectedDepartmentId) && $topic->getId()->isEqual($this->selectedDepartmentId))
+								$sectionInput .= " selected='selected'";
+							$sectionInput .= ">" . $this->escape($topic->getDisplayName()) . "</option>";
+						}
+
+						$sectionInput .= "
+						</optgroup>
 					</select>";
 					//var_dump($sectionInput);
 					//die();
 					break;
 			}
-			print "<li id='" . $key . "'><span class='section-type'>Type: " . $typeSelect . "</span><span class='section-value'>Value: " . $sectionInput . "</li>";
+			print "<li id='" . $key . "' class='section'><span class='section-type'>Type: " . $typeSelect . "</span><span class='section-value'>Value: " . $sectionInput . "</li>";
 		}
 		print "</ul>";
+
+		// Save and Reset buttons.
+		print "<button value='save'>Save</button>";
+		print "<button value='reset'>Reset</button>";
 	}
 ?>
