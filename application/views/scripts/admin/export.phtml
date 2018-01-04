@@ -1,6 +1,5 @@
 <?php
-  // Use this if you need a custom stylesheet.
-	//$this->headLink(array('rel' => 'stylesheet', 'href' => $this->baseUrl('/StyleSheets/Archive.css'), 'media' => 'all'));
+	$this->headLink(array('rel' => 'stylesheet', 'href' => $this->baseUrl('/StyleSheets/midd/Export.css'), 'media' => 'all'));
 ?>
 
 <h1>Manage Export Configuration</h1>
@@ -21,7 +20,7 @@ foreach ($this->configs as $config) {
 	if($this->latestRevision) {
 		print "<ul class='sections-list'>";
 		foreach($this->latestRevisionJsonData as $section) {
-			print "<li>" . $section['type'] . "</li>";
+			print "<li><span class='section-type'>" . $section['type'] . "</span><span class='section-value'>" . $section['value'] . "</li>";
 		}
 		print "</ul>";
 	}

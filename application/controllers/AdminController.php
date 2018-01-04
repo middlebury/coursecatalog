@@ -181,8 +181,6 @@ ORDER BY
 			$this->view->latestRevision = $stmt->fetch();
 
 			$this->view->latestRevisionJsonData = json_decode($this->view->latestRevision['json_data'], true);
-			//var_dump($this->view->jsonData);
-			//die();
 		}
 	}
 
