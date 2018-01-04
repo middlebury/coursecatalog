@@ -162,6 +162,7 @@ ORDER BY
 			}
 		}
 
+		// If user has selected a configuration to modify, get the latest revision.
 		if(isset($this->view->config)) {
 			$query =
 			"SELECT
@@ -178,8 +179,10 @@ ORDER BY
 			$stmt = $db->prepare($query);
 			$stmt->execute(array($this->view->config['id']));
 			$this->view->latestRevision = $stmt->fetch();
-			var_dump($this->view->latestRevision);
-			die();
+
+			$this->view->latestRevisionJsonData = json_decode($this->view->latestRevision['json_data'], true);
+			//var_dump($this->view->jsonData);
+			//die();
 		}
 	}
 
