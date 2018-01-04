@@ -163,11 +163,23 @@ ORDER BY
 		}
 
 		if(isset($this->view->config)) {
-			$query = "SELECT * FROM archive_configuration_revisions WHERE arch_conf_id = ?";
+			$query =
+			"SELECT
+				*
+			 FROM archive_configuration_revisions a
+			 INNER JOIN (
+			 	SELECT
+					arch_conf_id,
+					MAX(last_saved) as latest
+				FROM archive_configuration_revisions
+				GROUP BY arch_conf_id
+			) b ON a.arch_conf_id = b.arch_conf_id and a.last_saved = b.latest
+			 WHERE a.arch_conf_id = ?";
 			$stmt = $db->prepare($query);
 			$stmt->execute(array($this->view->config['id']));
 			$this->view->latestRevision = $stmt->fetch();
-
+			var_dump($this->view->latestRevision);
+			die();
 		}
 	}
 
