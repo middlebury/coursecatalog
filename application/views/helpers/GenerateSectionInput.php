@@ -23,20 +23,7 @@ class Zend_View_Helper_GenerateSectionInput
 	 */
 	public function generateSectionInput ($type, $value) {
 		switch ($type) {
-			case "h1":
-			case "h2":
-			case "page_content":
-				return "<input value='" . $value . "'></input>";
-			case "custom_text":
-				return "<textarea value='" . $value . "'>" . $value . "</textarea>";
-			case "course_list":
-				return "
-				<select name='course-list-select'>
-					<optgroup label='Subjects'>
-					</optgroup>
-					<optgroup label='Departments'>
-					</optgroup>
-				</select>";
+
 		}
 
 		return "Invalid section type!";

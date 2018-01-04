@@ -21,6 +21,7 @@ foreach ($this->configs as $config) {
 	if($this->latestRevision) {
 		print "<ul class='sections-list'>";
 		foreach($this->latestRevisionJsonData as $key => $section) {
+			// generate section type dropdown.
 			$typeSelect =
 			"<select name='" . $key . "-selector' onchange=updateSection('#" . $key . "')>
 				<option value='h1'" . (($section['type'] == 'h1')?' selected="selected"':'') . ">H1</option>
@@ -29,7 +30,37 @@ foreach ($this->configs as $config) {
 				<option value='custom_text'" . (($section['type'] == 'custom_text')?' selected="selected"':'') . ">Custom Text</option>
 				<option value='course_list'" . (($section['type'] == 'course_list')?' selected="selected"':'') . ">Course List</option>
 			</select>";
-			print "<li id='" . $key . "'><span class='section-type'>Type: " . $typeSelect . "</span><span class='section-value'>Value: " . $this->generateSectionInput($section['type'], $section['value']) . "</li>";
+
+			// generate section value based on type.
+			switch($section['type']) {
+				case "h1":
+				case "h2":
+				case "page_content":
+					$sectionInput = "<input value='" . $section['value'] . "'></input>";
+					break;
+				case "custom_text":
+					$sectionInput = "<textarea value='" . $section['value'] . "'>" . $section['value'] . "</textarea>";
+					break;
+				case "course_list":
+					$sectionInput = "
+					<select name='course-list-select'>
+						<optgroup label='Subjects'>";
+						while ($this->subjects->hasNext()) {
+							$topic = $this->subjects->getNextTopic();
+							$sectionInput .= "<option value='" . $this->getStringFromOsidId($topic->getId()) . "'";
+							if (isset($this->selectedDepartmentId) && $topic->getId()->isEqual($this->selectedDepartmentId))
+								$sectionInput .= " selected='selected'";
+							$sectionInput .= ">" . $this->escape($topic->getDisplayName()) . "</option>";
+						}
+						$sectionInput .= "
+						</optgroup>
+						<optgroup label='Departments'></optgroup>
+					</select>";
+					//var_dump($sectionInput);
+					//die();
+					break;
+			}
+			print "<li id='" . $key . "'><span class='section-type'>Type: " . $typeSelect . "</span><span class='section-value'>Value: " . $sectionInput . "</li>";
 		}
 		print "</ul>";
 	}

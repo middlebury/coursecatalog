@@ -163,7 +163,11 @@ ORDER BY
 		}
 
 		// If user has selected a configuration to modify, get the latest revision.
-		if(isset($this->view->config)) {
+		if(isset($this->view->config))
+		{
+			$catalogId = $this->_helper->osidId->fromString($this->view->config['catalog_id']);
+			$this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
+
 			$query =
 			"SELECT
 				*
@@ -179,9 +183,35 @@ ORDER BY
 			$stmt = $db->prepare($query);
 			$stmt->execute(array($this->view->config['id']));
 			$this->view->latestRevision = $stmt->fetch();
-			//var_dump($this->view->latestRevision['json_data']);
-			//die();
 			$this->view->latestRevisionJsonData = json_decode($this->view->latestRevision['json_data'], true);
+
+			// Populate certain info based on catalog ID.
+			$topicSearchSession = $this->_helper->osid->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
+			$topicQuery = $topicSearchSession->getTopicQuery();
+			// $topicQuery->matchGenusType($this->departmentType, true);
+			// if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+			// 	$record = $topicQuery->getTopicQueryRecord($this->termType);
+			// 	$record->matchTermId($termId, true);
+			// }
+			$search = $topicSearchSession->getTopicSearch();
+			$order = $topicSearchSession->getTopicSearchOrder();
+			$order->orderByDisplayName();
+			$search->orderTopicResults($order);
+			$searchResults = $topicSearchSession->getTopicsBySearch($topicQuery, $search);
+			$this->view->departments = $searchResults->getTopics();
+
+			$topicQuery = $topicSearchSession->getTopicQuery();
+			// $topicQuery->matchGenusType($this->subjectType, true);
+			// if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+			// 	$record = $topicQuery->getTopicQueryRecord($this->termType);
+			// 	$record->matchTermId($termId, true);
+			// }
+			$search = $topicSearchSession->getTopicSearch();
+			$order = $topicSearchSession->getTopicSearchOrder();
+			$order->orderByDisplayName();
+			$search->orderTopicResults($order);
+			$searchResults = $topicSearchSession->getTopicsBySearch($topicQuery, $search);
+			$this->view->subjects = $searchResults->getTopics();
 
 		}
 	}
