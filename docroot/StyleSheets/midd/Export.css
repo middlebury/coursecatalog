@@ -1,3 +1,14 @@
+.sections-list {
+  list-style: none;
+}
+
 .sections-list li {
   background: #b5c5dd;
+  padding: 10px;
+  border: 1px dashed gray;
+}
+
+.section-type {
+  display: block;
+  font-weight: bold;
 }

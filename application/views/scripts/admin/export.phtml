@@ -19,8 +19,16 @@ foreach ($this->configs as $config) {
 <?php
 	if($this->latestRevision) {
 		print "<ul class='sections-list'>";
-		foreach($this->latestRevisionJsonData as $section) {
-			print "<li><span class='section-type'>" . $section['type'] . "</span><span class='section-value'>" . $section['value'] . "</li>";
+		foreach($this->latestRevisionJsonData as $key => $section) {
+			$typeSelect =
+			"<select name=''" . $key . "-selector'>
+				<option value='h1'" . (($section['type'] == 'h1')?' selected="selected"':'') . ">H1</option>
+				<option value='h2'" . (($section['type'] == 'h2')?' selected="selected"':'') . ">H2</option>
+				<option value='page_content'" . (($section['type'] == 'page_content')?' selected="selected"':'') . ">Page Content</option>
+				<option value='custom_text'" . (($section['type'] == 'custom')?' selected="selected"':'') . ">Custom Text</option>
+				<option value='course_list'" . (($section['type'] == 'course_list')?' selected="selected"':'') . ">Course List</option>
+			</select>";
+			print "<li><span class='section-type'>Type: " . $typeSelect . "</span><span class='section-value'>Value: " . $section['value'] . "</li>";
 		}
 		print "</ul>";
 	}
