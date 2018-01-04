@@ -13,10 +13,11 @@ class Zend_View_Helper_GenerateSectionInput
 {
 
 	/**
-	 * Get and OSID id object from a string.
+	 * Generate an input field for a section based on its type.
 	 *
-	 * @param string $idString
-	 * @return osid_id_Id
+	 * @param string $type
+	 * @param string $value
+	 * @return string
 	 * @access public
 	 * @since 1/4/17
 	 */
@@ -28,6 +29,14 @@ class Zend_View_Helper_GenerateSectionInput
 				return "<input value='" . $value . "'></input>";
 			case "custom_text":
 				return "<textarea value='" . $value . "'>" . $value . "</textarea>";
+			case "course_list":
+				return "
+				<select name='course-list-select'>
+					<optgroup label='Subjects'>
+					</optgroup>
+					<optgroup label='Departments'>
+					</optgroup>
+				</select>";
 		}
 
 		return "Invalid section type!";

@@ -1,5 +1,6 @@
 <?php
 	$this->headLink(array('rel' => 'stylesheet', 'href' => $this->baseUrl('/StyleSheets/midd/Export.css'), 'media' => 'all'));
+	$this->headScript()->appendFile($this->baseUrl('javascript/export.js'));
 ?>
 
 <h1>Manage Export Configuration</h1>
@@ -21,14 +22,14 @@ foreach ($this->configs as $config) {
 		print "<ul class='sections-list'>";
 		foreach($this->latestRevisionJsonData as $key => $section) {
 			$typeSelect =
-			"<select name=''" . $key . "-selector'>
+			"<select name='" . $key . "-selector' onchange=updateSection('#" . $key . "')>
 				<option value='h1'" . (($section['type'] == 'h1')?' selected="selected"':'') . ">H1</option>
 				<option value='h2'" . (($section['type'] == 'h2')?' selected="selected"':'') . ">H2</option>
 				<option value='page_content'" . (($section['type'] == 'page_content')?' selected="selected"':'') . ">Page Content</option>
 				<option value='custom_text'" . (($section['type'] == 'custom_text')?' selected="selected"':'') . ">Custom Text</option>
 				<option value='course_list'" . (($section['type'] == 'course_list')?' selected="selected"':'') . ">Course List</option>
 			</select>";
-			print "<li><span class='section-type'>Type: " . $typeSelect . "</span><span class='section-value'>Value: " . $this->generateSectionInput($section['type'], $section['value']) . "</li>";
+			print "<li id='" . $key . "'><span class='section-type'>Type: " . $typeSelect . "</span><span class='section-value'>Value: " . $this->generateSectionInput($section['type'], $section['value']) . "</li>";
 		}
 		print "</ul>";
 	}
