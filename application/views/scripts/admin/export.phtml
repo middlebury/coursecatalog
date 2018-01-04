@@ -28,7 +28,7 @@ foreach ($this->configs as $config) {
 				<option value='custom_text'" . (($section['type'] == 'custom')?' selected="selected"':'') . ">Custom Text</option>
 				<option value='course_list'" . (($section['type'] == 'course_list')?' selected="selected"':'') . ">Course List</option>
 			</select>";
-			print "<li><span class='section-type'>Type: " . $typeSelect . "</span><span class='section-value'>Value: " . $section['value'] . "</li>";
+			print "<li><span class='section-type'>Type: " . $typeSelect . "</span><span class='section-value'>Value: " . $this->generateSectionInput($section['type'], $section['value']) . "</li>";
 		}
 		print "</ul>";
 	}
