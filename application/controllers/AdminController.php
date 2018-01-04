@@ -161,6 +161,14 @@ ORDER BY
 					$this->view->config = $config;
 			}
 		}
+
+		if(isset($this->view->config)) {
+			$query = "SELECT * FROM archive_configuration_revisions WHERE arch_conf_id = ?";
+			$stmt = $db->prepare($query);
+			$stmt->execute(array($this->view->config['id']));
+			$this->view->latestRevision = $stmt->fetch();
+
+		}
 	}
 
 	/**
