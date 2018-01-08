@@ -1,37 +1,22 @@
 /* Helper functions for catalog export configuration */
 
-// Update the input type of a section when user changes input type.
-function updateSection(sectionId) {
-
-  // retrieve the newly selected Section Type
-  var newType = $(sectionId).find('.section-type').find('select').val();
-
-  // retrieve this section's input value
-  var currentValue = $(sectionId).find('.section-value').find('input').val();
-
-  // there will be no value if the input is a textarea so we must select differently.
-  if (currentValue === undefined) {
-    currentValue = $(sectionId).find('.section-value').find('textarea').val();
-  }
-
-  alert(currentValue);
-
-  // set the html of this section-value span to a new input field based on the new type.
-  // put the old value into the new type if applicable.
-
-}
+$(document).ready(function() {
+  $('.section-input').change(function() {
+    $(this).attr('value', $(this).val());
+  });
+});
 
 function saveJSON() {
 
   var JSONString = "{";
   var sections = $('.section').toArray();
 
-  sections.forEach(function(element) {
+  sections.forEach(function(element, index) {
     var sectionAsDOMObject = $.parseHTML($(element).html());
-    //console.log(sectionAsDOMObject);
     var sectionType = sectionAsDOMObject[0].innerHTML.substring(sectionAsDOMObject[0].innerHTML.indexOf(": ") + 2);
     var sectionValueHTML = sectionAsDOMObject[1].innerHTML.substring(sectionAsDOMObject[1].innerHTML.indexOf(": ") + 2);
-    //console.log(sectionValueHTML);
+    console.log(sectionAsDOMObject);
+
     // Extract the value based on sectionType.
     switch(sectionType) {
       case 'h1':
@@ -41,13 +26,30 @@ function saveJSON() {
         var sectionValue = sectionValueHTML.substring(sectionValueHTML.indexOf('value=') + 6, sectionValueHTML.indexOf('>'));
         break;
       case 'course_list':
-        var sectionValue = 'not yet';
+        var selectedIndex = sectionValueHTML.indexOf('selected=');
+        var valueIndex = selectedIndex - 2;
+        /* To avoid getting stuck in an infinite loop, we cap the number of
+         * iterations.  If we have reached that max, then something clearly went
+         * wrong anyway */
+        var foundIndex = false;
+        while(!foundIndex && selectedIndex - valueIndex < 30) {
+          valueIndex--;
+          if(sectionValueHTML.substring(valueIndex, valueIndex + 6) === 'value=') {
+            var sectionValue = sectionValueHTML.substring(valueIndex + 6, selectedIndex - 1);
+            foundIndex = true;
+          }
+        }
         break;
       default:
         throw 'Invalid section type: ' + sectionType;
     }
-    console.log(sectionValue);
+
+    // Construct JSON.
+    JSONString += "\"section" + eval(index + 1) + "\":{\"type\":\"" + sectionType +"\",\"value\":" + sectionValue + "}," ;
   });
+
+  // Remove trailing ,
+  JSONString = JSONString.substring(0, JSONString.length - 1);
 
   JSONString += "}";
 

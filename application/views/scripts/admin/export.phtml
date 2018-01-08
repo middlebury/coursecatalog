@@ -27,19 +27,19 @@ foreach ($this->configs as $config) {
 				case "h1":
 				case "h2":
 				case "page_content":
-					$sectionInput = "<input value='" . $section['value'] . "'></input>";
+					$sectionInput = "<input class ='section-input' value='" . $section['value'] . "'></input>";
 					break;
 				case "custom_text":
-					$sectionInput = "<textarea value='" . $section['value'] . "'>" . $section['value'] . "</textarea>";
+					$sectionInput = "<textarea class='section-input' value='" . $section['value'] . "'>" . $section['value'] . "</textarea>";
 					break;
 				case "course_list":
 					$sectionInput = "
-					<select name='course-list-select'>
+					<select class='section-input' name='course-list-select'>
 						<optgroup label='Subjects'>";
 						while ($this->subjects->hasNext()) {
 							$topic = $this->subjects->getNextTopic();
 							$sectionInput .= "<option value='" . $this->getStringFromOsidId($topic->getId()) . "'";
-							if (isset($this->selectedDepartmentId) && $topic->getId()->isEqual($this->selectedDepartmentId))
+							if ($section['value'] === $this->getStringFromOsidId($topic->getId()))
 								$sectionInput .= " selected='selected'";
 							$sectionInput .= ">" . $this->escape($topic->getDisplayName()) . "</option>";
 						}
@@ -49,7 +49,7 @@ foreach ($this->configs as $config) {
 						while ($this->departments->hasNext()) {
 							$topic = $this->departments->getNextTopic();
 							$sectionInput .= "<option value='" . $this->getStringFromOsidId($topic->getId()) . "'";
-							if (isset($this->selectedDepartmentId) && $topic->getId()->isEqual($this->selectedDepartmentId))
+							if ($section['value'] === $this->getStringFromOsidId($topic->getId()))
 								$sectionInput .= " selected='selected'";
 							$sectionInput .= ">" . $this->escape($topic->getDisplayName()) . "</option>";
 						}
