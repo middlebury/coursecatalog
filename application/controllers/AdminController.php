@@ -148,6 +148,7 @@ ORDER BY
 		$this->view->userName = $this->_helper->auth()->getUserDisplayName();
 	}
 
+	/* Manage archive export configurations */
 	public function exportAction()
 	{
 		$db = Zend_Registry::get('db');

@@ -18,22 +18,34 @@ $(document).ready(function() {
 function saveJSON() {
 
   var JSONString = "{";
-  var sections = $('.section').toArray();
 
+  var sections = $('.section').toArray();
   sections.forEach(function(element, index) {
     var sectionAsDOMObject = $.parseHTML($(element).html());
     var sectionType = sectionAsDOMObject[0].innerHTML.substring(sectionAsDOMObject[0].innerHTML.indexOf(": ") + 2);
     var sectionValueHTML = sectionAsDOMObject[1].innerHTML.substring(sectionAsDOMObject[1].innerHTML.indexOf(": ") + 2);
     var sectionValue = sectionValueHTML.substring(sectionValueHTML.indexOf('value=') + 6, sectionValueHTML.indexOf('>'));
-
-    // Construct JSON.
     JSONString += "\"section" + eval(index + 1) + "\":{\"type\":\"" + sectionType +"\",\"value\":" + sectionValue + "}," ;
   });
 
   // Remove trailing ,
   JSONString = JSONString.substring(0, JSONString.length - 1);
-
   JSONString += "}";
 
   console.log(JSONString);
+
+  $.ajax({
+    url: "../exports/add",
+    type: "POST",
+    dataType: 'json',
+    data: {
+      jsonData: JSONString
+    },
+    error: function(error) {
+      throw error;
+    },
+    success: function(data) {
+      console.log(data);
+    }
+  })
 }
