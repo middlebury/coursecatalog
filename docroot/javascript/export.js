@@ -5,15 +5,31 @@ $(document).ready(function() {
     $(this).attr('value', $(this).val());
   });
   $('.section-dropdown').change(function() {
-    //alert(this.selectedIndex);
-    //$("option:selected", this).prop('selected', false);
     $(this).attr('value', $(this).val());
-    //var test = $(this + "option[value=" + this.value + "]", this);
-    // .attr("selected", true).siblings()
-    // .removeAttr("selected");
-    $(this).val()
   });
 });
+
+function newSection(previousSection) {
+  $("<li class='section'><select class='select-section-type' onchange='defineSection(this)'><option value='unselected' selected='selected'>Please choose a section type</option><option value='h1'>h1</option><option value='h2'>h2</option><option value='page_content'>External page content</option><option value='custom_text'>Custom text</option><option value='course_list'>Course list</option></select></li>").insertAfter(previousSection);
+  // Rename sections according to new order.
+  $('.section').toArray().forEach(function(element, index) {
+    $(element).attr('id', 'section' + eval(index + 1));
+  });
+}
+
+function defineSection(select) {
+  var sectionType = $(select).val();
+  var courseSelect = $.ajax({
+    url: "../export/generateCourseList",
+    type: "GET",
+    error: function(error) {
+      throw error;
+    },
+    success: function(data) {
+      console.log(data);
+    }
+  });
+}
 
 function saveJSON() {
 
@@ -32,10 +48,8 @@ function saveJSON() {
   JSONString = JSONString.substring(0, JSONString.length - 1);
   JSONString += "}";
 
-  console.log(JSONString);
-
   $.ajax({
-    url: "../exports/add",
+    url: "../export/add",
     type: "POST",
     dataType: 'json',
     data: {
@@ -47,5 +61,5 @@ function saveJSON() {
     success: function(data) {
       console.log(data);
     }
-  })
+  });
 }

@@ -1,7 +1,7 @@
 <?php
 
 /** Zend_Controller_Action */
-class ExportsController extends Zend_Controller_Action
+class ExportController extends Zend_Controller_Action
 {
   public function addAction()
   {
@@ -25,9 +25,16 @@ class ExportsController extends Zend_Controller_Action
         }
     }
     else {
-        echo 'Not Ajax';
-        // ... Do normal controller logic here (To catch non ajax calls to the script)
+        echo 'This route for XmlHttpRequests only.  Sorry!';
     }
+  }
+
+  public function generatecourselistAction()
+  {
+    echo "<select class='section-dropdown' value='unselected'><option value='unselected' selected='selected'>Please choose a subject</option><optgroup label='Subjects'></optgroup><optgroup label='Departments'></optgroup></select>";
+
+    $this->_helper->layout()->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
   }
 }
 

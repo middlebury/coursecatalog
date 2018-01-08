@@ -35,6 +35,7 @@ foreach ($this->configs as $config) {
 				case "course_list":
 					$sectionInput = "
 					<select class='section-dropdown' value=" . $section['value'] . ">
+						<option value='unselected'>Please choose a subject</option>
 						<optgroup label='Subjects'>";
 						while ($this->subjects->hasNext()) {
 							$topic = $this->subjects->getNextTopic();
@@ -59,7 +60,7 @@ foreach ($this->configs as $config) {
 					</select>";
 					break;
 			}
-			print "<li id='" . $key . "' class='section'><span class='section-type'>Type: " . $section['type'] . "</span><span class='section-value'>Value: " . $sectionInput . "</li>";
+			print "<li id='" . $key . "' class='section'><span class='section-type'>Type: " . $section['type'] . "</span><span class='section-value'>Value: " . $sectionInput . "</span><span class='section-controls'><button class='button-section-delete'>Delete</button><button class='button-section-add' onclick='newSection(" . $key . ")'>Add Section Below</button></span></li>";
 		}
 		print "</ul>";
 
