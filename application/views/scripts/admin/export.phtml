@@ -34,7 +34,7 @@ foreach ($this->configs as $config) {
 					break;
 				case "course_list":
 					$sectionInput = "
-					<select class='section-input' name='course-list-select'>
+					<select class='section-dropdown'>
 						<optgroup label='Subjects'>";
 						while ($this->subjects->hasNext()) {
 							$topic = $this->subjects->getNextTopic();
