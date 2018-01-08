@@ -21,17 +21,8 @@ foreach ($this->configs as $config) {
 	if($this->latestRevision) {
 		print "<ul class='sections-list'>";
 		foreach($this->latestRevisionJsonData as $key => $section) {
-			// generate section type dropdown.
-			$typeSelect =
-			"<select name='" . $key . "-selector' onchange=updateSection('#" . $key . "')>
-				<option value='h1'" . (($section['type'] == 'h1')?' selected="selected"':'') . ">H1</option>
-				<option value='h2'" . (($section['type'] == 'h2')?' selected="selected"':'') . ">H2</option>
-				<option value='page_content'" . (($section['type'] == 'page_content')?' selected="selected"':'') . ">Page Content</option>
-				<option value='custom_text'" . (($section['type'] == 'custom_text')?' selected="selected"':'') . ">Custom Text</option>
-				<option value='course_list'" . (($section['type'] == 'course_list')?' selected="selected"':'') . ">Course List</option>
-			</select>";
 
-			// generate section value based on type.
+			// generate section value input type based on type.
 			switch($section['type']) {
 				case "h1":
 				case "h2":
@@ -66,16 +57,14 @@ foreach ($this->configs as $config) {
 						$sectionInput .= "
 						</optgroup>
 					</select>";
-					//var_dump($sectionInput);
-					//die();
 					break;
 			}
-			print "<li id='" . $key . "' class='section'><span class='section-type'>Type: " . $typeSelect . "</span><span class='section-value'>Value: " . $sectionInput . "</li>";
+			print "<li id='" . $key . "' class='section'><span class='section-type'>Type: " . $section['type'] . "</span><span class='section-value'>Value: " . $sectionInput . "</li>";
 		}
 		print "</ul>";
 
 		// Save and Reset buttons.
-		print "<button value='save'>Save</button>";
+		print "<button value='save' onclick='saveJSON()'>Save</button>";
 		print "<button value='reset'>Reset</button>";
 	}
 ?>
