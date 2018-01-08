@@ -22,6 +22,9 @@ function defineSection(select) {
   var courseSelect = $.ajax({
     url: "../export/generateCourseList",
     type: "GET",
+    data: {
+      catalogId: $('#catalogId').val()
+    },
     error: function(error) {
       throw error;
     },

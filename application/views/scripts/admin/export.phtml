@@ -19,6 +19,7 @@ foreach ($this->configs as $config) {
 
 <?php
 	if($this->latestRevision) {
+		print "<input id='catalogId' type='hidden' value='" . $this->catalogId . "'></input>";
 		print "<ul class='sections-list'>";
 		foreach($this->latestRevisionJsonData as $key => $section) {
 

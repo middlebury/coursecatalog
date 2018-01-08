@@ -31,10 +31,15 @@ class ExportController extends Zend_Controller_Action
 
   public function generatecourselistAction()
   {
-    echo "<select class='section-dropdown' value='unselected'><option value='unselected' selected='selected'>Please choose a subject</option><optgroup label='Subjects'></optgroup><optgroup label='Departments'></optgroup></select>";
+    if ($this->_getParam('catalogId')) {
+      echo "<select class='section-dropdown' value='unselected'><option value='unselected' selected='selected'>Please choose a subject</option><optgroup label='Subjects'></optgroup><optgroup label='Departments'></optgroup></select>";
 
-    $this->_helper->layout()->disableLayout();
-    $this->_helper->viewRenderer->setNoRender(true);
+      $this->_helper->layout()->disableLayout();
+      $this->_helper->viewRenderer->setNoRender(true);
+    }
+    else {
+      echo 'Invalid request.  Please provide a catalogId';
+    }
   }
 }
 

@@ -167,6 +167,7 @@ ORDER BY
 		if(isset($this->view->config))
 		{
 			$catalogId = $this->_helper->osidId->fromString($this->view->config['catalog_id']);
+			$this->view->catalogId = $this->view->config['catalog_id'];
 			$this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
 			$this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
 
