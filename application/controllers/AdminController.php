@@ -215,9 +215,34 @@ ORDER BY
 			$search->orderTopicResults($order);
 			$searchResults = $topicSearchSession->getTopicsBySearch($topicQuery, $search);
 			$this->view->subjects = $searchResults->getTopics();
-
 		}
 	}
+
+	public function insertconfigrevisionAction()
+  {
+    $this->_helper->layout()->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
+
+    if ($this->getRequest()->isXmlHttpRequest()) {
+        if ($this->getRequest()->isPost()) {
+          $db = Zend_Registry::get('db');
+          $query =
+          "INSERT INTO archive_configuration_revisions (`arch_conf_id`, `last_saved`, `user_id`, `user_disp_name`, `json_data`)
+          VALUES (
+            '" . $this->getRequest()->getPost('configId') . "',
+            CURRENT_TIMESTAMP,
+            '" . $this->view->getUserId() . "',
+            '" . $this->view->getUserDisplayName() . "',"
+            . "'" . $this->getRequest()->getPost('jsonData') . "')";
+          $stmt = $db->prepare($query);
+          $stmt->execute();
+          return $this->getRequest()->getPost();
+        }
+    }
+    else {
+        echo 'This route for XmlHttpRequests only.  Sorry!';
+    }
+  }
 
 	/**
 	 * Manage antirequisites

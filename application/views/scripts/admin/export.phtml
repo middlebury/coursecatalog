@@ -17,17 +17,16 @@ foreach ($this->configs as $config) {
 	</select>
 </form>
 
-<div id='config-body'>
-	<?php
+<?php
+	print "<div id='config-body'>";
+
+	if($this->catalogId) {
 		print "<input id='catalogId' type='hidden' value='" . $this->catalogId . "'></input>";
 		print "<input id='configId' type='hidden' value='" . $this->config['id'] . "'></input>";
-		print "<input id='uid' type='hidden' value='" . $this->getUserId() . "'></input>";
-		print "<input id='udn' type='hidden' value='" . $this->getUserDisplayName() . "'></input>";
 		print "<button onclick='newSection(null)'>Add Section</button>";
 		print "<ul id='sections-list' class='sections-list'>";
-	?>
+	}
 
-<?php
 	if($this->latestRevision && !empty($this->latestRevisionJsonData)) {
 
 		// Generate ahead of time as creating the dropdown every time will result in missing data.
@@ -75,11 +74,18 @@ foreach ($this->configs as $config) {
 		}
 	}
 	else {
-		print "<li id='begin-message'>Please add a new section to begin</li>";
+		if($this->catalogId) {
+			print "<li id='begin-message'>Please add a new section to begin</li>";
+		}
 	}
-?>
-	</ul>
 
-	<button value='save' onclick='saveJSON()'>Save</button>
-	<button value='reset'>Reset</button>
-</div>
+	print "</ul>";
+
+	if($this->catalogId) {
+		print "<button value='save' onclick='saveJSON()'>Save</button>";
+		print "<button value='reset'>Reset</button>";
+	}
+	
+print "</div>";
+
+?>

@@ -97,14 +97,15 @@ function saveJSON() {
   JSONString = JSONString.substring(0, JSONString.length - 1);
   JSONString += "}";
 
+  // Ensure valid JSON if no sections are present.
+  if(JSONString === "}") JSONString = "{}";
+
   $.ajax({
-    url: "../export/add",
+    url: "insertconfigrevision",
     type: "POST",
     dataType: 'json',
     data: {
-      catalogId: $('#configId').attr('value'),
-      uid: $('#uid').attr('value'),
-      udn: $('#udn').attr('value'),
+      configId: $('#configId').attr('value'),
       jsonData: JSONString
     },
     error: function(error) {
