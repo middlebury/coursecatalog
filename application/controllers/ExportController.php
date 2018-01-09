@@ -14,7 +14,7 @@ class ExportController extends Zend_Controller_Action
           $query =
           "INSERT INTO archive_configuration_revisions (`arch_conf_id`, `last_saved`, `user_id`, `user_disp_name`, `json_data`)
           VALUES (
-            '1',
+            " . $this->getRequest()->getPost('catalogId') . ",
             CURRENT_TIMESTAMP,
             '35411217E5C630E81792E8F256807B19',
             'Corey Selover',"

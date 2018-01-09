@@ -17,12 +17,18 @@ foreach ($this->configs as $config) {
 	</select>
 </form>
 
-<?php
-	if($this->latestRevision) {
+<div id='config-body'>
+	<?php
 		print "<input id='catalogId' type='hidden' value='" . $this->catalogId . "'></input>";
-		print "<ul class='sections-list'>";
+		print "<input id='configId' type='hidden' value='" . $this->config['id'] . "'></input>";
+		print "<button onclick='newSection(null)'>Add Section</button>";
+		print "<ul id='sections-list' class='sections-list'>";
+	?>
 
-		// Generate ahead of time for O(1) rather than every time for O(n).
+<?php
+	if($this->latestRevision && !empty($this->latestRevisionJsonData)) {
+
+		// Generate ahead of time as creating the dropdown every time will result in missing data.
 		$courseDropdown = "
 		<select class='section-dropdown'>
 			<option value='unselected'>Please choose a subject</option>
@@ -65,11 +71,13 @@ foreach ($this->configs as $config) {
 
 			print "<li id='" . $key . "' class='section'><span class='section-type'>Type: " . $section['type'] . "</span><span class='section-value'>Value: " . $sectionInput . "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
 		}
-
-		print "</ul>";
-
-		// Save and Reset buttons.
-		print "<button value='save' onclick='saveJSON()'>Save</button>";
-		print "<button value='reset'>Reset</button>";
+	}
+	else {
+		print "<li id='begin-message'>Please add a new section to begin</li>";
 	}
 ?>
+	</ul>
+
+	<button value='save' onclick='saveJSON()'>Save</button>
+	<button value='reset'>Reset</button>
+</div>

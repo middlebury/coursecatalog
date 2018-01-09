@@ -5,7 +5,6 @@ $(document).ready(function() {
     $(this).attr('value', $(this).val());
   });
   $('.section-dropdown').change(function() {
-    console.log('oh hey');
     $(this).attr('value', $(this).val());
   });
 });
@@ -17,8 +16,16 @@ function renameSections() {
 }
 
 function newSection(thisButton) {
-  var li = $(thisButton).parent().parent();
-  $("<li class='section'><select class='select-section-type' onchange='defineSection(this)'><option value='unselected' selected='selected'>Please choose a section type</option><option value='h1'>h1</option><option value='h2'>h2</option><option value='page_content'>External page content</option><option value='custom_text'>Custom text</option><option value='course_list'>Course list</option></select></li>").insertAfter(li);
+  var newSectionHTML = "<li class='section'><select class='select-section-type' onchange='defineSection(this)'><option value='unselected' selected='selected'>Please choose a section type</option><option value='h1'>h1</option><option value='h2'>h2</option><option value='page_content'>External page content</option><option value='custom_text'>Custom text</option><option value='course_list'>Course list</option></select></li>";
+  if(!thisButton) {
+    if($('#begin-message')) {
+      $('#begin-message').remove();
+    }
+    $('#sections-list').append(newSectionHTML);
+  } else {
+    var li = $(thisButton).parent().parent();
+    $(newSectionHTML).insertAfter(li);
+  }
   renameSections();
 }
 
@@ -55,8 +62,13 @@ function defineSection(select) {
       }
 
       $(li).html("<span class='section-type'>Type: " + sectionType + "</span><span class='section-value'>Value: " + sectionInput + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>");
-      $(li).find('.section-dropdown').on('change', function() {
-        console.log('oh hey');
+
+      // Add event listeners for value changes.
+      // I will never understand why javascript doesn't do this for us.
+      $('.section-input').on('change', function() {
+        $(this).attr('value', $(this).val());
+      });
+      $('.section-dropdown').on('change', function() {
         $(this).attr('value', $(this).val());
       });
     }
@@ -90,6 +102,7 @@ function saveJSON() {
     type: "POST",
     dataType: 'json',
     data: {
+      catalogId: $('#configId').attr('value'),
       jsonData: JSONString
     },
     error: function(error) {
