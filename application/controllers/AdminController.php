@@ -168,53 +168,36 @@ ORDER BY
 		{
 			$catalogId = $this->_helper->osidId->fromString($this->view->config['catalog_id']);
 			$this->view->catalogId = $this->view->config['catalog_id'];
-			$this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
-			$this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
-
-			$query =
-			"SELECT
-				*
-			 FROM archive_configuration_revisions a
-			 INNER JOIN (
-			 	SELECT
-					arch_conf_id,
-					MAX(last_saved) as latest
-				FROM archive_configuration_revisions
-				GROUP BY arch_conf_id
-			) b ON a.arch_conf_id = b.arch_conf_id and a.last_saved = b.latest
-			 WHERE a.arch_conf_id = ?";
-			$stmt = $db->prepare($query);
-			$stmt->execute(array($this->view->config['id']));
-			$this->view->latestRevision = $stmt->fetch();
-			$this->view->latestRevisionJsonData = json_decode($this->view->latestRevision['json_data'], true);
+			//$this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
+			//$this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
 
 			// Populate certain info based on catalog ID.
-			$topicSearchSession = $this->_helper->osid->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
-			$topicQuery = $topicSearchSession->getTopicQuery();
-			$topicQuery->matchGenusType($this->departmentType, true);
-			if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
-				$record = $topicQuery->getTopicQueryRecord($this->termType);
-				$record->matchTermId($termId, true);
-			}
-			$search = $topicSearchSession->getTopicSearch();
-			$order = $topicSearchSession->getTopicSearchOrder();
-			$order->orderByDisplayName();
-			$search->orderTopicResults($order);
-			$searchResults = $topicSearchSession->getTopicsBySearch($topicQuery, $search);
-			$this->view->departments = $searchResults->getTopics();
-
-			$topicQuery = $topicSearchSession->getTopicQuery();
-			$topicQuery->matchGenusType($this->subjectType, true);
-			if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
-				$record = $topicQuery->getTopicQueryRecord($this->termType);
-				$record->matchTermId($termId, true);
-			}
-			$search = $topicSearchSession->getTopicSearch();
-			$order = $topicSearchSession->getTopicSearchOrder();
-			$order->orderByDisplayName();
-			$search->orderTopicResults($order);
-			$searchResults = $topicSearchSession->getTopicsBySearch($topicQuery, $search);
-			$this->view->subjects = $searchResults->getTopics();
+			// $topicSearchSession = $this->_helper->osid->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
+			// $topicQuery = $topicSearchSession->getTopicQuery();
+			// $topicQuery->matchGenusType($this->departmentType, true);
+			// if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+			// 	$record = $topicQuery->getTopicQueryRecord($this->termType);
+			// 	$record->matchTermId($termId, true);
+			// }
+			// $search = $topicSearchSession->getTopicSearch();
+			// $order = $topicSearchSession->getTopicSearchOrder();
+			// $order->orderByDisplayName();
+			// $search->orderTopicResults($order);
+			// $searchResults = $topicSearchSession->getTopicsBySearch($topicQuery, $search);
+			// $this->view->departments = $searchResults->getTopics();
+      //
+			// $topicQuery = $topicSearchSession->getTopicQuery();
+			// $topicQuery->matchGenusType($this->subjectType, true);
+			// if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+			// 	$record = $topicQuery->getTopicQueryRecord($this->termType);
+			// 	$record->matchTermId($termId, true);
+			// }
+			// $search = $topicSearchSession->getTopicSearch();
+			// $order = $topicSearchSession->getTopicSearchOrder();
+			// $order->orderByDisplayName();
+			// $search->orderTopicResults($order);
+			// $searchResults = $topicSearchSession->getTopicsBySearch($topicQuery, $search);
+			// $this->view->subjects = $searchResults->getTopics();
 		}
 	}
 

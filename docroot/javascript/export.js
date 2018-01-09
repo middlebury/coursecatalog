@@ -1,13 +1,73 @@
 /* Helper functions for catalog export configuration */
 
 $(document).ready(function() {
-  $('.section-input').change(function() {
-    $(this).attr('value', $(this).val());
-  });
-  $('.section-dropdown').change(function() {
-    $(this).attr('value', $(this).val());
+
+  // Load data.
+  $.ajax({
+    url: "../export/list",
+    type: "GET",
+    data: {
+      configId: $('#configId').val()
+    },
+    success: function(data) {
+      populateList($.parseJSON(data));
+
+      $('.section-input').change(function() {
+        $(this).attr('value', $(this).val());
+      });
+      $('.section-dropdown').change(function() {
+        $(this).attr('value', $(this).val());
+      });
+    }
   });
 });
+
+function populateList(jsonData) {
+  if (!jsonData) {
+    $('#sections-list').append("<li id='begin-message'>Please add a new section to begin</li>");
+  } else {
+    $.each(jsonData, function(key, value) {
+      generateInputTag(value.type, value.value, function(result) {
+        var li = "<li><span class='section-type'>Type: " + value.type + "</span><span class='section-value'>Value: " + result + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
+        $('#sections-list').append(li);
+      });
+    });
+  }
+}
+
+function generateInputTag(type, value, callback) {
+  switch(type) {
+    case "h1":
+  	case "h2":
+  	case "page_content":
+  		callback("<input class ='section-input' value='" + value + "'></input>");
+  		break;
+  	case "custom_text":
+  		callback("<textarea class='section-input' value='" + value + "'>" + value + "</textarea>");
+  		break;
+  	case "course_list":
+      $.ajax({
+        url: "../export/generateCourseList",
+        type: "GET",
+        data: {
+          catalogId: $('#catalogId').val()
+        },
+        error: function(error) {
+          throw error;
+        },
+        success: function(data) {
+          if(value === '') value = 'unselected';
+          var sectionInput = data;
+          sectionInput = sectionInput.replace("'" + value + "'", "'" + value + "' selected='selected'");
+          sectionInput = sectionInput.replace("<select class='section-dropdown' value='unselected'>", "<select class='section-dropdown' value='" + value + "'>");
+          callback(sectionInput);
+        }
+      });
+  		break;
+    default:
+      throw "Invalid input tag type: " + type;
+  }
+}
 
 function renameSections() {
   $('.section').toArray().forEach(function(element, index) {
@@ -33,45 +93,17 @@ function defineSection(select) {
   var sectionType = $(select).val();
   var li = $(select).parent();
 
-  // We do this for every section even if it's not a course list because of
-  // asyncronicity issues.
-  $.ajax({
-    url: "../export/generateCourseList",
-    type: "GET",
-    data: {
-      catalogId: $('#catalogId').val()
-    },
-    error: function(error) {
-      throw error;
-    },
-    success: function(data) {
-      switch(sectionType) {
-        case 'h1':
-        case 'h2':
-        case 'page_content':
-          var sectionInput = "<input class ='section-input' value=''></input>";
-          break;
-        case 'custom_text':
-          var sectionInput = "<textarea class='section-input' value=''></textarea>";
-          break;
-        case 'course_list':
-          var sectionInput = data;
-          break;
-        default:
-          throw 'Invalid section type: ' + sectionType;
-      }
+  generateInputTag(sectionType, '', function(result) {
+    $(li).html("<span class='section-type'>Type: " + sectionType + "</span><span class='section-value'>Value: " + result + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>");
 
-      $(li).html("<span class='section-type'>Type: " + sectionType + "</span><span class='section-value'>Value: " + sectionInput + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>");
-
-      // Add event listeners for value changes.
-      // I will never understand why javascript doesn't do this for us.
-      $('.section-input').on('change', function() {
-        $(this).attr('value', $(this).val());
-      });
-      $('.section-dropdown').on('change', function() {
-        $(this).attr('value', $(this).val());
-      });
-    }
+    // Add event listeners for value changes.
+    // I will never understand why javascript doesn't do this for us.
+    $('.section-input').on('change', function() {
+      $(this).attr('value', $(this).val());
+    });
+    $('.section-dropdown').on('change', function() {
+      $(this).attr('value', $(this).val());
+    });
   });
 }
 
@@ -89,7 +121,14 @@ function saveJSON() {
     var sectionAsDOMObject = $.parseHTML($(element).html());
     var sectionType = sectionAsDOMObject[0].innerHTML.substring(sectionAsDOMObject[0].innerHTML.indexOf(": ") + 2);
     var sectionValueHTML = sectionAsDOMObject[1].innerHTML.substring(sectionAsDOMObject[1].innerHTML.indexOf(": ") + 2);
-    var sectionValue = sectionValueHTML.substring(sectionValueHTML.indexOf('value=') + 6, sectionValueHTML.indexOf('>'));
+    switch(sectionType) {
+      case "course_list":
+        var sectionValue = sectionValueHTML.substring(sectionValueHTML.indexOf('value=') + 6, sectionValueHTML.indexOf('selected') - 1);
+        break;
+      default:
+        var sectionValue = sectionValueHTML.substring(sectionValueHTML.indexOf('value=') + 6, sectionValueHTML.indexOf('>'));
+    }
+    console.log(sectionValue);
     JSONString += "\"section" + eval(index + 1) + "\":{\"type\":\"" + sectionType +"\",\"value\":" + sectionValue + "}," ;
   });
 
@@ -101,7 +140,7 @@ function saveJSON() {
   if(JSONString === "}") JSONString = "{}";
 
   $.ajax({
-    url: "../export/insertconfigrevision",
+    url: "../export/insert",
     type: "POST",
     dataType: 'json',
     data: {

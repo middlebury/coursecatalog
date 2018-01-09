@@ -25,8 +25,32 @@ class ExportController extends Zend_Controller_Action
       throw new PermissionDeniedException('You are not authorized to administer this application.' . $admins[1]);
   }
 
-  public function insertconfigrevisionAction()
-  {
+  public function listAction() {
+
+    $this->_helper->layout()->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
+
+    $db = Zend_Registry::get('db');
+    $query =
+    "SELECT
+      *
+     FROM archive_configuration_revisions a
+     INNER JOIN (
+      SELECT
+        arch_conf_id,
+        MAX(last_saved) as latest
+      FROM archive_configuration_revisions
+      GROUP BY arch_conf_id
+    ) b ON a.arch_conf_id = b.arch_conf_id and a.last_saved = b.latest
+     WHERE a.arch_conf_id = ?";
+    $stmt = $db->prepare($query);
+    $stmt->execute(array($this->_getParam('configId')));
+    $latestRevision = $stmt->fetch();
+    echo $latestRevision['json_data'];
+  }
+
+  public function insertAction() {
+
     $this->_helper->layout()->disableLayout();
     $this->_helper->viewRenderer->setNoRender(true);
 
@@ -51,8 +75,8 @@ class ExportController extends Zend_Controller_Action
     }
   }
 
-  public function generatecourselistAction()
-  {
+  public function generatecourselistAction() {
+
     if ($this->_getParam('catalogId')) {
       $catalogId = $this->_helper->osidId->fromString($this->_getParam('catalogId'));
       $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");

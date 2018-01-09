@@ -27,6 +27,7 @@ foreach ($this->configs as $config) {
 		print "<ul id='sections-list' class='sections-list'>";
 	}
 
+	/*
 	if($this->latestRevision && !empty($this->latestRevisionJsonData)) {
 
 		// Generate ahead of time as creating the dropdown every time will result in missing data.
@@ -73,11 +74,7 @@ foreach ($this->configs as $config) {
 			print "<li id='" . $key . "' class='section'><span class='section-type'>Type: " . $section['type'] . "</span><span class='section-value'>Value: " . $sectionInput . "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
 		}
 	}
-	else {
-		if($this->catalogId) {
-			print "<li id='begin-message'>Please add a new section to begin</li>";
-		}
-	}
+*/
 
 	print "</ul>";
 
@@ -85,7 +82,7 @@ foreach ($this->configs as $config) {
 		print "<button value='save' onclick='saveJSON()'>Save</button>";
 		print "<button value='reset'>Reset</button>";
 	}
-	
+
 print "</div>";
 
 ?>
