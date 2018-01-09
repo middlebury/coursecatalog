@@ -101,7 +101,7 @@ function saveJSON() {
   if(JSONString === "}") JSONString = "{}";
 
   $.ajax({
-    url: "insertconfigrevision",
+    url: "../export/insertconfigrevision",
     type: "POST",
     dataType: 'json',
     data: {

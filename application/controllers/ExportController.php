@@ -3,6 +3,54 @@
 /** Zend_Controller_Action */
 class ExportController extends Zend_Controller_Action
 {
+  /**
+   * Constructor
+   *
+   * @return void
+   * @access public
+   * @since 1/9/18
+   */
+  public function init () {
+    parent::init();
+    $this->view->csrf_key = $this->_helper->csrfKey();
+
+    if (!$this->_helper->auth()->isAuthenticated())
+      $this->_helper->auth()->login();
+
+    $config = Zend_Registry::getInstance()->config;
+    if (!isset($config->admin->administrator_ids))
+      throw new PermissionDeniedException('No admins are defined for this application.');
+    $admins = explode(',', $config->admin->administrator_ids);
+    if (!in_array($this->_helper->auth()->getUserId(), $admins))
+      throw new PermissionDeniedException('You are not authorized to administer this application.' . $admins[1]);
+  }
+
+  public function insertconfigrevisionAction()
+  {
+    $this->_helper->layout()->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
+
+    if ($this->getRequest()->isXmlHttpRequest()) {
+        if ($this->getRequest()->isPost()) {
+          $db = Zend_Registry::get('db');
+          $query =
+          "INSERT INTO archive_configuration_revisions (`arch_conf_id`, `last_saved`, `user_id`, `user_disp_name`, `json_data`)
+          VALUES (
+            '" . $this->getRequest()->getPost('configId') . "',
+            CURRENT_TIMESTAMP,
+            '" . $this->_helper->auth()->getUserId() . "',
+            '" . $this->_helper->auth()->getUserDisplayName() . "',"
+            . "'" . $this->getRequest()->getPost('jsonData') . "')";
+          $stmt = $db->prepare($query);
+          $stmt->execute();
+          return $this->getRequest()->getPost();
+        }
+    }
+    else {
+        echo 'This route for XmlHttpRequests only.  Sorry!';
+    }
+  }
+
   public function generatecourselistAction()
   {
     if ($this->_getParam('catalogId')) {
