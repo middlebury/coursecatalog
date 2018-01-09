@@ -28,7 +28,7 @@ function populateList(jsonData) {
   } else {
     $.each(jsonData, function(key, value) {
       generateInputTag(value.type, value.value, function(result) {
-        var li = "<li><span class='section-type'>Type: " + value.type + "</span><span class='section-value'>Value: " + result + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
+        var li = "<li class='section'><span class='section-type'>Type: " + value.type + "</span><span class='section-value'>Value: " + result + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
         $('#sections-list').append(li);
       });
     });
@@ -58,8 +58,8 @@ function generateInputTag(type, value, callback) {
         success: function(data) {
           if(value === '') value = 'unselected';
           var sectionInput = data;
-          sectionInput = sectionInput.replace("'" + value + "'", "'" + value + "' selected='selected'");
           sectionInput = sectionInput.replace("<select class='section-dropdown' value='unselected'>", "<select class='section-dropdown' value='" + value + "'>");
+          sectionInput = sectionInput.replace("<option value='" + value + "'>", "<option value='" + value + "' selected='selected'>");
           callback(sectionInput);
         }
       });
@@ -121,13 +121,14 @@ function saveJSON() {
     var sectionAsDOMObject = $.parseHTML($(element).html());
     var sectionType = sectionAsDOMObject[0].innerHTML.substring(sectionAsDOMObject[0].innerHTML.indexOf(": ") + 2);
     var sectionValueHTML = sectionAsDOMObject[1].innerHTML.substring(sectionAsDOMObject[1].innerHTML.indexOf(": ") + 2);
-    switch(sectionType) {
-      case "course_list":
-        var sectionValue = sectionValueHTML.substring(sectionValueHTML.indexOf('value=') + 6, sectionValueHTML.indexOf('selected') - 1);
-        break;
-      default:
-        var sectionValue = sectionValueHTML.substring(sectionValueHTML.indexOf('value=') + 6, sectionValueHTML.indexOf('>'));
-    }
+    var sectionValue = sectionValueHTML.substring(sectionValueHTML.indexOf('value=') + 6, sectionValueHTML.indexOf('>'));
+    // switch(sectionType) {
+    //   case "course_list":
+    //     var sectionValue = sectionValueHTML.substring(sectionValueHTML.indexOf('value=') + 6, sectionValueHTML.indexOf('\"') - 1);
+    //     break;
+    //   default:
+    //     var sectionValue = sectionValueHTML.substring(sectionValueHTML.indexOf('value=') + 6, sectionValueHTML.indexOf('>'));
+    // }
     console.log(sectionValue);
     JSONString += "\"section" + eval(index + 1) + "\":{\"type\":\"" + sectionType +"\",\"value\":" + sectionValue + "}," ;
   });
