@@ -21,6 +21,29 @@ foreach ($this->configs as $config) {
 	if($this->latestRevision) {
 		print "<input id='catalogId' type='hidden' value='" . $this->catalogId . "'></input>";
 		print "<ul class='sections-list'>";
+
+		// Generate ahead of time for O(1) rather than every time for O(n).
+		$courseDropdown = "
+		<select class='section-dropdown'>
+			<option value='unselected'>Please choose a subject</option>
+			<optgroup label='Subjects'>";
+			while ($this->subjects->hasNext()) {
+				$topic = $this->subjects->getNextTopic();
+				$courseDropdown .= "<option value='" . $this->getStringFromOsidId($topic->getId()) . "'";
+				$courseDropdown .= ">" . $this->escape($topic->getDisplayName()) . "</option>";
+			}
+			$courseDropdown .= "
+			</optgroup>
+			<optgroup label='Departments'>";
+			while ($this->departments->hasNext()) {
+				$topic = $this->departments->getNextTopic();
+				$courseDropdown .= "<option value='" . $this->getStringFromOsidId($topic->getId()) . "'";
+				$courseDropdown .= ">" . $this->escape($topic->getDisplayName()) . "</option>";
+			}
+			$courseDropdown .= "
+			</optgroup>
+		</select>";
+
 		foreach($this->latestRevisionJsonData as $key => $section) {
 
 			// generate section value input type based on type.
@@ -34,35 +57,15 @@ foreach ($this->configs as $config) {
 					$sectionInput = "<textarea class='section-input' value='" . $section['value'] . "'>" . $section['value'] . "</textarea>";
 					break;
 				case "course_list":
-					$sectionInput = "
-					<select class='section-dropdown' value=" . $section['value'] . ">
-						<option value='unselected'>Please choose a subject</option>
-						<optgroup label='Subjects'>";
-						while ($this->subjects->hasNext()) {
-							$topic = $this->subjects->getNextTopic();
-							$sectionInput .= "<option value='" . $this->getStringFromOsidId($topic->getId()) . "'";
-							if ($section['value'] === $this->getStringFromOsidId($topic->getId()))
-								$sectionInput .= " selected='selected'";
-							$sectionInput .= ">" . $this->escape($topic->getDisplayName()) . "</option>";
-						}
-						$sectionInput .= "
-						</optgroup>
-						<optgroup label='Departments'>";
-						while ($this->departments->hasNext()) {
-							$topic = $this->departments->getNextTopic();
-							$sectionInput .= "<option value='" . $this->getStringFromOsidId($topic->getId()) . "'";
-							if ($section['value'] === $this->getStringFromOsidId($topic->getId()))
-								$sectionInput .= " selected='selected'";
-							$sectionInput .= ">" . $this->escape($topic->getDisplayName()) . "</option>";
-						}
-
-						$sectionInput .= "
-						</optgroup>
-					</select>";
+					$sectionInput = $courseDropdown;
+					$sectionInput = str_replace("'" . $section['value'] . "'", "'" . $section['value'] . "' selected='selected'", $sectionInput);
+					$sectionInput = str_replace("<select class='section-dropdown'>", "<select class='section-dropdown' value='" . $section['value'] . "'>", $sectionInput);
 					break;
 			}
-			print "<li id='" . $key . "' class='section'><span class='section-type'>Type: " . $section['type'] . "</span><span class='section-value'>Value: " . $sectionInput . "</span><span class='section-controls'><button class='button-section-delete'>Delete</button><button class='button-section-add' onclick='newSection(" . $key . ")'>Add Section Below</button></span></li>";
+
+			print "<li id='" . $key . "' class='section'><span class='section-type'>Type: " . $section['type'] . "</span><span class='section-value'>Value: " . $sectionInput . "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
 		}
+
 		print "</ul>";
 
 		// Save and Reset buttons.

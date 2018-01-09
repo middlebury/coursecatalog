@@ -5,21 +5,30 @@ $(document).ready(function() {
     $(this).attr('value', $(this).val());
   });
   $('.section-dropdown').change(function() {
+    console.log('oh hey');
     $(this).attr('value', $(this).val());
   });
 });
 
-function newSection(previousSection) {
-  $("<li class='section'><select class='select-section-type' onchange='defineSection(this)'><option value='unselected' selected='selected'>Please choose a section type</option><option value='h1'>h1</option><option value='h2'>h2</option><option value='page_content'>External page content</option><option value='custom_text'>Custom text</option><option value='course_list'>Course list</option></select></li>").insertAfter(previousSection);
-  // Rename sections according to new order.
+function renameSections() {
   $('.section').toArray().forEach(function(element, index) {
     $(element).attr('id', 'section' + eval(index + 1));
   });
 }
 
+function newSection(thisButton) {
+  var li = $(thisButton).parent().parent();
+  $("<li class='section'><select class='select-section-type' onchange='defineSection(this)'><option value='unselected' selected='selected'>Please choose a section type</option><option value='h1'>h1</option><option value='h2'>h2</option><option value='page_content'>External page content</option><option value='custom_text'>Custom text</option><option value='course_list'>Course list</option></select></li>").insertAfter(li);
+  renameSections();
+}
+
 function defineSection(select) {
   var sectionType = $(select).val();
-  var courseSelect = $.ajax({
+  var li = $(select).parent();
+
+  // We do this for every section even if it's not a course list because of
+  // asyncronicity issues.
+  $.ajax({
     url: "../export/generateCourseList",
     type: "GET",
     data: {
@@ -29,9 +38,34 @@ function defineSection(select) {
       throw error;
     },
     success: function(data) {
-      console.log(data);
+      switch(sectionType) {
+        case 'h1':
+        case 'h2':
+        case 'page_content':
+          var sectionInput = "<input class ='section-input' value=''></input>";
+          break;
+        case 'custom_text':
+          var sectionInput = "<textarea class='section-input' value=''></textarea>";
+          break;
+        case 'course_list':
+          var sectionInput = data;
+          break;
+        default:
+          throw 'Invalid section type: ' + sectionType;
+      }
+
+      $(li).html("<span class='section-type'>Type: " + sectionType + "</span><span class='section-value'>Value: " + sectionInput + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>");
+      $(li).find('.section-dropdown').on('change', function() {
+        console.log('oh hey');
+        $(this).attr('value', $(this).val());
+      });
     }
   });
+}
+
+function deleteSection(thisButton) {
+  $(thisButton).parent().parent().remove();
+  renameSections();
 }
 
 function saveJSON() {
