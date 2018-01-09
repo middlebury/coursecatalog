@@ -36,20 +36,28 @@ function generateInputTag(type, value, callback) {
 
 function reorderSectionsBasedOnIds() {
   var sections = $('.section').toArray();
-  console.log(sections);
+  sections.sort(function(a, b) {
+    var aId = parseInt(a['id'].substring(7));
+    var bId = parseInt(b['id'].substring(7));
+    return aId - bId;
+  });
+  $('#sections-list').empty().append(sections);
 }
 
 function populateList(jsonData) {
   if (!jsonData) {
     $('#sections-list').append("<li id='begin-message'>Please add a new section to begin</li>");
   } else {
+    // Because $.each does not return a promise we have to use this hacky
+    // strategy to fire reorderSectionsBasedOnIds() only on the last element.
+    var count = $.map(jsonData, function(el) { return el }).length;
     $.each(jsonData, function(key, value) {
       generateInputTag(value.type, value.value, function(result) {
         var li = "<li id='" + key + "' class='section'><span class='section-type'>Type: " + value.type + "</span><span class='section-value'>Value: " + result + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
         $('#sections-list').append(li);
+        if (!--count) reorderSectionsBasedOnIds();
       });
     });
-    reorderSectionsBasedOnIds();
   }
 }
 
