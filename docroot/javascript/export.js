@@ -34,7 +34,7 @@ function generateInputTag(type, value, callback) {
   }
 }
 
-function reorderSectionsBasedOnIds() {
+function reorderSectionsBasedOnIds(callback) {
   var sections = $('.section').toArray();
   sections.sort(function(a, b) {
     var aId = parseInt(a['id'].substring(7));
@@ -42,9 +42,10 @@ function reorderSectionsBasedOnIds() {
     return aId - bId;
   });
   $('#sections-list').empty().append(sections);
+  callback();
 }
 
-function populateList(jsonData) {
+function populateList(jsonData, callback) {
   if (!jsonData) {
     $('#sections-list').append("<li id='begin-message'>Please add a new section to begin</li>");
   } else {
@@ -55,7 +56,7 @@ function populateList(jsonData) {
       generateInputTag(value.type, value.value, function(result) {
         var li = "<li id='" + key + "' class='section'><span class='section-type'>Type: " + value.type + "</span><span class='section-value'>Value: " + result + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
         $('#sections-list').append(li);
-        if (!--count) reorderSectionsBasedOnIds();
+        if (!--count) reorderSectionsBasedOnIds(callback);
       });
     });
   }
@@ -90,10 +91,10 @@ function defineSection(select) {
 
     // Add event listeners for value changes.
     // I will never understand why javascript doesn't do this for us.
-    $('.section-input').on('change', function() {
+    $('.section-input').change(function() {
       $(this).attr('value', $(this).val());
     });
-    $('.section-dropdown').on('change', function() {
+    $('.section-dropdown').change(function() {
       $(this).attr('value', $(this).val());
     });
   });
@@ -151,13 +152,13 @@ $(document).ready(function() {
       configId: $('#configId').val()
     },
     success: function(data) {
-      populateList($.parseJSON(data));
-
-      $('.section-input').change(function() {
-        $(this).attr('value', $(this).val());
-      });
-      $('.section-dropdown').change(function() {
-        $(this).attr('value', $(this).val());
+      populateList($.parseJSON(data), function() {
+        $('.section-input').change(function() {
+          $(this).attr('value', $(this).val());
+        });
+        $('.section-dropdown').change(function() {
+          $(this).attr('value', $(this).val());
+        });
       });
     }
   });
