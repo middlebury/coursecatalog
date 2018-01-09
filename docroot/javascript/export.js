@@ -45,8 +45,8 @@ function reorderSectionsBasedOnIds(callback) {
   callback();
 }
 
-function populateList(jsonData, callback) {
-  if (!jsonData) {
+function buildList(jsonData, callback) {
+  if (!jsonData || JSON.stringify(jsonData) === "{}") {
     $('#sections-list').append("<li id='begin-message'>Please add a new section to begin</li>");
   } else {
     // Because $.each does not return a promise we have to use this hacky
@@ -60,6 +60,27 @@ function populateList(jsonData, callback) {
       });
     });
   }
+}
+
+function populate() {
+  // Load data.
+  $.ajax({
+    url: "../export/list",
+    type: "GET",
+    data: {
+      configId: $('#configId').val()
+    },
+    success: function(data) {
+      buildList($.parseJSON(data), function() {
+        $('.section-input').change(function() {
+          $(this).attr('value', $(this).val());
+        });
+        $('.section-dropdown').change(function() {
+          $(this).attr('value', $(this).val());
+        });
+      });
+    }
+  });
 }
 
 function renameSections() {
@@ -105,6 +126,11 @@ function deleteSection(thisButton) {
   renameSections();
 }
 
+function reset() {
+  $('#sections-list').html('');
+  populate();
+}
+
 function saveJSON() {
 
   var JSONString = "{";
@@ -134,32 +160,14 @@ function saveJSON() {
       jsonData: JSONString
     },
     error: function(error) {
-      throw error;
+      alert(error);
     },
     success: function(data) {
-      console.log('Saved successfully');
+      alert('Saved successfully');
     }
   });
 }
 
 $(document).ready(function() {
-
-  // Load data.
-  $.ajax({
-    url: "../export/list",
-    type: "GET",
-    data: {
-      configId: $('#configId').val()
-    },
-    success: function(data) {
-      populateList($.parseJSON(data), function() {
-        $('.section-input').change(function() {
-          $(this).attr('value', $(this).val());
-        });
-        $('.section-dropdown').change(function() {
-          $(this).attr('value', $(this).val());
-        });
-      });
-    }
-  });
+  populate();
 });
