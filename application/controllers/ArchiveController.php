@@ -462,17 +462,6 @@ class ArchiveController
 		}
 		$data->term_strings = $termStrings;
 
-		$allTopics = $this->_helper->topics->topicListAsArray($course->getTopics());
-
-		$reqs = array();
-		$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
-		$topicTypeString = $this->_helper->osidType->toString($topicType);
-		$topics = $this->_helper->topics->filterTopicsByType($allTopics, $topicType);
-		foreach ($topics as $topic) {
-			$reqs[] = $this->view->escape($topic->getDisplayName());
-		}
-		$data->requirements = $reqs;
-
 		/*********************************************************
 		 * Section descriptions
 		 *********************************************************/
@@ -503,6 +492,9 @@ class ArchiveController
 		$instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 		$identifiersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
 		$namesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:person_names');
+		$requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
+		$enrollmentNumbersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:enrollment_numbers');
+		$cwTopicId = new phpkit_id_Id('middlebury.edu', 'urn', 'topic/requirement/CW');
 		while ($offerings->hasNext()) {
 			$offering = $offerings->getNextCourseOffering();
 			$term = $offering->getTerm();
@@ -511,6 +503,7 @@ class ArchiveController
 				$sectionData[$termIdString] = array(
 					'label' => $term->getDisplayName(),
 					'sections' => array(),
+					'cw_seats' => 0,
 				);
 			}
 			if (!isset($allCourseInstructors[$termIdString])) {
@@ -532,11 +525,39 @@ class ArchiveController
 					'description' => $sectionDescription,
 					'instructors' => array(),
 					'section_numbers' => array(),
+					'requirements' => array(),
 				);
 			}
 			if ($offering->hasRecordType($identifiersType)) {
 				$identifiersRecord = $offering->getCourseOfferingRecord($identifiersType);
 				$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['section_numbers'][] = $identifiersRecord->getSequenceNumber();
+			}
+			// Build an array of requirements for each offering description in case we need to print them separately.
+			$topics = $offering->getTopics();
+			while ($topics->hasNext()) {
+				$topic = $topics->getNextTopic();
+				$topicIdString = $this->_helper->osidId->toString($topic->getId());
+				if ($requirementType->isEqual($topic->getGenusType())) {
+					if (!isset($sectionData[$termIdString]['sections'][$sectionDescriptionHash]['requirements'][$topicIdString])) {
+						$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['requirements'][$topicIdString] = [
+							'label' => $topic->getDisplayName(),
+							'total_seats' => 0,
+							'term_seats' => [
+								$termIdString => [
+									'term_label' => $term->getDisplayName(),
+									'seats' => 0,
+								],
+							],
+						];
+					}
+					// For CW requirements, associate the number of seats.
+					if ($offering->hasRecordType($enrollmentNumbersType) && $cwTopicId->isEqual($topic->getId())) {
+						$enrollmentNumbersRecord = $offering->getCourseOfferingRecord($enrollmentNumbersType);
+						$sectionData[$termIdString]['cw_seats'] += $enrollmentNumbersRecord->getMaxEnrollment();
+						$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['requirements'][$topicIdString]['total_seats'] += $enrollmentNumbersRecord->getMaxEnrollment();
+						$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['requirements'][$topicIdString]['term_seats'][$termIdString]['seats'] += $enrollmentNumbersRecord->getMaxEnrollment();
+					}
+				}
 			}
 			if ($offering->hasRecordType($instructorsType)) {
 				$instructorsRecord = $offering->getCourseOfferingRecord($instructorsType);
@@ -560,6 +581,31 @@ class ArchiveController
 			$data->instructors = '';
 		}
 
+		$allTopics = $this->_helper->topics->topicListAsArray($course->getTopics());
+		$reqs = array();
+		$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
+		$topicTypeString = $this->_helper->osidType->toString($topicType);
+		$topics = $this->_helper->topics->filterTopicsByType($allTopics, $topicType);
+		foreach ($topics as $topic) {
+			$req = [
+				'label' => $topic->getDisplayName(),
+			];
+			// For CW requirements, associate the number of seats per term.
+			if ($cwTopicId->isEqual($topic->getId())) {
+				$req['term_seats'] = [];
+				$req['total_seats'] = 0;
+				foreach ($sectionData as $termIdString => $term) {
+					$req['term_seats'][$termIdString] = [
+						'term_label' => $term['label'],
+						'seats' => $term['cw_seats'],
+					];
+					$req['total_seats'] += $term['cw_seats'];
+				}
+			}
+			$reqs[] = $req;
+		}
+		$data->requirements = $reqs;
+
 		$sectionDescriptionsText = '';
 		// Replace the description with the one from the section[s] if there is only one section description and it is
 		// different from the course.
@@ -570,11 +616,14 @@ class ArchiveController
 		else if (count($allSectionDescriptions) > 1) {
 			foreach ($sectionData as $termId => $termSectionData) {
 				$term_data = new stdClass;
+				$term_data->idString = $termId;
 				$term_data->label = $termSectionData['label'];
+				$term_data->cw_seats = $termSectionData['cw_seats'];
 				$data->terms[] = $term_data;
 				foreach ($termSectionData['sections'] as $hash => $section) {
 					$section_data = new stdClass;
 					$section_data->description = $section['description'];
+					$section_data->requirements = $section['requirements'];
 					if (count($termSectionData['sections']) > 1) {
 						$section_data->section_numbers = $section['section_numbers'];
 					} else {

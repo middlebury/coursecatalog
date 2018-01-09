@@ -1,0 +1,22 @@
+			<span class='course_requirements'>
+<?php
+$reqs = [];
+foreach ($this->requirements as $req) {
+	ob_start();
+	print "<strong>".$this->escape($req['label'])."</strong>";
+	if (!empty($req['total_seats'])) {
+		if (count($req['term_seats']) == 1) {
+			print " (".$req['total_seats']." seats)";
+		} elseif (count($req['term_seats'])) {
+			$termSeatsStrings = [];
+			foreach ($req['term_seats'] as $termIdString => $termSeats) {
+				$termSeatsStrings[] = $this->escape($termSeats['term_label']).': '.$this->escape($termSeats['seats']).' seats';
+			}
+			print " (".implode('; ', $termSeatsStrings).")";
+		}
+	}
+	$reqs[] = ob_get_clean();
+}
+print implode (", ", $reqs);
+?>
+			</span>
