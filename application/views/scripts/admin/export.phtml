@@ -21,6 +21,8 @@ foreach ($this->configs as $config) {
 	<?php
 		print "<input id='catalogId' type='hidden' value='" . $this->catalogId . "'></input>";
 		print "<input id='configId' type='hidden' value='" . $this->config['id'] . "'></input>";
+		print "<input id='uid' type='hidden' value='" . $this->getUserId() . "'></input>";
+		print "<input id='udn' type='hidden' value='" . $this->getUserDisplayName() . "'></input>";
 		print "<button onclick='newSection(null)'>Add Section</button>";
 		print "<ul id='sections-list' class='sections-list'>";
 	?>

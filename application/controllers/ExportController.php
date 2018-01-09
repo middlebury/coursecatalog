@@ -16,8 +16,8 @@ class ExportController extends Zend_Controller_Action
           VALUES (
             " . $this->getRequest()->getPost('catalogId') . ",
             CURRENT_TIMESTAMP,
-            '35411217E5C630E81792E8F256807B19',
-            'Corey Selover',"
+            '" . $this->getRequest()->getPost('uid') . "',
+            '" . $this->getRequest()->getPost('udn') . "',"
             . "'" . $this->getRequest()->getPost('jsonData') . "')";
           $stmt = $db->prepare($query);
           $stmt->execute();

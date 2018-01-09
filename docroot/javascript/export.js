@@ -103,13 +103,15 @@ function saveJSON() {
     dataType: 'json',
     data: {
       catalogId: $('#configId').attr('value'),
+      uid: $('#uid').attr('value'),
+      udn: $('#udn').attr('value'),
       jsonData: JSONString
     },
     error: function(error) {
       throw error;
     },
     success: function(data) {
-      console.log(data);
+      console.log('Saved successfully');
     }
   });
 }
