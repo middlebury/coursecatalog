@@ -54,7 +54,7 @@ function buildList(jsonData, callback) {
     var count = $.map(jsonData, function(el) { return el }).length;
     $.each(jsonData, function(key, value) {
       generateInputTag(value.type, value.value, function(result) {
-        var li = "<li id='" + key + "' class='section'><span class='section-type'>Type: " + value.type + "</span><span class='section-value'>Value: " + result + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
+        var li = "<li id='" + key + "' class='section ui-state-default'><span class='section-type'>Type: " + value.type + "</span><span class='section-value'>Value: " + result + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
         $('#sections-list').append(li);
         if (!--count) reorderSectionsBasedOnIds(callback);
       });
@@ -72,12 +72,10 @@ function populate() {
     },
     success: function(data) {
       buildList($.parseJSON(data), function() {
-        $('.section-input').change(function() {
-          $(this).attr('value', $(this).val());
+        $( "#sections-list" ).sortable({
+          stop: function( event, ui ) {}
         });
-        $('.section-dropdown').change(function() {
-          $(this).attr('value', $(this).val());
-        });
+        resetEventListeners();
       });
     }
   });
@@ -89,8 +87,22 @@ function renameSections() {
   });
 }
 
+function resetEventListeners() {
+  // Add event listeners for value changes.
+  // I will never understand why javascript doesn't do this for us.
+  $('.section-input').change(function() {
+    $(this).attr('value', $(this).val());
+  });
+  $('.section-dropdown').change(function() {
+    $(this).attr('value', $(this).val());
+  });
+  $( "#sections-list" ).on( "sortstop", function( event, ui ) {
+    renameSections();
+  });
+}
+
 function newSection(thisButton) {
-  var newSectionHTML = "<li class='section'><select class='select-section-type' onchange='defineSection(this)'><option value='unselected' selected='selected'>Please choose a section type</option><option value='h1'>h1</option><option value='h2'>h2</option><option value='page_content'>External page content</option><option value='custom_text'>Custom text</option><option value='course_list'>Course list</option></select></li>";
+  var newSectionHTML = "<li class='section ui-state-default' ><select class='select-section-type' onchange='defineSection(this)'><option value='unselected' selected='selected'>Please choose a section type</option><option value='h1'>h1</option><option value='h2'>h2</option><option value='page_content'>External page content</option><option value='custom_text'>Custom text</option><option value='course_list'>Course list</option></select></li>";
   if(!thisButton) {
     if($('#begin-message')) {
       $('#begin-message').remove();
@@ -110,14 +122,7 @@ function defineSection(select) {
   generateInputTag(sectionType, '', function(result) {
     $(li).html("<span class='section-type'>Type: " + sectionType + "</span><span class='section-value'>Value: " + result + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>");
 
-    // Add event listeners for value changes.
-    // I will never understand why javascript doesn't do this for us.
-    $('.section-input').change(function() {
-      $(this).attr('value', $(this).val());
-    });
-    $('.section-dropdown').change(function() {
-      $(this).attr('value', $(this).val());
-    });
+    resetEventListeners();
   });
 }
 
