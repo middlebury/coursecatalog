@@ -1,7 +1,7 @@
 <?php
 
 /** Zend_Controller_Action */
-class ExportController extends Zend_Controller_Action
+class ExportController extends AbstractCatalogController
 {
   /**
    * Constructor
@@ -47,6 +47,16 @@ class ExportController extends Zend_Controller_Action
     $stmt->execute(array($this->_getParam('configId')));
     $latestRevision = $stmt->fetch();
     echo $latestRevision['json_data'];
+  }
+
+  public function insertconfigAction() {
+    $lookupSession = $this->_helper->osid->getCourseManager()->getCourseCatalogLookupSession();
+    $this->view->catalogs = $lookupSession->getCourseCatalogs();
+  }
+
+  public function addconfigAction() {
+
+    $this->_helper->redirector('export', 'admin');
   }
 
   public function insertAction() {

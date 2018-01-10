@@ -1,4 +1,16 @@
 
+.admin-menu {
+  margin-bottom: 20px;
+}
+
+.config-select-form {
+  display: inline-block;
+}
+
+.inline-p {
+  display: inline;
+}
+
 .sections-list {
   list-style: none;
 }

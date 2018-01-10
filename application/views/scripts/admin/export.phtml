@@ -4,19 +4,22 @@
 	$this->headScript()->appendFile($this->baseUrl('javascript/jquery-ui-1.12.1/jquery-ui.min.js'));
 ?>
 
-<h1>Manage Export Configuration</h1>
-<div><a href="<?php print $this->url(array('action' => 'index')); ?>">&laquo; Back to Administration</a></div>
+<h1>Manage Catalog Export Configurations</h1>
+<div class='admin-menu'><a href="<?php print $this->url(array('action' => 'index')); ?>">&laquo; Back to Administration</a></div>
 
-<form action="<?php print $this->url(); ?>" method="get">
-	<select name='config' onchange="this.form.submit();">
-		<option value="select">Select a configuration</option>
-<?php
-foreach ($this->configs as $config) {
-	print "<option value='".$config['label']."'".(($config == $this->config)?' selected="selected"':'').">".$config['label']."</option>";
-}
-?>
-	</select>
-</form>
+<div class='config-menu'>
+	<form class='config-select-form' action="<?php print $this->url(); ?>" method="get">
+		<select name='config' onchange="this.form.submit();">
+			<option value="select">Select a configuration</option>
+			<?php
+			foreach ($this->configs as $config) {
+				print "<option value='".$config['label']."'".(($config == $this->config)?' selected="selected"':'').">".$config['label']."</option>";
+			}
+			?>
+		</select>
+	</form>
+	<p class='inline-p'> - or - <a href="<?php print $this->url(array('controller' => 'export', 'action' => 'insertconfig')); ?>">Create a new configuration</a></p>
+</div>
 
 <?php
 	print "<div id='config-body'>";
@@ -35,5 +38,4 @@ foreach ($this->configs as $config) {
 	}
 
 	print "</div>";
-
 ?>

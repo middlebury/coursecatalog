@@ -1,0 +1,22 @@
+<?php
+	$this->headLink(array('rel' => 'stylesheet', 'href' => $this->baseUrl('/StyleSheets/midd/Export.css'), 'media' => 'all'));
+	$this->headScript()->appendFile($this->baseUrl('javascript/export.js'));
+?>
+
+<h1>Create New Catalog Export Configuration</h1>
+
+<form class='config-create-form' action="<?php print $this->url(array('action' => 'addconfig')); ?>" method="post">
+	<strong>Label:</strong><input name='label'></input>
+	<strong>Catalog:</strong><br>
+		<select>
+			<option value='unselected'>Please choose a catalog</option>
+			<?php
+			while ($this->catalogs->hasNext()) {
+				$catalog = $this->catalogs->getNextCourseCatalog();
+				$params['catalog'] = $this->getStringFromOsidId($catalog->getId());
+				print "<option>".$catalog->getDisplayName()."</option>";
+			}
+			?>
+		</select>
+	<input type='submit'></input>
+</form>
