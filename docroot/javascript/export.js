@@ -54,7 +54,7 @@ function buildList(jsonData, callback) {
     var count = $.map(jsonData, function(el) { return el }).length;
     $.each(jsonData, function(key, value) {
       generateInputTag(value.type, value.value, function(result) {
-        var li = "<li id='" + key + "' class='section ui-state-default'><span class='section-type'>Type: " + value.type + "</span><span class='section-value'>Value: " + result + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
+        var li = "<li id='" + key + "' class='section ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + value.type + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
         $('#sections-list').append(li);
         if (!--count) reorderSectionsBasedOnIds(callback);
       });
@@ -120,7 +120,7 @@ function defineSection(select) {
   var li = $(select).parent();
 
   generateInputTag(sectionType, '', function(result) {
-    $(li).html("<span class='section-type'>Type: " + sectionType + "</span><span class='section-value'>Value: " + result + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>");
+    $(li).html("<span class='section-type'>Type: " + sectionType + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>");
 
     resetEventListeners();
   });

@@ -1,3 +1,4 @@
+
 .sections-list {
   list-style: none;
 }
@@ -6,18 +7,49 @@
   background: #b5c5dd;
   padding: 10px;
   border: 1px dashed gray;
+  border-left: 20px solid #3c3c3d;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.position-helper {
+  position: relative;
+  width: 0px;
+  height: 0px;
+}
+
+.move-arrows {
+  position: absolute;
+  color: white;
+  font-size: 10px;
+  left: -28px;
 }
 
 .section-type {
   display: block;
   font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 5px;
 }
 
 .section-value {
   display: block;
   font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.button-section-delete {
+  background: red;
+  color: white;
+  border: 1px solid black;
+  border-radius: 2px;
+  margin-right: 5px;
+}
+
+input {
+  width: 95%;
 }
 
 textarea {
-  width: 100%;
+  width: 95%;
 }
