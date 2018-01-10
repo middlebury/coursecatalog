@@ -102,7 +102,7 @@ function resetEventListeners() {
 }
 
 function newSection(thisButton) {
-  var newSectionHTML = "<li class='section ui-state-default' ><select class='select-section-type' onchange='defineSection(this)'><option value='unselected' selected='selected'>Please choose a section type</option><option value='h1'>h1</option><option value='h2'>h2</option><option value='page_content'>External page content</option><option value='custom_text'>Custom text</option><option value='course_list'>Course list</option></select></li>";
+  var newSectionHTML = "<li class='section ui-state-default'><select class='select-section-type' onchange='defineSection(this)'><option value='unselected' selected='selected'>Please choose a section type</option><option value='h1'>h1</option><option value='h2'>h2</option><option value='page_content'>External page content</option><option value='custom_text'>Custom text</option><option value='course_list'>Course list</option></select></li>";
   if(!thisButton) {
     if($('#begin-message')) {
       $('#begin-message').remove();
@@ -120,7 +120,7 @@ function defineSection(select) {
   var li = $(select).parent();
 
   generateInputTag(sectionType, '', function(result) {
-    $(li).html("<span class='section-type'>Type: " + sectionType + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>");
+    $(li).html("<div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + sectionType + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>");
 
     resetEventListeners();
   });
@@ -143,8 +143,9 @@ function saveJSON() {
   var sections = $('.section').toArray();
   sections.forEach(function(element, index) {
     var sectionAsDOMObject = $.parseHTML($(element).html());
-    var sectionType = sectionAsDOMObject[0].innerHTML.substring(sectionAsDOMObject[0].innerHTML.indexOf(": ") + 2);
-    var sectionValueHTML = sectionAsDOMObject[1].innerHTML.substring(sectionAsDOMObject[1].innerHTML.indexOf(": ") + 2);
+    var sectionType = sectionAsDOMObject[1].innerHTML.substring(sectionAsDOMObject[1].innerHTML.indexOf(': ') + 2);
+    console.log(sectionAsDOMObject);
+    var sectionValueHTML = sectionAsDOMObject[2].innerHTML.substring(sectionAsDOMObject[2].innerHTML.indexOf(": ") + 2);
     var sectionValue = sectionValueHTML.substring(sectionValueHTML.indexOf('value=') + 6, sectionValueHTML.indexOf('>'));
     JSONString += "\"section" + eval(index + 1) + "\":{\"type\":\"" + sectionType +"\",\"value\":" + sectionValue + "}," ;
   });
