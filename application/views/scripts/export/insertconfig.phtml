@@ -8,13 +8,12 @@
 <form class='config-create-form' action="<?php print $this->url(array('action' => 'addconfig')); ?>" method="post">
 	<strong>Label:</strong><input name='label'></input>
 	<strong>Catalog:</strong><br>
-		<select>
+		<select name='catalog_id'>
 			<option value='unselected'>Please choose a catalog</option>
 			<?php
 			while ($this->catalogs->hasNext()) {
 				$catalog = $this->catalogs->getNextCourseCatalog();
-				$params['catalog'] = $this->getStringFromOsidId($catalog->getId());
-				print "<option>".$catalog->getDisplayName()."</option>";
+				print "<option value='" . $this->getStringFromOsidId($catalog->getId()) . "'>" . $catalog->getDisplayName() . "</option>";
 			}
 			?>
 		</select>

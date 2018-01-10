@@ -55,6 +55,23 @@ class ExportController extends AbstractCatalogController
   }
 
   public function addconfigAction() {
+    if ($this->getRequest()->isPost()) {
+      $db = Zend_Registry::get('db');
+      // echo "INSERT INTO archive_configurations ('id', 'label', 'catalog_id')
+      // VALUES (
+      //   NULL,
+      //   '" . $this->getRequest()->getPost('label') . "',
+      //   '" . $this->getRequest()->getPost('catalog_id') . "')";
+      // die();
+      $query =
+      "INSERT INTO archive_configurations (id, label, catalog_id)
+      VALUES (
+        NULL,
+        '" . $this->getRequest()->getPost('label') . "',
+        '" . $this->getRequest()->getPost('catalog_id') . "')";
+      $stmt = $db->prepare($query);
+      $stmt->execute();
+    }
 
     $this->_helper->redirector('export', 'admin');
   }
