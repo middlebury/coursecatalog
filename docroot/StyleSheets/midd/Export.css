@@ -69,10 +69,15 @@
   padding: 10px;
 }
 
-input {
-  width: 95%;
+.error-div {
+  width: 94%;
+  background: #f95757;
+  border: 1px dashed red;
+  margin: 5px 0px 0px 20px;
+  padding: 10px;
+  color: white;
 }
 
-textarea {
+.section-input {
   width: 95%;
 }

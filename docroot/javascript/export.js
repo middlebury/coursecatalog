@@ -4,8 +4,10 @@ function generateInputTag(type, value, callback) {
   switch(type) {
     case "h1":
   	case "h2":
+      callback("<input class ='section-input' value='" + value + "'></input>");
+      break;
   	case "page_content":
-  		callback("<input class ='section-input' value='" + value + "'></input>");
+  		callback("<input class ='section-input' placeholder='http://wwww.example.com' value='" + value + "'></input>");
   		break;
   	case "custom_text":
   		callback("<textarea class='section-input' value='" + value + "'>" + value + "</textarea>");
@@ -79,6 +81,9 @@ function populate() {
       });
     }
   });
+
+  // hide error message.
+  $('#error-message').css('display', 'none');
 }
 
 function renameSections() {
@@ -160,41 +165,104 @@ function reset() {
   populate();
 }
 
+function validateInput(id, type, value, callback) {
+  // Strip ""s around value.
+  value = value.substring(1, value.length - 1);
+
+  switch(type) {
+    case 'h1':
+    case 'h2':
+      var validCharacters = /^[\/*.?!,;:()&amp;&quot; 0-9a-zA-Z]+$/;
+      if (validCharacters.test(value)) {
+        callback();
+      } else {
+        callback("Headers may only contain letters, numbers, .,?!\&;:(), and double quotes (\"\").", id);
+      }
+      break;
+    case 'page_content':
+      var validURL = /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})).?)(?::\d{2,5})?(?:[/?#]\S*)?$/;
+      if (validURL.test(value)) {
+        callback();
+      } else {
+        callback("Please enter a valid URL.  Example: http://catalog.middlebury.edu/spanish", id);
+      }
+      break;
+    case 'custom_text':
+      var validCharacters = /^[\/*.?!,;:()&amp;&quot; 0-9a-zA-Z]+$/;
+      if (validCharacters.test(value)) {
+        callback();
+      } else {
+        callback("Custom text may only contain letters, numbers, .,?!\&;:(), double quotes (\"\") and <a href='http://hammer.middlebury.edu/~afranco/catalog_markup/'>Catalog Markup Language</a>", id);
+      }
+      break;
+    case 'course_list':
+      if(value === "unselected") {
+        callback('Please select a course from the course list', id);
+      } else {
+        callback();
+      }
+      break;
+    default:
+      callback("Invalid input type.  I have no idea how you accomplished this.", id);
+  }
+}
+
 function saveJSON() {
+
+  var completelyValid = false;
 
   var JSONString = "{";
 
   var sections = $('.section').toArray();
   sections.forEach(function(element, index) {
+    var sectionId = element['id'];
     var sectionAsDOMObject = $.parseHTML($(element).html());
     var sectionType = sectionAsDOMObject[1].innerHTML.substring(sectionAsDOMObject[1].innerHTML.indexOf(': ') + 2);
     var sectionValueHTML = sectionAsDOMObject[2].innerHTML.substring(sectionAsDOMObject[2].innerHTML.indexOf(": ") + 2);
     var sectionValue = sectionValueHTML.substring(sectionValueHTML.indexOf('value=') + 6, sectionValueHTML.indexOf('>'));
-    JSONString += "\"section" + eval(index + 1) + "\":{\"type\":\"" + sectionType +"\",\"value\":" + sectionValue + "}," ;
+
+    validateInput(sectionId, sectionType, sectionValue, function(error, sectionId) {
+      if(error) {
+        $('#error-message').html("<p>Error: " + error + "</p>");
+        $('#error-message').css('display', 'block');
+        $("#" + sectionId).css('background', '#f95757');
+        completelyValid = false;
+        return;
+      } else {
+        $('#error-message').css('display', 'none');
+        JSONString += "\"section" + eval(index + 1) + "\":{\"type\":\"" + sectionType +"\",\"value\":" + sectionValue + "},";
+        completelyValid = true;
+      }
+    });
   });
 
-  // Remove trailing ,
-  JSONString = JSONString.substring(0, JSONString.length - 1);
-  JSONString += "}";
+  if (completelyValid) {
+    $('.section').css('background', '#b5c5dd');
 
-  // Ensure valid JSON if no sections are present.
-  if(JSONString === "}") JSONString = "{}";
+    // Remove trailing ,
+    JSONString = JSONString.substring(0, JSONString.length - 1);
+    JSONString += "}";
 
-  $.ajax({
-    url: "../export/insert",
-    type: "POST",
-    dataType: 'json',
-    data: {
-      configId: $('#configId').attr('value'),
-      jsonData: JSONString
-    },
-    error: function(error) {
-      alert(error);
-    },
-    success: function(data) {
-      alert('Saved successfully');
-    }
-  });
+    // Ensure valid JSON if no sections are present.
+    if(JSONString === "}") JSONString = "{}";
+
+    $.ajax({
+      url: "../export/insert",
+      type: "POST",
+      dataType: 'json',
+      data: {
+        configId: $('#configId').attr('value'),
+        jsonData: JSONString
+      },
+      error: function(error) {
+        alert(error);
+      },
+      success: function(data) {
+        $('#error-message').html("<p>Saved successfully</p>");
+        $('#error-message').css('display', 'block');
+      }
+    });
+  }
 }
 
 $(document).ready(function() {
