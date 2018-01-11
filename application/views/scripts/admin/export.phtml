@@ -18,7 +18,7 @@
 			?>
 		</select>
 	</form>
-	<p class='inline-p'> - or - <a href="<?php print $this->url(array('controller' => 'export', 'action' => 'insertconfig')); ?>">Create a new configuration</a></p>
+	<p class='inline-p'> - or - <a href="<?php print $this->url(array('controller' => 'export', 'action' => 'newconfig')); ?>">Create a new configuration</a></p>
 </div>
 
 <?php
@@ -27,14 +27,20 @@
 	if($this->catalogId) {
 		print "<input id='catalogId' type='hidden' value='" . $this->catalogId . "'></input>";
 		print "<input id='configId' type='hidden' value='" . $this->config['id'] . "'></input>";
+
+		// Top nav
 		print "<button value='save' onclick='saveJSON()'>Save</button>";
 		print "<button value='reset' onclick='reset()'>Reset to last save</button>";
 		print "<button onclick='newSection(null)'>Add section to end of list</button>";
-		print "<ul id='sections-list' class='sections-list'>";
-		print "</ul>";
+		print "<button onclick='deleteConfig(" . $this->config['id'] . ")'>Delete this config</button>";
+
+		print "<ul id='sections-list' class='sections-list'></ul>";
+
+		// Bottom nav
 		print "<button value='save' onclick='saveJSON()'>Save</button>";
 		print "<button value='reset' onclick='reset()'>Reset to last save</button>";
 		print "<button onclick='newSection(null)'>Add section to end of list</button>";
+		print "<button onclick='deleteConfig(" . $this->config['id'] . ")'>Delete this config</button>";
 	}
 
 	print "</div>";

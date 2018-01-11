@@ -49,20 +49,30 @@ class ExportController extends AbstractCatalogController
     echo $latestRevision['json_data'];
   }
 
-  public function insertconfigAction() {
+  public function newconfigAction() {
     $lookupSession = $this->_helper->osid->getCourseManager()->getCourseCatalogLookupSession();
     $this->view->catalogs = $lookupSession->getCourseCatalogs();
   }
 
-  public function addconfigAction() {
+  public function deleteconfigAction() {
+    $this->_helper->layout()->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
+
+    // Delete revisions that depend on this config.
+    $db = Zend_Registry::get('db');
+    $query = "DELETE FROM archive_configuration_revisions WHERE arch_conf_id = " . $this->getRequest()->getPost('configId') . "";
+    $stmt = $db->prepare($query);
+    $stmt->execute();
+
+    // Delete this config.
+    $query = "DELETE FROM archive_configurations WHERE id = " . $this->getRequest()->getPost('configId') . "";
+    $stmt = $db->prepare($query);
+    $stmt->execute();
+  }
+
+  public function insertconfigAction() {
     if ($this->getRequest()->isPost()) {
       $db = Zend_Registry::get('db');
-      // echo "INSERT INTO archive_configurations ('id', 'label', 'catalog_id')
-      // VALUES (
-      //   NULL,
-      //   '" . $this->getRequest()->getPost('label') . "',
-      //   '" . $this->getRequest()->getPost('catalog_id') . "')";
-      // die();
       $query =
       "INSERT INTO archive_configurations (id, label, catalog_id)
       VALUES (

@@ -120,7 +120,7 @@ function defineSection(select) {
   var li = $(select).parent();
 
   generateInputTag(sectionType, '', function(result) {
-    $(li).html("<div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + sectionType + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>");
+    $(li).html("<div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + sectionType + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>");
 
     resetEventListeners();
   });
@@ -129,6 +129,30 @@ function defineSection(select) {
 function deleteSection(thisButton) {
   $(thisButton).parent().parent().remove();
   renameSections();
+}
+
+function deleteConfig(configId) {
+  $('#config-body').append("<div id='warning-box' class='warning-box'><p class='warning'>Are you sure you want to delete this configuration? This cannot be undone. All related revisions will be gone as well.</p><div class='warning-controls'><button class='button-delete' onclick='confirmDelete(" + configId + ")'>Delete</button><button onclick='cancelDelete()'>Cancel</button></div></div>")
+}
+
+function confirmDelete(confId) {
+  $.ajax({
+    url: "../export/deleteconfig",
+    type: "POST",
+    data: {
+      configId: confId
+    },
+    error: function(error) {
+      alert(error);
+    },
+    success: function(data) {
+      location.reload(true);
+    }
+  });
+}
+
+function cancelDelete() {
+  $('#warning-box').remove();
 }
 
 function reset() {
@@ -144,7 +168,6 @@ function saveJSON() {
   sections.forEach(function(element, index) {
     var sectionAsDOMObject = $.parseHTML($(element).html());
     var sectionType = sectionAsDOMObject[1].innerHTML.substring(sectionAsDOMObject[1].innerHTML.indexOf(': ') + 2);
-    console.log(sectionAsDOMObject);
     var sectionValueHTML = sectionAsDOMObject[2].innerHTML.substring(sectionAsDOMObject[2].innerHTML.indexOf(": ") + 2);
     var sectionValue = sectionValueHTML.substring(sectionValueHTML.indexOf('value=') + 6, sectionValueHTML.indexOf('>'));
     JSONString += "\"section" + eval(index + 1) + "\":{\"type\":\"" + sectionType +"\",\"value\":" + sectionValue + "}," ;
