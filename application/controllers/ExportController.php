@@ -44,7 +44,7 @@ class ExportController extends AbstractCatalogController
     ) b ON a.arch_conf_id = b.arch_conf_id and a.last_saved = b.latest
      WHERE a.arch_conf_id = ?";
     $stmt = $db->prepare($query);
-    $stmt->execute(array($this->_getParam('configId')));
+    $stmt->execute(array(filter_input(INPUT_GET, 'configId', FILTER_SANITIZE_SPECIAL_CHARS)));
     $latestRevision = $stmt->fetch();
     echo $latestRevision['json_data'];
   }
@@ -72,12 +72,15 @@ class ExportController extends AbstractCatalogController
 
   public function insertconfigAction() {
     if ($this->getRequest()->isPost()) {
+      $safeLabel = filter_input(INPUT_POST, 'label', FILTER_SANITIZE_SPECIAL_CHARS);
+      $safeCatalogId = filter_input(INPUT_POST, 'catalog_id', FILTER_SANITIZE_SPECIAL_CHARS);
+
       $db = Zend_Registry::get('db');
       $query =
       "INSERT INTO archive_configurations (id, label, catalog_id)
       VALUES (NULL,:label,:catalogId)";
       $stmt = $db->prepare($query);
-      $stmt->execute(array(':label' => $this->getRequest()->getPost('label'), ':catalogId' => $this->getRequest()->getPost('catalog_id')));
+      $stmt->execute(array(':label' => $safeLabel, ':catalogId' => $safeCatalogId));
     }
 
     $this->_helper->redirector('export', 'admin');
@@ -89,20 +92,30 @@ class ExportController extends AbstractCatalogController
     $this->_helper->viewRenderer->setNoRender(true);
 
     if ($this->getRequest()->isXmlHttpRequest()) {
-        if ($this->getRequest()->isPost()) {
-          $db = Zend_Registry::get('db');
-          $query =
-          "INSERT INTO archive_configuration_revisions (`arch_conf_id`, `last_saved`, `user_id`, `user_disp_name`, `json_data`)
-          VALUES (
-            :configId,
-            CURRENT_TIMESTAMP,
-            :userId,
-            :userDN,
-            :jsonData)";
-          $stmt = $db->prepare($query);
-          $stmt->execute(array(':configId' => $this->getRequest()->getPost('configId'), ':userId' => $this->_helper->auth()->getUserId(), ':userDN' => $this->_helper->auth()->getUserDisplayName(), ':jsonData' => $this->getRequest()->getPost('jsonData')));
-          return $this->getRequest()->getPost();
-        }
+      $safeConfigId = filter_input(INPUT_POST, 'configId', FILTER_SANITIZE_SPECIAL_CHARS);
+      $safeJsonData = filter_input(INPUT_POST, 'jsonData', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+      // $decodedJson = json_decode($this->getRequest()->getPost('jsonData'));
+      // foreach($decodedJson as $key => $value) {
+      //   $safeJsonData[key] = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+      // }
+      // $safeJsonData = implode("", $safeJsonData);
+      // //var_dump($safeJsonData);
+      // //die();
+
+      if ($this->getRequest()->isPost()) {
+        $db = Zend_Registry::get('db');
+        $query =
+        "INSERT INTO archive_configuration_revisions (`arch_conf_id`, `last_saved`, `user_id`, `user_disp_name`, `json_data`)
+        VALUES (
+          :configId,
+          CURRENT_TIMESTAMP,
+          :userId,
+          :userDN,
+          :jsonData)";
+        $stmt = $db->prepare($query);
+        $stmt->execute(array(':configId' => $safeConfigId, ':userId' => $this->_helper->auth()->getUserId(), ':userDN' => $this->_helper->auth()->getUserDisplayName(), ':jsonData' => $safeJsonData));
+        return $this->getRequest()->getPost();
+      }
     }
     else {
         echo 'This route for XmlHttpRequests only.  Sorry!';
