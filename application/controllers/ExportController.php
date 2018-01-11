@@ -60,14 +60,14 @@ class ExportController extends AbstractCatalogController
 
     // Delete revisions that depend on this config.
     $db = Zend_Registry::get('db');
-    $query = "DELETE FROM archive_configuration_revisions WHERE arch_conf_id = " . $this->getRequest()->getPost('configId') . "";
+    $query = "DELETE FROM archive_configuration_revisions WHERE arch_conf_id = ?";
     $stmt = $db->prepare($query);
-    $stmt->execute();
+    $stmt->execute(array($this->getRequest()->getPost('configId')));
 
     // Delete this config.
-    $query = "DELETE FROM archive_configurations WHERE id = " . $this->getRequest()->getPost('configId') . "";
+    $query = "DELETE FROM archive_configurations WHERE id = ?";
     $stmt = $db->prepare($query);
-    $stmt->execute();
+    $stmt->execute(array($this->getRequest()->getPost('configId')));
   }
 
   public function insertconfigAction() {
@@ -75,12 +75,9 @@ class ExportController extends AbstractCatalogController
       $db = Zend_Registry::get('db');
       $query =
       "INSERT INTO archive_configurations (id, label, catalog_id)
-      VALUES (
-        NULL,
-        '" . $this->getRequest()->getPost('label') . "',
-        '" . $this->getRequest()->getPost('catalog_id') . "')";
+      VALUES (NULL,:label,:catalogId)";
       $stmt = $db->prepare($query);
-      $stmt->execute();
+      $stmt->execute(array(':label' => $this->getRequest()->getPost('label'), ':catalogId' => $this->getRequest()->getPost('catalog_id')));
     }
 
     $this->_helper->redirector('export', 'admin');
@@ -97,13 +94,13 @@ class ExportController extends AbstractCatalogController
           $query =
           "INSERT INTO archive_configuration_revisions (`arch_conf_id`, `last_saved`, `user_id`, `user_disp_name`, `json_data`)
           VALUES (
-            '" . $this->getRequest()->getPost('configId') . "',
+            :configId,
             CURRENT_TIMESTAMP,
-            '" . $this->_helper->auth()->getUserId() . "',
-            '" . $this->_helper->auth()->getUserDisplayName() . "',"
-            . "'" . $this->getRequest()->getPost('jsonData') . "')";
+            :userId,
+            :userDN,
+            :jsonData)";
           $stmt = $db->prepare($query);
-          $stmt->execute();
+          $stmt->execute(array(':configId' => $this->getRequest()->getPost('configId'), ':userId' => $this->_helper->auth()->getUserId(), ':userDN' => $this->_helper->auth()->getUserDisplayName(), ':jsonData' => $this->getRequest()->getPost('jsonData')));
           return $this->getRequest()->getPost();
         }
     }
