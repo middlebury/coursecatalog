@@ -93,7 +93,13 @@ class ExportController extends AbstractCatalogController
 
     if ($this->getRequest()->isXmlHttpRequest()) {
       $safeConfigId = filter_input(INPUT_POST, 'configId', FILTER_SANITIZE_SPECIAL_CHARS);
-      $safeJsonData = filter_input(INPUT_POST, 'jsonData', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+      $jsonArray = json_decode($this->getRequest()->getPost('jsonData'));
+      foreach($jsonArray as $key => $value) {
+        $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+      }
+      $safeJsonData = json_encode($jsonArray, JSON_PRETTY_PRINT);
+      //$safeJsonData = filter_input(INPUT_POST, 'jsonData', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
       // $decodedJson = json_decode($this->getRequest()->getPost('jsonData'));
       // foreach($decodedJson as $key => $value) {
       //   $safeJsonData[key] = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
