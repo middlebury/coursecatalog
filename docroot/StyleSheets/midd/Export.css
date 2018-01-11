@@ -71,11 +71,26 @@
 
 .error-div {
   width: 94%;
-  background: #f95757;
-  border: 1px dashed red;
   margin: 5px 0px 0px 20px;
   padding: 10px;
+}
+
+.error-div.hidden {
+  display: none;
+}
+
+.error-div.error {
+  display: block;
+  background: #f95757;
+  border: 1px dashed red;
   color: white;
+}
+
+.error-div.success {
+  display: block;
+  background: #84fc76;
+  border: 1px dashed green;
+  color: black;
 }
 
 .section-input {

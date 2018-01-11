@@ -56,7 +56,7 @@ function buildList(jsonData, callback) {
     var count = $.map(jsonData, function(el) { return el }).length;
     $.each(jsonData, function(key, value) {
       generateInputTag(value.type, value.value, function(result) {
-        var li = "<li id='" + key + "' class='section ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + value.type + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-section-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
+        var li = "<li id='" + key + "' class='section ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + value.type + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
         $('#sections-list').append(li);
         if (!--count) reorderSectionsBasedOnIds(callback);
       });
@@ -83,7 +83,7 @@ function populate() {
   });
 
   // hide error message.
-  $('#error-message').css('display', 'none');
+  $('#error-message').addClass('hidden');
 }
 
 function renameSections() {
@@ -208,13 +208,13 @@ function validateInput(id, type, value, callback) {
 }
 
 function saveJSON() {
-
-  var completelyValid = false;
-
+  var completelyValid = true;
   var JSONString = "{";
 
   var sections = $('.section').toArray();
   sections.forEach(function(element, index) {
+    if (!completelyValid) return;
+
     var sectionId = element['id'];
     var sectionAsDOMObject = $.parseHTML($(element).html());
     var sectionType = sectionAsDOMObject[1].innerHTML.substring(sectionAsDOMObject[1].innerHTML.indexOf(': ') + 2);
@@ -224,12 +224,12 @@ function saveJSON() {
     validateInput(sectionId, sectionType, sectionValue, function(error, sectionId) {
       if(error) {
         $('#error-message').html("<p>Error: " + error + "</p>");
-        $('#error-message').css('display', 'block');
+        $('#error-message').addClass('error');
+        $('#error-message').removeClass('hidden success');
         $("#" + sectionId).css('background', '#f95757');
         completelyValid = false;
-        return;
       } else {
-        $('#error-message').css('display', 'none');
+        $('#error-message').addClass('hidden');
         JSONString += "\"section" + eval(index + 1) + "\":{\"type\":\"" + sectionType +"\",\"value\":" + sectionValue + "},";
         completelyValid = true;
       }
@@ -259,7 +259,8 @@ function saveJSON() {
       },
       success: function(data) {
         $('#error-message').html("<p>Saved successfully</p>");
-        $('#error-message').css('display', 'block');
+        $('#error-message').removeClass('hidden error');
+        $('#error-message').addClass('success');
       }
     });
   }
