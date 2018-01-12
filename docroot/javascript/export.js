@@ -1,13 +1,59 @@
+
 /* Helper functions for catalog export configuration */
+
+// ----- INIT ------ //
+
+function buildList(jsonData, callback) {
+  if (!jsonData || JSON.stringify(jsonData) === "{}") {
+    $('#sections-list').append("<li id='begin-message'>Please add a new group to begin</li>");
+  } else {
+    // Because $.each does not return a promise we have to use this hacky
+    // strategy to fire reorderSectionsBasedOnIds() only on the last element.
+    var count = $.map(jsonData, function(el) { return el }).length;
+    $.each(jsonData, function(key, value) {
+      generateInputTag(value.type, value.value, function(result) {
+        var li = "<li id='" + key + "' class='section ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + value.type + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
+        $('#sections-list').append(li);
+        if (!--count) reorderSectionsBasedOnIds(callback);
+      });
+    });
+  }
+}
+
+function populate() {
+  // Load data.
+  $.ajax({
+    url: "../export/list",
+    type: "GET",
+    data: {
+      configId: $('#configId').val()
+    },
+    success: function(data) {
+      buildList($.parseJSON(data), function() {
+        $( "#sections-list" ).sortable({
+          stop: function( event, ui ) {}
+        });
+        resetEventListeners();
+      });
+    }
+  });
+
+  // hide error message.
+  $('.error-message').addClass('hidden');
+}
+
+// ----- HELPERS ------- //
 
 function generateInputTag(type, value, callback) {
   switch(type) {
     case "h1":
+      callback("<input class='section-input' placeholder='Please choose a title' value='" + value + "'></input>");
+      break;
   	case "h2":
-      callback("<input class ='section-input' value='" + value + "'></input>");
+      callback("<input class='section-input' value='" + value + "'></input>");
       break;
   	case "page_content":
-  		callback("<input class ='section-input' placeholder='http://wwww.example.com' value='" + value + "'></input>");
+  		callback("<input class='section-input' placeholder='http://wwww.example.com' value='" + value + "'></input>");
   		break;
   	case "custom_text":
   		callback("<textarea class='section-input' value='" + value + "'>" + value + "</textarea>");
@@ -47,51 +93,6 @@ function reorderSectionsBasedOnIds(callback) {
   callback();
 }
 
-function buildList(jsonData, callback) {
-  if (!jsonData || JSON.stringify(jsonData) === "{}") {
-    $('#sections-list').append("<li id='begin-message'>Please add a new section to begin</li>");
-  } else {
-    // Because $.each does not return a promise we have to use this hacky
-    // strategy to fire reorderSectionsBasedOnIds() only on the last element.
-    var count = $.map(jsonData, function(el) { return el }).length;
-    $.each(jsonData, function(key, value) {
-      generateInputTag(value.type, value.value, function(result) {
-        var li = "<li id='" + key + "' class='section ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + value.type + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
-        $('#sections-list').append(li);
-        if (!--count) reorderSectionsBasedOnIds(callback);
-      });
-    });
-  }
-}
-
-function populate() {
-  // Load data.
-  $.ajax({
-    url: "../export/list",
-    type: "GET",
-    data: {
-      configId: $('#configId').val()
-    },
-    success: function(data) {
-      buildList($.parseJSON(data), function() {
-        $( "#sections-list" ).sortable({
-          stop: function( event, ui ) {}
-        });
-        resetEventListeners();
-      });
-    }
-  });
-
-  // hide error message.
-  $('#error-message').addClass('hidden');
-}
-
-function renameSections() {
-  $('.section').toArray().forEach(function(element, index) {
-    $(element).attr('id', 'section' + eval(index + 1));
-  });
-}
-
 function resetEventListeners() {
   // Add event listeners for value changes.
   // I will never understand why javascript doesn't do this for us.
@@ -106,63 +107,11 @@ function resetEventListeners() {
   });
 }
 
-function newSection(thisButton) {
-  var newSectionHTML = "<li class='section ui-state-default'><select class='select-section-type' onchange='defineSection(this)'><option value='unselected' selected='selected'>Please choose a section type</option><option value='h1'>h1</option><option value='h2'>h2</option><option value='page_content'>External page content</option><option value='custom_text'>Custom text</option><option value='course_list'>Course list</option></select></li>";
-  if(!thisButton) {
-    if($('#begin-message')) {
-      $('#begin-message').remove();
-    }
-    $('#sections-list').append(newSectionHTML);
-  } else {
-    var li = $(thisButton).parent().parent();
-    $(newSectionHTML).insertAfter(li);
-  }
-  renameSections();
-}
-
-function defineSection(select) {
-  var sectionType = $(select).val();
-  var li = $(select).parent();
-
-  generateInputTag(sectionType, '', function(result) {
-    $(li).html("<div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + sectionType + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>");
-
-    resetEventListeners();
-  });
-}
-
-function deleteSection(thisButton) {
-  $(thisButton).parent().parent().remove();
-  renameSections();
-}
-
-function deleteConfig(configId) {
-  $('#config-body').append("<div id='warning-box' class='warning-box'><p class='warning'>Are you sure you want to delete this configuration? This cannot be undone. All related revisions will be gone as well.</p><div class='warning-controls'><button class='button-delete' onclick='confirmDelete(" + configId + ")'>Delete</button><button onclick='cancelDelete()'>Cancel</button></div></div>")
-}
-
-function confirmDelete(confId) {
-  $.ajax({
-    url: "../export/deleteconfig",
-    type: "POST",
-    data: {
-      configId: confId
-    },
-    error: function(error) {
-      alert(error);
-    },
-    success: function(data) {
-      location.reload(true);
-    }
-  });
-}
-
-function cancelDelete() {
-  $('#warning-box').remove();
-}
-
 function reset() {
   $('#sections-list').html('');
   populate();
+  $('.error-message').removeClass('success error');
+  $('.error-message').addClass('hidden');
 }
 
 function validateInput(id, type, value, callback) {
@@ -223,13 +172,13 @@ function saveJSON() {
 
     validateInput(sectionId, sectionType, sectionValue, function(error, sectionId) {
       if(error) {
-        $('#error-message').html("<p>Error: " + error + "</p>");
-        $('#error-message').addClass('error');
-        $('#error-message').removeClass('hidden success');
+        $('.error-message').html("<p>Error: " + error + "</p>");
+        $('.error-message').addClass('error');
+        $('.error-message').removeClass('hidden success');
         $("#" + sectionId).css('background', '#f95757');
         completelyValid = false;
       } else {
-        $('#error-message').addClass('hidden');
+        $('.error-message').addClass('hidden');
         JSONString += "\"section" + eval(index + 1) + "\":{\"type\":\"" + sectionType +"\",\"value\":" + sectionValue + "},";
         completelyValid = true;
       }
@@ -258,12 +207,126 @@ function saveJSON() {
         alert(error);
       },
       success: function(data) {
-        $('#error-message').html("<p>Saved successfully</p>");
-        $('#error-message').removeClass('hidden error');
-        $('#error-message').addClass('success');
+        $('.error-message').html("<p>Saved successfully</p>");
+        $('.error-message').removeClass('hidden error');
+        $('.error-message').addClass('success');
       }
     });
   }
+}
+
+// ------ CONFIGS ------- //
+
+function deleteConfig(configId) {
+  $('#config-body').append("<div id='warning-box' class='warning-box'><p class='warning'>Are you sure you want to delete this configuration? This cannot be undone. All related revisions will be gone as well.</p><div class='warning-controls'><button class='button-delete' onclick='confirmDelete(" + configId + ")'>Delete</button><button onclick='cancelDelete()'>Cancel</button></div></div>")
+}
+
+function confirmDelete(confId) {
+  $.ajax({
+    url: "../export/deleteconfig",
+    type: "POST",
+    data: {
+      configId: confId
+    },
+    error: function(error) {
+      alert(error);
+    },
+    success: function(data) {
+      location.reload(true);
+    }
+  });
+}
+
+function cancelDelete() {
+  $('#warning-box').remove();
+}
+
+// ------ GROUPS ------- //
+
+// TODO
+function renameGroups() {
+  $('.group').toArray().forEach(function(element, index) {
+    // If there is an H1 section, take its name.
+    if ($(element).hasClass('new')) {
+      $(element).attr('id', "yay");
+    } else {
+      $(element).attr('id', 'boo');
+    }
+  });
+}
+
+function newGroup(thisButton) {
+
+  // Only allow user to create one group at a time.
+  // TODO - display error message if user tries to create many at once.
+  if ($('.new').length) return;
+
+  var newGroupHTML = "<li class='new group ui-state-default'><ul class='section-group'></ul></li>";
+
+  if(!thisButton) {
+    if($('#begin-message')) {
+      $('#begin-message').remove();
+    }
+    $('#sections-list').append(newGroupHTML);
+  } else {
+    // TODO
+    var li = $(thisButton).parent().parent();
+    $(newGroupHTML).insertAfter(li);
+  }
+
+  renameGroups();
+
+  // Create h1 section.
+  newGroupFirstSection();
+}
+
+// ------ SECTIONS ----- //
+
+function renameSections() {
+  $('.section').toArray().forEach(function(element, index) {
+    $(element).attr('id', 'section' + eval(index + 1));
+  });
+}
+
+function newGroupFirstSection() {
+  generateInputTag('h1', '', function(input) {
+    var newSectionHTML = "<li class='section ui-state-default'>" + fullSectionHTML('h1', input) + "</li>";
+    $('.new').children("ul").append(newSectionHTML);
+  });
+}
+
+function fullSectionHTML(type, value) {
+  return "<div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + type + "</span><span class='section-value'>" + value + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>";
+}
+
+function newSection(thisButton) {
+  var newSectionHTML = "<li class='section ui-state-default'><select class='select-section-type' onchange='defineSection(this)'><option value='unselected' selected='selected'>Please choose a section type</option><option value='h1'>h1</option><option value='h2'>h2</option><option value='page_content'>External page content</option><option value='custom_text'>Custom text</option><option value='course_list'>Course list</option></select></li>";
+  if(!thisButton) {
+    if($('#begin-message')) {
+      $('#begin-message').remove();
+    }
+    $('#sections-list').append(newSectionHTML);
+  } else {
+    var li = $(thisButton).parent().parent();
+    $(newSectionHTML).insertAfter(li);
+  }
+  renameSections();
+}
+
+function defineSection(select) {
+  var sectionType = $(select).val();
+  var li = $(select).parent();
+
+  generateInputTag(sectionType, '', function(result) {
+    $(li).html(fullSectionHTML(sectionType, result));
+
+    resetEventListeners();
+  });
+}
+
+function deleteSection(thisButton) {
+  $(thisButton).parent().parent().remove();
+  renameSections();
 }
 
 $(document).ready(function() {

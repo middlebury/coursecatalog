@@ -11,6 +11,14 @@
   display: inline;
 }
 
+.group-section-controls button {
+  margin: 10px 0px;
+  height: 30px;
+  background: #84fc76;
+  border: 1px solid black;
+  border-radius: 3px;
+}
+
 .sections-list {
   list-style: none;
 }
@@ -71,7 +79,7 @@
 
 .error-div {
   width: 94%;
-  margin: 5px 0px 0px 20px;
+  margin: 5px 0px 10px 0px;
   padding: 10px;
 }
 
