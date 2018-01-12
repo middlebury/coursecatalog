@@ -11,13 +11,25 @@ function buildList(jsonData, callback) {
     // strategy to fire reorderSectionsBasedOnIds() only on the last element.
     var count = $.map(jsonData, function(el) { return el }).length;
     $.each(jsonData, function(key, value) {
-      generateInputTag(value.type, value.value, function(result) {
-        var sectionTypeClass = "'section ui-state-default'";
-        if(value.type === 'h1') sectionTypeClass= "'section h1-section ui-state-default'";
-        var li = "<li id='" + key + "' class=" + sectionTypeClass + "><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + value.type + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
-        $('#sections-list').append(li);
-        if (!--count) reorderSectionsBasedOnIds(callback);
-      });
+      var groupName = 'no-group';
+      if(key.indexOf('-group') !== -1 ) {
+        groupName = '#' + key;
+        $('#sections-list').append("<li id='" + key + "' class='group ui-state-default'><ul class='section-group'></ul></li>");
+        $.each(value, function(sectionKey, sectionValue) {
+          console.log(sectionKey + ", " + sectionValue);
+          console.log(sectionValue);
+          generateInputTag(sectionValue.type, sectionValue.value, function(result) {
+            console.log(result);
+            var sectionTypeClass = "'section ui-state-default'";
+            if(value.type === 'h1') sectionTypeClass= "'section h1-section ui-state-default'";
+            var li = "<li id='" + sectionKey + "' class=" + sectionTypeClass + "><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + sectionValue.type + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
+            console.log(li);
+            console.log($(groupName).html());
+            $(groupName).find(".section-group").append(li);
+            //if (!--count) reorderSectionsBasedOnIds(callback);
+          });
+        });
+      }
     });
   }
 }
@@ -128,7 +140,6 @@ function validateInput(id, type, value, callback) {
     case 'h1':
     case 'h2':
       var validCharacters = /^[\/*.?!,;:()&amp;&quot; 0-9a-zA-Z]+$/;
-      console.log(value);
       if (validCharacters.test(value)) {
         callback();
       } else {
@@ -170,30 +181,37 @@ function saveJSON() {
   var groups = $('.group').toArray();
   groups.forEach(function(element, index) {
     var groupId = element['id'];
-  });
-  var sections = $('.section').toArray();
-  sections.forEach(function(element, index) {
-    if (!completelyValid) return;
+    JSONString += "\"" + groupId + "\":{";
 
-    var sectionId = element['id'];
-    var sectionAsDOMObject = $.parseHTML($(element).html());
-    var sectionType = sectionAsDOMObject[1].innerHTML.substring(sectionAsDOMObject[1].innerHTML.indexOf(': ') + 2);
-    var sectionValueHTML = sectionAsDOMObject[2].innerHTML.substring(sectionAsDOMObject[2].innerHTML.indexOf(": ") + 2);
-    var sectionValue = sectionValueHTML.substring(sectionValueHTML.indexOf('value=') + 6, sectionValueHTML.indexOf('>'));
+    var sections = $(element).find('.section').toArray();
+    sections.forEach(function(element, index) {
+      if (!completelyValid) return;
 
-    validateInput(sectionId, sectionType, sectionValue, function(error, sectionId) {
-      if(error) {
-        $('.error-message').html("<p>Error: " + error + "</p>");
-        $('.error-message').addClass('error');
-        $('.error-message').removeClass('hidden success');
-        $("#" + sectionId).css('background', '#f95757');
-        completelyValid = false;
-      } else {
-        $('.error-message').addClass('hidden');
-        JSONString += "\"section" + eval(index + 1) + "\":{\"type\":\"" + sectionType +"\",\"value\":" + sectionValue + "},";
-        completelyValid = true;
-      }
+      var sectionId = element['id'];
+      var sectionAsDOMObject = $.parseHTML($(element).html());
+      var sectionType = sectionAsDOMObject[1].innerHTML.substring(sectionAsDOMObject[1].innerHTML.indexOf(': ') + 2);
+      var sectionValueHTML = sectionAsDOMObject[2].innerHTML.substring(sectionAsDOMObject[2].innerHTML.indexOf(": ") + 2);
+      var sectionValue = sectionValueHTML.substring(sectionValueHTML.indexOf('value=') + 6, sectionValueHTML.indexOf('>'));
+
+      validateInput(sectionId, sectionType, sectionValue, function(error, sectionId) {
+        if(error) {
+          $('.error-message').html("<p>Error: " + error + "</p>");
+          $('.error-message').addClass('error');
+          $('.error-message').removeClass('hidden success');
+          $("#" + sectionId).css('background', '#f95757');
+          completelyValid = false;
+        } else {
+          $('.error-message').addClass('hidden');
+          JSONString += "\"section" + eval(index + 1) + "\":{\"type\":\"" + sectionType +"\",\"value\":" + sectionValue + "},";
+          completelyValid = true;
+        }
+      });
     });
+
+    // Remove trailing ,
+    JSONString = JSONString.substring(0, JSONString.length - 1);
+
+    JSONString += "},";
   });
 
   if (completelyValid) {
@@ -260,7 +278,6 @@ function renameGroups() {
     // If there is an H1 section, take its name.
     //console.log($(element).find('.h1-section').find('.section-input').attr('value'));
     if($(element).find('.h1-section').has('.section-input').length) {
-      console.log($(element).html());
       $(element).attr('id', $(element).find('.h1-section').find('.section-input').attr('value') + '-group');
     } else {
       $(element).attr('id', 'unresolved-group-name');
