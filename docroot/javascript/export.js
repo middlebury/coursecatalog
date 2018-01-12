@@ -16,15 +16,10 @@ function buildList(jsonData, callback) {
         groupName = '#' + key;
         $('#sections-list').append("<li id='" + key + "' class='group ui-state-default'><ul class='section-group'></ul></li>");
         $.each(value, function(sectionKey, sectionValue) {
-          console.log(sectionKey + ", " + sectionValue);
-          console.log(sectionValue);
           generateInputTag(sectionValue.type, sectionValue.value, function(result) {
-            console.log(result);
             var sectionTypeClass = "'section ui-state-default'";
             if(value.type === 'h1') sectionTypeClass= "'section h1-section ui-state-default'";
             var li = "<li id='" + sectionKey + "' class=" + sectionTypeClass + "><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + sectionValue.type + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
-            console.log(li);
-            console.log($(groupName).html());
             $(groupName).find(".section-group").append(li);
             //if (!--count) reorderSectionsBasedOnIds(callback);
           });
@@ -272,13 +267,14 @@ function cancelDelete() {
 
 // ------ GROUPS ------- //
 
-// TODO
 function renameGroups() {
   $('.group').toArray().forEach(function(element, index) {
     // If there is an H1 section, take its name.
-    //console.log($(element).find('.h1-section').find('.section-input').attr('value'));
-    if($(element).find('.h1-section').has('.section-input').length) {
-      $(element).attr('id', $(element).find('.h1-section').find('.section-input').attr('value') + '-group');
+    if ($(element).find('.h1-section').has('.section-input').length) {
+      if ($(element).attr('id') == 'temp') {
+        var h1Value = $(element).find('.h1-section').find('.section-input').attr('value') + '-' + Math.floor(Math.random()) + Date.now();;
+        $(element).attr('id', h1Value + '-group');
+      }
     } else {
       $(element).attr('id', 'unresolved-group-name');
     }
