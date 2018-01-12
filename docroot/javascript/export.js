@@ -12,7 +12,9 @@ function buildList(jsonData, callback) {
     var count = $.map(jsonData, function(el) { return el }).length;
     $.each(jsonData, function(key, value) {
       generateInputTag(value.type, value.value, function(result) {
-        var li = "<li id='" + key + "' class='section ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + value.type + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
+        var sectionTypeClass = "'section ui-state-default'";
+        if(value.type === 'h1') sectionTypeClass= "'section h1-section ui-state-default'";
+        var li = "<li id='" + key + "' class=" + sectionTypeClass + "><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + value.type + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
         $('#sections-list').append(li);
         if (!--count) reorderSectionsBasedOnIds(callback);
       });
@@ -98,6 +100,10 @@ function resetEventListeners() {
   // I will never understand why javascript doesn't do this for us.
   $('.section-input').change(function() {
     $(this).attr('value', $(this).val());
+    if ($(this).parent().parent().html().indexOf('Type: h1') !== -1) {
+      $('.new').removeClass('new');
+      renameGroups();
+    }
   });
   $('.section-dropdown').change(function() {
     $(this).attr('value', $(this).val());
@@ -122,6 +128,7 @@ function validateInput(id, type, value, callback) {
     case 'h1':
     case 'h2':
       var validCharacters = /^[\/*.?!,;:()&amp;&quot; 0-9a-zA-Z]+$/;
+      console.log(value);
       if (validCharacters.test(value)) {
         callback();
       } else {
@@ -160,6 +167,10 @@ function saveJSON() {
   var completelyValid = true;
   var JSONString = "{";
 
+  var groups = $('.group').toArray();
+  groups.forEach(function(element, index) {
+    var groupId = element['id'];
+  });
   var sections = $('.section').toArray();
   sections.forEach(function(element, index) {
     if (!completelyValid) return;
@@ -247,10 +258,12 @@ function cancelDelete() {
 function renameGroups() {
   $('.group').toArray().forEach(function(element, index) {
     // If there is an H1 section, take its name.
-    if ($(element).hasClass('new')) {
-      $(element).attr('id', "yay");
+    //console.log($(element).find('.h1-section').find('.section-input').attr('value'));
+    if($(element).find('.h1-section').has('.section-input').length) {
+      console.log($(element).html());
+      $(element).attr('id', $(element).find('.h1-section').find('.section-input').attr('value') + '-group');
     } else {
-      $(element).attr('id', 'boo');
+      $(element).attr('id', 'unresolved-group-name');
     }
   });
 }
@@ -261,7 +274,7 @@ function newGroup(thisButton) {
   // TODO - display error message if user tries to create many at once.
   if ($('.new').length) return;
 
-  var newGroupHTML = "<li class='new group ui-state-default'><ul class='section-group'></ul></li>";
+  var newGroupHTML = "<li id='temp' class='new group ui-state-default'><ul class='section-group'></ul></li>";
 
   if(!thisButton) {
     if($('#begin-message')) {
@@ -273,8 +286,6 @@ function newGroup(thisButton) {
     var li = $(thisButton).parent().parent();
     $(newGroupHTML).insertAfter(li);
   }
-
-  renameGroups();
 
   // Create h1 section.
   newGroupFirstSection();
@@ -290,8 +301,9 @@ function renameSections() {
 
 function newGroupFirstSection() {
   generateInputTag('h1', '', function(input) {
-    var newSectionHTML = "<li class='section ui-state-default'>" + fullSectionHTML('h1', input) + "</li>";
+    var newSectionHTML = "<li class='section h1-section ui-state-default'>" + fullSectionHTML('h1', input) + "</li>";
     $('.new').children("ul").append(newSectionHTML);
+    resetEventListeners();
   });
 }
 
