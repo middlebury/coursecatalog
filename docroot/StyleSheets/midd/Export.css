@@ -24,21 +24,54 @@
 }
 
 .sections-list li {
-  background: #b5c5dd;
+  background: #595d66;
+  color: white;
   padding: 10px;
   border: 1px dashed gray;
   border-left: 20px solid #3c3c3d;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
+  margin: 16px 0px;
 }
 
 .group-title {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: bold;
+  margin-right: 30px;
+}
+
+.group-toggle {
+  display: inline-block;
+  float: right;
+  margin-left: 10px;
+  width: 0px;
+  height: 0px;
+  border-right: 8px solid white;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+
+.group-toggle.show {
+  width: 0px;
+  height: 0px;
+  border-top: 8px solid white;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
 }
 
 .section-group {
   list-style: none;
+  display: none;
+}
+
+.section-group.visible {
+  display: block;
+}
+
+.section-group li {
+  margin-left: -20px;
+  background: #b5c5dd;
+  color: black;
 }
 
 .position-helper {

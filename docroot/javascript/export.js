@@ -11,14 +11,12 @@ function buildList(jsonData, callback) {
       var groupName = 'no-group';
       if(key.indexOf('group') !== -1 ) {
         groupName = '#' + key;
-        $('#sections-list').append("<li id='" + key + "' class='group ui-state-default'><span class='group-title'>Unnamed Group</span><span class='group-toggle show'></span><ul class='section-group'></ul></li>");
+        $('#sections-list').append(groupHTML(key, "Unnamed Group", false));
         // Because $.each does not return a promise we have to use this hacky
         // strategy to fire reorderSectionsBasedOnIds() only on the last element.
         var count = $.map(value, function(el) { return el }).length;
         $.each(value, function(sectionKey, sectionValue) {
           if (sectionKey === 'title') {
-            //$(groupName).find('.group-title')[0].innerHTML = sectionValue;
-            console.log($(groupName).find('.group-title')[0].innerHTML);
             giveGroupTitle(groupName, sectionValue);
             --count;
           } else {
@@ -108,11 +106,6 @@ function reorderSectionsBasedOnIds(groupId, callback) {
   callback();
 }
 
-function giveGroupTitle(selector, value) {
-  console.log(selector);
-  $(selector).closest('.group').find('.group-title')[0].innerHTML = value;
-}
-
 function resetEventListeners() {
   $( "#sections-list" ).sortable({
     stop: function( event, ui ) {}
@@ -120,7 +113,7 @@ function resetEventListeners() {
   $( ".group" ).find('.section-group').sortable({
     stop: function( event, ui ) {}
   });
-  
+
   // Add event listeners for value changes.
   // I will never understand why javascript doesn't do this for us.
   $('.section-input').change(function() {
@@ -298,10 +291,27 @@ function cancelDelete() {
 
 // ------ GROUPS ------- //
 
+function groupHTML(id, title, visible) {
+  if (visible) {
+    return "<li id='" + id + "' class='group ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='group-title'>" + title + "</span><button class='button-delete' onclick='deleteGroup(this)'>Delete</button><div class='group-toggle show' onclick='toggleGroup(this)'></div><ul class='section-group visible'></ul></li>";
+  } else {
+    return "<li id='" + id + "' class='group ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='group-title'>" + title + "</span><button class='button-delete' onclick='deleteGroup(this)'>Delete</button><div class='group-toggle' onclick='toggleGroup(this)'></div><ul class='section-group'></ul></li>";
+  }
+}
+
 function renameGroups() {
   $('.group').toArray().forEach(function(element, index) {
     $(element).attr('id', 'group' + eval(index + 1));
   });
+}
+
+function giveGroupTitle(selector, value) {
+  $(selector).closest('.group').find('.group-title')[0].innerHTML = value;
+}
+
+function toggleGroup(arrow) {
+  $(arrow).closest('.group').find('.section-group').toggleClass('visible');
+  $(arrow).toggleClass('show');
 }
 
 function newGroup(thisButton) {
@@ -310,7 +320,7 @@ function newGroup(thisButton) {
   // TODO - display error message if user tries to create many at once.
   if ($('.new').length) return;
 
-  var newGroupHTML = "<li id='temp' class='new group ui-state-default'><span class='group-title'>Please fill out an h1 section to give this group a name</span><span class='group-toggle show'></span><ul class='section-group'></ul></li>";
+  var newGroupHTML = groupHTML('temp', 'Please fill out an h1 section to give this group a name', true);
 
   if(!thisButton) {
     if($('#begin-message')) {
@@ -318,13 +328,18 @@ function newGroup(thisButton) {
     }
     $('#sections-list').append(newGroupHTML);
   } else {
-    // TODO
     var li = $(thisButton).parent().parent();
     $(newGroupHTML).insertAfter(li);
   }
 
+  $('#temp').addClass('new');
+
   // Create h1 section.
   newGroupFirstSection();
+}
+
+function deleteGroup(thisButton) {
+  $(thisButton).closest('.group').remove();
 }
 
 // ------ SECTIONS ----- //
