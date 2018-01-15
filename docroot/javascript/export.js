@@ -11,14 +11,16 @@ function buildList(jsonData, callback) {
       var groupName = 'no-group';
       if(key.indexOf('group') !== -1 ) {
         groupName = '#' + key;
-        $('#sections-list').append("<li id='" + key + "' class='group ui-state-default'><span class='group-title'>Title</span><ul class='section-group'></ul></li>");
-
+        $('#sections-list').append("<li id='" + key + "' class='group ui-state-default'><span class='group-title'>Unnamed Group</span><ul class='section-group'></ul></li>");
         // Because $.each does not return a promise we have to use this hacky
         // strategy to fire reorderSectionsBasedOnIds() only on the last element.
         var count = $.map(value, function(el) { return el }).length;
         $.each(value, function(sectionKey, sectionValue) {
           if (sectionKey === 'title') {
-            $(groupName).find('.group-title')[0].innerHTML = sectionValue;
+            //$(groupName).find('.group-title')[0].innerHTML = sectionValue;
+            console.log($(groupName).find('.group-title')[0].innerHTML);
+            giveGroupTitle(groupName, sectionValue);
+            --count;
           } else {
             generateInputTag(sectionValue.type, sectionValue.value, function(result) {
               var sectionTypeClass = "'section ui-state-default'";
@@ -29,6 +31,8 @@ function buildList(jsonData, callback) {
             });
           }
         });
+      } else {
+        throw "Invalid JSON: " + jsonData;
       }
     });
   }
@@ -47,7 +51,7 @@ function populate() {
         $( "#sections-list" ).sortable({
           stop: function( event, ui ) {}
         });
-        $( ".group" ).sortable({
+        $( ".group" ).find('.section-group').sortable({
           stop: function( event, ui ) {}
         });
         resetEventListeners();
@@ -106,8 +110,13 @@ function reorderSectionsBasedOnIds(groupId, callback) {
     var bId = parseInt(b['id'].substring(7));
     return aId - bId;
   });
-  $(groupId).empty().append(sections);
+  $(groupId).find('.section-group').empty().append(sections);
   callback();
+}
+
+function giveGroupTitle(selector, value) {
+  console.log(selector);
+  $(selector).closest('.group').find('.group-title')[0].innerHTML = value;
 }
 
 function resetEventListeners() {
@@ -117,7 +126,7 @@ function resetEventListeners() {
     $(this).attr('value', $(this).val());
     if ($(this).parent().parent().html().indexOf('Type: h1') !== -1) {
       $('.new').removeClass('new');
-      $(this).closest('.group').find('.group-title')[0].innerHTML = $(this).val();
+      giveGroupTitle(this, $(this).val());
       renameGroups();
     }
   });
