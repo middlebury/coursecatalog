@@ -43,6 +43,9 @@ function populate() {
         $( "#sections-list" ).sortable({
           stop: function( event, ui ) {}
         });
+        $( ".group" ).sortable({
+          stop: function( event, ui ) {}
+        });
         resetEventListeners();
       });
     }
@@ -117,6 +120,15 @@ function resetEventListeners() {
     $(this).attr('value', $(this).val());
   });
   $( "#sections-list" ).on( "sortstop", function( event, ui ) {
+    // TODO - is there really any reason to rename groups and sections?  As long
+    // as their ids are unique do they really need to be in order?
+    renameGroups();
+    renameSections();
+  });
+  $( ".group" ).on( "sortstop", function( event, ui ) {
+    // TODO - is there really any reason to rename groups and sections?  As long
+    // as their ids are unique do they really need to be in order?
+    renameGroups();
     renameSections();
   });
 }
