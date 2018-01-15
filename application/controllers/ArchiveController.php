@@ -256,8 +256,9 @@ class ArchiveController
     ) b ON a.arch_conf_id = b.arch_conf_id and a.last_saved = b.latest
      WHERE a.arch_conf_id = ?";
     $stmt = $db->prepare($query);
-    $stmt->execute(array(filter_input(INPUT_GET, 'configId', FILTER_SANITIZE_SPECIAL_CHARS)));
+    $stmt->execute(array($this->_getParam('configId')));
     $latestRevision = $stmt->fetch();
+		var_dump($latestRevision);
 
 		/*
 		foreach ($config->catalog->print_sections as $i => $sectionConf) {
