@@ -23,7 +23,7 @@ function buildList(jsonData, callback) {
             generateInputTag(sectionValue.type, sectionValue.value, function(result) {
               var sectionTypeClass = "'section ui-state-default'";
               if(value.type === 'h1') sectionTypeClass= "'section h1-section ui-state-default'";
-              var li = "<li id='" + sectionKey + "' class=" + sectionTypeClass + "><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + sectionValue.type + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
+              var li = "<li id='" + sectionKey + "' class=" + sectionTypeClass + "><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + sectionValue.type + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete Section</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
               $(groupName).find(".section-group").append(li);
               if (!--count) reorderSectionsBasedOnIds(groupName, callback);
             });
@@ -359,7 +359,7 @@ function newGroupFirstSection() {
 }
 
 function fullSectionHTML(type, value) {
-  return "<div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + type + "</span><span class='section-value'>" + value + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>";
+  return "<div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + type + "</span><span class='section-value'>" + value + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete Section</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>";
 }
 
 function newSection(thisButton) {
@@ -388,7 +388,11 @@ function defineSection(select) {
 }
 
 function deleteSection(thisButton) {
-  $(thisButton).parent().parent().remove();
+  if ($(thisButton).closest('.group').find('.section').length === 1) {
+    deleteGroup(thisButton);
+  } else {
+    $(thisButton).closest('.section').remove();
+  }
   renameSections();
 }
 
