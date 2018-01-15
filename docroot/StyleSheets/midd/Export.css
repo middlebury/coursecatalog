@@ -24,7 +24,6 @@
 }
 
 .sections-list li {
-  background: #595d66;
   color: white;
   padding: 10px;
   border: 1px dashed gray;
@@ -34,29 +33,33 @@
   margin: 16px 0px;
 }
 
+.group {
+  background: #56748E;
+}
+
+.group.odd {
+  background: #56748E;
+}
+
+.group.even {
+  background: #65676b;
+}
+
 .group-title {
   font-size: 18px;
   font-weight: bold;
   margin-right: 30px;
 }
 
-.group-toggle {
-  display: inline-block;
+.group-toggle-description {
   float: right;
-  margin-left: 10px;
-  width: 0px;
-  height: 0px;
-  border-right: 8px solid white;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
+  border-bottom: 1px dashed gray;
 }
 
-.group-toggle.show {
-  width: 0px;
-  height: 0px;
-  border-top: 8px solid white;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
+.group-controls {
+  display: none;
+  margin-top: 5px;
+  padding: 2px;
 }
 
 .section-group {
@@ -64,7 +67,7 @@
   display: none;
 }
 
-.section-group.visible {
+.visible {
   display: block;
 }
 
@@ -101,7 +104,7 @@
 }
 
 .button-delete {
-  background: red;
+  background: #970400;
   color: white;
   border: 1px solid black;
   border-radius: 2px;

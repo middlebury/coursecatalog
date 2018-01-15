@@ -33,12 +33,11 @@
 		// Top nav
 		print "<button value='save' onclick='saveJSON()'>Save</button>";
 		print "<button value='reset' onclick='reset()'>Reset to last save</button>";
-		//print "<button onclick='newSection(null)'>Add section to end of list</button>";
 		print "<button onclick='deleteConfig(" . $this->config['id'] . ")'>Delete this config</button>";
 
-		print "<div class='group-section-controls'>";
-		print "<button onclick='newGroup(null)'>Add group</button>";
-		print "</div>";
+		// print "<div class='group-section-controls'>";
+		// print "<button onclick='newGroup(null)'>Add group</button>";
+		// print "</div>";
 
 		print "<ul id='sections-list' class='sections-list'></ul>";
 
@@ -47,7 +46,6 @@
 		// Bottom nav
 		print "<button value='save' onclick='saveJSON()'>Save</button>";
 		print "<button value='reset' onclick='reset()'>Reset to last save</button>";
-		//print "<button onclick='newSection(null)'>Add section to end of list</button>";
 		print "<button onclick='deleteConfig(" . $this->config['id'] . ")'>Delete this config</button>";
 	}
 

@@ -5,7 +5,7 @@
 
 function buildList(jsonData, callback) {
   if (!jsonData || JSON.stringify(jsonData) === "{}") {
-    $('#sections-list').append("<li id='begin-message'>Please add a new group to begin</li>");
+    newGroup();
   } else {
     $.each(jsonData, function(key, value) {
       var groupName = 'no-group';
@@ -46,6 +46,7 @@ function populate() {
     },
     success: function(data) {
       buildList($.parseJSON(data), function() {
+        renameGroups();
         resetEventListeners();
       });
     }
@@ -293,15 +294,22 @@ function cancelDelete() {
 
 function groupHTML(id, title, visible) {
   if (visible) {
-    return "<li id='" + id + "' class='group ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='group-title'>" + title + "</span><button class='button-delete' onclick='deleteGroup(this)'>Delete</button><div class='group-toggle show' onclick='toggleGroup(this)'></div><ul class='section-group visible'></ul></li>";
+    return "<li id='" + id + "' class='group ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='group-title'>" + title + "</span><div class='group-toggle-description' onclick='toggleGroup(this)'>show/hide</div><div class='group-controls visible'><button class='button-delete' onclick='deleteGroup(this)'>Delete group</button><button class='button' onclick='newGroup(this)'>Add group below</button></div><ul class='section-group visible'></ul></li>";
   } else {
-    return "<li id='" + id + "' class='group ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='group-title'>" + title + "</span><button class='button-delete' onclick='deleteGroup(this)'>Delete</button><div class='group-toggle' onclick='toggleGroup(this)'></div><ul class='section-group'></ul></li>";
+    return "<li id='" + id + "' class='group ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='group-title'>" + title + "</span><div class='group-toggle-description' onclick='toggleGroup(this)'>show/hide</div><div class='group-controls'><button class='button-delete' onclick='deleteGroup(this)'>Delete group</button><button class='button' onclick='newGroup(this)'>Add group below</button></div><ul class='section-group'></ul></li>";
   }
 }
 
 function renameGroups() {
   $('.group').toArray().forEach(function(element, index) {
     $(element).attr('id', 'group' + eval(index + 1));
+    if(index % 2 === 0) {
+      $(element).removeClass('odd');
+      $(element).addClass('even');
+    } else {
+      $(element).removeClass('even');
+      $(element).addClass('odd');
+    }
   });
 }
 
@@ -309,9 +317,9 @@ function giveGroupTitle(selector, value) {
   $(selector).closest('.group').find('.group-title')[0].innerHTML = value;
 }
 
-function toggleGroup(arrow) {
-  $(arrow).closest('.group').find('.section-group').toggleClass('visible');
-  $(arrow).toggleClass('show');
+function toggleGroup(button) {
+  $(button).closest('.group').find('.section-group').toggleClass('visible');
+  $(button).closest('.group').find('.group-controls').toggleClass('visible');
 }
 
 function newGroup(thisButton) {
@@ -340,6 +348,11 @@ function newGroup(thisButton) {
 
 function deleteGroup(thisButton) {
   $(thisButton).closest('.group').remove();
+  if ($('#sections-list').find('.group').length === 0) {
+    newGroup();
+  }
+
+  renameGroups();
 }
 
 // ------ SECTIONS ----- //
