@@ -11,19 +11,23 @@ function buildList(jsonData, callback) {
       var groupName = 'no-group';
       if(key.indexOf('group') !== -1 ) {
         groupName = '#' + key;
-        $('#sections-list').append("<li id='" + key + "' class='group ui-state-default'><ul class='section-group'></ul></li>");
+        $('#sections-list').append("<li id='" + key + "' class='group ui-state-default'><span class='group-title'>Title</span><ul class='section-group'></ul></li>");
 
         // Because $.each does not return a promise we have to use this hacky
         // strategy to fire reorderSectionsBasedOnIds() only on the last element.
         var count = $.map(value, function(el) { return el }).length;
         $.each(value, function(sectionKey, sectionValue) {
-          generateInputTag(sectionValue.type, sectionValue.value, function(result) {
-            var sectionTypeClass = "'section ui-state-default'";
-            if(value.type === 'h1') sectionTypeClass= "'section h1-section ui-state-default'";
-            var li = "<li id='" + sectionKey + "' class=" + sectionTypeClass + "><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + sectionValue.type + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
-            $(groupName).find(".section-group").append(li);
-            if (!--count) reorderSectionsBasedOnIds(groupName, callback);
-          });
+          if (sectionKey === 'title') {
+            $(groupName).find('.group-title')[0].innerHTML = sectionValue;
+          } else {
+            generateInputTag(sectionValue.type, sectionValue.value, function(result) {
+              var sectionTypeClass = "'section ui-state-default'";
+              if(value.type === 'h1') sectionTypeClass= "'section h1-section ui-state-default'";
+              var li = "<li id='" + sectionKey + "' class=" + sectionTypeClass + "><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + sectionValue.type + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
+              $(groupName).find(".section-group").append(li);
+              if (!--count) reorderSectionsBasedOnIds(groupName, callback);
+            });
+          }
         });
       }
     });
