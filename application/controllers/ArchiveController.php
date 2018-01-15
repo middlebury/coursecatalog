@@ -166,9 +166,9 @@ class ArchiveController
 	 * @since 6/15/09
 	 */
 	public function generateAction () {
-		if (!$this->_getParam('catalog')) {
+		if (!$this->_getParam('configId')) {
 			header('HTTP/1.1 400 Bad Request');
-			print "A catalog must be specified.";
+			print "A configId must be specified.";
 			exit;
 		}
 
@@ -192,7 +192,12 @@ class ArchiveController
 			ini_set('max_execution_time', $config->catalog->print_max_exec_time);
 
 		try {
-			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+			$db = Zend_Registry::get('db');
+	    $query = "SELECT catalog_id FROM archive_configurations WHERE id = ?";
+	    $stmt = $db->prepare($query);
+	    $stmt->execute(array($this->_getParam('configId')));
+	    $conf = $stmt->fetch();
+			$catalogId = $this->_helper->osidId->fromString($conf['catalog_id']);
 			$this->courseSearchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
 			$this->offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
 
@@ -238,6 +243,23 @@ class ArchiveController
 		}
 
 		$sections = array();
+    $query =
+    "SELECT
+      *
+     FROM archive_configuration_revisions a
+     INNER JOIN (
+      SELECT
+        arch_conf_id,
+        MAX(last_saved) as latest
+      FROM archive_configuration_revisions
+      GROUP BY arch_conf_id
+    ) b ON a.arch_conf_id = b.arch_conf_id and a.last_saved = b.latest
+     WHERE a.arch_conf_id = ?";
+    $stmt = $db->prepare($query);
+    $stmt->execute(array(filter_input(INPUT_GET, 'configId', FILTER_SANITIZE_SPECIAL_CHARS)));
+    $latestRevision = $stmt->fetch();
+
+		/*
 		foreach ($config->catalog->print_sections as $i => $sectionConf) {
 			$section = array('type' => $sectionConf->type);
 			if ($sectionConf->type == 'h1') {
@@ -280,6 +302,7 @@ class ArchiveController
 
 			$sections[] = $section;
 		}
+		*/
 
 		$title = 'Course Catalog - ';
 		$title .= $this->courseSearchSession->getCourseCatalog()->getDisplayName();
