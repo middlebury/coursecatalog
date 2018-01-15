@@ -12,7 +12,7 @@ function buildList(jsonData, callback) {
     var count = $.map(jsonData, function(el) { return el }).length;
     $.each(jsonData, function(key, value) {
       var groupName = 'no-group';
-      if(key.indexOf('-group') !== -1 ) {
+      if(key.indexOf('group') !== -1 ) {
         groupName = '#' + key;
         $('#sections-list').append("<li id='" + key + "' class='group ui-state-default'><ul class='section-group'></ul></li>");
         $.each(value, function(sectionKey, sectionValue) {
@@ -269,15 +269,7 @@ function cancelDelete() {
 
 function renameGroups() {
   $('.group').toArray().forEach(function(element, index) {
-    // If there is an H1 section, take its name.
-    if ($(element).find('.h1-section').has('.section-input').length) {
-      if ($(element).attr('id') == 'temp') {
-        var h1Value = $(element).find('.h1-section').find('.section-input').attr('value') + '-' + Math.floor(Math.random()) + Date.now();;
-        $(element).attr('id', h1Value + '-group');
-      }
-    } else {
-      $(element).attr('id', 'unresolved-group-name');
-    }
+    $(element).attr('id', 'group' + eval(index + 1));
   });
 }
 
