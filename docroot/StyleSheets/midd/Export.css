@@ -32,6 +32,15 @@
   border-bottom-left-radius: 5px;
 }
 
+.group-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.section-group {
+  list-style: none;
+}
+
 .position-helper {
   position: relative;
   width: 0px;

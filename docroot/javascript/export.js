@@ -11,7 +11,7 @@ function buildList(jsonData, callback) {
       var groupName = 'no-group';
       if(key.indexOf('group') !== -1 ) {
         groupName = '#' + key;
-        $('#sections-list').append("<li id='" + key + "' class='group ui-state-default'><span class='group-title'>Unnamed Group</span><ul class='section-group'></ul></li>");
+        $('#sections-list').append("<li id='" + key + "' class='group ui-state-default'><span class='group-title'>Unnamed Group</span><span class='group-toggle show'></span><ul class='section-group'></ul></li>");
         // Because $.each does not return a promise we have to use this hacky
         // strategy to fire reorderSectionsBasedOnIds() only on the last element.
         var count = $.map(value, function(el) { return el }).length;
@@ -48,12 +48,6 @@ function populate() {
     },
     success: function(data) {
       buildList($.parseJSON(data), function() {
-        $( "#sections-list" ).sortable({
-          stop: function( event, ui ) {}
-        });
-        $( ".group" ).find('.section-group').sortable({
-          stop: function( event, ui ) {}
-        });
         resetEventListeners();
       });
     }
@@ -120,6 +114,13 @@ function giveGroupTitle(selector, value) {
 }
 
 function resetEventListeners() {
+  $( "#sections-list" ).sortable({
+    stop: function( event, ui ) {}
+  });
+  $( ".group" ).find('.section-group').sortable({
+    stop: function( event, ui ) {}
+  });
+  
   // Add event listeners for value changes.
   // I will never understand why javascript doesn't do this for us.
   $('.section-input').change(function() {
@@ -309,7 +310,7 @@ function newGroup(thisButton) {
   // TODO - display error message if user tries to create many at once.
   if ($('.new').length) return;
 
-  var newGroupHTML = "<li id='temp' class='new group ui-state-default'><span class='group-title'>Unnamed group</span><ul class='section-group'></ul></li>";
+  var newGroupHTML = "<li id='temp' class='new group ui-state-default'><span class='group-title'>Please fill out an h1 section to give this group a name</span><span class='group-toggle show'></span><ul class='section-group'></ul></li>";
 
   if(!thisButton) {
     if($('#begin-message')) {
