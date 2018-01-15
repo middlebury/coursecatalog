@@ -258,7 +258,28 @@ class ArchiveController
     $stmt = $db->prepare($query);
     $stmt->execute(array($this->_getParam('configId')));
     $latestRevision = $stmt->fetch();
-		var_dump($latestRevision);
+		$jsonData = json_decode($latestRevision['json_data']);
+
+		foreach($jsonData as $group) {
+			foreach($group as $entry) {
+				echo 'Entry: ';
+				$section = array();
+				if(gettype($entry) === 'object') {
+					foreach($entry as $sectionKey => $sectionValue) {
+						if ($sectionKey === 'type') {
+							$section['type'] = $sectionValue;
+						} else if ($sectionKey === 'value') {
+							
+						}
+						if ($sectionValue === 'h1') {
+							if (strlen(trim($sectionValue)))
+								$section['text'] = $sectionValue;
+						}
+					}
+				}
+				$sections[] = $section;
+			}
+		}
 
 		/*
 		foreach ($config->catalog->print_sections as $i => $sectionConf) {
