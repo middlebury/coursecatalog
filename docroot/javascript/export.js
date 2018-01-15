@@ -113,6 +113,7 @@ function resetEventListeners() {
     $(this).attr('value', $(this).val());
     if ($(this).parent().parent().html().indexOf('Type: h1') !== -1) {
       $('.new').removeClass('new');
+      $(this).closest('.group').find('.group-title')[0].innerHTML = $(this).val();
       renameGroups();
     }
   });
@@ -190,6 +191,9 @@ function saveJSON() {
   groups.forEach(function(element, index) {
     var groupId = element['id'];
     JSONString += "\"" + groupId + "\":{";
+
+    var groupTitle = $(element).find('.group-title')[0].innerHTML;
+    JSONString += "\"title\":\"" + groupTitle + "\",";
 
     var sections = $(element).find('.section').toArray();
     sections.forEach(function(element, index) {
@@ -292,7 +296,7 @@ function newGroup(thisButton) {
   // TODO - display error message if user tries to create many at once.
   if ($('.new').length) return;
 
-  var newGroupHTML = "<li id='temp' class='new group ui-state-default'><ul class='section-group'></ul></li>";
+  var newGroupHTML = "<li id='temp' class='new group ui-state-default'><span class='group-title'>Unnamed group</span><ul class='section-group'></ul></li>";
 
   if(!thisButton) {
     if($('#begin-message')) {
