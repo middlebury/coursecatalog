@@ -1,4 +1,18 @@
-
+<?php
+	$this->headLink(array('rel' => 'stylesheet', 'href' => $this->baseUrl('/StyleSheets/midd/Export.css'), 'media' => 'all'));
+	$this->headScript()->appendFile($this->baseUrl('javascript/schedule.js'));
+?>
 
 <h1>Manage Catalog Export Scheduling</h1>
 <div class='admin-menu'><a href="<?php print $this->url(array('action' => 'index')); ?>">&laquo; Back to Administration</a></div>
+
+<table>
+	<tr>
+		<th>Active</th>
+		<th>Export Path</th>
+		<th>Config</th>
+		<th>Revision to Export</th>
+		<th>Terms</th>
+		<th>Actions</th>
+	</tr>
+</table>

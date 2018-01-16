@@ -171,9 +171,15 @@ ORDER BY
 		}
 	}
 
+	/**
+	 * Manage catalog archive scheduling
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/16/2018
+	 */
 	public function scheduleAction()
 	{
-		
 	}
 
 	/**
