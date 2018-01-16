@@ -286,12 +286,19 @@ class ArchiveController
 									// Check if filters are included.
 									if (strpos($sectionValue, ",") !== false) {
 										$filters = substr($sectionValue, strpos($sectionValue, ",") + 1);
+										$filters = explode(",", $filters);
+										// var_dump($filters);
+										$adjustedFilters = '';
+										foreach($filters as $filter) {
+											$adjustedFilters .= $filter . "|";
+										}
+										// var_dump($adjustedFilters);
+										// die();
+										// strip trailing |
+										$adjustedFilters = substr($adjustedFilters, 0, -1);
 										$sectionValue = substr($sectionValue, 0, strpos($sectionValue, ","));
-										//var_dump($filters);
-										//var_dump($sectionValue);
-										$section['number_filter'] = $filters;
+										$section['number_filter'] = "/(" . $adjustedFilters . ")/";
 									} else {
-										//var_dump($sectionValue);
 										$section['number_filter'] = null;
 									}
 									$section['id'] = $this->_helper->osidId->fromString($sectionValue);
