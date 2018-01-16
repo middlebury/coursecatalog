@@ -171,6 +171,11 @@ ORDER BY
 		}
 	}
 
+	public function scheduleAction()
+	{
+		
+	}
+
 	/**
 	 * Manage antirequisites
 	 *

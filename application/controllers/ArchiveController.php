@@ -284,16 +284,13 @@ class ArchiveController
 								case 'course_list':
 									$section['type'] = 'courses';
 									// Check if filters are included.
-									if (strpos($sectionValue, ",") !== false) {
+									if (strpos($sectionValue, ",")) {
 										$filters = substr($sectionValue, strpos($sectionValue, ",") + 1);
 										$filters = explode(",", $filters);
-										// var_dump($filters);
 										$adjustedFilters = '';
 										foreach($filters as $filter) {
 											$adjustedFilters .= $filter . "|";
 										}
-										// var_dump($adjustedFilters);
-										// die();
 										// strip trailing |
 										$adjustedFilters = substr($adjustedFilters, 0, -1);
 										$sectionValue = substr($sectionValue, 0, strpos($sectionValue, ","));
