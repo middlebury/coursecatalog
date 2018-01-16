@@ -283,9 +283,18 @@ class ArchiveController
 									break;
 								case 'course_list':
 									$section['type'] = 'courses';
+									// Check if filters are included.
+									if (strpos($sectionValue, ",") !== false) {
+										$filters = substr($sectionValue, strpos($sectionValue, ",") + 1);
+										$sectionValue = substr($sectionValue, 0, strpos($sectionValue, ","));
+										//var_dump($filters);
+										//var_dump($sectionValue);
+										$section['number_filter'] = $filters;
+									} else {
+										//var_dump($sectionValue);
+										$section['number_filter'] = null;
+									}
 									$section['id'] = $this->_helper->osidId->fromString($sectionValue);
-									// TODO - pull filtering data from DB.
-									$section['number_filter'] = null;
 									break;
 								default:
 									throw new InvalidArgumentException("Section type is invalid: " . $section['type']);
