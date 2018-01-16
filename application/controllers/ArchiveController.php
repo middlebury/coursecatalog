@@ -262,69 +262,41 @@ class ArchiveController
 
 		foreach($jsonData as $group) {
 			foreach($group as $entry) {
-				echo 'Entry: ';
-				$section = array();
-				if(gettype($entry) === 'object') {
+				if (gettype($entry) === 'object') {
+					$section = array();
 					foreach($entry as $sectionKey => $sectionValue) {
 						if ($sectionKey === 'type') {
 							$section['type'] = $sectionValue;
-						} else if ($sectionKey === 'value') {
-							
-						}
-						if ($sectionValue === 'h1') {
-							if (strlen(trim($sectionValue)))
-								$section['text'] = $sectionValue;
+						} else {
+							switch($section['type']) {
+								case 'h1':
+								case 'h2':
+									$section['text'] = $sectionValue;
+									break;
+								case 'page_content':
+									$section['url'] = $sectionValue;
+									break;
+								case 'custom_text':
+									// TODO - Unify naming of this type with export config UI.
+									$section['type'] = 'html';
+									$section['text'] = $sectionValue;
+									break;
+								case 'course_list':
+									$section['type'] = 'courses';
+									$section['id'] = $this->_helper->osidId->fromString($sectionValue);
+									// TODO - pull filtering data from DB.
+									$section['number_filter'] = null;
+									break;
+								default:
+									throw new InvalidArgumentException("Section type is invalid: " . $section['type']);
+									break;
+							}
 						}
 					}
+					$sections[] = $section;
 				}
-				$sections[] = $section;
 			}
 		}
-
-		/*
-		foreach ($config->catalog->print_sections as $i => $sectionConf) {
-			$section = array('type' => $sectionConf->type);
-			if ($sectionConf->type == 'h1') {
-				if (strlen(trim($sectionConf->text)))
-					$section['text'] = $sectionConf->text;
-				else
-					throw new InvalidArgumentException("catalog.print_sections.$i.text is missing.");
-				if (!empty($sectionConf->toc_text))
-					$section['toc_text'] = $sectionConf->toc_text;
-			} else if ($sectionConf->type == 'h2') {
-				if (strlen(trim($sectionConf->text)))
-					$section['text'] = $sectionConf->text;
-				else
-					throw new InvalidArgumentException("catalog.print_sections.$i.text is missing.");
-				if (!empty($sectionConf->toc_text))
-					$section['toc_text'] = $sectionConf->toc_text;
-			} else if ($sectionConf->type == 'page_content') {
-				if (strlen(trim($sectionConf->url)))
-					$section['url'] = $sectionConf->url;
-				else
-					throw new InvalidArgumentException("catalog.print_sections.$i.url is missing.");
-			} else if ($sectionConf->type == 'html') {
-				if (strlen(trim($sectionConf->text)))
-					$section['text'] = $sectionConf->text;
-				else
-					throw new InvalidArgumentException("catalog.print_sections.$i.text is missing.");
-			} else if ($sectionConf->type == 'courses') {
-				if (strlen(trim($sectionConf->id)))
-					$section['id'] = $this->_helper->osidId->fromString($sectionConf->id);
-				else
-					throw new InvalidArgumentException("catalog.print_sections.$i.id is missing.");
-				if (!empty($sectionConf->number_filter))
-					$section['number_filter'] = $sectionConf->number_filter;
-				else {
-					$section['number_filter'] = null;
-				}
-			} else {
-				throw new InvalidArgumentException("catalog.print_sections.$i.type is '".$sectionConf->type."'. Must be one of h1, h2, page_content, or courses.");
-			}
-
-			$sections[] = $section;
-		}
-		*/
 
 		$title = 'Course Catalog - ';
 		$title .= $this->courseSearchSession->getCourseCatalog()->getDisplayName();
