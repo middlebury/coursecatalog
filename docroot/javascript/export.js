@@ -86,18 +86,17 @@ function generateInputTag(type, value, callback) {
           if (value === '') value = 'unselected';
           // Course filters.
           if (value.indexOf(',') !== -1) {
-            console.log(value.substring(0, value.indexOf(',')));
-            var selection = value.substring(0, value.length -1);
-            //var selection = value.substring(0, value.indexOf(','));
-            // var filters = '';
-            // while(value.)
+            var selection = value.substring(0, value.indexOf(','));
+            var filters = value.substring(value.indexOf(',') +1);
+            var filterHTML = "<br><span class='course-filters'>Course #'s to exclude: <input class='filter-input' name='filtering' placeholder='Separate with commas' value='" + filters + "'></input></span>"
           } else {
             var selection = value;
+            var filterHTML = "<br><span class='course-filters'>Course #'s to exclude: <input class='filter-input' name='filtering' placeholder='Separate with commas'></input></span>"
           }
           var sectionInput = data;
           sectionInput = sectionInput.replace("<select class='section-dropdown' value='unselected'>", "<select class='section-dropdown' value='" + selection + "'>");
           sectionInput = sectionInput.replace("<option value='" + selection + "'>", "<option value='" + selection + "' selected='selected'>");
-          sectionInput += "<br><span class='course-filters'>Course #'s to exclude: <input class='filter-input' name='filtering' placeholder='Separate with commas'></input></span>";
+          sectionInput += filterHTML;
           callback(sectionInput);
         }
       });
