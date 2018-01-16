@@ -188,8 +188,16 @@ class ExportController extends AbstractCatalogController
     $this->_helper->viewRenderer->setNoRender(true);
 
     $db = Zend_Registry::get('db');
-		$jobs = $db->query("SELECT * FROM archive_jobs")->fetchAll();
-    echo json_encode($jobs);
+    $configs = $db->query("SELECT * FROM archive_configurations")->fetchAll();
+    $revisions = $db->query("SELECT * FROM archive_configuration_revisions")->fetchAll();
+    $jobs = $db->query("SELECT * FROM archive_jobs")->fetchAll();
+
+    $data = array();
+    $data[] = array("configs" => $configs);
+    $data[] = array("revisions" => $revisions);
+    $data[] = array("jobs" => $jobs);
+
+    echo json_encode($data);
   }
 }
 

@@ -1,6 +1,13 @@
 
 function buildList(data, callback) {
   console.log(data);
+
+  // Generate config dropdown
+  var configDropDownHTML = "";
+  // data[0][configs].foreach(function(element) {
+  //   configDropDownHTML +=
+  // });
+
   /*
   var jobs = data.split("; ");
 
@@ -35,7 +42,7 @@ function populate() {
     url: "../export/listjobs",
     type: "GET",
     success: function(data) {
-      buildList(data, function() {
+      buildList($.parseJSON(data), function() {
 
       });
     }
