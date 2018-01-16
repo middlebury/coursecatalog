@@ -182,6 +182,19 @@ class ExportController extends AbstractCatalogController
       echo 'Invalid request.  Please provide a catalogId';
     }
   }
+
+  public function listjobsAction() {
+    $this->_helper->layout()->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
+
+    $db = Zend_Registry::get('db');
+		$jobs = $db->query("SELECT * FROM archive_jobs")->fetchAll();
+
+    // Make jobs data easier to digest.
+    foreach($jobs as $job) {
+      echo(implode(", ", $job) . "; ");
+    }
+  }
 }
 
 ?>

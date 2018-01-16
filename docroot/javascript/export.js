@@ -266,8 +266,6 @@ function saveJSON() {
     // Ensure valid JSON if no sections are present.
     if(JSONString === "}") JSONString = "{}";
 
-    console.log(JSONString);
-
     $.ajax({
       url: "../export/insert",
       type: "POST",
