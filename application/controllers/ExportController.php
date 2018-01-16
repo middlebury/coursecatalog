@@ -189,11 +189,7 @@ class ExportController extends AbstractCatalogController
 
     $db = Zend_Registry::get('db');
 		$jobs = $db->query("SELECT * FROM archive_jobs")->fetchAll();
-
-    // Make jobs data easier to digest.
-    foreach($jobs as $job) {
-      echo(implode(", ", $job) . "; ");
-    }
+    echo json_encode($jobs);
   }
 }
 

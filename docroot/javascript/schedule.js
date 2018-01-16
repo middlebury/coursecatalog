@@ -1,5 +1,7 @@
 
 function buildList(data, callback) {
+  console.log(data);
+  /*
   var jobs = data.split("; ");
 
   // This split creates an extra, blank job. So, delete it.
@@ -23,8 +25,7 @@ function buildList(data, callback) {
   });
 
   $('#job-table').append(jobHTML);
-  console.log(jobHTML);
-
+  */
   callback();
 }
 
