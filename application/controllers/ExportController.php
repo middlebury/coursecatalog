@@ -97,13 +97,23 @@ class ExportController extends AbstractCatalogController
 					$this->view->config = $config;
 			}
 		}
+  }
 
-		// If user has selected a configuration to modify, get the latest revision.
-		if(isset($this->view->config))
-		{
-			//$catalogId = $this->_helper->osidId->fromString($this->view->config['catalog_id']);
-			//$this->view->catalogId = $this->view->config['catalog_id'];
-		}
+  public function insertjobAction() {
+    if ($this->getRequest()->isPost()) {
+      $safeConfigId = filter_input(INPUT_POST, 'configId', FILTER_SANITIZE_SPECIAL_CHARS);
+      $safeExportPath = filter_input(INPUT_POST, 'export_path', FILTER_SANITIZE_SPECIAL_CHARS);
+      $safeTerms = filter_input(INPUT_POST, 'terms', FILTER_SANITIZE_SPECIAL_CHARS);
+
+      $db = Zend_Registry::get('db');
+      $query =
+      "INSERT INTO archive_jobs (id, active, export_path, config_id, revision_id, terms)
+      VALUES (NULL, 1, :export_path, :config_id, NULL, :terms)";
+      $stmt = $db->prepare($query);
+      $stmt->execute(array(':export_path' => $safeExportPath, ':config_id' => $safeConfigId, ':terms' => $safeTerms));
+    }
+
+    $this->_helper->redirector('schedule', 'admin');
   }
 
   public function insertAction() {
