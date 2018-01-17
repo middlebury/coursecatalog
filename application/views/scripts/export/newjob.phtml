@@ -1,0 +1,27 @@
+<?php
+	$this->headLink(array('rel' => 'stylesheet', 'href' => $this->baseUrl('/StyleSheets/midd/Export.css'), 'media' => 'all'));
+	$this->headScript()->appendFile($this->baseUrl('javascript/export.js'));
+?>
+
+<h1>Create New Catalog Export Job</h1>
+
+<form class='config-select-form' action="<?php print $this->url(); ?>" method="get">
+	<select name='config' onchange="this.form.submit();">
+		<option value="select">Select a configuration</option>
+		<?php
+		foreach ($this->configs as $config) {
+			print "<option value='".$config['label']."'".(($config == $this->config)?' selected="selected"':'').">".$config['label']."</option>";
+		}
+		?>
+	</select>
+</form>
+
+<?php
+	if ($this->config) {
+		echo "<form class='config-create-form' action=" . $this->url(array('action' => 'insertjob')) . " method='post'>";
+		echo "<strong>Export path:</strong> <input type='hidden' name='configId' value='" . $this->config['id'] . "'><input name='export_path'></input>";
+		echo "<strong>Terms:</strong> <input name='terms'></input>";
+		echo "<input type='submit'></input>";
+		echo "</form>";
+	}
+?>

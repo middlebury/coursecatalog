@@ -89,6 +89,21 @@ class ExportController extends AbstractCatalogController
   public function newjobAction() {
     $db = Zend_Registry::get('db');
     $this->view->configs = $db->query("SELECT * FROM archive_configurations")->fetchAll();
+
+    $this->view->config = NULL;
+		if ($this->_getParam('config')) {
+			foreach($this->view->configs as $config) {
+				if ($config['label'] === $this->_getParam('config'))
+					$this->view->config = $config;
+			}
+		}
+
+		// If user has selected a configuration to modify, get the latest revision.
+		if(isset($this->view->config))
+		{
+			//$catalogId = $this->_helper->osidId->fromString($this->view->config['catalog_id']);
+			//$this->view->catalogId = $this->view->config['catalog_id'];
+		}
   }
 
   public function insertAction() {
