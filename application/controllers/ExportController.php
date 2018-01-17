@@ -86,6 +86,23 @@ class ExportController extends AbstractCatalogController
     $this->_helper->redirector('export', 'admin');
   }
 
+  public function listjobsAction() {
+    $this->_helper->layout()->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
+
+    $db = Zend_Registry::get('db');
+    $configs = $db->query("SELECT * FROM archive_configurations")->fetchAll();
+    $revisions = $db->query("SELECT * FROM archive_configuration_revisions ORDER BY last_saved DESC")->fetchAll();
+    $jobs = $db->query("SELECT * FROM archive_jobs")->fetchAll();
+
+    $data = array();
+    $data[] = array("configs" => $configs);
+    $data[] = array("revisions" => $revisions);
+    $data[] = array("jobs" => $jobs);
+
+    echo json_encode($data);
+  }
+
   public function newjobAction() {
     $db = Zend_Registry::get('db');
     $this->view->configs = $db->query("SELECT * FROM archive_configurations")->fetchAll();
@@ -97,6 +114,17 @@ class ExportController extends AbstractCatalogController
 					$this->view->config = $config;
 			}
 		}
+  }
+
+  public function deletejobAction() {
+    $this->_helper->layout()->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
+
+    // Delete revisions that depend on this config.
+    $db = Zend_Registry::get('db');
+    $query = "DELETE FROM archive_jobs WHERE id = ?";
+    $stmt = $db->prepare($query);
+    $stmt->execute(array($this->getRequest()->getPost('jobId')));
   }
 
   public function insertjobAction() {
@@ -114,6 +142,17 @@ class ExportController extends AbstractCatalogController
     }
 
     $this->_helper->redirector('schedule', 'admin');
+  }
+
+  public function listrevisionsAction() {
+    $this->_helper->layout()->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
+
+    $db = Zend_Registry::get('db');
+    $revisions = $db->query("SELECT * FROM archive_configuration_revisions ORDER BY last_saved DESC")->fetchAll();
+
+    echo json_encode($revisions);
+
   }
 
   public function insertAction() {
@@ -211,23 +250,6 @@ class ExportController extends AbstractCatalogController
     else {
       echo 'Invalid request.  Please provide a catalogId';
     }
-  }
-
-  public function listjobsAction() {
-    $this->_helper->layout()->disableLayout();
-    $this->_helper->viewRenderer->setNoRender(true);
-
-    $db = Zend_Registry::get('db');
-    $configs = $db->query("SELECT * FROM archive_configurations")->fetchAll();
-    $revisions = $db->query("SELECT * FROM archive_configuration_revisions")->fetchAll();
-    $jobs = $db->query("SELECT * FROM archive_jobs")->fetchAll();
-
-    $data = array();
-    $data[] = array("configs" => $configs);
-    $data[] = array("revisions" => $revisions);
-    $data[] = array("jobs" => $jobs);
-
-    echo json_encode($data);
   }
 }
 

@@ -1,6 +1,38 @@
 
-function defineConfigDropDown(configs) {
-  var configDropDownHTML = "<select class='config-dropdown' value='unselected'><option value='unselected' selected>Please select a config</option>";
+// RESET
+
+function reset() {
+  location.reload(true);
+}
+
+function resetEventListeners() {
+  $('.config-dropdown').change(function() {
+    $(this).attr('value', $(this).val());
+  });
+  $('.revision-dropdown').change(function() {
+    $(this).attr('value', $(this).val());
+  });
+}
+
+function repopulateRevisions(jobId) {
+  $('#job' + jobId).find('.revision-dropdown')[0].remove();
+  var newConfig = $('#job' + jobId).find('.config-dropdown').val();
+  $.ajax({
+    url: "../export/listrevisions",
+    type: "GET",
+    success: function(revisions) {
+      revisions = $.parseJSON(revisions);
+      var validRevisions = revisions.filter(function(revision) { return revision['arch_conf_id'] === newConfig; });
+      var revisionsDropDownHTML = selectRevision(null, defineRevisionsDropDown(validRevisions));
+      $('#job' + jobId).find('.job-revision-dropdown').append(revisionsDropDownHTML);
+    }
+  });
+}
+
+// INIT & CONFIG
+
+function defineConfigDropDown(jobId, configs) {
+  var configDropDownHTML = "<select onchange='repopulateRevisions(" + jobId + ")' class='config-dropdown' value='unselected'><option value='unselected' selected>Please select a config</option>";
   configs.forEach(function(element) {
     configDropDownHTML += "<option value='" + element['id'] + "'>" + element['label'] + "</option>";
   });
@@ -29,12 +61,37 @@ function selectRevision(revisionId, revisionDropDown) {
   revisionDropDown = revisionDropDown.replace(" selected", "");
   revisionDropDown = revisionDropDown.replace("value=\'" + revisionId + "\'", "value=\'" + revisionId + "\' selected");
   var currentValue = revisionDropDown.substring(revisionDropDown.indexOf("class=\'revision-dropdown\' value=\'"), revisionDropDown.indexOf("\'><option"));
-  revisionDropDown = revisionDropDown.replace(currentValue, "class=\'revisions-dropdown\' value=\'" + revisionId);
+  revisionDropDown = revisionDropDown.replace(currentValue, "class=\'revision-dropdown\' value=\'" + revisionId);
   return revisionDropDown;
 }
 
-function actions() {
-  return "<button value='delete'>Delete</button><button value='run'>Run</button>";
+function deleteJob(jobId) {
+  if($('#warning-box').length) return;
+  $('#jobs').prepend("<div id='warning-box' class='warning-box'><p class='warning'>Are you sure you want to delete this job? This cannot be undone.</p><div class='warning-controls'><button class='button-delete' onclick='confirmDelete(" + jobId + ")'>Delete</button><button onclick='cancelDelete()'>Cancel</button></div></div>");
+}
+
+function confirmDelete(jobId) {
+  $.ajax({
+    url: "../export/deletejob",
+    type: "POST",
+    data: {
+      jobId: jobId
+    },
+    error: function(error) {
+      alert(error);
+    },
+    success: function(data) {
+      location.reload(true);
+    }
+  });
+}
+
+function cancelDelete() {
+  $('#warning-box').remove();
+}
+
+function actions(jobId) {
+  return "<button value='delete' onclick='deleteJob(" + jobId + ")'>Delete</button><button value='run'>Run</button>";
 }
 
 function buildList(data, callback) {
@@ -42,28 +99,30 @@ function buildList(data, callback) {
   var jobsHTML = "";
   data[2]['jobs'].forEach(function(element) {
 
+    jobsHTML += "<tr id='job" + element['id'] + "'>";
+
     // ID && Active
-    jobsHTML += "<tr><td><input type='hidden' value='" + element['id'] + "'></input><input type='checkbox'";
+    jobsHTML += "<td class='job-active'><input type='hidden' value='" + element['id'] + "'></input><input type='checkbox'";
     if (element['active'] === '1') jobsHTML += " checked";
     jobsHTML += "></input></td>";
 
     // Export Path
-    jobsHTML += "<td><input value='" + element['export_path'] + "'></input></td>";
+    jobsHTML += "<td class='job-export-path'><input value='" + element['export_path'] + "'></input></td>";
 
     // Config
-    var configDropDownHTML = selectConfig(element['config_id'], defineConfigDropDown(data[0]['configs']));
-    jobsHTML += "<td>" + configDropDownHTML + "</td>";
+    var configDropDownHTML = selectConfig(element['config_id'], defineConfigDropDown(element['id'], data[0]['configs']));
+    jobsHTML += "<td class='job-config-dropdown'>" + configDropDownHTML + "</td>";
 
     // Revisions
     var validRevisions = data[1]['revisions'].filter(function(revision) { return revision['arch_conf_id'] === element['config_id']; });
     var revisionsDropDownHTML = selectRevision(element['revision_id'], defineRevisionsDropDown(validRevisions));
-    jobsHTML += "<td>" + revisionsDropDownHTML + "</td>";
+    jobsHTML += "<td class='job-revision-dropdown'>" + revisionsDropDownHTML + "</td>";
 
     // Terms
-    jobsHTML += "<td><input value='" + element['terms'] + "'></input></td>";
+    jobsHTML += "<td class='job-terms'><input value='" + element['terms'] + "'></input></td>";
 
     // Actions
-    jobsHTML += "<td>" + actions() + "</td>";
+    jobsHTML += "<td class='job-actions'>" + actions(element['id']) + "</td>";
     jobsHTML += "</tr>";
   });
 
@@ -79,7 +138,7 @@ function populate() {
     type: "GET",
     success: function(data) {
       buildList($.parseJSON(data), function() {
-
+        resetEventListeners();
       });
     }
   });
