@@ -86,6 +86,11 @@ class ExportController extends AbstractCatalogController
     $this->_helper->redirector('export', 'admin');
   }
 
+  public function newjobAction() {
+    $db = Zend_Registry::get('db');
+    $this->view->configs = $db->query("SELECT * FROM archive_configurations")->fetchAll();
+  }
+
   public function insertAction() {
 
     $this->_helper->layout()->disableLayout();

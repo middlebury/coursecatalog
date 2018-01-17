@@ -39,9 +39,6 @@ function actions() {
 
 function buildList(data, callback) {
 
-  //defineConfigDropDown(data[0]['configs']);
-  //defineRevisionsDropDown(data[1]['revisions']);
-
   var jobsHTML = "";
   data[2]['jobs'].forEach(function(element) {
 

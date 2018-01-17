@@ -3,6 +3,24 @@
   margin-bottom: 20px;
 }
 
+.job-menu {
+  margin: 10px 0px;
+}
+
+.job-schedule {
+  background: white;
+}
+
+.link-button {
+  padding: 2px 5px;
+  -webkit-appearance: button;
+  -moz-appearance: button;
+  appearance: button;
+
+  text-decoration: none;
+  color: initial;
+}
+
 .config-select-form {
   display: inline-block;
 }
