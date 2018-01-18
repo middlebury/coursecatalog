@@ -16,7 +16,7 @@
  * @copyright Copyright &copy; 2017, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class ArchiveController
+ class ArchiveController
 	extends AbstractCatalogController
 {
 
