@@ -154,6 +154,7 @@ class ExportController extends AbstractCatalogController
       $safeExportPath = filter_input(INPUT_POST, 'export_path', FILTER_SANITIZE_SPECIAL_CHARS);
       $safeConfigId = filter_input(INPUT_POST, 'config_id', FILTER_SANITIZE_SPECIAL_CHARS);
       $safeRevisionId = filter_input(INPUT_POST, 'revision_id', FILTER_SANITIZE_SPECIAL_CHARS);
+      if ($safeRevisionId === 'latest') $safeRevisionId = NULL;
       $safeTerms = filter_input(INPUT_POST, 'terms', FILTER_SANITIZE_SPECIAL_CHARS);
 
       $db = Zend_Registry::get('db');

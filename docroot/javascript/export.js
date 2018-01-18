@@ -275,7 +275,7 @@ function saveJSON() {
         jsonData: JSONString
       },
       error: function(error) {
-        alert(error);
+        console.log(error);
       },
       success: function(data) {
         $('.error-message').html("<p>Saved successfully</p>");
@@ -301,7 +301,7 @@ function confirmDelete(confId) {
       configId: confId
     },
     error: function(error) {
-      alert(error);
+      console.log(error);
     },
     success: function(data) {
       location.reload(true);

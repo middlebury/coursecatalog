@@ -134,7 +134,7 @@ function confirmDelete(jobId) {
       jobId: jobId
     },
     error: function(error) {
-      alert(error);
+      console.log(error);
     },
     success: function(data) {
       location.reload(true);
@@ -161,6 +161,25 @@ function save() {
     jobData['terms'] = $(job).find('.job-terms').find('input').val();
 
     console.log(jobData);
+
+    $.ajax({
+      url: "../export/updatejob",
+      type: "POST",
+      data: {
+        jobId: jobData['jobId'],
+        active: jobData['active'],
+        export_path: jobData['export_path'],
+        config_id: jobData['config_id'],
+        revision_id: jobData['revision_id'],
+        terms: jobData['terms']
+      },
+      error: function(error) {
+        console.log(error);
+      },
+      success: function(data) {
+        console.log('it worked!');
+      }
+    });
   });
 }
 
