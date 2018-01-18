@@ -115,6 +115,8 @@ function populate() {
       buildList($.parseJSON(data), function() {
         resetEventListeners();
       });
+
+      $('.error-message').addClass('hidden');
     }
   });
 }
@@ -134,7 +136,7 @@ function confirmDelete(jobId) {
       jobId: jobId
     },
     error: function(error) {
-      console.log(error);
+      throw error;
     },
     success: function(data) {
       location.reload(true);
@@ -148,36 +150,68 @@ function cancelDelete() {
 
 // INSERT
 
+function validateInput(jobData, callback) {
+  var numsOnly = /[0-9]/;
+  var pathsOnly = /[a-zA-Z0-9\/-]/;
+
+  if (!numsOnly.test(jobData['jobId']))                   { callback("Invalid ID: " + jobData['jobId']); }
+  if(jobData['active'] !== 0 && jobData['active'] !== 1)  { callback("Invalid active state: " + jobData['active']); }
+  if (!pathsOnly.test(jobData['export_path']))            { callback("Invalid export path. Please use letters, numbers, /, and - only."); }
+  if(!numsOnly.test(jobData['config_id']))                { callback("Invalid config ID: " + jobData['config_d']); }
+  if(!numsOnly.test(jobData['revision_id'])
+      && jobData['revision_id'] !== 'latest')             { callback("Invalid revision ID: " + jobData['revision_id']); }
+  if(!pathsOnly.test(jobData['terms']))                   { callback("Invald terms. Please use letters, numbers, /, and - only."); }
+
+  callback();
+}
+
 function save() {
+  var completelyValid = true;
+
   $(".job").each(function(index, job) {
+    if (!completelyValid) return false;
+
     var jobData = [];
 
+    if ($(job).find(':checkbox').is(':checked')) { jobData['active'] = 1; }
+    else { jobData['active'] = 0; }
+
     jobData['jobId'] = $(job).find(':hidden').val();
-    if($(job).find(':checkbox').is(':checked')) jobData['active'] = 1;
-    else jobData['active'] = 0;
     jobData['export_path'] = $(job).find('.job-export-path').find('input').val();
     jobData['config_id'] = $(job).find('.job-config-dropdown').find('select').val();
     jobData['revision_id'] = $(job).find('.job-revision-dropdown').find('select').val();
     jobData['terms'] = $(job).find('.job-terms').find('input').val();
 
-    console.log(jobData);
-
-    $.ajax({
-      url: "../export/updatejob",
-      type: "POST",
-      data: {
-        jobId: jobData['jobId'],
-        active: jobData['active'],
-        export_path: jobData['export_path'],
-        config_id: jobData['config_id'],
-        revision_id: jobData['revision_id'],
-        terms: jobData['terms']
-      },
-      error: function(error) {
-        console.log(error);
-      },
-      success: function(data) {
-        console.log('it worked!');
+    validateInput(jobData, function(error) {
+      if(error) {
+        $('.error-message').html("<p>Error: " + error + "</p>");
+        $('.error-message').addClass('error');
+        $('.error-message').removeClass('hidden success');
+        $("#job" + jobData['jobId']).css('background', '#f95757');
+        completelyValid = false;
+      } else {
+        if(!completelyValid) return false;
+        $('.error-message').html("<p>Save successful!</p>");
+        $('.error-message').addClass('success');
+        $('.error-message').removeClass('hidden error');
+        $("#job" + jobData['jobId']).css('background', 'white');
+        $.ajax({
+          url: "../export/updatejob",
+          type: "POST",
+          data: {
+            jobId: jobData['jobId'],
+            active: jobData['active'],
+            export_path: jobData['export_path'],
+            config_id: jobData['config_id'],
+            revision_id: jobData['revision_id'],
+            terms: jobData['terms']
+          },
+          error: function(error) {
+            throw error;
+          },
+          success: function(data) {
+          }
+        });
       }
     });
   });

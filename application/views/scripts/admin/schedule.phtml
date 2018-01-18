@@ -10,6 +10,8 @@
 	<button value='save' onclick='save()'>Save</button><button value='reset' onclick='reset()'>Reset to last save</button><a class='link-button' href="<?php print $this->url(array('controller' => 'export', 'action' => 'newjob')); ?>">Create a new job</a>
 </div>
 
+<div class='error-message error-div'>Error: </div>
+
 <div id='jobs' class='job-schedule'>
 	<table id='job-table'>
 		<tr>
