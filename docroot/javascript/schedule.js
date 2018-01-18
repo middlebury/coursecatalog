@@ -65,31 +65,6 @@ function selectRevision(revisionId, revisionDropDown) {
   return revisionDropDown;
 }
 
-function deleteJob(jobId) {
-  if($('#warning-box').length) return;
-  $('#jobs').prepend("<div id='warning-box' class='warning-box'><p class='warning'>Are you sure you want to delete this job? This cannot be undone.</p><div class='warning-controls'><button class='button-delete' onclick='confirmDelete(" + jobId + ")'>Delete</button><button onclick='cancelDelete()'>Cancel</button></div></div>");
-}
-
-function confirmDelete(jobId) {
-  $.ajax({
-    url: "../export/deletejob",
-    type: "POST",
-    data: {
-      jobId: jobId
-    },
-    error: function(error) {
-      alert(error);
-    },
-    success: function(data) {
-      location.reload(true);
-    }
-  });
-}
-
-function cancelDelete() {
-  $('#warning-box').remove();
-}
-
 function actions(jobId) {
   return "<button value='delete' onclick='deleteJob(" + jobId + ")'>Delete</button><button value='run'>Run</button>";
 }
@@ -99,7 +74,7 @@ function buildList(data, callback) {
   var jobsHTML = "";
   data[2]['jobs'].forEach(function(element) {
 
-    jobsHTML += "<tr id='job" + element['id'] + "'>";
+    jobsHTML += "<tr id='job" + element['id'] + "' class='job'>";
 
     // ID && Active
     jobsHTML += "<td class='job-active'><input type='hidden' value='" + element['id'] + "'></input><input type='checkbox'";
@@ -141,6 +116,51 @@ function populate() {
         resetEventListeners();
       });
     }
+  });
+}
+
+// DELETE
+
+function deleteJob(jobId) {
+  if($('#warning-box').length) return;
+  $('#jobs').prepend("<div id='warning-box' class='warning-box'><p class='warning'>Are you sure you want to delete this job? This cannot be undone.</p><div class='warning-controls'><button class='button-delete' onclick='confirmDelete(" + jobId + ")'>Delete</button><button onclick='cancelDelete()'>Cancel</button></div></div>");
+}
+
+function confirmDelete(jobId) {
+  $.ajax({
+    url: "../export/deletejob",
+    type: "POST",
+    data: {
+      jobId: jobId
+    },
+    error: function(error) {
+      alert(error);
+    },
+    success: function(data) {
+      location.reload(true);
+    }
+  });
+}
+
+function cancelDelete() {
+  $('#warning-box').remove();
+}
+
+// INSERT
+
+function save() {
+  $(".job").each(function(index, job) {
+    var jobData = [];
+
+    jobData['jobId'] = $(job).find(':hidden').val();
+    if($(job).find(':checkbox').is(':checked')) jobData['active'] = 1;
+    else jobData['active'] = 0;
+    jobData['export_path'] = $(job).find('.job-export-path').find('input').val();
+    jobData['config_id'] = $(job).find('.job-config-dropdown').find('select').val();
+    jobData['revision_id'] = $(job).find('.job-revision-dropdown').find('select').val();
+    jobData['terms'] = $(job).find('.job-terms').find('input').val();
+
+    console.log(jobData);
   });
 }
 
