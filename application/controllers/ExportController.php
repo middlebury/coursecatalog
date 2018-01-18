@@ -144,6 +144,28 @@ class ExportController extends AbstractCatalogController
     $this->_helper->redirector('schedule', 'admin');
   }
 
+  public function updatejobAction() {
+    $this->_helper->layout()->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
+
+    if ($this->getRequest()->isPost()) {
+      $safeId = filter_input(INPUT_POST, 'jobId', FILTER_SANITIZE_SPECIAL_CHARS);
+      $safeActive = filter_input(INPUT_POST, 'active', FILTER_SANITIZE_SPECIAL_CHARS);
+      $safeExportPath = filter_input(INPUT_POST, 'export_path', FILTER_SANITIZE_SPECIAL_CHARS);
+      $safeConfigId = filter_input(INPUT_POST, 'config_id', FILTER_SANITIZE_SPECIAL_CHARS);
+      $safeRevisionId = filter_input(INPUT_POST, 'revision_id', FILTER_SANITIZE_SPECIAL_CHARS);
+      $safeTerms = filter_input(INPUT_POST, 'terms', FILTER_SANITIZE_SPECIAL_CHARS);
+
+      $db = Zend_Registry::get('db');
+      $query =
+      "UPDATE archive_jobs
+      SET active = :active, export_path = :export_path, config_id = :config_id, revision_id = :revision_id, terms = :terms
+      WHERE id = :id";
+      $stmt = $db->prepare($query);
+      $stmt->execute(array(':id' => $safeId, ':active' => $safeActive, ':export_path' => $safeExportPath, ':config_id' => $safeConfigId, ':revision_id' => $safeRevisionId, ':terms' => $safeTerms));
+    }
+  }
+
   public function listrevisionsAction() {
     $this->_helper->layout()->disableLayout();
     $this->_helper->viewRenderer->setNoRender(true);
