@@ -66,7 +66,7 @@ function selectRevision(revisionId, revisionDropDown) {
 }
 
 function actions(jobId) {
-  return "<button value='delete' onclick='deleteJob(" + jobId + ")'>Delete</button><button value='run'>Run</button>";
+  return "<button value='delete' onclick='deleteJob(" + jobId + ")'>Delete</button><button value='run' onclick='runJob(" + jobId + ")'>Run</button>";
 }
 
 function buildList(data, callback) {
@@ -150,8 +150,10 @@ function cancelDelete() {
 
 // INSERT
 
-function validateJobTerms(jobTerms, catalogId, jobId = null) {
-  jobTerms.forEach(function(element) {
+// TODO - Will we ever use this without a jobId?
+function validateJobTerms(jobTerms, catalogId, callback, jobId = null) {
+
+  jobTerms.forEach(function(element, index) {
     $.ajax({
       url: "../export/validterm",
       type: "GET",
@@ -160,6 +162,7 @@ function validateJobTerms(jobTerms, catalogId, jobId = null) {
         term: element
       },
       error: function(error) {
+        completelyValid = false;
         var eText = error.responseText;
         $('.error-message').html(eText.substring(eText.indexOf('with message') + 12, eText.indexOf('.')));
         $('.error-message').addClass('error');
@@ -167,10 +170,16 @@ function validateJobTerms(jobTerms, catalogId, jobId = null) {
         if(jobId) {
           $('#job' + jobId).addClass('job-error');
         }
+        if(index === jobTerms.length - 1) {
+          callback('Invalid terms');
+        }
       },
       success: function(data) {
         if(jobId) {
           $('#job' + jobId).removeClass('job-error');
+        }
+        if(index === jobTerms.length - 1) {
+          callback();
         }
       }
     });
@@ -191,9 +200,25 @@ function validateInput(jobData, callback) {
 
   //Ensure terms are valid for catalog selected.
   var jobTerms = jobData['terms'].split(',');
-  validateJobTerms(jobTerms, jobData['catalog_id'], jobData['jobId']);
+  validateJobTerms(jobTerms, jobData['catalog_id'], callback, jobData['jobId']);
 
-  callback();
+}
+
+function generateJobData(job) {
+
+  var jobData = [];
+
+  if ($(job).find(':checkbox').is(':checked')) { jobData['active'] = 1; }
+  else { jobData['active'] = 0; }
+
+  jobData['jobId'] = $(job).find(':hidden').val();
+  jobData['export_path'] = $(job).find('.job-export-path').find('input').val();
+  jobData['config_id'] = $(job).find('.job-config-dropdown').find('select').val();
+  jobData['catalog_id'] = $(job).find('.job-config-dropdown').find(':selected').data('catalog');
+  jobData['revision_id'] = $(job).find('.job-revision-dropdown').find('select').val();
+  jobData['terms'] = $(job).find('.job-terms').find('input').val();
+
+  return jobData;
 }
 
 function save() {
@@ -202,17 +227,7 @@ function save() {
   $(".job").each(function(index, job) {
     if (!completelyValid) return false;
 
-    var jobData = [];
-
-    if ($(job).find(':checkbox').is(':checked')) { jobData['active'] = 1; }
-    else { jobData['active'] = 0; }
-
-    jobData['jobId'] = $(job).find(':hidden').val();
-    jobData['export_path'] = $(job).find('.job-export-path').find('input').val();
-    jobData['config_id'] = $(job).find('.job-config-dropdown').find('select').val();
-    jobData['catalog_id'] = $(job).find('.job-config-dropdown').find(':selected').data('catalog');
-    jobData['revision_id'] = $(job).find('.job-revision-dropdown').find('select').val();
-    jobData['terms'] = $(job).find('.job-terms').find('input').val();
+    var jobData = generateJobData(job);
 
     validateInput(jobData, function(error) {
       if(error) {
@@ -226,6 +241,7 @@ function save() {
         $('.error-message').html("<p>Save successful!</p>");
         $('.error-message').addClass('success');
         $('.error-message').removeClass('hidden error');
+        // TODO - I'm pretty sure this does nothing.
         $("#job" + jobData['jobId']).css('background', 'white');
         $.ajax({
           url: "../export/updatejob",
@@ -249,6 +265,24 @@ function save() {
         });
       }
     });
+  });
+}
+
+// ETC.
+
+function runJob(jobId) {
+  validateInput(generateJobData($('#job' + jobId)), function(error) {
+    if(error) {
+      $('.error-message').html("<p>Error: " + error + "</p>");
+      $('.error-message').addClass('error');
+      $('.error-message').removeClass('hidden success');
+      $("#job" + jobId).css('background', '#f95757');
+    } else {
+      $('.error-message').html("<p>Run successful!</p>");
+      $('.error-message').addClass('success');
+      $('.error-message').removeClass('hidden error');
+      console.log('yay');
+    }
   });
 }
 
