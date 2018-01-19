@@ -314,7 +314,10 @@ function runJob(jobId) {
           $('.error-message').removeClass('hidden success');
         },
         success: function() {
-          $('.error-message').html("<p>Job successful!</p>");
+          var url = "../archive/" + jobData.export_path + "/" + jobData.export_path.substring(0, jobData.export_path.indexOf('/')) + "-" + jobData.export_path.substring(jobData.export_path.indexOf('/') + 1) + "_latest.html";
+          var jobHTML = "<p>Job successful! Visible at: <a href='" + url + "'>" + url + "</a></p>";
+          console.log(jobHTML);
+          $('.error-message').html(jobHTML);
         }
       });
     }
