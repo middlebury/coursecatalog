@@ -333,75 +333,17 @@ class ExportController
     $this->_helper->layout()->disableLayout();
     $this->_helper->viewRenderer->setNoRender(true);
 
-    $config = new Zend_Config_Ini(BASE_PATH.'/archive_config.ini', APPLICATION_ENV);
+    $this->_helper->exportJob($this->_getParam('dest_dir'), $this->_getParam('config_id'), $this->_getParam('term'));
+  }
 
-    $destRoot = getcwd() . '/archives';
-    $jobRoot = $destRoot . '/' . $this->_getParam('dest_dir');
-    $htmlRoot = $jobRoot . '/html';
+  public function exportactivejobsAction() {
+    $this->_helper->layout()->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
 
-    if (!file_exists($htmlRoot)) {
-    	if (!mkdir($htmlRoot, 0775, true))
-    		file_put_contents('php://stderr', "Unable to create destination directory '$htmlRoot'.\n");
-    }
+    $db = Zend_Registry::get('db');
+    $jobs = $db->query("SELECT * FROM archive_jobs WHERE active=1")->fetchAll();
 
-    $fileBase = str_replace('/', '-', $this->_getParam('dest_dir')) . '_snapshot-' . date('Y-m-d');
-    $htmlName = $fileBase . '.html';
-    $htmlPath = $htmlRoot . '/' . $htmlName;
-
-    $params = array();
-    $params['configId'] = $this->_getParam('config_id');
-    $params['term'] = $this->_getParam('term');
-    if ($this->_getParam('verbose')) {
-      $params['verbose'] = $this->_getParam('verbose');
-    } else {
-      $params['verbose'] = '0';
-    }
-
-    // Generate the export.
-    $base = '';
-    if (!empty($config->catalog->archive->url_base)) {
-    	$base = '-b '.escapeshellarg($config->catalog->archive->url_base);
-    }
-    //$binDir = '../../bin';
-    $binDir = '/home/gselover/private_html/coursecatalog/bin';
-    $command = $binDir.'/zfcli.php '.$base.' -a archive.generate -p '.escapeshellarg(http_build_query($params)).' > '.$htmlPath;
-
-    exec($command, $output, $return);
-    if ($return) {
-      var_dump($return);
-    	file_put_contents('php://stderr', "Error running command:\n\n\t$command\n");
-    	unlink($htmlPath);
-    	return 2;
-    }
-
-    // Check to see if the export is different from the previous one.
-    $exports = explode("\n", trim(shell_exec('ls -1t '.escapeshellarg($htmlRoot))));
-    array_shift($exports);
-    if (count($exports)) {
-    	// When doing the diff, Ignore (-I) our the generated_date timestamp line.
-    	$diff = trim(shell_exec('diff -I generated_date '.escapeshellarg($htmlPath).' '.escapeshellarg($htmlRoot.'/'.$exports[0])));
-
-    	// Delete our current export if it is the same as the last one.
-    	// This way we only keep versions that contain changes.
-    	if (!strlen($diff)) {
-    		unlink($htmlPath);
-    		file_put_contents('php://stderr', "New version is the same as the last.\n");
-    		return 0;
-    	}
-    }
-
-    $linkName = str_replace('/', '-', $this->_getParam('dest_dir')).'_latest.html';
-    $linkPath = $jobRoot.'/'.$linkName;
-    if (file_exists($linkPath)) {
-    	if (!unlink($linkPath)) {
-    		file_put_contents('php://stderr', "Error deleting latest link: $linkPath\n");
-    		return 4;
-    	}
-    }
-    if (!symlink('html/'.$htmlName, $linkPath)) {
-    	file_put_contents('php://stderr', "Error creating latest link: $linkPath\n");
-    	return 5;
-    }
+    var_dump($jobs);
   }
 
 }
