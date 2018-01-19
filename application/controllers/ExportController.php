@@ -276,6 +276,42 @@ class ExportController
     }
   }
 
+  public function validtermAction() {
+    if (!$this->_getParam('catalogId')) {
+      echo "No catalog specified!";
+      exit;
+    }
+    if (!$this->_getParam('term')) {
+      echo "No term specified!";
+      exit;
+    }
+
+    $catalogId = $this->_helper->osidId->fromString($this->_getParam('catalogId'));
+    $this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+
+    try {
+      $termString = 'term/'.$this->_getParam('term');
+      $termId = $this->_helper->osidId->fromString($termString);
+    }
+    catch (osid_InvalidArgumentException $e) {
+			header('HTTP/1.1 400 Bad Request');
+			print "The term id specified was not of the correct format.";
+			exit;
+		}
+    catch (osid_NotFoundException $e) {
+      echo "not valid";
+    }
+
+    if ($this->termLookupSession->getTerm($termId)) {
+      echo "valid";
+    } else {
+      echo "not valid";
+    }
+
+    $this->_helper->layout()->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
+  }
+
   public function exportjobAction() {
 
     if (!$this->_getParam('dest_dir')) {

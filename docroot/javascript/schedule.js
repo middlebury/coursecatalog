@@ -34,7 +34,7 @@ function repopulateRevisions(jobId) {
 function defineConfigDropDown(jobId, configs) {
   var configDropDownHTML = "<select onchange='repopulateRevisions(" + jobId + ")' class='config-dropdown' value='unselected'><option value='unselected' selected>Please select a config</option>";
   configs.forEach(function(element) {
-    configDropDownHTML += "<option value='" + element['id'] + "'>" + element['label'] + "</option>";
+    configDropDownHTML += "<option data-catalog='" + element['catalog_id'] + "' value='" + element['id'] + "'>" + element['label'] + "</option>";
   });
   configDropDownHTML += "</select>";
   return configDropDownHTML;
@@ -162,6 +162,29 @@ function validateInput(jobData, callback) {
       && jobData['revision_id'] !== 'latest')             { callback("Invalid revision ID: " + jobData['revision_id']); }
   if(!pathsOnly.test(jobData['terms']))                   { callback("Invald terms. Please use letters, numbers, /, and - only."); }
 
+  //Ensure terms are valid for catalog selected.
+  var jobTerms = jobData['terms'].split(',');
+  jobTerms.forEach(function(element) {
+    console.log(element);
+    $.ajax({
+      url: "../export/validterm",
+      type: "GET",
+      data: {
+        catalogId: jobData['catalog_id'],
+        term: element
+      },
+      error: function(error) {
+        $('.error-message').html("<p>" + error.responseText.substring(error.responseText.indexOf('Could not'), error.responseText.indexOf('Could not') + 51) + "</p>");
+        $('.error-message').addClass('error');
+        $('.error-message').removeClass('hidden success');
+        console.log(error);
+      },
+      success: function(data) {
+        console.log(data);
+      }
+    });
+  });
+
   callback();
 }
 
@@ -179,6 +202,7 @@ function save() {
     jobData['jobId'] = $(job).find(':hidden').val();
     jobData['export_path'] = $(job).find('.job-export-path').find('input').val();
     jobData['config_id'] = $(job).find('.job-config-dropdown').find('select').val();
+    jobData['catalog_id'] = $(job).find('.job-config-dropdown').find(':selected').data('catalog');
     jobData['revision_id'] = $(job).find('.job-revision-dropdown').find('select').val();
     jobData['terms'] = $(job).find('.job-terms').find('input').val();
 
@@ -207,6 +231,9 @@ function save() {
             terms: jobData['terms']
           },
           error: function(error) {
+            $('.error-message').html("<p>Error: " + error + "</p>");
+            $('.error-message').addClass('error');
+            $('.error-message').removeClass('hidden success');
             throw error;
           },
           success: function(data) {
