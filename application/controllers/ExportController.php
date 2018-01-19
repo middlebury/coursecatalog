@@ -319,7 +319,7 @@ class ExportController
 			print "A dest_dir must be specified.";
 			exit;
 		}
-    if (!$this->_getParam('configId')) {
+    if (!$this->_getParam('config_id')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A config_id must be specified.";
 			exit;
@@ -336,7 +336,6 @@ class ExportController
     $config = new Zend_Config_Ini(BASE_PATH.'/archive_config.ini', APPLICATION_ENV);
 
     $destRoot = getcwd() . '/archives';
-    //$destRoot = '../../archives';
     $jobRoot = $destRoot . '/' . $this->_getParam('dest_dir');
     $htmlRoot = $jobRoot . '/html';
 
@@ -350,7 +349,7 @@ class ExportController
     $htmlPath = $htmlRoot . '/' . $htmlName;
 
     $params = array();
-    $params['configId'] = $this->_getParam('configId');
+    $params['configId'] = $this->_getParam('config_id');
     $params['term'] = $this->_getParam('term');
     if ($this->_getParam('verbose')) {
       $params['verbose'] = $this->_getParam('verbose');

@@ -268,20 +268,55 @@ function save() {
   });
 }
 
-// ETC.
+// RUN JOB
+
+function generateParams(jobData) {
+
+  var params = "";
+  params = 'config_id=' + jobData['config_id'];
+  params += "&dest_dir=" + jobData['export_path'];
+  var jobTerms = jobData['terms'].split(',');
+  jobTerms.forEach(function(element) {
+    params += "&term[]=term/" + element;
+  });
+
+  return params;
+}
 
 function runJob(jobId) {
-  validateInput(generateJobData($('#job' + jobId)), function(error) {
+
+  // Don't let user overload the job exports.
+  if ($('.error-message').html() === "<p>Running job... This may take a very long time!</p>") {
+    return;
+  }
+
+  var jobData = generateJobData($('#job' + jobId));
+
+  validateInput(jobData, function(error) {
     if(error) {
       $('.error-message').html("<p>Error: " + error + "</p>");
       $('.error-message').addClass('error');
       $('.error-message').removeClass('hidden success');
-      $("#job" + jobId).css('background', '#f95757');
     } else {
-      $('.error-message').html("<p>Run successful!</p>");
+      $('.error-message').html("<p>Running job... This may take a very long time!</p>");
       $('.error-message').addClass('success');
       $('.error-message').removeClass('hidden error');
-      console.log('yay');
+
+      var params = generateParams(jobData);
+
+      $.ajax({
+        url: "../export/exportjob",
+        type: "GET",
+        data: params,
+        error: function(error) {
+          $('.error-message').html("<p>Error: " + error + "</p>");
+          $('.error-message').addClass('error');
+          $('.error-message').removeClass('hidden success');
+        },
+        success: function() {
+          $('.error-message').html("<p>Job successful!</p>");
+        }
+      });
     }
   });
 }
