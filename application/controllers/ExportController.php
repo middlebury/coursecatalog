@@ -343,7 +343,15 @@ class ExportController
     $db = Zend_Registry::get('db');
     $jobs = $db->query("SELECT * FROM archive_jobs WHERE active=1")->fetchAll();
 
-    var_dump($jobs);
+    foreach($jobs as $job) {
+      $terms = explode(",", $job['terms']);
+      foreach($terms as &$term) {
+        $term = "term/" . $term;
+      }
+      unset($term);
+
+      $this->_helper->exportJob($job['export_path'], $job['config_id'], $terms);
+    }
   }
 
 }
