@@ -162,17 +162,12 @@ function validateJobTerms(jobTerms, catalogId, callback, jobId = null) {
         term: element
       },
       error: function(error) {
-        completelyValid = false;
-        var eText = error.responseText;
-        $('.error-message').html(eText.substring(eText.indexOf('with message') + 12, eText.indexOf('.')));
-        $('.error-message').addClass('error');
-        $('.error-message').removeClass('hidden success');
         if(jobId) {
           $('#job' + jobId).addClass('job-error');
         }
-        if(index === jobTerms.length - 1) {
-          callback('Invalid terms');
-        }
+        var eText = error.responseText;
+        callback('Invalid terms: ' + eText.substring(eText.indexOf('with message') + 12, eText.indexOf('.')));
+        return false;
       },
       success: function(data) {
         if(jobId) {
@@ -187,18 +182,16 @@ function validateJobTerms(jobTerms, catalogId, callback, jobId = null) {
 }
 
 function validateInput(jobData, callback) {
-  var numsOnly = /[0-9]/;
-  var pathsOnly = /[a-zA-Z0-9\/-]/;
+  var numsOnly = /[0-9]+/;
+  var pathsOnly = /[a-zA-Z0-9]+\/[a-zA-Z0-9]+/;
+  var numsAndCommaOnly = /([0-9],?)+/;
 
-  if (!numsOnly.test(jobData['jobId']))                   { callback("Invalid ID: " + jobData['jobId']); }
-  if(jobData['active'] !== 0 && jobData['active'] !== 1)  { callback("Invalid active state: " + jobData['active']); }
-  if (!pathsOnly.test(jobData['export_path']))            { callback("Invalid export path. Please use letters, numbers, /, and - only."); }
-  if(!numsOnly.test(jobData['config_id']))                { callback("Invalid config ID: " + jobData['config_d']); }
+  if (!numsOnly.test(jobData['jobId']))                   { callback("Invalid ID: " + jobData['jobId']); return false; }
+  if(jobData['active'] !== 0 && jobData['active'] !== 1)  { callback("Invalid active state: " + jobData['active']); return false; }
+  if (!pathsOnly.test(jobData['export_path']))            { callback("Invalid export path. Please use letters, numbers, and '-' only, and use format catalog/terms."); return false; }
+  if(!numsOnly.test(jobData['config_id']))                { callback("Invalid config ID: " + jobData['config_d']); return false; }
   if(!numsOnly.test(jobData['revision_id'])
-      && jobData['revision_id'] !== 'latest')             { callback("Invalid revision ID: " + jobData['revision_id']); }
-  if(!pathsOnly.test(jobData['terms']))                   { callback("Invald terms. Please use letters, numbers, /, and - only."); }
-
-  //Ensure terms are valid for catalog selected.
+      && jobData['revision_id'] !== 'latest')             { callback("Invalid revision ID: " + jobData['revision_id']); return false; }
   var jobTerms = jobData['terms'].split(',');
   validateJobTerms(jobTerms, jobData['catalog_id'], callback, jobData['jobId']);
 
@@ -316,7 +309,6 @@ function runJob(jobId) {
         success: function() {
           var url = "../archive/" + jobData.export_path + "/" + jobData.export_path.substring(0, jobData.export_path.indexOf('/')) + "-" + jobData.export_path.substring(jobData.export_path.indexOf('/') + 1) + "_latest.html";
           var jobHTML = "<p>Job successful! Visible at: <a href='" + url + "'>" + url + "</a></p>";
-          console.log(jobHTML);
           $('.error-message').html(jobHTML);
         }
       });
