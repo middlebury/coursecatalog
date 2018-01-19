@@ -150,6 +150,33 @@ function cancelDelete() {
 
 // INSERT
 
+function validateJobTerms(jobTerms, catalogId, jobId = null) {
+  jobTerms.forEach(function(element) {
+    $.ajax({
+      url: "../export/validterm",
+      type: "GET",
+      data: {
+        catalogId: catalogId,
+        term: element
+      },
+      error: function(error) {
+        var eText = error.responseText;
+        $('.error-message').html(eText.substring(eText.indexOf('with message') + 12, eText.indexOf('.')));
+        $('.error-message').addClass('error');
+        $('.error-message').removeClass('hidden success');
+        if(jobId) {
+          $('#job' + jobId).addClass('job-error');
+        }
+      },
+      success: function(data) {
+        if(jobId) {
+          $('#job' + jobId).removeClass('job-error');
+        }
+      }
+    });
+  });
+}
+
 function validateInput(jobData, callback) {
   var numsOnly = /[0-9]/;
   var pathsOnly = /[a-zA-Z0-9\/-]/;
@@ -164,26 +191,7 @@ function validateInput(jobData, callback) {
 
   //Ensure terms are valid for catalog selected.
   var jobTerms = jobData['terms'].split(',');
-  jobTerms.forEach(function(element) {
-    console.log(element);
-    $.ajax({
-      url: "../export/validterm",
-      type: "GET",
-      data: {
-        catalogId: jobData['catalog_id'],
-        term: element
-      },
-      error: function(error) {
-        $('.error-message').html("<p>" + error.responseText.substring(error.responseText.indexOf('Could not'), error.responseText.indexOf('Could not') + 51) + "</p>");
-        $('.error-message').addClass('error');
-        $('.error-message').removeClass('hidden success');
-        console.log(error);
-      },
-      success: function(data) {
-        console.log(data);
-      }
-    });
-  });
+  validateJobTerms(jobTerms, jobData['catalog_id'], jobData['jobId']);
 
   callback();
 }

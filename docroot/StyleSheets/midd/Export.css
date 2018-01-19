@@ -3,6 +3,10 @@
   margin-bottom: 20px;
 }
 
+.job-error td {
+  background: red;
+}
+
 .job-menu {
   margin: 10px 0px;
 }
