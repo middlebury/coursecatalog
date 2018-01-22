@@ -19,8 +19,8 @@ class Helper_ExportJob
 	 * @access public
 	 * @since 1/19/18
 	 */
-	public function direct ($dest_dir, $config_id, $term, $revision, $verbose = '0') {
-		return $this->exportJob($dest_dir, $config_id, $term, $revision, $verbose);
+	public function direct ($dest_dir, $config_id, $term, $verbose = '0') {
+		return $this->exportJob($dest_dir, $config_id, $term, $verbose);
 	}
 
 	/**
@@ -34,7 +34,7 @@ class Helper_ExportJob
 	 * @access public
 	 * @since 1/19/18
 	 */
-	public function exportJob ($dest_dir, $config_id, $term, $revision, $verbose) {
+	public function exportJob ($dest_dir, $config_id, $term, $verbose) {
     $config = new Zend_Config_Ini(BASE_PATH.'/archive_config.ini', APPLICATION_ENV);
 
     $destRoot = getcwd() . '/archives';
@@ -54,7 +54,6 @@ class Helper_ExportJob
     $params['configId'] = $config_id;
     $params['term'] = $term;
     $params['verbose'] = $verbose;
-		$params['revision'] = $revision;
 
     // Generate the export.
     $base = '';
@@ -70,6 +69,7 @@ class Helper_ExportJob
       var_dump($return);
       file_put_contents('php://stderr', "Error running command:\n\n\t$command\n");
       unlink($htmlPath);
+      return 2;
     }
 
     // Check to see if the export is different from the previous one.

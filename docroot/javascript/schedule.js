@@ -306,10 +306,9 @@ function runJob(jobId) {
           $('.error-message').addClass('error');
           $('.error-message').removeClass('hidden success');
         },
-        success: function(data) {
-          console.log(data);
+        success: function() {
           var url = "../archive/" + jobData.export_path + "/" + jobData.export_path.substring(0, jobData.export_path.indexOf('/')) + "-" + jobData.export_path.substring(jobData.export_path.indexOf('/') + 1) + "_latest.html";
-          var jobHTML = "<p>Job successful! Visible at: <a href='" + url + "'>" + url + "</a></p><p>Occasionally it takes a minute for the above link to update.  If the timestamp is not correct, try refreshing in a few minutes.";
+          var jobHTML = "<p>Job successful! Visible at: <a href='" + url + "'>" + url + "</a></p>";
           $('.error-message').html(jobHTML);
         }
       });

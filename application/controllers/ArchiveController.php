@@ -171,21 +171,6 @@
 			print "A configId must be specified.";
 			exit;
 		}
-    if (!$this->_getParam('dest_dir')) {
-			header('HTTP/1.1 400 Bad Request');
-			print "A dest_dir must be specified.";
-			exit;
-		}
-    if (!$this->_getParam('term')) {
-			header('HTTP/1.1 400 Bad Request');
-			print "Terms must be specified.";
-			exit;
-		}
-    if (!$this->_getParam('revision')) {
-      header('HTTP/1.1 400 Bad Request');
-			print "Revision must be specified.";
-			exit;
-    }
 
 		$config = Zend_Registry::getInstance()->config;
 		// Test for a password if we aren't run from the command-line to prevent
@@ -274,7 +259,6 @@
     $stmt->execute(array($this->_getParam('configId')));
     $latestRevision = $stmt->fetch();
 		$jsonData = json_decode($latestRevision['json_data']);
-    var_dump($jsonData);
 
 		foreach($jsonData as $group) {
 			foreach($group as $entry) {
