@@ -15,15 +15,15 @@ class ExportController
     parent::init();
     $this->view->csrf_key = $this->_helper->csrfKey();
 
-    // if (!$this->_helper->auth()->isAuthenticated())
-    //   $this->_helper->auth()->login();
-    //
-    // $config = Zend_Registry::getInstance()->config;
-    // if (!isset($config->admin->administrator_ids))
-    //   throw new PermissionDeniedException('No admins are defined for this application.');
-    // $admins = explode(',', $config->admin->administrator_ids);
-    // if (!in_array($this->_helper->auth()->getUserId(), $admins))
-    //   throw new PermissionDeniedException('You are not authorized to administer this application.' . $admins[1]);
+    if (!$this->_helper->auth()->isAuthenticated())
+      $this->_helper->auth()->login();
+
+    $config = Zend_Registry::getInstance()->config;
+    if (!isset($config->admin->administrator_ids))
+      throw new PermissionDeniedException('No admins are defined for this application.');
+    $admins = explode(',', $config->admin->administrator_ids);
+    if (!in_array($this->_helper->auth()->getUserId(), $admins))
+      throw new PermissionDeniedException('You are not authorized to administer this application.' . $admins[1]);
   }
 
   public function listAction() {
@@ -329,11 +329,16 @@ class ExportController
 			print "Terms must be specified.";
 			exit;
 		}
+    if (!$this->_getParam('revision')) {
+      header('HTTP/1.1 400 Bad Request');
+			print "Revision must be specified.";
+			exit;
+    }
 
     $this->_helper->layout()->disableLayout();
     $this->_helper->viewRenderer->setNoRender(true);
 
-    $this->_helper->exportJob($this->_getParam('dest_dir'), $this->_getParam('config_id'), $this->_getParam('term'));
+    $this->_helper->exportJob($this->_getParam('dest_dir'), $this->_getParam('config_id'), $this->_getParam('term'), $this->_getParam('revision'));
   }
 
   public function exportactivejobsAction() {
@@ -351,7 +356,8 @@ class ExportController
       }
       unset($term);
 
-      $this->_helper->exportJob($job['export_path'], $job['config_id'], $terms);
+      // TODO - this probably needs work.
+      $this->_helper->exportJob($job['export_path'], $job['config_id'], $terms, $job['revision']);
     }
   }
 
