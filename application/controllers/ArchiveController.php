@@ -504,6 +504,7 @@ class ArchiveController
 					'label' => $term->getDisplayName(),
 					'sections' => array(),
 					'cw_seats' => 0,
+					'total_seats' => 0,
 				);
 			}
 			if (!isset($allCourseInstructors[$termIdString])) {
@@ -531,6 +532,11 @@ class ArchiveController
 			if ($offering->hasRecordType($identifiersType)) {
 				$identifiersRecord = $offering->getCourseOfferingRecord($identifiersType);
 				$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['section_numbers'][] = $identifiersRecord->getSequenceNumber();
+			}
+			// Add the number of seats.
+			if ($offering->hasRecordType($enrollmentNumbersType)) {
+				$enrollmentNumbersRecord = $offering->getCourseOfferingRecord($enrollmentNumbersType);
+				$sectionData[$termIdString]['total_seats'] += $enrollmentNumbersRecord->getMaxEnrollment();
 			}
 			// Build an array of requirements for each offering description in case we need to print them separately.
 			$topics = $offering->getTopics();
@@ -593,13 +599,16 @@ class ArchiveController
 			// For CW requirements, associate the number of seats per term.
 			if ($cwTopicId->isEqual($topic->getId())) {
 				$req['term_seats'] = [];
+				$req['req_seats'] = 0;
 				$req['total_seats'] = 0;
 				foreach ($sectionData as $termIdString => $term) {
 					$req['term_seats'][$termIdString] = [
 						'term_label' => $term['label'],
-						'seats' => $term['cw_seats'],
+						'req_seats' => $term['cw_seats'],
+						'total_seats' => $term['total_seats'],
 					];
-					$req['total_seats'] += $term['cw_seats'];
+					$req['req_seats'] += $term['cw_seats'];
+					$req['total_seats'] += $term['total_seats'];
 				}
 			}
 			$reqs[] = $req;
@@ -619,6 +628,7 @@ class ArchiveController
 				$term_data->idString = $termId;
 				$term_data->label = $termSectionData['label'];
 				$term_data->cw_seats = $termSectionData['cw_seats'];
+				$term_data->total_seats = $termSectionData['total_seats'];
 				$data->terms[] = $term_data;
 				foreach ($termSectionData['sections'] as $hash => $section) {
 					$section_data = new stdClass;
