@@ -176,7 +176,6 @@ function validateInput(id, type, value, callback) {
       }
       break;
     case 'page_content':
-      console.log(value);
       var validURL = /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})).?)(?::\d{2,5})?(?:[/?#]\S*)?$/;
       if (validURL.test(value)) {
         callback();
@@ -185,7 +184,7 @@ function validateInput(id, type, value, callback) {
       }
       break;
     case 'custom_text':
-      var validCharacters = /^[\/*.?!,;:()&amp;&quot; 0-9a-zA-Z]+$/;
+      var validCharacters = /^[\/*.?!,;:()&amp;&quot;\\\'\s0-9a-zA-Z]+$/;
       if (validCharacters.test(value)) {
         callback();
       } else {
@@ -221,19 +220,24 @@ function saveJSON() {
       if (!completelyValid) return;
 
       var sectionId = element['id'];
-      var sectionAsDOMObject = $.parseHTML($(element).html());
-      // TODO - We can do better than using substrings to get this info.
-      var sectionType = sectionAsDOMObject[1].innerHTML.substring(sectionAsDOMObject[1].innerHTML.indexOf(': ') + 2);
-      var sectionValueHTML = sectionAsDOMObject[2].innerHTML;
-      var sectionValue = sectionValueHTML.substring(sectionValueHTML.indexOf("value=") + 6, sectionValueHTML.indexOf('>'));
-
-      if(sectionType === 'course_list' && $(element).find('.filter-input').val()) {
-        var filters = $(element).find('.filter-input').val();
-
-        // Remove trailing "
-        sectionValue = sectionValue.substring(0, sectionValue.length - 1);
-        sectionValue += "," + filters + "\"";
+      var section = $(element);
+      var sectionType = section.find('.section-type')[0].innerHTML.substring(section.find('.section-type')[0].innerHTML.indexOf(': ') + 2);
+      var sectionValue = '';
+      if (sectionType === 'custom_text') {
+        sectionValue = $($($(element).find('.section-value')[0]).find('textarea')[0]).val();
+      } else if (sectionType === 'course_list') {
+        sectionValue = $($($(element).find('.section-value')[0]).find('select')[0]).val();
+        if ($(element).find('.filter-input').val()) {
+          var filters = $(element).find('.filter-input').val();
+          // Remove trailing "
+          sectionValue = sectionValue.substring(0, sectionValue.length - 1);
+          sectionValue += "," + filters + "\"";
+        }
+      } else {
+        sectionValue = $($($(element).find('.section-value')[0]).find('input')[0]).val();
       }
+
+      sectionValue = "\"" + sectionValue + "\"";
 
       validateInput(sectionId, sectionType, sectionValue, function(error, sectionId) {
         if(error) {
@@ -265,6 +269,8 @@ function saveJSON() {
 
     // Ensure valid JSON if no sections are present.
     if(JSONString === "}") JSONString = "{}";
+
+    console.log(JSONString);
 
     $.ajax({
       url: "../export/insertrevision",
