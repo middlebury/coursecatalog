@@ -37,7 +37,6 @@ function buildList(jsonData, callback) {
 }
 
 function populate() {
-  // Load data.
   $.ajax({
     url: "../export/list",
     type: "GET",
@@ -152,6 +151,22 @@ function resetEventListeners() {
     // as their ids are unique do they really need to be in order?
     renameGroups();
     renameSections();
+  });
+}
+
+function showHide() {
+  var groups = $('.group').toArray();
+  var visible = true;
+  groups.forEach(function(element, index) {
+    if(index === 0) {
+      visible = $(element).find('.section-group').hasClass('visible');
+    }
+
+    if (!visible) {
+      $(element).find('.section-group').addClass('visible');
+    } else {
+      $(element).find('.section-group').removeClass('visible');
+    }
   });
 }
 
