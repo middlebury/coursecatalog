@@ -193,6 +193,7 @@ function validateInput(jobData, callback) {
   if(!numsOnly.test(jobData['revision_id'])
       && jobData['revision_id'] !== 'latest')             { callback("Invalid revision ID: " + jobData['revision_id']); return false; }
   var jobTerms = jobData['terms'].split(',');
+  if (jobTerms[0] === '') { callback("Please enter at least one term"); }
   validateJobTerms(jobTerms, jobData['catalog_id'], callback, jobData['jobId']);
 
 }
@@ -297,7 +298,7 @@ function runJob(jobId) {
       $('.error-message').removeClass('hidden error');
 
       var params = generateParams(jobData);
-      
+
       $.ajax({
         url: "../archive/exportjob",
         type: "GET",
