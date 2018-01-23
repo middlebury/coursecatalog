@@ -4,6 +4,7 @@
 ?>
 
 <h1>Create New Catalog Export Configuration</h1>
+<div class='admin-menu'><a href="<?php print $this->url(array('controller' => 'admin', 'action' => 'export')); ?>">&laquo; Back to Archive Export Configuration</a></div>
 
 <form class='config-create-form' action="<?php print $this->url(array('action' => 'insertconfig')); ?>" method="post">
 	<strong>Label:</strong><input name='label'></input>
