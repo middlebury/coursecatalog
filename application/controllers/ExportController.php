@@ -356,7 +356,7 @@ class ExportController
       }
       unset($term);
 
-      $this->_helper->exportJob($job['export_path'], $job['config_id'], $terms);
+      $this->_helper->exportJob($job['export_path'], $job['config_id'], $job['revision_id'], $terms);
     }
   }
 
