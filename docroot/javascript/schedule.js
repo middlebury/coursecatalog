@@ -272,6 +272,7 @@ function generateParams(jobData) {
   jobTerms.forEach(function(element) {
     params += "&term[]=term/" + element;
   });
+  params += "&revision_id=" + jobData['revision_id'];
 
   return params;
 }

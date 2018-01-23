@@ -166,9 +166,19 @@
 	 * @since 6/15/09
 	 */
 	public function generateAction () {
-		if (!$this->_getParam('configId')) {
+		if (!$this->_getParam('config_id')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A configId must be specified.";
+			exit;
+		}
+    if (!$this->_getParam('term')) {
+			header('HTTP/1.1 400 Bad Request');
+			print "A term must be specified.";
+			exit;
+		}
+    if (!$this->_getParam('revision_id')) {
+			header('HTTP/1.1 400 Bad Request');
+			print "A revisionId must be specified.";
 			exit;
 		}
 
@@ -195,7 +205,7 @@
 			$db = Zend_Registry::get('db');
 	    $query = "SELECT catalog_id FROM archive_configurations WHERE id = ?";
 	    $stmt = $db->prepare($query);
-	    $stmt->execute(array($this->_getParam('configId')));
+	    $stmt->execute(array($this->_getParam('config_id')));
 	    $conf = $stmt->fetch();
 			$catalogId = $this->_helper->osidId->fromString($conf['catalog_id']);
 			$this->courseSearchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
@@ -242,21 +252,31 @@
 			libxml_set_streams_context($context);
 		}
 
-		$sections = array();
-    $query =
-    "SELECT
-      *
-     FROM archive_configuration_revisions a
-     INNER JOIN (
-      SELECT
-        arch_conf_id,
-        MAX(last_saved) as latest
-      FROM archive_configuration_revisions
-      GROUP BY arch_conf_id
-    ) b ON a.arch_conf_id = b.arch_conf_id and a.last_saved = b.latest
-     WHERE a.arch_conf_id = ?";
-    $stmt = $db->prepare($query);
-    $stmt->execute(array($this->_getParam('configId')));
+    $sections = array();
+    if ($this->_getParam('revision_id') === 'latest') {
+      $query =
+      "SELECT
+        *
+       FROM archive_configuration_revisions a
+       INNER JOIN (
+        SELECT
+          arch_conf_id,
+          MAX(last_saved) as latest
+        FROM archive_configuration_revisions
+        GROUP BY arch_conf_id
+      ) b ON a.arch_conf_id = b.arch_conf_id and a.last_saved = b.latest
+       WHERE a.arch_conf_id = ?";
+      $stmt = $db->prepare($query);
+      $stmt->execute(array($this->_getParam('config_id')));
+    } else {
+      $query =
+      "SELECT
+        *
+       FROM archive_configuration_revisions
+       WHERE id = ?";
+      $stmt = $db->prepare($query);
+      $stmt->execute(array($this->_getParam('revision_id')));
+    }
     $latestRevision = $stmt->fetch();
 		$jsonData = json_decode($latestRevision['json_data']);
 

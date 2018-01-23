@@ -19,8 +19,8 @@ class Helper_ExportJob
 	 * @access public
 	 * @since 1/19/18
 	 */
-	public function direct ($dest_dir, $config_id, $term, $verbose = '0') {
-		return $this->exportJob($dest_dir, $config_id, $term, $verbose);
+	public function direct ($dest_dir, $config_id, $term, $revision_id, $verbose = '0') {
+		return $this->exportJob($dest_dir, $config_id, $term, $revision_id, $verbose);
 	}
 
 	/**
@@ -34,7 +34,7 @@ class Helper_ExportJob
 	 * @access public
 	 * @since 1/19/18
 	 */
-	public function exportJob ($dest_dir, $config_id, $term, $verbose) {
+	public function exportJob ($dest_dir, $config_id, $term, $revision_id, $verbose) {
     $config = new Zend_Config_Ini(BASE_PATH.'/archive_config.ini', APPLICATION_ENV);
 
     $destRoot = getcwd() . '/archives';
@@ -51,8 +51,9 @@ class Helper_ExportJob
     $htmlPath = $htmlRoot . '/' . $htmlName;
 
     $params = array();
-    $params['configId'] = $config_id;
+    $params['config_id'] = $config_id;
     $params['term'] = $term;
+		$params['revision_id'] = $revision_id;
     $params['verbose'] = $verbose;
 
     // Generate the export.
