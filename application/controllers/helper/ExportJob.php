@@ -34,13 +34,14 @@ class Helper_ExportJob
 	 * @access public
 	 * @since 1/19/18
 	 */
+	 // TODO - does the return do anything at all?
 	public function exportJob ($dest_dir, $config_id, $term, $revision_id, $verbose) {
 
     $config = new Zend_Config_Ini(BASE_PATH.'/archive_config.ini', APPLICATION_ENV);
 
 		if (empty($config->catalog->archive_root)) {
 			print "Invalid configuration: catalog.archive_root must be defined in archive_config.ini";
-			return 3;
+			return 1;
 		}
 		$destRoot = $config->catalog->archive_root;
     $jobRoot = $destRoot . '/' . $dest_dir;
@@ -66,8 +67,7 @@ class Helper_ExportJob
     if (!empty($config->catalog->archive->url_base)) {
       $base = '-b '.escapeshellarg($config->catalog->archive->url_base);
     }
-    // TODO - Figure out this path so it's relative.
-    $binDir = '/home/gselover/private_html/coursecatalog/bin';
+    $binDir = $config->catalog->archive_root . '/../../bin';
     $command = $binDir.'/zfcli.php '.$base.' -a archive.generate -p '.escapeshellarg(http_build_query($params)).' > '.$htmlPath;
 
     exec($command, $output, $return);
@@ -90,7 +90,7 @@ class Helper_ExportJob
       if (!strlen($diff)) {
         unlink($htmlPath);
         file_put_contents('php://stderr', "New version is the same as the last.\n");
-        return 0;
+        return 3;
       }
     }
 

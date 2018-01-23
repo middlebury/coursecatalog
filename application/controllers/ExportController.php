@@ -1,16 +1,32 @@
 <?php
+/**
+ * @since 8/23/17
+ * @package catalog.controllers
+ *
+ * @copyright Copyright &copy; 2017, Middlebury College
+ * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
+ */
 
-/** Zend_Controller_Action */
+/**
+ * A controller for working with courses
+ *
+ * @since 1/23/18
+ * @package catalog.controllers
+ *
+ * @copyright Copyright &copy; 2018, Middlebury College
+ * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
+ */
+
 class ExportController
   extends AbstractCatalogController
 {
   /**
-   * Constructor
-   *
-   * @return void
-   * @access public
-   * @since 1/9/18
-   */
+	 * Initialize object
+	 *
+	 * Called from {@link __construct()} as final step of object instantiation.
+	 *
+	 * @return void
+	 */
   public function init () {
     parent::init();
     $this->view->csrf_key = $this->_helper->csrfKey();
@@ -26,6 +42,14 @@ class ExportController
       throw new PermissionDeniedException('You are not authorized to administer this application.' . $admins[1]);
   }
 
+  /**
+	 * Echo JSON data of latest revision for a particular archive configuration.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/23/18
+	 */
+   // TODO - rename this
   public function listAction() {
 
     $this->_helper->layout()->disableLayout();
@@ -50,11 +74,25 @@ class ExportController
     echo $latestRevision['json_data'];
   }
 
+  /**
+	 * Provide interface for creating a new archive configuration.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/23/18
+	 */
   public function newconfigAction() {
     $lookupSession = $this->_helper->osid->getCourseManager()->getCourseCatalogLookupSession();
     $this->view->catalogs = $lookupSession->getCourseCatalogs();
   }
 
+  /**
+	 * Delete an archive configuration.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/23/18
+	 */
   public function deleteconfigAction() {
     $this->_helper->layout()->disableLayout();
     $this->_helper->viewRenderer->setNoRender(true);
@@ -71,6 +109,13 @@ class ExportController
     $stmt->execute(array($this->getRequest()->getPost('configId')));
   }
 
+  /**
+	 * Insert a new archive configuration into the database.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/23/18
+	 */
   public function insertconfigAction() {
     if ($this->getRequest()->isPost()) {
       $safeLabel = filter_input(INPUT_POST, 'label', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -87,6 +132,13 @@ class ExportController
     $this->_helper->redirector('export', 'admin');
   }
 
+  /**
+	 * Echo JSON data of all archive export jobs.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/23/18
+	 */
   public function listjobsAction() {
     $this->_helper->layout()->disableLayout();
     $this->_helper->viewRenderer->setNoRender(true);
@@ -104,6 +156,14 @@ class ExportController
     echo json_encode($data);
   }
 
+  /**
+	 * Provide an interface for creating a new archive export job.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/23/18
+	 */
+
   public function newjobAction() {
     $db = Zend_Registry::get('db');
     $this->view->configs = $db->query("SELECT * FROM archive_configurations")->fetchAll();
@@ -117,6 +177,13 @@ class ExportController
 		}
   }
 
+  /**
+	 * Delete an archive export job.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/23/18
+	 */
   public function deletejobAction() {
     $this->_helper->layout()->disableLayout();
     $this->_helper->viewRenderer->setNoRender(true);
@@ -128,6 +195,13 @@ class ExportController
     $stmt->execute(array($this->getRequest()->getPost('jobId')));
   }
 
+  /**
+	 * Insert a new archive export job into the DB.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/23/18
+	 */
   public function insertjobAction() {
     if ($this->getRequest()->isPost()) {
       $safeConfigId = filter_input(INPUT_POST, 'configId', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -145,6 +219,13 @@ class ExportController
     $this->_helper->redirector('schedule', 'admin');
   }
 
+  /**
+	 * Update an existing archive export job.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/23/18
+	 */
   public function updatejobAction() {
     $this->_helper->layout()->disableLayout();
     $this->_helper->viewRenderer->setNoRender(true);
@@ -168,6 +249,13 @@ class ExportController
     }
   }
 
+  /**
+	 * Echo JSON data of all archive configuration revisions.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/23/18
+	 */
   public function listrevisionsAction() {
     $this->_helper->layout()->disableLayout();
     $this->_helper->viewRenderer->setNoRender(true);
@@ -179,6 +267,13 @@ class ExportController
 
   }
 
+  /**
+	 * Insert new archive configuration revision to the DB.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/23/18
+	 */
   public function insertrevisionAction() {
 
     $this->_helper->layout()->disableLayout();
@@ -213,6 +308,13 @@ class ExportController
     }
   }
 
+  /**
+	 * Echo HTML for a course list dropdown menu based on an archive configuration ID.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/23/18
+	 */
   public function generatecourselistAction() {
 
     if ($this->_getParam('catalogId')) {
@@ -276,6 +378,14 @@ class ExportController
     }
   }
 
+  /**
+	 * Echo whether a user-entered term ID is valid.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/23/18
+	 */
+   // TODO - return instead of echo?
   public function validtermAction() {
     if (!$this->_getParam('catalogId')) {
       echo "No catalog specified!";

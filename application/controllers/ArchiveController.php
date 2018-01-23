@@ -157,6 +157,13 @@
 		$this->view->breadcrumb[$this->view->baseUrl($url)] = pathinfo($request->getParam('file'), PATHINFO_FILENAME);
 	}
 
+  /**
+	 * Export a single archive export job.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/23/18
+	 */
   public function exportjobAction() {
 
     if (!$this->_getParam('dest_dir')) {
@@ -186,6 +193,13 @@
     $this->_helper->exportJob($this->_getParam('dest_dir'), $this->_getParam('config_id'), $this->_getParam('term'), $this->_getParam('revision_id'));
   }
 
+  /**
+	 * Export all 'active' archive export jobs.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/23/18
+	 */
   public function exportactivejobsAction() {
 
     $this->_helper->layout()->disableLayout();
