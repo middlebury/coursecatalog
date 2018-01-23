@@ -184,7 +184,7 @@ function validateInput(id, type, value, callback) {
       }
       break;
     case 'custom_text':
-      var validCharacters = /^[\/*.?!,;:()&amp;&quot;\\\'\s0-9a-zA-Z]+$/;
+      var validCharacters = /^[\/*.?!,;:+-=()&amp;&quot;\\\'\s0-9a-zA-Z]+$/;
       if (validCharacters.test(value)) {
         callback();
       } else {
@@ -225,6 +225,8 @@ function saveJSON() {
       var sectionValue = '';
       if (sectionType === 'custom_text') {
         sectionValue = $($($(element).find('.section-value')[0]).find('textarea')[0]).val();
+        sectionValue = sectionValue.replace(/(?:\r\n|\r|\n)/g, '\\n');
+        sectionValue = sectionValue.replace(/\"/g, '&quot;');
       } else if (sectionType === 'course_list') {
         sectionValue = $($($(element).find('.section-value')[0]).find('select')[0]).val();
         if ($(element).find('.filter-input').val()) {
@@ -238,6 +240,8 @@ function saveJSON() {
       }
 
       sectionValue = "\"" + sectionValue + "\"";
+
+      console.log(sectionValue);
 
       validateInput(sectionId, sectionType, sectionValue, function(error, sectionId) {
         if(error) {
