@@ -299,7 +299,7 @@ function runJob(jobId) {
       var params = generateParams(jobData);
 
       $.ajax({
-        url: "../export/exportjob",
+        url: "../archive/exportjob",
         type: "GET",
         data: params,
         error: function(error) {

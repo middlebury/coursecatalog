@@ -157,6 +157,60 @@
 		$this->view->breadcrumb[$this->view->baseUrl($url)] = pathinfo($request->getParam('file'), PATHINFO_FILENAME);
 	}
 
+  public function exportjobAction() {
+
+    if (!$this->_getParam('dest_dir')) {
+      header('HTTP/1.1 400 Bad Request');
+      print "A dest_dir must be specified.";
+      exit;
+    }
+    if (!$this->_getParam('config_id')) {
+      header('HTTP/1.1 400 Bad Request');
+      print "A config_id must be specified.";
+      exit;
+    }
+    if (!$this->_getParam('term')) {
+      header('HTTP/1.1 400 Bad Request');
+      print "Terms must be specified.";
+      exit;
+    }
+    if (!$this->_getParam('revision_id')) {
+      header('HTTP/1.1 400 Bad Request');
+      print "A revision_id must be specified.";
+      exit;
+    }
+
+    $this->_helper->layout()->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
+
+    $this->_helper->exportJob($this->_getParam('dest_dir'), $this->_getParam('config_id'), $this->_getParam('term'), $this->_getParam('revision_id'));
+  }
+
+  public function exportactivejobsAction() {
+
+    $this->_helper->layout()->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
+
+    $db = Zend_Registry::get('db');
+    $jobs = $db->query("SELECT * FROM archive_jobs WHERE active=1")->fetchAll();
+
+    foreach($jobs as $job) {
+      $terms = explode(",", $job['terms']);
+      foreach($terms as &$term) {
+        $term = "term/" . $term;
+      }
+      unset($term);
+
+      if ($job['revision_id'] === NULL) {
+        $revision = 'latest';
+      } else {
+        $revision = $job['revision_id'];
+      }
+
+      $this->_helper->exportJob($job['export_path'], $job['config_id'], $terms, $revision);
+    }
+  }
+
 
 	/**
 	 * Answer a list of all recent courses
@@ -166,6 +220,7 @@
 	 * @since 6/15/09
 	 */
 	public function generateAction () {
+
 		if (!$this->_getParam('config_id')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A configId must be specified.";

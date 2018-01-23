@@ -34,6 +34,26 @@ $router->addRoute('archive_generate',
 	)
 );
 
+// Archive exporting
+$router->addRoute('archive_export_job',
+	new Zend_Controller_Router_Route(
+		'archive/exportjob',
+		array(
+			'controller' 	=> 'archive',
+			'action'			=> 'exportjob'
+		)
+	)
+);
+
+$router->addRoute('archive_export_active_jobs',
+	new Zend_Controller_Router_Route(
+		'archive/exportactivejobs',
+		array(
+			'controller' 	=> 'archive',
+			'action'			=> 'exportactivejobs'
+		)
+	)
+);
 
 // Add custom routes for the Kurogo JSON API.
 $router->addRoute('kurogo_terms',

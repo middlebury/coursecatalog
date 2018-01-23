@@ -25,7 +25,8 @@ if (!empty($config->catalog->archive->url_base)) {
 	$base = '-b '.escapeshellarg($config->catalog->archive->url_base);
 }
 
-exec($myDir.'/zfcli.php '.$base.' -a export.export_active_jobs', $output, $return);
+exec($myDir.'/zfcli.php '.$base.' -a archive.export_active_jobs', $output, $return);
+var_dump($output);
 
 // if (count($argv) || !isset($config->catalog->archive_jobs->$jobName)) {
 // 	print "Usage:
