@@ -10,7 +10,6 @@
 	<strong>Label:</strong><input name='label'></input>
 	<strong>Catalog:</strong><br>
 		<select name='catalog_id'>
-			<option value='unselected'>Please choose a catalog</option>
 			<?php
 			while ($this->catalogs->hasNext()) {
 				$catalog = $this->catalogs->getNextCourseCatalog();
