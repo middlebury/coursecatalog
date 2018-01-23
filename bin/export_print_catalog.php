@@ -13,20 +13,21 @@ if (empty($config->catalog->archive_root)) {
 }
 $destRoot = $config->catalog->archive_root;
 
-// $verbose = false;
-// $cmd = array_shift($argv);
-// $verbose = array_shift($argv);
-// if ($verbose && $verbose == '-v') {
-// 	$verbose = true;
-// }
+$verbose = '0';
+$cmd = array_shift($argv);
+$verbose = array_shift($argv);
+if ($verbose && $verbose == '-v') {
+	$verbose = '1';
+}
+
+$params['verbose'] = $verbose;
 
 $base = '';
 if (!empty($config->catalog->archive->url_base)) {
 	$base = '-b '.escapeshellarg($config->catalog->archive->url_base);
 }
 
-exec($myDir.'/zfcli.php '.$base.' -a archive.export_active_jobs', $output, $return);
-var_dump($output);
+exec($myDir.'/zfcli.php '.$base.' -a archive.export_active_jobs -p '.escapeshellarg(http_build_query($params)), $output, $return);
 
 // if (count($argv) || !isset($config->catalog->archive_jobs->$jobName)) {
 // 	print "Usage:

@@ -191,6 +191,10 @@
     $this->_helper->layout()->disableLayout();
     $this->_helper->viewRenderer->setNoRender(true);
 
+    if($this->_getParam('verbose')) {
+      $verbose = '1';
+    } else $verbose = '0';
+
     $db = Zend_Registry::get('db');
     $jobs = $db->query("SELECT * FROM archive_jobs WHERE active=1")->fetchAll();
 
@@ -207,7 +211,7 @@
         $revision = $job['revision_id'];
       }
 
-      $this->_helper->exportJob($job['export_path'], $job['config_id'], $terms, $revision);
+      $this->_helper->exportJob($job['export_path'], $job['config_id'], $terms, $revision, $verbose);
     }
   }
 
