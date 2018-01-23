@@ -171,3 +171,16 @@
 .section-input {
   width: 95%;
 }
+
+table {
+  border-collapse: collapse;
+}
+
+th {
+  padding: 2px;
+}
+
+td {
+  padding: 0px;
+  padding-bottom: 5px;
+}
