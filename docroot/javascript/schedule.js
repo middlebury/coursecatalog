@@ -297,7 +297,7 @@ function runJob(jobId) {
       $('.error-message').removeClass('hidden error');
 
       var params = generateParams(jobData);
-
+      
       $.ajax({
         url: "../archive/exportjob",
         type: "GET",

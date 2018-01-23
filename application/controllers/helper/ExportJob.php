@@ -35,9 +35,14 @@ class Helper_ExportJob
 	 * @since 1/19/18
 	 */
 	public function exportJob ($dest_dir, $config_id, $term, $revision_id, $verbose) {
+
     $config = new Zend_Config_Ini(BASE_PATH.'/archive_config.ini', APPLICATION_ENV);
 
-    $destRoot = getcwd() . '/archives';
+		if (empty($config->catalog->archive_root)) {
+			print "Invalid configuration: catalog.archive_root must be defined in archive_config.ini";
+			return 3;
+		}
+		$destRoot = $config->catalog->archive_root;
     $jobRoot = $destRoot . '/' . $dest_dir;
     $htmlRoot = $jobRoot . '/html';
 
