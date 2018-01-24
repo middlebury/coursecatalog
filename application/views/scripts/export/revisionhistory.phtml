@@ -1,7 +1,21 @@
-<h1> hola</h1>
-
 <?php
-  foreach($this->revisions as $revision) {
-    echo $revision['last_saved'] . "\n";
-  }
- ?>
+	$this->headLink(array('rel' => 'stylesheet', 'href' => $this->baseUrl('/StyleSheets/midd/Export.css'), 'media' => 'all'));
+	//$this->headScript()->appendFile($this->baseUrl('javascript/export.js'));
+?>
+
+<h1>Revision history for <?php echo $this->configLabel; ?></h1>
+<div class='admin-menu'><a href="<?php print $this->url(array('controller' => 'admin', 'action' => 'export')); ?>">&laquo; Back to catalog export configuration</a></div>
+
+<ul>
+<?php
+	if ($this->revisions && $this->latestRevision) {
+	  foreach($this->revisions as $revision) {
+	    print "<li>";
+			print "</li>";
+	  }
+	}
+	else {
+		print "No revisions in history for config: " . $this->configLabel;
+	}
+?>
+</ul>
