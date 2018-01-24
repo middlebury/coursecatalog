@@ -34,21 +34,15 @@ class Helper_ExportJob
 	 * @access public
 	 * @since 1/19/18
 	 */
-	 // TODO - does the return do anything at all?
 	public function exportJob ($dest_dir, $config_id, $term, $revision_id, $verbose) {
-
     $config = new Zend_Config_Ini(BASE_PATH.'/archive_config.ini', APPLICATION_ENV);
-
-		if (empty($config->catalog->archive_root)) {
-			print "Invalid configuration: catalog.archive_root must be defined in archive_config.ini";
-			return 1;
-		}
 
 		if (PHP_SAPI === 'cli') {
 			$destRoot = $config->catalog->archive_root;
 		} else {
 			$destRoot = getcwd() . '/archives';
 		}
+
     $jobRoot = $destRoot . '/' . $dest_dir;
     $htmlRoot = $jobRoot . '/html';
 
@@ -72,11 +66,13 @@ class Helper_ExportJob
     if (!empty($config->catalog->archive->url_base)) {
       $base = '-b '.escapeshellarg($config->catalog->archive->url_base);
     }
-    $binDir = $config->catalog->archive_root . '/../../bin';
+    // TODO - Figure out this path so it's relative.
+    $binDir = '/home/gselover/private_html/coursecatalog/bin';
     $command = $binDir.'/zfcli.php '.$base.' -a archive.generate -p '.escapeshellarg(http_build_query($params)).' > '.$htmlPath;
 
     exec($command, $output, $return);
     if ($return) {
+      var_dump($return);
       file_put_contents('php://stderr', "Error running command:\n\n\t$command\n");
       unlink($htmlPath);
       return 2;
@@ -94,7 +90,7 @@ class Helper_ExportJob
       if (!strlen($diff)) {
         unlink($htmlPath);
         file_put_contents('php://stderr', "New version is the same as the last.\n");
-        return 3;
+        return 0;
       }
     }
 
