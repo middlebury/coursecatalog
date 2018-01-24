@@ -49,8 +49,7 @@ class ExportController
 	 * @access public
 	 * @since 1/23/18
 	 */
-   // TODO - rename this
-  public function listAction() {
+  public function latestrevisionAction() {
 
     $this->_helper->layout()->disableLayout();
     $this->_helper->viewRenderer->setNoRender(true);
@@ -72,6 +71,23 @@ class ExportController
     $stmt->execute(array(filter_input(INPUT_GET, 'configId', FILTER_SANITIZE_SPECIAL_CHARS)));
     $latestRevision = $stmt->fetch();
     echo $latestRevision['json_data'];
+  }
+
+  /**
+	 * Display revision history for a given archive configuration.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/24/18
+	 */
+  public function revisionhistoryAction() {
+    $db = Zend_Registry::get('db');
+    $query =
+    "SELECT * FROM archive_configuration_revisions
+     WHERE arch_conf_id = ?";
+    $stmt = $db->prepare($query);
+    $stmt->execute(array(filter_input(INPUT_GET, 'configId', FILTER_SANITIZE_SPECIAL_CHARS)));
+    $this->view->revisions = $stmt->fetchAll();
   }
 
   /**

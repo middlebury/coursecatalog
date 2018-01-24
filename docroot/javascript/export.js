@@ -38,7 +38,7 @@ function buildList(jsonData, callback) {
 
 function populate() {
   $.ajax({
-    url: "../export/list",
+    url: "../export/latestrevision",
     type: "GET",
     data: {
       configId: $('#configId').val()
