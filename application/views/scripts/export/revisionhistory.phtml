@@ -16,7 +16,7 @@
 		print "<th>Compare</th><th>Date</th><th>Author</th><th>JSON</th><th>Actions</th>";
 	  foreach($this->revisions as $revision) {
 			print "<tr>";
-			print "<td><input type=radio></input</td>";
+			print "<td><input id='radio" . $revision['id'] . "' type=radio></input</td>";
 			print "<td>" . $revision['last_saved'] . "</td>";
 			print "<td>" . $revision['user_disp_name'] . "</td>";
 			print "<td width='300'><center><button onclick=showHide(" . $revision['id'] . ")>Show/Hide</button></center><div id='json" . $revision['id'] . "' class='json-data hidden'>" . $revision['json_data'] . "</div></td>";
