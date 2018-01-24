@@ -39,8 +39,10 @@ class Helper_ExportJob
 
 		if (PHP_SAPI === 'cli') {
 			$destRoot = $config->catalog->archive_root;
+			$binDir = 'bin';
 		} else {
 			$destRoot = getcwd() . '/archives';
+			$binDir = getcwd() . '/../bin';
 		}
 
     $jobRoot = $destRoot . '/' . $dest_dir;
@@ -66,8 +68,6 @@ class Helper_ExportJob
     if (!empty($config->catalog->archive->url_base)) {
       $base = '-b '.escapeshellarg($config->catalog->archive->url_base);
     }
-    // TODO - Figure out this path so it's relative.
-    $binDir = '/home/gselover/private_html/coursecatalog/bin';
     $command = $binDir.'/zfcli.php '.$base.' -a archive.generate -p '.escapeshellarg(http_build_query($params)).' > '.$htmlPath;
 
     exec($command, $output, $return);
