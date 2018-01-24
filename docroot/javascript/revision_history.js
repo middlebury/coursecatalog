@@ -1,12 +1,25 @@
 
 var selected = [];
 
-function select() {
-  console.log('hola');
+function compare() {
+  var comparison = $('#comparison')[0];
+
+  var dmp = new diff_match_patch();
+  var text1 = $('#' + selected[0]).parents('tr').find('.json-data')[0].innerText;
+  var text2 = $('#' + selected[1]).parents('tr').find('.json-data')[0].innerText;
+
+  dmp.Diff_Timeout = 10;
+  var diff = dmp.diff_main(text1, text2);
+  //dmp.diff_cleanupSemantic(diff);
+  var ds = dmp.diff_prettyHtml(diff);
+  $(comparison)[0].innerHTML = ds;
+  console.log($(comparison));
+
+  $(comparison).removeClass('hidden');
 }
 
-function compare() {
-  console.log('hola');
+function hideComparison() {
+  $('#comparison').addClass('hidden');
 }
 
 function revertTo(jsonData) {

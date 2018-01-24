@@ -10,6 +10,11 @@
 <div class='config-menu'>
 	<button onclick=compare()>Compare selected revisions</button>
 </div>
+
+<div id='comparison' class='comparison hidden'>
+	<button onclick='hideComparison()'>Hide</button>
+</div>
+
 <?php
 	if ($this->revisions && $this->latestRevision) {
 		print "<table id='revisions-table'>";
