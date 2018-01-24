@@ -13,3 +13,7 @@
 [submodule "docroot/javascript/jquery-week-calendar"]
 	path = docroot/javascript/jquery-week-calendar
 	url = http://github.com/themouette/jquery-week-calendar.git
+[submodule "library/google-diff-match-patch"]
+	path = library/google-diff-match-patch
+	url = https://github.com/CADbloke/google-diff-match-patch.git
+	branch = master
