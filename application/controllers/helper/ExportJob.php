@@ -43,7 +43,12 @@ class Helper_ExportJob
 			print "Invalid configuration: catalog.archive_root must be defined in archive_config.ini";
 			return 1;
 		}
-		$destRoot = $config->catalog->archive_root;
+
+		if (PHP_SAPI === 'cli') {
+			$destRoot = $config->catalog->archive_root;
+		} else {
+			$destRoot = getcwd() . '/archives';
+		}
     $jobRoot = $destRoot . '/' . $dest_dir;
     $htmlRoot = $jobRoot . '/html';
 
@@ -72,7 +77,6 @@ class Helper_ExportJob
 
     exec($command, $output, $return);
     if ($return) {
-      var_dump($return);
       file_put_contents('php://stderr', "Error running command:\n\n\t$command\n");
       unlink($htmlPath);
       return 2;
