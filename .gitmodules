@@ -13,3 +13,7 @@
 [submodule "docroot/javascript/jquery-week-calendar"]
 	path = docroot/javascript/jquery-week-calendar
 	url = http://github.com/themouette/jquery-week-calendar.git
+[submodule "library/diff2html"]
+	path = library/diff2html
+	url = https://github.com/rtfpessoa/diff2html.git
+	branch = master
