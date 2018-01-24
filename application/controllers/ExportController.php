@@ -81,13 +81,37 @@ class ExportController
 	 * @since 1/24/18
 	 */
   public function revisionhistoryAction() {
+    if(!$this->_getParam('configId')) {
+      header('HTTP/1.1 400 Bad Request');
+      print "A configId must be specified.";
+      exit;
+    }
     $db = Zend_Registry::get('db');
-    $query =
-    "SELECT * FROM archive_configuration_revisions
-     WHERE arch_conf_id = ?";
+    $query = "SELECT label FROM archive_configurations WHERE id = ?";
+    $stmt = $db->prepare($query);
+    $stmt->execute(array(filter_input(INPUT_GET, 'configId', FILTER_SANITIZE_SPECIAL_CHARS)));
+    $this->view->configLabel = $stmt->fetch()['label'];
+
+    $query = "SELECT * FROM archive_configuration_revisions WHERE arch_conf_id = ? ORDER BY last_saved DESC";
     $stmt = $db->prepare($query);
     $stmt->execute(array(filter_input(INPUT_GET, 'configId', FILTER_SANITIZE_SPECIAL_CHARS)));
     $this->view->revisions = $stmt->fetchAll();
+
+    $query =
+    "SELECT
+      *
+     FROM archive_configuration_revisions a
+     INNER JOIN (
+      SELECT
+        arch_conf_id,
+        MAX(last_saved) as latest
+      FROM archive_configuration_revisions
+      GROUP BY arch_conf_id
+    ) b ON a.arch_conf_id = b.arch_conf_id and a.last_saved = b.latest
+     WHERE a.arch_conf_id = ?";
+    $stmt = $db->prepare($query);
+    $stmt->execute(array(filter_input(INPUT_GET, 'configId', FILTER_SANITIZE_SPECIAL_CHARS)));
+    $this->view->latestRevision = $stmt->fetch();
   }
 
   /**

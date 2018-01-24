@@ -1,21 +1,30 @@
 <?php
 	$this->headLink(array('rel' => 'stylesheet', 'href' => $this->baseUrl('/StyleSheets/midd/Export.css'), 'media' => 'all'));
-	//$this->headScript()->appendFile($this->baseUrl('javascript/export.js'));
+	$this->headScript()->appendFile($this->baseUrl('javascript/diff_match_patch/diff_match_patch.js'));
+	$this->headScript()->appendFile($this->baseUrl('javascript/revision_history.js'));
 ?>
 
 <h1>Revision history for <?php echo $this->configLabel; ?></h1>
 <div class='admin-menu'><a href="<?php print $this->url(array('controller' => 'admin', 'action' => 'export')); ?>">&laquo; Back to catalog export configuration</a></div>
 
-<ul>
+<div class='config-menu'>
+	<button onclick=compare()>Compare selected revisions</button>
+</div>
 <?php
 	if ($this->revisions && $this->latestRevision) {
+		print "<table id='revisions-table'>";
+		print "<th>Compare</th><th>Date</th><th>Author</th><th>Actions</th>";
 	  foreach($this->revisions as $revision) {
-	    print "<li>";
-			print "</li>";
+			print "<tr>";
+			print "<td><input type=radio></input</td>";
+			print "<td>" . $revision['last_saved'] . "</td>";
+			print "<td>" . $revision['user_disp_name'] . "</td>";
+			print "<td><button onclick=revertTo('" . $revision['json_data'] . "')>Revert to this revision</button></td>";
+			print "</tr>";
 	  }
+		print "</table>";
 	}
 	else {
 		print "No revisions in history for config: " . $this->configLabel;
 	}
 ?>
-</ul>
