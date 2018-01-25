@@ -115,6 +115,24 @@ class ExportController
   }
 
   /**
+	 * Display diff between two revisions.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/25/18
+	 */
+  public function revisiondiffAction() {
+    if (!$this->getRequest()->isPost()) {
+      print "This page requires POST data.";
+    } else {
+      $this->view->text1 = $this->getRequest()->getPost('text1');
+      $this->view->text2 = $this->getRequest()->getPost('text2');
+      $this->view->time1 = $this->getRequest()->getPost('time1');
+      $this->view->time2 = $this->getRequest()->getPost('time2');
+    }
+  }
+
+  /**
 	 * Provide interface for creating a new archive configuration.
 	 *
 	 * @return void

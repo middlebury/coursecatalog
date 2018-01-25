@@ -1,8 +1,6 @@
 <?php
 	$this->headLink(array('rel' => 'stylesheet', 'href' => $this->baseUrl('/StyleSheets/midd/Export.css'), 'media' => 'all'));
-	$this->headLink(array('rel' => 'stylesheet', 'href' => $this->baseUrl('javascript/jsdifflib/diffview.css'), 'media' => 'all'));
 	$this->headScript()->appendFile($this->baseUrl('javascript/jsdifflib/difflib.js'));
-	$this->headScript()->appendFile($this->baseUrl('javascript/jsdifflib/diffview.js'));
 	$this->headScript()->appendFile($this->baseUrl('javascript/revision_history.js'));
 ?>
 
@@ -13,9 +11,12 @@
 	<button onclick=compare()>Compare selected revisions</button>
 </div>
 
-<div id='comparison' class='comparison hidden'>
-	<button onclick='hideComparison()'>Hide</button>
-</div>
+<form id="diff-form" class="hidden" action="revisiondiff" method="post" target="_blank">
+	<input id="text1" type="hidden" name="text1" value="" />
+	<input id="text2" type="hidden" name="text2" value="" />
+	<input id="time1" type="hidden" name="time1" value="" />
+	<input id="time2" type="hidden" name="time2" value="" />
+</form>
 
 <?php
 	if ($this->revisions && $this->latestRevision) {

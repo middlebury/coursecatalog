@@ -1,0 +1,33 @@
+<?php
+  $this->headLink(array('rel' => 'stylesheet', 'href' => $this->baseUrl('javascript/jsdifflib/diffview.css'), 'media' => 'all'));
+  $this->headScript()->appendFile($this->baseUrl('javascript/jsdifflib/difflib.js'));
+  $this->headScript()->appendFile($this->baseUrl('javascript/jsdifflib/diffview.js'));
+?>
+
+<div id='diff'></div>
+
+<script type='text/javascript'>
+  function buildDiffView(text1, text2, time1, time2) {
+    text1 = difflib.stringAsLines(text1);
+    text2 = difflib.stringAsLines(text2);
+    var contextSize = 5;
+    var sm = new difflib.SequenceMatcher(text1, text2);
+    var opcodes = sm.get_opcodes();
+    if(opcodes.length > 1) {
+      var diffView = diffview.buildView({
+            baseTextLines: text1,
+            newTextLines: text2,
+            opcodes: opcodes,
+            baseTextName: time1,
+            newTextName: time2,
+            contextSize: contextSize,
+            viewType: 1
+      });
+      $('#diff').append(diffView);
+    } else {
+      $('#diff').append("<div style='border:1px solid gray;padding:10px'><p>No difference in JSON data between these revisions</p></div>");
+    }
+  }
+
+  buildDiffView(<?php echo Zend_Json::encode($this->text1) ?>, <?php echo Zend_Json::encode($this->text2) ?>, <?php echo Zend_Json::encode($this->time1) ?>, <?php echo Zend_Json::encode($this->time2) ?>);
+</script>

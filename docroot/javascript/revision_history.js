@@ -45,35 +45,17 @@ function sortSelected() {
 
 function compare() {
   sortSelected();
+  var text1 = $('#' + selected[0]).parents('tr').find('.json-data')[0].innerText;
+  var text2 = $('#' + selected[1]).parents('tr').find('.json-data')[0].innerText;
+  var time1 = $('#' + selected[0]).parents('tr').find('.timestamp')[0].innerText + " (older)";
+  var time2 = $('#' + selected[1]).parents('tr').find('.timestamp')[0].innerText + " (newer)";
 
-  var comparison = $('#comparison')[0];
-  $(comparison).empty();
-  
-  var text1 = difflib.stringAsLines($('#' + selected[0]).parents('tr').find('.json-data')[0].innerText);
-  var text2 = difflib.stringAsLines($('#' + selected[1]).parents('tr').find('.json-data')[0].innerText);
-  var sm = new difflib.SequenceMatcher(text1, text2);
-  var opcodes = sm.get_opcodes();
-  if(opcodes.length > 1) {
-    while (comparison.firstChild) comparison.removeChild(comparison.firstChild);
-    var contextSize = 5;
-    comparison.appendChild(diffview.buildView({
-          baseTextLines: text1,
-          newTextLines: text2,
-          opcodes: opcodes,
-          baseTextName: $('#' + selected[0]).parents('tr').find('.timestamp')[0].innerText + "(older)",
-          newTextName: $('#' + selected[1]).parents('tr').find('.timestamp')[0].innerText + "(newer)",
-          contextSize: contextSize,
-          viewType: 1
-    }));
-  } else {
-    $(comparison).append("<p>No difference in JSON data between these revisions</p>");
-  }
+  $('#text1').val(text1);
+  $('#text2').val(text2);
+  $('#time1').val(time1);
+  $('#time2').val(time2);
 
-  var hideButton = "<button onclick='hideComparison()'>Hide</button>";
-  $(comparison).prepend(hideButton);
-  $(comparison).append(hideButton);
-
-  $(comparison).removeClass('hidden');
+  $('#diff-form').submit();
 }
 
 function hideComparison() {
