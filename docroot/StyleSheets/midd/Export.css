@@ -187,9 +187,18 @@ td {
 
 .comparison {
   margin: 10px 0px;
+  border: 1px solid gray;
   border-top: 10px solid #bababa;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
+}
+
+.added {
+  background: #9fff99;
+}
+
+.removed {
+  background: #ff9999;
 }
 
 .preform-json {

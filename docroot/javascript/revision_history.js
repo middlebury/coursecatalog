@@ -4,12 +4,13 @@ var selected = [];
 function prettifyDiff(diff) {
   var output = "<pre class='diff'>";
   diff.forEach(function(element) {
-    if(element[0] != '0') {
-      output += element[1];
+    if(element[0] === 1) {
+      output += "<div class='added'>" + element[1] + "</div>";
+    } else if (element[0] === -1) {
+      output += "<div class='removed'>" + element[1] + "</div>";
     }
   });
   output += "</pre>";
-  console.log(output);
   return output;
 }
 
