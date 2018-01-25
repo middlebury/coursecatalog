@@ -199,6 +199,7 @@ td {
 
 .removed {
   background: #ff9999;
+  text-decoration: line-through;
 }
 
 .preform-json {
