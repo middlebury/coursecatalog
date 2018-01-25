@@ -1,6 +1,8 @@
 <?php
 	$this->headLink(array('rel' => 'stylesheet', 'href' => $this->baseUrl('/StyleSheets/midd/Export.css'), 'media' => 'all'));
-	$this->headScript()->appendFile($this->baseUrl('javascript/diff_match_patch/diff_match_patch.js'));
+	$this->headLink(array('rel' => 'stylesheet', 'href' => $this->baseUrl('javascript/jsdifflib/diffview.css'), 'media' => 'all'));
+	$this->headScript()->appendFile($this->baseUrl('javascript/jsdifflib/difflib.js'));
+	$this->headScript()->appendFile($this->baseUrl('javascript/jsdifflib/diffview.js'));
 	$this->headScript()->appendFile($this->baseUrl('javascript/revision_history.js'));
 ?>
 

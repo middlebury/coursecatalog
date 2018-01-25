@@ -46,18 +46,33 @@ function sortSelected() {
 function compare() {
   var comparison = $('#comparison')[0];
 
-  var dmp = new diff_match_patch();
-  dmp.Diff_Timeout = 10;
+  //var dmp = new diff_match_patch();
+  //dmp.Diff_Timeout = 10;
 
   sortSelected();
-  var text1 = $('#' + selected[0]).parents('tr').find('.json-data')[0].innerText;
-  var text2 = $('#' + selected[1]).parents('tr').find('.json-data')[0].innerText;
-  var diff = dmp.diff_main(text1, text2);
-  dmp.diff_cleanupSemantic(diff);
+  var text1 = difflib.stringAsLines($('#' + selected[0]).parents('tr').find('.json-data')[0].innerText);
+  var text2 = difflib.stringAsLines($('#' + selected[1]).parents('tr').find('.json-data')[0].innerText);
+  var sm = new difflib.SequenceMatcher(text1, text2);
+  var opcodes = sm.get_opcodes();
+  while (comparison.firstChild) comparison.removeChild(comparison.firstChild);
+  var contextSize = 5;
 
-  console.log(diff);
+  comparison.appendChild(diffview.buildView({
+        baseTextLines: text1,
+        newTextLines: text2,
+        opcodes: opcodes,
+        // set the display titles for each resource
+        baseTextName: "Base Text",
+        newTextName: "New Text",
+        contextSize: contextSize,
+        viewType: 1
+    }));
+  // var diff = dmp.diff_main(text1, text2);
+  // dmp.diff_cleanupSemantic(diff);
 
-  $(comparison)[0].innerHTML = prettifyDiff(diff);
+  //console.log(diff);
+
+  //$(comparison)[0].innerHTML = prettifyDiff(diff);
   $(comparison).removeClass('hidden');
 }
 
