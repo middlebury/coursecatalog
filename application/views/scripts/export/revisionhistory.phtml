@@ -32,7 +32,7 @@
 			print "<td class='timestamp'>" . $revision['last_saved'] . "</td>";
 			print "<td>" . $revision['user_disp_name'] . "</td>";
 			print "<td width='200'>" . $revision['note'] . "</td>";
-			print "<td><form class='view-json-form' action='viewjson' method='get' target='_blank'><input type='submit' value='View JSON'></input><input type='hidden' name='revId' value='" . $revision['id'] ."'></input></form></td>";
+			print "<td><div id='json" . $revision['id'] . "' class='json-data hidden'>" . $revision['json_data'] . "</div><form class='view-json-form' action='viewjson' method='get' target='_blank'><input type='submit' value='View JSON'></input><input type='hidden' name='revId' value='" . $revision['id'] ."'></input></form></td>";
 			print "<td><button onclick=revertTo(" . $revision['id'] . ")>Revert to this revision</button></td>";
 			print "</tr>";
 	  }
