@@ -1,20 +1,38 @@
 
 var selected = [];
 
+function prettifyDiff(diff) {
+
+}
+
+function sortSelected() {
+  selected.sort(function(a, b) {
+    // if a timestamp later than b timestamp
+    var dateA = new Date($('#' + a).parents('tr').find('.timestamp')[0].innerText);
+    var dateB = new Date($('#' + b).parents('tr').find('.timestamp')[0].innerText);
+    if (dateA > dateB) {
+      return -1;
+    } else if (dateA === dateB) {
+      return 0;
+    } else {
+      return 1;
+    }
+  });
+}
+
 function compare() {
   var comparison = $('#comparison')[0];
 
   var dmp = new diff_match_patch();
+  dmp.Diff_Timeout = 10;
+
+  sortSelected();
   var text1 = $('#' + selected[0]).parents('tr').find('.json-data')[0].innerText;
   var text2 = $('#' + selected[1]).parents('tr').find('.json-data')[0].innerText;
-
-  dmp.Diff_Timeout = 10;
   var diff = dmp.diff_main(text1, text2);
   dmp.diff_cleanupSemantic(diff);
   var ds = dmp.diff_prettyHtml(diff);
-  $(comparison)[0].innerHTML = ds;
-  console.log($(comparison));
-
+  $(comparison)[0].innerHTML = ds; //prettifyDiff(diff);
   $(comparison).removeClass('hidden');
 }
 
