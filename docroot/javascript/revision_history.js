@@ -2,7 +2,15 @@
 var selected = [];
 
 function prettifyDiff(diff) {
-
+  var output = "<pre class='diff'>";
+  diff.forEach(function(element) {
+    if(element[0] != '0') {
+      output += element[1];
+    }
+  });
+  output += "</pre>";
+  console.log(output);
+  return output;
 }
 
 function sortSelected() {
@@ -10,7 +18,7 @@ function sortSelected() {
     // if a timestamp later than b timestamp
     var dateA = new Date($('#' + a).parents('tr').find('.timestamp')[0].innerText);
     var dateB = new Date($('#' + b).parents('tr').find('.timestamp')[0].innerText);
-    if (dateA > dateB) {
+    if (dateA < dateB) {
       return -1;
     } else if (dateA === dateB) {
       return 0;
@@ -31,8 +39,8 @@ function compare() {
   var text2 = $('#' + selected[1]).parents('tr').find('.json-data')[0].innerText;
   var diff = dmp.diff_main(text1, text2);
   dmp.diff_cleanupSemantic(diff);
-  var ds = dmp.diff_prettyHtml(diff);
-  $(comparison)[0].innerHTML = ds; //prettifyDiff(diff);
+
+  $(comparison)[0].innerHTML = prettifyDiff(diff);
   $(comparison).removeClass('hidden');
 }
 
@@ -51,7 +59,7 @@ function showHide(revisionId) {
 function prettifyJSON() {
   $('.json-data').toArray().forEach(function(element) {
     var JSONObject = JSON.parse(element.innerHTML);
-    element.innerHTML = "<pre>" + JSON.stringify(JSONObject, null, 2) + "</pre>";
+    element.innerHTML = "<pre class='preform-json'>" + JSON.stringify(JSONObject, null, 2) + "</pre>";
   });
 }
 
