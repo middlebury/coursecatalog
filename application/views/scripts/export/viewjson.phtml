@@ -1,0 +1,10 @@
+<?php
+	$this->headLink(array('rel' => 'stylesheet', 'href' => $this->baseUrl('/StyleSheets/midd/Export.css'), 'media' => 'all'));
+?>
+
+<?php
+	if($this->revision) {
+		print "<h1>Viewing revision: " . $this->revision['last_saved'] . "</h1>";
+		print "<pre>" . $this->revision['json_data'] . "</pre>";
+	}
+ ?>

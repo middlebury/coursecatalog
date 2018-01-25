@@ -1,33 +1,6 @@
 
 var selected = [];
 
-function prettifyDiff(diff) {
-  var output = "<pre class='diff'>";
-  diff.forEach(function(element, index) {
-    if(element[0] === 1) {
-      if(index > 0 && diff[index - 1][0] === 0) {
-        if (diff[index - 1][1].indexOf("group") < 5) {}
-        output += "\n...\n" + diff[index - 1][1].substring(diff[index - 1][1].lastIndexOf("group") - 2);
-      }
-      output += "<span class='added'>" + element[1] + "</span>";
-      if(diff[index + 1] && diff[index + 1][0] === 0) {
-        output += diff[index + 1][1].substring(0, Math.max(diff[index + 1][1].indexOf("group"), diff[index + 1][1].indexOf("}"))) + "\n...\n";
-      }
-    } else if (element[0] === -1) {
-      if(index > 0 && diff[index - 1][0] === 0) {
-        output += diff[index - 1][1].substring(diff[index - 1][1].lastIndexOf("group") - 2);
-      }
-      output += "<span class='removed'>" + element[1] + "</span>";
-      if(diff[index + 1] && diff[index + 1][0] === 0) {
-        output += diff[index + 1][1].substring(0, Math.max(diff[index + 1][1].indexOf("group"), diff[index + 1][1].indexOf("}"))) + "\n...\n";
-      }
-    }
-  });
-  output += "</pre>";
-
-  return output;
-}
-
 function sortSelected() {
   selected.sort(function(a, b) {
     // if a timestamp later than b timestamp
@@ -58,16 +31,13 @@ function compare() {
   $('#diff-form').submit();
 }
 
-function hideComparison() {
-  $('#comparison').addClass('hidden');
-}
-
 function revertTo(jsonData) {
   console.log('hola');
 }
 
-function showHide(revisionId) {
-  $('#json' + revisionId).toggleClass('hidden');
+function viewJSON(jsonData) {
+  
+  //$('#json' + revisionId).toggleClass('hidden');
 }
 
 function prettifyJSON() {

@@ -96,22 +96,6 @@ class ExportController
     $stmt = $db->prepare($query);
     $stmt->execute(array(filter_input(INPUT_GET, 'configId', FILTER_SANITIZE_SPECIAL_CHARS)));
     $this->view->revisions = $stmt->fetchAll();
-
-    $query =
-    "SELECT
-      *
-     FROM archive_configuration_revisions a
-     INNER JOIN (
-      SELECT
-        arch_conf_id,
-        MAX(last_saved) as latest
-      FROM archive_configuration_revisions
-      GROUP BY arch_conf_id
-    ) b ON a.arch_conf_id = b.arch_conf_id and a.last_saved = b.latest
-     WHERE a.arch_conf_id = ?";
-    $stmt = $db->prepare($query);
-    $stmt->execute(array(filter_input(INPUT_GET, 'configId', FILTER_SANITIZE_SPECIAL_CHARS)));
-    $this->view->latestRevision = $stmt->fetch();
   }
 
   /**
@@ -129,6 +113,25 @@ class ExportController
       $this->view->text2 = $this->getRequest()->getPost('text2');
       $this->view->time1 = $this->getRequest()->getPost('time1');
       $this->view->time2 = $this->getRequest()->getPost('time2');
+    }
+  }
+
+  /**
+	 * Display revision JSON data.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/25/18
+	 */
+  public function viewjsonAction() {
+    if (!$this->_getParam('revId')) {
+      print "This route requires a revId";
+    } else {
+      $db = Zend_Registry::get('db');
+      $query = "SELECT * FROM archive_configuration_revisions WHERE id = ?";
+      $stmt = $db->prepare($query);
+      $stmt->execute(array(filter_input(INPUT_GET, 'revId', FILTER_SANITIZE_SPECIAL_CHARS)));
+      $this->view->revision = $stmt->fetch();
     }
   }
 
