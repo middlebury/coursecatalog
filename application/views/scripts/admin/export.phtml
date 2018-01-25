@@ -38,6 +38,7 @@
 		print "<a class='link-button' href=" . $this->url(array('controller' => 'export', 'action' => 'revisionhistory')) . "?configId=" . $this->config['id'] . ">Revision history</a>";
 
 		// Content
+		print "<div><textarea id='note' class='note' style='width:100%' placeholder='(Optional) Write a note about this revision'></textarea></div>";
 		print "<ul id='sections-list' class='sections-list'></ul>";
 		print "<div class='error-message error-div'>Error: </div>";
 

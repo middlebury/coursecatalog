@@ -329,6 +329,39 @@ class ExportController
   }
 
   /**
+	 * Revert to an older revision by re-inserting it with new timestamp.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/25/18
+	 */
+  public function reverttorevisionAction() {
+    $this->_helper->layout()->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
+
+    $safeRevisionId = filter_input(INPUT_POST, 'revId', FILTER_SANITIZE_SPECIAL_CHARS);
+
+    $db = Zend_Registry::get('db');
+    $query = "SELECT * FROM archive_configuration_revisions WHERE id=:id";
+    $stmt = $db->prepare($query);
+    $stmt->execute(array(':id' => $safeRevisionId));
+    $oldRevision = $stmt->fetch();
+    $note = "Revert to revision: " . $safeRevisionId . " from " . $oldRevision['last_saved'];
+
+    $query =
+    "INSERT INTO archive_configuration_revisions (`arch_conf_id`, `note`, `last_saved`, `user_id`, `user_disp_name`, `json_data`)
+    VALUES (
+      :configId,
+      :note,
+      CURRENT_TIMESTAMP,
+      :userId,
+      :userDN,
+      :jsonData)";
+    $stmt = $db->prepare($query);
+    $stmt->execute(array(':configId' => $oldRevision['arch_conf_id'], ':note' => $note, ':userId' => $this->_helper->auth()->getUserId(), ':userDN' => $this->_helper->auth()->getUserDisplayName(), ':jsonData' => $oldRevision['json_data']));
+  }
+
+  /**
 	 * Insert new archive configuration revision to the DB.
 	 *
 	 * @return void
@@ -336,37 +369,35 @@ class ExportController
 	 * @since 1/23/18
 	 */
   public function insertrevisionAction() {
-
     $this->_helper->layout()->disableLayout();
     $this->_helper->viewRenderer->setNoRender(true);
 
-    if ($this->getRequest()->isXmlHttpRequest()) {
-      $safeConfigId = filter_input(INPUT_POST, 'configId', FILTER_SANITIZE_SPECIAL_CHARS);
-
-      $jsonArray = json_decode($this->getRequest()->getPost('jsonData'));
-      foreach($jsonArray as $key => $value) {
-        $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
-      }
-      $safeJsonData = json_encode($jsonArray, JSON_PRETTY_PRINT);
-
-      if ($this->getRequest()->isPost()) {
-        $db = Zend_Registry::get('db');
-        $query =
-        "INSERT INTO archive_configuration_revisions (`arch_conf_id`, `last_saved`, `user_id`, `user_disp_name`, `json_data`)
-        VALUES (
-          :configId,
-          CURRENT_TIMESTAMP,
-          :userId,
-          :userDN,
-          :jsonData)";
-        $stmt = $db->prepare($query);
-        $stmt->execute(array(':configId' => $safeConfigId, ':userId' => $this->_helper->auth()->getUserId(), ':userDN' => $this->_helper->auth()->getUserDisplayName(), ':jsonData' => $safeJsonData));
-        return $this->getRequest()->getPost();
-      }
+    if(!$this->getRequest()->isPost()) {
+      print "This route requires a POST request";
+      return;
     }
-    else {
-        echo 'This route for XmlHttpRequests only.  Sorry!';
+
+    $safeConfigId = filter_input(INPUT_POST, 'configId', FILTER_SANITIZE_SPECIAL_CHARS);
+    $safeNote = filter_input(INPUT_POST, 'note', FILTER_SANITIZE_SPECIAL_CHARS);
+    $jsonArray = json_decode($this->getRequest()->getPost('jsonData'));
+    foreach($jsonArray as $key => $value) {
+      $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
     }
+    $safeJsonData = json_encode($jsonArray, JSON_PRETTY_PRINT);
+
+    $db = Zend_Registry::get('db');
+    $query =
+    "INSERT INTO archive_configuration_revisions (`arch_conf_id`, `note`, `last_saved`, `user_id`, `user_disp_name`, `json_data`)
+    VALUES (
+      :configId,
+      :note,
+      CURRENT_TIMESTAMP,
+      :userId,
+      :userDN,
+      :jsonData)";
+    $stmt = $db->prepare($query);
+    $stmt->execute(array(':configId' => $safeConfigId, ':note' => $safeNote, ':userId' => $this->_helper->auth()->getUserId(), ':userDN' => $this->_helper->auth()->getUserDisplayName(), ':jsonData' => $safeJsonData));
+    return $this->getRequest()->getPost();
   }
 
   /**

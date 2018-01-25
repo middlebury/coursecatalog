@@ -256,8 +256,6 @@ function saveJSON() {
 
       sectionValue = "\"" + sectionValue + "\"";
 
-      console.log(sectionValue);
-
       validateInput(sectionId, sectionType, sectionValue, function(error, sectionId) {
         if(error) {
           $('.error-message').html("<p>Error: " + error + "</p>");
@@ -289,14 +287,13 @@ function saveJSON() {
     // Ensure valid JSON if no sections are present.
     if(JSONString === "}") JSONString = "{}";
 
-    console.log(JSONString);
-
     $.ajax({
       url: "../export/insertrevision",
       type: "POST",
       dataType: 'json',
       data: {
         configId: $('#configId').attr('value'),
+        note: $('#note').val(),
         jsonData: JSONString
       },
       error: function(error) {

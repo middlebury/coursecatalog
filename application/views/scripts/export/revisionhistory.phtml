@@ -25,13 +25,14 @@
 <?php
 	if ($this->revisions) {
 		print "<table id='revisions-table'>";
-		print "<th>Compare</th><th>Date</th><th>Author</th><th>JSON</th><th>Actions</th>";
+		print "<th>Compare</th><th>Date</th><th>Author</th><th>Note</th><th>JSON</th><th>Actions</th>";
 	  foreach($this->revisions as $revision) {
 			print "<tr>";
 			print "<td><input id='radio" . $revision['id'] . "' type=radio></input></td>";
 			print "<td class='timestamp'>" . $revision['last_saved'] . "</td>";
 			print "<td>" . $revision['user_disp_name'] . "</td>";
-			print "<td width='300'><form class='view-json-form' action='viewjson' method='get' target='_blank'><input type='submit' value='View JSON'></input><input type='hidden' name='revId' value='" . $revision['id'] ."'></input></form></td>";
+			print "<td width='200'>" . $revision['note'] . "</td>";
+			print "<td><form class='view-json-form' action='viewjson' method='get' target='_blank'><input type='submit' value='View JSON'></input><input type='hidden' name='revId' value='" . $revision['id'] ."'></input></form></td>";
 			print "<td><button onclick=revertTo(" . $revision['id'] . ")>Revert to this revision</button></td>";
 			print "</tr>";
 	  }

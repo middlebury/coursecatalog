@@ -31,13 +31,20 @@ function compare() {
   $('#diff-form').submit();
 }
 
-function revertTo(jsonData) {
-  console.log('hola');
-}
-
-function viewJSON(jsonData) {
-  
-  //$('#json' + revisionId).toggleClass('hidden');
+function revertTo(revId) {
+  $.ajax({
+    url: "../export/reverttorevision",
+    type: "POST",
+    data: {
+      revId: revId
+    },
+    success: function(data) {
+      location.reload();
+    },
+    error: function(error) {
+      throw error;
+    }
+  });
 }
 
 function prettifyJSON() {
