@@ -45,10 +45,6 @@ function sortSelected() {
 
 function compare() {
   var comparison = $('#comparison')[0];
-
-  //var dmp = new diff_match_patch();
-  //dmp.Diff_Timeout = 10;
-
   sortSelected();
   var text1 = difflib.stringAsLines($('#' + selected[0]).parents('tr').find('.json-data')[0].innerText);
   var text2 = difflib.stringAsLines($('#' + selected[1]).parents('tr').find('.json-data')[0].innerText);
@@ -61,18 +57,12 @@ function compare() {
         baseTextLines: text1,
         newTextLines: text2,
         opcodes: opcodes,
-        // set the display titles for each resource
-        baseTextName: "Base Text",
-        newTextName: "New Text",
+        baseTextName: $('#' + selected[0]).parents('tr').find('.timestamp')[0].innerText + "(older)",
+        newTextName: $('#' + selected[1]).parents('tr').find('.timestamp')[0].innerText + "(newer)",
         contextSize: contextSize,
         viewType: 1
-    }));
-  // var diff = dmp.diff_main(text1, text2);
-  // dmp.diff_cleanupSemantic(diff);
+  }));
 
-  //console.log(diff);
-
-  //$(comparison)[0].innerHTML = prettifyDiff(diff);
   $(comparison).removeClass('hidden');
 }
 
