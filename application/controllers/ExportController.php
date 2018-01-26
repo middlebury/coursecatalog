@@ -81,7 +81,9 @@ class ExportController
 	 * @since 1/24/18
 	 */
   public function revisionhistoryAction() {
-    if(!$this->_getParam('configId')) {
+    $request = $this->getRequest();
+
+    if(!$request->getParam('configId')) {
       header('HTTP/1.1 400 Bad Request');
       print "A configId must be specified.";
       exit;
@@ -124,7 +126,8 @@ class ExportController
 	 * @since 1/25/18
 	 */
   public function viewjsonAction() {
-    if (!$this->_getParam('revId')) {
+    $request = $this->getRequest();
+    if (!$request->getParam('revId')) {
       print "This route requires a revId";
     } else {
       $db = Zend_Registry::get('db');
@@ -226,13 +229,15 @@ class ExportController
 	 */
 
   public function newjobAction() {
+    $request = $this->getRequest();
+
     $db = Zend_Registry::get('db');
     $this->view->configs = $db->query("SELECT * FROM archive_configurations")->fetchAll();
 
     $this->view->config = NULL;
-		if ($this->_getParam('config')) {
+		if ($request->getParam('config')) {
 			foreach($this->view->configs as $config) {
-				if ($config['label'] === $this->_getParam('config'))
+				if ($config['label'] === $request->getParam('config'))
 					$this->view->config = $config;
 			}
 		}
@@ -408,9 +413,10 @@ class ExportController
 	 * @since 1/23/18
 	 */
   public function generatecourselistAction() {
+    $request = $this->getRequest();
 
-    if ($this->_getParam('catalogId')) {
-      $catalogId = $this->_helper->osidId->fromString($this->_getParam('catalogId'));
+    if ($request->getParam('catalogId')) {
+      $catalogId = $this->_helper->osidId->fromString($request->getParam('catalogId'));
       $this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
 			$this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
 
@@ -479,20 +485,22 @@ class ExportController
 	 */
    // TODO - return instead of echo?
   public function validtermAction() {
-    if (!$this->_getParam('catalogId')) {
+    $request = $this->getRequest();
+
+    if (!$request->getParam('catalogId')) {
       echo "No catalog specified!";
       exit;
     }
-    if (!$this->_getParam('term')) {
+    if (!$request->getParam('term')) {
       echo "No term specified!";
       exit;
     }
 
-    $catalogId = $this->_helper->osidId->fromString($this->_getParam('catalogId'));
+    $catalogId = $this->_helper->osidId->fromString($request->getParam('catalogId'));
     $this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 
     try {
-      $termString = 'term/'.$this->_getParam('term');
+      $termString = 'term/'.$request->getParam('term');
       $termId = $this->_helper->osidId->fromString($termString);
     }
     catch (osid_InvalidArgumentException $e) {

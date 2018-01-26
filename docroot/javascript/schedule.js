@@ -51,7 +51,13 @@ function selectConfig(configId, configDropDown) {
 function defineRevisionsDropDown(revisions) {
   var revisionsDropDownHTML = "<select class='revision-dropdown' value='unselected'><option value='latest' selected>Latest</option>";
   revisions.forEach(function(element) {
-    revisionsDropDownHTML += "<option value='" + element['id'] + "'>" + element['last_saved'] + "</option>";
+    if (element['note'] != '') {
+      var note = element['note'].substring(0, 24);
+      if (element['note'].length > 25) { note += "..."; }
+      revisionsDropDownHTML += "<option value='" + element['id'] + "'>" + note + "</option>";
+    } else {
+      revisionsDropDownHTML += "<option value='" + element['id'] + "'>" + element['last_saved'] + "</option>";
+    }
   });
   revisionsDropDownHTML += "</select>";
   return revisionsDropDownHTML;

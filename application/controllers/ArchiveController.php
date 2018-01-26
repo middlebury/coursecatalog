@@ -165,23 +165,23 @@
 	 * @since 1/23/18
 	 */
   public function exportjobAction() {
-
-    if (!$this->_getParam('dest_dir')) {
+    $request = $this->getRequest();
+    if (!$request->getParam('dest_dir')) {
       header('HTTP/1.1 400 Bad Request');
       print "A dest_dir must be specified.";
       exit;
     }
-    if (!$this->_getParam('config_id')) {
+    if (!$request->getParam('config_id')) {
       header('HTTP/1.1 400 Bad Request');
       print "A config_id must be specified.";
       exit;
     }
-    if (!$this->_getParam('term')) {
+    if (!$request->getParam('term')) {
       header('HTTP/1.1 400 Bad Request');
       print "Terms must be specified.";
       exit;
     }
-    if (!$this->_getParam('revision_id')) {
+    if (!$request->getParam('revision_id')) {
       header('HTTP/1.1 400 Bad Request');
       print "A revision_id must be specified.";
       exit;
@@ -190,7 +190,7 @@
     $this->_helper->layout()->disableLayout();
     $this->_helper->viewRenderer->setNoRender(true);
 
-    $this->_helper->exportJob($this->_getParam('dest_dir'), $this->_getParam('config_id'), $this->_getParam('term'), $this->_getParam('revision_id'));
+    $this->_helper->exportJob($request->getParam('dest_dir'), $request->getParam('config_id'), $request->getParam('term'), $request->getParam('revision_id'));
   }
 
   /**
@@ -201,11 +201,12 @@
 	 * @since 1/23/18
 	 */
   public function exportactivejobsAction() {
-
     $this->_helper->layout()->disableLayout();
     $this->_helper->viewRenderer->setNoRender(true);
 
-    if($this->_getParam('verbose')) {
+    $request = $this->getRequest();
+
+    if($request->getParam('verbose')) {
       $verbose = '1';
     } else $verbose = '0';
 
@@ -238,18 +239,19 @@
 	 * @since 6/15/09
 	 */
 	public function generateAction () {
+    $request = $this->getRequest();
 
-		if (!$this->_getParam('config_id')) {
+		if (!$request->getParam('config_id')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A configId must be specified.";
 			exit;
 		}
-    if (!$this->_getParam('term')) {
+    if (!$request->getParam('term')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A term must be specified.";
 			exit;
 		}
-    if (!$this->_getParam('revision_id')) {
+    if (!$request->getParam('revision_id')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A revisionId must be specified.";
 			exit;
@@ -259,12 +261,12 @@
 		// Test for a password if we aren't run from the command-line to prevent
 		// overloading.
 		if (PHP_SAPI != 'cli') {
-			if ($config->catalog->print_password && !$this->_getParam('password')) {
+			if ($config->catalog->print_password && !$request->getParam('password')) {
 				header('HTTP/1.1 400 Bad Request');
 				print "A password must be specified.";
 				exit;
 			}
-			if ($config->catalog->print_password && $this->_getParam('password') != $config->catalog->print_password) {
+			if ($config->catalog->print_password && $request->getParam('password') != $config->catalog->print_password) {
 				header('HTTP/1.1 400 Bad Request');
 				print "Invalid password specified.";
 				exit;
@@ -278,12 +280,11 @@
 			$db = Zend_Registry::get('db');
 	    $query = "SELECT catalog_id FROM archive_configurations WHERE id = ?";
 	    $stmt = $db->prepare($query);
-	    $stmt->execute(array($this->_getParam('config_id')));
+	    $stmt->execute(array($request->getParam('config_id')));
 	    $conf = $stmt->fetch();
 			$catalogId = $this->_helper->osidId->fromString($conf['catalog_id']);
 			$this->courseSearchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
 			$this->offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
-
 			$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 		} catch (osid_InvalidArgumentException $e) {
 			header('HTTP/1.1 400 Bad Request');
@@ -299,7 +300,7 @@
 			$this->selectedTerms = array();
 			$term_strings = array();
 			// Get all offerings in the terms
-			foreach ($this->_getParam('term') as $termIdString) {
+			foreach ($request->getParam('term') as $termIdString) {
 				$term_strings[] = $termIdString;
 				$termId = $this->_helper->osidId->fromString($termIdString);
 				$this->selectedTerms[] = $termId;
@@ -326,7 +327,7 @@
 		}
 
     $sections = array();
-    if ($this->_getParam('revision_id') === 'latest') {
+    if ($request->getParam('revision_id') === 'latest') {
       $query =
       "SELECT
         *
@@ -340,7 +341,7 @@
       ) b ON a.arch_conf_id = b.arch_conf_id and a.last_saved = b.latest
        WHERE a.arch_conf_id = ?";
       $stmt = $db->prepare($query);
-      $stmt->execute(array($this->_getParam('config_id')));
+      $stmt->execute(array($request->getParam('config_id')));
     } else {
       $query =
       "SELECT
@@ -348,10 +349,10 @@
        FROM archive_configuration_revisions
        WHERE id = ?";
       $stmt = $db->prepare($query);
-      $stmt->execute(array($this->_getParam('revision_id')));
+      $stmt->execute(array($request->getParam('revision_id')));
     }
-    $latestRevision = $stmt->fetch();
-		$jsonData = json_decode($latestRevision['json_data']);
+    $revision = $stmt->fetch();
+		$jsonData = json_decode($revision['json_data']);
 
 		foreach($jsonData as $group) {
 			foreach($group as $entry) {
@@ -376,7 +377,7 @@
 									break;
 								case 'course_list':
 									$section['type'] = 'courses';
-									// Check if filters are included.
+									// Check if course filters are included.
 									if (strpos($sectionValue, ",")) {
 										$filters = substr($sectionValue, strpos($sectionValue, ",") + 1);
 										$filters = explode(",", $filters);
@@ -417,7 +418,7 @@
 		$this->view->headTitle($title);
 		$this->view->sections = $sections;
 		foreach ($this->view->sections as $key => &$section) {
-			if ($this->_getParam('verbose')) {
+			if ($request->getParam('verbose')) {
 				$text = '';
 				if (!empty($section['text'])) {
 					$text = $section['text'];
