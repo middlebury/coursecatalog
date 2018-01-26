@@ -1,5 +1,5 @@
 
-// RESET
+// ------ RESET ------ //
 
 function reset() {
   location.reload(true);
@@ -29,7 +29,7 @@ function repopulateRevisions(jobId) {
   });
 }
 
-// INIT & CONFIG
+// ------ INIT ------- //
 
 function defineConfigDropDown(jobId, configs) {
   var configDropDownHTML = "<select onchange='repopulateRevisions(" + jobId + ")' class='config-dropdown' value='unselected'><option value='unselected' selected>Please select a config</option>";
@@ -76,7 +76,6 @@ function actions(jobId) {
 }
 
 function buildList(data, callback) {
-
   var jobsHTML = "";
   data[2]['jobs'].forEach(function(element) {
 
@@ -127,7 +126,7 @@ function populate() {
   });
 }
 
-// DELETE
+// ---- DELETE ----- //
 
 function deleteJob(jobId) {
   if($('#warning-box').length) return;
@@ -154,11 +153,9 @@ function cancelDelete() {
   $('#warning-box').remove();
 }
 
-// INSERT
+// ----- INSERT ------ //
 
-// TODO - Will we ever use this without a jobId?
-function validateJobTerms(jobTerms, catalogId, callback, jobId = null) {
-
+function validateJobTerms(jobTerms, catalogId, callback, jobId) {
   jobTerms.forEach(function(element, index) {
     $.ajax({
       url: "../export/validterm",
@@ -205,7 +202,6 @@ function validateInput(jobData, callback) {
 }
 
 function generateJobData(job) {
-
   var jobData = [];
 
   if ($(job).find(':checkbox').is(':checked')) { jobData['active'] = 1; }
@@ -268,10 +264,9 @@ function save() {
   });
 }
 
-// RUN JOB
+// ---- RUN JOB ----- //
 
 function generateParams(jobData) {
-
   var params = "";
   params = 'config_id=' + jobData['config_id'];
   params += "&dest_dir=" + jobData['export_path'];
@@ -285,7 +280,6 @@ function generateParams(jobData) {
 }
 
 function runJob(jobId) {
-
   // Don't let user overload the job exports.
   if ($('.error-message').html() === "<p>Running job... This may take a very long time!</p>") {
     return;

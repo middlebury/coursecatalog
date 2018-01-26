@@ -194,6 +194,60 @@
   }
 
   /**
+	 * Export a single archive export job from the command line.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 1/26/18
+	 */
+  public function exportsinglejobAction() {
+    $request = $this->getRequest();
+    if (!$request->getParam('id')) {
+      header('HTTP/1.1 400 Bad Request');
+      print "A job id must be specified.";
+      exit;
+    }
+
+    $this->_helper->layout()->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
+
+    $db = Zend_Registry::get('db');
+    $query =
+    "SELECT
+      *
+     FROM archive_jobs
+     WHERE id = ?";
+    $stmt = $db->prepare($query);
+    $stmt->execute(array($request->getParam('id')));
+    $job = $stmt->fetch();
+
+    // Revision is set to 'latest'
+    if (!$job['revision_id']) {
+      $query =
+      "SELECT
+        id
+       FROM archive_configuration_revisions a
+       INNER JOIN (
+        SELECT
+          arch_conf_id,
+          MAX(last_saved) as latest
+        FROM archive_configuration_revisions
+        GROUP BY arch_conf_id
+      ) b ON a.arch_conf_id = b.arch_conf_id and a.last_saved = b.latest
+       WHERE a.arch_conf_id = ?";
+      $stmt = $db->prepare($query);
+      $stmt->execute(array($job['config_id']));
+      $latestRevision = $stmt->fetch();
+      $job['revision_id'] = $latestRevision['id'];
+    }
+
+    $job['terms'] = explode(',', $job['terms']);
+    array_walk($job['terms'], function(&$value, $key) { $value = 'term/' . $value; } );
+
+    $this->_helper->exportJob($job['export_path'], $job['config_id'], $job['terms'], $job['revision_id']);
+  }
+
+  /**
 	 * Export all 'active' archive export jobs.
 	 *
 	 * @return void

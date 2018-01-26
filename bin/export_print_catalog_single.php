@@ -12,17 +12,27 @@ if (empty($config->catalog->archive_root)) {
 $destRoot = $config->catalog->archive_root;
 $verbose = '0';
 $cmd = array_shift($argv);
-$verbose = array_shift($argv);
-if ($verbose && $verbose == '-v') {
+$jobId = array_shift($argv);
+if ($jobId == '-v') {
 	$verbose = '1';
+	$jobId = array_shift($argv);
+}
+if (count($argv)) {
+	print "Usage:
+	$cmd [-v] <job>
+Where job is an id from the table 'archive_jobs'";
+	print "Options:\n\t-v Verbose output.\n";
+	return 1;
 }
 $params = array();
+$params['id'] = $jobId;
 $params['verbose'] = $verbose;
 $base = '';
 if (!empty($config->catalog->archive->url_base)) {
 	$base = '-b '.escapeshellarg($config->catalog->archive->url_base);
 }
-exec($myDir.'/zfcli.php '.$base.' -a archive.export_active_jobs -p '.escapeshellarg(http_build_query($params)), $output, $return);
+exec($myDir.'/zfcli.php '.$base.' -a archive.export_single_job -p '.escapeshellarg(http_build_query($params)), $output, $return);
+var_dump($output);
 if ($return) {
 	file_put_contents('php://stderr', "Error running command:\n\n\t$command\n");
 	unlink($htmlPath);
