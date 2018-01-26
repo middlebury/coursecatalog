@@ -7,8 +7,8 @@
 <div class='admin-menu'><a href="<?php print $this->url(array('controller' => 'admin', 'action' => 'export')); ?>">&laquo; Back to Archive Export Configuration</a></div>
 
 <form class='config-create-form' action="<?php print $this->url(array('action' => 'insertconfig')); ?>" method="post">
-	<strong>Label:</strong><input name='label'></input>
-	<strong>Catalog:</strong><br>
+	<label for='label'>Label:</label><input name='label'></input><br>
+	<label for='catalog_id'>Catalog:</label>
 		<select name='catalog_id'>
 			<?php
 			while ($this->catalogs->hasNext()) {
