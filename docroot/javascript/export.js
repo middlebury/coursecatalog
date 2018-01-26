@@ -1,61 +1,14 @@
 
 /* Helper functions for catalog export configuration */
 
-// ----- INIT ------ //
-
-function buildList(jsonData, callback) {
-  if (!jsonData || JSON.stringify(jsonData) === "{}") {
-    newGroup();
-  } else {
-    $.each(jsonData, function(key, value) {
-      var groupName = 'no-group';
-      if(key.indexOf('group') !== -1 ) {
-        groupName = '#' + key;
-        $('#sections-list').append(groupHTML(key, "Unnamed Group", false));
-        // Because $.each does not return a promise we have to use this hacky
-        // strategy to fire reorderSectionsBasedOnIds() only on the last element.
-        var count = $.map(value, function(el) { return el }).length;
-        $.each(value, function(sectionKey, sectionValue) {
-          if (sectionKey === 'title') {
-            giveGroupTitle(groupName, sectionValue);
-            --count;
-          } else {
-            generateInputTag(sectionValue.type, sectionValue.value, function(result) {
-              var sectionTypeClass = "'section ui-state-default'";
-              if(value.type === 'h1') sectionTypeClass= "'section h1-section ui-state-default'";
-              var li = "<li id='" + sectionKey + "' class=" + sectionTypeClass + "><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + sectionValue.type + "</span><span class='section-value'>" + result + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete Section</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span></li>";
-              $(groupName).find(".section-group").append(li);
-              if (!--count) reorderSectionsBasedOnIds(groupName, callback);
-            });
-          }
-        });
-      } else {
-        throw "Invalid JSON: " + jsonData;
-      }
-    });
-  }
+// ------ GENERATORS ------ //
+function generateSection(id, type, input) {
+  return "<li id='" + id + "' class='section ui-state-default'>" + generateSectionHTML(type, input);
 }
 
-function populate() {
-  $.ajax({
-    url: "../export/latestrevision",
-    type: "GET",
-    data: {
-      configId: $('#configId').val()
-    },
-    success: function(data) {
-      buildList($.parseJSON(data), function() {
-        renameGroups();
-        resetEventListeners();
-      });
-    }
-  });
-
-  // hide error message.
-  $('.error-message').addClass('hidden');
+function generateSectionHTML(type, input) {
+  return "<div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + type + "</span><span class='section-value'>" + input + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete Section</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>";
 }
-
-// ----- HELPERS ------- //
 
 function generateInputTag(type, value, callback) {
   switch(type) {
@@ -105,6 +58,68 @@ function generateInputTag(type, value, callback) {
   }
 }
 
+function generateGroup(id, title, visible) {
+  if (visible) {
+    return "<li id='" + id + "' class='group ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='group-title'>" + title + "</span><div class='group-toggle-description' onclick='toggleGroup(this)'>show/hide</div><div class='group-controls visible'><button class='button-delete' onclick='deleteGroup(this)'>Delete group</button><button class='button' onclick='newGroup(this)'>Add group below</button></div><ul class='section-group visible'></ul></li>";
+  } else {
+    return "<li id='" + id + "' class='group ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='group-title'>" + title + "</span><div class='group-toggle-description' onclick='toggleGroup(this)'>show/hide</div><div class='group-controls'><button class='button-delete' onclick='deleteGroup(this)'>Delete group</button><button class='button' onclick='newGroup(this)'>Add group below</button></div><ul class='section-group'></ul></li>";
+  }
+}
+
+// ----- INIT ------ //
+
+function buildList(jsonData, callback) {
+  if (!jsonData || JSON.stringify(jsonData) === "{}") {
+    newGroup();
+  } else {
+    $.each(jsonData, function(key, value) {
+      var groupName = 'no-group';
+      if(key.indexOf('group') !== -1 ) {
+        groupName = '#' + key;
+        $('#sections-list').append(generateGroup(key, "Unnamed Group", false));
+        // Because $.each does not return a promise we have to use this hacky
+        // strategy to fire reorderSectionsBasedOnIds() only on the last element.
+        var count = $.map(value, function(el) { return el }).length;
+        $.each(value, function(sectionKey, sectionValue) {
+          if (sectionKey === 'title') {
+            giveGroupTitle(groupName, sectionValue);
+            --count;
+          } else {
+            generateInputTag(sectionValue.type, sectionValue.value, function(result) {
+              var li = generateSection(sectionKey, sectionValue.type, result);
+              $(groupName).find(".section-group").append(li);
+              if (!--count) reorderSectionsBasedOnIds(groupName, callback);
+            });
+          }
+        });
+      } else {
+        throw "Invalid JSON: " + jsonData;
+      }
+    });
+  }
+}
+
+function populate() {
+  $.ajax({
+    url: "../export/latestrevision",
+    type: "GET",
+    data: {
+      configId: $('#configId').val()
+    },
+    success: function(data) {
+      buildList($.parseJSON(data), function() {
+        renameGroups();
+        resetEventListeners();
+      });
+    }
+  });
+
+  // hide error message.
+  $('.error-message').addClass('hidden');
+}
+
+// ----- HELPERS ------- //
+
 function reorderSectionsBasedOnIds(groupId, callback) {
   var sections = $(groupId).find('.section').toArray();
   sections.sort(function(a, b) {
@@ -114,6 +129,13 @@ function reorderSectionsBasedOnIds(groupId, callback) {
   });
   $(groupId).find('.section-group').empty().append(sections);
   callback();
+}
+
+function reset() {
+  $('#sections-list').html('');
+  populate();
+  $('.error-message').removeClass('success error');
+  $('.error-message').addClass('hidden');
 }
 
 function resetEventListeners() {
@@ -170,13 +192,6 @@ function showHide() {
   });
 }
 
-function reset() {
-  $('#sections-list').html('');
-  populate();
-  $('.error-message').removeClass('success error');
-  $('.error-message').addClass('hidden');
-}
-
 function validateInput(id, type, value, callback) {
   // Strip ""s around value.
   value = value.substring(1, value.length - 1);
@@ -217,6 +232,8 @@ function validateInput(id, type, value, callback) {
       callback("Invalid input type.  I have no idea how you accomplished this.", id);
   }
 }
+
+// ------ SAVE -------- //
 
 function saveJSON() {
   var completelyValid = true;
@@ -337,12 +354,8 @@ function cancelDelete() {
 
 // ------ GROUPS ------- //
 
-function groupHTML(id, title, visible) {
-  if (visible) {
-    return "<li id='" + id + "' class='group ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='group-title'>" + title + "</span><div class='group-toggle-description' onclick='toggleGroup(this)'>show/hide</div><div class='group-controls visible'><button class='button-delete' onclick='deleteGroup(this)'>Delete group</button><button class='button' onclick='newGroup(this)'>Add group below</button></div><ul class='section-group visible'></ul></li>";
-  } else {
-    return "<li id='" + id + "' class='group ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='group-title'>" + title + "</span><div class='group-toggle-description' onclick='toggleGroup(this)'>show/hide</div><div class='group-controls'><button class='button-delete' onclick='deleteGroup(this)'>Delete group</button><button class='button' onclick='newGroup(this)'>Add group below</button></div><ul class='section-group'></ul></li>";
-  }
+function giveGroupTitle(selector, value) {
+  $(selector).closest('.group').find('.group-title')[0].innerHTML = value;
 }
 
 function renameGroups() {
@@ -358,31 +371,25 @@ function renameGroups() {
   });
 }
 
-function giveGroupTitle(selector, value) {
-  $(selector).closest('.group').find('.group-title')[0].innerHTML = value;
-}
-
 function toggleGroup(button) {
   $(button).closest('.group').find('.section-group').toggleClass('visible');
   $(button).closest('.group').find('.group-controls').toggleClass('visible');
 }
 
 function newGroup(thisButton) {
-
   // Only allow user to create one group at a time.
-  // TODO - display error message if user tries to create many at once.
   if ($('.new').length) return;
 
-  var newGroupHTML = groupHTML('temp', 'Please fill out an h1 section to give this group a name', true);
+  var newgenerateGroup = generateGroup('temp', 'Please fill out an h1 section to give this group a name', true);
 
   if(!thisButton) {
     if($('#begin-message')) {
       $('#begin-message').remove();
     }
-    $('#sections-list').append(newGroupHTML);
+    $('#sections-list').append(newgenerateGroup);
   } else {
     var li = $(thisButton).parent().parent();
-    $(newGroupHTML).insertAfter(li);
+    $(newgenerateGroup).insertAfter(li);
   }
 
   $('#temp').addClass('new');
@@ -410,14 +417,10 @@ function renameSections() {
 
 function newGroupFirstSection() {
   generateInputTag('h1', '', function(input) {
-    var newSectionHTML = "<li class='section h1-section ui-state-default'>" + fullSectionHTML('h1', input) + "</li>";
+    var newSectionHTML = "<li class='section h1-section ui-state-default'>" + generateSectionHTML('h1', input) + "</li>";
     $('.new').children("ul").append(newSectionHTML);
     resetEventListeners();
   });
-}
-
-function fullSectionHTML(type, value) {
-  return "<div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + type + "</span><span class='section-value'>" + value + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete Section</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>";
 }
 
 function newSection(thisButton) {
@@ -439,7 +442,7 @@ function defineSection(select) {
   var li = $(select).parent();
 
   generateInputTag(sectionType, '', function(result) {
-    $(li).html(fullSectionHTML(sectionType, result));
+    $(li).html(generateSectionHTML(sectionType, result));
 
     resetEventListeners();
   });
