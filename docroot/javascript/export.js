@@ -214,12 +214,7 @@ function validateInput(id, type, value, callback) {
       }
       break;
     case 'custom_text':
-      var validCharacters = /^[\/*.?!,;:+-=()&amp;&quot;\\\'\s0-9a-zA-Z]+$/;
-      if (validCharacters.test(value)) {
-        callback();
-      } else {
-        callback("Custom text may only contain letters, numbers, .,?!\&;:(), double quotes (\"\") and <a href='http://hammer.middlebury.edu/~afranco/catalog_markup/'>Catalog Markup Language</a>", id);
-      }
+      callback();
       break;
     case 'course_list':
       if(value === "unselected") {
