@@ -421,8 +421,17 @@
 							switch($section['type']) {
 								case 'h1':
 								case 'h2':
-									$section['text'] = $sectionValue;
+                  $vals = explode(', ', $sectionValue);
+                  if(sizeOf($vals) > 1) {
+                    $section['text'] = $vals[0];
+                    $section['toc_text'] = $vals[1];
+                  } else {
+                    $section['text'] = $sectionValue;
+                  }
 									break;
+                case 'toc':
+                  $section['toc_text'] = $sectionValue;
+                  break;
 								case 'page_content':
 									$section['url'] = $sectionValue;
 									break;
@@ -488,15 +497,18 @@
 			}
 			switch ($section['type']) {
 				case 'h1':
-					break;
+        case 'toc':
 				case 'h2':
 					break;
 				case 'text':
 					break;
 				case 'html':
           $parser = self::getFsmParser();
+          $tmp = error_reporting();
+		      error_reporting(E_WARNING);
           ob_start();
           $parser->Parse($section['text'],"UNKNOWN");
+          error_reporting($tmp);
           $section['text'] = ob_get_clean();
 					break;
 				case 'page_content':

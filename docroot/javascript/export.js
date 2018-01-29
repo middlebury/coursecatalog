@@ -13,7 +13,7 @@ function generateSectionHTML(type, input) {
 function generateInputTag(type, value, callback) {
   switch(type) {
     case "h1":
-      callback("<input class='section-input' placeholder='Please choose a title' value='" + value + "'></input>");
+      callback("<p>Format: 'Title, TOC text.''  TOC text is optional.</p><input class='section-input' placeholder='Please choose a title.' value='" + value + "'></input>");
       break;
   	case "h2":
       callback("<input class='section-input' value='" + value + "'></input>");
@@ -259,7 +259,7 @@ function saveJSON() {
         if ($(element).find('.filter-input').val()) {
           var filters = $(element).find('.filter-input').val();
           // Remove trailing "
-          sectionValue = sectionValue.substring(0, sectionValue.length - 1);
+          //sectionValue = sectionValue.substring(0, sectionValue.length - 1);
           sectionValue += "," + filters;
         }
       } else {

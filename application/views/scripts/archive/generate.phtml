@@ -48,6 +48,8 @@ foreach ($this->sections as $section) {
 			}
 			print "\n\t\t</section>";
 			break;
+		case 'toc':
+			break;
 		default:
 			throw new Exception("Unknown section type ".$section['type']);
 	}
