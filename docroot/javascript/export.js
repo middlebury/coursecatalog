@@ -260,7 +260,7 @@ function saveJSON() {
           var filters = $(element).find('.filter-input').val();
           // Remove trailing "
           sectionValue = sectionValue.substring(0, sectionValue.length - 1);
-          sectionValue += "," + filters + "\"";
+          sectionValue += "," + filters;
         }
       } else {
         sectionValue = $($($(element).find('.section-value')[0]).find('input')[0]).val();
