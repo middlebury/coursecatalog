@@ -24,8 +24,8 @@ if (!empty($config->catalog->archive->url_base)) {
 }
 exec($myDir.'/zfcli.php '.$base.' -a archive.export_active_jobs -p '.escapeshellarg(http_build_query($params)), $output, $return);
 if ($return) {
-	file_put_contents('php://stderr', "Error running command:\n\n\t$command\n");
-	unlink($htmlPath);
+	file_put_contents('php://stderr', "Error running command:\n\n\tarchive.export_active_jobs\n");
+	file_put_contents('php://stderr', "$return\n");
 	return 2;
 }
 // Success

@@ -430,6 +430,7 @@
 									// TODO - Unify naming of this type with export config UI.
 									$section['type'] = 'html';
 									$section['text'] = $sectionValue;
+                  $section['text'] = str_replace("\n", "<br>", $section['text']);
 									break;
 								case 'course_list':
 									$section['type'] = 'courses';
