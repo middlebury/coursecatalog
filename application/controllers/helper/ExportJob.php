@@ -42,7 +42,7 @@ class Helper_ExportJob
 			$binDir = 'bin';
 		} else {
 			$destRoot = '../../archive';
-			$binDir = '../bin';
+			$binDir = 'bin';
 		}
 
     $jobRoot = $destRoot . '/' . $dest_dir;
