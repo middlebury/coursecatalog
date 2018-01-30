@@ -75,7 +75,9 @@ class Helper_ExportJob
 
     exec($command, $output, $return);
     if ($return) {
+			var_dump($output);
       var_dump($return);
+			var_dump($command);
       file_put_contents('php://stderr', "Error running command:\n\n\t$command\n");
       unlink($htmlPath);
       return 1;
