@@ -198,11 +198,12 @@ function validateInput(id, type, value, callback) {
   switch(type) {
     case 'h1':
     case 'h2':
-      var validCharacters = /^[\/*.?!,;:()&amp;&quot; 0-9a-zA-Z]+$/;
-      if (validCharacters.test(value)) {
-        callback();
-      } else {
-        callback("Headers may only contain letters, numbers, .,?!\&;:(), and double quotes (\"\").", id);
+      callback();
+      // var validCharacters = /^[\/*.?!,;:()&amp;&quot; 0-9a-zA-Z]+$/;
+      // if (validCharacters.test(value)) {
+      //   callback();
+      // } else {
+      //   callback("Headers may only contain letters, numbers, .,?!\&;:(), and double quotes (\"\").", id);
       }
       break;
     case 'page_content':
