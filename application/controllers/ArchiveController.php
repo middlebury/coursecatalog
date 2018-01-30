@@ -446,7 +446,7 @@
 									// Check if course filters are included.
 									if (strpos($sectionValue, ",")) {
 										$filters = substr($sectionValue, strpos($sectionValue, ",") + 1);
-										$filters = explode(",", $filters);
+										$filters = explode(";", $filters);
 										$adjustedFilters = '';
 										foreach($filters as $filter) {
 											$adjustedFilters .= $filter . "|";
