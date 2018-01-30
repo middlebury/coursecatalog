@@ -50,6 +50,7 @@ class Helper_ExportJob
 
     if (!file_exists($htmlRoot)) {
       if (!mkdir($htmlRoot, 0775, true))
+				echo "Unable to create directory: " . $htmlRoot . "\n";
         file_put_contents('php://stderr', "Unable to create destination directory '$htmlRoot'.\n");
     }
 
@@ -99,14 +100,17 @@ class Helper_ExportJob
     $linkPath = $jobRoot.'/'.$linkName;
     if (file_exists($linkPath)) {
       if (!unlink($linkPath)) {
+				echo "Error deleting latest link: " . $linkPath . "\n";
         file_put_contents('php://stderr', "Error deleting latest link: $linkPath\n");
         return 2;
       }
     }
     if (!symlink('html/'.$htmlName, $linkPath)) {
+			echo "Error creating latest link: " . $linkPath . "\n";
       file_put_contents('php://stderr', "Error creating latest link: $linkPath\n");
       return 3;
     }
-	}
 
+		return 0;
+	}
 }
