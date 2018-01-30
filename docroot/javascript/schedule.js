@@ -304,10 +304,15 @@ function runJob(jobId) {
         type: "GET",
         data: params,
         error: function(error) {
-          console.log(error);
-          $('.error-message').html("<p>Error: " + error + "</p>");
-          $('.error-message').addClass('error');
-          $('.error-message').removeClass('hidden success');
+          if(error.status !== 502) {
+            $('.error-message').html("<p>Error: " + error + "</p>");
+            $('.error-message').addClass('error');
+            $('.error-message').removeClass('hidden success');
+          } else {
+            var url = "../archive/" + jobData.export_path + "/" + jobData.export_path.substring(0, jobData.export_path.indexOf('/')) + "-" + jobData.export_path.substring(jobData.export_path.indexOf('/') + 1) + "_latest.html";
+            var jobHTML = "<p>Job successful! Visible at: <a href='" + url + "'>" + url + "</a></p>";
+            $('.error-message').html(jobHTML);
+          }
         },
         success: function() {
           var url = "../archive/" + jobData.export_path + "/" + jobData.export_path.substring(0, jobData.export_path.indexOf('/')) + "-" + jobData.export_path.substring(jobData.export_path.indexOf('/') + 1) + "_latest.html";
