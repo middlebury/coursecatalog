@@ -310,7 +310,7 @@ function runJob(jobId) {
             $('.error-message').removeClass('hidden success');
           } else {
             var url = "../archive/" + jobData.export_path + "/" + jobData.export_path.substring(0, jobData.export_path.indexOf('/')) + "-" + jobData.export_path.substring(jobData.export_path.indexOf('/') + 1) + "_latest.html";
-            var jobHTML = "<p>Job successful! Visible at: <a href='" + url + "'>" + url + "</a></p>";
+            var jobHTML = "<p>The export is taking longer than expected, but has not failed. It will be visible at: <a href='" + url + "'>" + url + "</a>.  If nothing shows at that link, try refreshing that page in 30 seconds.</p>";
             $('.error-message').html(jobHTML);
           }
         },
