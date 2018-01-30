@@ -44,6 +44,9 @@ class Helper_ExportJob
 			$binDir = getcwd() . '/../bin';
 		}
 
+		var_dump($destRoot);
+		var_dump($binDir);
+
     $jobRoot = $destRoot . '/' . $dest_dir;
     $htmlRoot = $jobRoot . '/html';
 
@@ -74,7 +77,7 @@ class Helper_ExportJob
       var_dump($return);
       file_put_contents('php://stderr', "Error running command:\n\n\t$command\n");
       unlink($htmlPath);
-      return 2;
+      return 1;
     }
 
     // Check to see if the export is different from the previous one.
@@ -98,12 +101,12 @@ class Helper_ExportJob
     if (file_exists($linkPath)) {
       if (!unlink($linkPath)) {
         file_put_contents('php://stderr', "Error deleting latest link: $linkPath\n");
-        return 4;
+        return 2;
       }
     }
     if (!symlink('html/'.$htmlName, $linkPath)) {
       file_put_contents('php://stderr', "Error creating latest link: $linkPath\n");
-      return 5;
+      return 3;
     }
 	}
 
