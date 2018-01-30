@@ -74,6 +74,7 @@ class Helper_ExportJob
     $command = $binDir.'/zfcli.php '.$base.' -a archive.generate -p '.escapeshellarg(http_build_query($params)).' > '.$htmlPath;
 
     exec($command, $output, $return);
+		var_dump($command);
     if ($return) {
 			var_dump($output);
       var_dump($return);
