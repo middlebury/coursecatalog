@@ -21,7 +21,8 @@ class banner_course_CourseOffering
 	middlebury_course_CourseOffering_InstructorsRecord,
 	middlebury_course_CourseOffering_AlternatesRecord,
 	middlebury_course_CourseOffering_LinkRecord,
-	middlebury_course_CourseOffering_BannerIdentifiersRecord
+	middlebury_course_CourseOffering_BannerIdentifiersRecord,
+	middlebury_course_CourseOffering_EnrollmentNumbersRecord
 {
 	/**
 	 * @var array $requiredFields;
@@ -39,6 +40,8 @@ class banner_course_CourseOffering
 			'SSBSECT_CAMP_CODE',
 			'SSBSECT_CRSE_TITLE',
 			'SSBSECT_MAX_ENRL',
+			'SSBSECT_ENRL',
+			'SSBSECT_SEATS_AVAIL',
 			'SSBSECT_LINK_IDENT',
 
 			'SSBDESC_TEXT_NARRATIVE',
@@ -97,6 +100,7 @@ class banner_course_CourseOffering
 		$this->alternatesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
 		$this->linkType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:link');
 		$this->identifiersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
+		$this->enrollmentNumbersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:enrollment_numbers');
 
 		parent::__construct();
 		$this->checkRow($row);
@@ -132,6 +136,7 @@ class banner_course_CourseOffering
 		$this->addRecordType($this->alternatesType);
 		$this->addRecordType($this->linkType);
 		$this->addRecordType($this->identifiersType);
+		$this->addRecordType($this->enrollmentNumbersType);
 
 		$properties = array();
 		$properties[] = new phpkit_Property('Course Reference Number', 'CRN', 'An number that uniquely identifies a section within a term.', $row['SSBSECT_CRN']);
@@ -1287,6 +1292,49 @@ class banner_course_CourseOffering
 		return (intval($parts['tm_hour']) * 3600) + (intval($parts['tm_min']) * 60);
 	}
 
+/*********************************************************
+ * EnrollmentNumbersRecord support
+ *********************************************************/
+
+	/**
+	 * Answer the maximum enrollment for the offering.
+	 *
+	 * This is the total number of seats available.
+	 *
+	 * @return int
+	 * @access public
+	 * @since 1/9/18
+	 */
+	public function getMaxEnrollment () {
+		return intval($this->row['SSBSECT_MAX_ENRL']);
+	}
+
+	/**
+	 * Answer the current enrollment for the offering.
+	 *
+	 * The number of seats currently filled.
+	 *
+	 * @return int
+	 * @access public
+	 * @since 1/9/18
+	 */
+	public function getEnrollment () {
+		return intval($this->row['SSBSECT_ENRL']);
+	}
+
+	/**
+	 * Answer the number of seats available to be filled.
+	 *
+	 * This should generally be the maximum enrollment minus the current
+	 * enrollment unless other constraints are in place.
+	 *
+	 * @return int
+	 * @access public
+	 * @since 1/9/18
+	 */
+	public function getSeatsAvailable () {
+		return intval($this->row['SSBSECT_SEATS_AVAIL']);
+	}
 
 /*********************************************************
  * Full-text search indexing support. Internal to this implementation.
