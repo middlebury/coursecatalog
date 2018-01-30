@@ -37,10 +37,11 @@ class Helper_ExportJob
 	public function exportJob ($dest_dir, $config_id, $term, $revision_id, $verbose) {
     $config = new Zend_Config_Ini(BASE_PATH.'/archive_config.ini', APPLICATION_ENV);
 
-		$destRoot = $config->catalog->archive_root;
 		if (PHP_SAPI === 'cli') {
+			$destRoot = $config->catalog->archive_root;
 			$binDir = 'bin';
 		} else {
+			$destRoot = getcwd() . '/../archives';
 			$binDir = getcwd() . '/../bin';
 		}
 
