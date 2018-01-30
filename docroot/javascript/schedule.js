@@ -304,6 +304,7 @@ function runJob(jobId) {
         type: "GET",
         data: params,
         error: function(error) {
+          console.log(error);
           $('.error-message').html("<p>Error: " + error + "</p>");
           $('.error-message').addClass('error');
           $('.error-message').removeClass('hidden success');
