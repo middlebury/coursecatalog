@@ -1,0 +1,85 @@
+-- phpMyAdmin SQL Dump
+-- version 4.6.3
+-- https://www.phpmyadmin.net/
+--
+-- Host: hammer
+-- Generation Time: Jan 29, 2018 at 05:45 PM
+-- Server version: 10.1.30-MariaDB
+-- PHP Version: 5.6.32
+
+--
+-- Database: `gselover_catalog`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `archive_configurations`
+--
+
+CREATE TABLE `archive_configurations` (
+  `id` int(11) NOT NULL auto_increment,
+  `label` varchar(100) DEFAULT NULL,
+  `catalog_id` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for table `archive_configurations`
+--
+ALTER TABLE `archive_configurations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Table structure for table `archive_configuration_revisions`
+--
+
+CREATE TABLE `archive_configuration_revisions` (
+  `id` int(11) NOT NULL auto_increment,
+  `arch_conf_id` int(11) DEFAULT NULL,
+  `note` varchar(100) DEFAULT NULL,
+  `last_saved` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `user_id` varchar(100) DEFAULT NULL,
+  `user_disp_name` varchar(100) DEFAULT NULL,
+  `json_data` mediumtext
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for table `archive_configuration_revisions`
+--
+ALTER TABLE `archive_configuration_revisions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `arch_conf_id` (`arch_conf_id`);
+
+--
+-- Constraints for table `archive_configuration_revisions`
+--
+ALTER TABLE `archive_configuration_revisions`
+  ADD CONSTRAINT `archive_configuration_revisions_ibfk_1` FOREIGN KEY (`arch_conf_id`) REFERENCES `archive_configurations` (`id`);
+
+--
+-- Table structure for table `archive_jobs`
+--
+
+CREATE TABLE `archive_jobs` (
+  `id` int(11) NOT NULL auto_increment,
+  `active` tinyint(1) DEFAULT NULL,
+  `export_path` varchar(100) DEFAULT NULL,
+  `config_id` int(11) DEFAULT NULL,
+  `revision_id` int(11) DEFAULT NULL,
+  `terms` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for table `archive_jobs`
+--
+ALTER TABLE `archive_jobs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `config_id` (`config_id`),
+  ADD KEY `revision_id` (`revision_id`);
+
+--
+-- Constraints for table `archive_jobs`
+--
+ALTER TABLE `archive_jobs`
+  ADD CONSTRAINT `archive_jobs_ibfk_1` FOREIGN KEY (`config_id`) REFERENCES `archive_configurations` (`id`),
+  ADD CONSTRAINT `archive_jobs_ibfk_2` FOREIGN KEY (`revision_id`) REFERENCES `archive_configuration_revisions` (`id`);
