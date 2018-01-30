@@ -75,6 +75,7 @@ class Helper_ExportJob
 
     exec($command, $output, $return);
 		var_dump($command);
+		var_dump($output);
     if ($return) {
 			var_dump($output);
       var_dump($return);
