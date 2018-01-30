@@ -18,7 +18,7 @@
 --
 
 CREATE TABLE `archive_configurations` (
-  `id` int(11) NOT NULL auto_increment,
+  `id` int(11) NOT NULL,
   `label` varchar(100) DEFAULT NULL,
   `catalog_id` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -28,6 +28,12 @@ CREATE TABLE `archive_configurations` (
 --
 ALTER TABLE `archive_configurations`
   ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for table `archive_configurations`
+--
+ALTER TABLE `archive_configurations`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- Table structure for table `archive_configuration_revisions`
@@ -49,6 +55,12 @@ CREATE TABLE `archive_configuration_revisions` (
 ALTER TABLE `archive_configuration_revisions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `arch_conf_id` (`arch_conf_id`);
+
+--
+-- AUTO_INCREMENT for table `archive_configuration_revisions`
+--
+ALTER TABLE `archive_configuration_revisions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- Constraints for table `archive_configuration_revisions`
@@ -76,6 +88,12 @@ ALTER TABLE `archive_jobs`
   ADD PRIMARY KEY (`id`),
   ADD KEY `config_id` (`config_id`),
   ADD KEY `revision_id` (`revision_id`);
+
+--
+-- AUTO_INCREMENT for table `archive_jobs`
+--
+ALTER TABLE `archive_configuration_revisions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 --
 -- Constraints for table `archive_jobs`
