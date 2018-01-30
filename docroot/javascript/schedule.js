@@ -298,6 +298,7 @@ function runJob(jobId) {
       $('.error-message').removeClass('hidden error');
 
       var params = generateParams(jobData);
+      console.log(params);
 
       $.ajax({
         url: "../archive/exportjob",
