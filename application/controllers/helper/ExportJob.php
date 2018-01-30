@@ -41,7 +41,7 @@ class Helper_ExportJob
 			$destRoot = $config->catalog->archive_root;
 			$binDir = 'bin';
 		} else {
-			$destRoot = getcwd() . '/../archives';
+			$destRoot = getcwd() . '/../archive';
 			$binDir = getcwd() . '/../bin';
 		}
 
