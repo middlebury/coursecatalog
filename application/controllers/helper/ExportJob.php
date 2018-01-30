@@ -45,9 +45,6 @@ class Helper_ExportJob
 			$binDir = '../bin';
 		}
 
-		var_dump($destRoot);
-		var_dump($binDir);
-
     $jobRoot = $destRoot . '/' . $dest_dir;
     $htmlRoot = $jobRoot . '/html';
 
@@ -74,8 +71,6 @@ class Helper_ExportJob
     $command = $binDir.'/zfcli.php '.$base.' -a archive.generate -p '.escapeshellarg(http_build_query($params)).' > '.$htmlPath;
 
     exec($command, $output, $return);
-		var_dump($command);
-		var_dump($output);
     if ($return) {
 			var_dump($output);
       var_dump($return);
