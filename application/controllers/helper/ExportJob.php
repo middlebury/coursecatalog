@@ -41,8 +41,8 @@ class Helper_ExportJob
 			$destRoot = $config->catalog->archive_root;
 			$binDir = 'bin';
 		} else {
-			$destRoot = '../../archive';
-			$binDir = 'bin';
+			$destRoot = $config->catalog->archive_root;
+			$binDir = getcwd() . '/../bin';
 		}
 
     $jobRoot = $destRoot . '/' . $dest_dir;
@@ -72,8 +72,7 @@ class Helper_ExportJob
 
     exec($command, $output, $return);
     if ($return) {
-			var_dump($output);
-      var_dump($return);
+			var_dump($return);
 			var_dump($command);
       file_put_contents('php://stderr', "Error running command:\n\n\t$command\n");
       unlink($htmlPath);
