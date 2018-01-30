@@ -51,7 +51,6 @@ if(isset($opts->a)) {
 
 
 	// Our stuff.
-	var_dump('hello');
 	$front->registerPlugin(new CatalogExternalRedirector());
 
 	Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/controllers/helper', 'Helper');

@@ -293,12 +293,11 @@ function runJob(jobId) {
       $('.error-message').addClass('error');
       $('.error-message').removeClass('hidden success');
     } else {
-      $('.error-message').html("<p>Running job... This may take a very long time!</p>");
+      $('.error-message').html("<p>Running job... This may take a very long time. A link will appear here when the export has finished.</p>");
       $('.error-message').addClass('success');
       $('.error-message').removeClass('hidden error');
 
       var params = generateParams(jobData);
-      console.log(params);
 
       $.ajax({
         url: "../archive/exportjob",
