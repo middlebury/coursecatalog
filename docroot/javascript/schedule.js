@@ -50,7 +50,9 @@ function selectConfig(configId, configDropDown) {
 
 function defineRevisionsDropDown(revisions) {
   var revisionsDropDownHTML = "<select class='revision-dropdown' value='unselected'><option value='latest' selected>Latest</option>";
+  console.log(revisions);
   revisions.forEach(function(element) {
+    console.log(element);
     if (element['note'] != '') {
       var note = element['note'].substring(0, 24);
       if (element['note'].length > 25) { note += "..."; }
@@ -299,10 +301,49 @@ function runJob(jobId) {
 
       var params = generateParams(jobData);
 
+      // var last_response_len = false;
+      //   $.ajax('./flushed-ajax.php', {
+      //       xhrFields: {
+      //           onprogress: function(e)
+      //           {
+      //               var this_response, response = e.currentTarget.response;
+      //               if(last_response_len === false)
+      //               {
+      //                   this_response = response;
+      //                   last_response_len = response.length;
+      //               }
+      //               else
+      //               {
+      //                   this_response = response.substring(last_response_len);
+      //                   last_response_len = response.length;
+      //               }
+      //               console.log(this_response);
+      //           }
+      //       }
+      //   })
+      //   .done(function(data)
+      //   {
+      //       console.log('Complete response = ' + data);
+      //   })
+      //   .fail(function(data)
+      //   {
+      //       console.log('Error: ', data);
+      //   });
+
+      var last_response_len = false;
       $.ajax({
         url: "../archive/exportjob",
         type: "GET",
         data: params,
+        // xhrFields: {
+        //   onprogress: function(e) {
+        //     console.log(e.target.responseText)
+        //     $("body").html(e.target.responseText)
+        //     if (e.lengthComputable) {
+        //         console.log(e.loaded / e.total * 100 + '%');
+        //     }
+        //   }
+        // },
         error: function(error) {
           if(error.status !== 502) {
             $('.error-message').html("<p>Error: " + error + "</p>");

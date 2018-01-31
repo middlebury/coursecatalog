@@ -209,7 +209,7 @@ class ExportController
 
     $db = Zend_Registry::get('db');
     $configs = $db->query("SELECT * FROM archive_configurations")->fetchAll();
-    $revisions = $db->query("SELECT * FROM archive_configuration_revisions ORDER BY last_saved DESC")->fetchAll();
+    $revisions = $db->query("SELECT `id`, `note`, `last_saved`, `arch_conf_id` FROM archive_configuration_revisions ORDER BY last_saved DESC")->fetchAll();
     $jobs = $db->query("SELECT * FROM archive_jobs ORDER BY terms DESC")->fetchAll();
 
     $data = array();
