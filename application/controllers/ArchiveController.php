@@ -483,6 +483,8 @@
 		$this->view->title = $title;
 		$this->view->headTitle($title);
 		$this->view->sections = $sections;
+    $numSections = count($sections);
+    $currentSection = 1;
 		foreach ($this->view->sections as $key => &$section) {
 			if ($request->getParam('verbose')) {
 				$text = '';
@@ -520,6 +522,11 @@
 				default:
 					throw new Exception("Unknown section type ".$section['type']);
 			}
+      //echo "Completed " . $currentSection . " of " . $numSections;
+      //$currentSection++;
+      while (ob_get_level()) { ob_end_flush(); }
+      flush();
+      //ob_flush();
 		}
 
 		$this->_helper->layout()->setLayout('minimal');
