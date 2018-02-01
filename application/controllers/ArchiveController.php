@@ -108,6 +108,8 @@
 	 * @since 4/21/09
 	 */
 	public function viewAction () {
+    $tmp = error_reporting();
+    error_reporting(0);
 		$config = Zend_Registry::getInstance()->config;
 		$request = $this->getRequest();
 		if (empty($config->catalog->archive_root)) {
@@ -157,6 +159,7 @@
 		};
 		$url .= '/'.$request->getParam('file');
 		$this->view->breadcrumb[$this->view->baseUrl($url)] = pathinfo($request->getParam('file'), PATHINFO_FILENAME);
+    error_reporting($tmp);
 	}
 
   /**
@@ -381,7 +384,8 @@
 			$context = stream_context_create($options);
 			libxml_set_streams_context($context);
 		}
-
+    $tmp = error_reporting();
+    error_reporting(0);
     $sections = array();
     if ($request->getParam('revision_id') === 'latest') {
       $query =
@@ -410,6 +414,8 @@
     $revision = $stmt->fetch();
 		$jsonData = json_decode($revision['json_data']);
 
+    $numGroups = count($jsonData);
+    $currentGroup = 1;
 		foreach($jsonData as $group) {
 			foreach($group as $entry) {
 				if (gettype($entry) === 'object') {
@@ -469,6 +475,7 @@
 					$sections[] = $section;
 				}
 			}
+      $currentGroup++;
 		}
 
 		$title = 'Course Catalog - ';
@@ -506,11 +513,8 @@
 					break;
 				case 'html':
           $parser = self::getFsmParser();
-          $tmp = error_reporting();
-		      error_reporting(E_WARNING);
           ob_start();
           $parser->Parse($section['text'],"UNKNOWN");
-          error_reporting($tmp);
           $section['text'] = ob_get_clean();
 					break;
 				case 'page_content':
@@ -522,13 +526,10 @@
 				default:
 					throw new Exception("Unknown section type ".$section['type']);
 			}
-      //echo "Completed " . $currentSection . " of " . $numSections;
-      //$currentSection++;
-      while (ob_get_level()) { ob_end_flush(); }
-      flush();
-      //ob_flush();
+      $currentSection++;
 		}
 
+    error_reporting($tmp);
 		$this->_helper->layout()->setLayout('minimal');
 	}
 
