@@ -279,6 +279,14 @@ function generateParams(jobData) {
   return params;
 }
 
+function jobDate() {
+  var d = new Date();
+  var month = (eval(d.getMonth() + 1) < 10 ? '0' : '') + eval(d.getMonth() + 1);
+  var date = (d.getDate() < 10 ? '0' : '') + d.getDate();
+  var dateString = d.getFullYear() + "-" + month + "-" + date;
+  return dateString;
+}
+
 function runJob(jobId) {
   // Don't let user overload the job exports.
   if ($('.error-message').html() === "<p>Running job... This may take a very long time!</p>") {
@@ -298,7 +306,6 @@ function runJob(jobId) {
       $('.error-message').removeClass('hidden error');
 
       var params = generateParams(jobData);
-      console.log(params);
 
       var last_response_len = false;
       $.ajax({
@@ -306,22 +313,19 @@ function runJob(jobId) {
         type: "GET",
         data: params,
         error: function(error) {
-          if(error.status !== 502) {
+          if(error.status == 502) {
+            var url = "../archive/" + jobData.export_path + "/html/" + jobData.export_path.substring(0, jobData.export_path.indexOf('/')) + "-" + jobData.export_path.substring(jobData.export_path.indexOf('/') + 1) + "_snapshot-" + jobDate() + ".html";
+            var jobHTML = "<p>The export is still in progress.  It will be visible at: <a href='" + url + "'>" + url + "</a> though it may take several minutes.  Please be patient.</p> ";
+            $('.error-message').html(jobHTML);
+          } else {
             $('.error-message').html("<p>Error: " + error + "</p>");
             $('.error-message').addClass('error');
             $('.error-message').removeClass('hidden success');
-          } else {
-            var url = "../archive/" + jobData.export_path + "/" + jobData.export_path.substring(0, jobData.export_path.indexOf('/')) + "-" + jobData.export_path.substring(jobData.export_path.indexOf('/') + 1) + "_latest.html";
-            var jobHTML = "<p>The export is taking longer than expected, but has not failed. It will be visible at: <a href='" + url + "'>" + url + "</a>.  If nothing shows at that link, try refreshing that page in 30 seconds.</p>";
-            $('.error-message').html(jobHTML);
           }
         },
         success: function() {
-          var d = new Date();
-          var month = (eval(d.getMonth() + 1) < 10 ? '0' : '') + eval(d.getMonth() + 1);
-          var date = (d.getDate() < 10 ? '0' : '') + d.getDate();
-          var dateString = d.getFullYear() + "-" + month + "-" + date;
-          var url = "../archive/" + jobData.export_path + "/html/" + jobData.export_path.substring(0, jobData.export_path.indexOf('/')) + "-" + jobData.export_path.substring(jobData.export_path.indexOf('/') + 1) + "_snapshot-" + dateString + ".html";          var jobHTML = "<p>Job successful! Visible at: <a href='" + url + "'>" + url + "</a></p>";
+          var url = "../archive/" + jobData.export_path + "/html/" + jobData.export_path.substring(0, jobData.export_path.indexOf('/')) + "-" + jobData.export_path.substring(jobData.export_path.indexOf('/') + 1) + "_snapshot-" + jobDate() + ".html";
+          var jobHTML = "<p>Job successful! Visible at: <a href='" + url + "'>" + url + "</a></p>";
           $('.error-message').html(jobHTML);
         }
       });
