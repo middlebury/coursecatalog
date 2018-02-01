@@ -414,14 +414,6 @@
     $revision = $stmt->fetch();
 		$jsonData = json_decode($revision['json_data']);
 
-    $numGroups = count($jsonData);
-    $currentGroup = 1;
-    // Set our cache-control headers since we will be flushing content soon.
-		$this->setCacheControlHeaders();
-		$this->getResponse()->sendHeaders();
-		// Close the session before we send headers and content.
-		session_write_close();
-    header('Content-Type: text/html');
 		foreach($jsonData as $group) {
 			foreach($group as $entry) {
 				if (gettype($entry) === 'object') {
@@ -481,8 +473,6 @@
 					$sections[] = $section;
 				}
 			}
-      while (ob_get_level()) { ob_end_flush(); } flush();
-      $currentGroup++;
 		}
 
 		$title = 'Course Catalog - ';
@@ -497,6 +487,13 @@
 		$this->view->title = $title;
 		$this->view->headTitle($title);
 		$this->view->sections = $sections;
+
+    // Set our cache-control headers since we will be flushing content soon.
+    $this->setCacheControlHeaders();
+    $this->getResponse()->sendHeaders();
+    // Close the session before we send headers and content.
+    session_write_close();
+    header('Content-Type: text/html');
     $numSections = count($sections);
     $currentSection = 1;
 		foreach ($this->view->sections as $key => &$section) {
@@ -523,6 +520,7 @@
           ob_start();
           $parser->Parse($section['text'],"UNKNOWN");
           $section['text'] = ob_get_clean();
+          ob_end_flush();
 					break;
 				case 'page_content':
 					$section['content'] = $this->getRequirements($section['url']);
@@ -533,6 +531,7 @@
 				default:
 					throw new Exception("Unknown section type ".$section['type']);
 			}
+      while (ob_get_level()) { ob_end_flush(); } flush();
       $currentSection++;
 		}
 
