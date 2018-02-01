@@ -50,9 +50,7 @@ function selectConfig(configId, configDropDown) {
 
 function defineRevisionsDropDown(revisions) {
   var revisionsDropDownHTML = "<select class='revision-dropdown' value='unselected'><option value='latest' selected>Latest</option>";
-  console.log(revisions);
   revisions.forEach(function(element) {
-    console.log(element);
     if (element['note'] != '') {
       var note = element['note'].substring(0, 24);
       if (element['note'].length > 25) { note += "..."; }
@@ -300,58 +298,24 @@ function runJob(jobId) {
       $('.error-message').removeClass('hidden error');
 
       var params = generateParams(jobData);
-
-      // var last_response_len = false;
-      //   $.ajax('./flushed-ajax.php', {
-      //       xhrFields: {
-      //           onprogress: function(e)
-      //           {
-      //               var this_response, response = e.currentTarget.response;
-      //               if(last_response_len === false)
-      //               {
-      //                   this_response = response;
-      //                   last_response_len = response.length;
-      //               }
-      //               else
-      //               {
-      //                   this_response = response.substring(last_response_len);
-      //                   last_response_len = response.length;
-      //               }
-      //               console.log(this_response);
-      //           }
-      //       }
-      //   })
-      //   .done(function(data)
-      //   {
-      //       console.log('Complete response = ' + data);
-      //   })
-      //   .fail(function(data)
-      //   {
-      //       console.log('Error: ', data);
-      //   });
+      console.log(params);
 
       var last_response_len = false;
       $.ajax({
         url: "../archive/exportjob",
         type: "GET",
         data: params,
-        // xhrFields: {
-        //   onprogress: function(e) {
-        //     console.log(e.target.responseText)
-        //     $("body").html(e.target.responseText)
-        //     if (e.lengthComputable) {
-        //         console.log(e.loaded / e.total * 100 + '%');
-        //     }
-        //   }
-        // },
         error: function(error) {
           $('.error-message').html("<p>Error: " + error + "</p>");
           $('.error-message').addClass('error');
           $('.error-message').removeClass('hidden success');
         },
         success: function() {
-          var url = "../archive/" + jobData.export_path + "/" + jobData.export_path.substring(0, jobData.export_path.indexOf('/')) + "-" + jobData.export_path.substring(jobData.export_path.indexOf('/') + 1) + "_latest.html";
-          var jobHTML = "<p>Job successful! Visible at: <a href='" + url + "'>" + url + "</a></p>";
+          var d = new Date();
+          var month = (eval(d.getMonth() + 1) < 10 ? '0' : '') + eval(d.getMonth() + 1);
+          var date = (d.getDate() < 10 ? '0' : '') + d.getDate();
+          var dateString = d.getFullYear() + "-" + month + "-" + date;
+          var url = "../archive/" + jobData.export_path + "/html/" + jobData.export_path.substring(0, jobData.export_path.indexOf('/')) + "-" + jobData.export_path.substring(jobData.export_path.indexOf('/') + 1) + "_snapshot-" + dateString + ".html";          var jobHTML = "<p>Job successful! Visible at: <a href='" + url + "'>" + url + "</a></p>";
           $('.error-message').html(jobHTML);
         }
       });
