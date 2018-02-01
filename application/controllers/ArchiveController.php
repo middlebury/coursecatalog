@@ -416,6 +416,12 @@
 
     $numGroups = count($jsonData);
     $currentGroup = 1;
+    // Set our cache-control headers since we will be flushing content soon.
+		$this->setCacheControlHeaders();
+		$this->getResponse()->sendHeaders();
+		// Close the session before we send headers and content.
+		session_write_close();
+    header('Content-Type: text/html');
 		foreach($jsonData as $group) {
 			foreach($group as $entry) {
 				if (gettype($entry) === 'object') {
@@ -475,6 +481,7 @@
 					$sections[] = $section;
 				}
 			}
+      while (ob_get_level()) { ob_end_flush(); } flush();
       $currentGroup++;
 		}
 
