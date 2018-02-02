@@ -315,7 +315,7 @@ function runJob(jobId) {
         error: function(error) {
           if(error.status == 502) {
             var url = "../archive/" + jobData.export_path + "/html/" + jobData.export_path.substring(0, jobData.export_path.indexOf('/')) + "-" + jobData.export_path.substring(jobData.export_path.indexOf('/') + 1) + "_snapshot-" + jobDate() + ".html";
-            var jobHTML = "<p>The export is still in progress.  It will be visible at: <a href='" + url + "'>" + url + "</a> though it may take several minutes.  If the page is blank, try refreshing it in 30 seconds.</p> ";
+            var jobHTML = "<p>The export is still in progress.  It will be visible at: <a href='" + url + "'>" + url + "</a> though it may take several minutes.  If the page is blank, try refreshing it in several minutes.</p> ";
             $('.error-message').html(jobHTML);
           } else {
             $('.error-message').html("<p>Error: " + error + "</p>");
