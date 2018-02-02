@@ -489,11 +489,11 @@
 		$this->view->sections = $sections;
 
     // Set our cache-control headers since we will be flushing content soon.
-    $this->setCacheControlHeaders();
-    $this->getResponse()->sendHeaders();
-    // Close the session before we send headers and content.
-    session_write_close();
-    header('Content-Type: text/html');
+    // $this->setCacheControlHeaders();
+    // $this->getResponse()->sendHeaders();
+    // // Close the session before we send headers and content.
+    // session_write_close();
+    // header('Content-Type: text/html');
     $numSections = count($sections);
     $currentSection = 1;
 		foreach ($this->view->sections as $key => &$section) {
@@ -517,7 +517,7 @@
 					break;
 				case 'html':
           $parser = self::getFsmParser();
-          ob_start();
+          //ob_start();
           $parser->Parse($section['text'],"UNKNOWN");
           $section['text'] = ob_get_clean();
           ob_end_flush();
@@ -531,7 +531,6 @@
 				default:
 					throw new Exception("Unknown section type ".$section['type']);
 			}
-      while (ob_get_level()) { ob_end_flush(); } flush();
       $currentSection++;
 		}
 
