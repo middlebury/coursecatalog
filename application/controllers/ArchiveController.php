@@ -531,6 +531,7 @@
 				default:
 					throw new Exception("Unknown section type ".$section['type']);
 			}
+      echo $currentSection;
       $currentSection++;
 		}
 
