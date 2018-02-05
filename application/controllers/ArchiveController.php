@@ -199,6 +199,24 @@
   }
 
   /**
+	 * Report progress of export job
+	 *
+	 * @return void
+	 * @access public
+	 * @since 2/5/18
+	 */
+  public function jobprogressAction() {
+    $config = Zend_Registry::getInstance()->config;
+    $file = $config->catalog->archive_root . '/progress.txt';
+    // Disable the line above and enable the line below for development.
+    //$file = getcwd() . '/archives/progress.txt';
+    echo file_get_contents($file);
+
+    $this->_helper->layout()->disableLayout();
+    $this->_helper->viewRenderer->setNoRender(true);
+  }
+
+  /**
 	 * Export a single archive export job from the command line.
 	 *
 	 * @return void
@@ -332,6 +350,14 @@
 			}
 		}
 
+    $file = $config->catalog->archive_root . '/progress.txt';
+    // Disable the line above and enable the line below for development.
+    //$file = getcwd() . '/archives/progress.txt';
+		chmod($file, 0755);
+		chown($file, 'apache');
+		chgrp($file, 'apache');
+		file_put_contents($file, 'Loading job info from db...');
+
 		if ($config->catalog->print_max_exec_time)
 			ini_set('max_execution_time', $config->catalog->print_max_exec_time);
 
@@ -412,6 +438,9 @@
     $revision = $stmt->fetch();
 		$jsonData = json_decode($revision['json_data']);
 
+    file_put_contents($file, 'Generating sections...');
+    $totalSections = count($jsonData);
+    $currentSection = 1;
 		foreach($jsonData as $group) {
 			foreach($group as $entry) {
 				if (gettype($entry) === 'object') {
@@ -468,6 +497,8 @@
 							}
 						}
 					}
+          file_put_contents($file, 'Loaded section ' . $currentSection . ' of ' . $totalSections);
+          $currentSection++;
 					$sections[] = $section;
 				}
 			}
@@ -486,13 +517,7 @@
 		$this->view->headTitle($title);
 		$this->view->sections = $sections;
 
-    // Set our cache-control headers since we will be flushing content soon.
-    // $this->setCacheControlHeaders();
-    // $this->getResponse()->sendHeaders();
-    // // Close the session before we send headers and content.
-    // session_write_close();
-    // header('Content-Type: text/html');
-    $numSections = count($sections);
+    $totalSections = count($sections);
     $currentSection = 1;
 		foreach ($this->view->sections as $key => &$section) {
 			if ($request->getParam('verbose')) {
@@ -531,8 +556,11 @@
 				default:
 					throw new Exception("Unknown section type ".$section['type']);
 			}
+      file_put_contents($file, 'Printed section ' . $currentSection . ' of ' . $totalSections);
       $currentSection++;
 		}
+
+    file_put_contents($file, 'Export finished');
 
 		$this->_helper->layout()->setLayout('minimal');
 	}

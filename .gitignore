@@ -4,3 +4,4 @@ configuration.plist
 update_config.ini
 catalog_prod.sql
 docroot/archives
+progress.txt

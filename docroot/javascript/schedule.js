@@ -1,4 +1,6 @@
 
+var exporting = false;
+
 // ------ RESET ------ //
 
 function reset() {
@@ -287,11 +289,29 @@ function jobDate() {
   return dateString;
 }
 
+function getProgress(exportPath) {
+  $.ajax({
+    url: "../archive/jobprogress",
+    type: "GET",
+    success: function(response) {
+      if(response != 'Export finished') {
+        $('.error-message').removeClass('hidden error');
+        $('.error-message').addClass('success');
+        $('.error-message').html(response);
+        setTimeout(getProgress(exportPath), 1000);
+      } else {
+        exporting = false;
+        var url = "../archive/" + exportPath + "/html/" + exportPath.substring(0, exportPath.indexOf('/')) + "-" + exportPath.substring(exportPath.indexOf('/') + 1) + "_snapshot-" + jobDate() + ".html";
+        var jobHTML = "<p>Export finished: <a href='" + url + "'>" + url + "</a></p> ";
+        $('.error-message').html(jobHTML);
+      }
+    }
+  })
+}
+
 function runJob(jobId) {
   // Don't let user overload the job exports.
-  if ($('.error-message').html() === "<p>Running job... This may take a very long time!</p>") {
-    return;
-  }
+  if (exporting) { return; }
 
   var jobData = generateJobData($('#job' + jobId));
 
@@ -301,35 +321,15 @@ function runJob(jobId) {
       $('.error-message').addClass('error');
       $('.error-message').removeClass('hidden success');
     } else {
-      $('.error-message').html("<p>Running job... This may take a very long time. A link will appear here when the export has finished.</p>");
-      $('.error-message').addClass('success');
-      $('.error-message').removeClass('hidden error');
-
       var params = generateParams(jobData);
       console.log(params);
-
-      var last_response_len = false;
       $.ajax({
         url: "../archive/exportjob",
         type: "GET",
-        data: params,
-        error: function(error) {
-          if(error.status == 502) {
-            var url = "../archive/" + jobData.export_path + "/html/" + jobData.export_path.substring(0, jobData.export_path.indexOf('/')) + "-" + jobData.export_path.substring(jobData.export_path.indexOf('/') + 1) + "_snapshot-" + jobDate() + ".html";
-            var jobHTML = "<p>The export is still in progress.  It will be visible at: <a href='" + url + "'>" + url + "</a> though it may take several minutes.  If the page is blank, try refreshing it in several minutes.</p> ";
-            $('.error-message').html(jobHTML);
-          } else {
-            $('.error-message').html("<p>Error: " + error + "</p>");
-            $('.error-message').addClass('error');
-            $('.error-message').removeClass('hidden success');
-          }
-        },
-        success: function() {
-          var url = "../archive/" + jobData.export_path + "/html/" + jobData.export_path.substring(0, jobData.export_path.indexOf('/')) + "-" + jobData.export_path.substring(jobData.export_path.indexOf('/') + 1) + "_snapshot-" + jobDate() + ".html";
-          var jobHTML = "<p>Job successful! Visible at: <a href='" + url + "'>" + url + "</a></p>";
-          $('.error-message').html(jobHTML);
-        }
+        data: params
       });
+      exporting = true;
+      setTimeout(getProgress(jobData.export_path), 3000);
     }
   });
 }
