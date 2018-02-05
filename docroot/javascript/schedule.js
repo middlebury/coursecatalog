@@ -306,6 +306,7 @@ function runJob(jobId) {
       $('.error-message').removeClass('hidden error');
 
       var params = generateParams(jobData);
+      console.log(params);
 
       var last_response_len = false;
       $.ajax({
