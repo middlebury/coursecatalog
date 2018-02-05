@@ -300,7 +300,6 @@ function getProgress(exportPath) {
         $('.error-message').html(response);
         setTimeout(getProgress(exportPath), 1000);
       } else {
-        console.log('Export finished');
         exporting = false;
         var url = "../archive/" + exportPath + "/html/" + exportPath.substring(0, exportPath.indexOf('/')) + "-" + exportPath.substring(exportPath.indexOf('/') + 1) + "_snapshot-" + jobDate() + ".html";
         var jobHTML = "<p>Export finished: <a href='" + url + "'>" + url + "</a></p> ";

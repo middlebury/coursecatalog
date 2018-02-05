@@ -350,14 +350,6 @@
 			}
 		}
 
-    $file = $config->catalog->archive_root . '/progress.txt';
-    // Disable the line above and enable the line below for development.
-    //$file = getcwd() . '/archives/progress.txt';
-		chmod($file, 0755);
-		chown($file, 'apache');
-		chgrp($file, 'apache');
-		file_put_contents($file, 'Loading job info from db...');
-
 		if ($config->catalog->print_max_exec_time)
 			ini_set('max_execution_time', $config->catalog->print_max_exec_time);
 
