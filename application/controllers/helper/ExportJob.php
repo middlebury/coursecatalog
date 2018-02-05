@@ -39,6 +39,7 @@ class Helper_ExportJob
 
 		// Write status updates to a file.
 		$file = $config->catalog->archive_root . '/progress.txt';
+		unlink($file);
 		// Disable the line above and enable the line below for development.
 		//$file = getcwd() . '/archives/progress.txt';
 		chmod($file, 0755);
