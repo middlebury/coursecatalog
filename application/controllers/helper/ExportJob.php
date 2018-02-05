@@ -37,16 +37,6 @@ class Helper_ExportJob
 	public function exportJob ($dest_dir, $config_id, $term, $revision_id, $verbose) {
     $config = new Zend_Config_Ini(BASE_PATH.'/archive_config.ini', APPLICATION_ENV);
 
-		// Write status updates to a file.
-		$file = $config->catalog->archive_root . '/progress.txt';
-		unlink($file);
-		// Disable the line above and enable the line below for development.
-		//$file = getcwd() . '/archives/progress.txt';
-		chmod($file, 0755);
-		chown($file, 'apache');
-		chgrp($file, 'apache');
-		file_put_contents($file, 'Loading job info from db...');
-
 		if (PHP_SAPI === 'cli') {
 			$destRoot = $config->catalog->archive_root;
 			$binDir = 'bin';

@@ -295,8 +295,6 @@ function getProgress(exportPath) {
     type: "GET",
     success: function(response) {
       if(response != 'Export finished') {
-        $('.error-message').removeClass('hidden error');
-        $('.error-message').addClass('success');
         $('.error-message').html(response);
         setTimeout(getProgress(exportPath), 1000);
       } else {
@@ -329,7 +327,10 @@ function runJob(jobId) {
         data: params
       });
       exporting = true;
-      setTimeout(getProgress(jobData.export_path), 3000);
+      $('.error-message').removeClass('hidden error');
+      $('.error-message').addClass('success');
+      $('.error-message').html('Initializing job export...');
+      setTimeout(getProgress, 3000, jobData.export_path);
     }
   });
 }
