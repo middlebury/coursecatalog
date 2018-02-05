@@ -384,8 +384,6 @@
 			$context = stream_context_create($options);
 			libxml_set_streams_context($context);
 		}
-    $tmp = error_reporting();
-    error_reporting(0);
     $sections = array();
     if ($request->getParam('revision_id') === 'latest') {
       $query =
@@ -516,11 +514,13 @@
 				case 'text':
 					break;
 				case 'html':
+          $tmp = error_reporting();
+          error_reporting(0);
           $parser = self::getFsmParser();
-          //ob_start();
           $parser->Parse($section['text'],"UNKNOWN");
           $section['text'] = ob_get_clean();
           ob_end_flush();
+          error_reporting($tmp);
 					break;
 				case 'page_content':
 					$section['content'] = $this->getRequirements($section['url']);
@@ -534,7 +534,6 @@
       $currentSection++;
 		}
 
-    error_reporting($tmp);
 		$this->_helper->layout()->setLayout('minimal');
 	}
 
