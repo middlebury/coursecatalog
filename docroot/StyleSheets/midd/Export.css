@@ -47,14 +47,6 @@
   background: #56748E;
 }
 
-.group.odd {
-  background: #56748E;
-}
-
-.group.even {
-  background: #65676b;
-}
-
 .group-controls {
   /*display: none;*/
   margin-top: 5px;

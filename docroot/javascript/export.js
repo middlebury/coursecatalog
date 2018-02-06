@@ -357,13 +357,6 @@ function giveGroupTitle(selector, value) {
 function renameGroups() {
   $('.group').toArray().forEach(function(element, index) {
     $(element).attr('id', 'group' + eval(index + 1));
-    if(index % 2 === 0) {
-      $(element).removeClass('odd');
-      $(element).addClass('even');
-    } else {
-      $(element).removeClass('even');
-      $(element).addClass('odd');
-    }
   });
 }
 
