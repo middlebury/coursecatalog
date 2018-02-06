@@ -22,7 +22,7 @@ function generateInputTag(type, value, callback) {
   		callback("<input class='section-input' placeholder='http://wwww.example.com' value='" + value + "'></input>");
   		break;
   	case "custom_text":
-  		callback("<textarea class='section-input' value='" + value + "'>" + value + "</textarea>");
+  		callback("<textarea class='section-input' rows='20' value='" + value + "'>" + value + "</textarea>");
   		break;
   	case "course_list":
       $.ajax({
