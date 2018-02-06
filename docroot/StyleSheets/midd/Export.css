@@ -48,7 +48,6 @@
 }
 
 .group-controls {
-  /*display: none;*/
   margin-top: 5px;
   padding: 2px;
 }
@@ -62,8 +61,8 @@
 }
 
 .group-title {
+  clear: right;
   font-size: 18px;
-  font-weight: bold;
   margin-right: 30px;
 }
 
