@@ -20,8 +20,8 @@
 <?php
 	if ($this->config) {
 		echo "<form class='config-create-form' action=" . $this->url(array('action' => 'insertjob')) . " method='post'>";
-		echo "<strong>Export path:</strong> <input type='hidden' name='configId' value='" . $this->config['id'] . "'><input name='export_path'></input>";
-		echo "<strong>Terms:</strong> <input name='terms'></input>";
+		echo "<strong>Export path:</strong><input type='hidden' name='configId' value='" . $this->config['id'] . "'><input name='export_path' value='" . substr($this->config['catalog_id'], 8) . "/'></input>";
+		echo "<strong>Terms:</strong><input name='terms' placeholder='E.g. 201790,201820'></input>";
 		echo "<input type='submit'></input>";
 		echo "</form>";
 	}
