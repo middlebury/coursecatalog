@@ -281,14 +281,6 @@ function generateParams(jobData) {
   return params;
 }
 
-function jobDate() {
-  var d = new Date();
-  var month = (eval(d.getMonth() + 1) < 10 ? '0' : '') + eval(d.getMonth() + 1);
-  var date = (d.getDate() < 10 ? '0' : '') + d.getDate();
-  var dateString = d.getFullYear() + "-" + month + "-" + date;
-  return dateString;
-}
-
 function getProgress(exportPath) {
   $.ajax({
     url: "../archive/jobprogress",
@@ -299,8 +291,8 @@ function getProgress(exportPath) {
         setTimeout(getProgress(exportPath), 1000);
       } else {
         exporting = false;
-        var url = "../archive/" + exportPath + "/html/" + exportPath.substring(0, exportPath.indexOf('/')) + "-" + exportPath.substring(exportPath.indexOf('/') + 1) + "_snapshot-" + jobDate() + ".html";
-        var jobHTML = "<p>Export finished: <a href='" + url + "'>" + url + "</a></p> ";
+        var url = "../archive/" + exportPath + "/" + exportPath.substring(0, exportPath.indexOf('/')) + "-" + exportPath.substring(exportPath.indexOf('/') + 1) + "_latest.html";
+        var jobHTML = "<p>Export finished: <a href='" + url + "' target='_blank'>" + url + "</a></p> ";
         $('.error-message').html(jobHTML);
       }
     }
