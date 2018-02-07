@@ -104,13 +104,17 @@
 }
 
 .link-button {
-  padding: 2px 5px;
-  -webkit-appearance: button;
-  -moz-appearance: button;
-  appearance: button;
+  display: inline-block;
+  padding: 1px 5px 2px 5px;
+  border: 1px solid #AFAEAF;
+  border-radius: 0px;
+  background: linear-gradient(rgba(226, 227, 227, 1.0), rgba(247, 247, 247, 1.0));
+  color: black;
+}
 
-  text-decoration: none;
-  color: initial;
+.link-button:hover {
+  color: black;
+  border: 1px solid #AFAEAF;
 }
 
 .move-arrows {
@@ -118,6 +122,10 @@
   color: white;
   font-size: 10px;
   left: -28px;
+}
+
+.note {
+  margin-top: 5px;
 }
 
 .position-helper {
