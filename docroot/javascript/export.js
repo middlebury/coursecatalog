@@ -76,6 +76,20 @@ function buildList(jsonData, callback) {
   if (!jsonData || JSON.stringify(jsonData) === "{}") {
     newGroup();
   } else {
+    /*
+     * The count variable is used to ensure that this whole block flows synchronously.
+     * Otherwise, callback will fire early or multiple times.
+     * This is a hacky way to do this and if you have a better idea, please feel free
+     * to implement.
+    */
+    var count = 0;
+    $.each(jsonData, function(key, value) {
+      $.each(value, function(sectionKey, sectionValue) {
+        count++;
+      });
+    });
+    // Subtract group names from count.
+    count -= Object.keys(jsonData).length;
     $.each(jsonData, function(key, value) {
       var groupName = 'no-group';
       if(key.indexOf('group') !== -1 ) {
@@ -89,6 +103,7 @@ function buildList(jsonData, callback) {
               var li = generateSection(sectionKey, sectionValue.type, result);
               $(groupName).find(".section-group").append(li);
               reorderSectionsBasedOnIds(groupName);
+              if (!--count) { callback(); }
             });
           }
         });
@@ -96,7 +111,6 @@ function buildList(jsonData, callback) {
         throw "Invalid JSON: " + jsonData;
       }
     });
-    callback();
   }
 }
 
@@ -110,7 +124,7 @@ function populate() {
     success: function(data) {
       buildList($.parseJSON(data), function() {
         renameGroups();
-        setTimeout(resetEventListeners, 2000);
+        resetEventListeners();
       });
     }
   });
