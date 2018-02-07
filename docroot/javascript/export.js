@@ -213,8 +213,10 @@ function showHide() {
 
     if (!visible) {
       $(element).find('.section-group').addClass('visible');
+      $(element).find('.group-controls').removeClass('hidden');
     } else {
       $(element).find('.section-group').removeClass('visible');
+      $(element).find('.group-controls').addClass('hidden');
     }
   });
 }
