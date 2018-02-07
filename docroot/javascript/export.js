@@ -110,7 +110,7 @@ function populate() {
     success: function(data) {
       buildList($.parseJSON(data), function() {
         renameGroups();
-        resetEventListeners();
+        setTimeout(resetEventListeners, 1000);
       });
     }
   });
@@ -141,7 +141,7 @@ function reset() {
 
 function hasTOC(input) {
   if ($($(input).parent().children(".toc")[0]).val() !== '') return true;
-  return false; 
+  return false;
 }
 
 function isTOC(input) {
@@ -433,7 +433,7 @@ function newGroupFirstSection() {
   generateInputTag('h1', '', function(input) {
     var newSectionHTML = "<li class='section h1-section ui-state-default'>" + generateSectionHTML('h1', input) + "</li>";
     $('.new').children("ul").append(newSectionHTML);
-    //resetEventListeners();
+    resetEventListeners();
   });
 }
 
@@ -458,7 +458,7 @@ function defineSection(select) {
   generateInputTag(sectionType, '', function(result) {
     $(li).html(generateSectionHTML(sectionType, result));
 
-    //resetEventListeners();
+    resetEventListeners();
   });
 }
 
