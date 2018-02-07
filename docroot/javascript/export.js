@@ -139,16 +139,14 @@ function reset() {
   $('.error-message').addClass('hidden');
 }
 
-function isH1(input) {
-  
-}
-
 function hasTOC(input) {
-
+  if ($($(input).parent().children(".toc")[0]).val() !== '') return true;
+  return false; 
 }
 
 function isTOC(input) {
-
+  if($(input).hasClass('toc')) return true;
+  return false;
 }
 
 function resetEventListeners() {
@@ -165,7 +163,7 @@ function resetEventListeners() {
     $(this).attr('value', $(this).val());
     if ($(this).parent().parent().html().indexOf('Type: h1') !== -1) {
       $('.new').removeClass('new');
-      if ( (isH1(this) && !hasTOC(this)) || isTOC(this)) {
+      if ( (!isTOC(this) && !hasTOC(this)) || isTOC(this)) {
         giveGroupTitle(this, $(this).val());
         renameGroups();
       }
