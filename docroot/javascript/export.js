@@ -110,7 +110,7 @@ function populate() {
     success: function(data) {
       buildList($.parseJSON(data), function() {
         renameGroups();
-        setTimeout(resetEventListeners, 1000);
+        setTimeout(resetEventListeners, 2000);
       });
     }
   });
