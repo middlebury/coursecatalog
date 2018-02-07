@@ -201,3 +201,8 @@
 .section-input {
   width: 95%;
 }
+
+.half-width {
+  width: 47%;
+  margin-right: 5px;
+}

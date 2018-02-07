@@ -13,10 +13,14 @@ function generateSectionHTML(type, input) {
 function generateInputTag(type, value, callback) {
   switch(type) {
     case "h1":
-      callback("<p>Format: 'Title; TOC text.''  TOC text is optional.</p><input class='section-input' placeholder='Please choose a title.' value='" + value + "'></input>");
-      break;
   	case "h2":
-      callback("<input class='section-input' value='" + value + "'></input>");
+      if(value.indexOf(';') !== -1) {
+        var toc = value.substring(value.indexOf(';') + 1);
+        value = value.substring(0, value.indexOf(';'));
+      } else {
+        var toc = '';
+      }
+      callback("<input class='section-input half-width' placeholder='Full title for section heading' value='" + value + "'></input><input class='toc section-input half-width' placeholder='Short title for TOC listing (Optional)' value='" + toc + "'></input>");
       break;
   	case "page_content":
   		callback("<input class='section-input' placeholder='http://wwww.example.com' value='" + value + "'></input>");
@@ -60,7 +64,7 @@ function generateInputTag(type, value, callback) {
 
 function generateGroup(id, title, visible) {
   if (visible) {
-    return "<li id='" + id + "' class='group ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='group-title'>" + title + "</span><div class='group-toggle-description' onclick='toggleGroup(this)'>show/hide</div><div class='group-controls hidden'><button class='button-delete' onclick='deleteGroup(this)'>Delete group</button><button class='button' onclick='newGroup(this)'>Add group below</button></div><ul class='section-group visible'></ul></li>";
+    return "<li id='" + id + "' class='group ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='group-title'>" + title + "</span><div class='group-toggle-description' onclick='toggleGroup(this)'>show/hide</div><div class='group-controls'><button class='button-delete' onclick='deleteGroup(this)'>Delete group</button><button class='button' onclick='newGroup(this)'>Add group below</button></div><ul class='section-group visible'></ul></li>";
   } else {
     return "<li id='" + id + "' class='group ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../images/arrow_cross.png'></span></div><span class='group-title'>" + title + "</span><div class='group-toggle-description' onclick='toggleGroup(this)'>show/hide</div><div class='group-controls hidden'><button class='button-delete' onclick='deleteGroup(this)'>Delete group</button><button class='button' onclick='newGroup(this)'>Add group below</button></div><ul class='section-group'></ul></li>";
   }
@@ -77,18 +81,14 @@ function buildList(jsonData, callback) {
       if(key.indexOf('group') !== -1 ) {
         groupName = '#' + key;
         $('#sections-list').append(generateGroup(key, "Unnamed Group", false));
-        // Because $.each does not return a promise we have to use this hacky
-        // strategy to fire reorderSectionsBasedOnIds() only on the last element.
-        var count = $.map(value, function(el) { return el }).length;
         $.each(value, function(sectionKey, sectionValue) {
           if (sectionKey === 'title') {
             giveGroupTitle(groupName, sectionValue);
-            --count;
           } else {
             generateInputTag(sectionValue.type, sectionValue.value, function(result) {
               var li = generateSection(sectionKey, sectionValue.type, result);
               $(groupName).find(".section-group").append(li);
-              if (!--count) reorderSectionsBasedOnIds(groupName, callback);
+              reorderSectionsBasedOnIds(groupName);
             });
           }
         });
@@ -96,6 +96,7 @@ function buildList(jsonData, callback) {
         throw "Invalid JSON: " + jsonData;
       }
     });
+    callback();
   }
 }
 
@@ -120,7 +121,7 @@ function populate() {
 
 // ----- HELPERS ------- //
 
-function reorderSectionsBasedOnIds(groupId, callback) {
+function reorderSectionsBasedOnIds(groupId) {
   var sections = $(groupId).find('.section').toArray();
   sections.sort(function(a, b) {
     var aId = parseInt(a['id'].substring(7));
@@ -128,7 +129,7 @@ function reorderSectionsBasedOnIds(groupId, callback) {
     return aId - bId;
   });
   $(groupId).find('.section-group').empty().append(sections);
-  callback();
+  //callback();
 }
 
 function reset() {
@@ -136,6 +137,18 @@ function reset() {
   populate();
   $('.error-message').removeClass('success error');
   $('.error-message').addClass('hidden');
+}
+
+function isH1(input) {
+  
+}
+
+function hasTOC(input) {
+
+}
+
+function isTOC(input) {
+
 }
 
 function resetEventListeners() {
@@ -152,8 +165,10 @@ function resetEventListeners() {
     $(this).attr('value', $(this).val());
     if ($(this).parent().parent().html().indexOf('Type: h1') !== -1) {
       $('.new').removeClass('new');
-      giveGroupTitle(this, $(this).val());
-      renameGroups();
+      if ( (isH1(this) && !hasTOC(this)) || isTOC(this)) {
+        giveGroupTitle(this, $(this).val());
+        renameGroups();
+      }
     }
   });
   $('.filter-input').change(function() {
@@ -162,13 +177,13 @@ function resetEventListeners() {
   $('.section-dropdown').change(function() {
     $(this).attr('value', $(this).val());
   });
-  $( "#sections-list" ).on( "sortstop", function( event, ui ) {
+  $( "#sections-list" ).on( "sortstop", function(event, ui) {
     // TODO - is there really any reason to rename groups and sections?  As long
     // as their ids are unique do they really need to be in order?
     renameGroups();
     renameSections();
   });
-  $( ".group" ).on( "sortstop", function( event, ui ) {
+  $( ".group" ).on( "sortstop", function(event, ui) {
     // TODO - is there really any reason to rename groups and sections?  As long
     // as their ids are unique do they really need to be in order?
     renameGroups();
@@ -251,20 +266,32 @@ function saveJSON() {
       var section = $(element);
       var sectionType = section.find('.section-type')[0].innerHTML.substring(section.find('.section-type')[0].innerHTML.indexOf(': ') + 2);
       var sectionValue = '';
-      if (sectionType === 'custom_text') {
-        sectionValue = $($($(element).find('.section-value')[0]).find('textarea')[0]).val();
-        sectionValue = sectionValue.replace(/(?:\r\n|\r|\n)/g, '\\n');
-        sectionValue = sectionValue.replace(/\"/g, '&quot;');
-      } else if (sectionType === 'course_list') {
-        sectionValue = $($($(element).find('.section-value')[0]).find('select')[0]).val();
-        if ($(element).find('.filter-input').val()) {
-          var filters = $(element).find('.filter-input').val();
-          // Remove trailing "
-          //sectionValue = sectionValue.substring(0, sectionValue.length - 1);
-          sectionValue += "," + filters;
-        }
-      } else {
-        sectionValue = $($($(element).find('.section-value')[0]).find('input')[0]).val();
+      switch(sectionType) {
+        case "h1":
+        case "h2":
+          sectionValue = $($($(element).find('.section-value')[0]).find('input')[0]).val();
+          var toc = $($($(element).find('.section-value')[0]).find('input')[1]).val();
+          if (toc) {
+            sectionValue += ";" + toc;
+          }
+          break;
+        case "custom_text":
+          sectionValue = $($($(element).find('.section-value')[0]).find('textarea')[0]).val();
+          sectionValue = sectionValue.replace(/(?:\r\n|\r|\n)/g, '\\n');
+          sectionValue = sectionValue.replace(/\"/g, '&quot;');
+          break;
+        case "course_list":
+          sectionValue = $($($(element).find('.section-value')[0]).find('select')[0]).val();
+          if ($(element).find('.filter-input').val()) {
+            var filters = $(element).find('.filter-input').val();
+            // Remove trailing "
+            //sectionValue = sectionValue.substring(0, sectionValue.length - 1);
+            sectionValue += "," + filters;
+          }
+          break;
+        default:
+          sectionValue = $($($(element).find('.section-value')[0]).find('input')[0]).val();
+          break;
       }
 
       sectionValue = "\"" + sectionValue + "\"";
@@ -362,7 +389,7 @@ function renameGroups() {
 
 function toggleGroup(button) {
   $(button).closest('.group').find('.section-group').toggleClass('visible');
-  $(button).closest('.group').find('.group-controls').toggleClass('visible');
+  $(button).closest('.group').find('.group-controls').toggleClass('hidden');
 }
 
 function newGroup(thisButton) {
@@ -408,7 +435,7 @@ function newGroupFirstSection() {
   generateInputTag('h1', '', function(input) {
     var newSectionHTML = "<li class='section h1-section ui-state-default'>" + generateSectionHTML('h1', input) + "</li>";
     $('.new').children("ul").append(newSectionHTML);
-    resetEventListeners();
+    //resetEventListeners();
   });
 }
 
@@ -433,7 +460,7 @@ function defineSection(select) {
   generateInputTag(sectionType, '', function(result) {
     $(li).html(generateSectionHTML(sectionType, result));
 
-    resetEventListeners();
+    //resetEventListeners();
   });
 }
 
