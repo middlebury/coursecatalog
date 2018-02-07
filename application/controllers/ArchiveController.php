@@ -454,7 +454,7 @@
 							switch($section['type']) {
 								case 'h1':
 								case 'h2':
-                  $vals = explode('; ', $sectionValue);
+                  $vals = explode(';', $sectionValue);
                   if(sizeOf($vals) > 1) {
                     $section['text'] = $vals[0];
                     $section['toc_text'] = $vals[1];
