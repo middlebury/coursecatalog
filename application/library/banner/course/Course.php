@@ -8,6 +8,7 @@
  */
 
 include_once("fsmparserclass.inc.php");
+include_once("harmoni/Primitives/Collections-Text/HtmlString.class.php");
 
 /**
  *  <p>A <code> Course </code> represents a canonical learning unit. A <code>
@@ -102,6 +103,9 @@ class banner_course_Course
 				$output = substr_replace($output, $link, $start, strlen($match[0]));
 			}
 		}
+
+		// Ensure that all tags are closed and there is not javascript.
+		$output = HtmlString::getSafeHtml($output);
 
 		return nl2br($output);
 	}
