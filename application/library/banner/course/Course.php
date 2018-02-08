@@ -131,8 +131,39 @@ class banner_course_Course
 			self::$fsmParser->FSM('/./s','echo $STRING;','CDATA','CDATA');
 
 			/*********************************************************
+			 * HTLM tag handling.
+			 *********************************************************/
+
+			// Enter into Italic with <em> or <i> tags.
+ 			self::$fsmParser->FSM(
+ 				'/<em>|<i>/i',
+ 				'preg_match("/<em>|<i>/i", $STRING, $m); echo "<em>".$m[1];',
+ 				'ITALIC');
+
+			// close italic with </em> or </i> tags.
+ 			self::$fsmParser->FSM(
+ 				'/<\/em>|<\/i>/i',
+ 				'preg_match("/<\/em>|<\/i>/i", $STRING, $m); echo "</em>".$m[1];',
+ 				'CDATA',
+				'ITALIC');
+
+			// Enter into Bold with <strong> or <b> tags.
+ 			self::$fsmParser->FSM(
+ 				'/<strong>|<b>/i',
+ 				'preg_match("/<strong>|<b>/i", $STRING, $m); echo "<strong>".$m[1];',
+ 				'BOLD');
+
+			// close italic with </strong> or </b> tags.
+ 			self::$fsmParser->FSM(
+ 				'/<\/strong>|<\/b>/i',
+ 				'preg_match("/<\/strong>|<\/b>/i", $STRING, $m); echo "</strong>".$m[1];',
+ 				'CDATA',
+				'BOLD');
+
+			/*********************************************************
 			 * Italic
 			 *********************************************************/
+
 			// Enter into Italic if at the begining of the line.
 			self::$fsmParser->FSM(
 				'/^\/\w/',
