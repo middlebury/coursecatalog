@@ -107,6 +107,17 @@ class banner_course_Course
 		// Ensure that all tags are closed and there is not javascript.
 		$output = HtmlString::getSafeHtml($output);
 
+		// Remove leading/trailing newlines with paragraphs as these are probably
+		// errors in hand-entered HTML and will generate extra white-space.
+		// Really, users should just be entering whitespace or HTML, not a mixture
+		// of both.
+		// Example:
+		//		text<p>
+		//		other text<p>
+		//		third text<p>
+		$output = preg_replace('#<p>\s+#i', '<p>', $output);
+		$output = preg_replace('#\s+</p>#i', '</p>', $output);
+
 		return nl2br($output);
 	}
 
