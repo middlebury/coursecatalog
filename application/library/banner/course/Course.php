@@ -140,9 +140,10 @@ class banner_course_Course
 				'ITALIC',
 				'UNKNOWN');
 
-			//In normal state, catch italic start
+			// In normal state, catch italic start.
+			// Be sure not to match </ in case there is HTML in the text.
 			self::$fsmParser->FSM(
-				'/[^\w.:\/]\/\w/',
+				'/[^\w.:<\/]\/\w/',
 				'preg_match("/(\W)\/(\w)/", $STRING, $m); echo $m[1]."<em>".$m[2];',
 				'ITALIC',
 				'CDATA');
