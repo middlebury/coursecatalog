@@ -8,6 +8,7 @@
  */
 
 include_once("fsmparserclass.inc.php");
+include_once("harmoni/Primitives/Collections-Text/HtmlString.class.php");
 
 /**
  *  <p>A <code> Course </code> represents a canonical learning unit. A <code>
@@ -103,6 +104,20 @@ class banner_course_Course
 			}
 		}
 
+		// Ensure that all tags are closed and there is not javascript.
+		$output = HtmlString::getSafeHtml($output);
+
+		// Remove leading/trailing newlines with paragraphs as these are probably
+		// errors in hand-entered HTML and will generate extra white-space.
+		// Really, users should just be entering whitespace or HTML, not a mixture
+		// of both.
+		// Example:
+		//		text<p>
+		//		other text<p>
+		//		third text<p>
+		$output = preg_replace('#<p>\s+#i', '<p>', $output);
+		$output = preg_replace('#\s+</p>#i', '</p>', $output);
+
 		return nl2br($output);
 	}
 
@@ -131,8 +146,39 @@ class banner_course_Course
 			self::$fsmParser->FSM('/./s','echo $STRING;','CDATA','CDATA');
 
 			/*********************************************************
+			 * HTLM tag handling.
+			 *********************************************************/
+
+			// Enter into Italic with <em> or <i> tags.
+ 			self::$fsmParser->FSM(
+ 				'/<em>|<i>/i',
+ 				'preg_match("/<em>|<i>/i", $STRING, $m); echo "<em>".$m[1];',
+ 				'ITALIC');
+
+			// close italic with </em> or </i> tags.
+ 			self::$fsmParser->FSM(
+ 				'/<\/em>|<\/i>/i',
+ 				'preg_match("/<\/em>|<\/i>/i", $STRING, $m); echo "</em>".$m[1];',
+ 				'CDATA',
+				'ITALIC');
+
+			// Enter into Bold with <strong> or <b> tags.
+ 			self::$fsmParser->FSM(
+ 				'/<strong>|<b>/i',
+ 				'preg_match("/<strong>|<b>/i", $STRING, $m); echo "<strong>".$m[1];',
+ 				'BOLD');
+
+			// close italic with </strong> or </b> tags.
+ 			self::$fsmParser->FSM(
+ 				'/<\/strong>|<\/b>/i',
+ 				'preg_match("/<\/strong>|<\/b>/i", $STRING, $m); echo "</strong>".$m[1];',
+ 				'CDATA',
+				'BOLD');
+
+			/*********************************************************
 			 * Italic
 			 *********************************************************/
+
 			// Enter into Italic if at the begining of the line.
 			self::$fsmParser->FSM(
 				'/^\/\w/',
@@ -140,9 +186,10 @@ class banner_course_Course
 				'ITALIC',
 				'UNKNOWN');
 
-			//In normal state, catch italic start
+			// In normal state, catch italic start.
+			// Be sure not to match </ in case there is HTML in the text.
 			self::$fsmParser->FSM(
-				'/[^\w.:\/]\/\w/',
+				'/[^\w.:<\/]\/\w/',
 				'preg_match("/(\W)\/(\w)/", $STRING, $m); echo $m[1]."<em>".$m[2];',
 				'ITALIC',
 				'CDATA');
