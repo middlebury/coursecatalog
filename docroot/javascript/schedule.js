@@ -170,9 +170,7 @@ function validateJobTerms(jobTerms, catalogId, callback, jobId) {
         if(jobId) {
           $('#job' + jobId).addClass('job-error');
         }
-        var eText = error.responseText;
-        callback('Invalid terms: ' + eText.substring(eText.indexOf('with message') + 12, eText.indexOf('.')));
-        return false;
+        callback('One or more of these terms is invalid or is not yet active.  This job will not be run until all terms are valid and active.');
       },
       success: function(data) {
         if(jobId) {
@@ -220,48 +218,49 @@ function generateJobData(job) {
 }
 
 function save() {
+
   var completelyValid = true;
 
   $(".job").each(function(index, job) {
-    if (!completelyValid) return false;
 
     var jobData = generateJobData(job);
 
     validateInput(jobData, function(error) {
       if(error) {
-        $('.error-message').html("<p>Error: " + error + "</p>");
+        $('.error-message').html("<p>Save successful, but produced warning:<br><br>" + error + "</p>");
         $('.error-message').addClass('error');
         $('.error-message').removeClass('hidden success');
         $("#job" + jobData['jobId']).css('background', '#f95757');
+        $($("#job" + jobData['jobId']).find('.job-active').find('input')[1]).prop('checked', false);
+        jobData['active'] = 0;
         completelyValid = false;
-      } else {
-        if(!completelyValid) return false;
+      } else if(completelyValid) {
         $('.error-message').html("<p>Save successful!</p>");
         $('.error-message').addClass('success');
         $('.error-message').removeClass('hidden error');
         // TODO - I'm pretty sure this does nothing.
         $("#job" + jobData['jobId']).css('background', 'white');
-        $.ajax({
-          url: "../export/updatejob",
-          type: "POST",
-          data: {
-            jobId: jobData['jobId'],
-            active: jobData['active'],
-            export_path: jobData['export_path'],
-            config_id: jobData['config_id'],
-            revision_id: jobData['revision_id'],
-            terms: jobData['terms']
-          },
-          error: function(error) {
-            $('.error-message').html("<p>Error: " + error + "</p>");
-            $('.error-message').addClass('error');
-            $('.error-message').removeClass('hidden success');
-            throw error;
-          },
-          success: function(data) {
-          }
-        });
       }
+      $.ajax({
+        url: "../export/updatejob",
+        type: "POST",
+        data: {
+          jobId: jobData['jobId'],
+          active: jobData['active'],
+          export_path: jobData['export_path'],
+          config_id: jobData['config_id'],
+          revision_id: jobData['revision_id'],
+          terms: jobData['terms']
+        },
+        error: function(error) {
+          $('.error-message').html("<p>Error: " + error + "</p>");
+          $('.error-message').addClass('error');
+          $('.error-message').removeClass('hidden success');
+          throw error;
+        },
+        success: function(data) {
+        }
+      });
     });
   });
 }
