@@ -13,7 +13,7 @@
 			<option value="select">Select a configuration</option>
 			<?php
 			foreach ($this->configs as $config) {
-				print "<option value='".$config['label']."'".(($config == $this->config)?' selected="selected"':'').">".$config['label']."</option>";
+				print "<option value='".$config['id']."'".(($config == $this->config)?' selected="selected"':'').">".$config['label']."</option>";
 			}
 			?>
 		</select>
