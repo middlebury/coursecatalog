@@ -65,6 +65,24 @@ $router->addRoute('export_viewjson',
 		)
 	)
 );
+$router->addRoute('export_deleteconfig',
+	new Zend_Controller_Router_Route(
+		'admin/export/deleteconfig',
+		array(
+			'controller' 	=> 'export',
+			'action'			=> 'deleteconfig'
+		)
+	)
+);
+$router->addRoute('export_insertrevision',
+	new Zend_Controller_Router_Route(
+		'admin/export/insertrevision',
+		array(
+			'controller' 	=> 'export',
+			'action'			=> 'insertrevision'
+		)
+	)
+);
 $router->addRoute('export_latestrevision',
 	new Zend_Controller_Router_Route(
 		'admin/export/latestrevision',
