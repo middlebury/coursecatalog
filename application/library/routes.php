@@ -35,6 +35,64 @@ $router->addRoute('archive_generate',
 );
 
 // Archive exporting
+$router->addRoute('admin_export',
+	new Zend_Controller_Router_Route(
+		'admin/export/:config',
+		array(
+			'config'		  => '-1',
+			'controller' 	=> 'admin',
+			'action'			=> 'export'
+		)
+	)
+);
+$router->addRoute('export_revisionhistory',
+	new Zend_Controller_Router_Route(
+		'admin/export/:config/history',
+		array(
+			'config'		  => '-1',
+			'controller' 	=> 'export',
+			'action'			=> 'revisionhistory'
+		)
+	)
+);
+$router->addRoute('export_viewjson',
+	new Zend_Controller_Router_Route(
+		'admin/export/json/:revision',
+		array(
+			'revision'	  => '-1',
+			'controller' 	=> 'export',
+			'action'			=> 'viewjson'
+		)
+	)
+);
+$router->addRoute('export_latestrevision',
+	new Zend_Controller_Router_Route(
+		'admin/export/latestrevision',
+		array(
+			'controller' 	=> 'export',
+			'action'			=> 'latestrevision'
+		)
+	)
+);
+$router->addRoute('export_reverttorevision',
+	new Zend_Controller_Router_Route(
+		'admin/export/reverttorevision',
+		array(
+			'controller' 	=> 'export',
+			'action'			=> 'reverttorevision'
+		)
+	)
+);
+$router->addRoute('export_generatecourselist',
+	new Zend_Controller_Router_Route(
+		'admin/export/generateCourseList',
+		array(
+			'controller' 	=> 'export',
+			'action'			=> 'generatecourselist'
+		)
+	)
+);
+
 $router->addRoute('archive_export_job',
 	new Zend_Controller_Router_Route(
 		'archive/exportjob',

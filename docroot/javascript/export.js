@@ -1,6 +1,11 @@
 
 /* Helper functions for catalog export configuration */
 
+function selectConfig() {
+  var config = $('#config-selector').find('select').val();
+  window.location.href = '../admin/export/' + config;
+}
+
 // ------ GENERATORS ------ //
 function generateSection(id, type, input) {
   return "<li id='" + id + "' class='section ui-state-default'>" + generateSectionHTML(type, input);
@@ -76,6 +81,8 @@ function buildList(jsonData, callback) {
   if (!jsonData || JSON.stringify(jsonData) === "{}") {
     newGroup();
   } else {
+    console.log(jsonData);
+
     /*
      * The count variable is used to ensure that this whole block flows synchronously.
      * Otherwise, callback will fire early or multiple times.
@@ -115,14 +122,18 @@ function buildList(jsonData, callback) {
 }
 
 function populate() {
+  if(!$('#configId').val()) {
+    return;
+  }
   $.ajax({
     url: "../export/latestrevision",
     type: "GET",
+    dataType: "JSON",
     data: {
       configId: $('#configId').val()
     },
     success: function(data) {
-      buildList($.parseJSON(data), function() {
+      buildList(data, function() {
         renameGroups();
         resetEventListeners();
       });
@@ -143,7 +154,6 @@ function reorderSectionsBasedOnIds(groupId) {
     return aId - bId;
   });
   $(groupId).find('.section-group').empty().append(sections);
-  //callback();
 }
 
 function reset() {
@@ -488,5 +498,6 @@ function deleteSection(thisButton) {
 }
 
 $(document).ready(function() {
+  console.log('yes');
   populate();
 });

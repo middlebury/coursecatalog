@@ -71,6 +71,7 @@ class ExportController
     $stmt->execute(array(filter_input(INPUT_GET, 'configId', FILTER_SANITIZE_SPECIAL_CHARS)));
     $latestRevision = $stmt->fetch();
     echo $latestRevision['json_data'];
+    return $latestRevision['json_data'];
   }
 
   /**
@@ -83,7 +84,7 @@ class ExportController
   public function revisionhistoryAction() {
     $request = $this->getRequest();
 
-    if(!$request->getParam('configId')) {
+    if(!$request->getParam('config') || $request->getParam('config') === -1) {
       header('HTTP/1.1 400 Bad Request');
       print "A configId must be specified.";
       exit;
@@ -91,12 +92,12 @@ class ExportController
     $db = Zend_Registry::get('db');
     $query = "SELECT label FROM archive_configurations WHERE id = ?";
     $stmt = $db->prepare($query);
-    $stmt->execute(array(filter_input(INPUT_GET, 'configId', FILTER_SANITIZE_SPECIAL_CHARS)));
+    $stmt->execute(array($request->getParam('config')));
     $this->view->configLabel = $stmt->fetch()['label'];
 
     $query = "SELECT * FROM archive_configuration_revisions WHERE arch_conf_id = ? ORDER BY last_saved DESC";
     $stmt = $db->prepare($query);
-    $stmt->execute(array(filter_input(INPUT_GET, 'configId', FILTER_SANITIZE_SPECIAL_CHARS)));
+    $stmt->execute(array($request->getParam('config')));
     $this->view->revisions = $stmt->fetchAll();
   }
 
@@ -127,15 +128,17 @@ class ExportController
 	 */
   public function viewjsonAction() {
     $request = $this->getRequest();
-    if (!$request->getParam('revId')) {
-      print "This route requires a revId";
-    } else {
-      $db = Zend_Registry::get('db');
-      $query = "SELECT * FROM archive_configuration_revisions WHERE id = ?";
-      $stmt = $db->prepare($query);
-      $stmt->execute(array(filter_input(INPUT_GET, 'revId', FILTER_SANITIZE_SPECIAL_CHARS)));
-      $this->view->revision = $stmt->fetch();
+    if (!$request->getParam('revision') || $request->getParam('revision') === -1) {
+      header('HTTP/1.1 400 Bad Request');
+			print "This route requires a revision ID";
+			exit;
     }
+
+    $db = Zend_Registry::get('db');
+    $query = "SELECT * FROM archive_configuration_revisions WHERE id = ?";
+    $stmt = $db->prepare($query);
+    $stmt->execute(array($request->getParam('revision')));
+    $this->view->revision = $stmt->fetch();
   }
 
   /**
@@ -466,10 +469,10 @@ class ExportController
         </optgroup>
       </select>";
 
-      echo $sectionInput;
-
       $this->_helper->layout()->disableLayout();
       $this->_helper->viewRenderer->setNoRender(true);
+
+      echo $sectionInput;
     }
     else {
       echo 'Invalid request.  Please provide a catalogId';

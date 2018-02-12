@@ -8,8 +8,8 @@
 <div class='admin-menu'><a href="<?php print $this->url(array('action' => 'index')); ?>">&laquo; Back to Administration</a></div>
 
 <div class='config-menu'>
-	<form class='config-select-form' action="<?php print $this->url(); ?>" method="get">
-		<select name='config' onchange="this.form.submit();">
+	<form id='config-selector' class='config-select-form' action="<?php print $this->url(); ?>" method="GET">
+		<select name='config' onchange="selectConfig()">
 			<option value="select">Select a configuration</option>
 			<?php
 			foreach ($this->configs as $config) {
@@ -35,7 +35,7 @@
 		print "<button class='link-button' onclick='reset()'>Reset</button>";
 		print "<button class='link-button' onclick='deleteConfig(" . $this->config['id'] . ")'>Delete this config</button>";
 		print "<button class='link-button' onclick='showHide()'>Show/Hide all groups</button>";
-		print "<a class='link-button' href=" . $this->url(array('controller' => 'export', 'action' => 'revisionhistory')) . "?configId=" . $this->config['id'] . ">Revision history</a>";
+		print "<a class='link-button' href=" . $this->url(array('controller' => 'export', 'action' => 'revisionhistory')) . "/history>Revision history</a>";
 
 		// Content
 		print "<div><textarea id='note' class='note' style='width:100%' placeholder='(Optional) Write a note about this revision'></textarea></div>";
@@ -47,7 +47,7 @@
 		print "<button class='link-button' onclick='reset()'>Reset</button>";
 		print "<button class='link-button' onclick='deleteConfig(" . $this->config['id'] . ")'>Delete this config</button>";
 		print "<button class='link-button' onclick='showHide()'>Show/Hide all groups</button>";
-		print "<a class='link-button' href=" . $this->url(array('controller' => 'export', 'action' => 'revisionhistory')) . "?configId=" . $this->config['id'] . ">Revision history</a>";
+		print "<a class='link-button' href=" . $this->url(array('controller' => 'export', 'action' => 'revisionhistory')) . "/history>Revision history</a>";
 	}
 
 	print "</div>";

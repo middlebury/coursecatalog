@@ -33,7 +33,7 @@ function compare() {
 
 function revertTo(revId) {
   $.ajax({
-    url: "../export/reverttorevision",
+    url: "../../../export/reverttorevision",
     type: "POST",
     data: {
       revId: revId
