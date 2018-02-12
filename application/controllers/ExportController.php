@@ -89,6 +89,7 @@ class ExportController
       print "A configId must be specified.";
       exit;
     }
+    $this->view->configId = $request->getParam('config');
     $db = Zend_Registry::get('db');
     $query = "SELECT label FROM archive_configurations WHERE id = ?";
     $stmt = $db->prepare($query);
