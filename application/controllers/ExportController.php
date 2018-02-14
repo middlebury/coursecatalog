@@ -110,13 +110,24 @@ class ExportController
 	 * @since 1/25/18
 	 */
   public function revisiondiffAction() {
-    if (!$this->getRequest()->isPost()) {
-      print "This page requires POST data.";
+    if (!$this->_getParam('rev1') || !$this->_getParam('rev2')) {
+      header('HTTP/1.1 400 Bad Request');
+			print "This route requires two revision IDs";
+			exit;
     } else {
-      $this->view->text1 = $this->getRequest()->getPost('text1');
-      $this->view->text2 = $this->getRequest()->getPost('text2');
-      $this->view->time1 = $this->getRequest()->getPost('time1');
-      $this->view->time2 = $this->getRequest()->getPost('time2');
+      $db = Zend_Registry::get('db');
+      $query = "SELECT * FROM archive_configuration_revisions WHERE id = ?";
+      $stmt = $db->prepare($query);
+      $stmt->execute(array($this->_getParam('rev1')));
+      $this->rev1 = $stmt->fetch();
+      $stmt = $db->prepare($query);
+      $stmt->execute(array($this->_getParam('rev2')));
+      $this->rev2 = $stmt->fetch();
+
+      $this->view->text1 = $this->rev1['json_data'];
+      $this->view->text2 = $this->rev2['json_data'];
+      $this->view->time1 = $this->rev1['last_saved'];
+      $this->view->time2 = $this->rev2['last_saved'];
     }
   }
 

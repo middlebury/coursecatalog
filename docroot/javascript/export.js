@@ -1,9 +1,9 @@
 
 /* Helper functions for catalog export configuration */
 
-function selectConfig() {
+function selectConfig(url) {
   var config = $('#config-selector').find('select').val();
-  window.location.href = '../admin/export/' + config;
+  window.location.href = url + '/' + config;
 }
 
 // ------ GENERATORS ------ //
@@ -498,6 +498,5 @@ function deleteSection(thisButton) {
 }
 
 $(document).ready(function() {
-  console.log('yes');
   populate();
 });

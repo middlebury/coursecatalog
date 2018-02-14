@@ -4,9 +4,9 @@
 ?>
 
 <h1>Create New Catalog Export Configuration</h1>
-<div class='admin-menu'><a href="<?php print $this->url(array('controller' => 'admin', 'action' => 'export')); ?>">&laquo; Back to Archive Export Configuration</a></div>
+<div class='admin-menu'><a href="<?php print $this->url(array('controller' => 'admin', 'action' => 'export'), 'default'); ?>">&laquo; Back to Archive Export Configuration</a></div>
 
-<form class='config-create-form' action="<?php print $this->url(array('action' => 'insertconfig')); ?>" method="post">
+<form class='config-create-form' action="<?php print $this->url(array('action' => 'insertconfig'), 'default'); ?>" method="post">
 	<label for='label'>Label:</label><input name='label'></input><br>
 	<label for='catalog_id'>Catalog:</label>
 		<select name='catalog_id'>

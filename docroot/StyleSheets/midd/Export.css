@@ -188,7 +188,7 @@
 }
 
 .warning-box {
-  position: absolute;
+  position: fixed;
   width: 300px;
   height: 100px;
   left: 40%;

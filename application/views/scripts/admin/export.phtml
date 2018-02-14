@@ -5,11 +5,11 @@
 ?>
 
 <h1>Manage Catalog Export Configurations</h1>
-<div class='admin-menu'><a href="<?php print $this->url(array('action' => 'index')); ?>">&laquo; Back to Administration</a></div>
+<div class='admin-menu'><a href="<?php print $this->url(array('controller' => 'admin', 'action' => 'index'), 'default'); ?>">&laquo; Back to Administration</a></div>
 
 <div class='config-menu'>
 	<form id='config-selector' class='config-select-form' action="<?php print $this->url(); ?>" method="GET">
-		<select name='config' onchange="selectConfig()">
+		<select name='config' onchange="selectConfig('<?php print $this->url(array('controller' => 'admin', 'action' => 'export'), 'default'); ?>')">
 			<option value="select">Select a configuration</option>
 			<?php
 			foreach ($this->configs as $config) {
@@ -18,7 +18,7 @@
 			?>
 		</select>
 	</form>
-	<p class='inline-p'> - or - <a href="<?php print $this->url(array('controller' => 'export', 'action' => 'newconfig')); ?>">Create a new configuration</a></p>
+	<p class='inline-p'> - or - <a href="<?php print $this->url(array('controller' => 'export', 'action' => 'newconfig'), 'default'); ?>">Create a new configuration</a></p>
 </div>
 
 <?php

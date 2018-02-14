@@ -34,7 +34,7 @@ $router->addRoute('archive_generate',
 	)
 );
 
-// Archive exporting
+// Archive admin UI
 $router->addRoute('admin_export',
 	new Zend_Controller_Router_Route(
 		'admin/export/:config',
@@ -57,11 +57,22 @@ $router->addRoute('export_revisionhistory',
 );
 $router->addRoute('export_viewjson',
 	new Zend_Controller_Router_Route(
-		'admin/export/json/:revision',
+		'admin/export/revision/:revision',
 		array(
 			'revision'	  => '-1',
 			'controller' 	=> 'export',
 			'action'			=> 'viewjson'
+		)
+	)
+);
+$router->addRoute('export_revisiondiff',
+	new Zend_Controller_Router_Route(
+		'admin/export/revisiondiff/:rev1/:rev2',
+		array(
+			'rev1'	  => '-1',
+			'rev2'		=> '-1',
+			'controller' 	=> 'export',
+			'action'			=> 'revisiondiff'
 		)
 	)
 );
@@ -71,6 +82,24 @@ $router->addRoute('export_deleteconfig',
 		array(
 			'controller' 	=> 'export',
 			'action'			=> 'deleteconfig'
+		)
+	)
+);
+$router->addRoute('export_newconfig',
+	new Zend_Controller_Router_Route(
+		'admin/export/newconfig',
+		array(
+			'controller' 	=> 'export',
+			'action'			=> 'newconfig'
+		)
+	)
+);
+$router->addRoute('export_insertconfig',
+	new Zend_Controller_Router_Route(
+		'admin/export/insertconfig',
+		array(
+			'controller' 	=> 'export',
+			'action'			=> 'insertconfig'
 		)
 	)
 );
@@ -110,6 +139,8 @@ $router->addRoute('export_generatecourselist',
 		)
 	)
 );
+
+// Archive Export
 
 $router->addRoute('archive_export_job',
 	new Zend_Controller_Router_Route(

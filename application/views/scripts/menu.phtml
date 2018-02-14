@@ -1,7 +1,7 @@
 
 						<ul class="menu">
 							<li class="leaf">
-								<a href="<?php echo $this->url(array('controller' => 'catalogs', 'action' => 'list'), null, true) ?>	">All Catalogs</a>
+								<a href="<?php echo $this->url(array('controller' => 'catalogs', 'action' => 'list'), 'default', true) ?>	">All Catalogs</a>
 							</li>
 
 	<?php if ($this->menuCatalogSelected) {
@@ -12,7 +12,7 @@
 				'catalog' => $this->getStringFromOsidId($this->menuCatalogSelected->getId()),
 				'term' => $this->termIdString,
 			),
-			null,
+			'default',
 			true);
 	?>
 							<li class="expanded">
@@ -44,7 +44,7 @@
 
 							<li class="leaf<?php if ($this->menuIsSchedule) { print " here"; } ?>">
 								<a href="<?php echo $this->url(array('controller' => 'schedules', 'catalog' => $this->catalogIdString,
-								'term' => $this->termIdString), null, true) ?>">My Schedule Planner</a>
+								'term' => $this->termIdString), 'default', true) ?>">My Schedule Planner</a>
 							</li>
 
 	<?php } ?>

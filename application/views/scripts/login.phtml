@@ -1,4 +1,4 @@
-<div class='login_info'>			
+<div class='login_info'>
 <?php
 if ($this->isAuthenticationEnabled()) {
 	$return = $this->pathAsAbsoluteUrl($this->url());
@@ -6,10 +6,10 @@ if ($this->isAuthenticationEnabled()) {
 		$return .= '?'.http_build_query($_GET);
 
 	if ($this->isAuthenticated()) {
-		print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'logout', 'return' => $return)).'">Log Out</a> ';
+		print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'logout', 'return' => $return), 'default').'">Log Out</a> ';
 		print $this->getUserDisplayName();
 	} else {
-		print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'login', 'return' => $return)).'">Log In</a>';
+		print ' <a href="'.$this->url(array('controller' => 'auth', 'action' => 'login', 'return' => $return), 'default').'">Log In</a>';
 	}
 }
 ?>

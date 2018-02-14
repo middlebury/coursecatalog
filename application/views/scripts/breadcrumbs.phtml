@@ -1,6 +1,6 @@
 
 					<div class="breadcrumb">
-						<a href="<?php echo $this->url(array(), null, true) ?>">Search Catalogs</a>
+						<a href="<?php echo $this->url(array(), 'default', true) ?>">Search Catalogs</a>
 						<?php
 						if (!empty($this->menuCatalogSelected)) {
 							$searchUrl = $this->url(
@@ -10,7 +10,7 @@
 									'catalog' => $this->getStringFromOsidId($this->menuCatalogSelected->getId()),
 									'term' => $this->termIdString,
 								),
-								null,
+								'default',
 								true);
 							print "\n\t\t\t\t\t\t &raquo; ";
 							print "<a class=\"\" href=\"".$searchUrl."\">".$this->escape($this->menuCatalogSelected->getDisplayName())."</a>";

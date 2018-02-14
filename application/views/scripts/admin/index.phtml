@@ -2,7 +2,7 @@
 <ul>
 	<li><a href="<?php print $this->url(array('action' => 'terms')); ?>">Manage Term Visibility</a></li>
 	<li><a href="<?php print $this->url(array('action' => 'antirequisites')); ?>">Manage Anti-Requisites</a></li>
-	<li><a href="<?php print $this->url(array('action' => 'export')); ?>">Manage Catalog Archive Configurations</a></li>
+	<li><a href="<?php print $this->url(array('controller' => 'admin', 'action' => 'export'), 'default'); ?>">Manage Catalog Archive Configurations</a></li>
 	<li><a href="<?php print $this->url(array('action' => 'schedule')); ?>">Manage Catalog Archive Scheduling</a></li>
 	<li><a href="<?php print $this->url(array('action' => 'masquerade')); ?>">Masquerade</a></li>
 	<li><a href="<?php print $this->url(array('action' => 'markup')); ?>">View Catalog Markup Example</a></li>
