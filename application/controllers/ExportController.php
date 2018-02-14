@@ -83,22 +83,21 @@ class ExportController
 	 */
   public function revisionhistoryAction() {
     $request = $this->getRequest();
-
     if(!$request->getParam('config') || $request->getParam('config') === -1) {
       header('HTTP/1.1 400 Bad Request');
-      print "A configId must be specified.";
+      print "A config ID must be specified.";
       exit;
     }
-    $this->view->configId = $request->getParam('config');
+    $this->view->configId = filter_var($request->getParam('config'), FILTER_SANITIZE_NUMBER_INT);
     $db = Zend_Registry::get('db');
     $query = "SELECT label FROM archive_configurations WHERE id = ?";
     $stmt = $db->prepare($query);
-    $stmt->execute(array($request->getParam('config')));
+    $stmt->execute(array($this->view->configId));
     $this->view->configLabel = $stmt->fetch()['label'];
 
     $query = "SELECT * FROM archive_configuration_revisions WHERE arch_conf_id = ? ORDER BY last_saved DESC";
     $stmt = $db->prepare($query);
-    $stmt->execute(array($request->getParam('config')));
+    $stmt->execute(array($this->view->configId));
     $this->view->revisions = $stmt->fetchAll();
   }
 
@@ -118,10 +117,10 @@ class ExportController
       $db = Zend_Registry::get('db');
       $query = "SELECT * FROM archive_configuration_revisions WHERE id = ?";
       $stmt = $db->prepare($query);
-      $stmt->execute(array($this->_getParam('rev1')));
+      $stmt->execute(array(filter_var($this->_getParam('rev1'), FILTER_SANITIZE_NUMBER_INT)));
       $this->rev1 = $stmt->fetch();
       $stmt = $db->prepare($query);
-      $stmt->execute(array($this->_getParam('rev2')));
+      $stmt->execute(array(filter_var($this->_getParam('rev2'), FILTER_SANITIZE_NUMBER_INT)));
       $this->rev2 = $stmt->fetch();
 
       $this->view->text1 = $this->rev1['json_data'];
@@ -149,7 +148,7 @@ class ExportController
     $db = Zend_Registry::get('db');
     $query = "SELECT * FROM archive_configuration_revisions WHERE id = ?";
     $stmt = $db->prepare($query);
-    $stmt->execute(array($request->getParam('revision')));
+    $stmt->execute(array(filter_var($this->_getParam('revision'), FILTER_SANITIZE_NUMBER_INT)));
     $this->view->revision = $stmt->fetch();
   }
 
@@ -180,7 +179,7 @@ class ExportController
     $db = Zend_Registry::get('db');
     $query = "DELETE FROM archive_configuration_revisions WHERE arch_conf_id = ?";
     $stmt = $db->prepare($query);
-    $stmt->execute(array($this->getRequest()->getPost('configId')));
+    $stmt->execute(array(filter_var($this->getRequest()->getPost('configId'), FILTER_SANITIZE_NUMBER_INT)));
 
     // Delete this config.
     $query = "DELETE FROM archive_configurations WHERE id = ?";
@@ -273,7 +272,7 @@ class ExportController
     $db = Zend_Registry::get('db');
     $query = "DELETE FROM archive_jobs WHERE id = ?";
     $stmt = $db->prepare($query);
-    $stmt->execute(array($this->getRequest()->getPost('jobId')));
+    $stmt->execute(array(filter_var($this->getRequest()->getPost('jobId'), FILTER_SANITIZE_NUMBER_INT)));
   }
 
   /**
