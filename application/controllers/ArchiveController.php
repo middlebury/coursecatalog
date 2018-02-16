@@ -721,13 +721,13 @@
 		$courseDescriptionHash = sha1($course->getDescription());
 		$allCourseInstructors = array();
 		$allSectionDescriptions = array();
+		$allSectionRequirementTopics = array();
 
 		$instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 		$identifiersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
 		$namesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:person_names');
 		$requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
 		$enrollmentNumbersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:enrollment_numbers');
-		$cwTopicId = new phpkit_id_Id('middlebury.edu', 'urn', 'topic/requirement/CW');
 		while ($offerings->hasNext()) {
 			$offering = $offerings->getNextCourseOffering();
 			$term = $offering->getTerm();
@@ -736,7 +736,7 @@
 				$sectionData[$termIdString] = array(
 					'label' => $term->getDisplayName(),
 					'sections' => array(),
-					'cw_seats' => 0,
+					'req_seats' => [],
 					'total_seats' => 0,
 				);
 			}
@@ -760,6 +760,7 @@
 					'instructors' => array(),
 					'section_numbers' => array(),
 					'requirements' => array(),
+					'total_seats' => 0,
 				);
 			}
 			if ($offering->hasRecordType($identifiersType)) {
@@ -770,6 +771,7 @@
 			if ($offering->hasRecordType($enrollmentNumbersType)) {
 				$enrollmentNumbersRecord = $offering->getCourseOfferingRecord($enrollmentNumbersType);
 				$sectionData[$termIdString]['total_seats'] += $enrollmentNumbersRecord->getMaxEnrollment();
+				$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['total_seats'] += $enrollmentNumbersRecord->getMaxEnrollment();
 			}
 			// Build an array of requirements for each offering description in case we need to print them separately.
 			$topics = $offering->getTopics();
@@ -777,6 +779,7 @@
 				$topic = $topics->getNextTopic();
 				$topicIdString = $this->_helper->osidId->toString($topic->getId());
 				if ($requirementType->isEqual($topic->getGenusType())) {
+					$allSectionRequirementTopics[] = $topic;
 					if (!isset($sectionData[$termIdString]['sections'][$sectionDescriptionHash]['requirements'][$topicIdString])) {
 						$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['requirements'][$topicIdString] = [
 							'label' => $topic->getDisplayName(),
@@ -789,10 +792,13 @@
 							],
 						];
 					}
-					// For CW requirements, associate the number of seats.
-					if ($offering->hasRecordType($enrollmentNumbersType) && $cwTopicId->isEqual($topic->getId())) {
+					// Associate the number of seats for each requirement.
+					if ($offering->hasRecordType($enrollmentNumbersType)) {
 						$enrollmentNumbersRecord = $offering->getCourseOfferingRecord($enrollmentNumbersType);
-						$sectionData[$termIdString]['cw_seats'] += $enrollmentNumbersRecord->getMaxEnrollment();
+						if (!isset($sectionData[$termIdString]['req_seats'][$topicIdString])) {
+							$sectionData[$termIdString]['req_seats'][$topicIdString] = 0;
+						}
+						$sectionData[$termIdString]['req_seats'][$topicIdString] += $enrollmentNumbersRecord->getMaxEnrollment();
 						$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['requirements'][$topicIdString]['total_seats'] += $enrollmentNumbersRecord->getMaxEnrollment();
 						$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['requirements'][$topicIdString]['term_seats'][$termIdString]['seats'] += $enrollmentNumbersRecord->getMaxEnrollment();
 					}
@@ -820,32 +826,85 @@
 			$data->instructors = '';
 		}
 
+		// Requirements-fullfilled data structure:
+		// - Course-level reqs apply to all sections unless some, but not all specify the req.
+		// - Sections may have additional reqs.
+		//
+		//  [
+		//		total_seats => INT,		# The total number of seats in the course
+		//
+		//		req_seats => INT,		# The number of seats that fullfill this req.
+		//								# By definition this will equal total_seats
+		//								# for course-level reqs.
+		//
+		//		term_seats => [			# The number of seats for this req, broken out by term.
+		//
+		//			term_label => STR,	# Label for the term.
+		//
+		//			total_seats => INT,	# The total number of seats in this term.
+		//
+		//			req_seats => INT,	# The number of seats that fullfill this req.
+		//								# By definition this will equal total_seats
+		//								# for course-level reqs.
+		//		]
+		// ]
+
+		// Apply all course-level topics.
 		$allTopics = $this->_helper->topics->topicListAsArray($course->getTopics());
 		$reqs = array();
 		$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
 		$topicTypeString = $this->_helper->osidType->toString($topicType);
 		$topics = $this->_helper->topics->filterTopicsByType($allTopics, $topicType);
 		foreach ($topics as $topic) {
+			$topicIdString = $this->_helper->osidId->toString($topic->getId());
 			$req = [
 				'label' => $topic->getDisplayName(),
+				'total_seats' => 0,
+				'req_seats' => 0,
+				'term_seats' => [],
 			];
-			// For CW requirements, associate the number of seats per term.
-			if ($cwTopicId->isEqual($topic->getId())) {
-				$req['term_seats'] = [];
-				$req['req_seats'] = 0;
-				$req['total_seats'] = 0;
-				foreach ($sectionData as $termIdString => $term) {
-					$req['term_seats'][$termIdString] = [
-						'term_label' => $term['label'],
-						'req_seats' => $term['cw_seats'],
-						'total_seats' => $term['total_seats'],
-					];
-					$req['req_seats'] += $term['cw_seats'];
-					$req['total_seats'] += $term['total_seats'];
+			// Add up the total number of seats for the course
+			foreach ($sectionData as $termIdString => $term) {
+				$req['term_seats'][$termIdString] = [
+					'term_label' => $term['label'],
+					'total_seats' => $term['total_seats'],
+					'req_seats' => $term['total_seats'],
+				];
+				$req['total_seats'] += $term['total_seats'];
+				if (isset($term['req_seats'][$topicIdString])) {
+					$req['req_seats'] += $term['req_seats'][$topicIdString];
 				}
 			}
-			$reqs[] = $req;
+			$reqs[$topicIdString] = $req;
 		}
+
+		// Add requirements that are only present on some offerings.
+		foreach ($allSectionRequirementTopics as $topic) {
+			$topicIdString = $this->_helper->osidId->toString($topic->getId());
+			// Overwrite the course-level values if we have this requirement specified
+			// per-section.
+			$req = [
+				'label' => $topic->getDisplayName(),
+				'total_seats' => 0,
+				'req_seats' => 0,
+				'term_seats' => [],
+			];
+			foreach ($sectionData as $termIdString => $term) {
+				$req['term_seats'][$termIdString] = [
+					'term_label' => $term['label'],
+					'total_seats' => $term['total_seats'],
+					'req_seats' => 0,
+				];
+				$req['total_seats'] += $term['total_seats'];
+				if (isset($term['req_seats'][$topicIdString])) {
+					$req['term_seats'][$termIdString]['req_seats'] += $term['req_seats'][$topicIdString];
+					$req['req_seats'] += $term['req_seats'][$topicIdString];
+				}
+			}
+			$reqs[$topicIdString] = $req;
+		}
+
+		ksort($reqs);
 		$data->requirements = $reqs;
 
 		$sectionDescriptionsText = '';
@@ -860,7 +919,7 @@
 				$term_data = new stdClass;
 				$term_data->idString = $termId;
 				$term_data->label = $termSectionData['label'];
-				$term_data->cw_seats = $termSectionData['cw_seats'];
+				$term_data->req_seats = $termSectionData['req_seats'];
 				$term_data->total_seats = $termSectionData['total_seats'];
 				$data->terms[] = $term_data;
 				foreach ($termSectionData['sections'] as $hash => $section) {
