@@ -108,8 +108,8 @@
 	 * @since 4/21/09
 	 */
 	public function viewAction () {
-    $tmp = error_reporting();
-    error_reporting(0);
+		$tmp = error_reporting();
+		error_reporting(0);
 		$config = Zend_Registry::getInstance()->config;
 		$request = $this->getRequest();
 		if (empty($config->catalog->archive_root)) {
@@ -159,153 +159,153 @@
 		};
 		$url .= '/'.$request->getParam('file');
 		$this->view->breadcrumb[$this->view->baseUrl($url)] = pathinfo($request->getParam('file'), PATHINFO_FILENAME);
-    error_reporting($tmp);
+		error_reporting($tmp);
 	}
 
-  /**
+	/**
 	 * Export a single archive export job.
 	 *
 	 * @return void
 	 * @access public
 	 * @since 1/23/18
 	 */
-  public function exportjobAction() {
-    $request = $this->getRequest();
-    if (!$request->getParam('dest_dir')) {
-      header('HTTP/1.1 400 Bad Request');
-      print "A dest_dir must be specified.";
-      exit;
-    }
-    if (!$request->getParam('config_id')) {
-      header('HTTP/1.1 400 Bad Request');
-      print "A config_id must be specified.";
-      exit;
-    }
-    if (!$request->getParam('term')) {
-      header('HTTP/1.1 400 Bad Request');
-      print "Terms must be specified.";
-      exit;
-    }
-    if (!$request->getParam('revision_id')) {
-      header('HTTP/1.1 400 Bad Request');
-      print "A revision_id must be specified.";
-      exit;
-    }
+	public function exportjobAction() {
+		$request = $this->getRequest();
+		if (!$request->getParam('dest_dir')) {
+			header('HTTP/1.1 400 Bad Request');
+			print "A dest_dir must be specified.";
+			exit;
+		}
+		if (!$request->getParam('config_id')) {
+			header('HTTP/1.1 400 Bad Request');
+			print "A config_id must be specified.";
+			exit;
+		}
+		if (!$request->getParam('term')) {
+			header('HTTP/1.1 400 Bad Request');
+			print "Terms must be specified.";
+			exit;
+		}
+		if (!$request->getParam('revision_id')) {
+			header('HTTP/1.1 400 Bad Request');
+			print "A revision_id must be specified.";
+			exit;
+		}
 
-    $this->_helper->layout()->disableLayout();
-    $this->_helper->viewRenderer->setNoRender(true);
+		$this->_helper->layout()->disableLayout();
+		$this->_helper->viewRenderer->setNoRender(true);
 
-    $this->_helper->exportJob($request->getParam('dest_dir'), $request->getParam('config_id'), $request->getParam('term'), $request->getParam('revision_id'));
-  }
+		$this->_helper->exportJob($request->getParam('dest_dir'), $request->getParam('config_id'), $request->getParam('term'), $request->getParam('revision_id'));
+	}
 
-  /**
+	/**
 	 * Report progress of export job
 	 *
 	 * @return void
 	 * @access public
 	 * @since 2/5/18
 	 */
-  public function jobprogressAction() {
-    $config = Zend_Registry::getInstance()->config;
-    $file = $config->catalog->archive_root . '/progress.txt';
-    // Disable the line above and enable the line below for development.
-    //$file = getcwd() . '/archives/progress.txt';
-    echo file_get_contents($file);
+	public function jobprogressAction() {
+		$config = Zend_Registry::getInstance()->config;
+		$file = $config->catalog->archive_root . '/progress.txt';
+		// Disable the line above and enable the line below for development.
+		//$file = getcwd() . '/archives/progress.txt';
+		echo file_get_contents($file);
 
-    $this->_helper->layout()->disableLayout();
-    $this->_helper->viewRenderer->setNoRender(true);
-  }
+		$this->_helper->layout()->disableLayout();
+		$this->_helper->viewRenderer->setNoRender(true);
+	}
 
-  /**
+	/**
 	 * Export a single archive export job from the command line.
 	 *
 	 * @return void
 	 * @access public
 	 * @since 1/26/18
 	 */
-  public function exportsinglejobAction() {
-    $request = $this->getRequest();
-    if (!$request->getParam('id')) {
-      header('HTTP/1.1 400 Bad Request');
-      print "A job id must be specified.";
-      exit;
-    }
+	public function exportsinglejobAction() {
+		$request = $this->getRequest();
+		if (!$request->getParam('id')) {
+			header('HTTP/1.1 400 Bad Request');
+			print "A job id must be specified.";
+			exit;
+		}
 
-    $this->_helper->layout()->disableLayout();
-    $this->_helper->viewRenderer->setNoRender(true);
+		$this->_helper->layout()->disableLayout();
+		$this->_helper->viewRenderer->setNoRender(true);
 
-    $db = Zend_Registry::get('db');
-    $query =
-    "SELECT
-      *
-     FROM archive_jobs
-     WHERE id = ?";
-    $stmt = $db->prepare($query);
-    $stmt->execute(array($request->getParam('id')));
-    $job = $stmt->fetch();
+		$db = Zend_Registry::get('db');
+		$query =
+		"SELECT
+			*
+		 FROM archive_jobs
+		 WHERE id = ?";
+		$stmt = $db->prepare($query);
+		$stmt->execute(array($request->getParam('id')));
+		$job = $stmt->fetch();
 
-    // Revision is set to 'latest'
-    if (!$job['revision_id']) {
-      $query =
-      "SELECT
-        id
-       FROM archive_configuration_revisions a
-       INNER JOIN (
-        SELECT
-          arch_conf_id,
-          MAX(last_saved) as latest
-        FROM archive_configuration_revisions
-        GROUP BY arch_conf_id
-      ) b ON a.arch_conf_id = b.arch_conf_id and a.last_saved = b.latest
-       WHERE a.arch_conf_id = ?";
-      $stmt = $db->prepare($query);
-      $stmt->execute(array($job['config_id']));
-      $latestRevision = $stmt->fetch();
-      $job['revision_id'] = $latestRevision['id'];
-    }
+		// Revision is set to 'latest'
+		if (!$job['revision_id']) {
+			$query =
+			"SELECT
+				id
+			 FROM archive_configuration_revisions a
+			 INNER JOIN (
+				SELECT
+					arch_conf_id,
+					MAX(last_saved) as latest
+				FROM archive_configuration_revisions
+				GROUP BY arch_conf_id
+			) b ON a.arch_conf_id = b.arch_conf_id and a.last_saved = b.latest
+			 WHERE a.arch_conf_id = ?";
+			$stmt = $db->prepare($query);
+			$stmt->execute(array($job['config_id']));
+			$latestRevision = $stmt->fetch();
+			$job['revision_id'] = $latestRevision['id'];
+		}
 
-    $job['terms'] = explode(',', $job['terms']);
-    array_walk($job['terms'], function(&$value, $key) { $value = 'term/' . $value; } );
+		$job['terms'] = explode(',', $job['terms']);
+		array_walk($job['terms'], function(&$value, $key) { $value = 'term/' . $value; } );
 
-    $this->_helper->exportJob($job['export_path'], $job['config_id'], $job['terms'], $job['revision_id']);
-  }
+		$this->_helper->exportJob($job['export_path'], $job['config_id'], $job['terms'], $job['revision_id']);
+	}
 
-  /**
+	/**
 	 * Export all 'active' archive export jobs.
 	 *
 	 * @return void
 	 * @access public
 	 * @since 1/23/18
 	 */
-  public function exportactivejobsAction() {
-    $this->_helper->layout()->disableLayout();
-    $this->_helper->viewRenderer->setNoRender(true);
+	public function exportactivejobsAction() {
+		$this->_helper->layout()->disableLayout();
+		$this->_helper->viewRenderer->setNoRender(true);
 
-    $request = $this->getRequest();
+		$request = $this->getRequest();
 
-    if($request->getParam('verbose')) {
-      $verbose = '1';
-    } else $verbose = '0';
+		if($request->getParam('verbose')) {
+			$verbose = '1';
+		} else $verbose = '0';
 
-    $db = Zend_Registry::get('db');
-    $jobs = $db->query("SELECT * FROM archive_jobs WHERE active=1")->fetchAll();
+		$db = Zend_Registry::get('db');
+		$jobs = $db->query("SELECT * FROM archive_jobs WHERE active=1")->fetchAll();
 
-    foreach($jobs as $job) {
-      $terms = explode(",", $job['terms']);
-      foreach($terms as &$term) {
-        $term = "term/" . $term;
-      }
-      unset($term);
+		foreach($jobs as $job) {
+			$terms = explode(",", $job['terms']);
+			foreach($terms as &$term) {
+				$term = "term/" . $term;
+			}
+			unset($term);
 
-      if ($job['revision_id'] === NULL) {
-        $revision = 'latest';
-      } else {
-        $revision = $job['revision_id'];
-      }
+			if ($job['revision_id'] === NULL) {
+				$revision = 'latest';
+			} else {
+				$revision = $job['revision_id'];
+			}
 
-      $this->_helper->exportJob($job['export_path'], $job['config_id'], $terms, $revision, $verbose);
-    }
-  }
+			$this->_helper->exportJob($job['export_path'], $job['config_id'], $terms, $revision, $verbose);
+		}
+	}
 
 
 	/**
@@ -316,19 +316,19 @@
 	 * @since 6/15/09
 	 */
 	public function generateAction () {
-    $request = $this->getRequest();
+		$request = $this->getRequest();
 
 		if (!$request->getParam('config_id')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A configId must be specified.";
 			exit;
 		}
-    if (!$request->getParam('term')) {
+		if (!$request->getParam('term')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A term must be specified.";
 			exit;
 		}
-    if (!$request->getParam('revision_id')) {
+		if (!$request->getParam('revision_id')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A revisionId must be specified.";
 			exit;
@@ -353,22 +353,22 @@
 		if ($config->catalog->print_max_exec_time)
 			ini_set('max_execution_time', $config->catalog->print_max_exec_time);
 
-    // Write status updates to a file.
-    $file = $config->catalog->archive_root . '/progress.txt';
-    // Disable the line above and enable the line below for development.
-    //$file = getcwd() . '/archives/progress.txt';
-    unlink($file);
-    chmod($file, 0755);
-    chown($file, 'apache');
-    chgrp($file, 'apache');
-    file_put_contents($file, 'Loading job info from db...');
+		// Write status updates to a file.
+		$file = $config->catalog->archive_root . '/progress.txt';
+		// Disable the line above and enable the line below for development.
+		//$file = getcwd() . '/archives/progress.txt';
+		unlink($file);
+		chmod($file, 0755);
+		chown($file, 'apache');
+		chgrp($file, 'apache');
+		file_put_contents($file, 'Loading job info from db...');
 
 		try {
 			$db = Zend_Registry::get('db');
-	    $query = "SELECT catalog_id FROM archive_configurations WHERE id = ?";
-	    $stmt = $db->prepare($query);
-	    $stmt->execute(array($request->getParam('config_id')));
-	    $conf = $stmt->fetch();
+			$query = "SELECT catalog_id FROM archive_configurations WHERE id = ?";
+			$stmt = $db->prepare($query);
+			$stmt->execute(array($request->getParam('config_id')));
+			$conf = $stmt->fetch();
 			$catalogId = $this->_helper->osidId->fromString($conf['catalog_id']);
 			$this->courseSearchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
 			$this->offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
@@ -404,45 +404,45 @@
 		// Increase the timeout when loading requirements documents:
 		if (!empty($config->catalog->archive->requirements_fetch_timeout)) {
 			$options = [
-			  'http' => [
-			    'method' => 'GET',
-			    'timeout' => $config->catalog->archive->requirements_fetch_timeout
-			  ]
+				'http' => [
+					'method' => 'GET',
+					'timeout' => $config->catalog->archive->requirements_fetch_timeout
+				]
 			];
 			$context = stream_context_create($options);
 			libxml_set_streams_context($context);
 		}
-    $sections = array();
-    if ($request->getParam('revision_id') === 'latest') {
-      $query =
-      "SELECT
-        *
-       FROM archive_configuration_revisions a
-       INNER JOIN (
-        SELECT
-          arch_conf_id,
-          MAX(last_saved) as latest
-        FROM archive_configuration_revisions
-        GROUP BY arch_conf_id
-      ) b ON a.arch_conf_id = b.arch_conf_id and a.last_saved = b.latest
-       WHERE a.arch_conf_id = ?";
-      $stmt = $db->prepare($query);
-      $stmt->execute(array($request->getParam('config_id')));
-    } else {
-      $query =
-      "SELECT
-        *
-       FROM archive_configuration_revisions
-       WHERE id = ?";
-      $stmt = $db->prepare($query);
-      $stmt->execute(array($request->getParam('revision_id')));
-    }
-    $revision = $stmt->fetch();
+		$sections = array();
+		if ($request->getParam('revision_id') === 'latest') {
+			$query =
+			"SELECT
+				*
+			 FROM archive_configuration_revisions a
+			 INNER JOIN (
+				SELECT
+					arch_conf_id,
+					MAX(last_saved) as latest
+				FROM archive_configuration_revisions
+				GROUP BY arch_conf_id
+			) b ON a.arch_conf_id = b.arch_conf_id and a.last_saved = b.latest
+			 WHERE a.arch_conf_id = ?";
+			$stmt = $db->prepare($query);
+			$stmt->execute(array($request->getParam('config_id')));
+		} else {
+			$query =
+			"SELECT
+				*
+			 FROM archive_configuration_revisions
+			 WHERE id = ?";
+			$stmt = $db->prepare($query);
+			$stmt->execute(array($request->getParam('revision_id')));
+		}
+		$revision = $stmt->fetch();
 		$jsonData = json_decode($revision['json_data']);
 
-    file_put_contents($file, 'Generating sections...');
-    $totalSections = count($jsonData);
-    $currentSection = 1;
+		file_put_contents($file, 'Generating sections...');
+		$totalSections = count($jsonData);
+		$currentSection = 1;
 		foreach($jsonData as $group) {
 			foreach($group as $entry) {
 				if (gettype($entry) === 'object') {
@@ -454,17 +454,17 @@
 							switch($section['type']) {
 								case 'h1':
 								case 'h2':
-                  $vals = explode(';', $sectionValue);
-                  if(sizeOf($vals) > 1) {
-                    $section['text'] = $vals[0];
-                    $section['toc_text'] = $vals[1];
-                  } else {
-                    $section['text'] = $sectionValue;
-                  }
+									$vals = explode(';', $sectionValue);
+									if(sizeOf($vals) > 1) {
+										$section['text'] = $vals[0];
+										$section['toc_text'] = $vals[1];
+									} else {
+										$section['text'] = $sectionValue;
+									}
 									break;
-                case 'toc':
-                  $section['toc_text'] = $sectionValue;
-                  break;
+								case 'toc':
+									$section['toc_text'] = $sectionValue;
+									break;
 								case 'page_content':
 									$section['url'] = $sectionValue;
 									break;
@@ -472,7 +472,7 @@
 									// TODO - Unify naming of this type with export config UI.
 									$section['type'] = 'html';
 									$section['text'] = $sectionValue;
-                  $section['text'] = str_replace("\n", "<br>", $section['text']);
+									$section['text'] = str_replace("\n", "<br>", $section['text']);
 									break;
 								case 'course_list':
 									$section['type'] = 'courses';
@@ -499,8 +499,8 @@
 							}
 						}
 					}
-          file_put_contents($file, 'Loaded section ' . $currentSection . ' of ' . $totalSections);
-          $currentSection++;
+					file_put_contents($file, 'Loaded section ' . $currentSection . ' of ' . $totalSections);
+					$currentSection++;
 					$sections[] = $section;
 				}
 			}
@@ -519,8 +519,8 @@
 		$this->view->headTitle($title);
 		$this->view->sections = $sections;
 
-    $totalSections = count($sections);
-    $currentSection = 1;
+		$totalSections = count($sections);
+		$currentSection = 1;
 		foreach ($this->view->sections as $key => &$section) {
 			if ($request->getParam('verbose')) {
 				$text = '';
@@ -535,19 +535,19 @@
 			}
 			switch ($section['type']) {
 				case 'h1':
-        case 'toc':
+				case 'toc':
 				case 'h2':
 					break;
 				case 'text':
 					break;
 				case 'html':
-          $tmp = error_reporting();
-          error_reporting(0);
-          $parser = self::getFsmParser();
-          $parser->Parse($section['text'],"UNKNOWN");
-          $section['text'] = ob_get_clean();
-          ob_end_flush();
-          error_reporting($tmp);
+					$tmp = error_reporting();
+					error_reporting(0);
+					$parser = self::getFsmParser();
+					$parser->Parse($section['text'],"UNKNOWN");
+					$section['text'] = ob_get_clean();
+					ob_end_flush();
+					error_reporting($tmp);
 					break;
 				case 'page_content':
 					$section['content'] = $this->getRequirements($section['url']);
@@ -558,11 +558,11 @@
 				default:
 					throw new Exception("Unknown section type ".$section['type']);
 			}
-      file_put_contents($file, 'Printed section ' . $currentSection . ' of ' . $totalSections);
-      $currentSection++;
+			file_put_contents($file, 'Printed section ' . $currentSection . ' of ' . $totalSections);
+			$currentSection++;
 		}
 
-    file_put_contents($file, 'Export finished');
+		file_put_contents($file, 'Export finished');
 
 		$this->_helper->layout()->setLayout('minimal');
 	}
@@ -1021,121 +1021,121 @@
 		return preg_replace('/[^a-z0-9.:]+/i', '-', $text);
 	}
 
-  /**
-   * Answer an FMS Parser configured to convert markdown into XHTML text
-   *
-   * @return FSMParser
-   * @access private
-   * @since 10/23/09
-   * @static
-   */
-  private static function getFsmParser () {
-    if (!isset(self::$fsmParser)) {
-      self::$fsmParser = new FSMParser();
-      //---------Programming the FSM:
-      /*********************************************************
-       * Normal state
-       *********************************************************/
-      // Enter from unknown into normal state if the first character is not a slash or bold.
-      self::$fsmParser->FSM('/[^\/\*]/s','echo $STRING;','CDATA','UNKNOWN');
-      //In normal state, catch all other data
-      self::$fsmParser->FSM('/./s','echo $STRING;','CDATA','CDATA');
-      /*********************************************************
-       * Italic
-       *********************************************************/
-      // Enter into Italic if at the begining of the line.
-      self::$fsmParser->FSM(
-        '/^\/\w/',
-        'preg_match("/^\/(\w)/", $STRING, $m); echo "<em>".$m[1];',
-        'ITALIC',
-        'UNKNOWN');
-      //In normal state, catch italic start
-      self::$fsmParser->FSM(
-        '/[^\w.:\/]\/\w/',
-        'preg_match("/(\W)\/(\w)/", $STRING, $m); echo $m[1]."<em>".$m[2];',
-        'ITALIC',
-        'CDATA');
-      // Close out of italic state back to normal
-      self::$fsmParser->FSM(
-        '/\w\/\W/',
-        'preg_match("/(\w)\/(\W)/", $STRING, $m); echo $m[1]."</em>".$m[2];',
-        'CDATA',
-        'ITALIC');
-      //In normal state, catch italic start for whitespace+non-word
-      self::$fsmParser->FSM(
-        '/\s\/[^\s]/',
-        'preg_match("/(\s)\/([^\s])/", $STRING, $m); echo $m[1]."<em>".$m[2];',
-        'ITALIC',
-        'CDATA');
-      // Close out of italic state back to normal for whitespace+non-word
-      self::$fsmParser->FSM(
-        '/[^\s]\/\s/',
-        'preg_match("/([^\s])\/(\s)/", $STRING, $m); echo $m[1]."</em>".$m[2];',
-        'CDATA',
-        'ITALIC');
-      // Close out of italic state back to normal if bold at the very end
-      self::$fsmParser->FSM(
-        '/\w\/$/',
-        'preg_match("/(\w)\/$/", $STRING, $m); echo $m[1]."</em>";',
-        'CDATA',
-        'ITALIC');
-      // Close out of italic state back to normal if there is no closing mark.
-      self::$fsmParser->FSM(
-        '/.$/',
-        'preg_match("/(.)$/", $STRING, $m); echo $m[1]."</em>";',
-        'CDATA',
-        'ITALIC');
-      //In italic state, catch all other data
-      self::$fsmParser->FSM('/./s','echo $STRING;','ITALIC','ITALIC');
-      /*********************************************************
-       * Bold
-       *********************************************************/
-      // Enter into Bold if at the begining of the line.
-      self::$fsmParser->FSM(
-        '/^\*\w/',
-        'preg_match("/^\*(\w)/", $STRING, $m); echo "<strong>".$m[1];',
-        'BOLD',
-        'UNKNOWN');
-      //In normal state, catch bold start
-      self::$fsmParser->FSM(
-        '/[^\w.]\*\w/',
-        'preg_match("/(\W)\*(\w)/", $STRING, $m); echo $m[1]."<strong>".$m[2];',
-        'BOLD',
-        'CDATA');
-      // Close out of bold state back to normal
-      self::$fsmParser->FSM(
-        '/\w\*\W/',
-        'preg_match("/(\w)\*(\W)/", $STRING, $m); echo $m[1]."</strong>".$m[2];',
-        'CDATA',
-        'BOLD');
-      //In normal state, catch bold start for whitespace+non-word
-      self::$fsmParser->FSM(
-        '/\s\*[^\s]/',
-        'preg_match("/(\s)\*([^\s])/", $STRING, $m); echo $m[1]."<strong>".$m[2];',
-        'BOLD',
-        'CDATA');
-      // Close out of bold state back to normal for whitespace+non-word
-      self::$fsmParser->FSM(
-        '/[^\s]\*\s/',
-        'preg_match("/([^\s])\*(\s)/", $STRING, $m); echo $m[1]."</strong>".$m[2];',
-        'CDATA',
-        'BOLD');
-      // Close out of bold state back to normal if bold at the very end
-      self::$fsmParser->FSM(
-        '/\w\*$/',
-        'preg_match("/(\w)\*$/", $STRING, $m); echo $m[1]."</strong>";',
-        'CDATA',
-        'BOLD');
-      // Close out of bold state back to normal if bold if there is no closing mark.
-      self::$fsmParser->FSM(
-        '/.$/',
-        'preg_match("/(.)$/", $STRING, $m); echo $m[1]."</strong>";',
-        'CDATA',
-        'BOLD');
-      //In bold state, catch all other data
-      self::$fsmParser->FSM('/./s','echo $STRING;','BOLD','BOLD');
-    }
-    return self::$fsmParser;
-  }
-  private static $fsmParser;
+	/**
+	 * Answer an FMS Parser configured to convert markdown into XHTML text
+	 *
+	 * @return FSMParser
+	 * @access private
+	 * @since 10/23/09
+	 * @static
+	 */
+	private static function getFsmParser () {
+		if (!isset(self::$fsmParser)) {
+			self::$fsmParser = new FSMParser();
+			//---------Programming the FSM:
+			/*********************************************************
+			 * Normal state
+			 *********************************************************/
+			// Enter from unknown into normal state if the first character is not a slash or bold.
+			self::$fsmParser->FSM('/[^\/\*]/s','echo $STRING;','CDATA','UNKNOWN');
+			//In normal state, catch all other data
+			self::$fsmParser->FSM('/./s','echo $STRING;','CDATA','CDATA');
+			/*********************************************************
+			 * Italic
+			 *********************************************************/
+			// Enter into Italic if at the begining of the line.
+			self::$fsmParser->FSM(
+				'/^\/\w/',
+				'preg_match("/^\/(\w)/", $STRING, $m); echo "<em>".$m[1];',
+				'ITALIC',
+				'UNKNOWN');
+			//In normal state, catch italic start
+			self::$fsmParser->FSM(
+				'/[^\w.:\/]\/\w/',
+				'preg_match("/(\W)\/(\w)/", $STRING, $m); echo $m[1]."<em>".$m[2];',
+				'ITALIC',
+				'CDATA');
+			// Close out of italic state back to normal
+			self::$fsmParser->FSM(
+				'/\w\/\W/',
+				'preg_match("/(\w)\/(\W)/", $STRING, $m); echo $m[1]."</em>".$m[2];',
+				'CDATA',
+				'ITALIC');
+			//In normal state, catch italic start for whitespace+non-word
+			self::$fsmParser->FSM(
+				'/\s\/[^\s]/',
+				'preg_match("/(\s)\/([^\s])/", $STRING, $m); echo $m[1]."<em>".$m[2];',
+				'ITALIC',
+				'CDATA');
+			// Close out of italic state back to normal for whitespace+non-word
+			self::$fsmParser->FSM(
+				'/[^\s]\/\s/',
+				'preg_match("/([^\s])\/(\s)/", $STRING, $m); echo $m[1]."</em>".$m[2];',
+				'CDATA',
+				'ITALIC');
+			// Close out of italic state back to normal if bold at the very end
+			self::$fsmParser->FSM(
+				'/\w\/$/',
+				'preg_match("/(\w)\/$/", $STRING, $m); echo $m[1]."</em>";',
+				'CDATA',
+				'ITALIC');
+			// Close out of italic state back to normal if there is no closing mark.
+			self::$fsmParser->FSM(
+				'/.$/',
+				'preg_match("/(.)$/", $STRING, $m); echo $m[1]."</em>";',
+				'CDATA',
+				'ITALIC');
+			//In italic state, catch all other data
+			self::$fsmParser->FSM('/./s','echo $STRING;','ITALIC','ITALIC');
+			/*********************************************************
+			 * Bold
+			 *********************************************************/
+			// Enter into Bold if at the begining of the line.
+			self::$fsmParser->FSM(
+				'/^\*\w/',
+				'preg_match("/^\*(\w)/", $STRING, $m); echo "<strong>".$m[1];',
+				'BOLD',
+				'UNKNOWN');
+			//In normal state, catch bold start
+			self::$fsmParser->FSM(
+				'/[^\w.]\*\w/',
+				'preg_match("/(\W)\*(\w)/", $STRING, $m); echo $m[1]."<strong>".$m[2];',
+				'BOLD',
+				'CDATA');
+			// Close out of bold state back to normal
+			self::$fsmParser->FSM(
+				'/\w\*\W/',
+				'preg_match("/(\w)\*(\W)/", $STRING, $m); echo $m[1]."</strong>".$m[2];',
+				'CDATA',
+				'BOLD');
+			//In normal state, catch bold start for whitespace+non-word
+			self::$fsmParser->FSM(
+				'/\s\*[^\s]/',
+				'preg_match("/(\s)\*([^\s])/", $STRING, $m); echo $m[1]."<strong>".$m[2];',
+				'BOLD',
+				'CDATA');
+			// Close out of bold state back to normal for whitespace+non-word
+			self::$fsmParser->FSM(
+				'/[^\s]\*\s/',
+				'preg_match("/([^\s])\*(\s)/", $STRING, $m); echo $m[1]."</strong>".$m[2];',
+				'CDATA',
+				'BOLD');
+			// Close out of bold state back to normal if bold at the very end
+			self::$fsmParser->FSM(
+				'/\w\*$/',
+				'preg_match("/(\w)\*$/", $STRING, $m); echo $m[1]."</strong>";',
+				'CDATA',
+				'BOLD');
+			// Close out of bold state back to normal if bold if there is no closing mark.
+			self::$fsmParser->FSM(
+				'/.$/',
+				'preg_match("/(.)$/", $STRING, $m); echo $m[1]."</strong>";',
+				'CDATA',
+				'BOLD');
+			//In bold state, catch all other data
+			self::$fsmParser->FSM('/./s','echo $STRING;','BOLD','BOLD');
+		}
+		return self::$fsmParser;
+	}
+	private static $fsmParser;
 }
