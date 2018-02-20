@@ -79,8 +79,8 @@ class Catalog_Action_Helper_OsidTerms
 	 * @since 6/9/10
 	 */
 	private static function cache_get ($key) {
-		if (function_exists('apc_fetch')) {
-			return apc_fetch($key);
+		if (function_exists('apcu_fetch')) {
+			return apcu_fetch($key);
 		}
 		// Fall back to Session caching if APC is not available.
 		else {
@@ -100,8 +100,8 @@ class Catalog_Action_Helper_OsidTerms
 	 * @since 6/9/10
 	 */
 	private static function cache_set ($key, $value) {
-		if (function_exists('apc_fetch')) {
-			return apc_store($key, $value, 3600);
+		if (function_exists('apcu_fetch')) {
+			return apcu_store($key, $value, 3600);
 		}
 		// Fall back to Session caching if APC is not available.
 		else {

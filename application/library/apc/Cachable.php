@@ -43,7 +43,7 @@ abstract class apc_Cachable {
 	 * @since 8/10/10
 	 */
 	protected function cacheGetPlain ($key) {
-		$result = apc_fetch($this->hash($key), $success);
+		$result = apcu_fetch($this->hash($key), $success);
 		if (!$success)
 			return null;
 		return $result;
@@ -59,7 +59,7 @@ abstract class apc_Cachable {
 	 * @since 8/10/10
 	 */
 	protected function cacheSetPlain ($key, $value) {
-		$success = apc_store($this->hash($key), $value);
+		$success = apcu_store($this->hash($key), $value);
 		return $value;
 	}
 
@@ -72,7 +72,7 @@ abstract class apc_Cachable {
 	 * @since 8/10/10
 	 */
 	protected function cacheGetObj ($key) {
-		$result = apc_fetch($this->hash($key), $success);
+		$result = apcu_fetch($this->hash($key), $success);
 		if (!$success)
 			return null;
 		return unserialize($result);
@@ -88,7 +88,7 @@ abstract class apc_Cachable {
 	 * @since 8/10/10
 	 */
 	protected function cacheSetObj ($key, $value) {
-		$success = apc_store($this->hash($key), serialize($value));
+		$success = apcu_store($this->hash($key), serialize($value));
 		return $value;
 	}
 
@@ -101,7 +101,7 @@ abstract class apc_Cachable {
 	 * @since 8/10/10
 	 */
 	protected function cacheDelete ($key) {
-		apc_delete($this->hash($key));
+		apcu_delete($this->hash($key));
 	}
 
 	/**
