@@ -8,16 +8,25 @@ foreach ($this->requirements as $req) {
 		if (count($req['term_seats']) == 1 && $req['req_seats'] != $req['total_seats']) {
 			print " (".$this->escape($req['req_seats'])." seats)";
 		} elseif (count($req['term_seats'])) {
-			$termSeatsStrings = [];
-			$termSeatsAllEqualAndTotal = true;
+			$partialSeatsStrings = [];
+			$someTermsStrings = [];
+			$seatsOnlyPartialInTerm = false;
+			$allTermsHaveSeats = true;
 			foreach ($req['term_seats'] as $termIdString => $termSeats) {
-				if ($termSeats['req_seats'] != $termSeats['total_seats']) {
-					$termSeatsAllEqualAndTotal = false;
+				if (empty($termSeats['req_seats'])) {
+					$allTermsHaveSeats = false;
+				} else {
+					if ($termSeats['req_seats'] != $termSeats['total_seats']) {
+						$seatsOnlyPartialInTerm = true;
+					}
+					$someTermsStrings[] = $this->escape($termSeats['term_label']);
+					$partialSeatsStrings[] = $this->escape($termSeats['term_label']).': '.$this->escape($termSeats['req_seats']).' seats';
 				}
-				$termSeatsStrings[] = $this->escape($termSeats['term_label']).': '.$this->escape($termSeats['req_seats']).' seats';
 			}
-			if (!$termSeatsAllEqualAndTotal) {
+			if ($seatsOnlyPartialInTerm) {
 				print " (".implode('; ', $termSeatsStrings).")";
+			} else if (!$allTermsHaveSeats) {
+				print " (".implode('; ', $someTermsStrings).")";
 			}
 		}
 	}
