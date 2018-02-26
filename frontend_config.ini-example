@@ -84,7 +84,7 @@ catalog.default_offering_genus_types_to_search[] = "urn:inet:middlebury.edu:gene
 catalog.shorten_ids_for_authority = "middlebury.edu"
 
 ; The URL of banner web for deep links into live data.
-catalog.banner_web_url = "https://ssb.middlebury.edu/PNTR/bwckschd.p_disp_detail_sched"
+catalog.banner_web_url = "https://ssb-prod.ec.middlebury.edu/PNTR/bwckschd.p_disp_detail_sched"
 
 ; Extra URLs to print in the sidebar
 catalog.menu_links.MCUG.catalog_id = "urn:inet:middlebury.edu:catalog/MCUG"
