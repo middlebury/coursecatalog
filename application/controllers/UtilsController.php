@@ -13,7 +13,7 @@ class UtilsController extends Zend_Controller_Action
 		if ($this->_getParam('key') != $config->osid->apc->clear_cache_key)
 			throw new InvalidArgumentException('key supplied does not match osid.apc.clear_cache_key');
 
-		apc_clear_cache('user');
+		apcu_clear_cache();
 
 		$this->_helper->layout->disableLayout();
 		$this->_helper->viewRenderer->setNoRender(true);
