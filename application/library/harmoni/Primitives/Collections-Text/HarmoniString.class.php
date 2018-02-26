@@ -11,15 +11,15 @@ require_once(dirname(__FILE__)."/../Objects/SObject.class.php");
  * @copyright Copyright &copy; 2005, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  *
- * @version $Id: String.class.php,v 1.8 2008/02/14 20:20:24 adamfranco Exp $
+ * @version $Id: HarmoniString.class.php,v 1.8 2008/02/14 20:20:24 adamfranco Exp $
  */
-class String 
+class HarmoniString 
 	extends SObject 
 {
 	
 	protected $_string;
 
-	function String($string="") {
+	function __construct ($string="") {
 		$this->_string = (string) $string;
 	}
 	
