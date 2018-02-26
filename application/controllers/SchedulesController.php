@@ -1,5 +1,7 @@
 <?php
 
+require_once "Mail.php";
+
 /** Zend_Controller_Action */
 class SchedulesController
 	extends AbstractCatalogController
