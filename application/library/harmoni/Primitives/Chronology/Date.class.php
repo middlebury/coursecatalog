@@ -288,7 +288,7 @@ class Date
  	 * @access public
  	 * @since 5/20/05
  	 */
- 	function printableString () {
+ 	function printableString ($printLeadingSpaceToo = false) {
  		return $this->printableStringWithFormat(array(1, 2, 3, ' ', 3, 1));
  	}
 	

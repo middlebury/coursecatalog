@@ -341,7 +341,7 @@ class Month
 	 * @access public
 	 * @since 5/23/05
 	 */
-	function printableString () {
+	function printableString ($printLeadingSpaceToo = false) {
 		return $this->name().' '.$this->startYear();
 	}
 

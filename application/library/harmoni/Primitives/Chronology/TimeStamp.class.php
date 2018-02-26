@@ -486,7 +486,7 @@ class TimeStamp
  	 * @access public
  	 * @since 5/13/05
  	 */
- 	function printableString () {
+ 	function printableString ($printLeadingSpaceToo = false) {
  		$date =$this->date();
  		$time =$this->time();
  		return $date->printableString().' '.$time->printableString();

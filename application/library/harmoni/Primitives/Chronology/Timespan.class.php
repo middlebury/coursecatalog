@@ -188,7 +188,7 @@ class Timespan
 	 * @access private
 	 * @since 5/2/05
 	 */
-	function Timespan () {
+	function __construct () {
 		
 	}
 
@@ -579,11 +579,12 @@ class Timespan
  	/**
  	 * Return a printable string
  	 * 
+	 * @param Included for compatability with PHP 7.1
  	 * @return string
  	 * @access public
  	 * @since 5/13/05
  	 */
- 	function printableString () {
+ 	function printableString ($printLeadingSpaceToo = false) {
  		return $this->start->printableString().'D'.$this->duration->printableString();
  	}
  	
