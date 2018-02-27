@@ -39,13 +39,22 @@ abstract class RegexStringParser
  *********************************************************/
 	/**
 	 * Return the regular expression used by this parser
-	 * 
+	 *
+	 * Changed by Corey Selover 2/27/18 - As of PHP 5.3 having an
+	 * abstract static function violates strict standards.  Previously
+	 * this method was abstract static.  All of the classes that
+	 * extend this function have their own version implemented, 
+	 * but are not actually required to do so.  Should harmoni be
+	 * updated and more subclasses be created, simply remember that they
+	 * will compile even without providing this function, which is likely
+	 * not the desired behavior.
+	 *
 	 * @return string
 	 * @access protected
 	 * @since 5/24/05
 	 * @static
 	 */
-	abstract public static function getRegex ();
+	public static function getRegex () {}
 
 /*********************************************************
  * Instance Methods
