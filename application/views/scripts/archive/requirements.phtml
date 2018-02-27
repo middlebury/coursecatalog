@@ -24,7 +24,7 @@ foreach ($this->requirements as $req) {
 				}
 			}
 			if ($seatsOnlyPartialInTerm) {
-				print " (".implode('; ', $termSeatsStrings).")";
+				print " (".implode('; ', $partialSeatsStrings).")";
 			} else if (!$allTermsHaveSeats) {
 				print " (".implode('; ', $someTermsStrings).")";
 			}
