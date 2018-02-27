@@ -206,11 +206,15 @@
 	 * @since 2/5/18
 	 */
 	public function jobprogressAction() {
-		$config = Zend_Registry::getInstance()->config;
-		//$file = $config->catalog->archive_root . '/progress.txt';
-		// Disable the line above and enable the line below for development.
-		$file = getcwd() . '/archives/progress.txt';
-		echo file_get_contents($file);
+    $db = Zend_Registry::get('db');
+		$query =
+		"SELECT
+			progress
+		 FROM archive_export_progress";
+		$stmt = $db->prepare($query);
+		$stmt->execute();
+		$progress = $stmt->fetch();
+    echo $progress['progress'];
 
 		$this->_helper->layout()->disableLayout();
 		$this->_helper->viewRenderer->setNoRender(true);
