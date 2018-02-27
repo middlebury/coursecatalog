@@ -284,7 +284,7 @@ class SafeHTML
      *
      * @access public
      */
-    function SafeHTML() 
+    function __construct() 
     {
         //making regular expressions based on Proto & CSS arrays
         foreach ($this->blackProtocols as $proto) {

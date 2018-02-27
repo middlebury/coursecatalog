@@ -42,7 +42,7 @@ class Helper_ExportJob
 			$binDir = 'bin';
 		} else {
 			$destRoot = $config->catalog->archive_root;
-	    // Disable the line above and enable the line below for development.
+	    		// Disable the line above and enable the line below for development.
 			//$destRoot = getcwd() . '/archives';
 			$binDir = getcwd() . '/../bin';
 		}
