@@ -207,9 +207,9 @@
 	 */
 	public function jobprogressAction() {
 		$config = Zend_Registry::getInstance()->config;
-		$file = $config->catalog->archive_root . '/progress.txt';
+		//$file = $config->catalog->archive_root . '/progress.txt';
 		// Disable the line above and enable the line below for development.
-		//$file = getcwd() . '/archives/progress.txt';
+		$file = getcwd() . '/archives/progress.txt';
 		echo file_get_contents($file);
 
 		$this->_helper->layout()->disableLayout();
@@ -353,18 +353,25 @@
 		if ($config->catalog->print_max_exec_time)
 			ini_set('max_execution_time', $config->catalog->print_max_exec_time);
 
-		// Write status updates to a file.
-		$file = $config->catalog->archive_root . '/progress.txt';
-		// Disable the line above and enable the line below for development.
-		//$file = getcwd() . '/archives/progress.txt';
-		unlink($file);
-		chmod($file, 0755);
-		chown($file, 'apache');
-		chgrp($file, 'apache');
-		file_put_contents($file, 'Loading job info from db...');
+		// Write status updates to db.
+    $db = Zend_Registry::get('db');
+    $query = "SELECT * FROM archive_export_progress";
+    $stmt = $db->prepare($query);
+    $stmt->execute();
+    $jobs = $stmt->fetchAll();
+    if(empty($jobs)) {
+      $query =
+        "INSERT INTO archive_export_progress
+        (progress)
+        VALUES ('Loading job info from db...');";
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+    } else if ($jobs[0]['progress'] != 'Export finished'){
+      // Don't allow user to run more than one job at once.
+      exit;
+    }
 
 		try {
-			$db = Zend_Registry::get('db');
 			$query = "SELECT catalog_id FROM archive_configurations WHERE id = ?";
 			$stmt = $db->prepare($query);
 			$stmt->execute(array($request->getParam('config_id')));
@@ -440,7 +447,6 @@
 		$revision = $stmt->fetch();
 		$jsonData = json_decode($revision['json_data']);
 
-		file_put_contents($file, 'Generating sections...');
 		$totalSections = count($jsonData);
 		$currentSection = 1;
 		foreach($jsonData as $group) {
@@ -499,7 +505,6 @@
 							}
 						}
 					}
-					file_put_contents($file, 'Loaded section ' . $currentSection . ' of ' . $totalSections);
 					$currentSection++;
 					$sections[] = $section;
 				}
@@ -552,11 +557,19 @@
 				default:
 					throw new Exception("Unknown section type ".$section['type']);
 			}
-			file_put_contents($file, 'Printed section ' . $currentSection . ' of ' . $totalSections);
+      $query =
+        "UPDATE archive_export_progress
+         SET progress = 'Printed section " . $currentSection . " of " . $totalSections . "';";
+      $stmt = $db->prepare($query);
+      $stmt->execute();
 			$currentSection++;
 		}
 
-		file_put_contents($file, 'Export finished');
+    $query =
+      "UPDATE archive_export_progress
+       SET progress = 'Export finished';";
+    $stmt = $db->prepare($query);
+    $stmt->execute();
 
 		$this->_helper->layout()->setLayout('minimal');
 	}
