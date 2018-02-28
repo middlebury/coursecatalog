@@ -82,6 +82,14 @@ CREATE TABLE `archive_jobs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
+-- Table structure for table `archive_export_progress`
+--
+
+CREATE TABLE `archive_export_progress` (
+  `progress` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
 -- Indexes for table `archive_jobs`
 --
 ALTER TABLE `archive_jobs`
