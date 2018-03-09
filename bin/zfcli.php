@@ -3,7 +3,7 @@
 
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors',true);
-date_default_timezone_set('America/Chicago');
+date_default_timezone_set('America/New_York');
 
 require_once(dirname(__FILE__) . '/../application/autoload.php');
 
