@@ -206,7 +206,7 @@
 	 * @since 2/5/18
 	 */
 	public function jobprogressAction() {
-    $db = Zend_Registry::get('db');
+		$db = Zend_Registry::get('db');
 		$query =
 		"SELECT
 			progress
@@ -214,7 +214,7 @@
 		$stmt = $db->prepare($query);
 		$stmt->execute();
 		$progress = $stmt->fetch();
-    echo $progress['progress'];
+		echo $progress['progress'];
 
 		$this->_helper->layout()->disableLayout();
 		$this->_helper->viewRenderer->setNoRender(true);
@@ -358,22 +358,22 @@
 			ini_set('max_execution_time', $config->catalog->print_max_exec_time);
 
 		// Write status updates to db.
-    $db = Zend_Registry::get('db');
-    $query = "SELECT * FROM archive_export_progress";
-    $stmt = $db->prepare($query);
-    $stmt->execute();
-    $jobs = $stmt->fetchAll();
-    if(empty($jobs)) {
-      $query =
-        "INSERT INTO archive_export_progress
-        (progress)
-        VALUES ('Loading job info from db...');";
-        $stmt = $db->prepare($query);
-        $stmt->execute();
-    } else if ($jobs[0]['progress'] != 'Export finished'){
-      // Don't allow user to run more than one job at once.
-      exit;
-    }
+		$db = Zend_Registry::get('db');
+		$query = "SELECT * FROM archive_export_progress";
+		$stmt = $db->prepare($query);
+		$stmt->execute();
+		$jobs = $stmt->fetchAll();
+		if(empty($jobs)) {
+			$query =
+				"INSERT INTO archive_export_progress
+				(progress)
+				VALUES ('Loading job info from db...');";
+				$stmt = $db->prepare($query);
+				$stmt->execute();
+		} else if ($jobs[0]['progress'] != 'Export finished'){
+			// Don't allow user to run more than one job at once.
+			exit;
+		}
 
 		try {
 			$query = "SELECT catalog_id FROM archive_configurations WHERE id = ?";
@@ -561,19 +561,19 @@
 				default:
 					throw new Exception("Unknown section type ".$section['type']);
 			}
-      $query =
-        "UPDATE archive_export_progress
-         SET progress = 'Printed section " . $currentSection . " of " . $totalSections . "';";
-      $stmt = $db->prepare($query);
-      $stmt->execute();
+			$query =
+				"UPDATE archive_export_progress
+				 SET progress = 'Printed section " . $currentSection . " of " . $totalSections . "';";
+			$stmt = $db->prepare($query);
+			$stmt->execute();
 			$currentSection++;
 		}
 
-    $query =
-      "UPDATE archive_export_progress
-       SET progress = 'Export finished';";
-    $stmt = $db->prepare($query);
-    $stmt->execute();
+		$query =
+			"UPDATE archive_export_progress
+			 SET progress = 'Export finished';";
+		$stmt = $db->prepare($query);
+		$stmt->execute();
 
 		$this->_helper->layout()->setLayout('minimal');
 	}
@@ -847,7 +847,7 @@
 		// - Course-level reqs apply to all sections unless some, but not all specify the req.
 		// - Sections may have additional reqs.
 		//
-		//  [
+		//	[
 		//		total_seats => INT,		# The total number of seats in the course
 		//
 		//		req_seats => INT,		# The number of seats that fullfill this req.
