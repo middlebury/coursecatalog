@@ -186,7 +186,8 @@ abstract class AbstractCatalogController
 	protected function setCacheControlHeaders () {
 		// Only allow caching if anonymous. This will ensure that users'
 		// browser caches will not cache pages if logged in.
-		if (!$this->_helper->auth()->isAuthenticated() && !headers_sent()) {
+		// Ignore for command-line requests.
+		if (php_sapi_name() !== 'cli' && !$this->_helper->auth()->isAuthenticated() && !headers_sent()) {
 			// Set cache-control headers
 			$config = Zend_Registry::getInstance()->config;
 			$maxAge = intval($config->cache_control->max_age);
