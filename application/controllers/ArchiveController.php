@@ -326,18 +326,19 @@
 		if (!$request->getParam('config_id')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A configId must be specified.";
-			exit;
+			exit(1);
 		}
 		if (!$request->getParam('term')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A term must be specified.";
-			exit;
+			exit(2);
 		}
 		if (!$request->getParam('revision_id')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A revisionId must be specified.";
-			exit;
+			exit(3);
 		}
+
 
 		$config = Zend_Registry::getInstance()->config;
 		// Test for a password if we aren't run from the command-line to prevent
@@ -346,12 +347,12 @@
 			if ($config->catalog->print_password && !$request->getParam('password')) {
 				header('HTTP/1.1 400 Bad Request');
 				print "A password must be specified.";
-				exit;
+				exit(4);
 			}
 			if ($config->catalog->print_password && $request->getParam('password') != $config->catalog->print_password) {
 				header('HTTP/1.1 400 Bad Request');
 				print "Invalid password specified.";
-				exit;
+				exit(4);
 			}
 		}
 
