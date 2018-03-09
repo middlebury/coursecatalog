@@ -980,8 +980,8 @@
 		$data->alternates = array();
 		$alternateType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:alternates-in-terms");
 		try {
-			if ($course->hasRecordType($this->alternateType)) {
-				$record = $course->getCourseRecord($this->alternateType);
+			if ($course->hasRecordType($alternateType)) {
+				$record = $course->getCourseRecord($alternateType);
 				if ($record->hasAlternatesInTerms($this->startTerm, $this->endTerm)) {
 					$alternates = $record->getAlternatesInTerms($this->startTerm, $this->endTerm);
 					while ($alternates->hasNext()) {
