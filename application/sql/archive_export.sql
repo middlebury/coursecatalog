@@ -86,8 +86,15 @@ CREATE TABLE `archive_jobs` (
 --
 
 CREATE TABLE `archive_export_progress` (
+  `pid` int(11) NOT NULL,
   `progress` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for table `archive_export_progress`
+--
+ALTER TABLE `archive_export_progress`
+  ADD PRIMARY KEY (`pid`);
 
 --
 -- Indexes for table `archive_jobs`

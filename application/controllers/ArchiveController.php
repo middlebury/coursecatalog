@@ -364,17 +364,32 @@
 		$stmt = $db->prepare($query);
 		$stmt->execute();
 		$jobs = $stmt->fetchAll();
-		if(empty($jobs)) {
-			$query =
-				"INSERT INTO archive_export_progress
-				(progress)
-				VALUES ('Loading job info from db...');";
-				$stmt = $db->prepare($query);
-				$stmt->execute();
-		} else if ($jobs[0]['progress'] != 'Export finished'){
-			// Don't allow user to run more than one job at once.
-			exit;
+
+		// Check that the previous export is still running.
+		if (!empty($jobs)) {
+			$delete = $db->prepare('DELETE FROM archive_export_progress WHERE pid = ?');
+			// Remove completed jobs.
+			if ($jobs[0]['progress'] == 'Export finished') {
+				$delete->execute([$jobs[0]['pid']]);
+			}
+			// Remove failed jobs.
+			elseif (posix_getpgid($jobs[0]['pid']) === false) {
+				$delete->execute([$jobs[0]['pid']]);
+				file_put_contents('php://stderr', "Removing failed export job. PID ".$jobs[0]['pid']." last recorded a status of: ".$jobs[0]['progress']."\n");
+			}
+			else {
+				// Don't allow user to run more than one job at once.
+				file_put_contents('php://stderr', "Another job with PID ".$jobs[0]['pid']." is already running and has status: ".$jobs[0]['progress']."\n");
+				exit;
+			}
 		}
+
+		// Record our PID and status.
+		$query = "INSERT INTO archive_export_progress (pid, progress) VALUES (?, ?);";
+		$stmt = $db->prepare($query);
+		$stmt->execute([getmypid(), 'Loading job info from db...']);
+		// Prepare our update statement.
+		$progressUpdateStmt = $db->prepare("UPDATE archive_export_progress SET progress = ? WHERE pid = ?");
 
 		try {
 			$query = "SELECT catalog_id FROM archive_configurations WHERE id = ?";
@@ -562,19 +577,18 @@
 				default:
 					throw new Exception("Unknown section type ".$section['type']);
 			}
-			$query =
-				"UPDATE archive_export_progress
-				 SET progress = 'Printed section " . $currentSection . " of " . $totalSections . "';";
-			$stmt = $db->prepare($query);
-			$stmt->execute();
+
+			$progressUpdateStmt->execute([
+				'Printed section ' . $currentSection . ' of ' . $totalSections,
+				getmypid(),
+			]);
 			$currentSection++;
 		}
 
-		$query =
-			"UPDATE archive_export_progress
-			 SET progress = 'Export finished';";
-		$stmt = $db->prepare($query);
-		$stmt->execute();
+		$progressUpdateStmt->execute([
+			'Export finished',
+			getmypid(),
+		]);
 
 		$this->_helper->layout()->setLayout('minimal');
 	}
