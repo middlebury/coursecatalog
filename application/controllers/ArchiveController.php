@@ -32,6 +32,8 @@
 	public function init() {
 		$this->alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
 		$this->alternateInTermsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:alternates-in-terms");
+		$this->identifiersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
+
 		parent::init();
 		$this->_helper->layout()->setLayout('midd_archive');
 	}
@@ -805,11 +807,28 @@
 				$enrollmentNumbersRecord = $offering->getCourseOfferingRecord($enrollmentNumbersType);
 				$sectionData[$termIdString]['total_seats'] += $enrollmentNumbersRecord->getMaxEnrollment();
 				$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['total_seats'] += $enrollmentNumbersRecord->getMaxEnrollment();
+
+				// If the offering has no enrollment and isn't the primary
+				// of a cross-listed pair, use the data from the primary
+				// section.
+				if ($enrollmentNumbersRecord->getMaxEnrollment() == 0 && $offering->hasRecordType($this->alternateType)) {
+					$offeringAlternateRecord = $offering->getCourseOfferingRecord($this->alternateType);
+					if ($offeringAlternateRecord->hasAlternates() && !$offeringAlternateRecord->isPrimary()) {
+						$primaryAlternate = $this->_getPrimaryAlternate($offering);
+						if ($primaryAlternate && $primaryAlternate->hasRecordType($enrollmentNumbersType)) {
+							$primaryEnrollmentNumbersRecord = $primaryAlternate->getCourseOfferingRecord($enrollmentNumbersType);
+
+							$sectionData[$termIdString]['total_seats'] += $primaryEnrollmentNumbersRecord->getMaxEnrollment();
+							$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['total_seats'] += $primaryEnrollmentNumbersRecord->getMaxEnrollment();
+						}
+					}
+				}
 			}
 			// Build an array of requirements for each offering description in case we need to print them separately.
 			$topics = $offering->getTopics();
 			while ($topics->hasNext()) {
 				$topic = $topics->getNextTopic();
+				$topicId = $topic->getId();
 				$topicIdString = $this->_helper->osidId->toString($topic->getId());
 				if ($requirementType->isEqual($topic->getGenusType())) {
 					$allSectionRequirementTopics[] = $topic;
@@ -834,6 +853,35 @@
 						$sectionData[$termIdString]['req_seats'][$topicIdString] += $enrollmentNumbersRecord->getMaxEnrollment();
 						$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['requirements'][$topicIdString]['total_seats'] += $enrollmentNumbersRecord->getMaxEnrollment();
 						$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['requirements'][$topicIdString]['term_seats'][$termIdString]['seats'] += $enrollmentNumbersRecord->getMaxEnrollment();
+
+						// If the offering has no enrollment and isn't the primary
+						// of a cross-listed pair, use the data from the primary
+						// section.
+						if ($enrollmentNumbersRecord->getMaxEnrollment() == 0 && $offering->hasRecordType($this->alternateType)) {
+							$offeringAlternateRecord = $offering->getCourseOfferingRecord($this->alternateType);
+							if ($offeringAlternateRecord->hasAlternates() && !$offeringAlternateRecord->isPrimary()) {
+								$primaryAlternate = $this->_getPrimaryAlternate($offering);
+								$primaryAlternateHasTopic = false;
+								if ($primaryAlternate) {
+									$primaryAlternateTopicIds = $primaryAlternate->getTopicIds();
+									while ($primaryAlternateTopicIds->hasNext()) {
+										if ($topicId->isEqual($primaryAlternateTopicIds->getNextId())) {
+											$primaryAlternateHasTopic = true;
+											break;
+										}
+									}
+								}
+								// Only add the enrollment of the primary cross-listed section
+								// if it has the topic at hand.
+								if ($primaryAlternateHasTopic && $primaryAlternate->hasRecordType($enrollmentNumbersType)) {
+									$primaryEnrollmentNumbersRecord = $primaryAlternate->getCourseOfferingRecord($enrollmentNumbersType);
+
+									$sectionData[$termIdString]['req_seats'][$topicIdString] += $primaryEnrollmentNumbersRecord->getMaxEnrollment();
+									$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['requirements'][$topicIdString]['total_seats'] += $primaryEnrollmentNumbersRecord->getMaxEnrollment();
+									$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['requirements'][$topicIdString]['term_seats'][$termIdString]['seats'] += $primaryEnrollmentNumbersRecord->getMaxEnrollment();
+								}
+							}
+						}
 					}
 				}
 			}
@@ -1104,6 +1152,40 @@
 
 	function _textToLink($text) {
 		return preg_replace('/[^a-z0-9.:]+/i', '-', $text);
+	}
+
+	function _getPrimaryAlternate(osid_course_CourseOffering $offering) {
+		$primary = null;
+		if (!$offering->hasRecordType($this->alternateType)) {
+			return null;
+		}
+		$baseSequenceNumber = null;
+		if ($offering->hasRecordType($this->identifiersType)) {
+			$baseIdentifiersRecord = $offering->getCourseOfferingRecord($this->identifiersType);
+			$baseSequenceNumber = $baseIdentifiersRecord->getSequenceNumber();
+		}
+		$baseAlternateRecord = $offering->getCourseOfferingRecord($this->alternateType);
+		$alternates = $baseAlternateRecord->getAlternates();
+		while ($alternates->hasNext()) {
+			$alternateOffering = $alternates->getNextCourseOffering();
+			$identifiersRecord = null;
+			if ($alternateOffering->hasRecordType($this->identifiersType)) {
+				$identifiersRecord = $alternateOffering->getCourseOfferingRecord($this->identifiersType);
+			}
+			if ($alternateOffering->hasRecordType($this->alternateType)) {
+				$offeringAlternateRecord = $alternateOffering->getCourseOfferingRecord($this->alternateType);
+				if ($offeringAlternateRecord->isPrimary()) {
+					$primary = $alternateOffering;
+
+					// Also check the sequence number on the off chance that we
+					// have multiple primaries designated. If not we'll default to any primary found.
+					if ($identifiersRecord && $baseSequenceNumber == $identifiersRecord->getSequenceNumber()) {
+						return $alternateOffering;
+					}
+				}
+			}
+		}
+		return $primary;
 	}
 
 }
