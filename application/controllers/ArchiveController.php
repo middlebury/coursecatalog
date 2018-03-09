@@ -31,6 +31,7 @@
 	 */
 	public function init() {
 		$this->alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
+		$this->alternateInTermsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:alternates-in-terms");
 		parent::init();
 		$this->_helper->layout()->setLayout('midd_archive');
 	}
@@ -978,10 +979,9 @@
 		 * Crosslists
 		 *********************************************************/
 		$data->alternates = array();
-		$alternateType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:alternates-in-terms");
 		try {
-			if ($course->hasRecordType($alternateType)) {
-				$record = $course->getCourseRecord($alternateType);
+			if ($course->hasRecordType($this->alternateInTermsType)) {
+				$record = $course->getCourseRecord($this->alternateInTermsType);
 				if ($record->hasAlternatesInTerms($this->startTerm, $this->endTerm)) {
 					$alternates = $record->getAlternatesInTerms($this->startTerm, $this->endTerm);
 					while ($alternates->hasNext()) {
