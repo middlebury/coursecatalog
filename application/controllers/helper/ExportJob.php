@@ -36,16 +36,7 @@ class Helper_ExportJob
 	 */
 	public function exportJob ($dest_dir, $config_id, $term, $revision_id, $verbose) {
     $config = new Zend_Config_Ini(BASE_PATH.'/archive_config.ini', APPLICATION_ENV);
-
-		if (PHP_SAPI === 'cli') {
-			$destRoot = $config->catalog->archive_root;
-			$binDir = 'bin';
-		} else {
-			$destRoot = $config->catalog->archive_root;
-	    // Disable the line above and enable the line below for development.
-			//$destRoot = getcwd() . '/archives';
-			$binDir = getcwd() . '/../bin';
-		}
+		$destRoot = $config->catalog->archive_root;
 
     $jobRoot = $destRoot . '/' . $dest_dir;
     $htmlRoot = $jobRoot . '/html';
@@ -71,7 +62,7 @@ class Helper_ExportJob
     if (!empty($config->catalog->archive->url_base)) {
       $base = '-b '.escapeshellarg($config->catalog->archive->url_base);
     }
-    $command = $binDir.'/zfcli.php '.$base.' -a archive.generate -p '.escapeshellarg(http_build_query($params)).' > '.$htmlPath;
+    $command = BASE_PATH.'/bin/zfcli.php '.$base.' -a archive.generate -p '.escapeshellarg(http_build_query($params)).' > '.$htmlPath;
 
     exec($command, $output, $return);
     if ($return) {
