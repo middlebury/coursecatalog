@@ -164,20 +164,18 @@ function reset() {
 }
 
 function hasTOC(input) {
-  if ($($(input).parent().children(".toc")[0]).val() !== '') return true;
-  return false;
+  return ($($(input).parent().children(".toc")[0]).val() !== '');
 }
 
 function isTOC(input) {
-  if($(input).hasClass('toc')) return true;
-  return false;
+  return ($(input).hasClass('toc'));
 }
 
 function resetEventListeners() {
   $( "#sections-list" ).sortable({
     stop: function( event, ui ) {}
   });
-  $( ".group" ).find('.section-group').sortable({
+  $( "#sections-list .group" ).find('.section-group').sortable({
     stop: function( event, ui ) {}
   });
 
@@ -186,7 +184,7 @@ function resetEventListeners() {
   $('.section-input').change(function() {
     $(this).attr('value', $(this).val());
     if ($(this).parent().parent().html().indexOf('Type: h1') !== -1) {
-      $('.new').removeClass('new');
+      $('#sections-list .new').removeClass('new');
       if ( (!isTOC(this) && !hasTOC(this)) || isTOC(this)) {
         giveGroupTitle(this, $(this).val());
         renameGroups();
@@ -205,7 +203,7 @@ function resetEventListeners() {
     renameGroups();
     renameSections();
   });
-  $( ".group" ).on( "sortstop", function(event, ui) {
+  $( "#sections-list .group" ).on( "sortstop", function(event, ui) {
     // TODO - is there really any reason to rename groups and sections?  As long
     // as their ids are unique do they really need to be in order?
     renameGroups();
@@ -214,7 +212,7 @@ function resetEventListeners() {
 }
 
 function showHide() {
-  var groups = $('.group').toArray();
+  var groups = $('#sections-list .group').toArray();
   var visible = true;
   groups.forEach(function(element, index) {
     if(index === 0) {
@@ -274,7 +272,7 @@ function saveJSON() {
   var completelyValid = true;
   var JSONString = "{";
 
-  var groups = $('.group').toArray();
+  var groups = $('#sections-list .group').toArray();
   groups.forEach(function(element, index) {
     var groupId = element['id'];
     JSONString += "\"" + groupId + "\":{";
@@ -402,23 +400,23 @@ function cancelDelete() {
 // ------ GROUPS ------- //
 
 function giveGroupTitle(selector, value) {
-  $(selector).closest('.group').find('.group-title')[0].innerHTML = value;
+  $(selector).closest('#sections-list .group').find('.group-title')[0].innerHTML = value;
 }
 
 function renameGroups() {
-  $('.group').toArray().forEach(function(element, index) {
+  $('#sections-list .group').toArray().forEach(function(element, index) {
     $(element).attr('id', 'group' + eval(index + 1));
   });
 }
 
 function toggleGroup(button) {
-  $(button).closest('.group').find('.section-group').toggleClass('visible');
-  $(button).closest('.group').find('.group-controls').toggleClass('hidden');
+  $(button).closest('#sections-list .group').find('.section-group').toggleClass('visible');
+  $(button).closest('#sections-list .group').find('.group-controls').toggleClass('hidden');
 }
 
 function newGroup(thisButton) {
   // Only allow user to create one group at a time.
-  if ($('.new').length) return;
+  if ($('#sections-list .new').length) return;
 
   var newgenerateGroup = generateGroup('temp', 'Please fill out an h1 section to give this group a name', true);
 
@@ -439,7 +437,7 @@ function newGroup(thisButton) {
 }
 
 function deleteGroup(thisButton) {
-  $(thisButton).closest('.group').remove();
+  $(thisButton).closest('#sections-list .group').remove();
   if ($('#sections-list').find('.group').length === 0) {
     newGroup();
   }
@@ -458,7 +456,7 @@ function renameSections() {
 function newGroupFirstSection() {
   generateInputTag('h1', '', function(input) {
     var newSectionHTML = "<li class='section h1-section ui-state-default'>" + generateSectionHTML('h1', input) + "</li>";
-    $('.new').children("ul").append(newSectionHTML);
+    $('#sections-list .new').children("ul").append(newSectionHTML);
     resetEventListeners();
   });
 }
@@ -489,7 +487,7 @@ function defineSection(select) {
 }
 
 function deleteSection(thisButton) {
-  if ($(thisButton).closest('.group').find('.section').length === 1) {
+  if ($(thisButton).closest('#sections-list .group').find('.section').length === 1) {
     deleteGroup(thisButton);
   } else {
     $(thisButton).closest('.section').remove();
