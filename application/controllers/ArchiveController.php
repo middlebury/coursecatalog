@@ -31,6 +31,9 @@
 	 */
 	public function init() {
 		$this->alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
+		$this->alternateInTermsType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:alternates-in-terms");
+		$this->identifiersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
+
 		parent::init();
 		$this->_helper->layout()->setLayout('midd_archive');
 	}
@@ -206,7 +209,7 @@
 	 * @since 2/5/18
 	 */
 	public function jobprogressAction() {
-    $db = Zend_Registry::get('db');
+		$db = Zend_Registry::get('db');
 		$query =
 		"SELECT
 			progress
@@ -214,7 +217,7 @@
 		$stmt = $db->prepare($query);
 		$stmt->execute();
 		$progress = $stmt->fetch();
-    echo $progress['progress'];
+		echo $progress['progress'];
 
 		$this->_helper->layout()->disableLayout();
 		$this->_helper->viewRenderer->setNoRender(true);
@@ -325,18 +328,19 @@
 		if (!$request->getParam('config_id')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A configId must be specified.";
-			exit;
+			exit(1);
 		}
 		if (!$request->getParam('term')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A term must be specified.";
-			exit;
+			exit(2);
 		}
 		if (!$request->getParam('revision_id')) {
 			header('HTTP/1.1 400 Bad Request');
 			print "A revisionId must be specified.";
-			exit;
+			exit(3);
 		}
+
 
 		$config = Zend_Registry::getInstance()->config;
 		// Test for a password if we aren't run from the command-line to prevent
@@ -345,12 +349,12 @@
 			if ($config->catalog->print_password && !$request->getParam('password')) {
 				header('HTTP/1.1 400 Bad Request');
 				print "A password must be specified.";
-				exit;
+				exit(4);
 			}
 			if ($config->catalog->print_password && $request->getParam('password') != $config->catalog->print_password) {
 				header('HTTP/1.1 400 Bad Request');
 				print "Invalid password specified.";
-				exit;
+				exit(4);
 			}
 		}
 
@@ -358,22 +362,37 @@
 			ini_set('max_execution_time', $config->catalog->print_max_exec_time);
 
 		// Write status updates to db.
-    $db = Zend_Registry::get('db');
-    $query = "SELECT * FROM archive_export_progress";
-    $stmt = $db->prepare($query);
-    $stmt->execute();
-    $jobs = $stmt->fetchAll();
-    if(empty($jobs)) {
-      $query =
-        "INSERT INTO archive_export_progress
-        (progress)
-        VALUES ('Loading job info from db...');";
-        $stmt = $db->prepare($query);
-        $stmt->execute();
-    } else if ($jobs[0]['progress'] != 'Export finished'){
-      // Don't allow user to run more than one job at once.
-      exit;
-    }
+		$db = Zend_Registry::get('db');
+		$query = "SELECT * FROM archive_export_progress";
+		$stmt = $db->prepare($query);
+		$stmt->execute();
+		$jobs = $stmt->fetchAll();
+
+		// Check that the previous export is still running.
+		if (!empty($jobs)) {
+			$delete = $db->prepare('DELETE FROM archive_export_progress WHERE pid = ?');
+			// Remove completed jobs.
+			if ($jobs[0]['progress'] == 'Export finished') {
+				$delete->execute([$jobs[0]['pid']]);
+			}
+			// Remove failed jobs.
+			elseif (posix_getpgid($jobs[0]['pid']) === false) {
+				$delete->execute([$jobs[0]['pid']]);
+				file_put_contents('php://stderr', "Removing failed export job. PID ".$jobs[0]['pid']." last recorded a status of: ".$jobs[0]['progress']."\n");
+			}
+			else {
+				// Don't allow user to run more than one job at once.
+				file_put_contents('php://stderr', "Another job with PID ".$jobs[0]['pid']." is already running and has status: ".$jobs[0]['progress']."\n");
+				exit;
+			}
+		}
+
+		// Record our PID and status.
+		$query = "INSERT INTO archive_export_progress (pid, progress) VALUES (?, ?);";
+		$stmt = $db->prepare($query);
+		$stmt->execute([getmypid(), 'Loading job info from db...']);
+		// Prepare our update statement.
+		$progressUpdateStmt = $db->prepare("UPDATE archive_export_progress SET progress = ? WHERE pid = ?");
 
 		try {
 			$query = "SELECT catalog_id FROM archive_configurations WHERE id = ?";
@@ -561,19 +580,18 @@
 				default:
 					throw new Exception("Unknown section type ".$section['type']);
 			}
-      $query =
-        "UPDATE archive_export_progress
-         SET progress = 'Printed section " . $currentSection . " of " . $totalSections . "';";
-      $stmt = $db->prepare($query);
-      $stmt->execute();
+
+			$progressUpdateStmt->execute([
+				'Printed section ' . $currentSection . ' of ' . $totalSections,
+				getmypid(),
+			]);
 			$currentSection++;
 		}
 
-    $query =
-      "UPDATE archive_export_progress
-       SET progress = 'Export finished';";
-    $stmt = $db->prepare($query);
-    $stmt->execute();
+		$progressUpdateStmt->execute([
+			'Export finished',
+			getmypid(),
+		]);
 
 		$this->_helper->layout()->setLayout('minimal');
 	}
@@ -789,11 +807,28 @@
 				$enrollmentNumbersRecord = $offering->getCourseOfferingRecord($enrollmentNumbersType);
 				$sectionData[$termIdString]['total_seats'] += $enrollmentNumbersRecord->getMaxEnrollment();
 				$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['total_seats'] += $enrollmentNumbersRecord->getMaxEnrollment();
+
+				// If the offering has no enrollment and isn't the primary
+				// of a cross-listed pair, use the data from the primary
+				// section.
+				if ($enrollmentNumbersRecord->getMaxEnrollment() == 0 && $offering->hasRecordType($this->alternateType)) {
+					$offeringAlternateRecord = $offering->getCourseOfferingRecord($this->alternateType);
+					if ($offeringAlternateRecord->hasAlternates() && !$offeringAlternateRecord->isPrimary()) {
+						$primaryAlternate = $this->_getPrimaryAlternate($offering);
+						if ($primaryAlternate && $primaryAlternate->hasRecordType($enrollmentNumbersType)) {
+							$primaryEnrollmentNumbersRecord = $primaryAlternate->getCourseOfferingRecord($enrollmentNumbersType);
+
+							$sectionData[$termIdString]['total_seats'] += $primaryEnrollmentNumbersRecord->getMaxEnrollment();
+							$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['total_seats'] += $primaryEnrollmentNumbersRecord->getMaxEnrollment();
+						}
+					}
+				}
 			}
 			// Build an array of requirements for each offering description in case we need to print them separately.
 			$topics = $offering->getTopics();
 			while ($topics->hasNext()) {
 				$topic = $topics->getNextTopic();
+				$topicId = $topic->getId();
 				$topicIdString = $this->_helper->osidId->toString($topic->getId());
 				if ($requirementType->isEqual($topic->getGenusType())) {
 					$allSectionRequirementTopics[] = $topic;
@@ -818,6 +853,35 @@
 						$sectionData[$termIdString]['req_seats'][$topicIdString] += $enrollmentNumbersRecord->getMaxEnrollment();
 						$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['requirements'][$topicIdString]['total_seats'] += $enrollmentNumbersRecord->getMaxEnrollment();
 						$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['requirements'][$topicIdString]['term_seats'][$termIdString]['seats'] += $enrollmentNumbersRecord->getMaxEnrollment();
+
+						// If the offering has no enrollment and isn't the primary
+						// of a cross-listed pair, use the data from the primary
+						// section.
+						if ($enrollmentNumbersRecord->getMaxEnrollment() == 0 && $offering->hasRecordType($this->alternateType)) {
+							$offeringAlternateRecord = $offering->getCourseOfferingRecord($this->alternateType);
+							if ($offeringAlternateRecord->hasAlternates() && !$offeringAlternateRecord->isPrimary()) {
+								$primaryAlternate = $this->_getPrimaryAlternate($offering);
+								$primaryAlternateHasTopic = false;
+								if ($primaryAlternate) {
+									$primaryAlternateTopicIds = $primaryAlternate->getTopicIds();
+									while ($primaryAlternateTopicIds->hasNext()) {
+										if ($topicId->isEqual($primaryAlternateTopicIds->getNextId())) {
+											$primaryAlternateHasTopic = true;
+											break;
+										}
+									}
+								}
+								// Only add the enrollment of the primary cross-listed section
+								// if it has the topic at hand.
+								if ($primaryAlternateHasTopic && $primaryAlternate->hasRecordType($enrollmentNumbersType)) {
+									$primaryEnrollmentNumbersRecord = $primaryAlternate->getCourseOfferingRecord($enrollmentNumbersType);
+
+									$sectionData[$termIdString]['req_seats'][$topicIdString] += $primaryEnrollmentNumbersRecord->getMaxEnrollment();
+									$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['requirements'][$topicIdString]['total_seats'] += $primaryEnrollmentNumbersRecord->getMaxEnrollment();
+									$sectionData[$termIdString]['sections'][$sectionDescriptionHash]['requirements'][$topicIdString]['term_seats'][$termIdString]['seats'] += $primaryEnrollmentNumbersRecord->getMaxEnrollment();
+								}
+							}
+						}
 					}
 				}
 			}
@@ -847,7 +911,7 @@
 		// - Course-level reqs apply to all sections unless some, but not all specify the req.
 		// - Sections may have additional reqs.
 		//
-		//  [
+		//	[
 		//		total_seats => INT,		# The total number of seats in the course
 		//
 		//		req_seats => INT,		# The number of seats that fullfill this req.
@@ -978,10 +1042,9 @@
 		 * Crosslists
 		 *********************************************************/
 		$data->alternates = array();
-		$alternateType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:alternates-in-terms");
 		try {
-			if ($course->hasRecordType($this->alternateType)) {
-				$record = $course->getCourseRecord($this->alternateType);
+			if ($course->hasRecordType($this->alternateInTermsType)) {
+				$record = $course->getCourseRecord($this->alternateInTermsType);
 				if ($record->hasAlternatesInTerms($this->startTerm, $this->endTerm)) {
 					$alternates = $record->getAlternatesInTerms($this->startTerm, $this->endTerm);
 					while ($alternates->hasNext()) {
@@ -1089,6 +1152,40 @@
 
 	function _textToLink($text) {
 		return preg_replace('/[^a-z0-9.:]+/i', '-', $text);
+	}
+
+	function _getPrimaryAlternate(osid_course_CourseOffering $offering) {
+		$primary = null;
+		if (!$offering->hasRecordType($this->alternateType)) {
+			return null;
+		}
+		$baseSequenceNumber = null;
+		if ($offering->hasRecordType($this->identifiersType)) {
+			$baseIdentifiersRecord = $offering->getCourseOfferingRecord($this->identifiersType);
+			$baseSequenceNumber = $baseIdentifiersRecord->getSequenceNumber();
+		}
+		$baseAlternateRecord = $offering->getCourseOfferingRecord($this->alternateType);
+		$alternates = $baseAlternateRecord->getAlternates();
+		while ($alternates->hasNext()) {
+			$alternateOffering = $alternates->getNextCourseOffering();
+			$identifiersRecord = null;
+			if ($alternateOffering->hasRecordType($this->identifiersType)) {
+				$identifiersRecord = $alternateOffering->getCourseOfferingRecord($this->identifiersType);
+			}
+			if ($alternateOffering->hasRecordType($this->alternateType)) {
+				$offeringAlternateRecord = $alternateOffering->getCourseOfferingRecord($this->alternateType);
+				if ($offeringAlternateRecord->isPrimary()) {
+					$primary = $alternateOffering;
+
+					// Also check the sequence number on the off chance that we
+					// have multiple primaries designated. If not we'll default to any primary found.
+					if ($identifiersRecord && $baseSequenceNumber == $identifiersRecord->getSequenceNumber()) {
+						return $alternateOffering;
+					}
+				}
+			}
+		}
+		return $primary;
 	}
 
 }
