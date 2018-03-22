@@ -9,7 +9,7 @@
 	url = git://github.com/Jasig/phpCAS.git
 [submodule "library/lazy_sessions"]
 	path = library/lazy_sessions
-	url = git://github.com/adamfranco/lazy_sessions.git
+	url = https://github.com/middlebury/lazy_sessions.git
 [submodule "docroot/javascript/jquery-week-calendar"]
 	path = docroot/javascript/jquery-week-calendar
 	url = http://github.com/themouette/jquery-week-calendar.git

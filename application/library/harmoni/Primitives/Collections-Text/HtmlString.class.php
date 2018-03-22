@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__)."/String.class.php");
+require_once(dirname(__FILE__)."/HarmoniString.class.php");
 define('XML_HTMLSAX3', dirname(__FILE__)."/SafeHTML/classes/");
 require_once(dirname(__FILE__)."/SafeHTML/classes/safehtml.php");
 
@@ -15,7 +15,7 @@ require_once(dirname(__FILE__)."/SafeHTML/classes/safehtml.php");
  * @version $Id: HtmlString.class.php,v 1.19 2008/02/14 20:20:23 adamfranco Exp $
  */
 class HtmlString 
-	extends String 
+	extends HarmoniString 
 {
 	private $_children;
 	protected $_string;
