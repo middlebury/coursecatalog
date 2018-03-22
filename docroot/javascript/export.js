@@ -1,4 +1,6 @@
 
+var loading = false;
+
 /* Helper functions for catalog export configuration */
 
 function selectConfig(url) {
@@ -125,6 +127,7 @@ function populate() {
   if(!$('#configId').val()) {
     return;
   }
+  loading = true;
   $.ajax({
     url: "../export/latestrevision",
     type: "GET",
@@ -136,6 +139,9 @@ function populate() {
       buildList(data, function() {
         renameGroups();
         resetEventListeners();
+		loading = false;
+    	$('.error-message').removeClass('error');
+    	$('.error-message').addClass('hidden');
       });
     }
   });
@@ -269,6 +275,12 @@ function validateInput(id, type, value, callback) {
 // ------ SAVE -------- //
 
 function saveJSON() {
+  if(loading) {
+    $('.error-message').html("<p>Still loading data... Please wait.</p>");
+    $('.error-message').removeClass('hidden success');
+    $('.error-message').addClass('error');
+  	return;
+  }
   var completelyValid = true;
   var JSONString = "{";
 
