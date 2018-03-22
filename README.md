@@ -29,7 +29,7 @@ Examples of the the Course-Catalog in action at <a href="http://www.middlebury.e
 Installation
 ============
 
-These instructions assume that you have a POSIX machine running Apache with PHP 5.3 or later.
+These instructions assume that you have a POSIX machine running Apache with PHP 7.0 or later.
 
 1. In a non-web-accessable directory, clone the course-catalog repository:
    ```git-clone https://github.com/middlebury/coursecatalog.git```
