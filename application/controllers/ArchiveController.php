@@ -1029,7 +1029,8 @@
 		// Look for a longer title that exceeds the limits of the Banner title field
 		// injected into the description as a bold first line.
 		if (preg_match('#^<strong>([^\n\r]+)</strong>(?:\s*<br />(.*)|\s*)$#sm', $data->description, $matches)) {
-			$data->title = $matches[1];
+			// Decode entities in the title to ensure they don't get double-encoded.
+			$data->title = html_entity_decode($matches[1]);
 			if (isset($matches[2]))
 				$data->description = trim($matches[2]);
 			else
