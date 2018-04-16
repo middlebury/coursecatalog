@@ -89,6 +89,13 @@ class Helper_ExportJob
       }
     }
 
+	// On the off chance that we get here, but didn't actually generate a new archive,
+	// check that it exists before recreating the symlink.
+	if (!file_exists($jobRoot.'/html/'.$htmlName)) {
+		file_put_contents('php://stderr', "Trying to update the symlink, but no new HTML export exists. Leaving the old one in place.\n");
+		return 4;
+	}
+
     $linkName = str_replace('/', '-', $dest_dir).'_latest.html';
     $linkPath = $jobRoot.'/'.$linkName;
     if (file_exists($linkPath)) {
