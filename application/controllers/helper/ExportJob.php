@@ -50,6 +50,9 @@ class Helper_ExportJob
     $fileBase = str_replace('/', '-', $dest_dir) . '_snapshot-' . date('Y-m-d');
     $htmlName = $fileBase . '.html';
     $htmlPath = $htmlRoot . '/' . $htmlName;
+    /* If the file we are about to write already exists, that means there has
+       already been an export today and we need to handle symlinks differently.*/
+    $differentDate = !file_exists($htmlPath);
 
     $params = array();
     $params['config_id'] = $config_id;
@@ -83,7 +86,7 @@ class Helper_ExportJob
       // Delete our current export if it is the same as the last one.
       // This way we only keep versions that contain changes.
       if (!strlen($diff)) {
-        unlink($htmlPath);
+        if($differentDate) unlink($htmlPath);
         file_put_contents('php://stderr', "New version is the same as the last.\n");
         return 0;
       }
