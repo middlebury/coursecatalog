@@ -82,6 +82,7 @@ function generateGroup(id, title, visible) {
 function buildList(jsonData, callback) {
   if (!jsonData || JSON.stringify(jsonData) === "{}") {
     newGroup();
+    callback()
   } else {
     console.log(jsonData);
 
