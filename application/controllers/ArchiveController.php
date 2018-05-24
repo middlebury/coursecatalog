@@ -613,11 +613,12 @@
 		ob_start();
 		foreach ($descriptions as $description) {
 			$body = $description->nodeValue;
-			// Strip out none-printable characters.
-			$body = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $body);
 			// Parse the HTML
 			$html = new DOMDocument();
-			$html->loadHTML($body);
+			// Force the HTML snippet to be interpreted as UTF-8 as that is what Drupal
+			// is returning. Without this prefix, the snippet will be assumed to be
+			// ISO-8859-1. See: https://stackoverflow.com/a/8218649/15872
+			$html->loadHTML('<?xml encoding="utf-8" ?>' . $body);
 			$htmlXPath = new DOMXPath($html);
 			// Only print out the inner-HTML of the body fields, excluding taxonomy
 			// terms and any other fields printed. Note that this is dependent
