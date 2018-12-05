@@ -35,9 +35,14 @@ class Helper_PathAsAbsoluteUrl
 	 * @since 6/9/10
 	 */
 	public function pathAsAbsoluteUrl ($path) {
-		$parts = explode('/', $_SERVER['SERVER_PROTOCOL']);
-		return strtolower(trim(array_shift($parts)))
-			. '://' . $_SERVER['HTTP_HOST'] . $path;
+		$scheme = 'http';
+		if (!empty($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME']) {
+			$scheme = $_SERVER['REQUEST_SCHEME'];
+		}
+		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+			$scheme = 'https';
+		}
+		return $scheme . '://' . $_SERVER['HTTP_HOST'] . $path;
 	}
 
 }
