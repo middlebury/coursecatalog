@@ -181,8 +181,8 @@ class banner_course_Course
 
 			// Enter into Italic if at the begining of the line.
 			self::$fsmParser->FSM(
-				'/^\/\w/',
-				'preg_match("/^\/(\w)/", $STRING, $m); echo "<em>".$m[1];',
+				'/^\/[^\s]/',
+				'preg_match("/^\/([^\s])/", $STRING, $m); echo "<em>".$m[1];',
 				'ITALIC',
 				'UNKNOWN');
 
@@ -239,8 +239,8 @@ class banner_course_Course
 
 			// Enter into Bold if at the begining of the line.
 			self::$fsmParser->FSM(
-				'/^\*\w/',
-				'preg_match("/^\*(\w)/", $STRING, $m); echo "<strong>".$m[1];',
+				'/^\*[^\s]/',
+				'preg_match("/^\*([^\s])/", $STRING, $m); echo "<strong>".$m[1];',
 				'BOLD',
 				'UNKNOWN');
 
