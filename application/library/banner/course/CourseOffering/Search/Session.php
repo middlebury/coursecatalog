@@ -239,7 +239,7 @@ class banner_course_CourseOffering_Search_Session
 	 * @since 6/4/09
 	 */
 	public function buildIndex ($displayStatus = false) {
-		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_drop_index_structure.sql', $this->manager->getDB());
+		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_drop_index.sql', $this->manager->getDB());
 		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_create_index_structure.sql', $this->manager->getDB());
 		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/../../../sql/create_views.sql', $this->manager->getDB());
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * @package harmoni.dbc
- * 
+ *
  * @copyright Copyright &copy; 2005, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  *
@@ -11,10 +11,10 @@
 /**
  * This is a static class that provides functions for the running of arbitrary
  * SQL strings and files.
- * 
+ *
  *
  * @package harmoni.dbc
- * 
+ *
  * @copyright Copyright &copy; 2005, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  *
@@ -26,7 +26,7 @@ class harmoni_SQLUtils {
 
 	/**
 	 * Parse SQL textfile to remove comments and line returns.
-	 * 
+	 *
 	 * @param string $file The file to be parsed
 	 * @return string The parsed SQL string.
 	 * @access public
@@ -40,10 +40,10 @@ class harmoni_SQLUtils {
 		else
 			throw new Exception("The file, '".$file."' was empty or doesn't exist.");
 	}
-	
+
 	/**
 	 * Parse SQL string to remove comments and line returns.
-	 * 
+	 *
 	 * @param string $queryString The string to be parsed
 	 * @return string The parsed SQL string.
 	 * @access public
@@ -53,26 +53,26 @@ class harmoni_SQLUtils {
 	public static function parseSQLString ( $queryString ) {
 		// Remove the comments
 		$queryString = preg_replace("/(#|--)[^\n\r]*(\n|\r|\n\r)/", "", $queryString);
-		
+
 		// Remove the line returns
 		$queryString = preg_replace("/\n|\r/", " ", $queryString);
-		
+
 		// Remove multiple spaces
 		$queryString = preg_replace("/[\ \t]+/", " ", $queryString);
-		
+
 		// Remove backticks included by MySQL since they aren't needed anyway.
 		$queryString = preg_replace("/`/", "", $queryString);
-		
+
 		// Add new lines after the end of each query.
 		$queryString = preg_replace("/;/", ";\n", $queryString);
-		
+
 		return $queryString;
 	}
-	
+
 	/**
 	 * Break up a SQL string with multiple queries (separated by ';') and run each
 	 * query
-	 * 
+	 *
 	 * @param string $queryString The string of queries.
 	 * @param PDO $db The database to run the queries on.
 	 * @return void
@@ -83,20 +83,27 @@ class harmoni_SQLUtils {
 	public static function multiQuery ( $queryString, PDO $db ) {
 		// break up the query string.
 		$queryStrings = explode(";", $queryString);
-		
+
 		// Run each query
 		foreach ($queryStrings as $string) {
 			$string = trim($string);
-			if ($string) {
+			// PDO::exec() can't be used for OPTIMIZE (or SELECT) queries because they
+			// return a result. See: http://php.net/manual/en/pdo.exec.php
+			if (preg_match('/^(OPTIMIZE)/i', $string)) {
+				$stmt = $db->query($string);
+				$stmt->closeCursor();
+			}
+			// For other queries, just run them and ignore the number of rows affected.
+			elseif ($string) {
 				$db->exec($string);
 			}
 		}
 	}
-	
+
 	/**
 	 * Run all of the queries in a text file. Comments must start with '#' and
 	 * queries must be separated by ';'.
-	 * 
+	 *
 	 * @param string $file The input file containing the queries.
 	 * @param PDO $db The database to run the queries on.
 	 * @return void
@@ -108,10 +115,10 @@ class harmoni_SQLUtils {
 		$string = self::parseSQLFile($file);
 		self::multiQuery($string, $db);
 	}
-	
+
 	/**
 	 * Run all of the files with a given extention in a directory as SQL files.
-	 * 
+	 *
 	 * @param string $dir
 	 * @param PDO $db The database to run the queries on.
 	 * @param optional string $extn The file extention to execute, default: 'sql'.
@@ -139,15 +146,15 @@ class harmoni_SQLUtils {
 		} else {
 			throw new Exception ("Could not open SQL directory, '$dir', for reading.");
 		}
-		
+
 		sort ($sqlFiles);
 		foreach ($sqlFiles as $path)
 			self::runSQLfile($path, $db);
 	}
-	
+
 	/**
 	 * Run all of the files with a given extention in a directory as SQL files.
-	 * 
+	 *
 	 * @param string $dir
 	 * @param array $exceptions An array of filenames to exclude.
 	 * @param PDO $db The database to run the queries on.
@@ -177,7 +184,7 @@ class harmoni_SQLUtils {
 		} else {
 			throw new Exception ("Could not open SQL directory, '$dir', for reading.");
 		}
-		
+
 		sort ($sqlFiles);
 		foreach ($sqlFiles as $path)
 			self::runSQLfile($path, $db);

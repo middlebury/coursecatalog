@@ -1,0 +1,1 @@
+ALTER TABLE `SSBSECT` DROP INDEX `SSBSECT_fulltext_index`;

@@ -1,3 +1,1 @@
-ALTER TABLE `SSBSECT` ADD FULLTEXT `SSBSECT_fulltext_index` (
-`SSBSECT_fulltext`
-)
+ALTER TABLE `SSBSECT` ADD FULLTEXT `SSBSECT_fulltext_index` (`SSBSECT_fulltext`);
