@@ -50,16 +50,17 @@ catch (Exception $e) {
 
 function asBytes($val) {
 	$val = trim($val);
+	$num = intval(preg_replace('/^([0-9]+)(.*)$/', '', $val));
 	$last = strtolower($val[strlen($val)-1]);
 	switch($last) {
 		// The 'G' modifier is available since PHP 5.1.0
 		case 'g':
-			$val *= 1024;
+			$num *= 1024;
 		case 'm':
-			$val *= 1024;
+			$num *= 1024;
 		case 'k':
-			$val *= 1024;
+			$num *= 1024;
 	}
 
-	return $val;
+	return $num;
 }
