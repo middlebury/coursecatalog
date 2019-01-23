@@ -21,6 +21,9 @@ while ($this->terms->hasNext()) {
 	print "\n\t\t\t<link>".$this->pathAsAbsoluteUrl($this->url($params))."</link>";
 	print "\n\t\t\t<description><![CDATA[".$term->getDescription()."]]></description>";
 	print "\n\t\t\t<catalog:id>".$this->getStringFromOsidId($term->getId())."</catalog:id>";
+	print "\n\t\t\t<catalog:start_date>".$term->getStartTime()->format('Y-m-d')."</catalog:start_date>";
+	print "\n\t\t\t<catalog:end_date>".$term->getEndTime()->format('Y-m-d')."</catalog:end_date>";
+	print "\n\t\t\t<catalog:weeks>".ceil(abs($term->getEndTime()->format('U') - $term->getStartTime()->format('U'))/60/60/24/7)."</catalog:weeks>";
 	print "\n\t\t</item>";
 }
 ?>
