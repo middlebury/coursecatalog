@@ -506,6 +506,16 @@ class CoursesController
 			print $course->getDescription();
 			print "]]></description>";
 			print "\n\t\t\t<catalog:id>".$courseIdString."</catalog:id>";
+			print "\n\t\t\t<catalog:display_name>".htmlspecialchars($course->getDisplayName())."</catalog:display_name>";
+			print "\n\t\t\t<catalog:title>".htmlspecialchars($course->getTitle())."</catalog:title>";
+
+			foreach ($alternates as $alt) {
+				print "\n\t\t\t<catalog:alternate>";
+				print "\n\t\t\t\t<catalog:id>".$this->_helper->osidId->toString($alt->getId())."</catalog:id>";
+				print "\n\t\t\t\t<catalog:display_name>".htmlspecialchars($alt->getDisplayName())."</catalog:display_name>";
+				print "\n\t\t\t\t<catalog:title>".htmlspecialchars($alt->getTitle())."</catalog:title>";
+				print "\n\t\t\t</catalog:alternate>";
+			}
 
 			$recentTerms = $recentCourses->getTermsForCourse($course);
 			if (count($recentTerms)) {
