@@ -239,8 +239,12 @@ class banner_course_CourseOffering
 		if (isset($this->row['SCBCRSE_TITLE']) && strlen($this->row['SCBCRSE_TITLE']))
 			$title .= $this->row['SCBCRSE_TITLE']."\n";
 
-		if (isset($this->row['SSBSECT_CRSE_TITLE']) && strlen($this->row['SSBSECT_CRSE_TITLE']))
+		// Add a section-specific title if one is set and it differs from the course title.
+		if (isset($this->row['SSBSECT_CRSE_TITLE']) && strlen($this->row['SSBSECT_CRSE_TITLE'])
+			&& trim(mb_strtolower($this->row['SSBSECT_CRSE_TITLE'])) != trim(mb_strtolower($this->row['SCBCRSE_TITLE']))
+		) {
 			$title .= $this->row['SSBSECT_CRSE_TITLE'];
+		}
 
 		$title = trim($title);
 
