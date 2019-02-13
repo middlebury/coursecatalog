@@ -273,4 +273,36 @@ interface middlebury_course_CourseOffering_WeeklyScheduleRecord
 	 * @since 6/10/09
 	 */
 	public function getSaturdayEndTimes ();
+
+	/**
+	 * Answer true if there is a date/time on which section meeting begins.
+	 *
+	 * @return boolean
+	 *		If a start date of the section is set.
+	 */
+	public function hasMeetingStartDate ();
+
+	/**
+	 * Answer date/time on which section meeting begins.
+	 *
+	 * @return DateTime
+	 *		The start date of the section.
+	 */
+	public function getMeetingStartDate ();
+
+	/**
+	 * Answer true if there is a date/time on which section meeting ends.
+	 *
+	 * @return boolean
+	 *		If a start date of the section is set.
+	 */
+	public function hasMeetingEndDate ();
+
+	/**
+	 * Answer date/time on which the section meeting ends.
+	 *
+	 * @return DateTime
+	 *		The end date
+	 */
+	public function getMeetingEndDate ();
 }

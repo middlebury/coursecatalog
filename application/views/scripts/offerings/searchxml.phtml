@@ -187,7 +187,18 @@ if ($section->hasLocation()) {
 } else if ($section->getLocationInfo()) {
 	print "\n\t\t\t<catalog:location>".$this->escape($section->getLocationInfo())."</catalog:location>";
 }
-print "\n\t\t\t<catalog:schedule>".$this->escape($section->getScheduleInfo())."</catalog:schedule>";
+print "\n\t\t\t<catalog:schedule";
+$weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
+if ($section->hasRecordType($weeklyScheduleType)) {
+	$scheduleRecord = $section->getCourseOfferingRecord($weeklyScheduleType);
+	if ($scheduleRecord->hasMeetingStartDate()) {
+		print ' meeting_start_date="' . $scheduleRecord->getMeetingStartDate()->format('Y-m-d') . '"';
+	}
+	if ($scheduleRecord->hasMeetingEndDate()) {
+		print ' meeting_end_date="' . $scheduleRecord->getMeetingEndDate()->format('Y-m-d') . '"';
+	}
+}
+print ">".$this->escape($section->getScheduleInfo())."</catalog:schedule>";
 
 $properties = $section->getProperties();
 while ($properties->hasNext()) {

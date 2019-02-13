@@ -1282,6 +1282,50 @@ class banner_course_CourseOffering
 		return $times;
 	}
 
+	/**
+	 * Answer true if there is a date/time on which section meeting begins.
+	 *
+	 * @return boolean
+	 *		If a start date of the section is set.
+	 */
+	public function hasMeetingStartDate () {
+		return !empty($this->getMeetingStartDate());
+	}
+
+	/**
+	 * Answer date/time on which section meeting begins.
+	 *
+	 * @return DateTime
+	 *		The start date of the section.
+	 */
+	public function getMeetingStartDate () {
+		foreach ($this->getMeetingRows() as $row) {
+			return new DateTime($row['SSRMEET_START_DATE']);
+		}
+	}
+
+	/**
+	 * Answer true if there is a date/time on which section meeting ends.
+	 *
+	 * @return boolean
+	 *		If a start date of the section is set.
+	 */
+	public function hasMeetingEndDate () {
+		return !empty($this->getMeetingEndDate());
+	}
+
+	/**
+	 * Answer date/time on which the section meeting ends.
+	 *
+	 * @return DateTime
+	 *		The end date
+	 */
+	public function getMeetingEndDate () {
+		foreach ($this->getMeetingRows() as $row) {
+			return new DateTime($row['SSRMEET_END_DATE']);
+		}
+	}
+
 
 	/**
 	 * Answer the number of seconds since midnight for a time-string from our db
