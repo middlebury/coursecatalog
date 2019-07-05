@@ -31,6 +31,17 @@ class CatalogExternalRedirector
 	 */
 	public function routeShutdown (Zend_Controller_Request_Abstract $request) {
 		if ( $request->getControllerName() == 'topics' && $request->getActionName() == 'view' ) {
+			// Per-catalog topic mapping.
+			if ($request->getParam('catalog')) {
+				$topics = $this->getTopicMapForCatalog($request->getParam('catalog'));
+				if (isset($topics[$request->getParam('topic')])) {
+					$response = $this->getResponse();
+					$response->setRedirect($topics[$request->getParam('topic')]);
+					$response->sendResponse();
+					exit;
+				}
+			}
+			// Global topic mapping.
 			$topics = $this->getTopicMap();
 			if (isset($topics[$request->getParam('topic')])) {
 				$response = $this->getResponse();
@@ -50,15 +61,45 @@ class CatalogExternalRedirector
 	 */
 	private function getTopicMap () {
 		$config = Zend_Registry::getInstance()->config;
-		$entries = $config->catalog->topic_map;
+		return $this->extractTopicMap($config->catalog->topic_map);
+	}
+
+	/**
+	 * Answer the topic mapping for a particular catalog.
+	 *
+	 * @param string $catalogId
+	 * @return array
+	 */
+	private function getTopicMapForCatalog ($catalogId) {
+		$config = Zend_Registry::getInstance()->config;
+		if (isset($config->catalog->catalog_topic_map->$catalogId)) {
+			return $this->extractTopicMap($config->catalog->catalog_topic_map->$catalogId);
+		}
+		else {
+			return [];
+		}
+	}
+
+	/**
+	 * Answer the topic map for a set of config entries.
+	 *
+	 * @param Iterator $entries
+	 *   The config entries to map.
+	 * @return array
+	 */
+	private function extractTopicMap($entries) {
 		$topicMap = array();
 		if ($entries && count($entries)) {
 			foreach ($entries as $key => $entry) {
-				if (!isset($entry->id) || !$entry->id)
-					throw new Exception('Each topic_map entry must have an id, "'.$key.'" does not.');
+				if (isset($entry->id) && $entry->id) {
+					$id = $entry->id;
+				}
+				else {
+					$id = $key;
+				}
 				if (!isset($entry->url) || !$entry->url)
 					throw new Exception('Each topic_map entry must have an url, "'.$key.'" does not.');
-				$topicMap[$entry->id] = $entry->url;
+				$topicMap[$id] = $entry->url;
 			}
 		}
 		return $topicMap;
