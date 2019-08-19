@@ -140,6 +140,7 @@ class OfferingsController
 		$this->view->terms = $this->termLookupSession->getTerms();
 
 		$this->view->feedTitle = 'Course Offering Results';
+		$this->view->feedLink = $this->_helper->pathAsAbsoluteUrl($this->view->url($this->view->searchParams));
 		$this->postDispatch();
 	}
 
@@ -531,6 +532,19 @@ class OfferingsController
 	 * @since 4/21/09
 	 */
 	public function viewAction () {
+		$this->viewBase();
+
+		// Bookmarked Courses and Schedules
+		$this->view->bookmarks_CourseId = $this->view->offering->getCourseId();
+
+		$this->view->menuIsOfferings = true;
+
+		$this->render();
+		$this->render('offerings', null, true);
+	}
+
+
+	protected function viewBase() {
 		$id = $this->_helper->osidId->fromString($this->_getParam('offering'));
 		$lookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
 		$lookupSession->useFederatedCourseCatalogView();
@@ -568,15 +582,26 @@ class OfferingsController
 				$this->view->alternates = $record->getAlternates();
 			}
 		}
+	}
 
-		// Bookmarked Courses and Schedules
-		$this->view->bookmarks_CourseId = $this->view->offering->getCourseId();
+	/**
+	 * Answer search results as an xml feed.
+	 *
+	 * @return void
+	 * @access public
+	 * @since 10/21/09
+	 */
+	public function viewxmlAction () {
+		$this->_helper->layout->disableLayout();
+		$this->_helper->viewRenderer->setRender('searchxml');
+		$this->getResponse()->setHeader('Content-Type', 'text/xml');
 
-		$this->render();
+		$this->viewBase();
 
-		$this->render('offerings', null, true);
-
-		$this->view->menuIsOfferings = true;
+		$this->view->feedTitle = $this->view->title;
+		$this->view->feedLink = $this->_helper->pathAsAbsoluteUrl('/offerings/view/'.$this->_getParam('catalog').'/offering/'.$this->_getParam('offering'));
+		$this->view->sections = new phpkit_course_ArrayCourseOfferingList([$this->view->offering]);
+		$this->postDispatch();
 	}
 
 }

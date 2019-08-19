@@ -25,7 +25,7 @@ print '<?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
 	<channel>
 		<title>'.$this->feedTitle.'</title>
-		<link>'.$this->pathAsAbsoluteUrl($this->url($this->searchParams)).'</link>
+		<link>'.$this->feedLink.'</link>
 		<description></description>
 		<lastBuildDate>'.date('r').'</lastBuildDate>
 		<generator>Course Catalog</generator>
@@ -51,7 +51,6 @@ if (isset($this->terms)) {
 print "\n";
 
 $alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
-
 while ($this->sections->hasNext()) {
 	$section = $this->sections->getNextCourseOffering();
 
