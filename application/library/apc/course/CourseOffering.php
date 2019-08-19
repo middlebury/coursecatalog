@@ -1286,4 +1286,60 @@ class apc_course_CourseOffering
 			return $val;
 	}
 
+	/**
+	 * Answer true if there is a date/time on which section meeting begins.
+	 *
+	 * @return boolean
+	 *		If a start date of the section is set.
+	 */
+	public function hasMeetingStartDate () {
+		$val = $this->cacheGetPlain('hasMeetingStartDate');
+		if (is_null($val))
+			return $this->cacheSetPlain('hasMeetingStartDate', $this->getOffering()->hasMeetingStartDate());
+		else
+			return $val;
+	}
+
+	/**
+	 * Answer date/time on which section meeting begins.
+	 *
+	 * @return DateTime
+	 *		The start date of the section.
+	 */
+	public function getMeetingStartDate () {
+		$val = $this->cacheGetPlain('MeetingStartDate');
+		if (is_null($val))
+			return $this->cacheSetPlain('MeetingStartDate', $this->getOffering()->getMeetingStartDate());
+		else
+			return $val;
+	}
+
+	/**
+	 * Answer true if there is a date/time on which section meeting ends.
+	 *
+	 * @return boolean
+	 *		If a start date of the section is set.
+	 */
+	public function hasMeetingEndDate () {
+		$val = $this->cacheGetPlain('hasMeetingEndDate');
+		if (is_null($val))
+			return $this->cacheSetPlain('hasMeetingEndDate', $this->getOffering()->hasMeetingEndDate());
+		else
+			return $val;
+	}
+
+	/**
+	 * Answer date/time on which the section meeting ends.
+	 *
+	 * @return DateTime
+	 *		The end date
+	 */
+	public function getMeetingEndDate () {
+		$val = $this->cacheGetPlain('MeetingEndDate');
+		if (is_null($val))
+			return $this->cacheSetPlain('MeetingEndDate', $this->getOffering()->getMeetingEndDate());
+		else
+			return $val;
+	}
+
 }
