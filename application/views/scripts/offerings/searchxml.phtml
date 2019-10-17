@@ -87,9 +87,9 @@ while ($this->sections->hasNext()) {
 
 if ($section->hasRecordType($alternateType)) {
 	$record = $section->getCourseOfferingRecord($alternateType);
-	print "\n\t\t\t<catalog:is_primary_alternate>";
+	print "\n\t\t\t<catalog:enrollable>";
 	print $record->isPrimary()?"true":"false";
-	print "</catalog:is_primary_alternate> ";
+	print "</catalog:enrollable> ";
 	if ($record->hasAlternates()) {
 		$alternates = $record->getAlternates();
 		while ($alternates->hasNext()) {
