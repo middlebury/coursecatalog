@@ -1289,7 +1289,12 @@ class banner_course_CourseOffering
 	 *		If a start date of the section is set.
 	 */
 	public function hasMeetingStartDate () {
-		return !empty($this->getMeetingStartDate());
+		foreach ($this->getMeetingRows() as $row) {
+			if (!empty($row['SSRMEET_START_DATE'])) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -1311,7 +1316,12 @@ class banner_course_CourseOffering
 	 *		If a start date of the section is set.
 	 */
 	public function hasMeetingEndDate () {
-		return !empty($this->getMeetingEndDate());
+		foreach ($this->getMeetingRows() as $row) {
+			if (!empty($row['SSRMEET_END_DATE'])) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
