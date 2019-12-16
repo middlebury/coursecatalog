@@ -95,7 +95,7 @@ if ($section->hasRecordType($alternateType)) {
 		while ($alternates->hasNext()) {
 			$alternate = $alternates->getNextCourseOffering();
 			$offeringParams['offering'] = $this->getStringFromOsidId($alternate->getId());
-			print "\n\t\t\t<catalog:alternate href=\"".$this->pathAsAbsoluteUrl($this->url($offeringParams))."\">";
+			print "\n\t\t\t<catalog:alternate id=\"".$this->getStringFromOsidId($alternate->getId())."\" href=\"".$this->pathAsAbsoluteUrl($this->url($offeringParams))."\">";
 			print $this->escape($alternate->getDisplayName());
 			print "</catalog:alternate> ";
 		}
