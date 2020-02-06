@@ -488,8 +488,6 @@ class banner_course_CourseOffering
 		$rows = $this->getMeetingRows();
 		foreach ($rows as $row) {
 			$days = array();
-			if ($row['SSRMEET_SUN_DAY'])
-				$days[] = 'Sunday';
 			if ($row['SSRMEET_MON_DAY'])
 				$days[] = 'Monday';
 			if ($row['SSRMEET_TUE_DAY'])
@@ -502,6 +500,8 @@ class banner_course_CourseOffering
 				$days[] = 'Friday';
 			if ($row['SSRMEET_SAT_DAY'])
 				$days[] = 'Saturday';
+			if ($row['SSRMEET_SUN_DAY'])
+				$days[] = 'Sunday';
 
 			if (!count($days))
 				continue;

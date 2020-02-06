@@ -297,6 +297,8 @@ FROM
 WHERE
 	SSRMEET_TERM_CODE = :term_code
 	AND SSRMEET_CRN = :crn
+ORDER BY
+	SSRMEET_START_DATE ASC
 ";
 			self::$meetingRows_stmt = $this->manager->getDB()->prepare($query);
 		}
