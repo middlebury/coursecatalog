@@ -75,7 +75,7 @@ class Helper_ExportJob
 
 		exec($command, $output, $return);
 		if ($return || filesize($tmpPath) < 10) {
-			file_put_contents('php://stderr', "Error running command:\n\n\t$command\n\n$output\n\n");
+			file_put_contents('php://stderr', "Error running command:\n\n\t$command\n\n".implode('', $output)."\n\n");
 			unlink($tmpPath);
 			return 1;
 		}
