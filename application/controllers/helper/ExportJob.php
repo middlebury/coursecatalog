@@ -46,6 +46,22 @@ class Helper_ExportJob
 			$tmpRoot = $config->catalog->archive_tmp;
 		}
 
+		// Ensure that the job-root directory exists.
+		if (!file_exists($destRoot)) {
+			echo "Archive destination directory does not exist: " . $destRoot . "\n";
+			file_put_contents('php://stderr', "Archive destination directory does not exist: '$destRoot' => ".realpath($destRoot)."\n");
+			return 2;
+		}
+
+		// Ensure that the destination directory exists.
+		if (!file_exists($jobRoot)) {
+			if (!mkdir($jobRoot, 0775, true)) {
+				echo "Unable to create directory: " . $jobRoot . "\n";
+				file_put_contents('php://stderr', "Unable to create destination directory '$jobRoot'.\n");
+				return 2;
+			}
+		}
+
 		// Ensure that the destination html directory exists.
 		if (!file_exists($htmlRoot)) {
 			if (!mkdir($htmlRoot, 0775, true)) {
