@@ -198,7 +198,14 @@
 		$this->_helper->layout()->disableLayout();
 		$this->_helper->viewRenderer->setNoRender(true);
 
+		// Send a first byte to any clients/proxies to avoid timeouts.
+		print "Beginning export...\n";
+		while (ob_get_level()) {
+			ob_end_flush();
+		}
+		flush();
 		$this->_helper->exportJob($request->getParam('dest_dir'), $request->getParam('config_id'), $request->getParam('term'), $request->getParam('revision_id'));
+		print "Export complete.\n";
 	}
 
 	/**
