@@ -286,8 +286,9 @@ function getProgress(exportPath) {
     type: "GET",
     success: function(response) {
       if(response != 'Export finished') {
+
         $('.error-message').html(response);
-        setTimeout(getProgress(exportPath), 1000);
+        setTimeout(function() { getProgress(exportPath); }, 1000);
       } else {
         exporting = false;
         var url = "../archive/" + exportPath + "/" + exportPath.substring(0, exportPath.indexOf('/')) + "-" + exportPath.substring(exportPath.indexOf('/') + 1) + "_latest.html";
