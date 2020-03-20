@@ -82,7 +82,7 @@ class Helper_ExportJob
 
 		// Check to see if the export is different from the previous one.
 		$exports = explode("\n", trim(shell_exec('ls -1t '.escapeshellarg($htmlRoot))));
-		if (count($exports)) {
+		if (count($exports) > 1) {
 			// When doing the diff, Ignore (-I) our the generated_date timestamp line.
 			$diff = trim(shell_exec('diff -I generated_date '.escapeshellarg($tmpPath).' '.escapeshellarg($htmlRoot.'/'.$exports[0])));
 
