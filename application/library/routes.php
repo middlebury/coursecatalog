@@ -15,7 +15,7 @@ $router->addRoute('archive_list',
 );
 $router->addRoute('archive_view',
 	new Zend_Controller_Router_Route_Regex(
-		'archive/([\w-/_]+)/([^/]+\.html)',
+		'archive/([\w\-/_]+)/([^/]+\.html)',
 		array(
 			'controller' => 'archive',
 			'action'     => 'view'
