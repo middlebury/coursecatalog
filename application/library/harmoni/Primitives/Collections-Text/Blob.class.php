@@ -4,21 +4,21 @@
  * A simple Blob data type.
  *
  * @package harmoni.primitives.collections-text
- * 
+ *
  * @copyright Copyright &copy; 2005, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  *
  * @version $Id: Blob.class.php,v 1.9 2007/10/10 22:58:33 adamfranco Exp $
  */
-class Blob 
-	extends String 
+class Blob
+	extends String
 {
 
-	function Blob($string="") {
+	function __construct($string="") {
 		$this->_string = $string;
 	}
-	
-	
+
+
 	/**
 	 * Instantiates a new Blob object with the passed value.
 	 * @param string $value
@@ -47,5 +47,5 @@ class Blob
 
 	function value() {
 		return $this->_string;
-	}	
+	}
 }
