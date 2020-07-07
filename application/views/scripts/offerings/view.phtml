@@ -55,6 +55,17 @@ print "\n\t\t<dd>".$this->formatScheduleInfo($this->offering->getScheduleInfo())
 print "\n\t\t<dt>Type:</dt>";
 print "\n\t\t<dd>".$this->escape($this->offering->getGenusType()->getDisplayName())."</dd>";
 
+$instructionMethodRecordType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instruction_method');
+if ($this->offering->hasRecordType($instructionMethodRecordType)) {
+	$instructionMethodRecord = $this->offering->getCourseOfferingRecord($instructionMethodRecordType);
+	if ($instructionMethodRecord->hasInstructionMethod()) {
+		print "\n\t\t<dt>Instruction Method:</dt>";
+		print "\n\t\t<dd>";
+		print $this->escape($instructionMethodRecord->getInstructionMethod()->getDisplayName());
+		print "</dd>";
+	}
+}
+
 $instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 if ($this->offering->hasRecordType($instructorsType)) {
 	$instructorsRecord = $this->offering->getCourseOfferingRecord($instructorsType);
