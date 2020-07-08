@@ -540,7 +540,7 @@ class banner_course_CourseOffering
 			}
 
 			// Default case.
-			return "TBD or not scheduled";
+			return "TBD";
 		}
 	}
 
