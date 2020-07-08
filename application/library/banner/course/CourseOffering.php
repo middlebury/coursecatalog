@@ -525,10 +525,23 @@ class banner_course_CourseOffering
 			$parts[] = $info;
 		}
 
-		if (count($parts))
+		if (count($parts)) {
 			return implode("\n", $parts);
-		else
-			return "Unknown";
+		}
+		// If no schedule is set, use a standardized message.
+		else {
+			// Flexible Online.
+			if ($this->row['GTVINSM_CODE'] == 'FON') {
+				return "Flexible Online";
+			}
+			// Cross-listed sections that don't have schedules entered.
+			if ($this->hasAlternates() && !$this->isPrimary()) {
+				return "Unscheduled cross-list, see primary section.";
+			}
+
+			// Default case.
+			return "TBD or not scheduled";
+		}
 	}
 
 	/**
