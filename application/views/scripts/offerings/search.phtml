@@ -410,7 +410,7 @@ print "\n\t\t<dd>".$this->escape($section->getGenusType()->getDisplayName())."</
 if ($section->hasRecordType($instructionMethodRecordType)) {
 	$instructionMethodRecord = $section->getCourseOfferingRecord($instructionMethodRecordType);
 	if ($instructionMethodRecord->hasInstructionMethod()) {
-		print "\n\t\t<dt>Instruction Method:</dt>";
+		print "\n\t\t<dt>Course Modality:</dt>";
 		print "\n\t\t<dd>";
 		print $this->escape($instructionMethodRecord->getInstructionMethod()->getDisplayName());
 		print "</dd>";

@@ -59,7 +59,7 @@ $instructionMethodRecordType = new phpkit_type_URNInetType('urn:inet:middlebury.
 if ($this->offering->hasRecordType($instructionMethodRecordType)) {
 	$instructionMethodRecord = $this->offering->getCourseOfferingRecord($instructionMethodRecordType);
 	if ($instructionMethodRecord->hasInstructionMethod()) {
-		print "\n\t\t<dt>Instruction Method:</dt>";
+		print "\n\t\t<dt>Course Modality:</dt>";
 		print "\n\t\t<dd>";
 		print $this->escape($instructionMethodRecord->getInstructionMethod()->getDisplayName());
 		print "</dd>";
