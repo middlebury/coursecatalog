@@ -44,6 +44,7 @@ class OfferingsController
 		$this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
 		$this->levelType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
 		$this->blockType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block");
+		$this->instructionMethodType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/instruction_method");
 
 		$this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
 
@@ -251,6 +252,14 @@ class OfferingsController
 		}
 		$this->view->blocks = $topicSearchSession->getTopicsByQuery($topicQuery);
 
+		$topicQuery = $topicSearchSession->getTopicQuery();
+		$topicQuery->matchGenusType($this->instructionMethodType, true);
+		if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+			$record = $topicQuery->getTopicQueryRecord($this->termType);
+			$record->matchTermId($termId, true);
+		}
+		$this->view->instructionMethods = $topicSearchSession->getTopicsByQuery($topicQuery);
+
 		$this->view->genusTypes = $offeringLookupSession->getCourseOfferingGenusTypes();
 
 		// Campuses -- only include if we have more than one.
@@ -382,6 +391,22 @@ class OfferingsController
 			}
 
 			$this->view->searchParams['block'] = $blocks;
+		}
+
+		$this->view->selectedInstructionMethodIds = array();
+		if ($this->_getParam('instruction_method') && count($this->_getParam('instruction_method'))) {
+			if (is_array($this->_getParam('instruction_method')))
+				$instructionMethods = $this->_getParam('instruction_method');
+			else
+				$instructionMethods = array($this->_getParam('instruction_method'));
+
+			foreach ($instructionMethods as $idString) {
+				$id = $this->_helper->osidId->fromString($idString);
+				$query->matchTopicId($id, true);
+				$this->view->selectedInstructionMethodIds[] = $id;
+			}
+
+			$this->view->searchParams['instruction_method'] = $instructionMethods;
 		}
 
 		$this->view->selectedGenusTypes = array();

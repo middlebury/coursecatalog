@@ -271,6 +271,17 @@ class TopicsController
 	}
 
 	/**
+	 * List all instruction-methods topics as a text file with each line being Id|DisplayName
+	 *
+	 * @return void
+	 * @access public
+	 * @since 10/20/09
+	 */
+	public function listinstructionmethodstxtAction () {
+		$this->renderTextList(new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/instruction_method"));
+	}
+
+	/**
 	 * List all department topics as a text file with each line being Id|DisplayName
 	 *
 	 * @return void

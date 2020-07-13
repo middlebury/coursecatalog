@@ -44,6 +44,7 @@ class banner_course_Topic_Search_List
 		$this->subjectWhere = $topicQuery->getSubjectWhereClause();
 		$this->levelWhere = $topicQuery->getLevelWhereClause();
 		$this->blockWhere = $topicQuery->getBlockWhereClause();
+		$this->instructionMethodWhere = $topicQuery->getInstructionMethodWhereClause();
 
 // 		$searchWhere = $topicSearch->getWhereClause();
 // 		if (strlen($searchWhere)) {
@@ -94,9 +95,23 @@ class banner_course_Topic_Search_List
 		if ($this->includeBlocks()) {
 			foreach ($topicQuery->getBlockParameters() as $i => $val) {
 				if (is_int($i)) {
-					$name = ':req_search_'.$i;
+					$name = ':block_search_'.$i;
 					$this->parameters[$name] = $val;
 					$this->blockWhere = preg_replace('/\?/', $name, $this->blockWhere, 1);
+				} else if (preg_match('/^:[a-z0-9_]+$/i', $i)) {
+					$this->parameters[$i] = $val;
+				} else {
+					throw new osid_OperationFailedException("Invalid parameter name '$i'. Must be an integer or of the ':param_name' form.");
+				}
+			}
+		}
+
+		if ($this->includeInstructionMethods()) {
+			foreach ($topicQuery->getInstructionMethodParameters() as $i => $val) {
+				if (is_int($i)) {
+					$name = ':insm_search_'.$i;
+					$this->parameters[$name] = $val;
+					$this->instructionMethodWhere = preg_replace('/\?/', $name, $this->instructionMethodWhere, 1);
 				} else if (preg_match('/^:[a-z0-9_]+$/i', $i)) {
 					$this->parameters[$i] = $val;
 				} else {
@@ -247,6 +262,17 @@ class banner_course_Topic_Search_List
 	 * @access protected
 	 * @since 4/17/09
 	 */
+	protected function getInstructionMethodWhereTerms() {
+		return $this->instructionMethodWhere;
+	}
+
+	/**
+	 * Answer additional where terms. E.g. 'SSRMEET_MON_DAY = true AND SSRMEET_TUE_DAY = false'
+	 *
+	 * @return array
+	 * @access protected
+	 * @since 4/17/09
+	 */
 	protected function getDivisionWhereTerms() {
 		return $this->divisionWhere;
 	}
@@ -304,6 +330,17 @@ class banner_course_Topic_Search_List
 	 */
 	protected function includeBlocks () {
 		return $this->topicQuery->includeBlocks();
+	}
+
+	/**
+	 * Answer true if instruction_method topics should be included
+	 *
+	 * @return boolean
+	 * @access protected
+	 * @since 6/12/09
+	 */
+	protected function includeInstructionMethods () {
+		return $this->topicQuery->includeInstructionMethods();
 	}
 
 	/**

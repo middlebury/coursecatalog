@@ -35,6 +35,7 @@ class banner_course_Topic_Search_Query
 		$this->requirementQuery = new banner_course_Topic_Search_Query_Requirement($session);
 		$this->levelQuery = new banner_course_Topic_Search_Query_Level($session);
 		$this->blockQuery = new banner_course_Topic_Search_Query_Block($session);
+		$this->instructionMethodQuery = new banner_course_Topic_Search_Query_InstructionMethod($session);
 		$this->divisionQuery = new banner_course_Topic_Search_Query_Division($session);
 		$this->departmentQuery = new banner_course_Topic_Search_Query_Department($session);
 		$this->subjectQuery = new banner_course_Topic_Search_Query_Subject($session);
@@ -49,6 +50,7 @@ class banner_course_Topic_Search_Query
 		$this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
 		$this->levelType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
 		$this->blockType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block");
+		$this->instructionMethodType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/instruction_method");
 
 		$this->toInclude = array();
 	}
@@ -93,6 +95,20 @@ class banner_course_Topic_Search_Query
 			return true;
 		else
 			return in_array('block', $this->toInclude);
+	}
+
+	/**
+	 * Answer true if instruction_method topics should be included
+	 *
+	 * @return boolean
+	 * @access public
+	 * @since 6/12/09
+	 */
+	public function includeInstructionMethods () {
+		if (!count($this->toInclude))
+			return true;
+		else
+			return in_array('instruction_method', $this->toInclude);
 	}
 
 	/**
@@ -203,6 +219,27 @@ class banner_course_Topic_Search_Query
 		return $this->blockQuery->getParameters();
 	}
 
+	/**
+	 * Answer the Where clause for instruction_methods
+	 *
+	 * @return string
+	 * @access public
+	 * @since 6/12/09
+	 */
+	public function getInstructionMethodWhereClause () {
+		return $this->instructionMethodQuery->getWhereClause();
+	}
+
+	/**
+	 * Answer the input parameters for instruction_methods
+	 *
+	 * @return string
+	 * @access public
+	 * @since 6/12/09
+	 */
+	public function getInstructionMethodParameters () {
+		return $this->instructionMethodQuery->getParameters();
+	}
 
 	/**
 	 * Answer the Where clause for divisions
@@ -327,7 +364,8 @@ class banner_course_Topic_Search_Query
 								$match) {
 		$this->requirementQuery->matchKeyword($keyword, $stringMatchType, $match);
 		$this->levelQuery->matchKeyword($keyword, $stringMatchType, $match);
-	$this->blockQuery->matchKeyword($keyword, $stringMatchType, $match);
+		$this->blockQuery->matchKeyword($keyword, $stringMatchType, $match);
+		$this->instructionMethodQuery->matchKeyword($keyword, $stringMatchType, $match);
 		$this->divisionQuery->matchKeyword($keyword, $stringMatchType, $match);
 		$this->departmentQuery->matchKeyword($keyword, $stringMatchType, $match);
 		$this->subjectQuery->matchKeyword($keyword, $stringMatchType, $match);
@@ -357,7 +395,8 @@ class banner_course_Topic_Search_Query
 									osid_type_Type $stringMatchType, $match) {
 		$this->requirementQuery->matchDisplayName($displayName, $stringMatchType, $match);
 		$this->levelQuery->matchDisplayName($displayName, $stringMatchType, $match);
-	$this->blockQuery->matchDisplayName($displayName, $stringMatchType, $match);
+		$this->blockQuery->matchDisplayName($displayName, $stringMatchType, $match);
+		$this->instructionMethodQuery->matchDisplayName($displayName, $stringMatchType, $match);
 		$this->divisionQuery->matchDisplayName($displayName, $stringMatchType, $match);
 		$this->departmentQuery->matchDisplayName($displayName, $stringMatchType, $match);
 		$this->subjectQuery->matchDisplayName($displayName, $stringMatchType, $match);
@@ -417,8 +456,10 @@ class banner_course_Topic_Search_Query
 			$type = 'requirement';
 		if ($this->levelType->isEqual($genusType))
 			$type = 'level';
-	if ($this->blockType->isEqual($genusType))
+		if ($this->blockType->isEqual($genusType))
 			$type = 'block';
+		if ($this->instructionMethodType->isEqual($genusType))
+			$type = 'instruction_method';
 		if ($this->divisionType->isEqual($genusType))
 			$type = 'division';
 		if ($this->departmentType->isEqual($genusType))
@@ -435,7 +476,8 @@ class banner_course_Topic_Search_Query
 			if (!count($this->toInclude)) {
 				$this->toInclude[] = 'requirement';
 				$this->toInclude[] = 'level';
-			$this->toInclude[] = 'block';
+				$this->toInclude[] = 'block';
+				$this->toInclude[] = 'instruction_method';
 				$this->toInclude[] = 'division';
 				$this->toInclude[] = 'department';
 				$this->toInclude[] = 'subject';
@@ -678,7 +720,8 @@ class banner_course_Topic_Search_Query
 	public function matchTermId(osid_id_Id $termId, $match) {
 		$this->requirementQuery->matchTermId($termId, $match);
 		$this->levelQuery->matchTermId($termId, $match);
-	$this->blockQuery->matchTermId($termId, $match);
+		$this->blockQuery->matchTermId($termId, $match);
+		$this->instructionMethodQuery->matchTermId($termId, $match);
 		$this->divisionQuery->matchTermId($termId, $match);
 		$this->departmentQuery->matchTermId($termId, $match);
 		$this->subjectQuery->matchTermId($termId, $match);

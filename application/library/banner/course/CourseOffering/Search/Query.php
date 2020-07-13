@@ -730,6 +730,9 @@ class banner_course_CourseOffering_Search_Query
 				$this->addClause('block_topic_id', 'SSRBLCK_BLCK_CODE = ?', array($value), $match);
 				$this->addTableJoin('LEFT JOIN SSRBLCK ON (SSRBLCK_TERM_CODE = SSBSECT_TERM_CODE AND SSRBLCK_CRN = SSBSECT_CRN)');
 				return;
+			case 'instruction_method':
+				$this->addClause('instruction_method_topic_id', 'SSBSECT_INSM_CODE = ?', array($value), $match);
+				return;
 			default:
 				$this->addClause('topic_id', 'FALSE', array(), $match);
 		}

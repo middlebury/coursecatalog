@@ -245,6 +245,38 @@ while ($this->blocks->hasNext()) {
 		</tr>
 <?php	} ?>
 
+<?php	if ($this->instructionMethods->hasNext()) { ?>
+		<tr>
+			<th>Course Modality:</th>
+			<td>
+				<div class='help_text'>(Leave all blank for no preference)</div>
+				<div class='instruction_method_group'>
+<?php
+$i = 0;
+while ($this->instructionMethods->hasNext()) {
+	if (!($i % 5))
+		print "\n\t\t\t</div>\n\t\t\t<div class='requirement_group'>";
+
+	$topic = $this->instructionMethods->getNextTopic();
+	print "\n\t\t\t\t<input type='checkbox' name='instruction_method[]' value='";
+	print $this->getStringFromOsidId($topic->getId());
+	print "'";
+	foreach ($this->selectedInstructionMethodIds as $selectedId) {
+		if ($topic->getId()->isEqual($selectedId)) {
+			print " checked='checked'";
+			break;
+		}
+	}
+	print "/><label>".$this->escape($topic->getDisplayName())."</label><br/>";
+
+	$i++;
+}
+?>
+				</div>
+			</td>
+		</tr>
+<?php	} ?>
+
 		<tr>
 			<th>Level:</th>
 			<td>

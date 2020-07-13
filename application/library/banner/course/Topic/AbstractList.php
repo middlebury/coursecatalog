@@ -124,6 +124,26 @@ GROUP BY STVBLCK_CODE)
 ";
 		}
 
+		if ($this->includeInstructionMethods()) {
+			$subqueries[] = "
+(SELECT
+	'instruction_method' AS type,
+	GTVINSM_CODE AS id,
+	GTVINSM_DESC AS display_name
+FROM
+	course_catalog_college
+	INNER JOIN course_catalog ON course_catalog_college.catalog_id = course_catalog.catalog_id
+	INNER JOIN ssbsect_scbcrse ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
+	INNER JOIN GTVINSM ON SSBSECT_INSM_CODE = GTVINSM_CODE
+WHERE
+	".$this->getAllInstructionMethodWhereTerms()."
+	AND ".$this->getCatalogWhereTerms('instruction_method')."
+	AND SSBSECT_SSTS_CODE = 'A'
+	AND (course_catalog.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != course_catalog.prnt_ind_to_exclude)
+GROUP BY GTVINSM_CODE)
+";
+		}
+
 		if ($this->includeDivisions()) {
 			$subqueries[] = "
 (SELECT
@@ -207,6 +227,8 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 				$params[':level_catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
 			if ($this->includeBlocks())
 				$params[':block_catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
+			if ($this->includeInstructionMethods())
+				$params[':instruction_method_catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
 			if ($this->includeDepartments())
 				$params[':dep_catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
 			if ($this->includeDivisions())
@@ -256,6 +278,21 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 	 */
 	private function getAllBlockWhereTerms () {
 		$terms = $this->getBlockWhereTerms();
+		if (strlen(trim($terms)))
+			return $terms;
+		else
+			return 'TRUE';
+	}
+
+	/**
+	 * Answer a where clause
+	 *
+	 * @return string
+	 * @access private
+	 * @since 4/20/09
+	 */
+	private function getAllInstructionMethodWhereTerms () {
+		$terms = $this->getInstructionMethodWhereTerms();
 		if (strlen(trim($terms)))
 			return $terms;
 		else
@@ -402,6 +439,15 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 	 * @access protected
 	 * @since 4/17/09
 	 */
+	abstract protected function getInstructionMethodWhereTerms();
+
+	/**
+	 * Answer additional where terms. E.g. 'SSRMEET_MON_DAY = true AND SSRMEET_TUE_DAY = false'
+	 *
+	 * @return array
+	 * @access protected
+	 * @since 4/17/09
+	 */
 	abstract protected function getDivisionWhereTerms();
 
 	/**
@@ -448,6 +494,15 @@ GROUP BY SCBCRSE_SUBJ_CODE)
 	 * @since 6/12/09
 	 */
 	abstract protected function includeBlocks ();
+
+	/**
+	 * Answer true if instruction_method topics should be included
+	 *
+	 * @return boolean
+	 * @access protected
+	 * @since 6/12/09
+	 */
+	abstract protected function includeInstructionMethods ();
 
 	/**
 	 * Answer true if division topics should be included

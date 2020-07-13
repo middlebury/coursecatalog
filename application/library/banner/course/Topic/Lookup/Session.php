@@ -194,6 +194,8 @@ class banner_course_Topic_Lookup_Session
 				return $this->getLevelTopic($topicId);
 			case 'block':
 				return $this->getBlockTopic($topicId);
+			case 'instruction_method':
+				return $this->getInstructionMethodTopic($topicId);
 			default:
 				throw new osid_NotFoundException('No topic found with category '.$type);
 		}
@@ -209,7 +211,7 @@ class banner_course_Topic_Lookup_Session
 	 */
 	public function getTopicType (osid_id_Id $topicId) {
 		$string = $this->getDatabaseIdString($topicId, 'topic/');
-	if (!preg_match('#(subject|department|division|requirement|level|block)/.+#', $string, $matches))
+	if (!preg_match('#(subject|department|division|requirement|level|block|instruction_method)/.+#', $string, $matches))
 			throw new osid_NotFoundException('Could not turn "'.$string.'" into a topic type.');
 
 		return $matches[1];
@@ -225,7 +227,7 @@ class banner_course_Topic_Lookup_Session
 	 */
 	public function getTopicValue (osid_id_Id $topicId) {
 		$string = $this->getDatabaseIdString($topicId, 'topic/');
-	if (!preg_match('#(subject|department|division|requirement|level|block)/(.+)#', $string, $matches))
+	if (!preg_match('#(subject|department|division|requirement|level|block|instruction_method)/(.+)#', $string, $matches))
 			throw new osid_NotFoundException('Could not turn "'.$string.'" into a topic type.');
 
 		return $matches[2];
@@ -866,6 +868,98 @@ GROUP BY STVBLCK_CODE
 		return new phpkit_course_ArrayTopicList($topics);
 	}
 
+	private static $getInstructionMethodTopic_stmts = array();
+	/**
+	 * Answer an instruction_method topic by id
+	 *
+	 * @param osid_id_Id $topicId
+	 * @return osid_course_Topic
+	 * @access private
+	 * @since 4/24/09
+	 */
+	private function getInstructionMethodTopic (osid_id_Id $topicId) {
+	$catalogWhere = $this->getCatalogWhereTerms();
+	if (!isset(self::$getInstructionMethodTopic_stmts[$catalogWhere])) {
+		$query =
+"SELECT
+	GTVINSM_CODE,
+	GTVINSM_DESC
+FROM
+	SSBSECT
+	INNER JOIN catalog_term ON SSBSECT_TERM_CODE = term_code
+	INNER JOIN GTVINSM ON SSBSECT_INSM_CODE = GTVINSM_CODE
+WHERE
+	SSBSECT_INSM_CODE = :insm_code
+	AND ".$this->getCatalogWhereTerms()."
+
+GROUP BY GTVINSM_CODE
+";
+			self::$getInstructionMethodTopic_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
+		}
+
+		$parameters = array_merge(
+			array(
+				':insm_code' => $this->getDatabaseIdString($topicId, 'topic/instruction_method/')
+			),
+			$this->getCatalogParameters());
+		self::$getInstructionMethodTopic_stmts[$catalogWhere]->execute($parameters);
+		$row = self::$getInstructionMethodTopic_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
+		self::$getInstructionMethodTopic_stmts[$catalogWhere]->closeCursor();
+
+		if (!$row['GTVINSM_CODE']) {
+			throw new osid_NotFoundException("Could not find a topic matching the instruction_method code ".$this->getDatabaseIdString($topicId, 'topic/instruction_method/').".");
+		}
+		return new banner_course_Topic(
+					$this->getOsidIdFromString($row['GTVINSM_CODE'], 'topic/instruction_method/'),
+					trim($row['GTVINSM_DESC']),
+					'',
+					new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/instruction_method")
+			);
+	}
+
+	private static $getInstructionMethodTopics_stmts = array();
+	/**
+	 * Answer all of the instruction_method topics
+	 *
+	 * @return osid_course_TopicList
+	 * @access private
+	 * @since 4/24/09
+	 */
+	private function getInstructionMethodTopics () {
+	$catalogWhere = $this->getCatalogWhereTerms();
+	if (!isset(self::$getInstructionMethodTopics_stmts[$catalogWhere])) {
+		$query =
+"SELECT
+	GTVINSM_CODE,
+	GTVINSM_DESC
+FROM
+	SSBSECT
+	INNER JOIN catalog_term ON SSBSECT_TERM_CODE = term_code
+	INNER JOIN GTVINSM ON SSBSECT_INSM_CODE = GTVINSM_CODE
+WHERE
+	".$this->getCatalogWhereTerms()."
+
+GROUP BY GTVINSM_CODE
+";
+			self::$getInstructionMethodTopics_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
+		}
+
+		$parameters = $this->getCatalogParameters();
+		self::$getInstructionMethodTopics_stmts[$catalogWhere]->execute($parameters);
+
+		$topics = array();
+		while ($row = self::$getInstructionMethodTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
+			$topics[] = new banner_course_Topic(
+						$this->getOsidIdFromString($row['GTVINSM_CODE'], 'topic/instruction_method/'),
+						trim($row['GTVINSM_DESC']),
+						'',
+						new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/instruction_method")
+				);
+		}
+		self::$getInstructionMethodTopics_stmts[$catalogWhere]->closeCursor();
+		return new phpkit_course_ArrayTopicList($topics);
+	}
+
 	/**
 	 * Answer the catalog where terms
 	 *
@@ -974,6 +1068,8 @@ GROUP BY STVBLCK_CODE
 				return $this->getLevelTopics();
 			case 'genera:topic/block':
 				return $this->getBlockTopics();
+			case 'genera:topic/instruction_method':
+				return $this->getInstructionMethodTopics();
 			default:
 				return new phpkit_EmptyList('osid_course_TopicList');
 		}
@@ -1045,7 +1141,8 @@ GROUP BY STVBLCK_CODE
 		$topicList->addList($this->getDivisionTopics());
 		$topicList->addList($this->getRequirementTopics());
 		$topicList->addList($this->getLevelTopics());
-	$topicList->addList($this->getBlockTopics());
+		$topicList->addList($this->getBlockTopics());
+		$topicList->addList($this->getInstructionMethodTopics());
 		return $topicList;
 	}
 
