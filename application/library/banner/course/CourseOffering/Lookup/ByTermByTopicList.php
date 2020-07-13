@@ -70,6 +70,9 @@ class banner_course_CourseOffering_Lookup_ByTermByTopicList
 			case 'block':
 				$params[':block_code'] = $value;
 				return $params;
+			case 'instruction_method':
+				$params[':insm_code'] = $value;
+				return $params;
 			default:
 				throw new osid_NotFoundException('No topic found with category '.$type);
 		}
@@ -97,6 +100,8 @@ class banner_course_CourseOffering_Lookup_ByTermByTopicList
 				return 'SSBSECT_TERM_CODE = :term_code AND SCRLEVL_LEVL_CODE = :level_code';
 			case 'block':
 				return 'SSBSECT_TERM_CODE = :term_code AND SSRBLCK_BLCK_CODE = :block_code';
+			case 'instruction_method':
+				return 'SSBSECT_TERM_CODE = :term_code AND SSBSECT_INSM_CODE = :insm_code';
 			default:
 				throw new osid_NotFoundException('No topic found with category '.$type);
 		}

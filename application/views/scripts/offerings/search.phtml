@@ -371,7 +371,6 @@ print $this->paginationControl($this->paginator, 'Sliding', 'ItemPaginationContr
 	<tbody>
 <?php
 	$alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
-	$instructionMethodRecordType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instruction_method');
 
 	foreach ($this->paginator as $section) {
 		$offeringParams = array(
@@ -439,14 +438,17 @@ print "\n\t<dl>";
 print "\n\t\t<dt>Type:</dt>";
 print "\n\t\t<dd>".$this->escape($section->getGenusType()->getDisplayName())."</dd>";
 
-if ($section->hasRecordType($instructionMethodRecordType)) {
-	$instructionMethodRecord = $section->getCourseOfferingRecord($instructionMethodRecordType);
-	if ($instructionMethodRecord->hasInstructionMethod()) {
-		print "\n\t\t<dt>Course Modality:</dt>";
-		print "\n\t\t<dd>";
-		print $this->escape($instructionMethodRecord->getInstructionMethod()->getDisplayName());
-		print "</dd>";
+$topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/instruction_method"));
+if (!empty($topics)) {
+	print "\n\t\t<dt>Course Modality:</dt>";
+	print "\n\t\t<dd>";
+	foreach ($topics as $topic) {
+		$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
+		print "<a href=\"".$this->url($topicParams)."\">";
+		print $this->escape($topic->getDisplayName());
+		print "</a> ";
 	}
+	print "</dd>";
 }
 
 print "\n\t\t<dt>Term:</dt>";

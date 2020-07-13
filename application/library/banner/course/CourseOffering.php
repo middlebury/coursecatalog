@@ -22,8 +22,7 @@ class banner_course_CourseOffering
 	middlebury_course_CourseOffering_AlternatesRecord,
 	middlebury_course_CourseOffering_LinkRecord,
 	middlebury_course_CourseOffering_BannerIdentifiersRecord,
-	middlebury_course_CourseOffering_EnrollmentNumbersRecord,
-	middlebury_course_CourseOffering_InstructionMethodRecord
+	middlebury_course_CourseOffering_EnrollmentNumbersRecord
 {
 	/**
 	 * @var array $requiredFields;
@@ -105,7 +104,6 @@ class banner_course_CourseOffering
 		$this->linkType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:link');
 		$this->identifiersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
 		$this->enrollmentNumbersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:enrollment_numbers');
-		$this->instructionMethodType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instruction_method');
 
 		parent::__construct();
 		$this->checkRow($row);
@@ -142,7 +140,6 @@ class banner_course_CourseOffering
 		$this->addRecordType($this->linkType);
 		$this->addRecordType($this->identifiersType);
 		$this->addRecordType($this->enrollmentNumbersType);
-		$this->addRecordType($this->instructionMethodType);
 
 		$properties = array();
 		$properties[] = new phpkit_Property('Course Reference Number', 'CRN', 'An number that uniquely identifies a section within a term.', $row['SSBSECT_CRN']);
@@ -381,6 +378,8 @@ class banner_course_CourseOffering
 				$this->topicIds[] = $this->getOsidIdFromString($this->row['SSBSECT_SUBJ_CODE'], 'topic/subject/');
 			if ($this->row['SCBCRSE_DIVS_CODE'])
 				$this->topicIds[] = $this->getOsidIdFromString($this->row['SCBCRSE_DIVS_CODE'], 'topic/division/');
+			if ($this->row['GTVINSM_CODE'])
+				$this->topicIds[] = $this->getOsidIdFromString($this->row['GTVINSM_CODE'], 'topic/instruction_method/');
 
 		$this->topicIds = array_merge(
 			$this->topicIds,
@@ -1411,42 +1410,6 @@ class banner_course_CourseOffering
 	 */
 	public function getSeatsAvailable () {
 		return intval($this->row['SSBSECT_SEATS_AVAIL']);
-	}
-
-/*********************************************************
- * InstructionMethodRecord support
- *********************************************************/
-
-	/**
-	 *  Answer if this offering has an instruction method defined.
-	 *
-	 *  @return bool True if an instruction method is defined.
-	 *  @compliance mandatory This method must be implemented.
-	 */
-	 public function hasInstructionMethod() {
-		 return (!is_null($this->row['GTVINSM_CODE']));
-	 }
-
-	/**
-	 *  Answer the Type of instruction method this offering uses.
-	 *
-	 *  @return object osid_type_Type The instruction method type.
-	 *  @compliance mandatory This method must be implemented.
-	 *  @throws osid_OperationFailedException unable to complete request
-	 */
-	public function getInstructionMethod() {
-		if ($this->hasInstructionMethod()) {
-			return new phpkit_type_Type(
-				'urn', 										// namespace
-				$this->session->getIdAuthority(), 			// id authority
-				'instruction_method/'.$this->row['GTVINSM_CODE'], 	// identifier
-				'Instruction Methods', 						// domain
-				trim($this->row['GTVINSM_DESC']), 						// display name
-				trim($this->row['GTVINSM_CODE'])						// display label
-			);
-		} else {
-			throw new osid_OperationFailedException('Course Offering does not have an instruction method.');
-		}
 	}
 
 /*********************************************************
