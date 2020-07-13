@@ -88,6 +88,10 @@ table.search_results td {
 
 table.search_results td.column1 {
 	width: 200px;
+	border-right: none;
+}
+table.search_results td.column2 {
+	border-left: none;
 }
 
 div.search_results_item_pagination {
