@@ -33,11 +33,6 @@ abstract class AbstractCatalogController
 		$this->view->catalogIdString = $this->_getParam('catalog');
 		$this->view->termIdString = $this->_getParam('term');
 		$this->view->addHelperPath(APPLICATION_PATH.'/views/helpers', 'Catalog_View_Helper');
-		// Register the Escaper class as a helper as AutoLoading wasn't working
-		// due to class-naming convention miss-match.
-		$escaper = new Zend\Escaper\Escaper('utf-8');
-		$this->view->registerHelper($escaper, 'EscapeHtmlAttr');
-		$this->view->registerHelper($escaper, 'EscapeHtml');
 
 		$this->view->doctype('XHTML1_TRANSITIONAL');
 

@@ -50,7 +50,7 @@ $this->headScript()->appendScript(
 while ($this->terms->hasNext()) {
 	$term = $this->terms->getNextTerm();
 	print "\n\t\t\t\t\t<option value='";
-	print $this->escapeHtmlAttr($this->getStringFromOsidId($term->getId()));
+	print htmlentities($this->getStringFromOsidId($term->getId()), ENT_QUOTES);
 	print "'";
 	if (isset($this->selectedTermId) && $term->getId()->isEqual($this->selectedTermId))
 		print " selected='selected'";
@@ -71,7 +71,7 @@ while ($this->terms->hasNext()) {
 while ($this->subjects->hasNext()) {
 	$topic = $this->subjects->getNextTopic();
 	print "\n\t\t\t\t\t<option value='";
-	print $this->escapeHtmlAttr($this->getStringFromOsidId($topic->getId()));
+	print htmlentities($this->getStringFromOsidId($topic->getId()), ENT_QUOTES);
 	print "'";
 	if (isset($this->selectedDepartmentId) && $topic->getId()->isEqual($this->selectedDepartmentId))
 		print " selected='selected'";
@@ -84,7 +84,7 @@ while ($this->subjects->hasNext()) {
 while ($this->departments->hasNext()) {
 	$topic = $this->departments->getNextTopic();
 	print "\n\t\t\t\t\t<option value='";
-	print $this->escapeHtmlAttr($this->getStringFromOsidId($topic->getId()));
+	print htmlentities($this->getStringFromOsidId($topic->getId()), ENT_QUOTES);
 	print "'";
 	if (isset($this->selectedDepartmentId) && $topic->getId()->isEqual($this->selectedDepartmentId))
 		print " selected='selected'";
@@ -110,7 +110,7 @@ while ($this->requirements->hasNext()) {
 
 	$topic = $this->requirements->getNextTopic();
 	print "\n\t\t\t\t<input type='checkbox' name='requirement[]' value='";
-	print $this->escapeHtmlAttr($this->getStringFromOsidId($topic->getId()));
+	print htmlentities($this->getStringFromOsidId($topic->getId()), ENT_QUOTES);
 	print "'";
 	foreach ($this->selectedRequirementIds as $selectedId) {
 		if ($topic->getId()->isEqual($selectedId)) {
@@ -130,7 +130,7 @@ while ($this->requirements->hasNext()) {
 		<tr>
 			<th>Keywords:</th>
 			<td>
-				<input class='text_input' type='text' name='keywords' value='<?php print $this->escapeHtmlAttr($this->keywords); ?>' />
+				<input class='text_input' type='text' name='keywords' value='<?php print htmlentities($this->keywords, ENT_QUOTES); ?>' />
 				<div class='help_text'>By default results only have to match one of the supplied keywords. Use a plus (+) before a word to require it or a minus (-) to exclude it. Use an asterisk (*) as a wildcard.</div>
 			</td>
 		</tr>
@@ -196,7 +196,7 @@ while ($this->genusTypes->hasNext()) {
 
 	$type = $this->genusTypes->getNextType();
 	print "\n\t\t\t\t<input type='checkbox' name='type[]' value='";
-	print $this->escapeHtmlAttr($this->getStringFromOsidType($type));
+	print htmlentities($this->getStringFromOsidType($type), ENT_QUOTES);
 	print "'";
 	foreach ($this->selectedGenusTypes as $selectedType) {
 		if ($type->isEqual($selectedType)) {
@@ -227,7 +227,7 @@ while ($this->blocks->hasNext()) {
 
 	$topic = $this->blocks->getNextTopic();
 	print "\n\t\t\t\t<input type='checkbox' name='block[]' value='";
-	print $this->escapeHtmlAttr($this->getStringFromOsidId($topic->getId()));
+	print htmlentities($this->getStringFromOsidId($topic->getId()), ENT_QUOTES);
 	print "'";
 	foreach ($this->selectedBlockIds as $selectedId) {
 		if ($topic->getId()->isEqual($selectedId)) {
@@ -259,7 +259,7 @@ while ($this->instructionMethods->hasNext()) {
 
 	$topic = $this->instructionMethods->getNextTopic();
 	print "\n\t\t\t\t<input type='checkbox' name='instruction_method[]' value='";
-	print $this->escapeHtmlAttr($this->getStringFromOsidId($topic->getId()));
+	print htmlentities($this->getStringFromOsidId($topic->getId()), ENT_QUOTES);
 	print "'";
 	foreach ($this->selectedInstructionMethodIds as $selectedId) {
 		if ($topic->getId()->isEqual($selectedId)) {
@@ -290,7 +290,7 @@ while ($this->levels->hasNext()) {
 
 	$topic = $this->levels->getNextTopic();
 	print "\n\t\t\t\t<input type='checkbox' name='level[]' value='";
-	print $this->escapeHtmlAttr($this->getStringFromOsidId($topic->getId()));
+	print htmlentities($this->getStringFromOsidId($topic->getId()), ENT_QUOTES);
 	print "'";
 	foreach ($this->selectedLevelIds as $selectedId) {
 		if ($topic->getId()->isEqual($selectedId)) {
@@ -323,7 +323,7 @@ while ($this->campuses->hasNext()) {
 
 	$campus = $this->campuses->getNextResource();
 	print "\n\t\t\t\t<input type='checkbox' name='location[]' value='";
-	print $this->escapeHtmlAttr($this->getStringFromOsidId($campus->getId()));
+	print htmlentities($this->getStringFromOsidId($campus->getId()), ENT_QUOTES);
 	print "'";
 
 	foreach ($this->selectedCampusIds as $selectedId) {
