@@ -463,7 +463,7 @@ CREATE TABLE IF NOT EXISTS `SSBSECT` (
 
 CREATE TABLE IF NOT EXISTS `SSBXLST` (
   `SSBXLST_TERM_CODE` varchar(6) NOT NULL COMMENT 'Cross List Section Term Code.',
-  `SSBXLST_XLST_GROUP` varchar(2) NOT NULL COMMENT 'Cross List Group Identifier.',
+  `SSBXLST_XLST_GROUP` varchar(15) NOT NULL COMMENT 'Cross List Group Identifier.',
   `SSBXLST_DESC` varchar(30) default NULL COMMENT 'Cross List Group Identifier.',
   `SSBXLST_MAX_ENRL` int(4) NOT NULL COMMENT 'Maxmum Cross List Enrollment.',
   `SSBXLST_ENRL` int(4) NOT NULL COMMENT 'Corss List Section Enrollment.',
