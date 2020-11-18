@@ -868,8 +868,14 @@ class banner_course_CourseOffering
 	 *  @throws osid_PermissionDeniedException authorization failure
 	 */
 	public function getAlternates() {
-		$lookupSession = $this->session->getCourseOfferingLookupSession();
-		return $lookupSession->getCourseOfferingsByIds($this->getAlternateIds());
+		// Get a lookup session for all catalogs in case cross-lists span catalogs.
+		$lookupSession = $this->session->getManager()->getCourseOfferingLookupSession();
+		$lookupSession->useFederatedCourseCatalogView();
+		try {
+			return $lookupSession->getCourseOfferingsByIds($this->getAlternateIds());
+		} catch (osid_NotFoundException $e) {
+			throw new osid_OperationFailedException("Could not load alternates for ".$this->getId()->getIdentifier(), 404, $e);
+		}
 	}
 
 	/**
