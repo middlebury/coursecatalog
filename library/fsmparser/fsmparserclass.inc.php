@@ -39,8 +39,8 @@ class FSMParser {
    $dataset=explode("\n",$data);
    foreach($dataset as $line){
     if(strlen(trim($line))){
-     if($line{0}=="#") continue;
-     if($line{0}=="\t") { $do.=trim($line); continue; }
+     if($line[0]=="#") continue;
+     if($line[0]=="\t") { $do.=trim($line); continue; }
      $comp=explode(" ",$line);
      $cs=($comp[0]=="*")?NULL:trim($comp[0]);
      $ex=trim($comp[1]);
