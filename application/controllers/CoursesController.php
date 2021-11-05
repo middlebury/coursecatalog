@@ -434,6 +434,8 @@ class CoursesController
 		$this->setCacheControlHeaders();
 		$this->getResponse()->sendHeaders();
 
+		$now = $this->DateTime_getTimestamp(new DateTime);
+
 		// Close the session before we send headers and content.
 		session_write_close();
 
@@ -526,6 +528,8 @@ class CoursesController
 						print ' type="current"';
 					} else if ($currentEndTime < $this->DateTime_getTimestamp($term->getEndTime())) {
 						print ' type="future"';
+					} else if ($now > $this->DateTime_getTimestamp($term->getStartTime()) && $now < $this->DateTime_getTimestamp($term->getEndTime())) {
+						print ' type="current"';
 					} else {
 						print ' type="past"';
 					}
