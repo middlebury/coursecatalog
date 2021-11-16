@@ -1,1 +1,0 @@
-ALTER TABLE `course_catalog` ADD `prnt_ind_to_exclude` CHAR(1) NULL DEFAULT NULL COMMENT 'Sections with a print indicator matching this value will be excluded from the catalog. If NULL, all will be included.' AFTER `catalog_title`;
