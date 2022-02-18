@@ -242,7 +242,6 @@ class CoursesController
 		exit;
 	}
 
-
 	/**
 	 * Search for courses
 	 *
@@ -316,7 +315,7 @@ class CoursesController
 		// Limit to just active courses
 		$query->matchGenusType(new phpkit_type_URNInetType("urn:inet:middlebury.edu:status-active"), true);
 
-		$courses = $searchSession->getCoursesByQuery($query);
+		$courses = $searchSession->getCoursesByQuery($query)->getCourses();
 
 		$topicLookup = $this->_helper->osid->getCourseManager()->getTopicLookupSession();
 		$topicLookup->useFederatedCourseCatalogView();

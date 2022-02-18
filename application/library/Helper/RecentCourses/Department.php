@@ -23,12 +23,12 @@ class Helper_RecentCourses_Department
 	/**
 	 * Group alternate courses
 	 *
-	 * @param osid_course_CourseSearchResults $courses
+	 * @param osid_course_CourseList $courses
 	 * @return array A two-dimensional array of course objects array(array($course, $equivCourse), array($course), array($course, $equivCourse));
 	 * @access protected
 	 * @since 11/13/09
 	 */
-	protected function groupAlternates (osid_course_CourseSearchResults $courses) {
+	protected function groupAlternates (osid_course_CourseList $courses) {
 		while ($courses->hasNext()) {
 
 			$course = $courses->getNextCourse();

@@ -679,7 +679,7 @@
 		$order->orderByNumber();
 		$order->ascend();
 		$search->orderCourseResults($order);
-		$courses = $this->courseSearchSession->getCoursesBySearch($query, $search);
+		$courses = $this->courseSearchSession->getCoursesBySearch($query, $search)->getCourses();
 
 		$i = 0;
 		while ($courses->hasNext()) {

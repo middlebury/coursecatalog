@@ -182,7 +182,7 @@ class JsonController
 		$termQueryRecord = $query->getCourseQueryRecord(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:term'));
 		$termQueryRecord->matchTermId($termId, true);
 
-		$courses = $searchSession->getCoursesByQuery($query);
+		$courses = $searchSession->getCoursesByQuery($query)->getCourses();
 		$result = array('courses' => array());
 		while ($courses->hasNext()) {
 			$result['courses'][] = $this->_getCourseResult($courses->getNextCourse(), $termId, $offeringLookupSession);

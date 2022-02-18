@@ -24,12 +24,12 @@ class Helper_RecentCourses_All
 	/**
 	 * Constructor
 	 *
-	 * @param osid_course_CourseSearchResults $courses
+	 * @param osid_course_CourseList $courses
 	 * @return void
 	 * @access public
 	 * @since 11/16/09
 	 */
-	public function __construct (osid_course_CourseSearchResults $courses) {
+	public function __construct (osid_course_CourseList $courses) {
 		$this->termsCache = array();
 		parent::__construct($courses);
 	}
