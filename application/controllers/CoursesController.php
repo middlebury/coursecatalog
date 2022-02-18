@@ -326,7 +326,66 @@ class CoursesController
 			$recentCourses->setRecentInterval(new DateInterval($this->_getParam('cutoff')));
 		}
 		$this->outputCourseFeed($recentCourses, htmlentities('Courses in  '.$topic->getDisplayName()), $searchUrl);
+	}
 
+	/**
+	 * Search for courses
+	 *
+	 * @return void
+	 * @access public
+	 * @since 6/15/09
+	 */
+	public function byidxmlAction () {
+		$this->_helper->layout->disableLayout();
+		$this->_helper->viewRenderer->setNoRender();
+
+		if (!$this->_getParam('catalog')) {
+			header('HTTP/1.1 400 Bad Request');
+			print "A catalog must be specified.";
+			exit;
+		}
+		try {
+			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+			$lookupSession = $this->_helper->osid->getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
+			$this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+		} catch (osid_InvalidArgumentException $e) {
+			header('HTTP/1.1 400 Bad Request');
+			print "The catalog id specified was not of the correct format.";
+			exit;
+		} catch (osid_NotFoundException $e) {
+			header('HTTP/1.1 404 Not Found');
+			print "The catalog id specified was not found.";
+			exit;
+		}
+
+		if (!$this->_getParam('course')) {
+			header('HTTP/1.1 400 Bad Request');
+			print "'courses' must be specified.";
+			exit;
+		}
+
+		$courseIds = array();
+		if (is_array($this->_getParam('course'))) {
+			foreach ($this->_getParam('course') as $idString) {
+				$courseIds[] = $this->_helper->osidId->fromString($idString);
+			}
+		} else {
+			$courseIds[] = $this->_helper->osidId->fromString($this->_getParam('course'));
+		}
+
+		$courses = $lookupSession->getCoursesByIds(new phpkit_id_ArrayIdList($courseIds));
+
+		$recentCourses = new Helper_RecentCourses_Department($courses);
+		if ($this->_getParam('cutoff')) {
+			$recentCourses->setRecentInterval(new DateInterval($this->_getParam('cutoff')));
+		}
+
+		$searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('courses', 'byid', null, [
+			'catalog' => $this->_getParam('catalog'),
+			'courses' => $this->_getParam('courses'),
+			'cuttoff' => $this->_getParam('cutoff'),
+		]));
+		$this->outputCourseFeed($recentCourses, 'Courses by Id', $searchUrl);
 	}
 
 	/**
