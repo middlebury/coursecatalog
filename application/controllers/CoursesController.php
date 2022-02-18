@@ -358,19 +358,19 @@ class CoursesController
 			exit;
 		}
 
-		if (!$this->_getParam('course')) {
+		if (!$this->_getParam('id')) {
 			header('HTTP/1.1 400 Bad Request');
-			print "'courses' must be specified.";
+			print "'id[]' must be specified.";
 			exit;
 		}
 
 		$courseIds = array();
-		if (is_array($this->_getParam('course'))) {
-			foreach ($this->_getParam('course') as $idString) {
+		if (is_array($this->_getParam('id'))) {
+			foreach ($this->_getParam('id') as $idString) {
 				$courseIds[] = $this->_helper->osidId->fromString($idString);
 			}
 		} else {
-			$courseIds[] = $this->_helper->osidId->fromString($this->_getParam('course'));
+			$courseIds[] = $this->_helper->osidId->fromString($this->_getParam('id'));
 		}
 
 		$courses = $lookupSession->getCoursesByIds(new phpkit_id_ArrayIdList($courseIds));
@@ -380,9 +380,9 @@ class CoursesController
 			$recentCourses->setRecentInterval(new DateInterval($this->_getParam('cutoff')));
 		}
 
-		$searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('courses', 'byid', null, [
+		$searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('courses', 'byidxml', null, [
 			'catalog' => $this->_getParam('catalog'),
-			'courses' => $this->_getParam('courses'),
+			'id' => $this->_getParam('id'),
 			'cuttoff' => $this->_getParam('cutoff'),
 		]));
 		$this->outputCourseFeed($recentCourses, 'Courses by Id', $searchUrl);
