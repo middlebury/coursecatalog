@@ -572,7 +572,7 @@
 				file_put_contents('php://stderr',str_pad($section['type'].': ', 15, ' ', STR_PAD_RIGHT).$text."\n");
 			}
 			$progressUpdateStmt->execute([
-				'Printing section ' . $currentSection . ' of ' . $totalSections . ' (' . $section['type'] . ' ' . $text . ' )...',
+				substr('Printing section ' . $currentSection . ' of ' . $totalSections . ' (' . $section['type'] . ' ' . $text . ' )', 0, 250) . '...',
 				getmypid(),
 			]);
 			switch ($section['type']) {
@@ -596,7 +596,7 @@
 			}
 
 			$progressUpdateStmt->execute([
-				'Printed section ' . $currentSection . ' of ' . $totalSections . '(' . $section['type'] . ' ' . $text . ')',
+				substr('Printed section ' . $currentSection . ' of ' . $totalSections . ' (' . $section['type'] . ' ' . $text . ' )', 0, 250) . '...',
 				getmypid(),
 			]);
 			$currentSection++;
