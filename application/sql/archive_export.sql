@@ -87,7 +87,7 @@ CREATE TABLE `archive_jobs` (
 
 CREATE TABLE `archive_export_progress` (
   `pid` int(11) NOT NULL,
-  `progress` varchar(50) DEFAULT NULL
+  `progress` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
