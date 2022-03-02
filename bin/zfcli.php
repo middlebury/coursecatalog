@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-error_reporting(E_ALL|E_STRICT);
+error_reporting(E_ALL & ~E_DEPRECATED);
 ini_set('display_errors',true);
 date_default_timezone_set('America/New_York');
 
