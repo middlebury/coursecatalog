@@ -233,7 +233,7 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
 		$row = self::$getCourse_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
 		self::$getCourse_stmts[$catalogWhere]->closeCursor();
 
-		if (!($row['SCBCRSE_SUBJ_CODE'] && $row['SCBCRSE_CRSE_NUMB']))
+		if (!$row || !($row['SCBCRSE_SUBJ_CODE'] && $row['SCBCRSE_CRSE_NUMB']))
 			throw new osid_NotFoundException("Could not find a course matching the id-component '$courseIdString' for the catalog '".$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/')."'.");
 
 		return new banner_course_Course(
