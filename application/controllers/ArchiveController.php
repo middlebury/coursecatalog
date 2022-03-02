@@ -36,6 +36,12 @@
 
 		parent::init();
 		$this->_helper->layout()->setLayout('midd_archive');
+
+		// Store an HTTP client configuration for later use.
+		$this->httpClientConfig = [
+			'maxredirects' => 10,
+			'timeout'      => 30,
+		];
 	}
 
 	/**
@@ -440,14 +446,7 @@
 
 		// Increase the timeout when loading requirements documents:
 		if (!empty($config->catalog->archive->requirements_fetch_timeout)) {
-			$options = [
-				'http' => [
-					'method' => 'GET',
-					'timeout' => $config->catalog->archive->requirements_fetch_timeout
-				]
-			];
-			$context = stream_context_create($options);
-			libxml_set_streams_context($context);
+			$this->httpClientConfig['timeout'] = $config->catalog->archive->requirements_fetch_timeout;
 		}
 		$sections = array();
 		if ($request->getParam('revision_id') === 'latest') {
@@ -609,12 +608,53 @@
 	 * @param $url
 	 * @return string
 	 * @access protected
-	 * @since 4/26/10
 	 */
-	protected function getRequirements ($url) {
+	protected function getRequirements($url) {
+		// D9 URL, don't bother with RSS attempt.
+		if (preg_match('#^https://www\.middlebury\.edu/(college|institute)/#', $url)) {
+			try {
+				return $this->getRequirementsFromD9Html($url);
+			}
+			catch (Exception $e) {
+				return $e->getMessage();
+			}
+		}
+		// D7 URL (might redirect to D9)
+		else {
+			try {
+				try {
+					return $this->getRequirementsFromD7Rss($url);
+				}
+				catch (RequirementNotXmlException $e) {
+					return $this->getRequirementsFromD9Html($url);
+				}
+			}
+			catch (Exception $e) {
+				return $e->getMessage();
+			}
+		}
+	}
+
+	/**
+	 * Answer requirements text
+	 *
+	 * @param $url
+	 * @return string
+	 * @access protected
+	 */
+	protected function getRequirementsFromD7Rss ($url) {
 		$feedUrl = $url.'/feed';
+		$client = $this->getHttpClient();
+		$client->setUri($feedUrl);
+		$response = $client->request();
+		if ($response->getStatus() != 200) {
+			throw new RequirementRequestFailedException('Received a non-success status for requirements RSS feed (' . $response->getStatus() . ') at ' . $feedUrl, $response->getStatus());
+		}
+		if (!preg_match('#^(text|application)/(xml|rss\+xml)($|;)#', $response->getHeader('Content-Type'))) {
+			throw new RequirementNotXmlException('Received a non-xml Content-Type for requirements RSS (' . $response->getHeader('Content-Type') . ') at  ' . $feedUrl);
+		}
 		$feedDoc = new DOMDocument;
-		$feedDoc->load($feedUrl);
+		$feedDoc->loadXml($response->getBody());
 		$xpath = new DOMXPath($feedDoc);
 		$descriptions = $xpath->query('/rss/channel/item/description');
 		ob_start();
@@ -643,6 +683,41 @@
 				print $html->saveHTML();
 			}
 
+		}
+		return ob_get_clean();
+	}
+
+	/**
+	 * Answer requirements text
+	 *
+	 * @param $url
+	 * @return string
+	 * @access protected
+	 */
+	protected function getRequirementsFromD9Html ($url) {
+		$client = $this->getHttpClient();
+		$client->setUri($url);
+		$response = $client->request();
+		if ($response->getStatus() != 200) {
+			throw new RequirementRequestFailedException('Received a non-success status for requirements page (' . $response->getStatus() . ') at  ' . $url, $response->getStatus());
+		}
+		if (!preg_match('#^text/html($|;)#', $response->getHeader('Content-Type'))) {
+			throw new RequirementNotXmlException('Received a non-HTML Content-Type for requirements page (' . $response->getHeader('Content-Type') . ') at  ' . $url);
+		}
+		$feedDoc = new DOMDocument;
+		$feedDoc->loadHTML($response->getBody());
+		$xpath = new DOMXPath($feedDoc);
+		ob_start();
+		// Only print out the inner-HTML of the body fields, excluding taxonomy
+		// terms and any other fields printed. Note that this is dependent
+		// on the Drupal markup and will need to be updated if that changes.
+		$bodies = $xpath->query('//div[contains(@class, "paragraphs")]/div');
+		if ($bodies->length) {
+			foreach ($bodies as $domBody) {
+				foreach ($domBody->childNodes as $child) {
+					print $feedDoc->saveHTML($child);
+				}
+			}
 		}
 		return ob_get_clean();
 	}
@@ -1197,4 +1272,14 @@
 		return $primary;
 	}
 
+	protected function getHttpClient() {
+		$client = new Zend_Http_Client();
+		$client->setConfig($this->httpClientConfig);
+		return $client;
+	}
+
 }
+
+class RequirementRequestFailedException extends Exception { }
+
+class RequirementNotXmlException extends Exception { }
