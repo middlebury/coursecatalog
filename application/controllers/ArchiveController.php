@@ -323,6 +323,10 @@
 				$revision = $job['revision_id'];
 			}
 
+			if ($verbose) {
+				file_put_contents('php://stderr', 'Beginning export: '.$job['config_id'].' '.$job['export_path'].' '.$job['terms'].' '.$revision . "\n");
+			}
+
 			$this->_helper->exportJob($job['export_path'], $job['config_id'], $terms, $revision, $verbose);
 		}
 	}
@@ -567,6 +571,10 @@
 				}
 				file_put_contents('php://stderr',str_pad($section['type'].': ', 15, ' ', STR_PAD_RIGHT).$text."\n");
 			}
+			$progressUpdateStmt->execute([
+				'Printing section ' . $currentSection . ' of ' . $totalSections . ' (' . $section['type'] . ' ' . $text . ' )...',
+				getmypid(),
+			]);
 			switch ($section['type']) {
 				case 'h1':
 				case 'toc':
@@ -588,7 +596,7 @@
 			}
 
 			$progressUpdateStmt->execute([
-				'Printed section ' . $currentSection . ' of ' . $totalSections,
+				'Printed section ' . $currentSection . ' of ' . $totalSections . '(' . $section['type'] . ' ' . $text . ')',
 				getmypid(),
 			]);
 			$currentSection++;
