@@ -713,7 +713,10 @@
 			throw new RequirementNotXmlException('Received a non-HTML Content-Type for requirements page (' . $response->getHeader('Content-Type') . ') at  ' . $url);
 		}
 		$feedDoc = new DOMDocument;
+		$feedDoc->encoding = 'utf-8';
+		libxml_use_internal_errors(true);
 		$feedDoc->loadHTML($response->getBody());
+		libxml_clear_errors();
 		$xpath = new DOMXPath($feedDoc);
 		ob_start();
 		// Only print out the inner-HTML of the body fields, excluding taxonomy
