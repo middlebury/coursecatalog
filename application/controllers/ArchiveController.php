@@ -560,15 +560,15 @@
 		$totalSections = count($sections);
 		$currentSection = 1;
 		foreach ($this->view->sections as $key => &$section) {
+			$text = '';
+			if (!empty($section['text'])) {
+				$text = $section['text'];
+			} else if (!empty($section['url'])) {
+				$text = $section['url'];
+			}else if (!empty($section['id'])) {
+				$text = $this->_helper->osidId->toString($section['id']);
+			}
 			if ($request->getParam('verbose')) {
-				$text = '';
-				if (!empty($section['text'])) {
-					$text = $section['text'];
-				} else if (!empty($section['url'])) {
-					$text = $section['url'];
-				}else if (!empty($section['id'])) {
-					$text = $this->_helper->osidId->toString($section['id']);
-				}
 				file_put_contents('php://stderr',str_pad($section['type'].': ', 15, ' ', STR_PAD_RIGHT).$text."\n");
 			}
 			$progressUpdateStmt->execute([
