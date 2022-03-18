@@ -553,7 +553,7 @@ CREATE TABLE IF NOT EXISTS `SSRMEET` (
 
 CREATE TABLE IF NOT EXISTS `SSRXLST` (
   `SSRXLST_TERM_CODE` varchar(6) NOT NULL COMMENT 'Cross List Section Term.',
-  `SSRXLST_XLST_GROUP` varchar(2) NOT NULL COMMENT 'Cross List Group Identifier Number.',
+  `SSRXLST_XLST_GROUP` varchar(15) NOT NULL COMMENT 'Cross List Group Identifier Number.',
   `SSRXLST_CRN` varchar(5) NOT NULL COMMENT 'Corss List Section CRN.',
   `SSRXLST_ACTIVITY_DATE` date NOT NULL COMMENT 'This field identifies the most recent date a record was created or updated.',
   PRIMARY KEY  (`SSRXLST_TERM_CODE`,`SSRXLST_XLST_GROUP`,`SSRXLST_CRN`),
