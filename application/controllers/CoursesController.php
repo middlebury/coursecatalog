@@ -467,7 +467,12 @@ class CoursesController
 		$instructorRecord = $query->getCourseOfferingQueryRecord(new phpkit_type_URNInetType("urn:inet:middlebury.edu:record:instructors"));
 		$instructorRecord->matchInstructorId($instructorId, true);
 
-		$courseOfferings = $offeringSearchSession->getCourseOfferingsByQuery($query);
+		$order = $offeringSearchSession->getCourseOfferingSearchOrder();
+		$order->orderByDisplayName();
+		$search = $offeringSearchSession->getCourseOfferingSearch();
+		$search->orderCourseOfferingResults($order);
+
+		$courseOfferings = $offeringSearchSession->getCourseOfferingsBySearch($query, $search);
 
 		$recentCourses = new Helper_RecentCourses_Instructor($courseOfferings, $courseLookupSession);
 		if ($this->_getParam('cutoff')) {
