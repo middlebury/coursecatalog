@@ -373,6 +373,9 @@ class CoursesController
 			$courseIds[] = $this->_helper->osidId->fromString($this->_getParam('id'));
 		}
 
+		// Use Comparative view to include any found courses, ignoring missing ids.
+		$lookupSession->useComparativeCourseView();
+
 		$courses = $lookupSession->getCoursesByIds(new phpkit_id_ArrayIdList($courseIds));
 
 		$recentCourses = new Helper_RecentCourses_Department($courses);
