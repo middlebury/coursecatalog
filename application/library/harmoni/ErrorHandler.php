@@ -117,6 +117,11 @@ class harmoni_ErrorHandler {
 			E_STRICT			=> 'Runtime Notice'
 		);
 		
+		// Added in PHP 5.3
+		if (defined('E_DEPRECATED'))
+			$this->errorTypes[E_DEPRECATED] = 'Deprecated Warning';
+		if (defined('E_USER_DEPRECATED'))
+			$this->errorTypes[E_USER_DEPRECATED] = 'User Deprecated Warning';
 		$this->defaultFatalErrors = (E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR);
 		$this->fatalErrors = $this->defaultFatalErrors;
 		
