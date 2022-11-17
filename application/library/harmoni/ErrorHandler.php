@@ -263,14 +263,21 @@ class harmoni_ErrorHandler {
 			$type = $exception->getType();
 		else
 			$type = get_class($exception);
-		
+
+		$trace = $exception->getTrace();
+		array_unshift($trace, [
+			'file' => $exception->getFile(),
+			'line' => $exception->getLine(),
+			'function' => '',
+		]);
+
 		if (ini_get('html_errors')) {
 			if (method_exists($exception, 'getHtmlMessage'))
-				self::printHtmlMessage($priority.' of type', $type, $exception->getHtmlMessage(), $exception->getTrace(), $exception->getCode());
+				self::printHtmlMessage($priority.' of type', $type, $exception->getHtmlMessage(), $trace, $exception->getCode());
 			else
-				self::printMessage($priority.' of type', $type, $exception->getMessage(), $exception->getTrace(), $exception->getCode());
+				self::printMessage($priority.' of type', $type, $exception->getMessage(), $trace, $exception->getCode());
 		} else {
-			self::printPlainTextMessage($priority.' of type', $type, $exception->getMessage(), $exception->getTrace(), $exception->getCode());
+			self::printPlainTextMessage($priority.' of type', $type, $exception->getMessage(), $trace, $exception->getCode());
 		}
 		
 		if (method_exists($exception, 'getPrevious') && is_object($exception->getPrevious())) {
