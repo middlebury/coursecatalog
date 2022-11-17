@@ -158,8 +158,6 @@ class Auth_Action_Helper_Cas
 	 */
 	protected static function initializePhpCas () {
 		if (!self::$phpcasInitialized) {
-			require_once('CAS.php');
-
 			$config = Zend_Registry::getInstance()->config;
 
 			if ($config->cas->debug_file) {
@@ -171,6 +169,7 @@ class Auth_Action_Helper_Cas
 				$config->cas->host,
 				(int)$config->cas->port,
 				$config->cas->path,
+				$config->cas->service_urls->toArray(),
 				false);
 
 			if ($config->cas->server_cert) {

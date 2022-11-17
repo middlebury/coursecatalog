@@ -1,0 +1,6 @@
+{
+    "require": {
+        "apereo/phpcas": "^1.6",
+        "psr/log": "^1.0"
+    }
+}

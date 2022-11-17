@@ -4,9 +4,6 @@
 [submodule "library/ZendFramework"]
 	path = library/ZendFramework
 	url = https://community.middlebury.edu/~afranco/git/external/ZendFramework.git/
-[submodule "library/phpcas"]
-	path = library/phpcas
-	url = https://github.com/apereo/phpCAS.git
 [submodule "library/lazy_sessions"]
 	path = library/lazy_sessions
 	url = https://github.com/middlebury/lazy_sessions.git

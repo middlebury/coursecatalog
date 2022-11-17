@@ -25,3 +25,5 @@ if (!defined('BASE_PATH')) {
 require_once('Zend/Loader/Autoloader.php');
 $autoloader = Zend_Loader_Autoloader::getInstance();
 $autoloader->setFallbackAutoloader(true);
+
+require_once(BASE_PATH .'/vendor/autoload.php');

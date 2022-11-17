@@ -8,6 +8,8 @@ authType = none
 cas.host = login.middlebury.edu
 cas.port = 443
 cas.path = /cas
+cas.service_urls[] = https://server1.example.edu
+cas.service_urls[] = https://server2.example.edu
 cas.server_cert =
 
 masquerade.enabled = 0
