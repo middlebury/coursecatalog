@@ -43,7 +43,7 @@ class PDODebug_PDO
 	 * @access public
 	 * @since 4/27/09
 	 */
-	public function exec ($statement) {
+	public function exec ($statement): int|false {
 		$this->execs++;
 		return parent::exec($statement);
 	}
@@ -52,16 +52,15 @@ class PDODebug_PDO
 	 * Executes an SQL statement, returning a result set as a PDOStatement object
 	 *
 	 * @param string $statement
-	 * @param optional int $fetchType
-	 * @param optional mixed $arg3
-	 * @param optional array $ctorargs
+	 * @param optional int $fetchMode
+	 * @param optional mixed $fetchModeArgs
 	 * @return PDOStatement
 	 * @access public
 	 * @since 4/27/09
 	 */
-	public function query ($statement, $fetchType = PDO::FETCH_BOTH, $arg3 = null, $ctorargs = null) {
+	public function query ($query, $fetchMode = PDO::FETCH_BOTH, ...$fetchModeArgs): PDOStatement|false {
 		$this->queries++;
-		return parent::query($statement, $fetchType, $arg3, $ctorargs);
+		return parent::query($statement, $fetchMode, ...$fetchModeArgs);
 	}
 
 	/**
@@ -73,7 +72,7 @@ class PDODebug_PDO
 	 * @access public
 	 * @since 4/27/09
 	 */
-	public function prepare ($statement, $driver_options = array()) {
+	public function prepare ($statement, $driver_options = array()): PDOStatement {
 		$this->preparations++;
 		if ($this->checkForDuplicatePreparation) {
 			if (in_array($statement, $this->preparedQueries)) {

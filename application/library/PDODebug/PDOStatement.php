@@ -34,7 +34,7 @@ class PDODebug_PDOStatement
 	 * @access public
 	 * @since 4/27/09
 	 */
-	public function execute ($input_parameters = array()) {
+	public function execute ($input_parameters = array()): bool {
 		$this->dbh->executions++;
 		return parent::execute($input_parameters);
 	}
@@ -46,7 +46,7 @@ class PDODebug_PDOStatement
 	 * @access public
 	 * @since 4/27/09
 	 */
-	public function closeCursor () {
+	public function closeCursor (): bool {
 		$this->dbh->cursorsClosed++;
 		return parent::closeCursor();
 	}
