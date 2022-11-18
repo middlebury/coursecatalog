@@ -48,7 +48,7 @@ class Paginator_Adaptor_CourseOfferingSearch
 	 * @access public
 	 * @since 6/2/09
 	 */
-	public function count () {
+	public function count (): int {
 		if (!isset($this->results))
 			$this->getItems(0, 20);
 		return $this->results->getResultSize();
