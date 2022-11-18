@@ -211,7 +211,7 @@ class Duration
 	 * @access private
 	 * @since 5/3/05
 	 */
-	function Duration ($seconds = 0) {
+	function __construct ($seconds = 0) {
 		$this->seconds = $seconds;
 	}
 	
