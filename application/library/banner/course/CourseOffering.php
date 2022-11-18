@@ -841,7 +841,7 @@ class banner_course_CourseOffering
 	 * @compliance mandatory This method must be implemented.
 	 */
 	public function hasAlternates () {
-		return (strlen($this->row['SSRXLST_XLST_GROUP']) > 0);
+		return (!empty($this->row['SSRXLST_XLST_GROUP']));
 	}
 
 	/**
