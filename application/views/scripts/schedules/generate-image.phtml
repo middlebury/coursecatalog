@@ -102,7 +102,7 @@ for ($d = $startDay; $d <= $endDay; $d++) {
 	$size = 24;
 	$bb = imagettfbbox($size, 0, $this->fontFile, $label);
 	$textWidth = $bb[2] - $bb[0];
-	ImageTTFText($im, $size, 0, $left + (($dayWidth - $textWidth)/2), $headerHeight - 5, $black, $this->fontFile, $label);
+	ImageTTFText($im, $size, 0, round($left + (($dayWidth - $textWidth)/2)), $headerHeight - 5, $black, $this->fontFile, $label);
 }
 
 // Hour Labels
