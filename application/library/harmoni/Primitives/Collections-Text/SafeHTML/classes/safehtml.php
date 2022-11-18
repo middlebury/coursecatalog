@@ -290,7 +290,7 @@ class SafeHTML
         foreach ($this->blackProtocols as $proto) {
             $preg = "/[\s\x01-\x1F]*";
             for ($i=0; $i<strlen($proto); $i++) {
-                $preg .= $proto{$i} . "[\s\x01-\x1F]*";
+                $preg .= $proto[$i] . "[\s\x01-\x1F]*";
             }
             $preg .= ":/i";
             $this->_protoRegexps[] = $preg;
@@ -668,4 +668,3 @@ class SafeHTML
  * c-hanging-comment-ender-p: nil
  * End:
  */
-
