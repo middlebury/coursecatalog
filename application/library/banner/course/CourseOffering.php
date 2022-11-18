@@ -552,8 +552,8 @@ class banner_course_CourseOffering
 	 * @since 4/16/09
 	 */
 	protected function as12HourTime ($time) {
-		$parts = strptime($time, '%H%M');
-		return date('g:ia', mktime($parts['tm_hour'], $parts['tm_min']));
+		$parts = date_parse_from_format('Hi', $time);
+		return date('g:ia', mktime($parts['hour'], $parts['minute']));
 	}
 
 
