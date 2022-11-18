@@ -71,7 +71,7 @@ class FSMParser {
   while($PTR<$LEN){
    foreach($this->FSM as $tkey=>$line) if( (!$line["cs"]) or ($line["cs"]==$this->STATE) ) {
     if(preg_match($line["ex"],substr($text,$PTR),$matches,PREG_OFFSET_CAPTURE)) {
-     if( (is_null($tok_off)) or ($matches[0][1]<$tok_off) or ( ($matches[0][1]==$tok_off) and (strlen($matches[0][0])>$tok_len) ) ) {
+     if( !isset($tok_off) or (is_null($tok_off)) or ($matches[0][1]<$tok_off) or ( ($matches[0][1]==$tok_off) and (strlen($matches[0][0])>$tok_len) ) ) {
       $tok_off=$matches[0][1];
       $tok_len=strlen($matches[0][0]);
       $tok_key=$tkey;
