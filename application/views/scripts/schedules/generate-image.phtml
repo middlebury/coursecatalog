@@ -154,7 +154,7 @@ foreach ($this->events as $event) {
 	$textWidth = $bb[2] - $bb[0];
 	$textHeight = $bb[1] - $bb[5];
 	$textTop = $top + $textHeight + 3;
-	$textLeft = $left + (($dayWidth - $textWidth)/2);
+	$textLeft = $left + round(($dayWidth - $textWidth)/2);
 	ImageTTFText($im, $size, 0, $textLeft, $textTop, $black, $this->fontFile, $string);
 
 	$size = 10;
@@ -162,7 +162,7 @@ foreach ($this->events as $event) {
 	$textWidth = $bb[2] - $bb[0];
 	$textHeight = $bb[1] - $bb[5];
 	$textTop = $top + $textHeight + 16;
-	$textLeft = $left + (($dayWidth - $textWidth)/2);
+	$textLeft = $left + round(($dayWidth - $textWidth)/2);
 	ImageTTFText($im, $size, 0, $textLeft, $textTop, $black, $this->fontFile, $event['name']);
 
 	$size = 10;
@@ -170,7 +170,7 @@ foreach ($this->events as $event) {
 	$textWidth = $bb[2] - $bb[0];
 	$textHeight = $bb[1] - $bb[5];
 	$textTop = $top + $textHeight +$textHeight + 22;
-	$textLeft = $left + (($dayWidth - $textWidth)/2);
+	$textLeft = $left + round(($dayWidth - $textWidth)/2);
 	ImageTTFText($im, $size, 0, $textLeft, $textTop, $black, $this->fontFile, $event['location']);
 
 	$size = 10;
@@ -179,7 +179,7 @@ foreach ($this->events as $event) {
 	$textHeight = $bb[1] - $bb[5];
 	//$textTop = $top + $textHeight +$textHeight + 34;
 	$textTop += 14;
-	$textLeft = $left + (($dayWidth - $textWidth)/3);
+	$textLeft = $left + round(($dayWidth - $textWidth)/3);
 	ImageTTFText($im, $size, 0, $textLeft, $textTop, $black, $this->fontFile, "CRN: ".$event['crn']);
 
 }
