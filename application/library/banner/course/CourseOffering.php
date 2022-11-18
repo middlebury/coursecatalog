@@ -239,11 +239,11 @@ class banner_course_CourseOffering
 	public function getTitle() {
 		$title = '';
 
-		if (isset($this->row['SCBCRSE_TITLE']) && strlen($this->row['SCBCRSE_TITLE']))
+		if (isset($this->row['SCBCRSE_TITLE']) && !empty($this->row['SCBCRSE_TITLE']))
 			$title .= $this->row['SCBCRSE_TITLE']."\n";
 
 		// Add a section-specific title if one is set and it differs from the course title.
-		if (isset($this->row['SSBSECT_CRSE_TITLE']) && strlen($this->row['SSBSECT_CRSE_TITLE'])
+		if (isset($this->row['SSBSECT_CRSE_TITLE']) && !empty($this->row['SSBSECT_CRSE_TITLE'])
 			&& trim(mb_strtolower($this->row['SSBSECT_CRSE_TITLE'])) != trim(mb_strtolower($this->row['SCBCRSE_TITLE']))
 		) {
 			$title .= $this->row['SSBSECT_CRSE_TITLE'];
@@ -281,7 +281,7 @@ class banner_course_CourseOffering
 	 *  @compliance mandatory This method must be implemented.
 	 */
 	public function getCredits() {
-		if (isset($this->row['SSBSECT_CREDIT_HRS']) && strlen($this->row['SSBSECT_CREDIT_HRS']))
+		if (isset($this->row['SSBSECT_CREDIT_HRS']) && !empty($this->row['SSBSECT_CREDIT_HRS']))
 			return floatval($this->row['SSBSECT_CREDIT_HRS']);
 		else
 			return $this->getCourse()->getCredits();
@@ -944,7 +944,7 @@ class banner_course_CourseOffering
 	 */
 	public function meetsOnSunday () {
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_SUN_DAY']))
+			if (!empty($row['SSRMEET_SUN_DAY']))
 				return true;
 		}
 		return false;
@@ -963,7 +963,7 @@ class banner_course_CourseOffering
 	public function getSundayStartTimes () {
 		$times = array();
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_SUN_DAY']))
+			if (!empty($row['SSRMEET_SUN_DAY']))
 				$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
 		}
 		return $times;
@@ -982,7 +982,7 @@ class banner_course_CourseOffering
 	public function getSundayEndTimes () {
 		$times = array();
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_SUN_DAY']))
+			if (!empty($row['SSRMEET_SUN_DAY']))
 				$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
 		}
 		return $times;
@@ -997,7 +997,7 @@ class banner_course_CourseOffering
 	 */
 	public function meetsOnMonday () {
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_MON_DAY']))
+			if (!empty($row['SSRMEET_MON_DAY']))
 				return true;
 		}
 		return false;
@@ -1016,7 +1016,7 @@ class banner_course_CourseOffering
 	public function getMondayStartTimes () {
 		$times = array();
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_MON_DAY']))
+			if (!empty($row['SSRMEET_MON_DAY']))
 				$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
 		}
 		return $times;
@@ -1035,7 +1035,7 @@ class banner_course_CourseOffering
 	public function getMondayEndTimes () {
 		$times = array();
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_MON_DAY']))
+			if (!empty($row['SSRMEET_MON_DAY']))
 				$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
 		}
 		return $times;
@@ -1050,7 +1050,7 @@ class banner_course_CourseOffering
 	 */
 	public function meetsOnTuesday () {
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_TUE_DAY']))
+			if (!empty($row['SSRMEET_TUE_DAY']))
 				return true;
 		}
 		return false;
@@ -1069,7 +1069,7 @@ class banner_course_CourseOffering
 	public function getTuesdayStartTimes () {
 		$times = array();
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_TUE_DAY']))
+			if (!empty($row['SSRMEET_TUE_DAY']))
 				$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
 		}
 		return $times;
@@ -1088,7 +1088,7 @@ class banner_course_CourseOffering
 	public function getTuesdayEndTimes () {
 		$times = array();
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_TUE_DAY']))
+			if (!empty($row['SSRMEET_TUE_DAY']))
 				$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
 		}
 		return $times;
@@ -1103,7 +1103,7 @@ class banner_course_CourseOffering
 	 */
 	public function meetsOnWednesday () {
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_WED_DAY']))
+			if (!empty($row['SSRMEET_WED_DAY']))
 				return true;
 		}
 		return false;
@@ -1122,7 +1122,7 @@ class banner_course_CourseOffering
 	public function getWednesdayStartTimes () {
 		$times = array();
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_WED_DAY']))
+			if (!empty($row['SSRMEET_WED_DAY']))
 				$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
 		}
 		return $times;
@@ -1141,7 +1141,7 @@ class banner_course_CourseOffering
 	public function getWednesdayEndTimes () {
 		$times = array();
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_WED_DAY']))
+			if (!empty($row['SSRMEET_WED_DAY']))
 				$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
 		}
 		return $times;
@@ -1156,7 +1156,7 @@ class banner_course_CourseOffering
 	 */
 	public function meetsOnThursday () {
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_THU_DAY']))
+			if (!empty($row['SSRMEET_THU_DAY']))
 				return true;
 		}
 		return false;
@@ -1175,7 +1175,7 @@ class banner_course_CourseOffering
 	public function getThursdayStartTimes () {
 		$times = array();
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_THU_DAY']))
+			if (!empty($row['SSRMEET_THU_DAY']))
 				$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
 		}
 		return $times;
@@ -1194,7 +1194,7 @@ class banner_course_CourseOffering
 	public function getThursdayEndTimes () {
 		$times = array();
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_THU_DAY']))
+			if (!empty($row['SSRMEET_THU_DAY']))
 				$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
 		}
 		return $times;
@@ -1209,7 +1209,7 @@ class banner_course_CourseOffering
 	 */
 	public function meetsOnFriday () {
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_FRI_DAY']))
+			if (!empty($row['SSRMEET_FRI_DAY']))
 				return true;
 		}
 		return false;
@@ -1228,7 +1228,7 @@ class banner_course_CourseOffering
 	public function getFridayStartTimes () {
 		$times = array();
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_FRI_DAY']))
+			if (!empty($row['SSRMEET_FRI_DAY']))
 				$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
 		}
 		return $times;
@@ -1247,7 +1247,7 @@ class banner_course_CourseOffering
 	public function getFridayEndTimes () {
 		$times = array();
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_FRI_DAY']))
+			if (!empty($row['SSRMEET_FRI_DAY']))
 				$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
 		}
 		return $times;
@@ -1262,7 +1262,7 @@ class banner_course_CourseOffering
 	 */
 	public function meetsOnSaturday () {
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_SAT_DAY']))
+			if (!empty($row['SSRMEET_SAT_DAY']))
 				return true;
 		}
 		return false;
@@ -1281,7 +1281,7 @@ class banner_course_CourseOffering
 	public function getSaturdayStartTimes () {
 		$times = array();
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_SAT_DAY']))
+			if (!empty($row['SSRMEET_SAT_DAY']))
 				$times[] = $this->asSeconds($row['SSRMEET_BEGIN_TIME']);
 		}
 		return $times;
@@ -1300,7 +1300,7 @@ class banner_course_CourseOffering
 	public function getSaturdayEndTimes () {
 		$times = array();
 		foreach ($this->getMeetingRows() as $row) {
-			if (strlen($row['SSRMEET_SAT_DAY']))
+			if (!empty($row['SSRMEET_SAT_DAY']))
 				$times[] = $this->asSeconds($row['SSRMEET_END_TIME']);
 		}
 		return $times;
