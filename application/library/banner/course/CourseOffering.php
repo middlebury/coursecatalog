@@ -1370,8 +1370,8 @@ class banner_course_CourseOffering
 	 * @since 6/10/09
 	 */
 	protected function asSeconds ($timeString) {
-		$parts = strptime($timeString, '%H%M');
-		return (intval($parts['tm_hour']) * 3600) + (intval($parts['tm_min']) * 60);
+		$parts = date_parse_from_format('Hi', $timeString);
+		return (intval($parts['hour']) * 3600) + (intval($parts['minute']) * 60);
 	}
 
 /*********************************************************
