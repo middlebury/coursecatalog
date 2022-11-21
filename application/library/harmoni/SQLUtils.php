@@ -164,7 +164,7 @@ class harmoni_SQLUtils {
 	 * @since 04/28/08
 	 * @static
 	 */
-	public static function runSQLdirWithExceptions ($dir, array $exceptions = array(), PDO $db, $extn = 'sql') {
+	public static function runSQLdirWithExceptions ($dir, array $exceptions, PDO $db, $extn = 'sql') {
 		$sqlFiles = array();
 		if ($handle = opendir($dir)) {
 			while (false !== ($file = readdir($handle))) {
