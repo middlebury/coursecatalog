@@ -171,7 +171,7 @@ ORDER BY
 		$this->view->config = NULL;
 		if ($this->_getParam('config') && $this->_getParam('config') != -1) {
 			foreach($this->view->configs as $config) {
-				if ($config['id'] === $this->_getParam('config'))
+				if ($config['id'] == $this->_getParam('config'))
 					$this->view->config = $config;
 			}
 		}
