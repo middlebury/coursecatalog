@@ -480,7 +480,7 @@
 		$revision = $stmt->fetch();
 		$jsonData = json_decode($revision['json_data']);
 
-		$totalSections = count($jsonData);
+		$totalSections = count(get_object_vars($jsonData));
 		$currentSection = 1;
 		foreach($jsonData as $group) {
 			foreach($group as $entry) {
