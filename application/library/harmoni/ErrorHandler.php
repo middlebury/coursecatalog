@@ -2,12 +2,12 @@
 /**
  * @since 10/10/07
  * @package harmoni.error_handler
- * 
+ *
  * @copyright Copyright &copy; 2007, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  *
  * @version $Id: HarmoniErrorHandler.class.php,v 1.20 2008/04/18 14:58:26 adamfranco Exp $
- */ 
+ */
 
 // E_RECOVERABLE_ERROR is not defined in PHP 5.1
 if (!defined('E_RECOVERABLE_ERROR'))
@@ -20,26 +20,26 @@ if (!defined('E_RECOVERABLE_ERROR'))
  * 'error_reporting' and 'display_errors' directives. Any errors that match the current
  * error_reporting level and all uncaught Exceptions will be processed by the
  * error handler and logged. If the display_errors directive is set to 'On', then
- * these errors and exceptions will also be printed to the screen, otherwise they 
+ * these errors and exceptions will also be printed to the screen, otherwise they
  * will be only logged.
- * 
+ *
  * In addition to the behavior devined by the 'error_reporting' and 'display_errors' directives,
  * the HarmoniErrorHandler also allows setting of which error_levels are fatal, causing
  * the execution to halt. This is set with the $errorHandler->fatalErrors() method
  * which has the same parameter syntax as the error_reporting() function.
- * 
+ *
  * @since 10/10/07
  * @package harmoni.error_handler
- * 
+ *
  * @copyright Copyright &copy; 2007, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  *
  * @version $Id: HarmoniErrorHandler.class.php,v 1.20 2008/04/18 14:58:26 adamfranco Exp $
  */
 class harmoni_ErrorHandler {
-		
+
 	/**
- 	 * @var object  $instance;  
+ 	 * @var object  $instance;
  	 * @access private
  	 * @since 10/10/07
  	 * @static
@@ -48,10 +48,10 @@ class harmoni_ErrorHandler {
 
 	/**
 	 * This class implements the Singleton pattern. There is only ever
-	 * one instance of the this class and it is accessed only via the 
+	 * one instance of the this class and it is accessed only via the
 	 * ClassName::instance() method.
-	 * 
-	 * @return object 
+	 *
+	 * @return object
 	 * @access public
 	 * @since 5/26/05
 	 * @static
@@ -59,17 +59,17 @@ class harmoni_ErrorHandler {
 	public static function instance () {
 		if (!isset(self::$instance))
 			self::$instance = new harmoni_ErrorHandler;
-		
+
 		return self::$instance;
 	}
-	
+
 	/**
-	 * @var array $errorTypes;  
+	 * @var array $errorTypes;
 	 * @access private
 	 * @since 10/10/07
 	 */
 	private $errorTypes;
-	
+
 	/**
 	 * @var integer $fatalErrors; The bitwise integer that determines whether or not
 	 * to halt execution when an error occurs.
@@ -77,7 +77,7 @@ class harmoni_ErrorHandler {
 	 * @since 10/17/07
 	 */
 	private $fatalErrors;
-	
+
 	/**
 	 * @var integer $defaultFatalErrors; The bitwise integer that determines whether or not
 	 * to halt execution when an error occurs.
@@ -85,17 +85,17 @@ class harmoni_ErrorHandler {
 	 * @since 10/17/07
 	 */
 	private $defaultFatalErrors;
-	
+
 	/**
-	 * @var array $privateRequestItems; Items to be filtered out of backtraces and logs 
+	 * @var array $privateRequestItems; Items to be filtered out of backtraces and logs
 	 * @access private
 	 * @since 4/9/08
 	 */
 	private $privateRequestItems;
-	
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @return void
 	 * @access private
 	 * @since 10/10/07
@@ -116,7 +116,7 @@ class harmoni_ErrorHandler {
 			E_RECOVERABLE_ERROR	=> 'Catchable Fatal Error',
 			E_STRICT			=> 'Runtime Notice'
 		);
-		
+
 		// Added in PHP 5.3
 		if (defined('E_DEPRECATED'))
 			$this->errorTypes[E_DEPRECATED] = 'Deprecated Warning';
@@ -124,13 +124,13 @@ class harmoni_ErrorHandler {
 			$this->errorTypes[E_USER_DEPRECATED] = 'User Deprecated Warning';
 		$this->defaultFatalErrors = (E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR);
 		$this->fatalErrors = $this->defaultFatalErrors;
-		
+
 		$this->privateRequestItems = array();
 	}
-	
+
 	/**
 	 * Make particular error types fatal. Syntax is the same as error_reporting().
-	 * 
+	 *
 	 * @param optional int $type A integer bitmap like the error_reporting levels.
 	 * @return int If no argument is passed the current fatal errors will be returned.
 	 * @access public
@@ -139,18 +139,18 @@ class harmoni_ErrorHandler {
 	public function fatalErrors () {
 		if (!func_num_args())
 			return $this->fatalErrors;
-		
+
 		$args = func_get_args();
 		$level = $args[0];
 		if (!is_int($level) || func_num_args() > 1)
 			throw new NullArgumentException("You must specify an integer error level. Should be one or a bitwise combination of E_ERROR, E_WARNING, E_PARSE, E_NOTICE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING, E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE, E_RECOVERABLE_ERROR, E_STRICT.");
-		
+
 		$this->fatalErrors = $level;
 	}
-	
+
 	/**
 	 * Answer the default fatal error level
-	 * 
+	 *
 	 * @return int
 	 * @access public
 	 * @since 10/17/07
@@ -158,10 +158,10 @@ class harmoni_ErrorHandler {
 	public function getDefaultFatalErrorLevel () {
 		return $this->defaultFatalErrors;
 	}
-	
+
 	/**
 	 * Handle an error
-	 * 
+	 *
 	 * @param int $errorType
 	 * @param string $errorMessage
 	 * @return void
@@ -181,7 +181,7 @@ class harmoni_ErrorHandler {
 			else
 				die();
 		}
-		
+
 		$backtrace = debug_backtrace();
 // 		$backtrace = array_shift(debug_backtrace());
 
@@ -194,10 +194,10 @@ class harmoni_ErrorHandler {
 		$errorHandler = self::instance();
 		$errorHandler->completeHandlingError($errorType, $errorMessage, $backtrace);
 	}
-	
+
 	/**
 	 * Handle an error
-	 * 
+	 *
 	 * @param int $errorType
 	 * @param string $errorMessage
 	 * @param array $backtrace
@@ -208,15 +208,15 @@ class harmoni_ErrorHandler {
 	private function completeHandlingError ($errorType, $errorMessage, array $backtrace) {
 		// Only print Errors to the screen if the display_errors directive instructs
 		// us to do so.
-		if (ini_get('display_errors') === true || ini_get('display_errors') === 'On' 
+		if (ini_get('display_errors') === true || ini_get('display_errors') === 'On'
 			|| ini_get('display_errors') === 'stdout' || ini_get('display_errors') === '1')
 		{
 			$this->printError($errorType, $errorMessage, $backtrace);
 		}
-		
+
 		// Log the error.
 		$this->logError($errorType, $errorMessage, $backtrace);
-		
+
 		// Exit if the error is fatal
 		// do a bitwise comparison of the error level to the current fatalErrors level
 		if (!($errorType & $this->fatalErrors))
@@ -224,10 +224,10 @@ class harmoni_ErrorHandler {
 		else
 			die();
 	}
-	
+
 	/**
 	 * Handle an Exception
-	 * 
+	 *
 	 * @param object Exception $exception
 	 * @return void
 	 * @access public
@@ -236,34 +236,34 @@ class harmoni_ErrorHandler {
 	 */
 	public static function handleException (Throwable $exception) {
 		$priority = 'Uncaught Exception';
-		
+
 		if (method_exists($exception, "getType") && $exception->getType())
 			$type = $exception->getType();
 		else
 			$type = get_class($exception);
-		
+
 		// Only print Exceptions to the screen if the display_errors directive instructs
 		// us to do so.
-		if (ini_get('display_errors') === true || strtolower(ini_get('display_errors')) === 'on' 
+		if (ini_get('display_errors') === true || strtolower(ini_get('display_errors')) === 'on'
 			|| ini_get('display_errors') === 'stdout' || ini_get('display_errors') === '1')
 		{
 			self::printException($exception);
 		}
-		
+
 		// Log the Exception
 		self::logMessage($priority, $exception->getMessage(), $exception->getTrace(), 'Harmoni', $type);
 	}
-	
+
 	/**
 	 * Print out an exception
-	 * 
+	 *
 	 * @param Exception $exception
 	 * @return void
 	 * @access public
 	 * @since 1/27/09
 	 * @static
 	 */
-	public static function printException (Throwable $exception, $priority = 'Uncaught Exception') {		
+	public static function printException (Throwable $exception, $priority = 'Uncaught Exception') {
 		if (method_exists($exception, "getType") && $exception->getType())
 			$type = $exception->getType();
 		else
@@ -284,15 +284,15 @@ class harmoni_ErrorHandler {
 		} else {
 			self::printPlainTextMessage($priority.' of type', $type, $exception->getMessage(), $trace, $exception->getCode());
 		}
-		
+
 		if (method_exists($exception, 'getPrevious') && is_object($exception->getPrevious())) {
 			self::printException($exception->getPrevious(), 'Caused by Exception');
 		}
 	}
-	
+
 	/**
 	 * Print out an error message
-	 * 
+	 *
 	 * @param int $errorType
 	 * @param string $errorMessage
 	 * @param array $backtrace
@@ -306,10 +306,10 @@ class harmoni_ErrorHandler {
 		else
 			self::printPlainTextMessage('Error', $this->errorTypes[$errorType], $errorMessage, $backtrace, $errorType);
 	}
-	
+
 	/**
-	 * Print out an error or exception message 
-	 * 
+	 * Print out an error or exception message
+	 *
 	 * @param string $errorOrException A string describing whether this was an error or an uncaught exception.
 	 * @param string $type The type of error or exception that occurred
 	 * @param string $message A message.
@@ -322,10 +322,10 @@ class harmoni_ErrorHandler {
 	public static function printMessage ( $errorOrException, $type, $message, array $backtrace, $code = null) {
 		self::printHtmlMessage($errorOrException, $type, htmlentities($message), $backtrace, $code);
 	}
-	
+
 	/**
-	 * Print out an error or exception message 
-	 * 
+	 * Print out an error or exception message
+	 *
 	 * @param string $errorOrException A string describing whether this was an error or an uncaught exception.
 	 * @param string $type The type of error or exception that occurred
 	 * @param string $message A message.
@@ -350,10 +350,10 @@ class harmoni_ErrorHandler {
 		print "\n\t</div>";
 		print "\n</div>";
 	}
-	
+
 	/**
-	 * Print out an error or exception message 
-	 * 
+	 * Print out an error or exception message
+	 *
 	 * @param string $errorOrException A string describing whether this was an error or an uncaught exception.
 	 * @param string $type The type of error or exception that occurred
 	 * @param string $message A message.
@@ -377,10 +377,10 @@ class harmoni_ErrorHandler {
 		self::printPlainTextDebugBacktrace($backtrace);
 		print "\n*****************************************************************************\n";
 	}
-	
+
 	/**
 	 * Log an error with the Logging OSID implementation.
-	 * 
+	 *
 	 * @param string $errorType
 	 * @param string $errorMessage
 	 * @param array $backtrace
@@ -391,10 +391,10 @@ class harmoni_ErrorHandler {
 	private function logError ($errorType, $errorMessage, array $backtrace) {
 		self::logMessage($this->errorTypes[$errorType], $errorMessage, $backtrace);
 	}
-	
+
 	/**
 	 * Log an Exception.
-	 * 
+	 *
 	 * @param object Exception $exception
 	 * @param optional string $logName Defaults to the Harmoni log
 	 * @return void
@@ -402,18 +402,18 @@ class harmoni_ErrorHandler {
 	 * @since 10/24/07
 	 */
 	public static function logException (Exception $exception, $logName = 'Harmoni') {
-		
+
 		if (method_exists($exception, "getType") && $exception->getType())
 			$type = $exception->getType();
 		else
 			$type = get_class($exception);
-		
+
 		self::logMessage('Exception', $exception->getMessage(), $exception->getTrace(), $logName, $type);
 	}
-	
+
 	/**
 	 * Log an error or exception with the Logging OSID implemenation
-	 * 
+	 *
 	 * @param string $type The type of error or exception that occurred
 	 * @param string $message A message.
 	 * @param array $backtrace
@@ -425,36 +425,36 @@ class harmoni_ErrorHandler {
 	 * @static
 	 */
 	public static function logMessage ($type, $message, array $backtrace, $logName = 'Harmoni', $category = null) {
-		
+
 		/*********************************************************
 		 * Log the error in the default system log if the log_errors
 		 * directive is on.
 		 *********************************************************/
-		if (ini_get('log_errors') === true || ini_get('log_errors') === 'On' 
+		if (ini_get('log_errors') === true || ini_get('log_errors') === 'On'
 			|| ini_get('log_errors') === '1')
 		{
 			error_log("PHP ".$type.": ".strip_tags($message)." in ".$backtrace[0]['file']." on line ".$backtrace[0]['line']);
 		}
-		
+
 		/*********************************************************
 		 * Log the error using the Logging OSID if available.
 		 *********************************************************/
-		// If we have an error in the error handler or the logging system, 
+		// If we have an error in the error handler or the logging system,
 		// don't infinitely loop trying to log the error of the error....
 		$testBacktrace = debug_backtrace();
 		for ($i = 1; $i < count($testBacktrace); $i++) {
-			if (isset($testBacktrace[$i]['function']) 
-				&& strtolower($testBacktrace[$i]['function']) == 'logMessage') 
+			if (isset($testBacktrace[$i]['function'])
+				&& strtolower($testBacktrace[$i]['function']) == 'logMessage')
 			{
 				return;
 			}
 		}
 	}
-	
+
 	/**
 	 * This method will strip out the values of request parameters deemed to be private.
 	 * By default, and parameter key that contains the string 'password' will be hidden.
-	 * 
+	 *
 	 * @param array $requestParams
 	 * @return array
 	 * @access private
@@ -474,10 +474,10 @@ class harmoni_ErrorHandler {
 		}
 		return $filtered;
 	}
-	
+
 	/**
 	 * Add a request key to strip from logs
-	 * 
+	 *
 	 * @param string $key
 	 * @return void
 	 * @access public
@@ -486,7 +486,7 @@ class harmoni_ErrorHandler {
 	public function addPrivateRequestKey ($key) {
 		$this->privateRequestItems[] = $key;
 	}
-	
+
 	/**
 	 * Prints a debug_backtrace() array in a pretty HTML way...
 	 * @param optional array $trace The array. If null, a current backtrace is used.
@@ -497,12 +497,12 @@ class harmoni_ErrorHandler {
 	 public static function printDebugBacktrace($trace = null, $return=false) {
 	 	if (is_array($trace))
 	 		$traceArray = $trace;
-	 	else 
+	 	else
 			$traceArray = debug_backtrace();
-		
-	
+
+
 		if ($return) ob_start();
-			
+
 		print "\n\n<table border='1'>";
 		print "\n\t<thead>";
 		print "\n\t\t<tr>";
@@ -523,12 +523,12 @@ class harmoni_ErrorHandler {
 					$filePath = '';
 					$file = '';
 				}
-					
+
 				if (isset($trace['line']))
 					$line = $trace['line'];
 				else
 					$line = '';
-				
+
 				$function = $trace['function'];
 				$class = isset($trace['class'])?$trace['class']:'';
 				$type = isset($trace['type'])?$trace['type']:'';
@@ -536,7 +536,7 @@ class harmoni_ErrorHandler {
 					$args = harmoni_ArgumentRenderer::renderManyArguments($trace['args'], false, false);
 				else
 					$args = '';
-				
+
 				print "\n\t\t<tr>";
 				print "\n\t\t\t<td>$i</td>";
 				print "\n\t\t\t<td title=\"".htmlentities($filePath)."\">".htmlentities($file)."</td>";
@@ -551,10 +551,10 @@ class harmoni_ErrorHandler {
 		}
 		print "\n\t</tbody>";
 		print "\n</table>";
-		
+
 		if ($return) return ob_get_clean();
 	}
-	
+
 	/**
 	 * Prints a debug_backtrace() array in a pretty plain text way...
 	 * @param optional array $trace The array. If null, a current backtrace is used.
@@ -565,12 +565,12 @@ class harmoni_ErrorHandler {
 	 public static function printPlainTextDebugBacktrace($trace = null, $return=false) {
 	 	if (is_array($trace))
 	 		$traceArray = $trace;
-	 	else 
+	 	else
 			$traceArray = debug_backtrace();
-		
-	
+
+
 		if ($return) ob_start();
-		
+
 		$filenameSize = 5;
 		if (is_array($traceArray)) {
 			foreach($traceArray as $trace) {
@@ -579,15 +579,15 @@ class harmoni_ErrorHandler {
 			}
 		}
 		$filenameSize = $filenameSize + 2;
-			
+
 		print "\n* # ";
 		print "\tFile";
 		for ($j = 4; $j < $filenameSize; $j++)
 			print " ";
 		print "Line";
 		print "\tCall ";
-		print "\n*-----------------------------------------------------------------------------";		
-		if (is_array($traceArray)) {			
+		print "\n*-----------------------------------------------------------------------------";
+		if (is_array($traceArray)) {
 			foreach($traceArray as $i => $trace) {
 				/* each $traceArray element represents a step in the call hiearchy. Print them from bottom up. */
 				$file = isset($trace['file'])?basename($trace['file']):'';
@@ -596,7 +596,7 @@ class harmoni_ErrorHandler {
 				$class = isset($trace['class'])?$trace['class']:'';
 				$type = isset($trace['type'])?$trace['type']:'';
 				$args = harmoni_ArgumentRenderer::renderManyArguments($trace['args'], false, false);
-				
+
 				print "\n* $i";
 				print "\t".$file;
 				for ($j = strlen($file); $j < $filenameSize; $j++)
@@ -608,7 +608,7 @@ class harmoni_ErrorHandler {
 				}
 			}
 		}
-		
+
 		if ($return) return ob_get_clean();
 	}
 }
