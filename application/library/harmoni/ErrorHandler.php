@@ -433,7 +433,7 @@ class harmoni_ErrorHandler {
 		if (ini_get('log_errors') === true || ini_get('log_errors') === 'On' 
 			|| ini_get('log_errors') === '1')
 		{
-			error_log("PHP ".$type.":  ".strip_tags($message));
+			error_log("PHP ".$type.": ".strip_tags($message)." in ".$backtrace[0]['file']." on line ".$backtrace[0]['line']);
 		}
 		
 		/*********************************************************
