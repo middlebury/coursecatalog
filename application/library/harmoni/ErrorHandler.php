@@ -595,7 +595,10 @@ class harmoni_ErrorHandler {
 				$function = isset($trace['function'])?$trace['function']:'';
 				$class = isset($trace['class'])?$trace['class']:'';
 				$type = isset($trace['type'])?$trace['type']:'';
-				$args = harmoni_ArgumentRenderer::renderManyArguments($trace['args'], false, false);
+				if (isset($trace['args']))
+					$args = harmoni_ArgumentRenderer::renderManyArguments($trace['args'], false, false);
+				else
+					$args = '';
 
 				print "\n* $i";
 				print "\t".$file;
