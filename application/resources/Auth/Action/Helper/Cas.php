@@ -164,6 +164,19 @@ class Auth_Action_Helper_Cas
 				phpCAS::setDebug($config->cas->debug_file);
 			}
 
+			if (empty($config->cas->host)) {
+				throw new InvalidArgumentException('cas.host must be configured.');
+			}
+			if (empty($config->cas->port)) {
+				throw new InvalidArgumentException('cas.port must be configured.');
+			}
+			if (empty($config->cas->path)) {
+				throw new InvalidArgumentException('cas.path must be configured.');
+			}
+			if (empty($config->cas->service_urls)) {
+				throw new InvalidArgumentException('cas.service_urls[] must be configured.');
+			}
+
 			phpCAS::client(
 				CAS_VERSION_2_0,
 				$config->cas->host,
