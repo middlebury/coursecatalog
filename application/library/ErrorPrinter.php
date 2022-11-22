@@ -143,7 +143,7 @@ class ErrorPrinter {
 			header('HTTP/1.1 '.$code.' '.self::getCodeString($code));
 		$this->printException($e, $code);
 		if ($this->shouldLogException($e, $code))
-			error_log($e->getMessage());
+			error_log('PHP '.get_class($e).': '.$e->getMessage().' in '.$e->getFile().' on line '.$e->getLine());
 	}
 
 	/**
@@ -168,7 +168,7 @@ class ErrorPrinter {
 		$this->printException($e, $code, ob_get_clean());
 
 		if ($this->shouldLogException($e, $code))
-			error_log($e->getMessage());
+			error_log('PHP '.get_class($e).': '.$e->getMessage().' in '.$e->getFile().' on line '.$e->getLine());
 	}
 
 	/**
