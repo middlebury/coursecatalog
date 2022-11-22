@@ -250,8 +250,15 @@ class harmoni_ErrorHandler {
 			self::printException($exception);
 		}
 
+		$trace = $exception->getTrace();
+		array_unshift($trace, [
+			'file' => $exception->getFile(),
+			'line' => $exception->getLine(),
+			'function' => '',
+		]);
+
 		// Log the Exception
-		self::logMessage($priority, $exception->getMessage(), $exception->getTrace(), 'Harmoni', $type);
+		self::logMessage($priority, $exception->getMessage(), $trace, 'Harmoni', $type);
 	}
 
 	/**
@@ -408,7 +415,14 @@ class harmoni_ErrorHandler {
 		else
 			$type = get_class($exception);
 
-		self::logMessage('Exception', $exception->getMessage(), $exception->getTrace(), $logName, $type);
+		$trace = $exception->getTrace();
+		array_unshift($trace, [
+			'file' => $exception->getFile(),
+			'line' => $exception->getLine(),
+			'function' => '',
+		]);
+
+		self::logMessage('Exception', $exception->getMessage(), $trace, $logName, $type);
 	}
 
 	/**
