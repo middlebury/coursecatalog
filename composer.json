@@ -1,6 +1,12 @@
 {
     "require": {
-        "apereo/phpcas": "^1.6",
+        "apereo/phpcas": "dev-lazy-session-initialization",
         "psr/log": "^1.0"
-    }
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/apereo/phpCAS"
+        }
+    ]
 }
