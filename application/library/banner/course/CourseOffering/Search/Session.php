@@ -240,7 +240,14 @@ class banner_course_CourseOffering_Search_Session
 	 */
 	public function buildIndex ($displayStatus = false) {
 		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_drop_index.sql', $this->manager->getDB());
-		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_create_index_structure.sql', $this->manager->getDB());
+		try {
+			harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_create_index_structure.sql', $this->manager->getDB());
+		} catch (\PDOException $e) {
+			// Ignore "Column already exists" errors.
+			if ($e->getCode() != '42S21') {
+				throw $e;
+			}
+		}
 		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/../../../sql/create_views.sql', $this->manager->getDB());
 
 
