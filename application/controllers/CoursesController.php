@@ -383,7 +383,7 @@ class CoursesController
 			$recentCourses->setRecentInterval(new DateInterval($this->_getParam('cutoff')));
 		}
 
-		$searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('courses', 'byidxml', null, [
+		$searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('byidxml', 'courses', null, [
 			'catalog' => $this->_getParam('catalog'),
 			'id' => $this->_getParam('id'),
 			'cuttoff' => $this->_getParam('cutoff'),
