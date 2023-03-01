@@ -53,8 +53,14 @@ class CatalogSync_Director
 			$this->sync->postCopy();
 			$this->sync->updateDerived();
 			$this->sync->disconnect();
+			if (!empty($this->sync->getNonFatalErrors())) {
+				$this->sendNonFatalErrorMessage($this->sync->getNonFatalErrors());
+			}
 		} catch (Exception $e) {
 			$this->sync->rollback();
+			if (!empty($this->sync->getNonFatalErrors())) {
+				$this->sendNonFatalErrorMessage($this->sync->getNonFatalErrors());
+			}
 			$this->sendException($e);
 			throw $e;
 		}
@@ -111,12 +117,43 @@ class CatalogSync_Director
 	}
 
 	/**
-	 * Send messages to administrators on errors.
+	 * Send messages to administrators on fatal exceptions.
 	 *
 	 * @param Exception $exception
 	 * @return null
 	 */
 	protected function sendException(Exception $e) {
+		$host = trim(shell_exec('hostname'));
+		$subject = "Synchonization Exception";
+		$message = "The following errors occurred during database synchronization on $host:\n\n";
+		$message .= $e->getMessage() . "\n\n";
+		$message .= $e->getTraceAsString() . "\n\n";
+		$this->sendAdminMessage($subject, $message);
+	}
+
+	/**
+	 * Send messages to administrators on non-fatal errors.
+	 *
+	 * @param Exception $exception
+	 * @return null
+	 */
+	protected function sendNonFatalErrorMessage($errors) {
+		$host = trim(shell_exec('hostname'));
+		$subject = "Non-Fatal Errors During Synchonization";
+		$message = "The following non-fatal errors occurred during database synchronization on $host:\n\n";
+		$message .= implode("\n\n", $errors);
+		$message .= "\n\n";
+		$this->sendAdminMessage($subject, $message);
+	}
+
+	/**
+	 * Send messages to administrators on errors.
+	 *
+	 * @param string $subject
+	 * @param string $message
+	 * @return null
+	 */
+	protected function sendAdminMessage($subject, $message) {
 		if (empty($this->config->error_mail_to)) {
 			return;
 		}
@@ -130,10 +167,7 @@ class CatalogSync_Director
 			$to = implode(", ", $error_mail_to);
 		}
 		$host = trim(shell_exec('hostname'));
-		$subject = "$host - COURSE CATALOG: Synchonization Exception";
-		$message = "The following errors occurred during database synchronization on $host:\n\n";
-		$message .= $e->getMessage() . "\n\n";
-		$message .= $e->getTraceAsString() . "\n\n";
+		$subject = "$host - COURSE CATALOG: $subject";
 
 		$headers = "From: ".$this->config->error_mail_from."\r\n";
 		mail($to, $subject, $message, $headers);

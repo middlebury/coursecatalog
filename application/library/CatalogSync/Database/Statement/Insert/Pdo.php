@@ -44,11 +44,17 @@ class CatalogSync_Database_Statement_Insert_Pdo
 	 * Insert all rows found in the SelectStatement
 	 *
 	 * @param CatalogSync_Database_Statement_Select $select
+	 * @param callable|NULL $rowPrepCallback
+	 *   A callback that will receive a reference to the currently selected row
+	 *   and will be able to modify the row before it is inserted.
 	 * @return null
 	 * @access public
 	 */
-	public function insertAll (CatalogSync_Database_Statement_Select $select) {
+	public function insertAll (CatalogSync_Database_Statement_Select $select, callable $rowPrepCallback = NULL) {
 		while ($row = $select->fetch()) {
+			if (!is_null($rowPrepCallback)) {
+				call_user_func($rowPrepCallback, $row);
+			}
 			foreach ($this->columns as $column => $placeholder) {
 				$this->statement->bindValue($placeholder, $row->$column);
 			}

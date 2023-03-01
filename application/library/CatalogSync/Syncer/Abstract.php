@@ -23,6 +23,7 @@ abstract class CatalogSync_Syncer_Abstract
 
 	protected $destination_db;
 	protected $allowedBlckCodes = array();
+	protected $nonFatalErrors = [];
 
 	/**
 	 * Configure this sync instance
@@ -1187,10 +1188,44 @@ abstract class CatalogSync_Syncer_Abstract
 			));
 		$select = $source_db->query("SATURN_MIDD.SYVINST");
 		$select->convertBin2Hex("WEB_ID");
-		$insert->insertAll($select);
+		$insert->insertAll($select, [$this, 'preprocessSyvinstRow']);
 		print "...\tUpdated SYVINST\n";
 
 		$target_db->commit();
+	}
+
+	/**
+	 * Validate that user rows contain valid data and fix to avoid failure on
+	 * user accounts.
+	 *
+	 * @param object $row
+	 */
+	public function preprocessSyvinstRow(object $row) {
+		$missing = [];
+		if (empty($row->SYVINST_FIRST_NAME)) {
+			$missing[] = 'SYVINST_FIRST_NAME';
+			$row->SYVINST_FIRST_NAME = 'Unknown';
+		}
+		if (empty($row->SYVINST_LAST_NAME)) {
+			$missing[] = 'SYVINST_LAST_NAME';
+			$row->SYVINST_LAST_NAME = 'Unknown';
+		}
+		if (count($missing)) {
+			$message = 'Encountered bad user data in SYVINST. SYVINST_PIDM='.$row->SYVINST_PIDM.' has empty values for '. implode(', ', $missing) . '. Using "Unknown" as a placeholder, but upstream data should be fixed.';
+			$this->nonFatalErrors[] = $message;
+			print $message . "\n";
+		}
+	}
+
+	/**
+	 * Answer an array of non-fatal errors that should be mailed.
+	 *
+	 * @return array
+	 *   An array of error messages.
+	 * @access public
+	 */
+	public function getNonFatalErrors () {
+		return array_unique($this->nonFatalErrors);
 	}
 
 }

@@ -85,4 +85,12 @@ interface CatalogSync_Syncer
 	 */
 	public function disconnect ();
 
+	/**
+	 * Answer an array of non-fatal errors that should be mailed.
+	 *
+	 * @return array
+	 *   An array of error messages.
+	 * @access public
+	 */
+	public function getNonFatalErrors ();
 }
