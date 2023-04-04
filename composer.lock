@@ -4,15 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "61c7a867cfd9085ef6638fca13585f8c",
+    "content-hash": "28034e271a203894f46ae1d6c869efce",
     "packages": [
         {
             "name": "apereo/phpcas",
-            "version": "dev-lazy-session-initialization",
+            "version": "1.6.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/apereo/phpCAS",
-                "reference": "b3c9ce09fd87e8f01a909b70d101e5a562940448"
+                "url": "https://github.com/apereo/phpCAS.git",
+                "reference": "c129708154852656aabb13d8606cd5b12dbbabac"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/apereo/phpCAS/zipball/c129708154852656aabb13d8606cd5b12dbbabac",
+                "reference": "c129708154852656aabb13d8606cd5b12dbbabac",
+                "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
@@ -39,27 +45,15 @@
                     "source/"
                 ]
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "PhpCas\\": "test/CAS/"
-                }
-            },
-            "scripts": {
-                "test": [
-                    "phpunit"
-                ],
-                "phpstan": [
-                    "phpstan"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "Apache-2.0"
             ],
             "authors": [
                 {
                     "name": "Joachim Fritschi",
-                    "homepage": "https://github.com/jfritschi",
-                    "email": "jfritschi@freenet.de"
+                    "email": "jfritschi@freenet.de",
+                    "homepage": "https://github.com/jfritschi"
                 },
                 {
                     "name": "Adam Franco",
@@ -77,7 +71,11 @@
                 "cas",
                 "jasig"
             ],
-            "time": "2022-12-01T17:40:43+00:00"
+            "support": {
+                "issues": "https://github.com/apereo/phpCAS/issues",
+                "source": "https://github.com/apereo/phpCAS/tree/1.6.1"
+            },
+            "time": "2023-02-19T19:52:35+00:00"
         },
         {
             "name": "psr/log",
@@ -133,9 +131,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "apereo/phpcas": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
