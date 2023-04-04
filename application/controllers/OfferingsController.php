@@ -300,15 +300,16 @@ class OfferingsController
 			else
 				$departments = array($this->_getParam('department'));
 
-			foreach ($departments as $idString) {
-				$id = $this->_helper->osidId->fromString($idString);
-				$query->matchTopicId($id, true);
-				// set the first as the selected one if multiple.
-				if (!isset($this->view->selectedDepartmentId))
-					$this->view->selectedDepartmentId = $id;
+			if (count($departments)) {
+				foreach ($departments as $idString) {
+					$id = $this->_helper->osidId->fromString($idString);
+					$query->matchTopicId($id, true);
+					// set the first as the selected one if multiple.
+					if (!isset($this->view->selectedDepartmentId))
+						$this->view->selectedDepartmentId = $id;
+				}
+				$this->view->searchParams['department'] = $departments;
 			}
-
-			$this->view->searchParams['department'] = $departments;
 		}
 
 		if ($this->_getParam('subject')) {
@@ -317,15 +318,16 @@ class OfferingsController
 			else
 				$subjects = array($this->_getParam('subject'));
 
-			foreach ($subjects as $idString) {
-				$id = $this->_helper->osidId->fromString($idString);
-				$query->matchTopicId($id, true);
-				// set the first as the selected one if multiple.
-				if (!isset($this->view->selectedSubjectId))
-					$this->view->selectedSubjectId = $id;
+			if (count($subjects)) {
+				foreach ($subjects as $idString) {
+					$id = $this->_helper->osidId->fromString($idString);
+					$query->matchTopicId($id, true);
+					// set the first as the selected one if multiple.
+					if (!isset($this->view->selectedSubjectId))
+						$this->view->selectedSubjectId = $id;
+				}
+				$this->view->searchParams['subject'] = $subjects;
 			}
-
-			$this->view->searchParams['subject'] = $subjects;
 		}
 
 		if ($this->_getParam('division')) {
@@ -334,112 +336,119 @@ class OfferingsController
 			else
 				$divisions = array($this->_getParam('division'));
 
-			foreach ($divisions as $idString) {
-				$id = $this->_helper->osidId->fromString($idString);
-				$query->matchTopicId($id, true);
-				// set the first as the selected one if multiple.
-				if (!isset($this->view->selectedDivisionId))
-					$this->view->selectedDivisionId = $id;
+			if (count($divisions)) {
+				foreach ($divisions as $idString) {
+					$id = $this->_helper->osidId->fromString($idString);
+					$query->matchTopicId($id, true);
+					// set the first as the selected one if multiple.
+					if (!isset($this->view->selectedDivisionId))
+						$this->view->selectedDivisionId = $id;
+				}
+				$this->view->searchParams['division'] = $divisions;
 			}
-
-			$this->view->searchParams['division'] = $divisions;
 		}
 
 		$this->view->selectedRequirementIds = array();
-		if ($this->_getParam('requirement') && count($this->_getParam('requirement'))) {
+		if ($this->_getParam('requirement')) {
 			if (is_array($this->_getParam('requirement')))
 				$requirements = $this->_getParam('requirement');
 			else
 				$requirements = array($this->_getParam('requirement'));
 
-			foreach ($requirements as $idString) {
-				$id = $this->_helper->osidId->fromString($idString);
-				$query->matchTopicId($id, true);
-				$this->view->selectedRequirementIds[] = $id;
+			if (count($requirements)) {
+				foreach ($requirements as $idString) {
+					$id = $this->_helper->osidId->fromString($idString);
+					$query->matchTopicId($id, true);
+					$this->view->selectedRequirementIds[] = $id;
+				}
+				$this->view->searchParams['requirement'] = $requirements;
 			}
-
-			$this->view->searchParams['requirement'] = $requirements;
 		}
 
 		$this->view->selectedLevelIds = array();
-		if ($this->_getParam('level') && count($this->_getParam('level'))) {
+		if ($this->_getParam('level')) {
 			if (is_array($this->_getParam('level')))
 				$levels = $this->_getParam('level');
 			else
 				$levels = array($this->_getParam('level'));
 
-			foreach ($levels as $idString) {
-				$id = $this->_helper->osidId->fromString($idString);
-				$query->matchTopicId($id, true);
-				$this->view->selectedLevelIds[] = $id;
+			if (count($levels)) {
+				foreach ($levels as $idString) {
+					$id = $this->_helper->osidId->fromString($idString);
+					$query->matchTopicId($id, true);
+					$this->view->selectedLevelIds[] = $id;
+				}
+				$this->view->searchParams['level'] = $levels;
 			}
-
-			$this->view->searchParams['level'] = $levels;
 		}
 
 		$this->view->selectedBlockIds = array();
-		if ($this->_getParam('block') && count($this->_getParam('block'))) {
+		if ($this->_getParam('block')) {
 			if (is_array($this->_getParam('block')))
 				$blocks = $this->_getParam('block');
 			else
 				$blocks = array($this->_getParam('block'));
 
-			foreach ($blocks as $idString) {
-				$id = $this->_helper->osidId->fromString($idString);
-				$query->matchTopicId($id, true);
-				$this->view->selectedBlockIds[] = $id;
+			if (count($blocks)) {
+				foreach ($blocks as $idString) {
+					$id = $this->_helper->osidId->fromString($idString);
+					$query->matchTopicId($id, true);
+					$this->view->selectedBlockIds[] = $id;
+				}
+				$this->view->searchParams['block'] = $blocks;
 			}
-
-			$this->view->searchParams['block'] = $blocks;
 		}
 
 		$this->view->selectedInstructionMethodIds = array();
-		if ($this->_getParam('instruction_method') && count($this->_getParam('instruction_method'))) {
+		if ($this->_getParam('instruction_method')) {
 			if (is_array($this->_getParam('instruction_method')))
 				$instructionMethods = $this->_getParam('instruction_method');
 			else
 				$instructionMethods = array($this->_getParam('instruction_method'));
 
-			foreach ($instructionMethods as $idString) {
-				$id = $this->_helper->osidId->fromString($idString);
-				$query->matchTopicId($id, true);
-				$this->view->selectedInstructionMethodIds[] = $id;
+			if (count($instructionMethods)) {
+				foreach ($instructionMethods as $idString) {
+					$id = $this->_helper->osidId->fromString($idString);
+					$query->matchTopicId($id, true);
+					$this->view->selectedInstructionMethodIds[] = $id;
+				}
+				$this->view->searchParams['instruction_method'] = $instructionMethods;
 			}
-
-			$this->view->searchParams['instruction_method'] = $instructionMethods;
 		}
 
 		$this->view->selectedGenusTypes = array();
-		if ($this->_getParam('type') && count($this->_getParam('type'))) {
+		if ($this->_getParam('type')) {
 			if (is_array($this->_getParam('type')))
 				$genusTypes = $this->_getParam('type');
 			else
 				$genusTypes = array($this->_getParam('type'));
 
-			foreach ($genusTypes as $typeString) {
-				$genusType = $this->_helper->osidType->fromString($typeString);
-				$query->matchGenusType($genusType, true);
-				$this->view->selectedGenusTypes[] = $genusType;
+			if (count($genusTypes)) {
+				foreach ($genusTypes as $typeString) {
+					$genusType = $this->_helper->osidType->fromString($typeString);
+					$query->matchGenusType($genusType, true);
+					$this->view->selectedGenusTypes[] = $genusType;
+				}
+				$this->view->searchParams['type'] = $genusTypes;
 			}
-
-			$this->view->searchParams['type'] = $genusTypes;
 		}
 
 		// Campuses
 		$this->view->selectedCampusIds = array();
-		if ($this->_getParam('location') && count($this->_getParam('location'))) {
+		if ($this->_getParam('location')) {
 			if (is_array($this->_getParam('location')))
 				$campuses = $this->_getParam('location');
 			else
 				$campuses = array($this->_getParam('location'));
 
-			foreach ($campuses as $idString) {
-				$id = $this->_helper->osidId->fromString($idString);
-				$query->matchLocationId($id, true);
-				$this->view->selectedCampusIds[] = $id;
+			if (count($campuses)) {
+				foreach ($campuses as $idString) {
+					$id = $this->_helper->osidId->fromString($idString);
+					$query->matchLocationId($id, true);
+					$this->view->selectedCampusIds[] = $id;
+				}
+				$this->view->searchParams['location'] = $campuses;
 			}
-
-			$this->view->searchParams['location'] = $campuses;
 		}
 
 
@@ -451,34 +460,36 @@ class OfferingsController
 		if ($query->hasRecordType($this->weeklyScheduleType)) {
 			$queryRecord = $query->getCourseOfferingQueryRecord($this->weeklyScheduleType);
 
-			if ($this->_getParam('days') && count($this->_getParam('days'))) {
+			if ($this->_getParam('days')) {
 				if (is_array($this->_getParam('days')))
 					$days = $this->_getParam('days');
 				else
 					$days = array($this->_getParam('days'));
 
-				if (!in_array('sunday', $days))
-					$queryRecord->matchMeetsSunday(false);
+				if (count($days)) {
+					if (!in_array('sunday', $days))
+						$queryRecord->matchMeetsSunday(false);
 
-				if (!in_array('monday', $days))
-					$queryRecord->matchMeetsMonday(false);
+					if (!in_array('monday', $days))
+						$queryRecord->matchMeetsMonday(false);
 
-				if (!in_array('tuesday', $days))
-					$queryRecord->matchMeetsTuesday(false);
+					if (!in_array('tuesday', $days))
+						$queryRecord->matchMeetsTuesday(false);
 
-				if (!in_array('wednesday', $days))
-					$queryRecord->matchMeetsWednesday(false);
+					if (!in_array('wednesday', $days))
+						$queryRecord->matchMeetsWednesday(false);
 
-				if (!in_array('thursday', $days))
-					$queryRecord->matchMeetsThursday(false);
+					if (!in_array('thursday', $days))
+						$queryRecord->matchMeetsThursday(false);
 
-				if (!in_array('friday', $days))
-					$queryRecord->matchMeetsFriday(false);
+					if (!in_array('friday', $days))
+						$queryRecord->matchMeetsFriday(false);
 
-				if (!in_array('saturday', $days))
-					$queryRecord->matchMeetsSaturday(false);
+					if (!in_array('saturday', $days))
+						$queryRecord->matchMeetsSaturday(false);
 
-				$this->view->searchParams['days'] = $days;
+					$this->view->searchParams['days'] = $days;
+				}
 			} else {
 				$this->view->searchParams['days'] = array();
 			}
