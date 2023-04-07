@@ -240,6 +240,11 @@ function save() {
         $('.error-message').removeClass('hidden error');
         // TODO - I'm pretty sure this does nothing.
         $("#job" + jobData['jobId']).css('background', 'white');
+        // Hide the message after a few seconds.
+        setTimeout(function() {
+          $('.error-message').addClass('hidden');
+          $('.error-message').removeClass('success');
+        }, 5000);
       }
       $.ajax({
         url: "../export/updatejob",
