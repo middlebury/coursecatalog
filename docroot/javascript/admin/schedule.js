@@ -85,7 +85,7 @@ function buildList(data, callback) {
 
     // ID && Active
     jobsHTML += "<td class='job-active'><input type='hidden' value='" + element['id'] + "'></input><input type='checkbox'";
-    if (element['active'] === '1') jobsHTML += " checked";
+    if (element['active'] === '1' || element['active'] === 1) jobsHTML += " checked";
     jobsHTML += "></input></td>";
 
     // Export Path
