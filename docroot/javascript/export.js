@@ -17,6 +17,12 @@ function generateSectionHTML(type, input) {
   return "<div class='position-helper'><span class='move-arrows'><img src='../../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + type + "</span><span class='section-value'>" + input + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete Section</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>";
 }
 
+// Cache of courselist data for reuse.
+// We will fetch the lists asynchronously, but want to only do a single fetch.
+let courselist_data = {};
+let courselists_to_populate = [];
+let loading_courselist = false;
+
 function generateInputTag(type, value, callback) {
   switch(type) {
     case "h1":
@@ -36,37 +42,75 @@ function generateInputTag(type, value, callback) {
   		callback("<textarea class='section-input' rows='20' value='" + value + "'>" + value + "</textarea>");
   		break;
   	case "course_list":
-      $.ajax({
-        url: "../export/generateCourseList",
-        type: "GET",
-        data: {
-          catalogId: $('#catalogId').val()
-        },
-        error: function(error) {
-          throw error;
-        },
-        success: function(data) {
-          if (value === '') value = 'unselected';
-          // Course filters.
-          if (value.indexOf(',') !== -1) {
-            var selection = value.substring(0, value.indexOf(','));
-            var filters = value.substring(value.indexOf(',') +1);
-            var filterHTML = "<br><span class='course-filters'>Course #'s to exclude: <input class='filter-input' name='filtering' placeholder='Separate with commas' value='" + filters + "'></input></span>"
-          } else {
-            var selection = value;
-            var filterHTML = "<br><span class='course-filters'>Course #'s to exclude: <input class='filter-input' name='filtering' placeholder='Separate with commas'></input></span>"
-          }
-          var sectionInput = data;
-          sectionInput = sectionInput.replace("<select class='section-dropdown' value='unselected'>", "<select class='section-dropdown' value='" + selection + "'>");
-          sectionInput = sectionInput.replace("<option value='" + selection + "'>", "<option value='" + selection + "' selected='selected'>");
-          sectionInput += filterHTML;
-          callback(sectionInput);
+      // We only want to perform a single fetch of data for the course lists to
+      // not fire of dozens of requests for the same data, so we'll fire off the
+      // first request and then queue up addtional inputs to render that we'll
+      // go through when the result comes back.
+
+      // If we've already loaded the data, just use it.
+      if (courselist_data[$('#catalogId').val()]) {
+        getCourseListInputForData(courselist_data[$('#catalogId').val()], value, callback);
+      } else {
+        // If we don't have data yet, add our element to the queue to be rendered.
+        courselists_to_populate.push({
+          catalog: $('#catalogId').val(),
+          value: value,
+          callback: callback
+        });
+        // Kick off a load of the data if we aren't loading yet.
+        if (!loading_courselist) {
+          // Set up an overlay to prevent working with or saving the form until
+          // population is finished.
+          loading_courselist = true;
+          $('body').append("<div id='loading-overlay' class='loading-overlay'><p class='loading'>Loading course list options...</div></div>");
+          $('.loading-overlay').css("height", $(window).height());
+          $(window).resize(function() {
+            $('.loading-overlay').css("height", $(window).height());
+          });
+
+          // Run the request and work through our queue when we get the result back.
+          $.ajax({
+            url: "../export/generateCourseList",
+            type: "GET",
+            data: {
+              catalogId: $('#catalogId').val()
+            },
+            error: function(error) {
+              throw error;
+            },
+            success: function(data) {
+              courselist_data[$('#catalogId').val()] = data;
+              while (l = courselists_to_populate.pop()) {
+                setCourseListInputForData(courselist_data[l['catalog']], l['value'], l['callback']);
+              }
+              loading_courselist = false;
+              $('.loading-overlay').hide();
+            }
+          });
         }
-      });
+      }
   		break;
     default:
       throw "Invalid input tag type: " + type;
   }
+}
+
+function setCourseListInputForData(data, value, callback) {
+  if (value === '') value = 'unselected';
+  // Course filters.
+  if (value.indexOf(',') !== -1) {
+    var selection = value.substring(0, value.indexOf(','));
+    var filters = value.substring(value.indexOf(',') +1);
+    var filterHTML = "<br><span class='course-filters'>Course #'s to exclude: <input class='filter-input' name='filtering' placeholder='Separate with commas' value='" + filters + "'></input></span>"
+  } else {
+    var selection = value;
+    var filterHTML = "<br><span class='course-filters'>Course #'s to exclude: <input class='filter-input' name='filtering' placeholder='Separate with commas'></input></span>"
+  }
+  var sectionInput = data;
+  sectionInput = sectionInput.replace("<select class='section-dropdown' value='unselected'>", "<select class='section-dropdown' value='" + selection + "'>");
+  sectionInput = sectionInput.replace("<option value='" + selection + "'>", "<option value='" + selection + "' selected='selected'>");
+  sectionInput += filterHTML;
+  callback(sectionInput);
 }
 
 function generateGroup(id, title, visible) {
@@ -84,7 +128,6 @@ function buildList(jsonData, callback) {
     newGroup();
     callback()
   } else {
-    console.log(jsonData);
 
     /*
      * The count variable is used to ensure that this whole block flows synchronously.

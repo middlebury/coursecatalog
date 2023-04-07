@@ -206,3 +206,20 @@
   width: 47%;
   margin-right: 5px;
 }
+
+#loading-overlay {
+  background-color: #555b;
+  height: 500px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  color: white;
+  font-size: xx-large;
+}
+
+.loading {
+  top: 50%;
+  position: relative;
+}
