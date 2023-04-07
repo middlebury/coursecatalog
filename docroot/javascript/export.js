@@ -421,6 +421,10 @@ function saveJSON() {
         $('.error-message').html("<p>Saved successfully</p>");
         $('.error-message').removeClass('hidden error');
         $('.error-message').addClass('success');
+        setTimeout(function() {
+          $('.error-message').addClass('hidden');
+          $('.error-message').removeClass('success');
+        }, 5000);
       }
     });
   }
