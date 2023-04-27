@@ -281,17 +281,19 @@ class OfferingsController
 		$this->view->terms = $termLookupSession->getTerms();
 
 		// Add our parameters to the search query
-		if (isset($termId)) {
+		if ($this->_getParam('term')) {
 			$this->view->searchParams['term'] = $this->_getParam('term');
 
-			$query->matchTermId($termId, true);
+			if (isset($termId)) {
+				$query->matchTermId($termId, true);
 
-			$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
-			$termLookupSession->useFederatedCourseCatalogView();
-			$this->view->term = $termLookupSession->getTerm($termId);
-			$this->view->selectedTermId = $termId;
+				$termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
+				$termLookupSession->useFederatedCourseCatalogView();
+				$this->view->term = $termLookupSession->getTerm($termId);
+				$this->view->selectedTermId = $termId;
 
-			$this->view->title .= " ".$this->view->term->getDisplayName();
+				$this->view->title .= " ".$this->view->term->getDisplayName();
+			}
 		}
 
 		if ($this->_getParam('department')) {
