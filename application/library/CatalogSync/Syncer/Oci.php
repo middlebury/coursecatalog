@@ -48,7 +48,7 @@ class CatalogSync_Syncer_Oci
 	 * Warnings or Errors. This should catch any OCI problems that
 	 * are not picked up by calls to oci_error().
 	 */
-	public function exception_error_handler ($errno, $errstr, $errfile, $errLine, $errcontext) {
+	public function exception_error_handler ($errno, $errstr, $errfile = NULL, $errLine = NULL, $errcontext = NULL) {
 		throw new Exception($errstr, $errno);
 	}
 
