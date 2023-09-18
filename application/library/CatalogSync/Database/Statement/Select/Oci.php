@@ -38,7 +38,9 @@ class CatalogSync_Database_Statement_Select_Oci
 	 *
 	 */
 	public function __destruct() {
-		oci_free_statement($this->statement);
+		if (isset($this->statement)) {
+			oci_free_statement($this->statement);
+		}
 	}
 
 	/**
