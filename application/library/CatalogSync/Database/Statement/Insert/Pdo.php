@@ -55,10 +55,22 @@ class CatalogSync_Database_Statement_Insert_Pdo
 			if (!is_null($rowPrepCallback)) {
 				call_user_func($rowPrepCallback, $row);
 			}
-			foreach ($this->columns as $column => $placeholder) {
-				$this->statement->bindValue($placeholder, $row->$column);
+			try {
+				foreach ($this->columns as $column => $placeholder) {
+					$this->statement->bindValue($placeholder, $row->$column);
+				}
+				$this->statement->execute();
 			}
-			$this->statement->execute();
+			catch (\Exception $e) {
+				ob_start();
+			  $p = $this->statement->debugDumpParams();
+			  $params = str_replace("\n", "; ", ob_get_clean());
+				throw new \Exception(sprintf('Insert Error: %s. Query: %s; %s',
+					$e->getMessage(),
+					$this->statement->queryString,
+					$params
+				), $e->getCode(), $e);
+			}
 		}
 	}
 
