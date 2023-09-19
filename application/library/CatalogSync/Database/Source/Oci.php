@@ -94,10 +94,14 @@ class CatalogSync_Database_Source_Oci
 	 * @param string $table
 	 * @param optional array $columns
 	 * @param optional string $where
+	 * @param optional array $whereArgs
+	 *   An array or placeholder arguments for the where clause. Example:
+	 *     $where = 'first_name = :fname AND surname = :lname'
+	 *     $whereArgs = [':fname' => 'John', ':lname' => 'Doe']
 	 * @return CatalogSync_Database_Statement_Select
 	 * @access public
 	 */
-	public function query ($table, array $columns = array(), $where = '') {
+	public function query ($table, array $columns = array(), $where = '', $whereArgs = []) {
 		// Build the query.
 		if (empty($columns)) {
 			$column_list = '*';
@@ -106,13 +110,18 @@ class CatalogSync_Database_Source_Oci
 		}
 		$query = "SELECT $column_list FROM $table";
 		if (!empty($where)) {
-			$query .= " $where";
+			$query .= " WHERE $where";
 		}
 
 		// Parse and Execute the statement
 		$statement = oci_parse($this->handle, $query);
 		if ($error = oci_error($this->handle)) {
 			throw new Exception($error['message'], $error['code']);
+		}
+		if (!empty($whereArgs)) {
+			foreach ($whereArgs as $name => $value) {
+				oci_bind_by_name($statement, $name, $value);
+			}
 		}
 		oci_execute($statement);
 		if ($error = oci_error($this->handle)) {
