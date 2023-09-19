@@ -65,9 +65,8 @@ class CatalogSync_Database_Statement_Insert_Pdo
 				ob_start();
 			  $p = $this->statement->debugDumpParams();
 			  $params = str_replace("\n", "; ", ob_get_clean());
-				throw new \Exception(sprintf('Insert Error: %s. Query: %s; %s',
+				throw new \Exception(sprintf('Insert Error: %s. %s',
 					$e->getMessage(),
-					$this->statement->queryString,
 					$params
 				), $e->getCode(), $e);
 			}
