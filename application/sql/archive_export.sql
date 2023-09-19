@@ -21,7 +21,7 @@ CREATE TABLE `archive_configurations` (
   `id` int(11) NOT NULL,
   `label` varchar(100) DEFAULT NULL,
   `catalog_id` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Indexes for table `archive_configurations`
@@ -47,7 +47,7 @@ CREATE TABLE `archive_configuration_revisions` (
   `user_id` varchar(100) DEFAULT NULL,
   `user_disp_name` varchar(100) DEFAULT NULL,
   `json_data` mediumtext
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Indexes for table `archive_configuration_revisions`
@@ -79,7 +79,7 @@ CREATE TABLE `archive_jobs` (
   `config_id` int(11) DEFAULT NULL,
   `revision_id` int(11) DEFAULT NULL,
   `terms` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Table structure for table `archive_export_progress`
@@ -88,7 +88,7 @@ CREATE TABLE `archive_jobs` (
 CREATE TABLE `archive_export_progress` (
   `pid` int(11) NOT NULL,
   `progress` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Indexes for table `archive_export_progress`

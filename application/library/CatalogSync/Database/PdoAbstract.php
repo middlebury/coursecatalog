@@ -93,7 +93,7 @@ class CatalogSync_Database_PdoAbstract
 	 * @return PDO
 	 */
 	protected function createPdo(Zend_Config $config) {
-		$dsn = $config->type.':host='.$config->host.';dbname='.$config->database.';charset=utf8';
+		$dsn = $config->type.':host='.$config->host.';dbname='.$config->database.';charset=utf8mb4';
 		return new Pdo($dsn, $config->username, $config->password, $this->getDatabaseOptions($config->type));
 	}
 

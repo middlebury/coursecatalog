@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `user_savedcourses` (
   `updated` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`user_id`,`course_id_keyword`,`course_id_authority`,`course_id_namespace`),
   KEY `updated` (`updated`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Courses bookmarked by users.';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Courses bookmarked by users.';
 
 -- --------------------------------------------------------
 
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `user_schedule_offerings` (
   `offering_id_namespace` varchar(10) NOT NULL,
   `updated` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`schedule_id`,`offering_id_keyword`,`offering_id_authority`,`offering_id_namespace`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Offerings attached to a schedule';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Offerings attached to a schedule';
 
 --
 -- Constraints for dumped tables
@@ -85,4 +85,4 @@ CREATE TABLE IF NOT EXISTS `user_catalog` (
   `catalog_id_namespace` varchar(10) collate utf8_bin NOT NULL,
   `updated` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores a user-preference of the default catalog and term.';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Stores a user-preference of the default catalog and term.';

@@ -22,5 +22,5 @@ UPDATE `catalog_term_inactive` SET `catalog_id` = 'MIISLPP' WHERE term_code LIKE
 UPDATE `catalog_term_inactive` SET `catalog_id` = 'MIISLPP' WHERE term_code LIKE '%78';
 UPDATE `catalog_term_inactive` SET `catalog_id` = 'MIISLPP' WHERE term_code LIKE '%88';
 
-ALTER TABLE `catalog_term_inactive` CHANGE `catalog_id` `catalog_id` VARCHAR(10) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+ALTER TABLE `catalog_term_inactive` CHANGE `catalog_id` `catalog_id` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL;
 ALTER TABLE `catalog_term_inactive` ADD PRIMARY KEY( `catalog_id`, `term_code`);
