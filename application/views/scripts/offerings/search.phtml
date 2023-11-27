@@ -545,8 +545,11 @@ if ($section->hasLocation()) {
 	print "\n\t\t<dd>".$this->escape($section->getLocationInfo())."</dd>";
 }
 
-print "\n\t\t<dt>Schedule:</dt>";
-print "\n\t\t<dd>".$this->formatScheduleInfo($section->getScheduleInfo())."</dd>";
+$scheduleInfo = $section->getScheduleInfo();
+if (!empty($scheduleInfo)) {
+	print "\n\t\t<dt>Schedule:</dt>";
+	print "\n\t\t<dd>".$this->formatScheduleInfo($scheduleInfo)."</dd>";	
+}
 
 $availabilityLink = $this->getAvailabilityLink($section);
 if (!empty($availabilityLink)) {

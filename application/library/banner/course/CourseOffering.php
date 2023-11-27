@@ -533,6 +533,10 @@ class banner_course_CourseOffering
 			if ($this->row['GTVINSM_CODE'] == 'FON') {
 				return "Flexible Online";
 			}
+			// MIIS Institute Online asynchronous.
+			if ($this->row['GTVINSM_CODE'] == 'ONASY') {
+				return "";
+			}
 			// Cross-listed sections that don't have schedules entered.
 			if ($this->hasAlternates() && !$this->isPrimary()) {
 				return "Unscheduled cross-list, see primary section.";
