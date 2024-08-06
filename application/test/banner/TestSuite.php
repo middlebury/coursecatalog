@@ -1,10 +1,12 @@
 <?php
 
+use PHPUnit\Framework\TestSuite;
+
 set_include_path(realpath(dirname(__FILE__).'/../') . PATH_SEPARATOR . get_include_path());
 
 require_once(dirname(__FILE__).'/../../autoload.php');
 
-class banner_TestSuite extends PHPUnit_Framework_TestSuite
+class banner_TestSuite extends TestSuite
 {
 	public static function suite()
 	{
@@ -16,7 +18,7 @@ class banner_TestSuite extends PHPUnit_Framework_TestSuite
 		return $suite;
 	}
 
-	protected function setUp()
+	protected function setUp(): void
 	{
 		$this->setMemoryLimit();
 		try {
@@ -27,7 +29,7 @@ class banner_TestSuite extends PHPUnit_Framework_TestSuite
 		}
 	}
 
-	protected function tearDown()
+	protected function tearDown(): void
 	{
 		try {
 			$this->emptyBannerDbAndClose();

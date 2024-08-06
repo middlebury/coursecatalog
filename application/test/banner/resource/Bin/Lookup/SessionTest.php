@@ -30,13 +30,13 @@ class banner_resource_Bin_Lookup_SessionTest
 	static $runtimeManager;
 	static $courseManager;
 
-	public static function setUpBeforeClass()
+	public static function setUpBeforeClass(): void
 	{
 		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../../../').'/configuration.plist');
 		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
 	}
 
-	public static function tearDownAfterClass()
+	public static function tearDownAfterClass(): void
 	{
 		self::$courseManager->shutdown();
 		self::$runtimeManager->shutdown();
@@ -48,7 +48,7 @@ class banner_resource_Bin_Lookup_SessionTest
 	 *
 	 * @access protected
 	 */
-	protected function setUp()
+	protected function setUp(): void
 	{
 		$this->manager = self::$courseManager->getResourceManager();
 		$this->session = $this->manager->getBinLookupSession();
@@ -70,7 +70,7 @@ class banner_resource_Bin_Lookup_SessionTest
 	 *
 	 * @access protected
 	 */
-	protected function tearDown()
+	protected function tearDown(): void
 	{
 		$this->session->close();
 	}

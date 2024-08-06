@@ -36,7 +36,7 @@ class banner_resource_Resource_PersonTest
 	 *
 	 * @access protected
 	 */
-	protected function setUp()
+	protected function setUp(): void
 	{
 		$this->namesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:person_names');
 		$this->unknownType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:unknown');
@@ -68,7 +68,7 @@ class banner_resource_Resource_PersonTest
 	 *
 	 * @access protected
 	 */
-	protected function tearDown()
+	protected function tearDown(): void
 	{
 	}
 
