@@ -34,19 +34,6 @@ INSERT INTO `catalog_term` (`catalog_id`, `term_code`, `term_display_label`) VAL
 ('MCLS', '201690', 'F');
 
 --
--- Dumping data for table `catalog_term_match`
---
-
-INSERT INTO `catalog_term_match` (`catalog_id`, `term_code_match`, `term_display_label`) VALUES
-('BLSE', '%70', ''),
-('MCLS', '%60', 'L'),
-('MCLS', '%90', 'F'),
-('MCUG', '%10', 'W'),
-('MCUG', '%20', 'S'),
-('MCUG', '%90', 'F'),
-('MIIS', '%8', '');
-
---
 -- Dumping data for table `course_catalog`
 --
 
@@ -86,6 +73,19 @@ INSERT INTO `course_catalog_college` (`catalog_id`, `coll_code`) VALUES
 ('BLSE', 'WC'),
 ('MMLA', 'AX'),
 ('MCSA', 'SA');
+
+--
+-- Dumping data for table `catalog_term_match`
+--
+
+INSERT INTO `catalog_term_match` (`catalog_id`, `term_code_match`, `term_display_label`) VALUES
+('BLSE', '%70', ''),
+('MCLS', '%60', 'L'),
+('MCLS', '%90', 'F'),
+('MCUG', '%10', 'W'),
+('MCUG', '%20', 'S'),
+('MCUG', '%90', 'F'),
+('MIIS', '%8', '');
 
 --
 -- Dumping data for table `GORINTG`
