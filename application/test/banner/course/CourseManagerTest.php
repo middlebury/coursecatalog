@@ -7,17 +7,8 @@
 class banner_course_CourseManagerTest
 	extends phpkit_test_phpunit_AbstractOsidManagerTest
 {
-	static $runtimeManager;
 
-	public static function setUpBeforeClass(): void
-	{
-		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../').'/configuration.plist');
-	}
-
-	public static function tearDownAfterClass(): void
-	{
-		self::$runtimeManager->shutdown();
-	}
+	use banner_DatabaseTestTrait;
 
 	/**
 	 * @var    banner_course_CourseManager

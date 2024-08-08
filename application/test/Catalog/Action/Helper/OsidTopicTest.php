@@ -9,6 +9,8 @@ use PHPUnit\Framework\TestCase;
 class Catalog_Action_Helper_OsidTopicTest extends TestCase
 {
 
+	use Catalog_ApplicationTestTrait;
+
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.

@@ -1,43 +1,40 @@
 <?php
 
-use PHPUnit\Framework\TestSuite;
+trait banner_DatabaseTestTrait {
 
-set_include_path(realpath(dirname(__FILE__).'/../') . PATH_SEPARATOR . get_include_path());
+	public static $runtimeManager;
+	public static $courseManager;
 
-require_once(dirname(__FILE__).'/../../autoload.php');
-
-class banner_TestSuite extends TestSuite
-{
-	public static function suite()
+	public static function setUpBeforeClass(): void
 	{
-		$suite = new banner_TestSuite('banner.course');
-
-		self::recursiveAddTests($suite, dirname(__FILE__).'/course');
-		self::recursiveAddTests($suite, dirname(__FILE__).'/resource');
-
-		return $suite;
+		self::setUpDatabase();
 	}
 
-	protected function setUp(): void
+	public static function tearDownAfterClass(): void
 	{
-		$this->setMemoryLimit();
+		self::tearDownDatabase();
+	}
+
+	public static function setUpDatabase(): void
+	{
+		self::setMemoryLimit();
 		try {
-			$this->loadBannerDb();
+			self::loadBannerDb();
 		} catch (Exception $e) {
 			print $e->getMessage()."\n";
 			throw $e;
 		}
 	}
 
-	protected function tearDown(): void
+	public static function tearDownDatabase(): void
 	{
 		try {
-			$this->emptyBannerDbAndClose();
+			self::emptyBannerDbAndClose();
 		} catch (Exception $e) {
 			print $e->getMessage()."\n";
 			throw $e;
 		}
-		$this->resetMemoryLimit();
+		self::resetMemoryLimit();
 	}
 
 	/**
@@ -46,18 +43,18 @@ class banner_TestSuite extends TestSuite
 	 * @access public
 	 * @since 6/11/09
 	 */
-	public function loadBannerDb () {
-		$this->runtimeManager = new phpkit_AutoloadOsidRuntimeManager(dirname(__FILE__).'/configuration.plist');
-		$this->courseManager = $this->runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
+	public static function loadBannerDb () {
+		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(dirname(__FILE__).'/configuration.plist');
+		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
 
 		// Initialize our testing database
-		$db = $this->courseManager->getDB();
+		$db = self::$courseManager->getDB();
 		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/drop_tables.sql', $db);
 		harmoni_SQLUtils::runSQLfile(APPLICATION_PATH.'/library/banner/sql/table_creation.sql', $db);
 		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/test_data.sql', $db);
 
 		// Build our full-text search index.
-		$searchSession = $this->courseManager->getCourseOfferingSearchSession();
+		$searchSession = self::$courseManager->getCourseOfferingSearchSession();
 		$searchSession->buildIndex(false);
 
 		if (method_exists($db, 'resetCounters')) {
@@ -73,9 +70,9 @@ class banner_TestSuite extends TestSuite
 	 * @access public
 	 * @since 6/11/09
 	 */
-	public function emptyBannerDbAndClose () {
+	public static function emptyBannerDbAndClose () {
 		// Remove our testing database
-		$db = $this->courseManager->getDB();
+		$db = self::$courseManager->getDB();
 		if (method_exists($db, 'getCounters')) {
 			$maxName = 0;
 			$maxNum = 0;
@@ -113,8 +110,8 @@ class banner_TestSuite extends TestSuite
 		}
 		harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/drop_tables.sql', $db);
 
-		$this->courseManager->shutdown();
-		$this->runtimeManager->shutdown();
+		self::$courseManager->shutdown();
+		self::$runtimeManager->shutdown();
 	}
 
 	/**
@@ -136,15 +133,15 @@ class banner_TestSuite extends TestSuite
 		}
 	}
 
-	private $minMemory = '300M';
-	private $currentMemory = null;
+	private static $minMemory = '300M';
+	private static $currentMemory = null;
 
-	protected function setMemoryLimit() {
-		$minBytes = $this->asBytes($this->minMemory);
-		$currentBytes = $this->asBytes(ini_get('memory_limit'));
+	protected static function setMemoryLimit() {
+		$minBytes = self::asBytes(self::$minMemory);
+		$currentBytes = self::asBytes(ini_get('memory_limit'));
 		if ($currentBytes < $minBytes) {
-			$this->currentMemory = ini_get('memory_limit');
-			ini_set('memory_limit', $this->minMemory);
+			self::$currentMemory = ini_get('memory_limit');
+			ini_set('memory_limit', self::$minMemory);
 		}
 	}
 
@@ -155,25 +152,26 @@ class banner_TestSuite extends TestSuite
 	 * @access private
 	 * @since 11/12/09
 	 */
-	protected function resetMemoryLimit () {
-		if (!is_null($this->currentMemory)) {
-			ini_set('memory_limit', $this->currentMemory);
+	protected static function resetMemoryLimit () {
+		if (!is_null(self::$currentMemory)) {
+			ini_set('memory_limit', self::$currentMemory);
 		}
 	}
 
-	private function asBytes($val) {
+	private static function asBytes($val) {
 		$val = trim($val);
 		$last = strtolower($val[strlen($val)-1]);
+		$num = substr($val, 0, strlen($val) - 1);
 		switch($last) {
 			// The 'G' modifier is available since PHP 5.1.0
 			case 'g':
-				$val *= 1024;
+				$num *= 1024;
 			case 'm':
-				$val *= 1024;
+				$num *= 1024;
 			case 'k':
-				$val *= 1024;
+				$num *= 1024;
 		}
 
-		return $val;
+		return $num;
 	}
 }

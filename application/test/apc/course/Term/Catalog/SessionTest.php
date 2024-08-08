@@ -8,8 +8,9 @@ class apc_course_Term_Catalog_SessionTest
 	extends banner_course_Term_Catalog_SessionTest
 {
 
-	public static function setUpBeforeClass()
+	public static function setUpBeforeClass(): void
 	{
+		parent::setUpBeforeClass();
 		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../../../').'/configuration.plist');
 		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'apc_course_CourseManager', '3.0.0');
 	}

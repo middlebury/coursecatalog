@@ -8,26 +8,14 @@ use PHPUnit\Framework\TestCase;
  */
 class banner_course_Course_Search_OrderTest extends TestCase
 {
+
+	use banner_DatabaseTestTrait;
+
 	/**
 	 * @var    banner_course_Course_Search_Order
 	 * @access protected
 	 */
 	protected $object;
-
-	static $runtimeManager;
-	static $courseManager;
-
-	public static function setUpBeforeClass(): void
-	{
-		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../../../').'/configuration.plist');
-		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
-	}
-
-	public static function tearDownAfterClass(): void
-	{
-		self::$courseManager->shutdown();
-		self::$runtimeManager->shutdown();
-	}
 
 	/**
 	 * Sets up the fixture, for example, opens a network connection.

@@ -7,6 +7,9 @@
 class banner_course_CourseOffering_Lookup_CombinedSessionTest
 	extends phpkit_test_phpunit_AbstractOsidSessionTest
 {
+
+	use banner_DatabaseTestTrait;
+
 	/**
 	 * @var    banner_course_CourseCatalog_Lookup_Session
 	 * @access protected
@@ -22,21 +25,6 @@ class banner_course_CourseOffering_Lookup_CombinedSessionTest
 	 */
 	protected function getSession () {
 		return $this->session;
-	}
-
-	static $runtimeManager;
-	static $courseManager;
-
-	public static function setUpBeforeClass(): void
-	{
-		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../../../').'/configuration.plist');
-		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
-	}
-
-	public static function tearDownAfterClass(): void
-	{
-		self::$courseManager->shutdown();
-		self::$runtimeManager->shutdown();
 	}
 
 	/**
