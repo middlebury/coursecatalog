@@ -10,7 +10,7 @@
         <testsuite name="all">
             <directory>application/test/apc</directory>
             <directory>application/test/banner</directory>
-            <directory>application/test/catalog</directory>
+            <directory>application/test/Catalog</directory>
         </testsuite>
     </testsuites>
 </phpunit>
