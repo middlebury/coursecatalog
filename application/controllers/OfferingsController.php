@@ -469,26 +469,55 @@ class OfferingsController
 					$days = array($this->_getParam('days'));
 
 				if (count($days)) {
-					if (!in_array('sunday', $days))
-						$queryRecord->matchMeetsSunday(false);
+					if ($this->_getParam('days_mode') == 'exclusive') {
+						$this->view->searchParams['days_mode'] = 'exclusive';
 
-					if (!in_array('monday', $days))
-						$queryRecord->matchMeetsMonday(false);
+						if (!in_array('sunday', $days))
+							$queryRecord->matchMeetsSunday(false);
 
-					if (!in_array('tuesday', $days))
-						$queryRecord->matchMeetsTuesday(false);
+						if (!in_array('monday', $days))
+							$queryRecord->matchMeetsMonday(false);
 
-					if (!in_array('wednesday', $days))
-						$queryRecord->matchMeetsWednesday(false);
+						if (!in_array('tuesday', $days))
+							$queryRecord->matchMeetsTuesday(false);
 
-					if (!in_array('thursday', $days))
-						$queryRecord->matchMeetsThursday(false);
+						if (!in_array('wednesday', $days))
+							$queryRecord->matchMeetsWednesday(false);
 
-					if (!in_array('friday', $days))
-						$queryRecord->matchMeetsFriday(false);
+						if (!in_array('thursday', $days))
+							$queryRecord->matchMeetsThursday(false);
 
-					if (!in_array('saturday', $days))
-						$queryRecord->matchMeetsSaturday(false);
+						if (!in_array('friday', $days))
+							$queryRecord->matchMeetsFriday(false);
+
+						if (!in_array('saturday', $days))
+							$queryRecord->matchMeetsSaturday(false);
+					}
+					// Inclusive search.
+					else {
+						$this->view->searchParams['days_mode'] = 'inclusive';
+
+						if (in_array('sunday', $days))
+							$queryRecord->matchMeetsSunday(true);
+
+						if (in_array('monday', $days))
+							$queryRecord->matchMeetsMonday(true);
+
+						if (in_array('tuesday', $days))
+							$queryRecord->matchMeetsTuesday(true);
+
+						if (in_array('wednesday', $days))
+							$queryRecord->matchMeetsWednesday(true);
+
+						if (in_array('thursday', $days))
+							$queryRecord->matchMeetsThursday(true);
+
+						if (in_array('friday', $days))
+							$queryRecord->matchMeetsFriday(true);
+
+						if (in_array('saturday', $days))
+							$queryRecord->matchMeetsSaturday(true);
+					}
 
 					$this->view->searchParams['days'] = $days;
 				}

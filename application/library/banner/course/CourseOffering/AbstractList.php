@@ -87,13 +87,13 @@ SELECT
 	SSRMEET_ROOM_CODE,
 	SSRMEET_BEGIN_TIME,
 	SSRMEET_END_TIME,
-	SSRMEET_SUN_DAY,
-	SSRMEET_MON_DAY,
-	SSRMEET_TUE_DAY,
-	SSRMEET_WED_DAY,
-	SSRMEET_THU_DAY,
-	SSRMEET_FRI_DAY,
-	SSRMEET_SAT_DAY,
+	GROUP_CONCAT(DISTINCT SSRMEET_SUN_DAY) as SSRMEET_SUN_DAY,
+	GROUP_CONCAT(DISTINCT SSRMEET_MON_DAY) as SSRMEET_MON_DAY,
+	GROUP_CONCAT(DISTINCT SSRMEET_TUE_DAY) as SSRMEET_TUE_DAY,
+	GROUP_CONCAT(DISTINCT SSRMEET_WED_DAY) as SSRMEET_WED_DAY,
+	GROUP_CONCAT(DISTINCT SSRMEET_THU_DAY) as SSRMEET_THU_DAY,
+	GROUP_CONCAT(DISTINCT SSRMEET_FRI_DAY) as SSRMEET_FRI_DAY,
+	GROUP_CONCAT(DISTINCT SSRMEET_SAT_DAY) as SSRMEET_SAT_DAY,
 	SSRMEET_START_DATE,
 	SSRMEET_END_DATE,
 	COUNT(SSRMEET_TERM_CODE) as num_meet,
@@ -139,6 +139,7 @@ WHERE
 	AND (course_catalog.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != course_catalog.prnt_ind_to_exclude)
 
 GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
+HAVING ".$this->getAllHavingTerms()."
 ".$this->getOrderByClause()."
 ".$this->getLimitClause()."
 ";
@@ -220,6 +221,21 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 	}
 
 	/**
+	 * Answer a HAVING clause
+	 *
+	 * @return string
+	 * @access private
+	 * @since 8/5/2024
+	 */
+	private function getAllHavingTerms () {
+		$terms = $this->getHavingTerms();
+		if (strlen(trim($terms)))
+			return $terms;
+		else
+			return 'TRUE';
+	}
+
+	/**
 	 * Answer any additional table join clauses to use
 	 *
 	 * @return string
@@ -284,6 +300,17 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 	 * @since 4/17/09
 	 */
 	abstract protected function getWhereTerms();
+
+	/**
+	 * Answer additional where terms. E.g. 'SSRMEET_MON_DAY = true AND SSRMEET_TUE_DAY = false'
+	 *
+	 * @return array
+	 * @access protected
+	 * @since 4/17/09
+	 */
+	protected function getHavingTerms() {
+		return '';
+	}
 
 	/**
 	 * Answer an object from a result row

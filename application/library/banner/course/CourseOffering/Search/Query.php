@@ -1201,7 +1201,7 @@ AND SCBCRSE_COLL_CODE IN (
 	 * @compliance mandatory This method must be implemented.
 	 */
 	public function matchMeetsSunday($match) {
-		$this->addClause('meets_sunday', "SSRMEET_SUN_DAY IS NOT NULL", array(), $match);
+		$this->addHavingClause('meets_sunday', "SSRMEET_SUN_DAY IS NOT NULL", array(), $match);
 	}
 
 	/**
@@ -1212,7 +1212,7 @@ AND SCBCRSE_COLL_CODE IN (
 	 * @compliance mandatory This method must be implemented.
 	 */
 	public function matchMeetsMonday($match) {
-		$this->addClause('meets_monday', "SSRMEET_MON_DAY IS NOT NULL", array(), $match);
+		$this->addHavingClause('meets_monday', "SSRMEET_MON_DAY IS NOT NULL", array(), $match);
 	}
 
 	/**
@@ -1223,7 +1223,7 @@ AND SCBCRSE_COLL_CODE IN (
 	 * @compliance mandatory This method must be implemented.
 	 */
 	public function matchMeetsTuesday($match) {
-		$this->addClause('meets_tuesday', "SSRMEET_TUE_DAY IS NOT NULL", array(), $match);
+		$this->addHavingClause('meets_tuesday', "SSRMEET_TUE_DAY IS NOT NULL", array(), $match);
 	}
 
 	/**
@@ -1234,7 +1234,7 @@ AND SCBCRSE_COLL_CODE IN (
 	 * @compliance mandatory This method must be implemented.
 	 */
 	public function matchMeetsWednesday($match) {
-		$this->addClause('meets_wednesday', "SSRMEET_WED_DAY IS NOT NULL", array(), $match);
+		$this->addHavingClause('meets_wednesday', "SSRMEET_WED_DAY IS NOT NULL", array(), $match);
 	}
 
 	/**
@@ -1245,7 +1245,7 @@ AND SCBCRSE_COLL_CODE IN (
 	 * @compliance mandatory This method must be implemented.
 	 */
 	public function matchMeetsThursday($match) {
-		$this->addClause('meets_thursday', "SSRMEET_THU_DAY IS NOT NULL", array(), $match);
+		$this->addHavingClause('meets_thursday', "SSRMEET_THU_DAY IS NOT NULL", array(), $match);
 	}
 
 	/**
@@ -1256,7 +1256,7 @@ AND SCBCRSE_COLL_CODE IN (
 	 * @compliance mandatory This method must be implemented.
 	 */
 	public function matchMeetsFriday($match) {
-		$this->addClause('meets_friday', "SSRMEET_FRI_DAY IS NOT NULL", array(), $match);
+		$this->addHavingClause('meets_friday', "SSRMEET_FRI_DAY IS NOT NULL", array(), $match);
 	}
 
 	/**
@@ -1267,7 +1267,7 @@ AND SCBCRSE_COLL_CODE IN (
 	 * @compliance mandatory This method must be implemented.
 	 */
 	public function matchMeetsSaturday($match) {
-		$this->addClause('meets_saturday', "SSRMEET_SAT_DAY IS NOT NULL", array(), $match);
+		$this->addHavingClause('meets_saturday', "SSRMEET_SAT_DAY IS NOT NULL", array(), $match);
 	}
 
 	/**

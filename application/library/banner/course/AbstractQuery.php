@@ -20,6 +20,8 @@ abstract class banner_course_AbstractQuery {
 
 	private $clauseSets;
 	private $parameters;
+	private $havingClauseSets;
+	private $havingParameters;
 	private $additionalTableJoins;
 	private $stringMatchTypes;
 	protected $session;
@@ -39,6 +41,8 @@ abstract class banner_course_AbstractQuery {
 
 		$this->clauseSets = array();
 		$this->parameters = array();
+		$this->havingClauseSets = array();
+		$this->havingParameters = array();
 		$this->additionalTableJoins = array();
 		$this->stringMatchTypes = array();
 		$this->recordTypes = array();
@@ -87,6 +91,39 @@ abstract class banner_course_AbstractQuery {
 		else
 			$this->clauseSets[$set][] = 'NOT '.$where;
 		$this->parameters[$set][] = $parameters;
+	}
+
+	/**
+	 * Add a HAVING clause. All HAVING clauses in the same set will be OR'ed, sets will be AND'ed.
+	 *
+	 * @param string $set
+	 * @param string $having A having clause with parameters in '?' form.
+	 * @param array $parameters An indexed array of parameters
+	 * @param boolean $match <code> true </code> for a positive match, <code>
+	 *          false </code> for a negative match
+	 * @return void
+	 * @access protected
+	 * @since 5/20/09
+	 */
+	protected function addHavingClause ($set, $having, array $parameters, $match) {
+		$numParams = preg_match_all('/\?/', $having, $matches);
+		if ($numParams === false)
+			throw new osid_OperationFailedException('An error occured in matching.');
+		if ($numParams != count($parameters))
+			throw new osid_InvalidArgumentException('The number of \'?\'s must match the number of parameters.');
+		if (!is_bool($match))
+			throw new osid_InvalidArgumentException("\$match '$match' must be a boolean.");
+
+		if (!isset($this->havingClauseSets[$set]))
+			$this->havingClauseSets[$set] = array();
+		if (!isset($this->havingParameters[$set]))
+			$this->havingParameters[$set] = array();
+
+		if ($match)
+			$this->havingClauseSets[$set][] = $having;
+		else
+			$this->havingClauseSets[$set][] = 'NOT '.$having;
+		$this->havingParameters[$set][] = $parameters;
 	}
 
 	/**
@@ -139,6 +176,51 @@ abstract class banner_course_AbstractQuery {
 	public function getParameters () {
 		$params = array();
 		foreach ($this->parameters as $set) {
+			foreach ($set as $clauseParams) {
+				$params = array_merge($params, $clauseParams);
+			}
+		}
+
+		return $params;
+	}
+
+	/**
+	 * Answer the HAVING clause sets
+	 *
+	 * @return array
+	 * @access protected
+	 * @since 8/05/24
+	 */
+	protected function getHavingClauseSets () {
+		return $this->havingClauseSets;
+	}
+
+	/**
+	 * Answer the SQL WHERE clause that reflects our current state
+	 *
+	 * @return string
+	 * @access public
+	 * @since 8/05/24
+	 */
+	public function getHavingClause () {
+		$sets = array();
+		foreach ($this->getHavingClauseSets() as $set) {
+			$sets[] = '('.implode("\n\t\tOR ", $set).')';
+		}
+
+		return implode("\n\tAND ", $sets);
+	}
+
+	/**
+	 * Answer the array of parameters that matches our current state
+	 *
+	 * @return array
+	 * @access public
+	 * @since 8/05/24
+	 */
+	public function getHavingParameters () {
+		$params = array();
+		foreach ($this->havingParameters as $set) {
 			foreach ($set as $clauseParams) {
 				$params = array_merge($params, $clauseParams);
 			}
