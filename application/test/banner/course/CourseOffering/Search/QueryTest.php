@@ -85,7 +85,7 @@ class banner_course_CourseOffering_Search_QueryTest
 	 */
 	public function testGetWhereClause()
 	{
-		$this->assertInternalType('string', $this->object->getWhereClause());
+		$this->assertIsString($this->object->getWhereClause());
 	}
 
 	/**
@@ -93,7 +93,7 @@ class banner_course_CourseOffering_Search_QueryTest
 	 */
 	public function testGetAdditionalTableJoins()
 	{
-		$this->assertInternalType('array', $this->object->getAdditionalTableJoins());
+		$this->assertIsArray($this->object->getAdditionalTableJoins());
 	}
 
 	/**
@@ -101,7 +101,7 @@ class banner_course_CourseOffering_Search_QueryTest
 	 */
 	public function testGetParameters()
 	{
-		$this->assertInternalType('array', $this->object->getParameters());
+		$this->assertIsArray($this->object->getParameters());
 	}
 
 	/**

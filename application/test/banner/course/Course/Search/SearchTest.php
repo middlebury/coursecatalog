@@ -72,7 +72,7 @@ class banner_course_Course_Search_SearchTest extends TestCase
 	 */
 	public function testGetLimitClause()
 	{
-		$this->assertInternalType('string', $this->object->getLimitClause());
+		$this->assertIsString($this->object->getLimitClause());
 		$this->assertEquals('', $this->object->getLimitClause());
 	}
 
@@ -81,7 +81,7 @@ class banner_course_Course_Search_SearchTest extends TestCase
 	 */
 	public function testGetOrderByClause()
 	{
-		$this->assertInternalType('string', $this->object->getOrderByClause());
+		$this->assertIsString($this->object->getOrderByClause());
 		$this->assertEquals('', $this->object->getOrderByClause());
 	}
 
@@ -90,7 +90,7 @@ class banner_course_Course_Search_SearchTest extends TestCase
 	 */
 	public function testGetWhereClause()
 	{
-		$this->assertInternalType('string', $this->object->getWhereClause());
+		$this->assertIsString($this->object->getWhereClause());
 		$this->assertEquals('', $this->object->getWhereClause());
 	}
 
@@ -99,7 +99,7 @@ class banner_course_Course_Search_SearchTest extends TestCase
 	 */
 	public function testGetAdditionalTableJoins()
 	{
-		$this->assertInternalType('array', $this->object->getAdditionalTableJoins());
+		$this->assertIsArray($this->object->getAdditionalTableJoins());
 		$this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
 
 	}
@@ -109,7 +109,7 @@ class banner_course_Course_Search_SearchTest extends TestCase
 	 */
 	public function testGetParameters()
 	{
-		$this->assertInternalType('array', $this->object->getParameters());
+		$this->assertIsArray($this->object->getParameters());
 		$this->assertEquals(0, count($this->object->getParameters()));
 	}
 

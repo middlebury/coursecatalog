@@ -251,7 +251,7 @@ class banner_course_Topic_Search_QueryTest extends TestCase
 	 */
 	public function testHasRecordType()
 	{
-		$this->assertInternalType('boolean', $this->object->hasRecordType($this->requirementType));
+		$this->assertIsBool($this->object->hasRecordType($this->requirementType));
 	}
 
 	/**

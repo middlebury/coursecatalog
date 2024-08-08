@@ -63,7 +63,7 @@ class banner_course_CourseTest
 	 */
 	public function testGetTitle()
 	{
-		$this->assertInternalType('string', $this->object->getTitle());
+		$this->assertIsString($this->object->getTitle());
 	}
 
 
@@ -88,7 +88,7 @@ class banner_course_CourseTest
 	 */
 	public function testGetNumber()
 	{
-		$this->assertInternalType('string', $this->object->getNumber());
+		$this->assertIsString($this->object->getNumber());
 	}
 
 	/**
@@ -96,7 +96,7 @@ class banner_course_CourseTest
 	 */
 	public function testGetCredits()
 	{
-		$this->assertInternalType('float', $this->object->getCredits());
+		$this->assertIsFloat($this->object->getCredits());
 	}
 
 	/**
@@ -104,7 +104,7 @@ class banner_course_CourseTest
 	 */
 	public function testGetPrereqInfo()
 	{
-		$this->assertInternalType('string', $this->object->getTitle());
+		$this->assertIsString($this->object->getTitle());
 	}
 
 	/**

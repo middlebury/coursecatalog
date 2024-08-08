@@ -68,7 +68,7 @@ class banner_course_CourseOffering_Search_OrderTest
 	 */
 	public function testGetOrderByClause()
 	{
-		$this->assertInternalType('string', $this->object->getOrderByClause());
+		$this->assertIsString($this->object->getOrderByClause());
 		$this->assertEquals('', $this->object->getOrderByClause());
 	}
 
@@ -77,7 +77,7 @@ class banner_course_CourseOffering_Search_OrderTest
 	 */
 	public function testGetAdditionalTableJoins()
 	{
-		$this->assertInternalType('array', $this->object->getAdditionalTableJoins());
+		$this->assertIsArray($this->object->getAdditionalTableJoins());
 		$this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
 	}
 
