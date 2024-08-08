@@ -67,10 +67,10 @@ class banner_resource_ResourceManagerTest
 
 	/**
 	 * Ensure that we cannot initialize the manager again.
-	 * @expectedException osid_IllegalStateException
 	 */
 	public function testInitialize()
 	{
+		$this->expectException(osid_IllegalStateException::class);
 		$this->manager->initialize(self::$runtimeManager);
 	}
 

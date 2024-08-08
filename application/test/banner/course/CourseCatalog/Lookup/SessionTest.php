@@ -77,10 +77,11 @@ class banner_course_CourseCatalog_Lookup_SessionTest
 
 	/**
 	 * Should thrown osid_NotFoundExceptions for unknown results.
-	 * @expectedException osid_NotFoundException
 	 */
 	public function testUsePlenaryCourseCatalogView()
 	{
+	$this->expectException(osid_NotFoundException::class);
+
 	$this->session->usePlenaryCourseCatalogView();
 	$catalogs = $this->session->getCourseCatalogsByIds(new phpkit_id_ArrayIdList(array(
 						$this->mcugId,

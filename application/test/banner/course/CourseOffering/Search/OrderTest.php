@@ -169,10 +169,12 @@ class banner_course_CourseOffering_Search_OrderTest
 	}
 
 	/**
-	 *  @expectedException osid_UnsupportedException
+	 *
 	 */
 	public function testGetCourseSearchOrderRecordOther()
 	{
+		$this->expectException(osid_UnsupportedException::class);
+
 		$record = $this->object->getCourseSearchOrderRecord($this->otherType);
 		$this->assertInstanceOf('osid_course_CourseOfferingSearchOrderRecord', $record);
 	}
@@ -241,10 +243,12 @@ class banner_course_CourseOffering_Search_OrderTest
 	}
 
 	/**
-	 *  @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetCourseSearchOrder()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$this->object->getCourseSearchOrder();
 	}
 
@@ -268,10 +272,12 @@ class banner_course_CourseOffering_Search_OrderTest
 	}
 
 	/**
-	 *  @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetTermSearchOrder()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$this->object->getTermSearchOrder();
 	}
 
@@ -306,10 +312,12 @@ class banner_course_CourseOffering_Search_OrderTest
 	}
 
 	/**
-	 *  @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetLocationSearchOrder()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$this->object->getLocationSearchOrder();
 	}
 
@@ -344,10 +352,12 @@ class banner_course_CourseOffering_Search_OrderTest
 	}
 
 	/**
-	 *  @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetCalendarSearchOrder()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$this->object->getCalendarSearchOrder();
 	}
 
@@ -371,10 +381,12 @@ class banner_course_CourseOffering_Search_OrderTest
 	}
 
 	/**
-	 *  @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetLearningObjectiveSearchOrder()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$this->object->getLearningObjectiveSearchOrder();
 	}
 

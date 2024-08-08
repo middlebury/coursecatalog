@@ -106,10 +106,11 @@ class banner_resource_Resource_Lookup_SessionTest
 
 	/**
 	 * Should thrown osid_NotFoundExceptions for unknown results.
-	 * @expectedException osid_NotFoundException
 	 */
 	public function testUsePlenaryResourceView()
 	{
+		$this->expectException(osid_NotFoundException::class);
+
 		$this->session->usePlenaryResourceView();
 		$resources = $this->session->getResourcesByIds(new phpkit_id_ArrayIdList(array(
 						$this->person1Id, $this->campusId, $this->buildingId, $this->roomId, $this->unknownId)));

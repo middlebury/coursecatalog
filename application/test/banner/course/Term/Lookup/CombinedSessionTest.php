@@ -102,10 +102,12 @@ class banner_course_Term_Lookup_CombinedSessionTest
 	}
 
 	/**
-	 * @expectedException osid_NotFoundException
+	 *
 	 */
 	public function testUsePlenaryTermView()
 	{
+		$this->expectException(osid_NotFoundException::class);
+
 		$this->session->usePlenaryTermView();
 		$this->session->useFederatedCourseCatalogView();
 		$terms = $this->session->getTermsByIds(new phpkit_id_ArrayIdList(array(
@@ -127,10 +129,12 @@ class banner_course_Term_Lookup_CombinedSessionTest
 	}
 
 	/**
-	 * @expectedException osid_NotFoundException
+	 *
 	 */
 	public function testUseIsolatedCourseCatalogView()
 	{
+		$this->expectException(osid_NotFoundException::class);
+
 		$this->session->usePlenaryTermView();
 		$this->session->useIsolatedCourseCatalogView();
 
@@ -177,10 +181,12 @@ class banner_course_Term_Lookup_CombinedSessionTest
 	}
 
 	/**
-	 * @expectedException osid_NotFoundException
+	 *
 	 */
 	public function testGetBadTerm()
 	{
+		$this->expectException(osid_NotFoundException::class);
+
 		$this->session->getTerm($this->badTermId);
 	}
 

@@ -99,10 +99,12 @@ class banner_course_Term_Lookup_SessionTest
 	}
 
 	/**
-	 * @expectedException osid_NotFoundException
+	 *
 	 */
 	public function testUsePlenaryTermView()
 	{
+		$this->expectException(osid_NotFoundException::class);
+
 		$this->session->usePlenaryTermView();
 		$terms = $this->session->getTermsByIds(new phpkit_id_ArrayIdList(array(
 					$this->termId,
@@ -157,10 +159,12 @@ class banner_course_Term_Lookup_SessionTest
 	}
 
 	/**
-	 * @expectedException osid_NotFoundException
+	 *
 	 */
 	public function testGetBadTerm()
 	{
+		$this->expectException(osid_NotFoundException::class);
+
 		$this->session->getTerm($this->badTermId);
 	}
 

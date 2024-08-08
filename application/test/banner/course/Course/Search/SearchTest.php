@@ -150,42 +150,52 @@ class banner_course_Course_Search_SearchTest extends TestCase
 	}
 
 	/**
-	 *  @expectedException osid_InvalidArgumentException
+	 *
 	 */
 	public function testLimitResultSetInverted()
 	{
+		$this->expectException(osid_InvalidArgumentException::class);
+
 		$this->object->limitResultSet(10, 1);
 	}
 
 	/**
-	 *  @expectedException osid_InvalidArgumentException
+	 *
 	 */
 	public function testLimitResultSetOutOfRange0()
 	{
+		$this->expectException(osid_InvalidArgumentException::class);
+
 		$this->object->limitResultSet(0, 10);
 	}
 
 	/**
-	 *  @expectedException osid_InvalidArgumentException
+	 *
 	 */
 	public function testLimitResultSetOutOfRangeN1()
 	{
+		$this->expectException(osid_InvalidArgumentException::class);
+
 		$this->object->limitResultSet(-1, 10);
 	}
 
 	/**
-	 *  @expectedException osid_NullArgumentException
+	 *
 	 */
 	public function testLimitResultSetOutNullStart()
 	{
+		$this->expectException(osid_NullArgumentException::class);
+
 		$this->object->limitResultSet(null, 10);
 	}
 
 	/**
-	 *  @expectedException osid_NullArgumentException
+	 *
 	 */
 	public function testLimitResultSetOutNullEnd()
 	{
+		$this->expectException(osid_NullArgumentException::class);
+
 		$this->object->limitResultSet(1, null);
 	}
 
@@ -268,10 +278,12 @@ class banner_course_Course_Search_SearchTest extends TestCase
 	}
 
 	/**
-	 * @expectedException osid_UnsupportedException
+	 *
 	 */
 	public function testGetCourseSearchRecord()
 	{
+	$this->expectException(osid_UnsupportedException::class);
+
 	$this->object->getCourseSearchRecord($this->otherType);
 	}
 }

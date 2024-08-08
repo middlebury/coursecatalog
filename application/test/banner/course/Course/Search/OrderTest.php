@@ -206,10 +206,12 @@ class banner_course_Course_Search_OrderTest extends TestCase
 	}
 
 	/**
-	 *  @expectedException osid_UnsupportedException
+	 *
 	 */
 	public function testGetCourseSearchOrderRecordOther()
 	{
+		$this->expectException(osid_UnsupportedException::class);
+
 		$record = $this->object->getCourseSearchOrderRecord($this->otherType);
 		$this->assertInstanceOf('osid_course_CourseSearchOrderRecord', $record);
 	}

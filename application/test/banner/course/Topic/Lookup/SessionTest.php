@@ -136,10 +136,11 @@ class banner_course_Topic_Lookup_SessionTest
 
 	/**
 	 * Should thrown osid_NotFoundExceptions for unknown results.
-	 * @expectedException osid_NotFoundException
 	 */
 	public function testUsePlenaryTopicView()
 	{
+		$this->expectException(osid_NotFoundException::class);
+
 		$this->session->usePlenaryTopicView();
 		$topics = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList(array(
 						$this->geolSubjId, $this->physDeptId, $this->unknownId)));

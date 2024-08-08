@@ -98,10 +98,12 @@ class banner_course_Topic_Search_OrderTest extends TestCase
 	}
 
 	/**
-	 * @expectedException osid_UnsupportedException
+	 *
 	 */
 	public function testGetTopicSearchOrderRecord()
 	{
+		$this->expectException(osid_UnsupportedException::class);
+
 		$this->object->getTopicSearchOrderRecord($this->termType);
 	}
 }

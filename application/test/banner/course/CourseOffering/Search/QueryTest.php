@@ -1077,10 +1077,12 @@ class banner_course_CourseOffering_Search_QueryTest
 	}
 
 	/**
-	 * @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetCourseQuery()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$this->object->getCourseQuery();
 	}
 
@@ -1186,10 +1188,12 @@ class banner_course_CourseOffering_Search_QueryTest
 	}
 
 	/**
-	 * @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetTermQuery()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$this->object->getTermQuery();
 	}
 
@@ -1352,10 +1356,12 @@ class banner_course_CourseOffering_Search_QueryTest
 	}
 
 	/**
-	 * @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetTopicQuery()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$this->object->getTopicQuery();
 	}
 
@@ -1450,10 +1456,12 @@ class banner_course_CourseOffering_Search_QueryTest
 	}
 
 	/**
-	 * @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetLocationQuery()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$this->object->getLocationQuery();
 	}
 
@@ -1510,10 +1518,12 @@ class banner_course_CourseOffering_Search_QueryTest
 	}
 
 	/**
-	 * @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetCalendarQuery()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$this->object->getCalendarQuery();
 	}
 
@@ -1548,10 +1558,12 @@ class banner_course_CourseOffering_Search_QueryTest
 	}
 
 	/**
-	 * @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetLearningObjectiveQuery()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$this->object->getLearningObjectiveQuery();
 	}
 
@@ -1659,10 +1671,12 @@ AND SCBCRSE_COLL_CODE IN (
 	}
 
 	/**
-	 * @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetCourseCatalogQuery()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$this->object->getCourseCatalogQuery();
 	}
 
@@ -1699,10 +1713,12 @@ AND SCBCRSE_COLL_CODE IN (
 	}
 
 	/**
-	 * @expectedException osid_UnsupportedException
+	 *
 	 */
 	public function testGetCourseOfferingQueryRecordOther()
 	{
+		$this->expectException(osid_UnsupportedException::class);
+
 		$record = $this->object->getCourseOfferingQueryRecord($this->otherType);
 	}
 
@@ -1774,10 +1790,12 @@ AND SCBCRSE_COLL_CODE IN (
 	}
 
 	/**
-	 * @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetInstructorQuery()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$this->object->getInstructorQuery();
 	}
 
@@ -2089,19 +2107,23 @@ AND SCBCRSE_COLL_CODE IN (
 	}
 
 	/**
-	 * @expectedException osid_NullArgumentException
+	 *
 	 */
 	public function testMatchEnrollmentNullStart()
 	{
+		$this->expectException(osid_NullArgumentException::class);
+
 		$record = $this->object->getCourseOfferingQueryRecord($this->enrollmentType);
 		$record->matchEnrollment(null, 2, true);
 	}
 
 	/**
-	 * @expectedException osid_InvalidArgumentException
+	 *
 	 */
 	public function testMatchEnrollmentNegative()
 	{
+		$this->expectException(osid_InvalidArgumentException::class);
+
 		$record = $this->object->getCourseOfferingQueryRecord($this->enrollmentType);
 		$record->matchEnrollment(-1, 2, true);
 	}
@@ -2146,10 +2168,12 @@ AND SCBCRSE_COLL_CODE IN (
 	}
 
 	/**
-	 * @expectedException osid_NullArgumentException
+	 *
 	 */
 	public function testMatchSeatsAvailableBothNull()
 	{
+		$this->expectException(osid_NullArgumentException::class);
+
 		$record = $this->object->getCourseOfferingQueryRecord($this->enrollmentType);
 		$record->matchSeatsAvailable(null, null, true);
 	}

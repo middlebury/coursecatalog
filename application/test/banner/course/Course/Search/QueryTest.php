@@ -682,10 +682,12 @@ class banner_course_Course_Search_QueryTest extends TestCase
 	}
 
 	/**
-	 * @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetCourseOfferingQuery()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$this->object->getCourseOfferingQuery();
 	}
 
@@ -760,18 +762,22 @@ class banner_course_Course_Search_QueryTest extends TestCase
 	}
 
 	/**
-	 * @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetCourseCatalogQuery()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$this->object->getCourseCatalogQuery();
 	}
 
 	/**
-	 * @expectedException osid_UnsupportedException
+	 *
 	 */
 	public function testGetCourseQueryRecord()
 	{
+		$this->expectException(osid_UnsupportedException::class);
+
 		$record = $this->object->getCourseQueryRecord($this->otherType);
 //         $this->assertInstanceOf('osid_course_CourseQueryRecord', $record);
 //         $this->assertInstanceOf('middlebury_course_Course_Search_InstructorsQueryRecord', $record);
@@ -844,9 +850,11 @@ class banner_course_Course_Search_QueryTest extends TestCase
 	}
 
 	/**
-	 * @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetTopicQuery() {
+		$this->expectException(osid_UnimplementedException::class);
+
 		$record = $this->object->getCourseQueryRecord($this->topicQueryRecordType);
 		$topicQuery = $record->getTopicQuery();
 	}
@@ -957,10 +965,12 @@ class banner_course_Course_Search_QueryTest extends TestCase
 	}
 
 	/**
-	 * @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetInstructorQuery()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$record = $this->object->getCourseQueryRecord($this->instructorsType);
 		$record->getInstructorQuery();
 	}
@@ -1045,10 +1055,12 @@ class banner_course_Course_Search_QueryTest extends TestCase
 	}
 
 	/**
-	 * @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetLocationQuery()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$record = $this->object->getCourseQueryRecord($this->locationType);
 		$record->getLocationQuery();
 	}

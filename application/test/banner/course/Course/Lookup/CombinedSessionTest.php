@@ -114,10 +114,11 @@ class banner_course_Course_Lookup_CombinedSessionTest
 
 	/**
 	 * Should thrown osid_NotFoundExceptions for unknown results.
-	 * @expectedException osid_NotFoundException
 	 */
 	public function testUsePlenaryCourseView()
 	{
+		$this->expectException(osid_NotFoundException::class);
+
 		$this->session->usePlenaryCourseView();
 		$courses = $this->session->getCoursesByIds(new phpkit_id_ArrayIdList(array(
 						$this->physId,

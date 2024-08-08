@@ -98,18 +98,20 @@ class banner_course_TermTest
 	}
 
 	/**
-	 * @expectedException osid_IllegalStateException
 	 */
 	public function testGetCalendarId()
 	{
+		$this->expectException(osid_IllegalStateException::class);
+
 		$this->object->getCalendarId();
 	}
 
 	/**
-	 * @expectedException osid_IllegalStateException
 	 */
 	public function testGetCalendar()
 	{
+		$this->expectException(osid_IllegalStateException::class);
+
 		$this->object->getCalendar();
 	}
 

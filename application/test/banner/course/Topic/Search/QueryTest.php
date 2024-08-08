@@ -274,10 +274,12 @@ class banner_course_Topic_Search_QueryTest extends TestCase
 	}
 
 	/**
-	 * @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetCourseOfferingQuery()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$this->object->getCourseOfferingQuery();
 	}
 
@@ -312,10 +314,12 @@ class banner_course_Topic_Search_QueryTest extends TestCase
 	}
 
 	/**
-	 * @expectedException osid_UnimplementedException
+	 *
 	 */
 	public function testGetCourseCatalogQuery()
 	{
+		$this->expectException(osid_UnimplementedException::class);
+
 		$this->assertFalse($this->object->getCourseCatalogQuery());
 	}
 

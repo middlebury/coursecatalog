@@ -74,10 +74,12 @@ class banner_course_Term_Catalog_SessionTest
 	}
 
 	/**
-	 * @expectedException osid_NotFoundException
+	 *
 	 */
 	public function testUsePlenaryTermCatalogView()
 	{
+		$this->expectException(osid_NotFoundException::class);
+
 		$this->session->usePlenaryTermCatalogView();
 		$termIds = $this->session->getTermIdsByCatalogs(new phpkit_id_ArrayIdList(array(
 						$this->mcugId,
