@@ -122,5 +122,6 @@ class banner_course_TermTest
 		while ($types->hasNext()) {
 			$this->assertInstanceOf('osid_course_CourseRecord', $this->object->getTermRecord($types->getNextType()));
 		}
+		$this->assertTrue(true, "No unexpected exceptions were thrown.");
 	}
 }

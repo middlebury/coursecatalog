@@ -59,6 +59,7 @@ class banner_course_Topic_Search_OrderTest extends TestCase
 	public function testAscend()
 	{
 		$this->object->ascend();
+		$this->assertTrue(true, "No unexpected exceptions were thrown.");
 	}
 
 	/**
@@ -67,6 +68,7 @@ class banner_course_Topic_Search_OrderTest extends TestCase
 	public function testDescend()
 	{
 		$this->object->descend();
+		$this->assertTrue(true, "No unexpected exceptions were thrown.");
 	}
 
 	/**
@@ -75,6 +77,7 @@ class banner_course_Topic_Search_OrderTest extends TestCase
 	public function testOrderByDisplayName()
 	{
 		$this->object->orderByDisplayName();
+		$this->assertTrue(true, "No unexpected exceptions were thrown.");
 	}
 
 	/**
@@ -83,6 +86,7 @@ class banner_course_Topic_Search_OrderTest extends TestCase
 	public function testOrderByGenusType()
 	{
 		$this->object->orderByGenusType();
+		$this->assertTrue(true, "No unexpected exceptions were thrown.");
 	}
 
 	/**

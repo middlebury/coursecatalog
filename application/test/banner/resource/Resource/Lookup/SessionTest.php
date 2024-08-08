@@ -121,6 +121,7 @@ class banner_resource_Resource_Lookup_SessionTest
 	public function testUseFederatedBinView()
 	{
 		$this->session->useFederatedBinView();
+		$this->assertTrue(true, "No unexpected exceptions were thrown.");
 	}
 
 	/**
@@ -129,6 +130,7 @@ class banner_resource_Resource_Lookup_SessionTest
 	public function testUseIsolatedBinView()
 	{
 		$this->session->useIsolatedBinView();
+		$this->assertTrue(true, "No unexpected exceptions were thrown.");
 	}
 
 	/**

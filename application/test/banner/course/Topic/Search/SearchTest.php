@@ -59,6 +59,7 @@ class banner_course_Topic_Search_SearchTest extends TestCase
 	public function testLimitResultSet()
 	{
 		$this->object->limitResultSet(1, 10);
+		$this->assertTrue(true, "No unexpected exceptions were thrown.");
 	}
 
 	/**
@@ -76,6 +77,7 @@ class banner_course_Topic_Search_SearchTest extends TestCase
 	{
 		$results = $this->session->getTopicsBySearch($this->session->getTopicQuery(), $this->session->getTopicSearch());
 		$this->object->searchWithinTopicResults($results);
+		$this->assertTrue(true, "No unexpected exceptions were thrown.");
 	}
 
 	/**
@@ -89,6 +91,7 @@ class banner_course_Topic_Search_SearchTest extends TestCase
 		));
 
 		$this->object->searchAmongTopics($topicList);
+		$this->assertTrue(true, "No unexpected exceptions were thrown.");
 	}
 
 	/**
@@ -99,6 +102,7 @@ class banner_course_Topic_Search_SearchTest extends TestCase
 		$order = $this->session->getTopicSearchOrder();
 		$order->orderByDisplayName();
 		$this->object->orderTopicResults($order);
+		$this->assertTrue(true, "No unexpected exceptions were thrown.");
 	}
 
 	/**

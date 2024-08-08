@@ -241,6 +241,7 @@ class banner_course_CourseOfferingTest
 							'topic/level/UG'
 						);
 		$found = array();
+		$this->assertTrue($list->hasNext());
 		while ($list->hasNext()) {
 			$found[] = $list->getNextId()->getIdentifier();
 		}

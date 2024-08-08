@@ -90,6 +90,7 @@ class banner_course_CourseOffering_Catalog_SessionTest
 							)));
 		$this->fail('Should have thrown an osid_NotFoundException');
 	} catch (osid_NotFoundException $e) {
+		$this->assertTrue(true, "The expected exception was thrown.");
 	}
 
 	try {
@@ -99,6 +100,7 @@ class banner_course_CourseOffering_Catalog_SessionTest
 							)));
 		$this->fail('Should have thrown an osid_NotFoundException');
 	} catch (osid_NotFoundException $e) {
+		$this->assertTrue(true, "The expected exception was thrown.");
 	}
 	}
 
