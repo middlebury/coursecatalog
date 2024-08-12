@@ -20,10 +20,12 @@ class Catalog_Action_Helper_OsidTermsTest extends TestCase
 	protected function setUp(): void
 	{
 		$this->osidHelper = new Catalog_Action_Helper_Osid();
+		$this->osidHelper->setConfigPath($this->getTestConfigPath());
 		Zend_Controller_Action_HelperBroker::addHelper($this->osidHelper);
 		$this->osidIdHelper = new Catalog_Action_Helper_OsidId();
 		Zend_Controller_Action_HelperBroker::addHelper($this->osidIdHelper);
 		$this->osidTermsHelper = new Catalog_Action_Helper_OsidTerms();
+		$this->osidHelper->setConfigPath($this->getTestConfigPath());
 		Zend_Controller_Action_HelperBroker::addHelper($this->osidTermsHelper);
 
 		$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');

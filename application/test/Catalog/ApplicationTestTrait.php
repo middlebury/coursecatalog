@@ -14,10 +14,13 @@ trait Catalog_ApplicationTestTrait {
 
     $registry = Zend_Registry::getInstance();
     $registry->config = new Zend_Config_Ini(dirname(__FILE__).'/frontend_config.ini', 'development');
+  }
 
-    // Use the APC implementation instead of the direct-query Banner implementation.
-    self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(dirname(__FILE__).'/../apc/configuration.plist');
-    self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'apc_course_CourseManager', '3.0.0');
+  /**
+   * Answer the configuration path to be used when running tests.
+   */
+  public function getTestConfigPath() {
+    return dirname(__FILE__).'/../apc/configuration.plist';
   }
 
 }

@@ -20,6 +20,7 @@ class Catalog_Action_Helper_OsidTopicTest extends TestCase
 	protected function setUp(): void
 	{
 		$this->osidHelper = new Catalog_Action_Helper_Osid();
+		$this->osidHelper->setConfigPath($this->getTestConfigPath());
 		Zend_Controller_Action_HelperBroker::addHelper($this->osidHelper);
 		$this->osidIdHelper = new Catalog_Action_Helper_OsidId();
 		Zend_Controller_Action_HelperBroker::addHelper($this->osidIdHelper);

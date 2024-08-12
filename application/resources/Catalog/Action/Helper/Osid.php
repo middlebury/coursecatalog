@@ -39,7 +39,7 @@ class Catalog_Action_Helper_Osid
 	 * @throws osid_IllegalStateException The config path has already been set.
 	 */
 	public function setConfigPath ($path) {
-		if (isset(self::$configPath))
+		if (isset(self::$configPath) && self::$configPath != $path)
 			throw new osid_IllegalStateException('the config path has already been set');
 
 		self::$configPath = $path;
