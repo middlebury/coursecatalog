@@ -7,6 +7,9 @@
 class banner_course_Course_Catalog_SessionTest
 	extends phpkit_test_phpunit_AbstractOsidSessionTest
 {
+
+	use banner_DatabaseTestTrait;
+
 	/**
 	 * @var    banner_course_CourseCatalog_Lookup_Session
 	 * @access protected
@@ -27,28 +30,13 @@ class banner_course_Course_Catalog_SessionTest
 		return $this->session;
 	}
 
-	static $runtimeManager;
-	static $courseManager;
-
-	public static function setUpBeforeClass()
-	{
-		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../../../').'/configuration.plist');
-		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
-	}
-
-	public static function tearDownAfterClass()
-	{
-	self::$courseManager->shutdown();
-		self::$runtimeManager->shutdown();
-	}
-
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
 	 *
 	 * @access protected
 	 */
-	protected function setUp()
+	protected function setUp(): void
 	{
 		$this->session = self::$courseManager->getCourseCatalogSession();
 
@@ -65,7 +53,7 @@ class banner_course_Course_Catalog_SessionTest
 	 *
 	 * @access protected
 	 */
-	protected function tearDown()
+	protected function tearDown(): void
 	{
 		$this->session->close();
 	}
@@ -100,6 +88,7 @@ class banner_course_Course_Catalog_SessionTest
 							)));
 		$this->fail('Should have thrown an osid_NotFoundException');
 	} catch (osid_NotFoundException $e) {
+		$this->assertTrue(true, "Saw the expected exception.");
 	}
 
 	try {
@@ -109,6 +98,7 @@ class banner_course_Course_Catalog_SessionTest
 							)));
 		$this->fail('Should have thrown an osid_NotFoundException');
 	} catch (osid_NotFoundException $e) {
+		$this->assertTrue(true, "Saw the expected exception.");
 	}
 	}
 

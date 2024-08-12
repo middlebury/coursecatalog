@@ -7,6 +7,9 @@
 class banner_course_Course_Search_SessionTest
 	extends phpkit_test_phpunit_AbstractOsidSessionTest
 {
+
+	use banner_DatabaseTestTrait;
+
 	/**
 	 * @var    banner_course_Course_Lookup_Session
 	 * @access protected
@@ -27,28 +30,13 @@ class banner_course_Course_Search_SessionTest
 		return $this->session;
 	}
 
-	static $runtimeManager;
-	static $courseManager;
-
-	public static function setUpBeforeClass()
-	{
-		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../../../').'/configuration.plist');
-		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
-	}
-
-	public static function tearDownAfterClass()
-	{
-		self::$courseManager->shutdown();
-		self::$runtimeManager->shutdown();
-	}
-
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
 	 *
 	 * @access protected
 	 */
-	protected function setUp()
+	protected function setUp(): void
 	{
 		$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
 		$this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
@@ -79,7 +67,7 @@ class banner_course_Course_Search_SessionTest
 	 *
 	 * @access protected
 	 */
-	protected function tearDown()
+	protected function tearDown(): void
 	{
 		$this->session->close();
 	}

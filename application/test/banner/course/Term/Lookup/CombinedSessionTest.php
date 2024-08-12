@@ -7,6 +7,9 @@
 class banner_course_Term_Lookup_CombinedSessionTest
 	extends phpkit_test_phpunit_AbstractOsidSessionTest
 {
+
+	use banner_DatabaseTestTrait;
+
 	/**
 	 * @var    banner_course_CourseCatalog_Lookup_Session
 	 * @access protected
@@ -24,28 +27,13 @@ class banner_course_Term_Lookup_CombinedSessionTest
 		return $this->session;
 	}
 
-	static $runtimeManager;
-	static $courseManager;
-
-	public static function setUpBeforeClass()
-	{
-		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../../../').'/configuration.plist');
-		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
-	}
-
-	public static function tearDownAfterClass()
-	{
-		self::$courseManager->shutdown();
-		self::$runtimeManager->shutdown();
-	}
-
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
 	 *
 	 * @access protected
 	 */
-	protected function setUp()
+	protected function setUp(): void
 	{
 		$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
 		$this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
@@ -68,7 +56,7 @@ class banner_course_Term_Lookup_CombinedSessionTest
 	 *
 	 * @access protected
 	 */
-	protected function tearDown()
+	protected function tearDown(): void
 	{
 	}
 
@@ -114,10 +102,12 @@ class banner_course_Term_Lookup_CombinedSessionTest
 	}
 
 	/**
-	 * @expectedException osid_NotFoundException
+	 *
 	 */
 	public function testUsePlenaryTermView()
 	{
+		$this->expectException(osid_NotFoundException::class);
+
 		$this->session->usePlenaryTermView();
 		$this->session->useFederatedCourseCatalogView();
 		$terms = $this->session->getTermsByIds(new phpkit_id_ArrayIdList(array(
@@ -139,10 +129,12 @@ class banner_course_Term_Lookup_CombinedSessionTest
 	}
 
 	/**
-	 * @expectedException osid_NotFoundException
+	 *
 	 */
 	public function testUseIsolatedCourseCatalogView()
 	{
+		$this->expectException(osid_NotFoundException::class);
+
 		$this->session->usePlenaryTermView();
 		$this->session->useIsolatedCourseCatalogView();
 
@@ -189,10 +181,12 @@ class banner_course_Term_Lookup_CombinedSessionTest
 	}
 
 	/**
-	 * @expectedException osid_NotFoundException
+	 *
 	 */
 	public function testGetBadTerm()
 	{
+		$this->expectException(osid_NotFoundException::class);
+
 		$this->session->getTerm($this->badTermId);
 	}
 

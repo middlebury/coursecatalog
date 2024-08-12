@@ -7,6 +7,9 @@
 class banner_course_CourseTest
 	extends phpkit_test_phpunit_AbstractOsidObjectTest
 {
+
+	use banner_DatabaseTestTrait;
+
 	/**
 	 * @var    banner_course_Course
 	 * @access protected
@@ -24,28 +27,13 @@ class banner_course_CourseTest
 		return $this->object;
 	}
 
-	static $runtimeManager;
-	static $courseManager;
-
-	public static function setUpBeforeClass()
-	{
-		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../').'/configuration.plist');
-		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
-	}
-
-	public static function tearDownAfterClass()
-	{
-		self::$courseManager->shutdown();
-		self::$runtimeManager->shutdown();
-	}
-
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
 	 *
 	 * @access protected
 	 */
-	protected function setUp()
+	protected function setUp(): void
 	{
 		$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
 		$this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
@@ -65,7 +53,7 @@ class banner_course_CourseTest
 	 *
 	 * @access protected
 	 */
-	protected function tearDown()
+	protected function tearDown(): void
 	{
 		$this->session->close();
 	}
@@ -75,7 +63,7 @@ class banner_course_CourseTest
 	 */
 	public function testGetTitle()
 	{
-		$this->assertInternalType('string', $this->object->getTitle());
+		$this->assertIsString($this->object->getTitle());
 	}
 
 
@@ -100,7 +88,7 @@ class banner_course_CourseTest
 	 */
 	public function testGetNumber()
 	{
-		$this->assertInternalType('string', $this->object->getNumber());
+		$this->assertIsString($this->object->getNumber());
 	}
 
 	/**
@@ -108,7 +96,7 @@ class banner_course_CourseTest
 	 */
 	public function testGetCredits()
 	{
-		$this->assertInternalType('float', $this->object->getCredits());
+		$this->assertIsFloat($this->object->getCredits());
 	}
 
 	/**
@@ -116,7 +104,7 @@ class banner_course_CourseTest
 	 */
 	public function testGetPrereqInfo()
 	{
-		$this->assertInternalType('string', $this->object->getTitle());
+		$this->assertIsString($this->object->getTitle());
 	}
 
 	/**
@@ -154,6 +142,7 @@ class banner_course_CourseTest
 							'topic/level/UG'
 						);
 		$found = array();
+		$this->assertTrue($list->hasNext());
 		while ($list->hasNext()) {
 			$found[] = $list->getNextId()->getIdentifier();
 		}

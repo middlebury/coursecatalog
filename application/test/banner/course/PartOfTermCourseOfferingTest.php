@@ -7,6 +7,9 @@
 class banner_course_PartOfTermCourseOfferingTest
 	extends phpkit_test_phpunit_AbstractOsidObjectTest
 {
+
+	use banner_DatabaseTestTrait;
+
 	/**
 	 * @var    banner_course_CourseOffering
 	 * @access protected
@@ -24,28 +27,13 @@ class banner_course_PartOfTermCourseOfferingTest
 		return $this->object;
 	}
 
-	static $runtimeManager;
-	static $courseManager;
-
-	public static function setUpBeforeClass()
-	{
-		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../').'/configuration.plist');
-		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
-	}
-
-	public static function tearDownAfterClass()
-	{
-		self::$courseManager->shutdown();
-		self::$runtimeManager->shutdown();
-	}
-
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
 	 *
 	 * @access protected
 	 */
-	protected function setUp()
+	protected function setUp(): void
 	{
 
 
@@ -75,7 +63,7 @@ class banner_course_PartOfTermCourseOfferingTest
 	 *
 	 * @access protected
 	 */
-	protected function tearDown()
+	protected function tearDown(): void
 	{
 	}
 

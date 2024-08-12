@@ -7,6 +7,9 @@
 class banner_resource_ResourceManagerTest
 	extends phpkit_test_phpunit_AbstractOsidManagerTest
 {
+
+	use banner_DatabaseTestTrait;
+
 	/**
 	 * @var    banner_course_CourseManager
 	 * @access protected
@@ -24,28 +27,13 @@ class banner_resource_ResourceManagerTest
 		return $this->manager;
 	}
 
-	static $runtimeManager;
-	static $courseManager;
-
-	public static function setUpBeforeClass()
-	{
-		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../').'/configuration.plist');
-		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
-	}
-
-	public static function tearDownAfterClass()
-	{
-		self::$courseManager->shutdown();
-		self::$runtimeManager->shutdown();
-	}
-
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
 	 *
 	 * @access protected
 	 */
-	protected function setUp()
+	protected function setUp(): void
 	{
 		$this->allBinId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/all');
 		$this->manager = self::$courseManager->getResourceManager();
@@ -57,7 +45,7 @@ class banner_resource_ResourceManagerTest
 	 *
 	 * @access protected
 	 */
-	protected function tearDown()
+	protected function tearDown(): void
 	{
 	}
 
@@ -79,10 +67,10 @@ class banner_resource_ResourceManagerTest
 
 	/**
 	 * Ensure that we cannot initialize the manager again.
-	 * @expectedException osid_IllegalStateException
 	 */
 	public function testInitialize()
 	{
+		$this->expectException(osid_IllegalStateException::class);
 		$this->manager->initialize(self::$runtimeManager);
 	}
 

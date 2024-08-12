@@ -7,6 +7,9 @@
 class banner_course_CourseCatalogTest
 	extends phpkit_test_phpunit_AbstractOsidObjectTest
 {
+
+	use banner_DatabaseTestTrait;
+
 	/**
 	 * @var    banner_course_CourseCatalog
 	 * @access protected
@@ -33,28 +36,13 @@ class banner_course_CourseCatalogTest
 		return $this->object;
 	}
 
-	static $runtimeManager;
-	static $courseManager;
-
-	public static function setUpBeforeClass()
-	{
-		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../').'/configuration.plist');
-		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
-	}
-
-	public static function tearDownAfterClass()
-	{
-		self::$courseManager->shutdown();
-		self::$runtimeManager->shutdown();
-	}
-
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
 	 *
 	 * @access protected
 	 */
-	protected function setUp()
+	protected function setUp(): void
 	{
 		$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
 		$this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
@@ -81,7 +69,7 @@ class banner_course_CourseCatalogTest
 	 *
 	 * @access protected
 	 */
-	protected function tearDown()
+	protected function tearDown(): void
 	{
 		$this->session->close();
 	}
@@ -91,6 +79,7 @@ class banner_course_CourseCatalogTest
 	public function testGetCourseCatalogRecord()
 	{
 		$types = $this->object->getRecordTypes();
+		$this->assertIsBool($types->hasNext());
 		while ($types->hasNext()) {
 			$this->assertInstanceOf('osid_course_CourseCatalogRecord', $this->object->getCourseRecord($types->getNextType()));
 		}

@@ -7,17 +7,8 @@
 class banner_course_CourseManagerTest
 	extends phpkit_test_phpunit_AbstractOsidManagerTest
 {
-	static $runtimeManager;
 
-	public static function setUpBeforeClass()
-	{
-		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../').'/configuration.plist');
-	}
-
-	public static function tearDownAfterClass()
-	{
-		self::$runtimeManager->shutdown();
-	}
+	use banner_DatabaseTestTrait;
 
 	/**
 	 * @var    banner_course_CourseManager
@@ -42,7 +33,7 @@ class banner_course_CourseManagerTest
 	 *
 	 * @access protected
 	 */
-	protected function setUp()
+	protected function setUp(): void
 	{
 		$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
 		$this->manager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
@@ -54,7 +45,7 @@ class banner_course_CourseManagerTest
 	 *
 	 * @access protected
 	 */
-	protected function tearDown()
+	protected function tearDown(): void
 	{
 		if ($this->manager)
 			$this->manager->shutdown();
@@ -78,10 +69,11 @@ class banner_course_CourseManagerTest
 
 	/**
 	 * Ensure that we cannot initialize the manager again.
-	 * @expectedException osid_IllegalStateException
 	 */
 	public function testInitialize()
 	{
+		$this->expectException(osid_IllegalStateException::class);
+
 		$this->manager->initialize(self::$runtimeManager);
 	}
 

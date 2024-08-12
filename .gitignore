@@ -6,3 +6,4 @@ catalog_prod.sql
 docroot/archives
 progress.txt
 vendor/
+.phpunit.result.cache

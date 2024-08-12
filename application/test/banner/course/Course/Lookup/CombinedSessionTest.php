@@ -7,6 +7,9 @@
 class banner_course_Course_Lookup_CombinedSessionTest
 	extends phpkit_test_phpunit_AbstractOsidSessionTest
 {
+
+	use banner_DatabaseTestTrait;
+
 	/**
 	 * @var    banner_course_Course_Lookup_Session
 	 * @access protected
@@ -27,28 +30,13 @@ class banner_course_Course_Lookup_CombinedSessionTest
 		return $this->session;
 	}
 
-	static $runtimeManager;
-	static $courseManager;
-
-	public static function setUpBeforeClass()
-	{
-		self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(realpath(dirname(__FILE__).'/../../../').'/configuration.plist');
-		self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
-	}
-
-	public static function tearDownAfterClass()
-	{
-		self::$courseManager->shutdown();
-		self::$runtimeManager->shutdown();
-	}
-
 	/**
 	 * Sets up the fixture, for example, opens a network connection.
 	 * This method is called before a test is executed.
 	 *
 	 * @access protected
 	 */
-	protected function setUp()
+	protected function setUp(): void
 	{
 		$this->allId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/all');
 
@@ -80,7 +68,7 @@ class banner_course_Course_Lookup_CombinedSessionTest
 	 *
 	 * @access protected
 	 */
-	protected function tearDown()
+	protected function tearDown(): void
 	{
 		$this->session->close();
 	}
@@ -126,10 +114,11 @@ class banner_course_Course_Lookup_CombinedSessionTest
 
 	/**
 	 * Should thrown osid_NotFoundExceptions for unknown results.
-	 * @expectedException osid_NotFoundException
 	 */
 	public function testUsePlenaryCourseView()
 	{
+		$this->expectException(osid_NotFoundException::class);
+
 		$this->session->usePlenaryCourseView();
 		$courses = $this->session->getCoursesByIds(new phpkit_id_ArrayIdList(array(
 						$this->physId,
