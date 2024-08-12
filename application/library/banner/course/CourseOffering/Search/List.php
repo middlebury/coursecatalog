@@ -42,6 +42,7 @@ class banner_course_CourseOffering_Search_List
 		$searchWhere = $courseOfferingSearch->getWhereClause();
 		if (strlen($searchWhere))
 			$this->where .= "\n\tAND ".$searchWhere;
+		$this->having = $courseQuery->getHavingClause();
 
 		$this->additionalColumns = $courseQuery->getAdditionalColumns();
 
@@ -58,7 +59,7 @@ class banner_course_CourseOffering_Search_List
 		$this->limit = $courseOfferingSearch->getLimitClause();
 
 		$this->parameters = array();
-		$parameters = array_merge($courseQuery->getParameters(), $courseOfferingSearch->getParameters());
+		$parameters = array_merge($courseQuery->getParameters(), $courseOfferingSearch->getParameters(), $courseQuery->getHavingParameters());
 		foreach ($parameters as $i => $val) {
 			if (is_int($i)) {
 				$name = ':co_search_'.$i;
@@ -149,6 +150,17 @@ class banner_course_CourseOffering_Search_List
 	 */
 	protected function getWhereTerms() {
 		return $this->where;
+	}
+
+	/**
+	 * Answer additional HAVING terms. E.g. 'SSRMEET_MON_DAY = true AND SSRMEET_TUE_DAY = false'
+	 *
+	 * @return array
+	 * @access protected
+	 * @since 8/5/24
+	 */
+	protected function getHavingTerms() {
+		return $this->having;
 	}
 
 /*********************************************************

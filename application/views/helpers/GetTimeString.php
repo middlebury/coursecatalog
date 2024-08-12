@@ -34,7 +34,7 @@ class Catalog_View_Helper_GetTimeString
 
 		$string .= ':'.str_pad($minute, 2, '0', STR_PAD_LEFT);
 
-		if ($hour < 13)
+		if ($hour < 12)
 			$string .= ' am';
 		else
 			$string .= ' pm';

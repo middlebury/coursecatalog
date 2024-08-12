@@ -139,14 +139,19 @@ while ($this->requirements->hasNext()) {
 		<tr>
 			<th>Days of the week:</th>
 			<td>
-				<label><input type='checkbox' name='days[]' value='sunday' <?php if (in_array('sunday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Sunday</label>
-				<label><input type='checkbox' name='days[]' value='monday' <?php if (in_array('monday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Monday</label>
-				<label><input type='checkbox' name='days[]' value='tuesday' <?php if (in_array('tuesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Tuesday</label>
-				<label><input type='checkbox' name='days[]' value='wednesday' <?php if (in_array('wednesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Wednesday</label>
-				<label><input type='checkbox' name='days[]' value='thursday' <?php if (in_array('thursday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Thursday</label>
-				<label><input type='checkbox' name='days[]' value='friday' <?php if (in_array('friday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Friday</label>
-				<label><input type='checkbox' name='days[]' value='saturday' <?php if (in_array('saturday', $this->searchParams['days'])) { print "checked='checked'"; } ?> />Saturday</label>
+
+				<label><input type='checkbox' name='days[]' value='sunday' <?php if (in_array('sunday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /> Sunday</label>
+				<label><input type='checkbox' name='days[]' value='monday' <?php if (in_array('monday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /> Monday</label>
+				<label><input type='checkbox' name='days[]' value='tuesday' <?php if (in_array('tuesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /> Tuesday</label>
+				<label><input type='checkbox' name='days[]' value='wednesday' <?php if (in_array('wednesday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /> Wednesday</label>
+				<label><input type='checkbox' name='days[]' value='thursday' <?php if (in_array('thursday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /> Thursday</label>
+				<label><input type='checkbox' name='days[]' value='friday' <?php if (in_array('friday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /> Friday</label>
+				<label><input type='checkbox' name='days[]' value='saturday' <?php if (in_array('saturday', $this->searchParams['days'])) { print "checked='checked'"; } ?> /> Saturday</label>
 				<div class='help_text'>Leave all unchecked if no preference.</div>
+				<br/>
+				<label><input type='radio' name='days_mode' value='inclusive' <?php if (empty($this->searchParams['days_mode']) || $this->searchParams['days_mode'] == "inclusive") { print "checked='checked'"; } ?> /> Inclusive search -- meets on all of the selected days and possibly others</label>
+				<br/>
+				<label><input type='radio' name='days_mode' value='exclusive' <?php if (isset($this->searchParams['days_mode']) && $this->searchParams['days_mode'] == "exclusive") { print "checked='checked'"; } ?> /> Exclusive search -- meets only on selected days, not on unselected days</label>
 			</td>
 		</tr>
 
@@ -548,7 +553,7 @@ if ($section->hasLocation()) {
 $scheduleInfo = $section->getScheduleInfo();
 if (!empty($scheduleInfo)) {
 	print "\n\t\t<dt>Schedule:</dt>";
-	print "\n\t\t<dd>".$this->formatScheduleInfo($scheduleInfo)."</dd>";	
+	print "\n\t\t<dd>".$this->formatScheduleInfo($scheduleInfo)."</dd>";
 }
 
 $availabilityLink = $this->getAvailabilityLink($section);

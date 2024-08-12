@@ -1814,7 +1814,7 @@ AND SCBCRSE_COLL_CODE IN (
 		$params = $this->object->getParameters();
 		$this->assertEquals(0, count($params));
 
-		$this->assertEquals("(SSRMEET_SUN_DAY IS NOT NULL)", $this->object->getWhereClause());
+		$this->assertEquals("(SSRMEET_SUN_DAY IS NOT NULL)", $this->object->getHavingClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
@@ -1832,7 +1832,7 @@ AND SCBCRSE_COLL_CODE IN (
 		$params = $this->object->getParameters();
 		$this->assertEquals(0, count($params));
 
-		$this->assertEquals("(SSRMEET_MON_DAY IS NOT NULL)", $this->object->getWhereClause());
+		$this->assertEquals("(SSRMEET_MON_DAY IS NOT NULL)", $this->object->getHavingClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
@@ -1850,7 +1850,7 @@ AND SCBCRSE_COLL_CODE IN (
 		$params = $this->object->getParameters();
 		$this->assertEquals(0, count($params));
 
-		$this->assertEquals("(SSRMEET_TUE_DAY IS NOT NULL)", $this->object->getWhereClause());
+		$this->assertEquals("(SSRMEET_TUE_DAY IS NOT NULL)", $this->object->getHavingClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
@@ -1868,7 +1868,7 @@ AND SCBCRSE_COLL_CODE IN (
 		$params = $this->object->getParameters();
 		$this->assertEquals(0, count($params));
 
-		$this->assertEquals("(SSRMEET_WED_DAY IS NOT NULL)", $this->object->getWhereClause());
+		$this->assertEquals("(SSRMEET_WED_DAY IS NOT NULL)", $this->object->getHavingClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
@@ -1886,7 +1886,7 @@ AND SCBCRSE_COLL_CODE IN (
 		$params = $this->object->getParameters();
 		$this->assertEquals(0, count($params));
 
-		$this->assertEquals("(SSRMEET_THU_DAY IS NOT NULL)", $this->object->getWhereClause());
+		$this->assertEquals("(SSRMEET_THU_DAY IS NOT NULL)", $this->object->getHavingClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
@@ -1904,7 +1904,7 @@ AND SCBCRSE_COLL_CODE IN (
 		$params = $this->object->getParameters();
 		$this->assertEquals(0, count($params));
 
-		$this->assertEquals("(SSRMEET_FRI_DAY IS NOT NULL)", $this->object->getWhereClause());
+		$this->assertEquals("(SSRMEET_FRI_DAY IS NOT NULL)", $this->object->getHavingClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
@@ -1922,7 +1922,7 @@ AND SCBCRSE_COLL_CODE IN (
 		$params = $this->object->getParameters();
 		$this->assertEquals(0, count($params));
 
-		$this->assertEquals("(SSRMEET_SAT_DAY IS NOT NULL)", $this->object->getWhereClause());
+		$this->assertEquals("(SSRMEET_SAT_DAY IS NOT NULL)", $this->object->getHavingClause());
 
 		$courseOfferings = $this->session->getCourseOfferingsByQuery($this->object);
 // 		print $courseOfferings->debug();
