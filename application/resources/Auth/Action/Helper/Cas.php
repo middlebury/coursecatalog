@@ -43,6 +43,7 @@ class Auth_Action_Helper_Cas
 	/**
 	 * Log in. Throw an exception if isAuthenticationEnabled is false.
 	 *
+	 * @param optional string $returnUrl A url to return to after successful login.
 	 * @return boolean TRUE on successful login.
 	 * @access public
 	 */

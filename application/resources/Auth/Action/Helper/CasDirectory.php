@@ -44,10 +44,11 @@ class Auth_Action_Helper_CasDirectory
 	/**
 	 * Log in. Throw an exception if isAuthenticationEnabled is false.
 	 *
+	 * @param optional string $returnUrl A url to return to after successful login.
 	 * @return boolean TRUE on successful login.
 	 * @access public
 	 */
-	public function login()
+	public function login($returnUrl = null)
 	{
 		throw new Exception("Direct authentication not supported by this helper");
 	}

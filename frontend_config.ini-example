@@ -2,15 +2,22 @@
 phpSettings.display_startup_errors = 0
 phpSettings.display_errors = 0
 
-; Select the authentication type to use, 'cas' or 'none'
+; Select the authentication type to use, 'cas', 'saml' or 'none'
 authType = none
 
+; If using CAS authentication.
 cas.host = login.middlebury.edu
 cas.port = 443
 cas.path = /cas
 cas.service_urls[] = https://server1.example.edu
 cas.service_urls[] = https://server2.example.edu
 cas.server_cert =
+
+; If using SAML authentication.
+saml.idp.entityId = https://sts.windows.net/xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/
+saml.idp.singleSignOnService.url = https://login.microsoftonline.com/xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/saml2
+saml.idp.singleLogoutService.url = https://login.microsoftonline.com/xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/saml2
+saml.idp.x509cert = "MII.....sdfs"
 
 masquerade.enabled = 0
 ; To support admins masquerading as other users, specify a directory service
