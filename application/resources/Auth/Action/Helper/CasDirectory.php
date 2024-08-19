@@ -7,7 +7,7 @@
  */
 
 /**
- * A helper for authenticating via CAS.
+ * A helper for masquerading via CasDirectory web service.
  *
  * @since 6/14/10
  *
