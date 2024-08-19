@@ -47,7 +47,7 @@ class Auth_Action_Helper_Cas
 	 * @return boolean TRUE on successful login.
 	 * @access public
 	 */
-	public function login()
+	public function login($returnUrl = null)
 	{
 		self::initializePhpCas();
 
