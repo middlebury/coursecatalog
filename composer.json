@@ -1,6 +1,13 @@
 {
     "require": {
         "apereo/phpcas": "^1.6",
-        "psr/log": "^1.0"
+        "psr/log": "^1.0",
+        "onelogin/php-saml": "^4.2",
+        "microsoft/microsoft-graph": "^2.12"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     }
 }
