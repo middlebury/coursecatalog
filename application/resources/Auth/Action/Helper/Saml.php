@@ -297,7 +297,7 @@ class Auth_Action_Helper_Saml
 	 * @access public
 	 */
 	public function getUserGroups() {
-		return trim($this->getAttribute('http://schemas.microsoft.com/ws/2008/06/identity/claims/groups', false));
+		return $this->getAttribute('http://schemas.microsoft.com/ws/2008/06/identity/claims/groups', false);
 	}
 
 	/**
