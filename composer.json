@@ -1,4 +1,9 @@
 {
+    "name": "middlebury/coursecatalog",
+    "type": "project",
+    "license": "GPL-3.0-or-later",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
     "require": {
         "apereo/phpcas": "^1.6",
         "psr/log": "^1.0",
