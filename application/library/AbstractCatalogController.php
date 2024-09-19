@@ -132,8 +132,8 @@ abstract class AbstractCatalogController extends Zend_Controller_Action
 
         $end = microtime();
 
-        list($sm, $ss) = explode(' ', $start);
-        list($em, $es) = explode(' ', $end);
+        [$sm, $ss] = explode(' ', $start);
+        [$em, $es] = explode(' ', $end);
 
         $s = $ss + $sm;
         $e = $es + $em;

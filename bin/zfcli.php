@@ -30,7 +30,7 @@ if (isset($opts->h)) {
 
 if (isset($opts->a)) {
     $reqRoute = array_reverse(explode('.', $opts->a));
-    @list($action, $controller, $module) = $reqRoute;
+    @[$action, $controller, $module] = $reqRoute;
 
     $params = [];
     parse_str($opts->p, $params);

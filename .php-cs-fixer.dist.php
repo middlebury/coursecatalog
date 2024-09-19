@@ -10,6 +10,7 @@ $finder = (new PhpCsFixer\Finder())
 
 return (new PhpCsFixer\Config())
     ->setRules([
+        '@PHP71Migration' => true,
         '@Symfony' => true,
         // '@Symfony:risky' => true,
         'trailing_comma_in_multiline' => ['elements' => ['arrays', 'match', 'parameters']],

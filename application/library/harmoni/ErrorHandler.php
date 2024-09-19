@@ -586,8 +586,8 @@ class harmoni_ErrorHandler
                 }
 
                 $function = $trace['function'];
-                $class = isset($trace['class']) ? $trace['class'] : '';
-                $type = isset($trace['type']) ? $trace['type'] : '';
+                $class = $trace['class'] ?? '';
+                $type = $trace['type'] ?? '';
                 if (isset($trace['args'])) {
                     $args = harmoni_ArgumentRenderer::renderManyArguments($trace['args'], false, false);
                 } else {
@@ -656,10 +656,10 @@ class harmoni_ErrorHandler
             foreach ($traceArray as $i => $trace) {
                 /* each $traceArray element represents a step in the call hiearchy. Print them from bottom up. */
                 $file = isset($trace['file']) ? basename($trace['file']) : '';
-                $line = isset($trace['line']) ? $trace['line'] : '';
-                $function = isset($trace['function']) ? $trace['function'] : '';
-                $class = isset($trace['class']) ? $trace['class'] : '';
-                $type = isset($trace['type']) ? $trace['type'] : '';
+                $line = $trace['line'] ?? '';
+                $function = $trace['function'] ?? '';
+                $class = $trace['class'] ?? '';
+                $type = $trace['type'] ?? '';
                 if (isset($trace['args'])) {
                     $args = harmoni_ArgumentRenderer::renderManyArguments($trace['args'], false, false);
                 } else {
