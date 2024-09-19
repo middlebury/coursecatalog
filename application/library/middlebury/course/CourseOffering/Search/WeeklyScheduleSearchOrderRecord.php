@@ -22,79 +22,73 @@
  *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  *     DEALINGS IN THE SOFTWARE.
- *
- * @package middlebury.course
  */
 
 /**
  * <p>A record for ordering by the weekly schedule of a <code> CourseOffering. </code>
  * The methods specified by the record type are available through the
- * underlying object. </p>
+ * underlying object. </p>.
  *
  *  The type for this record is:
  *		id namespace:	urn
  *		authority:		middlebury.edu
  *		identifier:		record:weekly_schedule
- *
- * @package middlebury.course
  */
-interface middlebury_course_CourseOffering_Search_InstructorsSearchOrderRecord
-	extends osid_course_CourseOfferingSearchOrderRecord
+interface middlebury_course_CourseOffering_Search_InstructorsSearchOrderRecord extends osid_course_CourseOfferingSearchOrderRecord
 {
+    /**
+     * Order by meeting on Sunday.
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function orderByMeetsSunday();
 
-	/**
-	 * Order by meeting on Sunday.
-	 *
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function orderByMeetsSunday();
+    /**
+     * Order by meeting on Monday.
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function orderByMeetsMonday();
 
-	/**
-	 * Order by meeting on Monday.
-	 *
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function orderByMeetsMonday();
+    /**
+     * Order by meeting on Tuesday.
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function orderByMeetsTuesday();
 
-	/**
-	 * Order by meeting on Tuesday.
-	 *
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function orderByMeetsTuesday();
+    /**
+     * Order by meeting on Wednesday.
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function orderByMeetsWednesday();
 
-	/**
-	 * Order by meeting on Wednesday.
-	 *
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function orderByMeetsWednesday();
+    /**
+     * Order by meeting on Thursday.
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function orderByMeetsThursday();
 
-	/**
-	 * Order by meeting on Thursday.
-	 *
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function orderByMeetsThursday();
+    /**
+     * Order by meeting on Friday.
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function orderByMeetsFriday();
 
-	/**
-	 * Order by meeting on Friday.
-	 *
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function orderByMeetsFriday();
+    /**
+     * Order by meeting on Saturday.
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function orderByMeetsSaturday();
 
-	/**
-	 * Order by meeting on Saturday.
-	 *
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function orderByMeetsSaturday();
-
-	/**
-	 * Order by meeting times
-	 *
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function orderByMeetingTime ();
+    /**
+     * Order by meeting times.
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function orderByMeetingTime();
 }

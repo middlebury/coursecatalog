@@ -8,109 +8,86 @@ use PHPUnit\Framework\TestCase;
  */
 class banner_course_Topic_Search_SearchTest extends TestCase
 {
+    use banner_DatabaseTestTrait;
 
-	use banner_DatabaseTestTrait;
+    /**
+     * @var banner_course_Topic_Search_Search
+     */
+    protected $object;
 
-	/**
-	 * @var    banner_course_Topic_Search_Search
-	 * @access protected
-	 */
-	protected $object;
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    protected function setUp(): void
+    {
+        $this->wildcardStringMatchType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:search:wildcard');
 
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 *
-	 * @access protected
-	 */
-	protected function setUp(): void
-	{
-		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
+        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
+        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
 
-		$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
-		$this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
+        $this->session = self::$courseManager->getTopicSearchSessionForCatalog($this->mcugId);
+        $this->object = $this->session->getTopicSearch();
 
-		$this->session = self::$courseManager->getTopicSearchSessionForCatalog($this->mcugId);
-		$this->object = $this->session->getTopicSearch();
+        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200820');
 
-		$this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200820');
+        $this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
 
-		$this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
+        $this->subjectType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/subject');
+        $this->departmentType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/department');
+        $this->divisionType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/division');
+        $this->requirementType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/requirement');
+    }
 
-		$this->subjectType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
-		$this->departmentType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
-		$this->divisionType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division");
-		$this->requirementType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
-	}
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown(): void
+    {
+    }
 
-	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 *
-	 * @access protected
-	 */
-	protected function tearDown(): void
-	{
-	}
+    public function testLimitResultSet()
+    {
+        $this->object->limitResultSet(1, 10);
+        $this->assertTrue(true, 'No unexpected exceptions were thrown.');
+    }
 
-	/**
-	 *
-	 */
-	public function testLimitResultSet()
-	{
-		$this->object->limitResultSet(1, 10);
-		$this->assertTrue(true, "No unexpected exceptions were thrown.");
-	}
+    public function testHasSearchRecordType()
+    {
+        $this->assertFalse($this->object->hasSearchRecordType($this->termType));
+    }
 
-	/**
-	 *
-	 */
-	public function testHasSearchRecordType()
-	{
-		$this->assertFalse($this->object->hasSearchRecordType($this->termType));
-	}
+    public function testSearchWithinTopicResults()
+    {
+        $results = $this->session->getTopicsBySearch($this->session->getTopicQuery(), $this->session->getTopicSearch());
+        $this->object->searchWithinTopicResults($results);
+        $this->assertTrue(true, 'No unexpected exceptions were thrown.');
+    }
 
-	/**
-	 *
-	 */
-	public function testSearchWithinTopicResults()
-	{
-		$results = $this->session->getTopicsBySearch($this->session->getTopicQuery(), $this->session->getTopicSearch());
-		$this->object->searchWithinTopicResults($results);
-		$this->assertTrue(true, "No unexpected exceptions were thrown.");
-	}
+    public function testSearchAmongTopics()
+    {
+        $topicList = new phpkit_id_ArrayIdList([
+            new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/DED'),
+            new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/SCI'),
+        ]);
 
-	/**
-	 *
-	 */
-	public function testSearchAmongTopics()
-	{
-		$topicList = new phpkit_id_ArrayIdList(array(
-			new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/DED'),
-			new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/SCI')
-		));
+        $this->object->searchAmongTopics($topicList);
+        $this->assertTrue(true, 'No unexpected exceptions were thrown.');
+    }
 
-		$this->object->searchAmongTopics($topicList);
-		$this->assertTrue(true, "No unexpected exceptions were thrown.");
-	}
+    public function testOrderTopicResults()
+    {
+        $order = $this->session->getTopicSearchOrder();
+        $order->orderByDisplayName();
+        $this->object->orderTopicResults($order);
+        $this->assertTrue(true, 'No unexpected exceptions were thrown.');
+    }
 
-	/**
-	 *
-	 */
-	public function testOrderTopicResults()
-	{
-		$order = $this->session->getTopicSearchOrder();
-		$order->orderByDisplayName();
-		$this->object->orderTopicResults($order);
-		$this->assertTrue(true, "No unexpected exceptions were thrown.");
-	}
+    public function testGetTopicSearchRecord()
+    {
+        $this->expectException(osid_UnsupportedException::class);
 
-	/**
-	 */
-	public function testGetTopicSearchRecord()
-	{
-		$this->expectException(osid_UnsupportedException::class);
-
-		$this->object->getTopicSearchRecord($this->termType);
-	}
+        $this->object->getTopicSearchRecord($this->termType);
+    }
 }

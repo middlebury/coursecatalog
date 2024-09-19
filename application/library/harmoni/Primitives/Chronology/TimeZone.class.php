@@ -1,18 +1,18 @@
 <?php
 /**
  * @since 5/3/05
- * @package harmoni.primitives.chronology
  *
  * @copyright Copyright &copy; 2005, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  *
  * @version $Id: TimeZone.class.php,v 1.5 2007/10/10 22:58:33 adamfranco Exp $
  *
- * @link http://harmoni.sourceforge.net/
+ * @see http://harmoni.sourceforge.net/
+ *
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once(dirname(__FILE__)."/../Objects/SObject.class.php");
+require_once dirname(__FILE__).'/../Objects/SObject.class.php';
 
 /**
  * TimeZone is a simple class to colect the information identifying a UTC time zone.
@@ -33,199 +33,205 @@ require_once(dirname(__FILE__)."/../Objects/SObject.class.php");
  *					$aStringName, $aStringAbbreviation)}
  *
  * @since 5/3/05
- * @package harmoni.primitives.chronology
  *
  * @copyright Copyright &copy; 2005, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  *
  * @version $Id: TimeZone.class.php,v 1.5 2007/10/10 22:58:33 adamfranco Exp $
  *
- * @link http://harmoni.sourceforge.net/
+ * @see http://harmoni.sourceforge.net/
+ *
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
-class TimeZone
-	extends SObject
+class TimeZone extends SObject
 {
+    /*********************************************************
+     * Class Methods - Instance Creation
+     *********************************************************/
 
-/*********************************************************
- * Class Methods - Instance Creation
- *********************************************************/
+    /**
+     * Answer the default time zone - GMT.
+     *
+     * @return object TimeZone
+     *
+     * @since 5/3/05
+     *
+     * @static
+     */
+    public static function defaultTimeZone()
+    {
+        $obj = TimeZone::offsetNameAbbreviation(
+            Duration::withHours(0),
+            'Greenwich Mean Time',
+            'GMT');
 
- 	/**
-	 * Answer the default time zone - GMT
-	 *
-	 * @return object TimeZone
-	 * @access public
-	 * @since 5/3/05
-	 * @static
-	 */
-	static function defaultTimeZone () {
-		$obj = TimeZone::offsetNameAbbreviation(
-					Duration::withHours(0),
-					'Greenwich Mean Time',
-					'GMT');
-		return $obj;
-	}
+        return $obj;
+    }
 
-	/**
-	 * Create a new Timezone.
-	 *
-	 * @param object Duration $aDuration
-	 * @param string $aStringName
-	 * @param string $aStringAbbriviation
-	 * @return object TimeZone
-	 * @access public
-	 * @static
-	 * @since 5/3/05
-	 */
-	static function offsetNameAbbreviation ( $aDuration, $aStringName = NULL,
-		$aStringAbbreviation = NULL)
-	{
-		$obj = new TimeZone ($aDuration, $aStringName, $aStringAbbreviation );
-		return $obj;
-	}
+    /**
+     * Create a new Timezone.
+     *
+     * @param object Duration $aDuration
+     * @param string $aStringName
+     *
+     * @return object TimeZone
+     *
+     * @static
+     *
+     * @since 5/3/05
+     */
+    public static function offsetNameAbbreviation($aDuration, $aStringName = null,
+        $aStringAbbreviation = null)
+    {
+        $obj = new TimeZone($aDuration, $aStringName, $aStringAbbreviation);
 
+        return $obj;
+    }
 
-/*********************************************************
- * Class Methods - Accessing
- *********************************************************/
+    /*********************************************************
+     * Class Methods - Accessing
+     *********************************************************/
 
-	/**
-	 * Return an Array of TimeZones
-	 *
-	 * @return array
-	 * @access public
-	 * @since 5/3/05
-	 * @static
-	 */
-	static function timeZones () {
-		$array = array (
-			TimeZone::offsetNameAbbreviation(
-				Duration::withHours(0),
-				'Universal Time',
-				'UTC'),
-			TimeZone::offsetNameAbbreviation(
-				Duration::withHours(0),
-				'Greenwich Mean Time',
-				'GMT'),
-			TimeZone::offsetNameAbbreviation(
-				Duration::withHours(0),
-				'British Summer Time',
-				'BST'),
-			TimeZone::offsetNameAbbreviation(
-				Duration::withHours(-5),
-				'Eastern Standard Time',
-				'EST'),
-			TimeZone::offsetNameAbbreviation(
-				Duration::withHours(-4),
-				'Eastern Daylight Time',
-				'EDT'),
-			TimeZone::offsetNameAbbreviation(
-				Duration::withHours(-6),
-				'Central Standard Time',
-				'CST'),
-			TimeZone::offsetNameAbbreviation(
-				Duration::withHours(-5),
-				'Central Daylight Time',
-				'CDT'),
-			TimeZone::offsetNameAbbreviation(
-				Duration::withHours(-7),
-				'Mountain Standard Time',
-				'MST'),
-			TimeZone::offsetNameAbbreviation(
-				Duration::withHours(-6),
-				'Mountain Daylight Time',
-				'MDT'),
-			TimeZone::offsetNameAbbreviation(
-				Duration::withHours(-8),
-				'Pacific Standard Time',
-				'PST'),
-			TimeZone::offsetNameAbbreviation(
-				Duration::withHours(-7),
-				'Pacific Daylight Time',
-				'PDT'),
+    /**
+     * Return an Array of TimeZones.
+     *
+     * @return array
+     *
+     * @since 5/3/05
+     *
+     * @static
+     */
+    public static function timeZones()
+    {
+        $array = [
+            TimeZone::offsetNameAbbreviation(
+                Duration::withHours(0),
+                'Universal Time',
+                'UTC'),
+            TimeZone::offsetNameAbbreviation(
+                Duration::withHours(0),
+                'Greenwich Mean Time',
+                'GMT'),
+            TimeZone::offsetNameAbbreviation(
+                Duration::withHours(0),
+                'British Summer Time',
+                'BST'),
+            TimeZone::offsetNameAbbreviation(
+                Duration::withHours(-5),
+                'Eastern Standard Time',
+                'EST'),
+            TimeZone::offsetNameAbbreviation(
+                Duration::withHours(-4),
+                'Eastern Daylight Time',
+                'EDT'),
+            TimeZone::offsetNameAbbreviation(
+                Duration::withHours(-6),
+                'Central Standard Time',
+                'CST'),
+            TimeZone::offsetNameAbbreviation(
+                Duration::withHours(-5),
+                'Central Daylight Time',
+                'CDT'),
+            TimeZone::offsetNameAbbreviation(
+                Duration::withHours(-7),
+                'Mountain Standard Time',
+                'MST'),
+            TimeZone::offsetNameAbbreviation(
+                Duration::withHours(-6),
+                'Mountain Daylight Time',
+                'MDT'),
+            TimeZone::offsetNameAbbreviation(
+                Duration::withHours(-8),
+                'Pacific Standard Time',
+                'PST'),
+            TimeZone::offsetNameAbbreviation(
+                Duration::withHours(-7),
+                'Pacific Daylight Time',
+                'PDT'),
+        ];
 
-		);
+        return $array;
+    }
 
-		return $array;
-	}
+    /*********************************************************
+     * 	Instance Methods - private
+     *********************************************************/
 
+    /**
+     * Create a new Timezone.
+     *
+     * @param object Duration $aDuration
+     * @param string $aStringName
+     *
+     * @return object TimeZone
+     *
+     * @since 5/3/05
+     */
+    public function __construct($aDuration, $aStringName, $aStringAbbreviation)
+    {
+        $this->offset = $aDuration;
+        $this->name = $aStringName;
+        $this->abbreviation = $aStringAbbreviation;
+    }
 
-/*********************************************************
- * 	Instance Methods - private
- *********************************************************/
+    /*********************************************************
+     * Instance Methods - Accessing
+     *********************************************************/
 
-	/**
-	 * Create a new Timezone.
-	 *
-	 * @param object Duration $aDuration
-	 * @param string $aStringName
-	 * @param string $aStringAbbriviation
-	 * @return object TimeZone
-	 * @access private
-	 * @since 5/3/05
-	 */
-	function __construct ( $aDuration, $aStringName, $aStringAbbreviation ) {
-		$this->offset =$aDuration;
-		$this->name = $aStringName;
-		$this->abbreviation = $aStringAbbreviation;
-	}
+    /**
+     * Return the offset of this TimeZone.
+     *
+     * @return object Duration
+     *
+     * @since 5/3/05
+     */
+    public function offset()
+    {
+        return $this->offset;
+    }
 
-/*********************************************************
- * Instance Methods - Accessing
- *********************************************************/
+    /**
+     * Answer the abreviation.
+     *
+     * @return string
+     *
+     * @since 5/10/05
+     */
+    public function abbreviation()
+    {
+        return $this->abbreviation;
+    }
 
-	/**
-	 * Return the offset of this TimeZone
-	 *
-	 * @return object Duration
-	 * @access public
-	 * @since 5/3/05
-	 */
-	function offset () {
-		return $this->offset;
-	}
+    /**
+     * Answer the name.
+     *
+     * @return string
+     *
+     * @since 5/10/05
+     */
+    public function name()
+    {
+        return $this->name;
+    }
 
-	/**
-	 * Answer the abreviation
-	 *
-	 * @return string
-	 * @access public
-	 * @since 5/10/05
-	 */
-	function abbreviation () {
-		return $this->abbreviation;
-	}
+    /**
+     * Answer a string version of this time zone.
+     *
+     * @return string
+     *
+     * @since 10/15/08
+     */
+    public function printableString()
+    {
+        if ($this->offset->isLessThan(Duration::withSeconds(0))) {
+            $string = '-';
+        } else {
+            $string = '+';
+        }
 
-	/**
-	 * Answer the name
-	 *
-	 * @return string
-	 * @access public
-	 * @since 5/10/05
-	 */
-	function name () {
-		return $this->name;
-	}
+        $string .= str_pad(abs($this->offset->hours()), 2, '0', STR_PAD_LEFT);
+        $string .= ':'.str_pad(abs($this->offset->minutes()), 2, '0', STR_PAD_LEFT);
 
-	/**
-	 * Answer a string version of this time zone
-	 *
-	 * @return string
-	 * @access public
-	 * @since 10/15/08
-	 */
-	public function printableString () {
-		if ($this->offset->isLessThan(Duration::withSeconds(0)))
-			$string = '-';
-		else
-			$string = '+';
-
-		$string .= str_pad(abs($this->offset->hours()), 2, '0', STR_PAD_LEFT);
-		$string .=':'.str_pad(abs($this->offset->minutes()), 2, '0', STR_PAD_LEFT);
-
-		return $string;
-	}
+        return $string;
+    }
 }
-
-?>

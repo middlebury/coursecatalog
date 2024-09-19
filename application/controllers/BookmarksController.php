@@ -3,72 +3,74 @@
 /** Zend_Controller_Action */
 class BookmarksController extends Zend_Controller_Action
 {
+    private $bookmarks;
 
-	private $bookmarks;
+    /**
+     * Constructor.
+     *
+     * @return void
+     *
+     * @since 11/3/09
+     */
+    public function init()
+    {
+        parent::init();
 
-	/**
-	 * Constructor
-	 *
-	 * @return void
-	 * @access public
-	 * @since 11/3/09
-	 */
-	public function init () {
-		parent::init();
+        $this->bookmarks = $this->_helper->bookmarks();
 
-		$this->bookmarks = $this->_helper->bookmarks();
+        // Verify our CSRF key
+        if (!$this->_getParam('csrf_key') == $this->_helper->csrfKey()) {
+            throw new PermissionDeniedException('Invalid CSRF Key. Please log in again.');
+        }
 
-		// Verify our CSRF key
-		 if (!$this->_getParam('csrf_key') == $this->_helper->csrfKey())
-			throw new PermissionDeniedException('Invalid CSRF Key. Please log in again.');
+        $this->_helper->layout->disableLayout();
+        $this->_helper->viewRenderer->setNoRender(true);
+        $this->getResponse()->setHeader('Content-Type', 'text/xml');
 
+        echo '<?xml version="1.0" encoding="UTF-8"?>';
+    }
 
-		$this->_helper->layout->disableLayout();
-		$this->_helper->viewRenderer->setNoRender(true);
-		$this->getResponse()->setHeader('Content-Type', 'text/xml');
+    /**
+     * Bookmark a course.
+     *
+     * @return void
+     *
+     * @since 7/29/10
+     */
+    public function addAction()
+    {
+        $idString = $this->_getParam('course');
+        if (!$idString) {
+            throw new InvalidArgumentException('No Course Id specified.');
+        }
+        $id = $this->_helper->osidId->fromString($idString);
 
-		print '<'.'?xml version="1.0" encoding="UTF-8"?'.'>';
-	}
+        $this->bookmarks->add($id);
 
-	/**
-	 * Bookmark a course
-	 *
-	 * @return void
-	 * @access public
-	 * @since 7/29/10
-	 */
-	public function addAction () {
-		$idString = $this->_getParam('course');
-		if (!$idString)
-			throw new InvalidArgumentException('No Course Id specified.');
-		$id = $this->_helper->osidId->fromString($idString);
+        echo '<response>';
+        echo '<success/>';
+        echo '</response>';
+    }
 
-		$this->bookmarks->add($id);
+    /**
+     * Remove a course bookmark.
+     *
+     * @return void
+     *
+     * @since 7/29/10
+     */
+    public function removeAction()
+    {
+        $idString = $this->_getParam('course');
+        if (!$idString) {
+            throw new InvalidArgumentException('No Course Id specified.');
+        }
+        $id = $this->_helper->osidId->fromString($idString);
 
-		print '<response>';
-		print '<success/>';
-		print '</response>';
+        $this->bookmarks->remove($id);
 
-	}
-
-	/**
-	 * Remove a course bookmark
-	 *
-	 * @return void
-	 * @access public
-	 * @since 7/29/10
-	 */
-	public function removeAction () {
-		$idString = $this->_getParam('course');
-		if (!$idString)
-			throw new InvalidArgumentException('No Course Id specified.');
-		$id = $this->_helper->osidId->fromString($idString);
-
-		$this->bookmarks->remove($id);
-
-		print '<response>';
-		print '<success/>';
-		print '</response>';
-
-	}
+        echo '<response>';
+        echo '<success/>';
+        echo '</response>';
+    }
 }

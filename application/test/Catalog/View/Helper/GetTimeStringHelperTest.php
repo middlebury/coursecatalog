@@ -8,39 +8,31 @@ use PHPUnit\Framework\TestCase;
  */
 class GetTimeStringHelperTest extends TestCase
 {
+    use Catalog_ApplicationTestTrait;
 
-	use Catalog_ApplicationTestTrait;
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    protected function setUp(): void
+    {
+        require_once APPLICATION_PATH.'/views/helpers/GetTimeString.php';
+        $this->helper = new Catalog_View_Helper_GetTimeString();
+    }
 
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 *
-	 * @access protected
-	 */
-	protected function setUp(): void
-	{
-		require_once(APPLICATION_PATH.'/views/helpers/GetTimeString.php');
-		$this->helper = new Catalog_View_Helper_GetTimeString;
-	}
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown(): void
+    {
+    }
 
-	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 *
-	 * @access protected
-	 */
-	protected function tearDown(): void
-	{
-	}
-
-	/**
-	 *
-	 */
-	public function testGetTimeString()
-	{
-		$this->assertEquals('12:00 am', $this->helper->getTimeString(0));
-		$this->assertEquals('8:33 am', $this->helper->getTimeString(30780));
-		$this->assertEquals('6:21 pm', $this->helper->getTimeString(66060));
-		$this->assertEquals('12:00 am', $this->helper->getTimeString(86400));
-	}
+    public function testGetTimeString()
+    {
+        $this->assertEquals('12:00 am', $this->helper->getTimeString(0));
+        $this->assertEquals('8:33 am', $this->helper->getTimeString(30780));
+        $this->assertEquals('6:21 pm', $this->helper->getTimeString(66060));
+        $this->assertEquals('12:00 am', $this->helper->getTimeString(86400));
+    }
 }

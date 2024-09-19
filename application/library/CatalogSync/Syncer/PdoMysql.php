@@ -1,7 +1,6 @@
 <?php
 /**
  * @since 2/22/16
- * @package CatalogSync
  *
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
@@ -12,62 +11,57 @@
  * on the source side and a MySQL-PDO connection on the destination side.
  *
  * @since 2/22/16
- * @package CatalogSync
  *
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class CatalogSync_Syncer_PdoMysql
-	extends CatalogSync_Syncer_Abstract
-	implements CatalogSync_Syncer
+class CatalogSync_Syncer_PdoMysql extends CatalogSync_Syncer_Abstract implements CatalogSync_Syncer
 {
-	protected $source_db;
+    protected $source_db;
 
-	/**
-	 * Configure this sync instance
-	 *
-	 * @param Zend_Config $config
-	 * @return void
-	 * @access public
-	 */
-	public function configure (Zend_Config $config) {
-		parent::configure($config);
-		$this->source_db = new CatalogSync_Database_Source_PdoMysql('source_mysql_db');
-		$this->source_db->configure($config->source_mysql_db);
-	}
+    /**
+     * Configure this sync instance.
+     *
+     * @return void
+     */
+    public function configure(Zend_Config $config)
+    {
+        parent::configure($config);
+        $this->source_db = new CatalogSync_Database_Source_PdoMysql('source_mysql_db');
+        $this->source_db->configure($config->source_mysql_db);
+    }
 
-	/**
-	 * Set up connections to our source and destination.
-	 *
-	 * @return void
-	 * @access public
-	 */
-	public function connect () {
-		parent::connect();
+    /**
+     * Set up connections to our source and destination.
+     *
+     * @return void
+     */
+    public function connect()
+    {
+        parent::connect();
 
-		// Connect to Banner
-		$this->source_db->connect();
-	}
+        // Connect to Banner
+        $this->source_db->connect();
+    }
 
-	/**
-	 * Disconnect from our databases
-	 *
-	 * @return void
-	 * @access public
-	 */
-	public function disconnect () {
-		parent::disconnect();
-		$this->source_db->disconnect();
-	}
+    /**
+     * Disconnect from our databases.
+     *
+     * @return void
+     */
+    public function disconnect()
+    {
+        parent::disconnect();
+        $this->source_db->disconnect();
+    }
 
-	/**
-	 * Answer the database we should copy from.
-	 *
-	 * @return CatalogSync_Database_Source
-	 * @access public
-	 */
-	protected function getCopySourceDatabase () {
-		return $this->source_db;
-	}
-
+    /**
+     * Answer the database we should copy from.
+     *
+     * @return CatalogSync_Database_Source
+     */
+    protected function getCopySourceDatabase()
+    {
+        return $this->source_db;
+    }
 }

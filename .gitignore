@@ -7,3 +7,4 @@ docroot/archives
 progress.txt
 vendor/
 .phpunit.result.cache
+.php-cs-fixer.cache

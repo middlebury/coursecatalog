@@ -14,19 +14,17 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class Catalog_View_Helper_CsrfKey
-	extends Zend_View_Helper_Abstract
+class Catalog_View_Helper_CsrfKey extends Zend_View_Helper_Abstract
 {
-
-	/**
-	 * Answer the CSRF key.
-	 *
-	 * @return string
-	 * @access public
-	 * @since 7/30/10
-	 */
-	public function csrfKey () {
-		return Zend_Controller_Action_HelperBroker::getStaticHelper('CsrfKey')->direct();
-	}
-
+    /**
+     * Answer the CSRF key.
+     *
+     * @return string
+     *
+     * @since 7/30/10
+     */
+    public function csrfKey()
+    {
+        return Zend_Controller_Action_HelperBroker::getStaticHelper('CsrfKey')->direct();
+    }
 }

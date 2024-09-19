@@ -22,99 +22,102 @@
  *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  *     DEALINGS IN THE SOFTWARE.
- *
- * @package middlebury.course
  */
 
 /**
  * <p>A record for matching the instructors of a <code> CourseOffering. </code>
  * The methods specified by the record type are available through the
- * underlying object. </p>
+ * underlying object. </p>.
  *
  *  The type for this record is:
  *		id namespace:	urn
  *		authority:		middlebury.edu
  *		identifier:		record:weekly_schedule
- *
- * @package middlebury.course
  */
-interface middlebury_course_CourseOffering_Search_WeeklyScheduleQueryRecord
-	extends osid_course_CourseOfferingQueryRecord
+interface middlebury_course_CourseOffering_Search_WeeklyScheduleQueryRecord extends osid_course_CourseOfferingQueryRecord
 {
+    /**
+     * Matches a meeting on Sunday.
+     *
+     * @param bool $match <code> true </code> if a positive match, <code>
+     *                    false </code> for negative match
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function matchMeetsSunday($match);
 
-	/**
-	 * Matches a meeting on Sunday.
-	 *
-	 * @param boolean $match <code> true </code> if a positive match, <code>
-	 *          false </code> for negative match
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function matchMeetsSunday($match);
+    /**
+     * Matches a meeting on Monday.
+     *
+     * @param bool $match <code> true </code> if a positive match, <code>
+     *                    false </code> for negative match
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function matchMeetsMonday($match);
 
-	/**
-	 * Matches a meeting on Monday.
-	 *
-	 * @param boolean $match <code> true </code> if a positive match, <code>
-	 *          false </code> for negative match
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function matchMeetsMonday($match);
+    /**
+     * Matches a meeting on Tuesday.
+     *
+     * @param bool $match <code> true </code> if a positive match, <code>
+     *                    false </code> for negative match
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function matchMeetsTuesday($match);
 
-	/**
-	 * Matches a meeting on Tuesday.
-	 *
-	 * @param boolean $match <code> true </code> if a positive match, <code>
-	 *          false </code> for negative match
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function matchMeetsTuesday($match);
+    /**
+     * Matches a meeting on Wednesday.
+     *
+     * @param bool $match <code> true </code> if a positive match, <code>
+     *                    false </code> for negative match
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function matchMeetsWednesday($match);
 
-	/**
-	 * Matches a meeting on Wednesday.
-	 *
-	 * @param boolean $match <code> true </code> if a positive match, <code>
-	 *          false </code> for negative match
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function matchMeetsWednesday($match);
+    /**
+     * Matches a meeting on Thursday.
+     *
+     * @param bool $match <code> true </code> if a positive match, <code>
+     *                    false </code> for negative match
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function matchMeetsThursday($match);
 
-	/**
-	 * Matches a meeting on Thursday.
-	 *
-	 * @param boolean $match <code> true </code> if a positive match, <code>
-	 *          false </code> for negative match
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function matchMeetsThursday($match);
+    /**
+     * Matches a meeting on Friday.
+     *
+     * @param bool $match <code> true </code> if a positive match, <code>
+     *                    false </code> for negative match
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function matchMeetsFriday($match);
 
-	/**
-	 * Matches a meeting on Friday.
-	 *
-	 * @param boolean $match <code> true </code> if a positive match, <code>
-	 *          false </code> for negative match
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function matchMeetsFriday($match);
+    /**
+     * Matches a meeting on Saturday.
+     *
+     * @param bool $match <code> true </code> if a positive match, <code>
+     *                    false </code> for negative match
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function matchMeetsSaturday($match);
 
-	/**
-	 * Matches a meeting on Saturday.
-	 *
-	 * @param boolean $match <code> true </code> if a positive match, <code>
-	 *          false </code> for negative match
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function matchMeetsSaturday($match);
-
-	/**
-	 * Matches meeting times that fall within the range given.
-	 *
-	 * @param integer $rangeStart The lower bound of the start time in seconds since midnight. 0-86399
-	 * @param integer $rangeEnd The upper bound of the end time in seconds since midnight. 1-86400
-	 * @param boolean $match <code> true </code> if a positive match, <code>
-	 *          false </code> for negative match
-	 * @compliance mandatory This method must be implemented.
-	 * @throws osid_NullArgumentException rangeStart or rangeEnd are null.
-	 * @throws osid_InvalidArgumentException rangeStart or rangeEnd are out of range.
-	 */
-	public function matchMeetingTime ($rangeStart, $rangeEnd, $match);
+    /**
+     * Matches meeting times that fall within the range given.
+     *
+     * @param int  $rangeStart The lower bound of the start time in seconds since midnight. 0-86399
+     * @param int  $rangeEnd   The upper bound of the end time in seconds since midnight. 1-86400
+     * @param bool $match      <code> true </code> if a positive match, <code>
+     *                         false </code> for negative match
+     *
+     * @compliance mandatory This method must be implemented.
+     *
+     * @throws osid_NullArgumentException    rangeStart or rangeEnd are null
+     * @throws osid_InvalidArgumentException rangeStart or rangeEnd are out of range
+     */
+    public function matchMeetingTime($rangeStart, $rangeEnd, $match);
 }

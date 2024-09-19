@@ -1,8 +1,9 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4: */
 
 /**
- * SafeHTML Parser
+ * SafeHTML Parser.
  *
  * PHP versions 4 and 5
  *
@@ -10,37 +11,37 @@
  * - 2007-12-06 - Removed return and pass-by reference ampersands to match PHP5 strict-mode.
  *
  * @category   HTML
- * @package    SafeHTML
+ *
  * @author     Roman Ivanov <thingol@mail.ru>
  * @copyright  2004-2005 Roman Ivanov
  * @license    http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
- * @version    1.3.7
- * @link       http://pixel-apes.com/safehtml/
- */
-
-/**
- * This package requires HTMLSax3 package
- */
-require_once(XML_HTMLSAX3 . 'HTMLSax3.php');
-
- 
-/**
  *
- * SafeHTML Parser
+ * @version    1.3.7
+ *
+ * @see       http://pixel-apes.com/safehtml/
+ */
+
+/**
+ * This package requires HTMLSax3 package.
+ */
+require_once XML_HTMLSAX3.'HTMLSax3.php';
+
+/**
+ * SafeHTML Parser.
  *
  * This parser strips down all potentially dangerous content within HTML:
  * <ul>
  * <li>opening tag without its closing tag</li>
  * <li>closing tag without its opening tag</li>
- * <li>any of these tags: "base", "basefont", "head", "html", "body", "applet", 
- * "object", "iframe", "frame", "frameset", "script", "layer", "ilayer", "embed", 
+ * <li>any of these tags: "base", "basefont", "head", "html", "body", "applet",
+ * "object", "iframe", "frame", "frameset", "script", "layer", "ilayer", "embed",
  * "bgsound", "link", "meta", "style", "title", "blink", "xml" etc.</li>
  * <li>any of these attributes: on*, data*, dynsrc</li>
  * <li>javascript:/vbscript:/about: etc. protocols</li>
  * <li>expression/behavior etc. in styles</li>
  * <li>any other active content</li>
  * </ul>
- * It also tries to convert code to XHTML valid, but htmltidy is far better 
+ * It also tries to convert code to XHTML valid, but htmltidy is far better
  * solution for this task.
  *
  * <b>Example:</b>
@@ -50,330 +51,308 @@ require_once(XML_HTMLSAX3 . 'HTMLSax3.php');
  * </pre>
  *
  * @category   HTML
- * @package    SafeHTML
+ *
  * @author     Roman Ivanov <thingol@mail.ru>
  * @copyright  1997-2005 Roman Ivanov
  * @license    http://www.debian.org/misc/bsd.license  BSD License (3 Clause)
+ *
  * @version    Release: @package_version@
- * @link       http://pear.php.net/package/SafeHTML
+ *
+ * @see       http://pear.php.net/package/SafeHTML
  */
-class SafeHTML 
+class SafeHTML
 {
     /**
-     * Storage for resulting HTML output
+     * Storage for resulting HTML output.
      *
      * @var string
-     * @access private
      */
-    var $_xhtml = '';
-    
+    public $_xhtml = '';
+
     /**
-     * Array of counters for each tag
+     * Array of counters for each tag.
      *
      * @var array
-     * @access private
      */
-    var $_counter = array();
-    
+    public $_counter = [];
+
     /**
-     * Stack of unclosed tags
+     * Stack of unclosed tags.
      *
      * @var array
-     * @access private
      */
-    var $_stack = array();
-    
+    public $_stack = [];
+
     /**
-     * Array of counters for tags that must be deleted with all content
+     * Array of counters for tags that must be deleted with all content.
      *
      * @var array
-     * @access private
      */
-    var $_dcCounter = array();
-    
+    public $_dcCounter = [];
+
     /**
-     * Stack of unclosed tags that must be deleted with all content
+     * Stack of unclosed tags that must be deleted with all content.
      *
      * @var array
-     * @access private
      */
-    var $_dcStack = array();
-    
+    public $_dcStack = [];
+
     /**
-     * Stores level of list (ol/ul) nesting
+     * Stores level of list (ol/ul) nesting.
      *
      * @var int
-     * @access private
      */
-    var $_listScope = 0; 
-    
-    /**
-     * Stack of unclosed list tags 
-     *
-     * @var array
-     * @access private
-     */
-    var $_liStack = array();
+    public $_listScope = 0;
 
     /**
-     * Array of prepared regular expressions for protocols (schemas) matching
+     * Stack of unclosed list tags.
      *
      * @var array
-     * @access private
      */
-    var $_protoRegexps = array();
-    
-    /**
-     * Array of prepared regular expressions for CSS matching
-     *
-     * @var array
-     * @access private
-     */
-    var $_cssRegexps = array();
+    public $_liStack = [];
 
     /**
-     * List of single tags ("<tag />")
+     * Array of prepared regular expressions for protocols (schemas) matching.
      *
      * @var array
-     * @access public
      */
-    var $singleTags = array('area', 'br', 'img', 'input', 'hr', 'wbr', );
+    public $_protoRegexps = [];
 
     /**
-     * List of dangerous tags (such tags will be deleted)
+     * Array of prepared regular expressions for CSS matching.
      *
      * @var array
-     * @access public
      */
-    var $deleteTags = array(
-        'applet', 'base',   'basefont', 'bgsound', 'blink',  'body', 
-        'embed',  'frame',  'frameset', 'head',    'html',   'ilayer', 
-        'iframe', 'layer',  'link',     'meta',    'object', 'style', 
-        'title',  'script', 
-        );
+    public $_cssRegexps = [];
 
     /**
-     * List of dangerous tags (such tags will be deleted, and all content 
-     * inside this tags will be also removed)
+     * List of single tags ("<tag />").
      *
      * @var array
-     * @access public
      */
-    var $deleteTagsContent = array('script', 'style', 'title', 'xml', );
+    public $singleTags = ['area', 'br', 'img', 'input', 'hr', 'wbr'];
 
     /**
-     * Type of protocols filtering ('white' or 'black')
+     * List of dangerous tags (such tags will be deleted).
+     *
+     * @var array
+     */
+    public $deleteTags = [
+        'applet', 'base',   'basefont', 'bgsound', 'blink',  'body',
+        'embed',  'frame',  'frameset', 'head',    'html',   'ilayer',
+        'iframe', 'layer',  'link',     'meta',    'object', 'style',
+        'title',  'script',
+    ];
+
+    /**
+     * List of dangerous tags (such tags will be deleted, and all content
+     * inside this tags will be also removed).
+     *
+     * @var array
+     */
+    public $deleteTagsContent = ['script', 'style', 'title', 'xml'];
+
+    /**
+     * Type of protocols filtering ('white' or 'black').
      *
      * @var string
-     * @access public
      */
-    var $protocolFiltering = 'white';
+    public $protocolFiltering = 'white';
 
     /**
-     * List of "dangerous" protocols (used for blacklist-filtering)
+     * List of "dangerous" protocols (used for blacklist-filtering).
      *
      * @var array
-     * @access public
      */
-    var $blackProtocols = array(
-        'about',   'chrome',     'data',       'disk',     'hcp',     
-        'help',    'javascript', 'livescript', 'lynxcgi',  'lynxexec', 
-        'ms-help', 'ms-its',     'mhtml',      'mocha',    'opera',   
-        'res',     'resource',   'shell',      'vbscript', 'view-source', 
-        'vnd.ms.radio',          'wysiwyg', 
-        );
+    public $blackProtocols = [
+        'about',   'chrome',     'data',       'disk',     'hcp',
+        'help',    'javascript', 'livescript', 'lynxcgi',  'lynxexec',
+        'ms-help', 'ms-its',     'mhtml',      'mocha',    'opera',
+        'res',     'resource',   'shell',      'vbscript', 'view-source',
+        'vnd.ms.radio',          'wysiwyg',
+    ];
 
     /**
-     * List of "safe" protocols (used for whitelist-filtering)
+     * List of "safe" protocols (used for whitelist-filtering).
      *
      * @var array
-     * @access public
      */
-    var $whiteProtocols = array(
-        'ed2k',   'file', 'ftp',  'gopher', 'http',  'https', 
-        'irc',    'mailto', 'news', 'nntp', 'telnet', 'webcal', 
+    public $whiteProtocols = [
+        'ed2k',   'file', 'ftp',  'gopher', 'http',  'https',
+        'irc',    'mailto', 'news', 'nntp', 'telnet', 'webcal',
         'xmpp',   'callto', 'feed',
-        );
+    ];
 
     /**
-     * List of attributes that can contain protocols
+     * List of attributes that can contain protocols.
      *
      * @var array
-     * @access public
      */
-    var $protocolAttributes = array(
-        'action', 'background', 'codebase', 'dynsrc', 'href', 'lowsrc', 'src', 
-        );
+    public $protocolAttributes = [
+        'action', 'background', 'codebase', 'dynsrc', 'href', 'lowsrc', 'src',
+    ];
 
     /**
-     * List of dangerous CSS keywords
+     * List of dangerous CSS keywords.
      *
-     * Whole style="" attribute will be removed, if parser will find one of 
+     * Whole style="" attribute will be removed, if parser will find one of
      * these keywords
      *
      * @var array
-     * @access public
      */
-    var $cssKeywords = array(
-        'absolute', 'behavior',       'behaviour',   'content', 'expression', 
+    public $cssKeywords = [
+        'absolute', 'behavior',       'behaviour',   'content', 'expression',
         'fixed',    'include-source', 'moz-binding',
-        );
+    ];
 
     /**
-     * List of tags that can have no "closing tag"
+     * List of tags that can have no "closing tag".
      *
      * @var array
-     * @access public
+     *
      * @deprecated XHTML does not allow such tags
      */
-    var $noClose = array();
+    public $noClose = [];
 
     /**
-     * List of block-level tags that terminates paragraph
+     * List of block-level tags that terminates paragraph.
      *
      * Paragraph will be closed when this tags opened
      *
      * @var array
-     * @access public
      */
-    var $closeParagraph = array(
-        'address', 'blockquote', 'center', 'dd',      'dir',       'div', 
-        'dl',      'dt',         'h1',     'h2',      'h3',        'h4', 
-        'h5',      'h6',         'hr',     'isindex', 'listing',   'marquee', 
-        'menu',    'multicol',   'ol',     'p',       'plaintext', 'pre', 
-        'table',   'ul',         'xmp', 
-        );
+    public $closeParagraph = [
+        'address', 'blockquote', 'center', 'dd',      'dir',       'div',
+        'dl',      'dt',         'h1',     'h2',      'h3',        'h4',
+        'h5',      'h6',         'hr',     'isindex', 'listing',   'marquee',
+        'menu',    'multicol',   'ol',     'p',       'plaintext', 'pre',
+        'table',   'ul',         'xmp',
+    ];
 
     /**
-     * List of table tags, all table tags outside a table will be removed
+     * List of table tags, all table tags outside a table will be removed.
      *
      * @var array
-     * @access public
      */
-    var $tableTags = array(
-        'caption', 'col', 'colgroup', 'tbody', 'td', 'tfoot', 'th', 
-        'thead',   'tr', 
-        );
+    public $tableTags = [
+        'caption', 'col', 'colgroup', 'tbody', 'td', 'tfoot', 'th',
+        'thead',   'tr',
+    ];
 
     /**
-     * List of list tags
+     * List of list tags.
      *
      * @var array
-     * @access public
      */
-    var $listTags = array('dir', 'menu', 'ol', 'ul', 'dl', );
+    public $listTags = ['dir', 'menu', 'ol', 'ul', 'dl'];
 
     /**
-     * List of dangerous attributes
+     * List of dangerous attributes.
      *
      * @var array
-     * @access public
      */
-    var $attributes = array('dynsrc', 'id', 'name', );
+    public $attributes = ['dynsrc', 'id', 'name'];
 
     /**
-     * List of allowed "namespaced" attributes
+     * List of allowed "namespaced" attributes.
      *
      * @var array
-     * @access public
      */
-    var $attributesNS = array('xml:lang', );
+    public $attributesNS = ['xml:lang'];
 
     /**
-     * Constructs class
-     *
-     * @access public
+     * Constructs class.
      */
-    function __construct() 
+    public function __construct()
     {
-        //making regular expressions based on Proto & CSS arrays
+        // making regular expressions based on Proto & CSS arrays
         foreach ($this->blackProtocols as $proto) {
             $preg = "/[\s\x01-\x1F]*";
-            for ($i=0; $i<strlen($proto); $i++) {
-                $preg .= $proto[$i] . "[\s\x01-\x1F]*";
+            for ($i = 0; $i < strlen($proto); ++$i) {
+                $preg .= $proto[$i]."[\s\x01-\x1F]*";
             }
-            $preg .= ":/i";
+            $preg .= ':/i';
             $this->_protoRegexps[] = $preg;
         }
 
         foreach ($this->cssKeywords as $css) {
-            $this->_cssRegexps[] = '/' . $css . '/i';
+            $this->_cssRegexps[] = '/'.$css.'/i';
         }
+
         return true;
     }
 
     /**
-     * Handles the writing of attributes - called from $this->_openHandler()
+     * Handles the writing of attributes - called from $this->_openHandler().
      *
      * @param array $attrs array of attributes $name => $value
-     * @return boolean
-     * @access private
+     *
+     * @return bool
      */
-    function _writeAttrs ($attrs) 
+    public function _writeAttrs($attrs)
     {
         if (is_array($attrs)) {
             foreach ($attrs as $name => $value) {
-
                 $name = strtolower($name);
 
-                if (strpos($name, 'on') === 0) {
+                if (0 === strpos($name, 'on')) {
                     continue;
                 }
-                if (strpos($name, 'data') === 0) {
+                if (0 === strpos($name, 'data')) {
                     continue;
                 }
                 if (in_array($name, $this->attributes)) {
                     continue;
                 }
-                if (!preg_match("/^[a-z0-9]+$/i", $name)) {
-                    if (!in_array($name, $this->attributesNS))
-                    {
+                if (!preg_match('/^[a-z0-9]+$/i', $name)) {
+                    if (!in_array($name, $this->attributesNS)) {
                         continue;
                     }
                 }
 
-                if (($value === TRUE) || (is_null($value))) {
+                if ((true === $value) || is_null($value)) {
                     $value = $name;
                 }
 
-                if ($name == 'style') {
-                   
-                   // removes insignificant backslahes
-                   $value = str_replace("\\", '', $value);
+                if ('style' == $name) {
+                    // removes insignificant backslahes
+                    $value = str_replace('\\', '', $value);
 
-                   // removes CSS comments
-                   while (1)
-                   {
-                     $_value = preg_replace("!/\*.*?\*/!s", '', $value);
-                     if ($_value == $value) break;
-                     $value = $_value;
-                   }
-                   
-                   // replace all & to &amp;
-                   $value = str_replace('&amp;', '&', $value);
-                   $value = str_replace('&', '&amp;', $value);
+                    // removes CSS comments
+                    while (1) {
+                        $_value = preg_replace("!/\*.*?\*/!s", '', $value);
+                        if ($_value == $value) {
+                            break;
+                        }
+                        $value = $_value;
+                    }
 
-                   foreach ($this->_cssRegexps as $css) {
-                       if (preg_match($css, $value)) { 
-                           continue 2;
-                       }
-                   }
-                   foreach ($this->_protoRegexps as $proto) {
-                       if (preg_match($proto, $value)) {
-                           continue 2;
-                       }
-                   }
+                    // replace all & to &amp;
+                    $value = str_replace('&amp;', '&', $value);
+                    $value = str_replace('&', '&amp;', $value);
+
+                    foreach ($this->_cssRegexps as $css) {
+                        if (preg_match($css, $value)) {
+                            continue 2;
+                        }
+                    }
+                    foreach ($this->_protoRegexps as $proto) {
+                        if (preg_match($proto, $value)) {
+                            continue 2;
+                        }
+                    }
                 }
 
-                $tempval = preg_replace_callback('/&#(\d+);?/m', function ($m) { return chr($m[1]); }, $value); //"'
+                $tempval = preg_replace_callback('/&#(\d+);?/m', function ($m) { return chr($m[1]); }, $value); // "'
                 $tempval = preg_replace_callback('/&#x([0-9a-f]+);?/mi', function ($m) { return chr(hexdec($m[1])); }, $tempval);
 
-                if ((in_array($name, $this->protocolAttributes)) && 
-                    (strpos($tempval, ':') !== false)) 
-                {
-                    if ($this->protocolFiltering == 'black') {
+                if (in_array($name, $this->protocolAttributes)
+                    && (false !== strpos($tempval, ':'))) {
+                    if ('black' == $this->protocolFiltering) {
                         foreach ($this->_protoRegexps as $proto) {
-                            if (preg_match($proto, $tempval)) continue 2;
+                            if (preg_match($proto, $tempval)) {
+                                continue 2;
+                            }
                         }
                     } else {
                         $_tempval = explode(':', $tempval);
@@ -384,280 +363,279 @@ class SafeHTML
                     }
                 }
 
-                $value = str_replace("\"", "&quot;", $value);
-                $this->_xhtml .= ' ' . $name . '="' . $value . '"';
+                $value = str_replace('"', '&quot;', $value);
+                $this->_xhtml .= ' '.$name.'="'.$value.'"';
             }
         }
+
         return true;
     }
 
     /**
-     * Opening tag handler - called from HTMLSax
+     * Opening tag handler - called from HTMLSax.
      *
      * @param object $parser HTML Parser
      * @param string $name   tag name
      * @param array  $attrs  tag attributes
-     * @return boolean
-     * @access private
+     *
+     * @return bool
      */
-    function _openHandler($parser, $name, $attrs) 
+    public function _openHandler($parser, $name, $attrs)
     {
         $name = strtolower($name);
 
         if (in_array($name, $this->deleteTagsContent)) {
             array_push($this->_dcStack, $name);
-            $this->_dcCounter[$name] = isset($this->_dcCounter[$name]) ? $this->_dcCounter[$name]+1 : 1;
+            $this->_dcCounter[$name] = isset($this->_dcCounter[$name]) ? $this->_dcCounter[$name] + 1 : 1;
         }
-        if (count($this->_dcStack) != 0) {
+        if (0 != count($this->_dcStack)) {
             return true;
         }
 
         if (in_array($name, $this->deleteTags)) {
             return true;
         }
-        
-        if (!preg_match("/^[a-z0-9]+$/i", $name)) {
+
+        if (!preg_match('/^[a-z0-9]+$/i', $name)) {
             if (preg_match("!(?:\@|://)!i", $name)) {
-                $this->_xhtml .= '&lt;' . $name . '&gt;';
+                $this->_xhtml .= '&lt;'.$name.'&gt;';
             }
+
             return true;
         }
 
         if (in_array($name, $this->singleTags)) {
-            $this->_xhtml .= '<' . $name;
+            $this->_xhtml .= '<'.$name;
             $this->_writeAttrs($attrs);
             $this->_xhtml .= ' />';
+
             return true;
         }
 
         // TABLES: cannot open table elements when we are not inside table
-        if ((isset($this->_counter['table'])) && ($this->_counter['table'] <= 0) 
-            && (in_array($name, $this->tableTags))) 
-        {
+        if ((isset($this->_counter['table'])) && ($this->_counter['table'] <= 0)
+            && in_array($name, $this->tableTags)) {
             return true;
         }
 
         // PARAGRAPHS: close paragraph when closeParagraph tags opening
-        if ((in_array($name, $this->closeParagraph)) && (in_array('p', $this->_stack))) {
+        if (in_array($name, $this->closeParagraph) && in_array('p', $this->_stack)) {
             $this->_closeHandler($parser, 'p');
         }
 
         // LISTS: we should close <li> if <li> of the same level opening
-        if ($name == 'li' && count($this->_liStack) && 
-            $this->_listScope == $this->_liStack[count($this->_liStack)-1]) 
-        {
+        if ('li' == $name && count($this->_liStack)
+            && $this->_listScope == $this->_liStack[count($this->_liStack) - 1]) {
             $this->_closeHandler($parser, 'li');
         }
 
         // LISTS: we want to know on what nesting level of lists we are
         if (in_array($name, $this->listTags)) {
-            $this->_listScope++;
+            ++$this->_listScope;
         }
-        if ($name == 'li') {
+        if ('li' == $name) {
             array_push($this->_liStack, $this->_listScope);
         }
-            
-        $this->_xhtml .= '<' . $name;
+
+        $this->_xhtml .= '<'.$name;
         $this->_writeAttrs($attrs);
         $this->_xhtml .= '>';
-        array_push($this->_stack,$name);
-        $this->_counter[$name] = isset($this->_counter[$name]) ? $this->_counter[$name]+1 : 1;
+        array_push($this->_stack, $name);
+        $this->_counter[$name] = isset($this->_counter[$name]) ? $this->_counter[$name] + 1 : 1;
+
         return true;
     }
 
     /**
-     * Closing tag handler - called from HTMLSax
+     * Closing tag handler - called from HTMLSax.
      *
-     * @param object $parsers HTML parser
-     * @param string $name    tag name
-     * @return boolean
-     * @access private
+     * @param string $name tag name
+     *
+     * @return bool
      */
-    function _closeHandler($parser, $name) 
+    public function _closeHandler($parser, $name)
     {
-
         $name = strtolower($name);
 
-        if (isset($this->_dcCounter[$name]) && ($this->_dcCounter[$name] > 0) && 
-            (in_array($name, $this->deleteTagsContent))) 
-        {
-           while ($name != ($tag = array_pop($this->_dcStack))) {
-            $this->_dcCounter[$tag]--;
-           }
+        if (isset($this->_dcCounter[$name]) && ($this->_dcCounter[$name] > 0)
+            && in_array($name, $this->deleteTagsContent)) {
+            while ($name != ($tag = array_pop($this->_dcStack))) {
+                --$this->_dcCounter[$tag];
+            }
 
-           $this->_dcCounter[$name]--;
+            --$this->_dcCounter[$name];
         }
 
-        if (count($this->_dcStack) != 0) {
+        if (0 != count($this->_dcStack)) {
             return true;
         }
 
         if ((isset($this->_counter[$name])) && ($this->_counter[$name] > 0)) {
-           while ($name != ($tag = array_pop($this->_stack))) {
-               $this->_closeTag($tag);
-           }
+            while ($name != ($tag = array_pop($this->_stack))) {
+                $this->_closeTag($tag);
+            }
 
-           $this->_closeTag($name);
+            $this->_closeTag($name);
         }
+
         return true;
     }
 
     /**
-     * Closes tag 
+     * Closes tag.
      *
      * @param string $tag tag name
-     * @return boolean
-     * @access private
+     *
+     * @return bool
      */
-    function _closeTag($tag) 
+    public function _closeTag($tag)
     {
         if (!in_array($tag, $this->noClose)) {
-            $this->_xhtml .= '</' . $tag . '>';
+            $this->_xhtml .= '</'.$tag.'>';
         }
 
-        $this->_counter[$tag]--;
+        --$this->_counter[$tag];
 
         if (in_array($tag, $this->listTags)) {
-            $this->_listScope--;
+            --$this->_listScope;
         }
 
-        if ($tag == 'li') {
+        if ('li' == $tag) {
             array_pop($this->_liStack);
         }
+
         return true;
     }
 
     /**
-     * Character data handler - called from HTMLSax
+     * Character data handler - called from HTMLSax.
      *
      * @param object $parser HTML parser
      * @param string $data   textual data
-     * @return boolean
-     * @access private
+     *
+     * @return bool
      */
-    function _dataHandler($parser, $data) 
+    public function _dataHandler($parser, $data)
     {
-        if (count($this->_dcStack) == 0) {
+        if (0 == count($this->_dcStack)) {
             $this->_xhtml .= $data;
         }
+
         return true;
     }
 
     /**
-     * Escape handler - called from HTMLSax
+     * Escape handler - called from HTMLSax.
      *
      * @param object $parser HTML parser
      * @param string $data   comments or other type of data
-     * @return boolean
-     * @access private
+     *
+     * @return bool
      */
-    function _escapeHandler($parser, $data) 
+    public function _escapeHandler($parser, $data)
     {
         return true;
     }
 
     /**
-     * Returns the XHTML document
+     * Returns the XHTML document.
      *
      * @return string Processed (X)HTML document
-     * @access public
      */
-    function getXHTML () 
+    public function getXHTML()
     {
         while ($tag = array_pop($this->_stack)) {
             $this->_closeTag($tag);
         }
-        
+
         return $this->_xhtml;
     }
 
     /**
-     * Clears current document data
+     * Clears current document data.
      *
-     * @return boolean
-     * @access public
+     * @return bool
      */
-    function clear() 
+    public function clear()
     {
         $this->_xhtml = '';
+
         return true;
     }
 
     /**
-     * Main parsing fuction
+     * Main parsing fuction.
      *
      * @param string $doc HTML document for processing
+     *
      * @return string Processed (X)HTML document
-     * @access public
      */
-    function parse($doc) 
+    public function parse($doc)
     {
+        // Save all '<' symbols
+        $doc = preg_replace("/<(?=[^a-zA-Z\/\!\?\%])/", '&lt;', $doc);
 
-       // Save all '<' symbols
-       $doc = preg_replace("/<(?=[^a-zA-Z\/\!\?\%])/", '&lt;', $doc);
+        // Web documents shouldn't contains \x00 symbol
+        $doc = str_replace("\x00", '', $doc);
 
-       // Web documents shouldn't contains \x00 symbol
-       $doc = str_replace("\x00", '', $doc);
+        // Opera6 bug workaround
+        $doc = str_replace("\xC0\xBC", '&lt;', $doc);
 
-       // Opera6 bug workaround
-       $doc = str_replace("\xC0\xBC", '&lt;', $doc);
-       
-       // UTF-7 encoding ASCII decode
-       $doc = $this->repackUTF7($doc);
+        // UTF-7 encoding ASCII decode
+        $doc = $this->repackUTF7($doc);
 
-       // Instantiate the parser
-       $parser= new XML_HTMLSax3();
+        // Instantiate the parser
+        $parser = new XML_HTMLSax3();
 
-       // Set up the parser
-       $parser->set_object($this);
+        // Set up the parser
+        $parser->set_object($this);
 
-       $parser->set_element_handler('_openHandler','_closeHandler');
-       $parser->set_data_handler('_dataHandler');
-       $parser->set_escape_handler('_escapeHandler');
+        $parser->set_element_handler('_openHandler', '_closeHandler');
+        $parser->set_data_handler('_dataHandler');
+        $parser->set_escape_handler('_escapeHandler');
 
-       $parser->parse($doc);
+        $parser->parse($doc);
 
-       return $this->getXHTML();
-
+        return $this->getXHTML();
     }
 
-
     /**
-     * UTF-7 decoding fuction
+     * UTF-7 decoding fuction.
      *
      * @param string $str HTML document for recode ASCII part of UTF-7 back to ASCII
+     *
      * @return string Decoded document
-     * @access private
      */
-    function repackUTF7($str)
+    public function repackUTF7($str)
     {
-       return preg_replace_callback('!\+([0-9a-zA-Z/]+)\-!', array($this, 'repackUTF7Callback'), $str);
+        return preg_replace_callback('!\+([0-9a-zA-Z/]+)\-!', [$this, 'repackUTF7Callback'], $str);
     }
 
     /**
-     * Additional UTF-7 decoding fuction
+     * Additional UTF-7 decoding fuction.
      *
      * @param string $str String for recode ASCII part of UTF-7 back to ASCII
+     *
      * @return string Recoded string
-     * @access private
      */
-    function repackUTF7Callback($str)
+    public function repackUTF7Callback($str)
     {
-       $str = base64_decode($str[1]);
-       $str = preg_replace_callback('/^((?:\x00.)*)((?:[^\x00].)+)/', array($this, 'repackUTF7Back'), $str);
-       return preg_replace('/\x00(.)/', '$1', $str);
+        $str = base64_decode($str[1]);
+        $str = preg_replace_callback('/^((?:\x00.)*)((?:[^\x00].)+)/', [$this, 'repackUTF7Back'], $str);
+
+        return preg_replace('/\x00(.)/', '$1', $str);
     }
 
     /**
-     * Additional UTF-7 encoding fuction
+     * Additional UTF-7 encoding fuction.
      *
      * @param string $str String for recode ASCII part of UTF-7 back to ASCII
+     *
      * @return string Recoded string
-     * @access private
      */
-    function repackUTF7Back($str)
+    public function repackUTF7Back($str)
     {
-       return $str[1].'+'.rtrim(base64_encode($str[2]), '=').'-';
+        return $str[1].'+'.rtrim(base64_encode($str[2]), '=').'-';
     }
 }
 

@@ -14,8 +14,6 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class PermissionDeniedException
-	extends Exception
+class PermissionDeniedException extends Exception
 {
-
 }

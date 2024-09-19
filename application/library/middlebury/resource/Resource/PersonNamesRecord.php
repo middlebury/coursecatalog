@@ -22,89 +22,82 @@
  *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  *     DEALINGS IN THE SOFTWARE.
- *
- * @package phpkit.resource
  */
 
 /**
  *  <p>A record for a <code> Resource. </code> The methods specified by the
- *  record type are available through the underlying object. </p>
+ *  record type are available through the underlying object. </p>.
  *
  *  The type for this record is:
  *		id namespace:	urn
  *		authority:		middlebury.edu
  *		identifier:		record:person_names
- *
- * @package phpkit.resource
  */
-interface middlebury_resource_Resource_PersonNamesRecord
-	extends osid_resource_ResourceRecord
+interface middlebury_resource_Resource_PersonNamesRecord extends osid_resource_ResourceRecord
 {
+    /**
+     * Gets the given (first) name of a person.
+     *
+     * @return string
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function getGivenName();
 
-	/**
-	 * Gets the given (first) name of a person
-	 *
-	 * @return string
-	 * @access public
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function getGivenName ();
+    /**
+     * Gets the surname (family name/last name) of a person.
+     *
+     * @return string
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function getSurname();
 
-	/**
-	 * Gets the surname (family name/last name) of a person
-	 *
-	 * @return string
-	 * @access public
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function getSurname ();
+    /**
+     * Gets the middle name[s] of a person separated by spaces.
+     *
+     * @return string
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function getMiddleNames();
 
-	/**
-	 * Gets the middle name[s] of a person separated by spaces.
-	 *
-	 * @return string
-	 * @access public
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function getMiddleNames ();
+    /**
+     * Gets the middle initial[s] of a person with any appropriate punctuation.
+     *
+     * @return string
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function getMiddleInitials();
 
-	/**
-	 * Gets the middle initial[s] of a person with any appropriate punctuation.
-	 *
-	 * @return string
-	 * @access public
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function getMiddleInitials ();
+    /**
+     * Gets any suffix non-title suffix of a person that would appear after their name.
+     * E.g. 'Junior', 'Jr.', 'Sr.', 'III'.
+     *
+     * @return string
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function getNameSuffix();
 
-	/**
-	 * Gets any suffix non-title suffix of a person that would appear after their name.
-	 * E.g. 'Junior', 'Jr.', 'Sr.', 'III'
-	 *
-	 * @return string
-	 * @access public
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function getNameSuffix ();
+    /**
+     * Gets any title of a person that would appear before their name. E.g. 'Mr.',
+     * 'Dr.', 'Miss', 'Admiral', etc.
+     *
+     * @return string
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function getPrefixTitle();
 
-	/**
-	 * Gets any title of a person that would appear before their name. E.g. 'Mr.',
-	 * 'Dr.', 'Miss', 'Admiral', etc.
-	 *
-	 * @return string
-	 * @access public
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function getPrefixTitle ();
-
-	/**
-	 * Gets any title of a person that would appear after their name. E.g. 'Ph.D.',
-	 * 'Esquire', etc.
-	 *
-	 * @return string
-	 * @access public
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function getSuffixTitle ();
-
+    /**
+     * Gets any title of a person that would appear after their name. E.g. 'Ph.D.',
+     * 'Esquire', etc.
+     *
+     * @return string
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function getSuffixTitle();
 }

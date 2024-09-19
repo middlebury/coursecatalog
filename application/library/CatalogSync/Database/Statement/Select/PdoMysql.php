@@ -1,7 +1,6 @@
 <?php
 /**
  * @since 2/23/16
- * @package CatalogSync
  *
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
@@ -11,102 +10,99 @@
  * This interface defines the requirements of source databases.
  *
  * @since 2/23/16
- * @package CatalogSync
  *
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-
-class CatalogSync_Database_Statement_Select_PdoMysql
-	implements CatalogSync_Database_Statement_Select
+class CatalogSync_Database_Statement_Select_PdoMysql implements CatalogSync_Database_Statement_Select
 {
+    protected $statement;
+    protected $column_conversions = [];
 
-	protected $statement;
-	protected $column_conversions = array();
+    /**
+     * Constructor.
+     */
+    public function __construct(PDOStatement $statement)
+    {
+        $this->statement = $statement;
+    }
 
-	/**
-	 * Constructor
-	 *
-	 * @param PDOStatement $statement
-	 */
-	public function __construct(PDOStatement $statement) {
-		$this->statement = $statement;
-	}
+    /**
+     * Destructor.
+     */
+    public function __destruct()
+    {
+        $this->closeCursor();
+    }
 
-	/**
-	 * Destructor
-	 *
-	 */
-	public function __destruct() {
-		$this->closeCursor();
-	}
+    /**
+     * Fetch the next row of values.
+     *
+     * @return object
+     */
+    public function fetch()
+    {
+        if (!isset($this->statement) || is_null($this->statement)) {
+            throw new Exception('Cannot fetch without a statement. Maybe it was already closed?');
+        }
+        // Fetch
+        $row = $this->statement->fetch(PDO::FETCH_OBJ, PDO::FETCH_ORI_NEXT);
+        // End of results
+        if (!$row) {
+            return false;
+        }
 
-	/**
-	 * Fetch the next row of values
-	 *
-	 * @return object
-	 * @access public
-	 */
-	public function fetch () {
-		if (!isset($this->statement) || is_null($this->statement)) {
-			throw new Exception('Cannot fetch without a statement. Maybe it was already closed?');
-		}
-		// Fetch
-		$row = $this->statement->fetch(PDO::FETCH_OBJ, PDO::FETCH_ORI_NEXT);
-		// End of results
-		if (!$row) {
-			return false;
-		}
+        // Apply any conversions for our result rows.
+        foreach ($this->column_conversions as $column => $function) {
+            $row->$column = $this->$function($row->$column);
+        }
 
-		// Apply any conversions for our result rows.
-		foreach ($this->column_conversions as $column => $function) {
-			$row->$column = $this->$function($row->$column);
-		}
+        return $row;
+    }
 
-		return $row;
-	}
+    /**
+     * Close this query's cursor if open.
+     *
+     * @return null
+     */
+    public function closeCursor()
+    {
+        $this->statement->closeCursor();
+    }
 
-	/**
-	 * Close this query's cursor if open.
-	 *
-	 * @return null
-	 * @access public
-	 */
-	public function closeCursor () {
-		$this->statement->closeCursor();
-	}
+    /**
+     * Configure conversion for a column value.
+     *
+     * @param string $column
+     *
+     * @return null
+     */
+    public function convertDate($column)
+    {
+        // Do nothing -- data should already be converted.
+    }
 
-	/**
-	 * Configure conversion for a column value
-	 *
-	 * @param string $column
-	 * @return null
-	 * @access public
-	 */
-	public function convertDate ($column) {
-		// Do nothing -- data should already be converted.
-	}
+    /**
+     * Configure conversion for a column value.
+     *
+     * @param string $column
+     *
+     * @return null
+     */
+    public function convertText($column)
+    {
+        // Do nothing -- data should already be converted.
+    }
 
-	/**
-	 * Configure conversion for a column value
-	 *
-	 * @param string $column
-	 * @return null
-	 * @access public
-	 */
-	public function convertText ($column) {
-		// Do nothing -- data should already be converted.
-	}
-
-	/**
-	 * Configure conversion for a column value
-	 *
-	 * @param string $column
-	 * @return null
-	 * @access public
-	 */
-	public function convertBin2Hex ($column) {
-		// Do nothing -- data should already be converted.
-	}
-
+    /**
+     * Configure conversion for a column value.
+     *
+     * @param string $column
+     *
+     * @return null
+     */
+    public function convertBin2Hex($column)
+    {
+        // Do nothing -- data should already be converted.
+    }
 }

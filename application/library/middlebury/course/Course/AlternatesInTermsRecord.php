@@ -22,71 +22,65 @@
  *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  *     DEALINGS IN THE SOFTWARE.
- *
- * @package middlebury.course
  */
 
 /**
  * <p>A record for accessing the alternate instances of a <code> Course </code>
  * such as in the case of cross-listed courses or alternate numbering schemes
  * The methods specified by the record type are available through the
- * underlying object. </p>
+ * underlying object. </p>.
  *
  *  The type for this record is:
  *		id namespace:	urn
  *		authority:		middlebury.edu
  *		identifier:		record:alternates-in-terms
- *
- * @package middlebury.course
  */
-interface middlebury_course_Course_AlternatesInTermsRecord
-	extends osid_course_CourseRecord
+interface middlebury_course_Course_AlternatesInTermsRecord extends osid_course_CourseRecord
 {
+    /**
+     * Tests if this course has any alternate courses, effective between the terms specified (inclusive).
+     *
+     * @return boolean <code> true </code> if this course has any
+     *                        alternates, <code> false </code> otherwise
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function hasAlternatesinTerms(osid_id_Id $startTerm, osid_id_Id $endTerm);
 
-	/**
-	 * Tests if this course has any alternate courses, effective between the terms specified (inclusive).
-	 *
-	 * @param osid_id_Id $startTerm
-	 * @param osid_id_Id $endTerm
-	 * @return boolean <code> true </code> if this course has any
-	 *          alternates, <code> false </code> otherwise
-	 * @access public
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function hasAlternatesinTerms (osid_id_Id $startTerm, osid_id_Id $endTerm);
+    /**
+     *  Gets the Ids of any alternate courses, effective between the terms specified (inclusive).
+     *
+     * @return object osid_id_IdList the list of alternate ids
+     *
+     * @compliance mandatory This method must be implemented.
+     *
+     * @throws osid_OperationFailedException  unable to complete request
+     * @throws osid_PermissionDeniedException authorization failure
+     */
+    public function getAlternateIdsInTerms(osid_id_Id $startTerm, osid_id_Id $endTerm);
 
-	/**
-	 *  Gets the Ids of any alternate courses, effective between the terms specified (inclusive).
-	 *
-	 * @param osid_id_Id $startTerm
-	 * @param osid_id_Id $endTerm
-	 * @return object osid_id_IdList the list of alternate ids.
-	 * @compliance mandatory This method must be implemented.
-	 * @throws osid_OperationFailedException unable to complete request
-	 * @throws osid_PermissionDeniedException authorization failure
-	 */
-	public function getAlternateIdsInTerms(osid_id_Id $startTerm, osid_id_Id $endTerm);
+    /**
+     *  Gets the alternate <code> Courses </code>, effective between the terms specified (inclusive).
+     *
+     * @return object osid_course_CourseList The list of alternates
+     *
+     * @compliance mandatory This method must be implemented.
+     *
+     * @throws osid_OperationFailedException  unable to complete request
+     * @throws osid_PermissionDeniedException authorization failure
+     */
+    public function getAlternatesInTerms(osid_id_Id $startTerm, osid_id_Id $endTerm);
 
-	/**
-	 *  Gets the alternate <code> Courses </code>, effective between the terms specified (inclusive).
-	 *
-	 * @param osid_id_Id $startTerm
-	 * @param osid_id_Id $endTerm
-	 * @return object osid_course_CourseList The list of alternates.
-	 * @compliance mandatory This method must be implemented.
-	 * @throws osid_OperationFailedException unable to complete request
-	 * @throws osid_PermissionDeniedException authorization failure
-	 */
-	public function getAlternatesInTerms(osid_id_Id $startTerm, osid_id_Id $endTerm);
-
-	/**
-	 * Answer <code> true </code> if this course is the primary version in a group of
-	 * alternates, effective between the terms specified (inclusive).
-	 *
-	 * @return boolean
-	 * @compliance mandatory This method must be implemented.
-	 * @throws osid_OperationFailedException unable to complete request
-	 * @throws osid_PermissionDeniedException authorization failure
-	 */
-	public function isPrimaryInTerms (osid_id_Id $startTerm, osid_id_Id $endTerm);
+    /**
+     * Answer <code> true </code> if this course is the primary version in a group of
+     * alternates, effective between the terms specified (inclusive).
+     *
+     * @return bool
+     *
+     * @compliance mandatory This method must be implemented.
+     *
+     * @throws osid_OperationFailedException  unable to complete request
+     * @throws osid_PermissionDeniedException authorization failure
+     */
+    public function isPrimaryInTerms(osid_id_Id $startTerm, osid_id_Id $endTerm);
 }
