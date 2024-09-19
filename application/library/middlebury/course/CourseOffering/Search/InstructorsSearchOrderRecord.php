@@ -22,30 +22,24 @@
  *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  *     DEALINGS IN THE SOFTWARE.
- *
- * @package middlebury.course
  */
 
 /**
  * <p>A record for ordering by the instructors of a <code> CourseOffering. </code>
  * The methods specified by the record type are available through the
- * underlying object. </p>
+ * underlying object. </p>.
  *
  *  The type for this record is:
  *		id namespace:	urn
  *		authority:		middlebury.edu
  *		identifier:		record:instructors
- *
- * @package middlebury.course
  */
-interface middlebury_course_CourseOffering_Search_InstructorsSearchOrderRecord
-	extends osid_course_CourseOfferingSearchOrderRecord
+interface middlebury_course_CourseOffering_Search_InstructorsSearchOrderRecord extends osid_course_CourseOfferingSearchOrderRecord
 {
-
-	/**
-	 *  Specifies a preference for ordering the result set by the instructor
-	 *
-	 *  @compliance mandatory This method must be implemented.
-	 */
-	public function orderByInstructor();
+    /**
+     *  Specifies a preference for ordering the result set by the instructor.
+     *
+     *  @compliance mandatory This method must be implemented.
+     */
+    public function orderByInstructor();
 }

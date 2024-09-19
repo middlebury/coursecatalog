@@ -22,50 +22,43 @@
  *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  *     DEALINGS IN THE SOFTWARE.
- *
- * @package phpkit.resource
  */
 
 /**
  *  <p>A record for a <code> Resource. </code> The methods specified by the
- *  record type are available through the underlying object. </p>
+ *  record type are available through the underlying object. </p>.
  *
  *  The type for this record is:
  *		id namespace:	urn
  *		authority:		middlebury.edu
  *		identifier:		record:person_names
- *
- * @package phpkit.resource
  */
-interface middlebury_resource_Resource_Location
-	extends osid_resource_ResourceRecord
+interface middlebury_resource_Resource_Location extends osid_resource_ResourceRecord
 {
+    /**
+     * Answers the building code.
+     *
+     * @return string
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function getBuildingCode();
 
-	/**
-	 * Answers the building code.
-	 *
-	 * @return string
-	 * @access public
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function getBuildingCode ();
+    /**
+     * Answers the building display name.
+     *
+     * @return string
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function getBuildingDisplayName();
 
-	/**
-	 * Answers the building display name.
-	 *
-	 * @return string
-	 * @access public
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function getBuildingDisplayName ();
-
-	/**
-	 * Answers the room number if exists, null otherwise.
-	 *
-	 * @return string
-	 * @access public
-	 * @compliance mandatory This method must be implemented.
-	 */
-	public function getRoom ();
-
+    /**
+     * Answers the room number if exists, null otherwise.
+     *
+     * @return string
+     *
+     * @compliance mandatory This method must be implemented.
+     */
+    public function getRoom();
 }

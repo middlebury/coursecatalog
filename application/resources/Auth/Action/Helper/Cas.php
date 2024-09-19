@@ -14,185 +14,189 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class Auth_Action_Helper_Cas
-	extends Zend_Controller_Action_Helper_Abstract
-	implements Auth_Action_Helper_AuthInterface
+class Auth_Action_Helper_Cas extends Zend_Controller_Action_Helper_Abstract implements Auth_Action_Helper_AuthInterface
 {
+    /**
+     * Initialize this helper.
+     *
+     * @return void
+     *
+     * @since 6/14/10
+     */
+    public function init()
+    {
+        self::initializePhpCas();
+    }
 
-	/**
-	 * Initialize this helper.
-	 *
-	 * @return void
-	 * @access public
-	 * @since 6/14/10
-	 */
-	public function init () {
-		self::initializePhpCas();
-	}
+    /**
+     * Answer true if this authentication method allows login.
+     *
+     * @return bool
+     */
+    public function isAuthenticationEnabled()
+    {
+        return true;
+    }
 
-	/**
-	 * Answer true if this authentication method allows login.
-	 *
-	 * @return boolean
-	 * @access public
-	 */
-	public function isAuthenticationEnabled () {
-		return true;
-	}
+    /**
+     * Log in. Throw an exception if isAuthenticationEnabled is false.
+     *
+     * @param optional string $returnUrl A url to return to after successful login
+     *
+     * @return bool TRUE on successful login
+     */
+    public function login($returnUrl = null)
+    {
+        self::initializePhpCas();
 
-	/**
-	 * Log in. Throw an exception if isAuthenticationEnabled is false.
-	 *
-	 * @param optional string $returnUrl A url to return to after successful login.
-	 * @return boolean TRUE on successful login.
-	 * @access public
-	 */
-	public function login($returnUrl = null)
-	{
-		self::initializePhpCas();
+        phpCAS::forceAuthentication();
 
-		phpCAS::forceAuthentication();
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Log out. Throw an exception if isAuthenticationEnabled is false.
-	 *
-	 * @param optional string $returnUrl A url to return to after successful logout.
-	 * @return void
-	 * @access public
-	 */
-	public function logout($returnUrl = null)
-	{
-		self::initializePhpCas();
+    /**
+     * Log out. Throw an exception if isAuthenticationEnabled is false.
+     *
+     * @param optional string $returnUrl A url to return to after successful logout
+     *
+     * @return void
+     */
+    public function logout($returnUrl = null)
+    {
+        self::initializePhpCas();
 
-		session_destroy();
-		if ($returnUrl) {
-			phpCAS::logoutWithUrl($returnUrl);
-		} else {
-			phpCAS::logout();
-		}
-		exit;
-	}
+        session_destroy();
+        if ($returnUrl) {
+            phpCAS::logoutWithUrl($returnUrl);
+        } else {
+            phpCAS::logout();
+        }
+        exit;
+    }
 
-	/**
-	 * Answer true if a user is currently authenticated.
-	 *
-	 * @return boolean
-	 * @access public
-	 */
-	public function isAuthenticated() {
-		self::initializePhpCas();
+    /**
+     * Answer true if a user is currently authenticated.
+     *
+     * @return bool
+     */
+    public function isAuthenticated()
+    {
+        self::initializePhpCas();
 
-		return phpCAS::isAuthenticated();
-	}
+        return phpCAS::isAuthenticated();
+    }
 
-	/**
-	 * Answer the user id if a user is currently authenticated or throw an Exception
-	 * if isAuthenticated is false.
-	 *
-	 * @return string
-	 * @access public
-	 */
-	public function getUserId() {
-		self::initializePhpCas();
+    /**
+     * Answer the user id if a user is currently authenticated or throw an Exception
+     * if isAuthenticated is false.
+     *
+     * @return string
+     */
+    public function getUserId()
+    {
+        self::initializePhpCas();
 
-		return phpCAS::getUser();
-	}
+        return phpCAS::getUser();
+    }
 
-	/**
-	 * Answer a name for the user if a user is currently authenticated or throw an Exception
-	 * if isAuthenticated is false.
-	 *
-	 * @return string
-	 * @access public
-	 */
-	public function getUserDisplayName() {
-		self::initializePhpCas();
+    /**
+     * Answer a name for the user if a user is currently authenticated or throw an Exception
+     * if isAuthenticated is false.
+     *
+     * @return string
+     */
+    public function getUserDisplayName()
+    {
+        self::initializePhpCas();
 
-		$displayName = '';
-		$displayName .= phpCAS::getAttribute('FirstName');
-		$displayName .= ' '.phpCAS::getAttribute('LastName');
-//     	$displayName .= ' ('.phpCAS::getAttribute('EMail').')';
-		return trim($displayName);
-	}
+        $displayName = '';
+        $displayName .= phpCAS::getAttribute('FirstName');
+        $displayName .= ' '.phpCAS::getAttribute('LastName');
 
-	/**
-	 * Answer an email address for the user if a user is currently authenticated or throw an Exception
-	 * if isAuthenticated is false.
-	 *
-	 * @return string
-	 * @access public
-	 */
-	public function getUserEmail() {
-		self::initializePhpCas();
+        //     	$displayName .= ' ('.phpCAS::getAttribute('EMail').')';
+        return trim($displayName);
+    }
 
-		return trim(phpCAS::getAttribute('EMail'));
-	}
+    /**
+     * Answer an email address for the user if a user is currently authenticated or throw an Exception
+     * if isAuthenticated is false.
+     *
+     * @return string
+     */
+    public function getUserEmail()
+    {
+        self::initializePhpCas();
 
-	/**
-	 * Answer an array of groups for the user if a user is currently authenticated or throw an Exception
-	 * if isAuthenticated is false.
-	 *
-	 * @return array
-	 * @access public
-	 */
-	public function getUserGroups() {
-		self::initializePhpCas();
+        return trim(phpCAS::getAttribute('EMail'));
+    }
 
-		$memberOf = phpCAS::getAttribute('MemberOf');
-		if (empty($memberOf))
-			return array();
-		if (is_array($memberOf))
-			return $memberOf;
-		else
-			return array($memberOf);
-	}
+    /**
+     * Answer an array of groups for the user if a user is currently authenticated or throw an Exception
+     * if isAuthenticated is false.
+     *
+     * @return array
+     */
+    public function getUserGroups()
+    {
+        self::initializePhpCas();
 
-	static $phpcasInitialized = false;
-	/**
-	 * Initialize phpCAS
-	 *
-	 * @return void
-	 * @access protected
-	 * @since 6/7/10
-	 */
-	protected static function initializePhpCas () {
-		if (!self::$phpcasInitialized) {
-			$config = Zend_Registry::getInstance()->config;
+        $memberOf = phpCAS::getAttribute('MemberOf');
+        if (empty($memberOf)) {
+            return [];
+        }
+        if (is_array($memberOf)) {
+            return $memberOf;
+        } else {
+            return [$memberOf];
+        }
+    }
 
-			if ($config->cas->debug_file) {
-				phpCAS::setDebug($config->cas->debug_file);
-			}
+    public static $phpcasInitialized = false;
 
-			if (empty($config->cas->host)) {
-				throw new InvalidArgumentException('cas.host must be configured.');
-			}
-			if (empty($config->cas->port)) {
-				throw new InvalidArgumentException('cas.port must be configured.');
-			}
-			if (empty($config->cas->path)) {
-				throw new InvalidArgumentException('cas.path must be configured.');
-			}
-			if (empty($config->cas->service_urls)) {
-				throw new InvalidArgumentException('cas.service_urls[] must be configured.');
-			}
+    /**
+     * Initialize phpCAS.
+     *
+     * @return void
+     *
+     * @since 6/7/10
+     */
+    protected static function initializePhpCas()
+    {
+        if (!self::$phpcasInitialized) {
+            $config = Zend_Registry::getInstance()->config;
 
-			phpCAS::client(
-				CAS_VERSION_2_0,
-				$config->cas->host,
-				(int)$config->cas->port,
-				$config->cas->path,
-				$config->cas->service_urls->toArray(),
-				false);
+            if ($config->cas->debug_file) {
+                phpCAS::setDebug($config->cas->debug_file);
+            }
 
-			if ($config->cas->server_cert) {
-				phpCAS::setCasServerCACert($config->cas->server_cert);
-			} else {
-				phpCAS::setNoCasServerValidation();
-			}
+            if (empty($config->cas->host)) {
+                throw new InvalidArgumentException('cas.host must be configured.');
+            }
+            if (empty($config->cas->port)) {
+                throw new InvalidArgumentException('cas.port must be configured.');
+            }
+            if (empty($config->cas->path)) {
+                throw new InvalidArgumentException('cas.path must be configured.');
+            }
+            if (empty($config->cas->service_urls)) {
+                throw new InvalidArgumentException('cas.service_urls[] must be configured.');
+            }
 
-			self::$phpcasInitialized = true;
-		}
-	}
+            phpCAS::client(
+                CAS_VERSION_2_0,
+                $config->cas->host,
+                (int) $config->cas->port,
+                $config->cas->path,
+                $config->cas->service_urls->toArray(),
+                false);
+
+            if ($config->cas->server_cert) {
+                phpCAS::setCasServerCACert($config->cas->server_cert);
+            } else {
+                phpCAS::setNoCasServerValidation();
+            }
+
+            self::$phpcasInitialized = true;
+        }
+    }
 }

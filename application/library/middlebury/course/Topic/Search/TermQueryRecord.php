@@ -22,59 +22,55 @@
  *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  *     DEALINGS IN THE SOFTWARE.
- *
- * @package middlebury.course
  */
 
 /**
  * <p>A record for matching the terms of a <code> Topic. </code>
  * The methods specified by the record type are available through the
- * underlying object. </p>
+ * underlying object. </p>.
  *
  *  The type for this record is:
  *		id namespace:	urn
  *		authority:		middlebury.edu
  *		identifier:		record:terms
- *
- * @package middlebury.course
  */
-interface middlebury_course_Topic_Search_TermQueryRecord
-	extends osid_course_TopicQueryRecord
+interface middlebury_course_Topic_Search_TermQueryRecord extends osid_course_TopicQueryRecord
 {
+    /**
+     *  Sets the term <code> Id </code> for this query to match topics in that term.
+     *
+     *  @param object osid_id_Id $termId an term <code> Id </code>
+     * @param bool $match <code> true </code> if a positive match, <code>
+     *                    false </code> for negative match
+     *
+     * @throws osid_NullArgumentException <code> termId </code> is <code>
+     *                                           null </code>
+     *
+     *  @compliance mandatory This method must be implemented.
+     */
+    public function matchTermId(osid_id_Id $termId, $match);
 
-	/**
-	 *  Sets the term <code> Id </code> for this query to match topics in that term
-	 *
-	 *  @param object osid_id_Id $termId an term <code> Id </code>
-	 *  @param boolean $match <code> true </code> if a positive match, <code>
-	 *          false </code> for negative match
-	 *  @throws osid_NullArgumentException <code> termId </code> is <code>
-	 *          null </code>
-	 *  @compliance mandatory This method must be implemented.
-	 */
-	public function matchTermId(osid_id_Id $termId, $match);
+    /**
+     *  Tests if an <code> TermQuery </code> is available.
+     *
+     * @return boolean <code> true </code> if a term query interface is
+     *                        available, <code> false </code> otherwise
+     *
+     *  @compliance mandatory This method must be implemented.
+     */
+    public function supportsTermQuery();
 
-
-	/**
-	 *  Tests if an <code> TermQuery </code> is available.
-	 *
-	 *  @return boolean <code> true </code> if a term query interface is
-	 *          available, <code> false </code> otherwise
-	 *  @compliance mandatory This method must be implemented.
-	 */
-	public function supportsTermQuery();
-
-
-	/**
-	 *  Gets the query interface for an term. Multiple retrievals produce a
-	 *  nested <code> OR </code> term.
-	 *
-	 *  @return object types_course_TermQuery the term query
-	 *  @throws osid_UnimplementedException <code> supportsTermQuery()
-	 *          </code> is <code> false </code>
-	 *  @compliance optional This method must be implemented if <code>
-	 *              supportsTermQuery() </code> is <code> true. </code>
-	 */
-	public function getTermQuery();
-
+    /**
+     *  Gets the query interface for an term. Multiple retrievals produce a
+     *  nested <code> OR </code> term.
+     *
+     * @return object types_course_TermQuery the term query
+     *
+     * @throws osid_UnimplementedException <code> supportsTermQuery()
+     *                                            </code> is <code> false </code>
+     *
+     *  @compliance optional This method must be implemented if <code>
+     *              supportsTermQuery() </code> is <code> true. </code>
+     */
+    public function getTermQuery();
 }

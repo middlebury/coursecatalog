@@ -7,117 +7,122 @@
  */
 
 /**
- * A cachable object
+ * A cachable object.
  *
  * @since 8/11/10
  *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-abstract class apc_course_CachableSession
-	extends apc_course_AbstractSession
+abstract class apc_course_CachableSession extends apc_course_AbstractSession
 {
+    /**
+     * Contructor.
+     *
+     * @return void
+     *
+     * @since 8/10/10
+     */
+    public function __construct(osid_course_CourseManager $manager)
+    {
+        parent::__construct($manager);
 
-	/**
-	 * Contructor
-	 *
-	 * @param osid_course_CourseManager $manager
-	 * @return void
-	 * @access public
-	 * @since 8/10/10
-	 */
-	public function __construct (osid_course_CourseManager $manager) {
-		parent::__construct($manager);
+        $this->collectionId = static::class;
 
-		$this->collectionId = get_class($this);
+        $catalogId = $this->getCourseCatalogId();
 
-		$catalogId = $this->getCourseCatalogId();
+        $this->idString = $catalogId->getIdentifierNamespace().':'.$catalogId->getAuthority().':'.$catalogId->getIdentifier();
+    }
+    private $collectionId;
+    private $idString;
 
-		$this->idString = $catalogId->getIdentifierNamespace().':'.$catalogId->getAuthority().':'.$catalogId->getIdentifier();
-	}
-	private $collectionId;
-	private $idString;
+    /**
+     * Answer data from the cache or NULL if not available.
+     *
+     * @param string $key
+     *
+     * @since 8/10/10
+     */
+    protected function cacheGetPlain($key)
+    {
+        $result = apcu_fetch($this->hash($key), $success);
+        if (!$success) {
+            return null;
+        }
 
-	/**
-	 * Answer data from the cache or NULL if not available.
-	 *
-	 * @param string $key
-	 * @return mixed
-	 * @access protected
-	 * @since 8/10/10
-	 */
-	protected function cacheGetPlain ($key) {
-		$result = apcu_fetch($this->hash($key), $success);
-		if (!$success)
-			return null;
-		return $result;
-	}
+        return $result;
+    }
 
-	/**
-	 * Set data into the cache and return the data.
-	 *
-	 * @param string $key
-	 * @param mixed $value
-	 * @return mixed
-	 * @access protected
-	 * @since 8/10/10
-	 */
-	protected function cacheSetPlain ($key, $value) {
-		$success = apcu_store($this->hash($key), $value);
-		return $value;
-	}
+    /**
+     * Set data into the cache and return the data.
+     *
+     * @param string $key
+     *
+     * @since 8/10/10
+     */
+    protected function cacheSetPlain($key, $value)
+    {
+        $success = apcu_store($this->hash($key), $value);
 
-	/**
-	 * Answer data from the cache or NULL if not available.
-	 *
-	 * @param string $key
-	 * @return mixed
-	 * @access protected
-	 * @since 8/10/10
-	 */
-	protected function cacheGetObj ($key) {
-		$result = apcu_fetch($this->hash($key), $success);
-		if (!$success)
-			return null;
-		return unserialize($result);
-	}
+        return $value;
+    }
 
-	/**
-	 * Set data into the cache and return the data.
-	 *
-	 * @param string $key
-	 * @param mixed $value
-	 * @return mixed
-	 * @access protected
-	 * @since 8/10/10
-	 */
-	protected function cacheSetObj ($key, $value) {
-		$success = apcu_store($this->hash($key), serialize($value));
-		return $value;
-	}
+    /**
+     * Answer data from the cache or NULL if not available.
+     *
+     * @param string $key
+     *
+     * @since 8/10/10
+     */
+    protected function cacheGetObj($key)
+    {
+        $result = apcu_fetch($this->hash($key), $success);
+        if (!$success) {
+            return null;
+        }
 
-	/**
-	 * Delete an item from cache.
-	 *
-	 * @param string $key
-	 * @return void
-	 * @access protected
-	 * @since 8/10/10
-	 */
-	protected function cacheDelete ($key) {
-		apcu_delete($this->hash($key));
-	}
+        return unserialize($result);
+    }
 
-	/**
-	 * Hash a key into a per-instance value.
-	 *
-	 * @param string $key
-	 * @return string
-	 * @access private
-	 * @since 8/10/10
-	 */
-	private function hash ($key) {
-		return $this->collectionId.':'.$this->idString.':'.$key;
-	}
+    /**
+     * Set data into the cache and return the data.
+     *
+     * @param string $key
+     *
+     * @since 8/10/10
+     */
+    protected function cacheSetObj($key, $value)
+    {
+        $success = apcu_store($this->hash($key), serialize($value));
 
+        return $value;
+    }
+
+    /**
+     * Delete an item from cache.
+     *
+     * @param string $key
+     *
+     * @return void
+     *
+     * @since 8/10/10
+     */
+    protected function cacheDelete($key)
+    {
+        apcu_delete($this->hash($key));
+    }
+
+    /**
+     * Hash a key into a per-instance value.
+     *
+     * @param string $key
+     *
+     * @return string
+     *
+     * @since 8/10/10
+     */
+    private function hash($key)
+    {
+        return $this->collectionId.':'.$this->idString.':'.$key;
+    }
 }

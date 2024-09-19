@@ -22,12 +22,10 @@
  *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  *     DEALINGS IN THE SOFTWARE.
- *
- * @package middlebury.course
  */
 
 /**
- * A record for accessing the link identifier of a <code> CourseOffering. </code>
+ * A record for accessing the link identifier of a <code> CourseOffering. </code>.
  *
  * The offerings of a course in a term will be grouped into one or more link sets
  * (set 1, set 2, set 3, etc).
@@ -44,47 +42,40 @@
  *		id namespace:	urn
  *		authority:		middlebury.edu
  *		identifier:		record:instructors
- *
- * @package middlebury.course
  */
-interface middlebury_course_CourseOffering_LinkRecord
-	extends osid_course_CourseOfferingRecord
+interface middlebury_course_CourseOffering_LinkRecord extends osid_course_CourseOfferingRecord
 {
+    /**
+     * Answer the link-set id for the offering.
+     *
+     * The offerings of a course in a term will be grouped into one or more link sets
+     * (set 1, set 2, set 3, etc).
+     * Each offering also has a link type (such as lecture, discussion, lab, etc).
+     *
+     * When registering for a Course that has multiple Offerings (such as lecture + lab or
+     * lectures at different times), students must choose a link set and then one offering
+     * of each type within that set.
+     *
+     * @return osid_id_Id
+     *
+     * @since 8/3/10
+     */
+    public function getLinkSetId();
 
-	/**
-	 * Answer the link-set id for the offering.
-	 *
-	 * The offerings of a course in a term will be grouped into one or more link sets
-	 * (set 1, set 2, set 3, etc).
-	 * Each offering also has a link type (such as lecture, discussion, lab, etc).
-	 *
-	 * When registering for a Course that has multiple Offerings (such as lecture + lab or
-	 * lectures at different times), students must choose a link set and then one offering
-	 * of each type within that set.
-	 *
-	 *
-	 * @return osid_id_Id
-	 * @access public
-	 * @since 8/3/10
-	 */
-	public function getLinkSetId ();
-
-	/**
-	 * Answer the link-type id for the offering.
-	 *
-	 * The offerings of a course in a term will be grouped into one or more link sets
-	 * (set 1, set 2, set 3, etc).
-	 * Each offering also has a link type (such as lecture, discussion, lab, etc).
-	 *
-	 * When registering for a Course that has multiple Offerings (such as lecture + lab or
-	 * lectures at different times), students must choose a link set and then one offering
-	 * of each type within that set.
-	 *
-	 *
-	 * @return osid_id_Id
-	 * @access public
-	 * @since 8/3/10
-	 */
-	public function getLinkTypeId ();
-
+    /**
+     * Answer the link-type id for the offering.
+     *
+     * The offerings of a course in a term will be grouped into one or more link sets
+     * (set 1, set 2, set 3, etc).
+     * Each offering also has a link type (such as lecture, discussion, lab, etc).
+     *
+     * When registering for a Course that has multiple Offerings (such as lecture + lab or
+     * lectures at different times), students must choose a link set and then one offering
+     * of each type within that set.
+     *
+     * @return osid_id_Id
+     *
+     * @since 8/3/10
+     */
+    public function getLinkTypeId();
 }

@@ -1,7 +1,6 @@
 <?php
 /**
  * @since 7/29/10
- * @package catalog.bookmarks
  *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
@@ -12,161 +11,169 @@
  * user.
  *
  * @since 7/29/10
- * @package catalog.bookmarks
  *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class Bookmarks {
+class Bookmarks
+{
+    /**
+     * Constructor.
+     *
+     * @param string $userId
+     *
+     * @return void
+     *
+     * @since 7/29/10
+     */
+    public function __construct(Zend_Db_Adapter_Abstract $db, $userId, osid_course_CourseManager $courseManager)
+    {
+        if (!strlen($userId)) {
+            throw new InvalidArgumentException('No $userId passed.');
+        }
 
-	/**
-	 * Constructor
-	 *
-	 * @param Zend_Db_Adapter_Abstract $db
-	 * @param string $userId
-	 * @return void
-	 * @access public
-	 * @since 7/29/10
-	 */
-	public function __construct (Zend_Db_Adapter_Abstract $db, $userId, osid_course_CourseManager $courseManager) {
-		if (!strlen($userId))
-			throw new InvalidArgumentException('No $userId passed.');
+        $this->db = $db;
+        $this->userId = $userId;
+        $this->courseManager = $courseManager;
+    }
 
-		$this->db = $db;
-		$this->userId = $userId;
-		$this->courseManager = $courseManager;
-	}
+    private $db;
+    private $userId;
 
-	private $db;
-	private $userId;
+    /**
+     * Add a bookmark.
+     *
+     * @return void
+     *
+     * @since 7/29/10
+     */
+    public function add(osid_id_Id $courseId)
+    {
+        $stmt = $this->db->prepare('INSERT INTO user_savedcourses (user_id, course_id_keyword, course_id_authority, course_id_namespace) VALUES (?, ?, ?, ?);');
+        try {
+            $stmt->execute([
+                $this->userId,
+                $courseId->getIdentifier(),
+                $courseId->getAuthority(),
+                $courseId->getIdentifierNamespace(),
+            ]);
+        } catch (Zend_Db_Statement_Exception $e) {
+            if (23000 == $e->getCode()) {
+                throw new Exception('Bookmark already added.', 23000);
+            } else {
+                throw $e;
+            }
+        }
+    }
 
+    /**
+     * Remove a bookmark.
+     *
+     * @return void
+     *
+     * @since 7/29/10
+     */
+    public function remove(osid_id_Id $courseId)
+    {
+        $stmt = $this->db->prepare('DELETE FROM user_savedcourses WHERE user_id = ? AND course_id_keyword = ? AND course_id_authority = ? AND course_id_namespace = ? LIMIT 1;');
+        $stmt->execute([
+            $this->userId,
+            $courseId->getIdentifier(),
+            $courseId->getAuthority(),
+            $courseId->getIdentifierNamespace(),
+        ]);
+    }
 
-	/**
-	 * Add a bookmark
-	 *
-	 * @param osid_id_Id $courseId
-	 * @return void
-	 * @access public
-	 * @since 7/29/10
-	 */
-	public function add (osid_id_Id $courseId) {
-		$stmt = $this->db->prepare("INSERT INTO user_savedcourses (user_id, course_id_keyword, course_id_authority, course_id_namespace) VALUES (?, ?, ?, ?);");
-		try {
-			$stmt->execute(array(
-				$this->userId,
-				$courseId->getIdentifier(),
-				$courseId->getAuthority(),
-				$courseId->getIdentifierNamespace()
-			));
-		} catch (Zend_Db_Statement_Exception $e) {
-			if ($e->getCode() == 23000)
-				throw new Exception('Bookmark already added.', 23000);
-			else
-				throw $e;
-		}
-	}
+    /**
+     * Answer true if the course Id passed is bookmarked.
+     *
+     * @return bool
+     *
+     * @since 7/29/10
+     */
+    public function isBookmarked(osid_id_Id $courseId)
+    {
+        $stmt = $this->db->prepare('SELECT COUNT(*) as is_bookmarked FROM user_savedcourses WHERE user_id = ? AND course_id_keyword = ? AND course_id_authority = ? AND course_id_namespace = ?');
+        $stmt->execute([
+            $this->userId,
+            $courseId->getIdentifier(),
+            $courseId->getAuthority(),
+            $courseId->getIdentifierNamespace(),
+        ]);
+        $num = (int) $stmt->fetchColumn();
 
-	/**
-	 * Remove a bookmark
-	 *
-	 * @param osid_id_Id $courseId
-	 * @return void
-	 * @access public
-	 * @since 7/29/10
-	 */
-	public function remove (osid_id_Id $courseId) {
-		$stmt = $this->db->prepare("DELETE FROM user_savedcourses WHERE user_id = ? AND course_id_keyword = ? AND course_id_authority = ? AND course_id_namespace = ? LIMIT 1;");
-		$stmt->execute(array(
-			$this->userId,
-			$courseId->getIdentifier(),
-			$courseId->getAuthority(),
-			$courseId->getIdentifierNamespace()
-		));
-	}
+        return $num > 0;
+    }
 
-	/**
-	 * Answer true if the course Id passed is bookmarked
-	 *
-	 * @param osid_id_Id $courseId
-	 * @return boolean
-	 * @access public
-	 * @since 7/29/10
-	 */
-	public function isBookmarked (osid_id_Id $courseId) {
-		$stmt = $this->db->prepare("SELECT COUNT(*) as is_bookmarked FROM user_savedcourses WHERE user_id = ? AND course_id_keyword = ? AND course_id_authority = ? AND course_id_namespace = ?");
-		$stmt->execute(array(
-			$this->userId,
-			$courseId->getIdentifier(),
-			$courseId->getAuthority(),
-			$courseId->getIdentifierNamespace()
-		));
-		$num = intval($stmt->fetchColumn());
-		return ($num > 0);
-	}
+    /**
+     * Answer an array of all bookmarked courseIds.
+     *
+     * @return osid_id_IdList
+     *
+     * @since 7/30/10
+     */
+    public function getAllBookmarkedCourseIds()
+    {
+        $stmt = $this->db->prepare('SELECT * FROM user_savedcourses WHERE user_id = ?');
+        $stmt->execute([
+            $this->userId,
+        ]);
+        $ids = [];
+        foreach ($stmt->fetchAll() as $row) {
+            $ids[] = new phpkit_id_Id($row['course_id_authority'], $row['course_id_namespace'], $row['course_id_keyword']);
+        }
 
-	/**
-	 * Answer an array of all bookmarked courseIds
-	 *
-	 * @return osid_id_IdList
-	 * @access public
-	 * @since 7/30/10
-	 */
-	public function getAllBookmarkedCourseIds () {
-		$stmt = $this->db->prepare("SELECT * FROM user_savedcourses WHERE user_id = ?");
-		$stmt->execute(array(
-			$this->userId
-		));
-		$ids = array();
-		foreach ($stmt->fetchAll() as $row) {
-			$ids[] = new phpkit_id_Id($row['course_id_authority'], $row['course_id_namespace'], $row['course_id_keyword']);
-		}
-		return new phpkit_id_ArrayIdList($ids);
-	}
+        return new phpkit_id_ArrayIdList($ids);
+    }
 
-	/**
-	 * Answer an array of all bookmarked courses
-	 *
-	 * @return osid_course_CourseList
-	 * @access public
-	 * @since 7/30/10
-	 */
-	public function getAllBookmarkedCourses () {
-		$courseIdList = $this->getAllBookmarkedCourseIds();
-		if (!$courseIdList->hasNext())
-			return new phpkit_course_ArrayCourseList(array());
+    /**
+     * Answer an array of all bookmarked courses.
+     *
+     * @return osid_course_CourseList
+     *
+     * @since 7/30/10
+     */
+    public function getAllBookmarkedCourses()
+    {
+        $courseIdList = $this->getAllBookmarkedCourseIds();
+        if (!$courseIdList->hasNext()) {
+            return new phpkit_course_ArrayCourseList([]);
+        }
 
-		$courseLookupSession = $this->courseManager->getCourseLookupSession();
-		$courseLookupSession->useFederatedCourseCatalogView();
-		return $courseLookupSession->getCoursesByIds($courseIdList);
-	}
+        $courseLookupSession = $this->courseManager->getCourseLookupSession();
+        $courseLookupSession->useFederatedCourseCatalogView();
 
-	/**
-	 * Answer an array of all bookmarked courses that match a given catalog and term.
-	 *
-	 * @param osid_id_Id $catalogId
-	 * @param osid_id_Id $termId
-	 * @return osid_course_CourseList
-	 * @access public
-	 * @since 7/30/10
-	 */
-	public function getBookmarkedCoursesInCatalogForTerm (osid_id_Id $catalogId, osid_id_Id $termId) {
-		$courseIdList = $this->getAllBookmarkedCourseIds();
-		if (!$courseIdList->hasNext())
-			return new phpkit_course_ArrayCourseList(array());
+        return $courseLookupSession->getCoursesByIds($courseIdList);
+    }
 
-		$searchSession = $this->courseManager->getCourseSearchSessionForCatalog($catalogId);
+    /**
+     * Answer an array of all bookmarked courses that match a given catalog and term.
+     *
+     * @return osid_course_CourseList
+     *
+     * @since 7/30/10
+     */
+    public function getBookmarkedCoursesInCatalogForTerm(osid_id_Id $catalogId, osid_id_Id $termId)
+    {
+        $courseIdList = $this->getAllBookmarkedCourseIds();
+        if (!$courseIdList->hasNext()) {
+            return new phpkit_course_ArrayCourseList([]);
+        }
 
-		$search = $searchSession->getCourseSearch();
-		$search->searchAmongCourses($courseIdList);
+        $searchSession = $this->courseManager->getCourseSearchSessionForCatalog($catalogId);
 
-		$query = $searchSession->getCourseQuery();
-		$record = $query->getCourseQueryRecord(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:term'));
-		$record->matchTermId($termId, true);
+        $search = $searchSession->getCourseSearch();
+        $search->searchAmongCourses($courseIdList);
 
-		// Limit to just active courses
-		$query->matchGenusType(new phpkit_type_URNInetType("urn:inet:middlebury.edu:status-active"), true);
+        $query = $searchSession->getCourseQuery();
+        $record = $query->getCourseQueryRecord(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:term'));
+        $record->matchTermId($termId, true);
 
-		$results = $searchSession->getCoursesBySearch($query, $search);
-		return $results->getCourses();
-	}
+        // Limit to just active courses
+        $query->matchGenusType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:status-active'), true);
+
+        $results = $searchSession->getCoursesBySearch($query, $search);
+
+        return $results->getCourses();
+    }
 }

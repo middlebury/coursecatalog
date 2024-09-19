@@ -8,282 +8,222 @@ use PHPUnit\Framework\TestCase;
  */
 class banner_course_Course_Search_SearchTest extends TestCase
 {
+    use banner_DatabaseTestTrait;
 
-	use banner_DatabaseTestTrait;
+    /**
+     * @var banner_course_Course_Search_Search
+     */
+    protected $object;
 
-	/**
-	 * @var    banner_course_Course_Search_Search
-	 * @access protected
-	 */
-	protected $object;
+    /**
+     * Sets up the fixture, for example, opens a network connection.
+     * This method is called before a test is executed.
+     */
+    protected function setUp(): void
+    {
+        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
+        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
+        $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
 
-	/**
-	 * Sets up the fixture, for example, opens a network connection.
-	 * This method is called before a test is executed.
-	 *
-	 * @access protected
-	 */
-	protected function setUp(): void
-	{
-		$this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
-		$this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
-		$this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
+        $this->session = self::$courseManager->getCourseSearchSessionForCatalog($this->mcugId);
 
-		$this->session = self::$courseManager->getCourseSearchSessionForCatalog($this->mcugId);
+        $this->wildcardStringMatchType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:search:wildcard');
 
-		$this->wildcardStringMatchType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:search:wildcard");
+        $this->query = $this->session->getCourseQuery();
+        $this->query->matchNumber('*0*', $this->wildcardStringMatchType, true);
 
-		$this->query = $this->session->getCourseQuery();
-		$this->query->matchNumber('*0*', $this->wildcardStringMatchType, true);
+        $this->object = $this->session->getCourseSearch();
 
-		$this->object = $this->session->getCourseSearch();
+        $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
+        $this->geolId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/GEOL0250');
+        $this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHEM0104');
+        $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/XXXX0101');
 
-		$this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
-		$this->geolId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/GEOL0250');
-		$this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHEM0104');
-		$this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/XXXX0101');
+        $this->deptTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/PHYS');
+        $this->subjTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/CHEM');
+        $this->divTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/division/NSCI');
 
-		$this->deptTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/PHYS');
-		$this->subjTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/CHEM');
-		$this->divTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/division/NSCI');
+        $this->unknownType = new phpkit_type_URNInetType('urn:inet:osid.org:unknown_type');
 
-		$this->unknownType = new phpkit_type_URNInetType("urn:inet:osid.org:unknown_type");
+        $this->generaNoneType = new phpkit_type_URNInetType('urn:inet:osid.org:genera:none');
+        $this->secondaryType = new phpkit_type_URNInetType('urn:inet:osid.org:genera:secondary');
+        $this->undergraduateType = new phpkit_type_URNInetType('urn:inet:osid.org:genera:undergraduate');
 
-		$this->generaNoneType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:none");
-		$this->secondaryType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:secondary");
-		$this->undergraduateType = new phpkit_type_URNInetType("urn:inet:osid.org:genera:undergraduate");
+        $this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+        $this->otherType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:other');
+    }
 
-		$this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
-		$this->otherType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:other');
-	}
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown(): void
+    {
+    }
 
-	/**
-	 * Tears down the fixture, for example, closes a network connection.
-	 * This method is called after a test is executed.
-	 *
-	 * @access protected
-	 */
-	protected function tearDown(): void
-	{
-	}
+    public function testGetLimitClause()
+    {
+        $this->assertIsString($this->object->getLimitClause());
+        $this->assertEquals('', $this->object->getLimitClause());
+    }
 
-	/**
-	 *
-	 */
-	public function testGetLimitClause()
-	{
-		$this->assertIsString($this->object->getLimitClause());
-		$this->assertEquals('', $this->object->getLimitClause());
-	}
+    public function testGetOrderByClause()
+    {
+        $this->assertIsString($this->object->getOrderByClause());
+        $this->assertEquals('', $this->object->getOrderByClause());
+    }
 
-	/**
-	 *
-	 */
-	public function testGetOrderByClause()
-	{
-		$this->assertIsString($this->object->getOrderByClause());
-		$this->assertEquals('', $this->object->getOrderByClause());
-	}
+    public function testGetWhereClause()
+    {
+        $this->assertIsString($this->object->getWhereClause());
+        $this->assertEquals('', $this->object->getWhereClause());
+    }
 
-	/**
-	 *
-	 */
-	public function testGetWhereClause()
-	{
-		$this->assertIsString($this->object->getWhereClause());
-		$this->assertEquals('', $this->object->getWhereClause());
-	}
+    public function testGetAdditionalTableJoins()
+    {
+        $this->assertIsArray($this->object->getAdditionalTableJoins());
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
+    }
 
-	/**
-	 *
-	 */
-	public function testGetAdditionalTableJoins()
-	{
-		$this->assertIsArray($this->object->getAdditionalTableJoins());
-		$this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+    public function testGetParameters()
+    {
+        $this->assertIsArray($this->object->getParameters());
+        $this->assertCount(0, $this->object->getParameters());
+    }
 
-	}
+    public function testLimitResultSet()
+    {
+        $results = $this->session->getCoursesBySearch($this->query, $this->object);
+        $this->assertEquals(4, $results->getResultSize());
 
-	/**
-	 *
-	 */
-	public function testGetParameters()
-	{
-		$this->assertIsArray($this->object->getParameters());
-		$this->assertEquals(0, count($this->object->getParameters()));
-	}
+        $this->object->limitResultSet(1, 3);
+        $this->assertEquals('LIMIT 0, 3', $this->object->getLimitClause());
 
-	/**
-	 *
-	 */
-	public function testLimitResultSet()
-	{
-		$results = $this->session->getCoursesBySearch($this->query, $this->object);
-		$this->assertEquals(4, $results->getResultSize());
+        $results = $this->session->getCoursesBySearch($this->query, $this->object);
+        $this->assertEquals(4, $results->getResultSize());
 
-		$this->object->limitResultSet(1, 3);
-		$this->assertEquals('LIMIT 0, 3', $this->object->getLimitClause());
+        $this->assertEquals(3, $results->getCourses()->available());
+    }
 
-		$results = $this->session->getCoursesBySearch($this->query, $this->object);
-		$this->assertEquals(4, $results->getResultSize());
+    public function testLimitResultSet2()
+    {
+        $results = $this->session->getCoursesBySearch($this->query, $this->object);
+        $this->assertEquals(4, $results->getResultSize());
 
-		$this->assertEquals(3, $results->getCourses()->available());
+        $this->object->limitResultSet(2, 3);
+        $this->assertEquals('LIMIT 1, 2', $this->object->getLimitClause());
 
-	}
+        $results = $this->session->getCoursesBySearch($this->query, $this->object);
+        $this->assertEquals(4, $results->getResultSize());
 
-	/**
-	 *
-	 */
-	public function testLimitResultSet2()
-	{
-		$results = $this->session->getCoursesBySearch($this->query, $this->object);
-		$this->assertEquals(4, $results->getResultSize());
+        $this->assertEquals(2, $results->getCourses()->available());
+    }
 
-		$this->object->limitResultSet(2, 3);
-		$this->assertEquals('LIMIT 1, 2', $this->object->getLimitClause());
+    public function testLimitResultSetInverted()
+    {
+        $this->expectException(osid_InvalidArgumentException::class);
 
-		$results = $this->session->getCoursesBySearch($this->query, $this->object);
-		$this->assertEquals(4, $results->getResultSize());
+        $this->object->limitResultSet(10, 1);
+    }
 
-		$this->assertEquals(2, $results->getCourses()->available());
+    public function testLimitResultSetOutOfRange0()
+    {
+        $this->expectException(osid_InvalidArgumentException::class);
 
-	}
+        $this->object->limitResultSet(0, 10);
+    }
 
-	/**
-	 *
-	 */
-	public function testLimitResultSetInverted()
-	{
-		$this->expectException(osid_InvalidArgumentException::class);
+    public function testLimitResultSetOutOfRangeN1()
+    {
+        $this->expectException(osid_InvalidArgumentException::class);
 
-		$this->object->limitResultSet(10, 1);
-	}
+        $this->object->limitResultSet(-1, 10);
+    }
 
-	/**
-	 *
-	 */
-	public function testLimitResultSetOutOfRange0()
-	{
-		$this->expectException(osid_InvalidArgumentException::class);
+    public function testLimitResultSetOutNullStart()
+    {
+        $this->expectException(osid_NullArgumentException::class);
 
-		$this->object->limitResultSet(0, 10);
-	}
+        $this->object->limitResultSet(null, 10);
+    }
 
-	/**
-	 *
-	 */
-	public function testLimitResultSetOutOfRangeN1()
-	{
-		$this->expectException(osid_InvalidArgumentException::class);
+    public function testLimitResultSetOutNullEnd()
+    {
+        $this->expectException(osid_NullArgumentException::class);
 
-		$this->object->limitResultSet(-1, 10);
-	}
+        $this->object->limitResultSet(1, null);
+    }
 
-	/**
-	 *
-	 */
-	public function testLimitResultSetOutNullStart()
-	{
-		$this->expectException(osid_NullArgumentException::class);
+    public function testHasSearchRecordType()
+    {
+        $this->assertFalse($this->object->hasSearchRecordType($this->instructorsType));
+        $this->assertFalse($this->object->hasSearchRecordType($this->otherType));
+    }
 
-		$this->object->limitResultSet(null, 10);
-	}
+    public function testSearchWithinCourseResults()
+    {
+        $query = $this->session->getCourseQuery();
+        $query->matchNumber('*2*', $this->wildcardStringMatchType, true);
 
-	/**
-	 *
-	 */
-	public function testLimitResultSetOutNullEnd()
-	{
-		$this->expectException(osid_NullArgumentException::class);
+        $all200Results = $this->session->getCoursesBySearch($query, $this->object);
+        $this->assertInstanceOf('osid_course_CourseSearchResults', $all200Results);
+        $this->assertEquals(3, $all200Results->getResultSize());
 
-		$this->object->limitResultSet(1, null);
-	}
+        $this->object->searchWithinCourseResults($all200Results);
 
-	/**
-	 *
-	 */
-	public function testHasSearchRecordType()
-	{
-		$this->assertFalse($this->object->hasSearchRecordType($this->instructorsType));
-		$this->assertFalse($this->object->hasSearchRecordType($this->otherType));
-	}
+        $query2 = $this->session->getCourseQuery();
+        $query2->matchNumber('*E*', $this->wildcardStringMatchType, true);
 
-	/**
-	 *
-	 */
-	public function testSearchWithinCourseResults()
-	{
-		$query = $this->session->getCourseQuery();
-		$query->matchNumber('*2*', $this->wildcardStringMatchType, true);
+        $results = $this->session->getCoursesBySearch($query2, $this->object);
+        //     	print $results->debug();
+        $this->assertInstanceOf('osid_course_CourseSearchResults', $results);
+        $this->assertEquals(2, $results->getResultSize());
+    }
 
-		$all200Results = $this->session->getCoursesBySearch($query, $this->object);
-		$this->assertInstanceOf('osid_course_CourseSearchResults', $all200Results);
-		$this->assertEquals(3, $all200Results->getResultSize());
+    public function testSearchAmongCourses()
+    {
+        $this->query = $this->session->getCourseQuery();
+        $this->query->matchNumber('*2*', $this->wildcardStringMatchType, true);
 
-		$this->object->searchWithinCourseResults($all200Results);
+        $results = $this->session->getCoursesBySearch($this->query, $this->object);
+        $this->assertEquals(3, $results->getResultSize());
 
-		$query2 = $this->session->getCourseQuery();
-		$query2->matchNumber('*E*', $this->wildcardStringMatchType, true);
+        $courses = new phpkit_id_ArrayIdList([
+            $this->physId,
+            $this->chemId]);
+        $this->object->searchAmongCourses($courses);
 
-		$results = $this->session->getCoursesBySearch($query2, $this->object);
-//     	print $results->debug();
-		$this->assertInstanceOf('osid_course_CourseSearchResults', $results);
-		$this->assertEquals(2, $results->getResultSize());
-	}
-
-	/**
-	 *
-	 */
-	public function testSearchAmongCourses()
-	{
-		$this->query = $this->session->getCourseQuery();
-		$this->query->matchNumber('*2*', $this->wildcardStringMatchType, true);
-
-		$results = $this->session->getCoursesBySearch($this->query, $this->object);
-		$this->assertEquals(3, $results->getResultSize());
-
-		$courses = new phpkit_id_ArrayIdList(array(
-			$this->physId,
-			$this->chemId));
-		$this->object->searchAmongCourses($courses);
-
-		$this->assertEquals(
-			'((SCBCRSE_SUBJ_CODE = ? AND SCBCRSE_CRSE_NUMB = ?)
+        $this->assertEquals(
+            '((SCBCRSE_SUBJ_CODE = ? AND SCBCRSE_CRSE_NUMB = ?)
 		OR (SCBCRSE_SUBJ_CODE = ? AND SCBCRSE_CRSE_NUMB = ?))',
-			$this->object->getWhereClause());
+            $this->object->getWhereClause());
 
-		$params = $this->object->getParameters();
-		$this->assertEquals('PHYS', $params[0]);
-		$this->assertEquals('0201', $params[1]);
-		$this->assertEquals('CHEM', $params[2]);
-		$this->assertEquals('0104', $params[3]);
+        $params = $this->object->getParameters();
+        $this->assertEquals('PHYS', $params[0]);
+        $this->assertEquals('0201', $params[1]);
+        $this->assertEquals('CHEM', $params[2]);
+        $this->assertEquals('0104', $params[3]);
 
-		$results = $this->session->getCoursesBySearch($this->query, $this->object);
-//         print $results->debug();
-		$this->assertEquals(1, $results->getResultSize());
-	}
+        $results = $this->session->getCoursesBySearch($this->query, $this->object);
+        //         print $results->debug();
+        $this->assertEquals(1, $results->getResultSize());
+    }
 
-	/**
-	 *
-	 */
-	public function testOrderCourseResults()
-	{
-		$order = $this->session->getCourseSearchOrder();
-		$order->orderByDisplayName();
+    public function testOrderCourseResults()
+    {
+        $order = $this->session->getCourseSearchOrder();
+        $order->orderByDisplayName();
 
-		$this->object->orderCourseResults($order);
+        $this->object->orderCourseResults($order);
 
-		$results = $this->session->getCoursesBySearch($this->query, $this->object);
-		$this->assertEquals(4, $results->getResultSize());
-	}
+        $results = $this->session->getCoursesBySearch($this->query, $this->object);
+        $this->assertEquals(4, $results->getResultSize());
+    }
 
-	/**
-	 *
-	 */
-	public function testGetCourseSearchRecord()
-	{
-	$this->expectException(osid_UnsupportedException::class);
+    public function testGetCourseSearchRecord()
+    {
+        $this->expectException(osid_UnsupportedException::class);
 
-	$this->object->getCourseSearchRecord($this->otherType);
-	}
+        $this->object->getCourseSearchRecord($this->otherType);
+    }
 }

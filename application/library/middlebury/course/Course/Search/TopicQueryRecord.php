@@ -22,60 +22,56 @@
  *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  *     DEALINGS IN THE SOFTWARE.
- *
- * @package middlebury.course
  */
 
 /**
  * <p>A record for matching the instructors of a <code> Course. </code>
  * The methods specified by the record type are available through the
- * underlying object. </p>
+ * underlying object. </p>.
  *
  *  The type for this record is:
  *		id namespace:	urn
  *		authority:		middlebury.edu
  *		identifier:		record:instructors
- *
- * @package middlebury.course
  */
-interface middlebury_course_Course_Search_TopicQueryRecord
-	extends osid_course_CourseQueryRecord
+interface middlebury_course_Course_Search_TopicQueryRecord extends osid_course_CourseQueryRecord
 {
+    /**
+     *  Sets the topic <code> Id </code> for this query to match
+     *  courses that have a related topic.
+     *
+     *  @param object osid_id_Id $topicId a topic <code> Id </code>
+     * @param bool $match <code> true </code> if a positive match, <code>
+     *                    false </code> for negative match
+     *
+     * @throws osid_NullArgumentException <code> topicId </code> is <code>
+     *                                           null </code>
+     *
+     *  @compliance mandatory This method must be implemented.
+     */
+    public function matchTopicId(osid_id_Id $topicId, $match);
 
-	/**
-	 *  Sets the topic <code> Id </code> for this query to match
-	 *  courses that have a related topic.
-	 *
-	 *  @param object osid_id_Id $topicId a topic <code> Id </code>
-	 *  @param boolean $match <code> true </code> if a positive match, <code>
-	 *          false </code> for negative match
-	 *  @throws osid_NullArgumentException <code> topicId </code> is <code>
-	 *          null </code>
-	 *  @compliance mandatory This method must be implemented.
-	 */
-	public function matchTopicId(osid_id_Id $topicId, $match);
+    /**
+     *  Tests if an <code> TopicQuery </code> is available.
+     *
+     * @return boolean <code> true </code> if a topic query interface is
+     *                        available, <code> false </code> otherwise
+     *
+     *  @compliance mandatory This method must be implemented.
+     */
+    public function supportsTopicQuery();
 
-
-	/**
-	 *  Tests if an <code> TopicQuery </code> is available.
-	 *
-	 *  @return boolean <code> true </code> if a topic query interface is
-	 *          available, <code> false </code> otherwise
-	 *  @compliance mandatory This method must be implemented.
-	 */
-	public function supportsTopicQuery();
-
-
-	/**
-	 *  Gets the query interface for an topic. Multiple retrievals produce a
-	 *  nested <code> OR </code> term.
-	 *
-	 *  @return object osid_course_TopicQuery the topic query
-	 *  @throws osid_UnimplementedException <code> supportsTopicQuery()
-	 *          </code> is <code> false </code>
-	 *  @compliance optional This method must be implemented if <code>
-	 *              supportsTopicQuery() </code> is <code> true. </code>
-	 */
-	public function getTopicQuery();
-
+    /**
+     *  Gets the query interface for an topic. Multiple retrievals produce a
+     *  nested <code> OR </code> term.
+     *
+     * @return object osid_course_TopicQuery the topic query
+     *
+     * @throws osid_UnimplementedException <code> supportsTopicQuery()
+     *                                            </code> is <code> false </code>
+     *
+     *  @compliance optional This method must be implemented if <code>
+     *              supportsTopicQuery() </code> is <code> true. </code>
+     */
+    public function getTopicQuery();
 }

@@ -8,28 +8,29 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class Catalog_Action_Helper_OsidTypes
-	extends Catalog_Action_Helper_AbstractOsidIdentifier
+class Catalog_Action_Helper_OsidTypes extends Catalog_Action_Helper_AbstractOsidIdentifier
 {
+    /**
+     * Answer the course offering genus types that should be searched by default
+     * for a catalog.
+     *
+     * @return array of osid_type_Types
+     *
+     * @since 6/16/09
+     */
+    public function getDefaultGenusTypes()
+    {
+        $types = [];
+        $config = Zend_Registry::getInstance()->config;
+        $typeStrings = $config->catalog->default_offering_genus_types_to_search;
+        if (!$typeStrings) {
+            return [];
+        }
 
-	/**
-	 * Answer the course offering genus types that should be searched by default
-	 * for a catalog
-	 *
-	 * @return array of osid_type_Types
-	 * @access public
-	 * @since 6/16/09
-	 */
-	public function getDefaultGenusTypes () {
-		$types = array();
-		$config = Zend_Registry::getInstance()->config;
-		$typeStrings = $config->catalog->default_offering_genus_types_to_search;
-		if (!$typeStrings)
-			return array();
+        foreach ($typeStrings as $typeString) {
+            $types[] = new phpkit_type_URNInetType($typeString);
+        }
 
-		foreach ($typeStrings as $typeString) {
-			$types[] = new phpkit_type_URNInetType($typeString);
-		}
-		return $types;
-	}
+        return $types;
+    }
 }

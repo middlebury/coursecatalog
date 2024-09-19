@@ -14,83 +14,86 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-abstract class apc_course_AbstractSession
-	extends phpkit_AbstractOsidSession
+abstract class apc_course_AbstractSession extends phpkit_AbstractOsidSession
 {
+    /**
+     * Constructor.
+     *
+     * @return void
+     *
+     * @since 8/11/10
+     */
+    public function __construct(osid_course_CourseManager $manager)
+    {
+        $this->manager = $manager;
+    }
+    protected $manager;
 
-	/**
-	 * Constructor
-	 *
-	 * @param osid_course_CourseManager $manager
-	 * @return void
-	 * @access public
-	 * @since 8/11/10
-	 */
-	public function __construct (osid_course_CourseManager $manager) {
-		$this->manager = $manager;
-	}
-	protected $manager;
+    /**
+     * Answer the course lookup session.
+     *
+     * @return osid_course_CourseLookupSession
+     *
+     * @since 4/16/09
+     */
+    public function getCourseLookupSession()
+    {
+        if (!isset($this->courseLookupSession)) {
+            $this->courseLookupSession = $this->manager->getCourseLookupSessionForCatalog($this->getCourseCatalogId());
+            $this->courseLookupSession->useFederatedCourseCatalogView();
+        }
 
-	/**
-	 * Answer the course lookup session
-	 *
-	 * @return osid_course_CourseLookupSession
-	 * @access public
-	 * @since 4/16/09
-	 */
-	public function getCourseLookupSession () {
-		if (!isset($this->courseLookupSession)) {
-			$this->courseLookupSession = $this->manager->getCourseLookupSessionForCatalog($this->getCourseCatalogId());
-			$this->courseLookupSession->useFederatedCourseCatalogView();
-		}
-		return $this->courseLookupSession;
-	}
+        return $this->courseLookupSession;
+    }
 
-	/**
-	 * Answer the courseoffering lookup session
-	 *
-	 * @return osid_course_CourseOfferingLookupSession
-	 * @access public
-	 * @since 4/16/09
-	 */
-	public function getCourseOfferingLookupSession () {
-		if (!isset($this->courseOfferingLookupSession)) {
-			$this->courseOfferingLookupSession = $this->manager->getCourseOfferingLookupSessionForCatalog($this->getCourseCatalogId());
-			$this->courseOfferingLookupSession->useFederatedCourseCatalogView();
-		}
-		return $this->courseOfferingLookupSession;
-	}
+    /**
+     * Answer the courseoffering lookup session.
+     *
+     * @return osid_course_CourseOfferingLookupSession
+     *
+     * @since 4/16/09
+     */
+    public function getCourseOfferingLookupSession()
+    {
+        if (!isset($this->courseOfferingLookupSession)) {
+            $this->courseOfferingLookupSession = $this->manager->getCourseOfferingLookupSessionForCatalog($this->getCourseCatalogId());
+            $this->courseOfferingLookupSession->useFederatedCourseCatalogView();
+        }
 
-	/**
-	 * Answer a term lookup session
-	 *
-	 * @return osid_course_TermLookupSession
-	 * @access public
-	 * @since 4/16/09
-	 */
-	public function getTermLookupSession () {
-		if (!isset($this->termLookupSession)) {
-			$this->termLookupSession = $this->manager->getTermLookupSessionForCatalog($this->getCourseCatalogId());
-// 			$this->termLookupSession = $this->manager->getTermLookupSession();
-			$this->termLookupSession->useFederatedCourseCatalogView();
-		}
+        return $this->courseOfferingLookupSession;
+    }
 
-		return $this->termLookupSession;
-	}
+    /**
+     * Answer a term lookup session.
+     *
+     * @return osid_course_TermLookupSession
+     *
+     * @since 4/16/09
+     */
+    public function getTermLookupSession()
+    {
+        if (!isset($this->termLookupSession)) {
+            $this->termLookupSession = $this->manager->getTermLookupSessionForCatalog($this->getCourseCatalogId());
+            // 			$this->termLookupSession = $this->manager->getTermLookupSession();
+            $this->termLookupSession->useFederatedCourseCatalogView();
+        }
 
-	/**
-	 * Answer a Resource lookup session
-	 *
-	 * @return osid_resource_ResourceLookupSession
-	 * @access public
-	 * @since 4/16/09
-	 */
-	public function getResourceLookupSession () {
-		if (!isset($this->resourceLookupSession))
-			$this->resourceLookupSession = $this->manager->getResourceManager()->getResourceLookupSession();
+        return $this->termLookupSession;
+    }
 
-		return $this->resourceLookupSession;
-	}
+    /**
+     * Answer a Resource lookup session.
+     *
+     * @return osid_resource_ResourceLookupSession
+     *
+     * @since 4/16/09
+     */
+    public function getResourceLookupSession()
+    {
+        if (!isset($this->resourceLookupSession)) {
+            $this->resourceLookupSession = $this->manager->getResourceManager()->getResourceLookupSession();
+        }
 
-
+        return $this->resourceLookupSession;
+    }
 }

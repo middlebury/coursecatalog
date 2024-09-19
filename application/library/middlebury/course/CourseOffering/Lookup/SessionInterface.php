@@ -22,27 +22,22 @@
  *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  *     DEALINGS IN THE SOFTWARE.
- *
- * @package middlebury.course
  */
 
 /**
- * <p>This interface defines custom extensions that have not yet made it back into the OSID core.</p>
- *
- * @package middlebury.course
+ * <p>This interface defines custom extensions that have not yet made it back into the OSID core.</p>.
  */
-interface middlebury_course_CourseOffering_Lookup_SessionInterface
-	extends osid_course_CourseOfferingLookupSession
+interface middlebury_course_CourseOffering_Lookup_SessionInterface extends osid_course_CourseOfferingLookupSession
 {
-
-	/**
-	 *  Gets a list of the genus types for course offerings
-	 *
-	 *  @return object osid_id_TypeList the list of course offering genus types.
-	 *  @compliance mandatory This method must be implemented.
-	 *  @throws osid_OperationFailedException unable to complete request
-	 *  @throws osid_PermissionDeniedException authorization failure
-	 */
-	public function getCourseOfferingGenusTypes();
-
+    /**
+     *  Gets a list of the genus types for course offerings.
+     *
+     * @return object osid_id_TypeList the list of course offering genus types
+     *
+     *  @compliance mandatory This method must be implemented.
+     *
+     * @throws osid_OperationFailedException  unable to complete request
+     * @throws osid_PermissionDeniedException authorization failure
+     */
+    public function getCourseOfferingGenusTypes();
 }

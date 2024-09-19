@@ -1,147 +1,162 @@
 <?php
 
-require_once(dirname(__FILE__)."/../Objects/SObject.class.php");
-
+require_once __DIR__.'/../Objects/SObject.class.php';
 
 /**
  * A simple Boolean data type.
- *
- * @package harmoni.primitives
  *
  * @copyright Copyright &copy; 2005, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  *
  * @version $Id: Boolean.class.php,v 1.11 2007/10/10 22:58:34 adamfranco Exp $
  */
-class Boolean
-	extends SObject
+class Boolean extends SObject
 {
+    public $_bool;
 
-	var $_bool;
+    /*********************************************************
+     * Class Methods - Virtual Constructors
+     *********************************************************/
 
-/*********************************************************
- * Class Methods - Virtual Constructors
- *********************************************************/
+    /**
+     * Instantiates a new Boolean object with the passed value.
+     *
+     * @param string $value
+     *
+     * @return ref object
+     *
+     * @static
+     */
+    public static function withValue($value)
+    {
+        $temp = new self($value);
 
-	/**
-	 * Instantiates a new Boolean object with the passed value.
-	 * @param string $value
-	 * @return ref object
-	 * @access public
-	 * @static
-	 */
-	static function withValue($value) {
-		$temp = new Boolean($value);
-		return $temp;
-	}
+        return $temp;
+    }
 
+    /**
+     * Instantiates a new Boolean object from a known string.
+     *
+     * @param string $aString true(case insensitive) is true if not, it's false
+     *
+     * @return ref object
+     *
+     * @since 3/14/06
+     *
+     * @static
+     */
+    public static function fromString($aString)
+    {
+        $temp = new self(('true' == strtolower($aString)) ? true : false);
 
-	/**
-	 * Instantiates a new Boolean object from a known string
-	 *
-	 * @param string $aString true(case insensitive) is true if not, it's false
-	 * @return ref object
-	 * @access public
-	 * @since 3/14/06
-	 * @static
-	 */
-	static function fromString ($aString) {
-		$temp = new Boolean(((strtolower($aString) == "true")?true:false));
-		return $temp;
-	}
+        return $temp;
+    }
 
-	/**
-	 * Instantiates a new Boolean object with the value, false.
-	 *
-	 * @return object Boolean
-	 * @access public
-	 * @since 8/11/05
-	 * @static
-	 */
-	static function false () {
-		$temp = new Boolean(false);
-		return $temp;
-	}
+    /**
+     * Instantiates a new Boolean object with the value, false.
+     *
+     * @return object Boolean
+     *
+     * @since 8/11/05
+     *
+     * @static
+     */
+    public static function false()
+    {
+        $temp = new self(false);
 
-	/**
-	 * Instantiates a new Boolean object with the value, true.
-	 *
-	 * @return object Boolean
-	 * @access public
-	 * @since 8/11/05
-	 * @static
-	 */
-	static function true () {
-		$temp = new Boolean(true);
-		return $temp;
-	}
+        return $temp;
+    }
 
-/*********************************************************
- * Instance Methods
- *********************************************************/
+    /**
+     * Instantiates a new Boolean object with the value, true.
+     *
+     * @return object Boolean
+     *
+     * @since 8/11/05
+     *
+     * @static
+     */
+    public static function true()
+    {
+        $temp = new self(true);
 
-	function __construct($value=true) {
-		$this->_bool = (bool) $value;
-	}
+        return $temp;
+    }
 
-	/**
-	 * Returns the boolean value.
-	 * @access public
-	 * @return boolean
-	 */
-	function value()
-	{
-		return $this->_bool;
-	}
+    /*********************************************************
+     * Instance Methods
+     *********************************************************/
 
-	/**
- 	 * Answer a String whose characters are a description of the receiver.
- 	 * Override this method as needed to provide a better representation
- 	 *
- 	 * @return string
- 	 * @access public
- 	 * @since 7/11/05
- 	 */
- 	function printableString () {
-		return $this->_bool?"true":"false";
-	}
+    public function __construct($value = true)
+    {
+        $this->_bool = (bool) $value;
+    }
 
-	/**
- 	 * Answer whether the receiver and the argument are the same.
- 	 * If = is redefined in any subclass, consider also redefining the
-	 * message hash.
- 	 *
- 	 * @param object $anObject
- 	 * @return boolean
- 	 * @access public
- 	 * @since 7/11/05
- 	 */
- 	function isEqualTo ( $anObject ) {
- 		if (!method_exists($anObject, 'value'))
- 			return false;
+    /**
+     * Returns the boolean value.
+     *
+     * @return bool
+     */
+    public function value()
+    {
+        return $this->_bool;
+    }
 
-		return ($this->_bool===$anObject->value())?true:false;
-	}
+    /**
+     * Answer a String whose characters are a description of the receiver.
+     * Override this method as needed to provide a better representation.
+     *
+     * @return string
+     *
+     * @since 7/11/05
+     */
+    public function printableString()
+    {
+        return $this->_bool ? 'true' : 'false';
+    }
 
-	/**
-	 * Answer true if this object represents a 'true' value, false otherwise.
-	 *
-	 * @return boolean
-	 * @access public
-	 * @since 9/29/05
-	 */
-	function isTrue () {
-		return $this->_bool;
-	}
+    /**
+     * Answer whether the receiver and the argument are the same.
+     * If = is redefined in any subclass, consider also redefining the
+     * message hash.
+     *
+     * @param object $anObject
+     *
+     * @return bool
+     *
+     * @since 7/11/05
+     */
+    public function isEqualTo($anObject)
+    {
+        if (!method_exists($anObject, 'value')) {
+            return false;
+        }
 
-	/**
-	 * Answer true if this object represents a 'false' value, false otherwise.
-	 *
-	 * @return boolean
-	 * @access public
-	 * @since 9/29/05
-	 */
-	function isFalse () {
-		return $this->_bool?false:true;
-	}
+        return ($this->_bool === $anObject->value()) ? true : false;
+    }
+
+    /**
+     * Answer true if this object represents a 'true' value, false otherwise.
+     *
+     * @return bool
+     *
+     * @since 9/29/05
+     */
+    public function isTrue()
+    {
+        return $this->_bool;
+    }
+
+    /**
+     * Answer true if this object represents a 'false' value, false otherwise.
+     *
+     * @return bool
+     *
+     * @since 9/29/05
+     */
+    public function isFalse()
+    {
+        return $this->_bool ? false : true;
+    }
 }

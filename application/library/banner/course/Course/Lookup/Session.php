@@ -1,7 +1,6 @@
 <?php
 /**
  * @since 4/13/09
- * @package banner.course
  *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
@@ -11,7 +10,7 @@
  *  <p>This session defines methods for retrieving courses. A <code> Course
  *  </code> is a canonical course listed in a course catalog. A <code>
  *  CourseOffering </code> is derived from a <code> Course </code> and maps to
- *  an offering time and registered students. </p>
+ *  an offering time and registered students. </p>.
  *
  *  <p> This lookup session defines several views: </p>
  *
@@ -38,158 +37,166 @@
  *  may not be accessed through a cast of the <code> Course. </code> </p>
  *
  * @since 4/13/09
- * @package banner.course
  *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class banner_course_Course_Lookup_Session
-	extends banner_course_Course_AbstractSession
-	implements osid_course_CourseLookupSession
+class banner_course_Course_Lookup_Session extends banner_course_Course_AbstractSession implements osid_course_CourseLookupSession
 {
+    /**
+     * Constructor.
+     *
+     * @return void
+     *
+     * @since 4/10/09
+     */
+    public function __construct(banner_course_CourseManagerInterface $manager, osid_id_Id $catalogId)
+    {
+        parent::__construct($manager, 'course/');
 
-	/**
-	 * Constructor
-	 *
-	 * @param banner_course_CourseManagerInterface $manager
-	 * @param osid_id_Id $catalogId
-	 * @return void
-	 * @access public
-	 * @since 4/10/09
-	 */
-	public function __construct (banner_course_CourseManagerInterface $manager, osid_id_Id $catalogId) {
-		parent::__construct($manager, 'course/');
+        $this->catalogId = $catalogId;
+    }
 
-		$this->catalogId = $catalogId;
-	}
+    private $catalog;
 
-	private $catalog;
+    /**
+     *  Gets the <code> CourseCatalog </code> <code> Id </code> associated
+     *  with this session.
+     *
+     * @return object osid_id_Id the <code> CourseCatalog Id </code>
+     *                associated with this session
+     *
+     * @throws osid_IllegalStateException this session has been closed
+     *
+     *  @compliance mandatory This method must be implemented.
+     */
+    public function getCourseCatalogId()
+    {
+        return $this->catalogId;
+    }
 
-	/**
-	 *  Gets the <code> CourseCatalog </code> <code> Id </code> associated
-	 *  with this session.
-	 *
-	 *  @return object osid_id_Id the <code> CourseCatalog Id </code>
-	 *          associated with this session
-	 *  @throws osid_IllegalStateException this session has been closed
-	 *  @compliance mandatory This method must be implemented.
-	 */
-	public function getCourseCatalogId() {
-		return $this->catalogId;
-	}
+    /**
+     *  Gets the <code> CourseCatalog </code> associated with this session.
+     *
+     * @return object osid_course_CourseCatalog the course catalog
+     *
+     * @throws osid_OperationFailedException  unable to complete request
+     * @throws osid_PermissionDeniedException authorization failure
+     * @throws osid_IllegalStateException     this session has been closed
+     *
+     *  @compliance mandatory This method must be implemented.
+     */
+    public function getCourseCatalog()
+    {
+        if (!isset($this->catalog)) {
+            $lookup = $this->manager->getCourseCatalogLookupSession();
+            $lookup->usePlenaryView();
+            $this->catalog = $lookup->getCourseCatalog($this->getCourseCatalogId());
+        }
 
+        return $this->catalog;
+    }
 
-	/**
-	 *  Gets the <code> CourseCatalog </code> associated with this session.
-	 *
-	 *  @return object osid_course_CourseCatalog the course catalog
-	 *  @throws osid_OperationFailedException unable to complete request
-	 *  @throws osid_PermissionDeniedException authorization failure
-	 *  @throws osid_IllegalStateException this session has been closed
-	 *  @compliance mandatory This method must be implemented.
-	 */
-	public function getCourseCatalog() {
-		if (!isset($this->catalog)) {
-			$lookup = $this->manager->getCourseCatalogLookupSession();
-			$lookup->usePlenaryView();
-			$this->catalog = $lookup->getCourseCatalog($this->getCourseCatalogId());
-		}
-		return $this->catalog;
-	}
+    /**
+     *  Tests if this user can perform <code> Course </code> lookups. A return
+     *  of true does not guarantee successful authorization. A return of false
+     *  indicates that it is known all methods in this session will result in
+     *  a <code> PERMISSION_DENIED. </code> This is intended as a hint to an
+     *  application that may not offer lookup operations to unauthorized
+     *  users.
+     *
+     * @return boolean <code> false </code> if lookup methods are not
+     *                        authorized, <code> true </code> otherwise
+     *
+     * @throws osid_IllegalStateException this session has been closed
+     *
+     *  @compliance mandatory This method must be implemented.
+     */
+    public function canLookupCourses()
+    {
+        return true;
+    }
 
+    /**
+     *  The returns from the lookup methods may omit or translate elements
+     *  based on this session, such as authorization, and not result in an
+     *  error. This view is used when greater interoperability is desired at
+     *  the expense of precision.
+     *
+     *  @compliance mandatory This method is must be implemented.
+     */
+    public function useComparativeCourseView()
+    {
+        $this->useComparativeView();
+    }
 
-	/**
-	 *  Tests if this user can perform <code> Course </code> lookups. A return
-	 *  of true does not guarantee successful authorization. A return of false
-	 *  indicates that it is known all methods in this session will result in
-	 *  a <code> PERMISSION_DENIED. </code> This is intended as a hint to an
-	 *  application that may not offer lookup operations to unauthorized
-	 *  users.
-	 *
-	 *  @return boolean <code> false </code> if lookup methods are not
-	 *          authorized, <code> true </code> otherwise
-	 *  @throws osid_IllegalStateException this session has been closed
-	 *  @compliance mandatory This method must be implemented.
-	 */
-	public function canLookupCourses() {
-		return true;
-	}
+    /**
+     *  A complete view of the <code> Course </code> returns is desired.
+     *  Methods will return what is requested or result in an error. This view
+     *  is used when greater precision is desired at the expense of
+     *  interoperability.
+     *
+     *  @compliance mandatory This method is must be implemented.
+     */
+    public function usePlenaryCourseView()
+    {
+        $this->usePlenaryView();
+    }
 
+    /**
+     *  Federates the view for methods in this session. A federated view will
+     *  include courses in catalogs which are children of this catalog in the
+     *  course catalog hierarchy.
+     *
+     *  @compliance mandatory This method is must be implemented.
+     */
+    public function useFederatedCourseCatalogView()
+    {
+        $this->useFederatedView();
+    }
 
-	/**
-	 *  The returns from the lookup methods may omit or translate elements
-	 *  based on this session, such as authorization, and not result in an
-	 *  error. This view is used when greater interoperability is desired at
-	 *  the expense of precision.
-	 *
-	 *  @compliance mandatory This method is must be implemented.
-	 */
-	public function useComparativeCourseView() {
-		$this->useComparativeView();
-	}
+    /**
+     *  Isolates the view for methods in this session. An isolated view
+     *  restricts retrievals to this course catalog only.
+     *
+     *  @compliance mandatory This method is must be implemented.
+     */
+    public function useIsolatedCourseCatalogView()
+    {
+        $this->useIsolatedView();
+    }
 
+    private static $getCourse_stmts = [];
 
-	/**
-	 *  A complete view of the <code> Course </code> returns is desired.
-	 *  Methods will return what is requested or result in an error. This view
-	 *  is used when greater precision is desired at the expense of
-	 *  interoperability.
-	 *
-	 *  @compliance mandatory This method is must be implemented.
-	 */
-	public function usePlenaryCourseView() {
-		$this->usePlenaryView();
-	}
-
-
-	/**
-	 *  Federates the view for methods in this session. A federated view will
-	 *  include courses in catalogs which are children of this catalog in the
-	 *  course catalog hierarchy.
-	 *
-	 *  @compliance mandatory This method is must be implemented.
-	 */
-	public function useFederatedCourseCatalogView() {
-		$this->useFederatedView();
-	}
-
-
-	/**
-	 *  Isolates the view for methods in this session. An isolated view
-	 *  restricts retrievals to this course catalog only.
-	 *
-	 *  @compliance mandatory This method is must be implemented.
-	 */
-	public function useIsolatedCourseCatalogView() {
-		$this->useIsolatedView();
-	}
-
-	private static $getCourse_stmts = array();
-	/**
-	 *  Gets the <code> Course </code> specified by its <code> Id. </code> In
-	 *  plenary mode, the exact <code> Id </code> is found or a <code>
-	 *  NOT_FOUND </code> results. Otherwise, the returned <code> Course
-	 *  </code> may have a different <code> Id </code> than requested, such as
-	 *  the case where a duplicate <code> Id </code> was assigned to a <code>
-	 *  Course </code> and retained for compatibility.
-	 *
-	 *  @param object osid_id_Id $courseId the <code> Id </code> of the <code>
-	 *          Course </code> to rerieve
-	 *  @return object osid_course_Course the returned <code> Course </code>
-	 *  @throws osid_NotFoundException no <code> Course </code> found with the
-	 *          given <code> Id </code>
-	 *  @throws osid_NullArgumentException <code> courseId </code> is <code>
-	 *          null </code>
-	 *  @throws osid_OperationFailedException unable to complete request
-	 *  @throws osid_PermissionDeniedException authorization failure
-	 *  @throws osid_IllegalStateException this session has been closed
-	 *  @compliance mandatory This method must be implemented.
-	 */
-	public function getCourse(osid_id_Id $courseId) {
-		$catalogWhere = $this->getCatalogWhereTerms();
-		if (!isset(self::$getCourse_stmts[$catalogWhere])) {
-			$query =
-"SELECT
+    /**
+     *  Gets the <code> Course </code> specified by its <code> Id. </code> In
+     *  plenary mode, the exact <code> Id </code> is found or a <code>
+     *  NOT_FOUND </code> results. Otherwise, the returned <code> Course
+     *  </code> may have a different <code> Id </code> than requested, such as
+     *  the case where a duplicate <code> Id </code> was assigned to a <code>
+     *  Course </code> and retained for compatibility.
+     *
+     *  @param object osid_id_Id $courseId the <code> Id </code> of the <code>
+     *          Course </code> to rerieve
+     *
+     * @return object osid_course_Course the returned <code> Course </code>
+     *
+     * @throws osid_NotFoundException            no <code> Course </code> found with the
+     *                                           given <code> Id </code>
+     * @throws osid_NullArgumentException <code> courseId </code> is <code>
+     *                                           null </code>
+     * @throws osid_OperationFailedException     unable to complete request
+     * @throws osid_PermissionDeniedException    authorization failure
+     * @throws osid_IllegalStateException        this session has been closed
+     *
+     *  @compliance mandatory This method must be implemented.
+     */
+    public function getCourse(osid_id_Id $courseId)
+    {
+        $catalogWhere = $this->getCatalogWhereTerms();
+        if (!isset(self::$getCourse_stmts[$catalogWhere])) {
+            $query =
+'SELECT
 	SCBCRSE_SUBJ_CODE ,
 	SCBCRSE_CRSE_NUMB ,
 	SCBCRSE_EFF_TERM ,
@@ -214,251 +221,279 @@ WHERE
 		FROM
 			course_catalog_college
 		WHERE
-			".$this->getCatalogWhereTerms()."
+			'.$this->getCatalogWhereTerms().'
 	)
 ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
-";
-			self::$getCourse_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
-		}
+';
+            self::$getCourse_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
+        }
 
-		$courseIdString = $this->getDatabaseIdString($courseId, 'course/');
+        $courseIdString = $this->getDatabaseIdString($courseId, 'course/');
 
-		$parameters = array_merge(
-			array(
-				':subject_code' =>  $this->getSubjectFromCourseId($courseId),
-				':course_number' => $this->getNumberFromCourseId($courseId)
-			),
-			$this->getCatalogParameters());
-		self::$getCourse_stmts[$catalogWhere]->execute($parameters);
-		$row = self::$getCourse_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
-		self::$getCourse_stmts[$catalogWhere]->closeCursor();
+        $parameters = array_merge(
+            [
+                ':subject_code' => $this->getSubjectFromCourseId($courseId),
+                ':course_number' => $this->getNumberFromCourseId($courseId),
+            ],
+            $this->getCatalogParameters());
+        self::$getCourse_stmts[$catalogWhere]->execute($parameters);
+        $row = self::$getCourse_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
+        self::$getCourse_stmts[$catalogWhere]->closeCursor();
 
-		if (!$row || !($row['SCBCRSE_SUBJ_CODE'] && $row['SCBCRSE_CRSE_NUMB']))
-			throw new osid_NotFoundException("Could not find a course matching the id-component '$courseIdString' for the catalog '".$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/')."'.");
+        if (!$row || !($row['SCBCRSE_SUBJ_CODE'] && $row['SCBCRSE_CRSE_NUMB'])) {
+            throw new osid_NotFoundException("Could not find a course matching the id-component '$courseIdString' for the catalog '".$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/')."'.");
+        }
 
-		return new banner_course_Course(
-					$this->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'], 'course/'),
-					$row['SCBCRSE_SUBJ_CODE']." ".$row['SCBCRSE_CRSE_NUMB'],
-					((is_null($row['SCBDESC_TEXT_NARRATIVE']))?'':$row['SCBDESC_TEXT_NARRATIVE']),	// Description
-					$row['SCBCRSE_TITLE'],
-					$row['SCBCRSE_CREDIT_HR_HIGH'],
-					array(
-						$this->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'], 'topic/subject/'),
-						$this->getOsidIdFromString($row['SCBCRSE_DEPT_CODE'], 'topic/department/'),
-						$this->getOsidIdFromString($row['SCBCRSE_DIVS_CODE'], 'topic/division/')
-					),
-					$row['has_alternates'],
-					$this);
-	}
+        return new banner_course_Course(
+            $this->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'], 'course/'),
+            $row['SCBCRSE_SUBJ_CODE'].' '.$row['SCBCRSE_CRSE_NUMB'],
+            (null === $row['SCBDESC_TEXT_NARRATIVE']) ? '' : $row['SCBDESC_TEXT_NARRATIVE'],	// Description
+            $row['SCBCRSE_TITLE'],
+            $row['SCBCRSE_CREDIT_HR_HIGH'],
+            [
+                $this->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'], 'topic/subject/'),
+                $this->getOsidIdFromString($row['SCBCRSE_DEPT_CODE'], 'topic/department/'),
+                $this->getOsidIdFromString($row['SCBCRSE_DIVS_CODE'], 'topic/division/'),
+            ],
+            $row['has_alternates'],
+            $this);
+    }
 
-	/**
-	 * Answer the catalog where terms
-	 *
-	 * @return string
-	 * @access private
-	 * @since 4/20/09
-	 */
-	private function getCatalogWhereTerms () {
-		if (is_null($this->catalogId) || $this->catalogId->isEqual($this->getCombinedCatalogId()))
-			return 'TRUE';
-		else
-			return 'catalog_id = :catalog_id';
-	}
+    /**
+     * Answer the catalog where terms.
+     *
+     * @return string
+     *
+     * @since 4/20/09
+     */
+    private function getCatalogWhereTerms()
+    {
+        if (null === $this->catalogId || $this->catalogId->isEqual($this->getCombinedCatalogId())) {
+            return 'TRUE';
+        } else {
+            return 'catalog_id = :catalog_id';
+        }
+    }
 
-	/**
-	 * Answer the input parameters
-	 *
-	 * @return array
-	 * @access private
-	 * @since 4/17/09
-	 */
-	private function getCatalogParameters () {
-		$params = array();
-		if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->getCombinedCatalogId()))
-			$params[':catalog_id'] = $this->getCatalogDatabaseId($this->catalogId);
-		return $params;
-	}
+    /**
+     * Answer the input parameters.
+     *
+     * @return array
+     *
+     * @since 4/17/09
+     */
+    private function getCatalogParameters()
+    {
+        $params = [];
+        if (null !== $this->catalogId && !$this->catalogId->isEqual($this->getCombinedCatalogId())) {
+            $params[':catalog_id'] = $this->getCatalogDatabaseId($this->catalogId);
+        }
 
-	/**
-	 *  Gets a <code> CourseList </code> corresponding to the given <code>
-	 *  IdList. </code> In plenary mode, the returned list contains all of the
-	 *  courses specified in the <code> Id </code> list, in the order of the
-	 *  list, including duplicates, or an error results if an <code> Id
-	 *  </code> in the supplied list is not found or inaccessible. Otherwise,
-	 *  inaccessible <code> Courses </code> may be omitted from the list and
-	 *  may present the elements in any order including returning a unique
-	 *  set.
-	 *
-	 *  @param object osid_id_IdList $courseIdList the list of <code> Ids
-	 *          </code> to rerieve
-	 *  @return object osid_course_CourseList the returned <code> Course list
-	 *          </code>
-	 *  @throws osid_NotFoundException an <code> Id was </code> not found
-	 *  @throws osid_NullArgumentException <code> courseIdList </code> is
-	 *          <code> null </code>
-	 *  @throws osid_OperationFailedException unable to complete request
-	 *  @throws osid_PermissionDeniedException authorization failure
-	 *  @throws osid_IllegalStateException this session has been closed
-	 *  @compliance mandatory This method must be implemented.
-	 */
-	public function getCoursesByIds(osid_id_IdList $courseIdList) {
-		$courses = array();
+        return $params;
+    }
 
-		while ($courseIdList->hasNext()) {
-			try {
-				$courses[] = $this->getCourse($courseIdList->getNextId());
-			} catch (osid_NotFoundException $e) {
-				if ($this->usesPlenaryView())
-					throw $e;
-			} catch (osid_PermissionDeniedException $e) {
-				if ($this->usesPlenaryView())
-					throw $e;
-			}
-		}
+    /**
+     *  Gets a <code> CourseList </code> corresponding to the given <code>
+     *  IdList. </code> In plenary mode, the returned list contains all of the
+     *  courses specified in the <code> Id </code> list, in the order of the
+     *  list, including duplicates, or an error results if an <code> Id
+     *  </code> in the supplied list is not found or inaccessible. Otherwise,
+     *  inaccessible <code> Courses </code> may be omitted from the list and
+     *  may present the elements in any order including returning a unique
+     *  set.
+     *
+     *  @param object osid_id_IdList $courseIdList the list of <code> Ids
+     *          </code> to rerieve
+     *
+     * @return object osid_course_CourseList the returned <code> Course list
+     *                </code>
+     *
+     * @throws osid_NotFoundException            an <code> Id was </code> not found
+     * @throws osid_NullArgumentException <code> courseIdList </code> is
+     *                                           <code> null </code>
+     * @throws osid_OperationFailedException     unable to complete request
+     * @throws osid_PermissionDeniedException    authorization failure
+     * @throws osid_IllegalStateException        this session has been closed
+     *
+     *  @compliance mandatory This method must be implemented.
+     */
+    public function getCoursesByIds(osid_id_IdList $courseIdList)
+    {
+        $courses = [];
 
-		return new phpkit_course_ArrayCourseList($courses);
-	}
+        while ($courseIdList->hasNext()) {
+            try {
+                $courses[] = $this->getCourse($courseIdList->getNextId());
+            } catch (osid_NotFoundException $e) {
+                if ($this->usesPlenaryView()) {
+                    throw $e;
+                }
+            } catch (osid_PermissionDeniedException $e) {
+                if ($this->usesPlenaryView()) {
+                    throw $e;
+                }
+            }
+        }
 
+        return new phpkit_course_ArrayCourseList($courses);
+    }
 
-	/**
-	 *  Gets a <code> CourseList </code> corresponding to the given course
-	 *  genus <code> Type </code> which does not include courses of types
-	 *  derived from the specified <code> Type. </code> In plenary mode, the
-	 *  returned list contains all known courses or an error results.
-	 *  Otherwise, the returned list may contain only those courses that are
-	 *  accessible through this session. In both cases, the order of the set
-	 *  is not specified.
-	 *
-	 *  @param object osid_type_Type $courseGenusType a course genus type
-	 *  @return object osid_course_CourseList the returned <code> Course list
-	 *          </code>
-	 *  @throws osid_NullArgumentException <code> courseGenusType </code> is
-	 *          <code> null </code>
-	 *  @throws osid_OperationFailedException unable to complete request
-	 *  @throws osid_PermissionDeniedException authorization failure
-	 *  @throws osid_IllegalStateException this session has been closed
-	 *  @compliance mandatory This method must be implemented.
-	 */
-	public function getCoursesByGenusType(osid_type_Type $courseGenusType) {
-		if ($courseGenusType->isEqual(new phpkit_type_URNInetType("urn:inet:osid.org:genera:none")))
-			return $this->getCourses();
-		else
-			return new phpkit_EmptyList;
-	}
+    /**
+     *  Gets a <code> CourseList </code> corresponding to the given course
+     *  genus <code> Type </code> which does not include courses of types
+     *  derived from the specified <code> Type. </code> In plenary mode, the
+     *  returned list contains all known courses or an error results.
+     *  Otherwise, the returned list may contain only those courses that are
+     *  accessible through this session. In both cases, the order of the set
+     *  is not specified.
+     *
+     *  @param object osid_type_Type $courseGenusType a course genus type
+     *
+     * @return object osid_course_CourseList the returned <code> Course list
+     *                </code>
+     *
+     * @throws osid_NullArgumentException <code> courseGenusType </code> is
+     *                                           <code> null </code>
+     * @throws osid_OperationFailedException     unable to complete request
+     * @throws osid_PermissionDeniedException    authorization failure
+     * @throws osid_IllegalStateException        this session has been closed
+     *
+     *  @compliance mandatory This method must be implemented.
+     */
+    public function getCoursesByGenusType(osid_type_Type $courseGenusType)
+    {
+        if ($courseGenusType->isEqual(new phpkit_type_URNInetType('urn:inet:osid.org:genera:none'))) {
+            return $this->getCourses();
+        } else {
+            return new phpkit_EmptyList();
+        }
+    }
 
+    /**
+     *  Gets a <code> CourseList </code> corresponding to the given course
+     *  genus <code> Type </code> and include any additional courses with
+     *  genus types derived from the specified <code> Type. </code> In plenary
+     *  mode, the returned list contains all known courses or an error
+     *  results. Otherwise, the returned list may contain only those courses
+     *  that are accessible through this session. In both cases, the order of
+     *  the set is not specified.
+     *
+     *  @param object osid_type_Type $courseGenusType a course genus type
+     *
+     * @return object osid_course_CourseList the returned <code> Course list
+     *                </code>
+     *
+     * @throws osid_NullArgumentException <code> courseGenusType </code> is
+     *                                           <code> null </code>
+     * @throws osid_OperationFailedException     unable to complete request
+     * @throws osid_PermissionDeniedException    authorization failure
+     * @throws osid_IllegalStateException        this session has been closed
+     *
+     *  @compliance mandatory This method must be implemented.
+     */
+    public function getCoursesByParentGenusType(osid_type_Type $courseGenusType)
+    {
+        return $this->getCoursesByGenusType($courseGenusType);
+    }
 
-	/**
-	 *  Gets a <code> CourseList </code> corresponding to the given course
-	 *  genus <code> Type </code> and include any additional courses with
-	 *  genus types derived from the specified <code> Type. </code> In plenary
-	 *  mode, the returned list contains all known courses or an error
-	 *  results. Otherwise, the returned list may contain only those courses
-	 *  that are accessible through this session. In both cases, the order of
-	 *  the set is not specified.
-	 *
-	 *  @param object osid_type_Type $courseGenusType a course genus type
-	 *  @return object osid_course_CourseList the returned <code> Course list
-	 *          </code>
-	 *  @throws osid_NullArgumentException <code> courseGenusType </code> is
-	 *          <code> null </code>
-	 *  @throws osid_OperationFailedException unable to complete request
-	 *  @throws osid_PermissionDeniedException authorization failure
-	 *  @throws osid_IllegalStateException this session has been closed
-	 *  @compliance mandatory This method must be implemented.
-	 */
-	public function getCoursesByParentGenusType(osid_type_Type $courseGenusType) {
-		return $this->getCoursesByGenusType($courseGenusType);
-	}
+    /**
+     *  Gets a <code> CourseList </code> containing the given course record
+     *  <code> Type. </code> In plenary mode, the returned list contains all
+     *  known courses or an error results. Otherwise, the returned list may
+     *  contain only those courses that are accessible through this session.
+     *  In both cases, the order of the set is not specified.
+     *
+     *  @param object osid_type_Type $courseRecordType a course record type
+     *
+     * @return object osid_course_CourseList the returned <code> CourseList
+     *                list </code>
+     *
+     * @throws osid_NullArgumentException <code> courseRecordType </code> is
+     *                                           <code> null </code>
+     * @throws osid_OperationFailedException     unable to complete request
+     * @throws osid_PermissionDeniedException    authorization failure
+     * @throws osid_IllegalStateException        this session has been closed
+     *
+     *  @compliance mandatory This method must be implemented.
+     */
+    public function getCoursesByRecordType(osid_type_Type $courseRecordType)
+    {
+        return new phpkit_EmptyList();
+    }
 
+    /**
+     *  WARNING: This method was not in the OSID trunk as of 2009-04-27. A
+     *  ticket requesting the addition of this method is available at:
+     *  http://oki.assembla.com/spaces/osid-dev/tickets/18-osid-course---No-way-to-map-Topics-to-Courses-or-CourseOfferings-
+     *  Gets a <code> CourseList </code> corresponding to the given topic
+     *  <code> Id </code> . In plenary mode, the returned list contains all
+     *  known courses or an error results. Otherwise, the returned list may
+     *  contain only those courses that are accessible through this session.
+     *  In both cases, the order of the set is not specified.
+     *
+     *  @param object osid_id_Id $topicId a topic id
+     *
+     * @return object osid_course_CourseList the returned <code> Course list
+     *                </code>
+     *
+     * @throws osid_NullArgumentException <code> courseGenusType </code> is
+     *                                           <code> null </code>
+     * @throws osid_OperationFailedException     unable to complete request
+     * @throws osid_PermissionDeniedException    authorization failure
+     * @throws osid_IllegalStateException        this session has been closed
+     *
+     *  @compliance mandatory This method must be implemented.
+     */
+    public function getCoursesByTopic(osid_id_Id $topicId)
+    {
+        return new banner_course_Course_Lookup_ByTopicList(
+            $this->manager->getDB(),
+            $this,
+            $this->getCourseCatalogId(),
+            $topicId);
+    }
 
-	/**
-	 *  Gets a <code> CourseList </code> containing the given course record
-	 *  <code> Type. </code> In plenary mode, the returned list contains all
-	 *  known courses or an error results. Otherwise, the returned list may
-	 *  contain only those courses that are accessible through this session.
-	 *  In both cases, the order of the set is not specified.
-	 *
-	 *  @param object osid_type_Type $courseRecordType a course record type
-	 *  @return object osid_course_CourseList the returned <code> CourseList
-	 *          list </code>
-	 *  @throws osid_NullArgumentException <code> courseRecordType </code> is
-	 *          <code> null </code>
-	 *  @throws osid_OperationFailedException unable to complete request
-	 *  @throws osid_PermissionDeniedException authorization failure
-	 *  @throws osid_IllegalStateException this session has been closed
-	 *  @compliance mandatory This method must be implemented.
-	 */
-	public function getCoursesByRecordType(osid_type_Type $courseRecordType) {
-		return new phpkit_EmptyList;
-	}
+    /**
+     *  Gets all <code> Courses. </code> In plenary mode, the returned list
+     *  contains all known courses or an error results. Otherwise, the
+     *  returned list may contain only those courses that are accessible
+     *  through this session. In both cases, the order of the set is not
+     *  specifed.
+     *
+     * @return object osid_course_CourseList a list of <code> Courses </code>
+     *
+     * @throws osid_OperationFailedException  unable to complete request
+     * @throws osid_PermissionDeniedException authorization failure
+     * @throws osid_IllegalStateException     this session has been closed
+     *
+     *  @compliance mandatory This method must be implemented.
+     */
+    public function getCourses()
+    {
+        return new banner_course_Course_Lookup_AllList(
+            $this->manager->getDB(),
+            $this,
+            $this->getCourseCatalogId()
+        );
+    }
 
-	/**
-	 *  WARNING: This method was not in the OSID trunk as of 2009-04-27. A
-	 *  ticket requesting the addition of this method is available at:
-	 *  http://oki.assembla.com/spaces/osid-dev/tickets/18-osid-course---No-way-to-map-Topics-to-Courses-or-CourseOfferings-
-	 *  Gets a <code> CourseList </code> corresponding to the given topic
-	 *  <code> Id </code> . In plenary mode, the returned list contains all
-	 *  known courses or an error results. Otherwise, the returned list may
-	 *  contain only those courses that are accessible through this session.
-	 *  In both cases, the order of the set is not specified.
-	 *
-	 *  @param object osid_id_Id $topicId a topic id
-	 *  @return object osid_course_CourseList the returned <code> Course list
-	 *          </code>
-	 *  @throws osid_NullArgumentException <code> courseGenusType </code> is
-	 *          <code> null </code>
-	 *  @throws osid_OperationFailedException unable to complete request
-	 *  @throws osid_PermissionDeniedException authorization failure
-	 *  @throws osid_IllegalStateException this session has been closed
-	 *  @compliance mandatory This method must be implemented.
-	 */
-	public function getCoursesByTopic(osid_id_Id $topicId) {
-		return  new banner_course_Course_Lookup_ByTopicList(
-			$this->manager->getDB(),
-			$this,
-			$this->getCourseCatalogId(),
-			$topicId);
-	}
+    /*********************************************************
+     * Support for fetching course alternates.
+     *********************************************************/
 
+    private static $alternatesForCourse_stmt;
 
-	/**
-	 *  Gets all <code> Courses. </code> In plenary mode, the returned list
-	 *  contains all known courses or an error results. Otherwise, the
-	 *  returned list may contain only those courses that are accessible
-	 *  through this session. In both cases, the order of the set is not
-	 *  specifed.
-	 *
-	 *  @return object osid_course_CourseList a list of <code> Courses </code>
-	 *  @throws osid_OperationFailedException unable to complete request
-	 *  @throws osid_PermissionDeniedException authorization failure
-	 *  @throws osid_IllegalStateException this session has been closed
-	 *  @compliance mandatory This method must be implemented.
-	 */
-	public function getCourses() {
-		return new banner_course_Course_Lookup_AllList(
-			$this->manager->getDB(),
-			$this,
-			$this->getCourseCatalogId()
-		);
-	}
-
-	/*********************************************************
-	 * Support for fetching course alternates.
-	 *********************************************************/
-
-
-	private static $alternatesForCourse_stmt;
-	/**
-	 * Answer the alternate course ids
-	 *
-	 * @param osid_id_Id $courseId
-	 * @return PDOStatement
-	 * @access public
-	 * @since 5/1/09
-	 */
-	public function getAlternateIdsForCourse (osid_id_Id $courseId) {
-		if (!isset(self::$alternatesForCourse_stmt)) {
-			$query = "
+    /**
+     * Answer the alternate course ids.
+     *
+     * @return PDOStatement
+     *
+     * @since 5/1/09
+     */
+    public function getAlternateIdsForCourse(osid_id_Id $courseId)
+    {
+        if (!isset(self::$alternatesForCourse_stmt)) {
+            $query = '
 SELECT
 	*
 FROM (
@@ -607,52 +642,51 @@ GROUP BY
 	subj_code,
 	crse_numb
 ORDER BY eff_term DESC
-";
-			self::$alternatesForCourse_stmt = $this->manager->getDB()->prepare($query);
-		}
-		$params = array(
-			':subj_code_0' => $this->getSubjectFromCourseId($courseId),
-			':crse_numb_0' => $this->getNumberFromCourseId($courseId),
-			':subj_code_1' => $this->getSubjectFromCourseId($courseId),
-			':crse_numb_1' => $this->getNumberFromCourseId($courseId),
-			':subj_code_2' => $this->getSubjectFromCourseId($courseId),
-			':crse_numb_2' => $this->getNumberFromCourseId($courseId),
-			':subj_code_3' => $this->getSubjectFromCourseId($courseId),
-			':crse_numb_3' => $this->getNumberFromCourseId($courseId),
-			':subj_code_4' => $this->getSubjectFromCourseId($courseId),
-			':crse_numb_4' => $this->getNumberFromCourseId($courseId),
-			':subj_code_5' => $this->getSubjectFromCourseId($courseId),
-			':crse_numb_5' => $this->getNumberFromCourseId($courseId),
-			':subj_code_6' => $this->getSubjectFromCourseId($courseId),
-			':crse_numb_6' => $this->getNumberFromCourseId($courseId)
-		);
+';
+            self::$alternatesForCourse_stmt = $this->manager->getDB()->prepare($query);
+        }
+        $params = [
+            ':subj_code_0' => $this->getSubjectFromCourseId($courseId),
+            ':crse_numb_0' => $this->getNumberFromCourseId($courseId),
+            ':subj_code_1' => $this->getSubjectFromCourseId($courseId),
+            ':crse_numb_1' => $this->getNumberFromCourseId($courseId),
+            ':subj_code_2' => $this->getSubjectFromCourseId($courseId),
+            ':crse_numb_2' => $this->getNumberFromCourseId($courseId),
+            ':subj_code_3' => $this->getSubjectFromCourseId($courseId),
+            ':crse_numb_3' => $this->getNumberFromCourseId($courseId),
+            ':subj_code_4' => $this->getSubjectFromCourseId($courseId),
+            ':crse_numb_4' => $this->getNumberFromCourseId($courseId),
+            ':subj_code_5' => $this->getSubjectFromCourseId($courseId),
+            ':crse_numb_5' => $this->getNumberFromCourseId($courseId),
+            ':subj_code_6' => $this->getSubjectFromCourseId($courseId),
+            ':crse_numb_6' => $this->getNumberFromCourseId($courseId),
+        ];
 
-		self::$alternatesForCourse_stmt->execute($params);
-		$rows = self::$alternatesForCourse_stmt->fetchAll(PDO::FETCH_ASSOC);
-		self::$alternatesForCourse_stmt->closeCursor();
+        self::$alternatesForCourse_stmt->execute($params);
+        $rows = self::$alternatesForCourse_stmt->fetchAll(PDO::FETCH_ASSOC);
+        self::$alternatesForCourse_stmt->closeCursor();
 
-		$ids = array();
-		foreach ($rows as $row) {
-			$ids[] = $this->getCourseIdFromSubjectAndNumber($row['subj_code'], $row['crse_numb']);
-		}
+        $ids = [];
+        foreach ($rows as $row) {
+            $ids[] = $this->getCourseIdFromSubjectAndNumber($row['subj_code'], $row['crse_numb']);
+        }
 
-		return new phpkit_id_ArrayIdList($ids);
-	}
+        return new phpkit_id_ArrayIdList($ids);
+    }
 
-	private static $alternatesForCourseInTerms_stmt;
-	/**
-	 * Answer the alternate course ids that are effive between the given start and end terms (inclusive).
-	 *
-	 * @param osid_id_Id $courseId
-	 * @param osid_id_Id $startTerm
-	 * @param osid_id_Id $endTerm
-	 * @return PDOStatement
-	 * @access public
-	 * @since 5/1/09
-	 */
-	public function getAlternateIdsForCourseInTerms (osid_id_Id $courseId, osid_id_Id $startTerm, osid_id_Id $endTerm) {
-		if (!isset(self::$alternatesForCourseInTerms_stmt)) {
-			$query = "
+    private static $alternatesForCourseInTerms_stmt;
+
+    /**
+     * Answer the alternate course ids that are effive between the given start and end terms (inclusive).
+     *
+     * @return PDOStatement
+     *
+     * @since 5/1/09
+     */
+    public function getAlternateIdsForCourseInTerms(osid_id_Id $courseId, osid_id_Id $startTerm, osid_id_Id $endTerm)
+    {
+        if (!isset(self::$alternatesForCourseInTerms_stmt)) {
+            $query = '
 SELECT
 	*
 FROM (
@@ -822,56 +856,55 @@ GROUP BY
 	subj_code,
 	crse_numb
 ORDER BY eff_term DESC
-";
-			self::$alternatesForCourseInTerms_stmt = $this->manager->getDB()->prepare($query);
-		}
-		$params = array(
-			':subj_code_0' => $this->getSubjectFromCourseId($courseId),
-			':crse_numb_0' => $this->getNumberFromCourseId($courseId),
-			':subj_code_1' => $this->getSubjectFromCourseId($courseId),
-			':crse_numb_1' => $this->getNumberFromCourseId($courseId),
-			':subj_code_2' => $this->getSubjectFromCourseId($courseId),
-			':crse_numb_2' => $this->getNumberFromCourseId($courseId),
-			':subj_code_3' => $this->getSubjectFromCourseId($courseId),
-			':crse_numb_3' => $this->getNumberFromCourseId($courseId),
-			':subj_code_4' => $this->getSubjectFromCourseId($courseId),
-			':crse_numb_4' => $this->getNumberFromCourseId($courseId),
-			':subj_code_5' => $this->getSubjectFromCourseId($courseId),
-			':crse_numb_5' => $this->getNumberFromCourseId($courseId),
-			':subj_code_6' => $this->getSubjectFromCourseId($courseId),
-			':crse_numb_6' => $this->getNumberFromCourseId($courseId),
-			':start_term_0' => $this->getTermCodeFromTermId($startTerm),
-			':start_term_1' => $this->getTermCodeFromTermId($startTerm),
-			':start_term_2' => $this->getTermCodeFromTermId($startTerm),
-			':start_term_3' => $this->getTermCodeFromTermId($startTerm),
-			':start_term_4' => $this->getTermCodeFromTermId($startTerm),
-			':start_term_5' => $this->getTermCodeFromTermId($startTerm),
-			':start_term_6' => $this->getTermCodeFromTermId($startTerm),
-			':start_term_7' => $this->getTermCodeFromTermId($startTerm),
-			':start_term_8' => $this->getTermCodeFromTermId($startTerm),
-			':start_term_9' => $this->getTermCodeFromTermId($startTerm),
-			':end_term_0' => $this->getTermCodeFromTermId($endTerm),
-			':end_term_1' => $this->getTermCodeFromTermId($endTerm),
-			':end_term_2' => $this->getTermCodeFromTermId($endTerm),
-			':end_term_3' => $this->getTermCodeFromTermId($endTerm),
-			':end_term_4' => $this->getTermCodeFromTermId($endTerm),
-			':end_term_5' => $this->getTermCodeFromTermId($endTerm),
-			':end_term_6' => $this->getTermCodeFromTermId($endTerm),
-			':end_term_7' => $this->getTermCodeFromTermId($endTerm),
-			':end_term_8' => $this->getTermCodeFromTermId($endTerm),
-			':end_term_9' => $this->getTermCodeFromTermId($endTerm),
-		);
+';
+            self::$alternatesForCourseInTerms_stmt = $this->manager->getDB()->prepare($query);
+        }
+        $params = [
+            ':subj_code_0' => $this->getSubjectFromCourseId($courseId),
+            ':crse_numb_0' => $this->getNumberFromCourseId($courseId),
+            ':subj_code_1' => $this->getSubjectFromCourseId($courseId),
+            ':crse_numb_1' => $this->getNumberFromCourseId($courseId),
+            ':subj_code_2' => $this->getSubjectFromCourseId($courseId),
+            ':crse_numb_2' => $this->getNumberFromCourseId($courseId),
+            ':subj_code_3' => $this->getSubjectFromCourseId($courseId),
+            ':crse_numb_3' => $this->getNumberFromCourseId($courseId),
+            ':subj_code_4' => $this->getSubjectFromCourseId($courseId),
+            ':crse_numb_4' => $this->getNumberFromCourseId($courseId),
+            ':subj_code_5' => $this->getSubjectFromCourseId($courseId),
+            ':crse_numb_5' => $this->getNumberFromCourseId($courseId),
+            ':subj_code_6' => $this->getSubjectFromCourseId($courseId),
+            ':crse_numb_6' => $this->getNumberFromCourseId($courseId),
+            ':start_term_0' => $this->getTermCodeFromTermId($startTerm),
+            ':start_term_1' => $this->getTermCodeFromTermId($startTerm),
+            ':start_term_2' => $this->getTermCodeFromTermId($startTerm),
+            ':start_term_3' => $this->getTermCodeFromTermId($startTerm),
+            ':start_term_4' => $this->getTermCodeFromTermId($startTerm),
+            ':start_term_5' => $this->getTermCodeFromTermId($startTerm),
+            ':start_term_6' => $this->getTermCodeFromTermId($startTerm),
+            ':start_term_7' => $this->getTermCodeFromTermId($startTerm),
+            ':start_term_8' => $this->getTermCodeFromTermId($startTerm),
+            ':start_term_9' => $this->getTermCodeFromTermId($startTerm),
+            ':end_term_0' => $this->getTermCodeFromTermId($endTerm),
+            ':end_term_1' => $this->getTermCodeFromTermId($endTerm),
+            ':end_term_2' => $this->getTermCodeFromTermId($endTerm),
+            ':end_term_3' => $this->getTermCodeFromTermId($endTerm),
+            ':end_term_4' => $this->getTermCodeFromTermId($endTerm),
+            ':end_term_5' => $this->getTermCodeFromTermId($endTerm),
+            ':end_term_6' => $this->getTermCodeFromTermId($endTerm),
+            ':end_term_7' => $this->getTermCodeFromTermId($endTerm),
+            ':end_term_8' => $this->getTermCodeFromTermId($endTerm),
+            ':end_term_9' => $this->getTermCodeFromTermId($endTerm),
+        ];
 
-		self::$alternatesForCourseInTerms_stmt->execute($params);
-		$rows = self::$alternatesForCourseInTerms_stmt->fetchAll(PDO::FETCH_ASSOC);
-		self::$alternatesForCourseInTerms_stmt->closeCursor();
+        self::$alternatesForCourseInTerms_stmt->execute($params);
+        $rows = self::$alternatesForCourseInTerms_stmt->fetchAll(PDO::FETCH_ASSOC);
+        self::$alternatesForCourseInTerms_stmt->closeCursor();
 
-		$ids = array();
-		foreach ($rows as $row) {
-			$ids[] = $this->getCourseIdFromSubjectAndNumber($row['subj_code'], $row['crse_numb']);
-		}
+        $ids = [];
+        foreach ($rows as $row) {
+            $ids[] = $this->getCourseIdFromSubjectAndNumber($row['subj_code'], $row['crse_numb']);
+        }
 
-		return new phpkit_id_ArrayIdList($ids);
-	}
-
+        return new phpkit_id_ArrayIdList($ids);
+    }
 }
