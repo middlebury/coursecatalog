@@ -80,6 +80,6 @@ class CatalogSync_Database_Source_PdoMysql extends CatalogSync_Database_PdoAbstr
         }
 
         // Parse and Execute the statement
-        return intval($this->pdo->query($query)->fetchColumn());
+        return (int) $this->pdo->query($query)->fetchColumn();
     }
 }

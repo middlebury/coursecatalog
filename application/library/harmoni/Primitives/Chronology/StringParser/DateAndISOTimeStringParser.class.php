@@ -12,7 +12,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/DateAndTimeStringParser.class.php';
+require_once __DIR__.'/DateAndTimeStringParser.class.php';
 
 /**
  * DateAndTimeStringParser breaks up strings into a date component and a time
@@ -86,13 +86,13 @@ class DateAndISOTimeStringParser extends DateAndTimeStringParser
         $this->setMinute($timeParser->minute());
         $this->setSecond($timeParser->second());
 
-        if (!is_null($timeParser->offsetHour())) {
+        if (null !== $timeParser->offsetHour()) {
             $this->setOffsetHour($timeParser->offsetHour());
         }
-        if (!is_null($timeParser->offsetMinute())) {
+        if (null !== $timeParser->offsetMinute()) {
             $this->setOffsetMinute($timeParser->offsetMinute());
         }
-        if (!is_null($timeParser->offsetSecond())) {
+        if (null !== $timeParser->offsetSecond()) {
             $this->setOffsetSecond($timeParser->offsetSecond());
         }
     }

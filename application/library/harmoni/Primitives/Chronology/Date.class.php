@@ -12,8 +12,8 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/Timespan.class.php';
-require_once dirname(__FILE__).'/DateAndTime.class.php';
+require_once __DIR__.'/Timespan.class.php';
+require_once __DIR__.'/DateAndTime.class.php';
 
 /**
  * Instances of Date are Timespans with duration of 1 day.
@@ -258,7 +258,7 @@ class Date extends Timespan
      */
     public static function withYearMonthDay($anIntYear, $anIntOrStringMonth, $anIntDay, $class = 'Date')
     {
-        eval('$result = '.$class.'::starting(DateAndTime::withYearMonthDay($anIntYear, 
+        eval('$result = '.$class.'::starting(DateAndTime::withYearMonthDay($anIntYear,
 			$anIntOrStringMonth, $anIntDay));');
 
         return $result;
@@ -371,7 +371,7 @@ class Date extends Timespan
             switch ($element) {
                 case 1:
                     if ($twoDigits) {
-                        $result .= str_pad($this->dayOfMonth(), 2, '0', STR_PAD_LEFT);
+                        $result .= str_pad($this->dayOfMonth(), 2, '0', \STR_PAD_LEFT);
                     } else {
                         $result .= $this->dayOfMonth();
                     }
@@ -380,7 +380,7 @@ class Date extends Timespan
                 case 2:
                     if (1 == $monthFormat) {
                         if ($twoDigits) {
-                            $result .= str_pad($this->startMonth(), 2, '0', STR_PAD_LEFT);
+                            $result .= str_pad($this->startMonth(), 2, '0', \STR_PAD_LEFT);
                         } else {
                             $result .= $this->startMonth();
                         }
@@ -393,7 +393,7 @@ class Date extends Timespan
 
                 case 3:
                     if (2 == $yearFormat) {
-                        $result .= str_pad($this->startYear() % 100, 2, '0', STR_PAD_LEFT);
+                        $result .= str_pad($this->startYear() % 100, 2, '0', \STR_PAD_LEFT);
                     } else {
                         $result .= $this->startYear();
                     }

@@ -12,7 +12,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/StringParser.class.php';
+require_once __DIR__.'/StringParser.class.php';
 // require_once(dirname(__FILE__)."/TwoDigitYearStringParser.class.php");
 
 /**
@@ -60,9 +60,9 @@ class MonthNumberDayYearStringParser extends TwoDigitYearStringParser
 		|
 		(?:  1[0-2])
 	)
-	
+
 	[^0-9a-zA-Z]+		# delimiters
-	
+
 	(					# Day of the Month
 		(?:  0?[1-9])
 		|
@@ -70,9 +70,9 @@ class MonthNumberDayYearStringParser extends TwoDigitYearStringParser
 		|
 		(?:  3[01])
 	)
-	
+
 	[^0-9a-zA-Z]+		# delimiters
-	
+
 	([0-9]{2,})			# Year
 $
 /x';

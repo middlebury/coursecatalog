@@ -31,7 +31,7 @@ abstract class banner_course_CachingPdoQueryList extends phpkit_List_Pdo_Query_F
     protected function getStatementCacheKey($query = null)
     {
         if (!isset($this->statementCacheKey)) {
-            if (is_null($query)) {
+            if (null === $query) {
                 throw new osid_OperationFailedException('A query must be present when setting the cache key');
             }
             $this->statementCacheKey = md5($query);

@@ -12,7 +12,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/DateAndTime.class.php';
+require_once __DIR__.'/DateAndTime.class.php';
 
 /**
  * This represents a duration of 0 length that marks a particular point in time.
@@ -596,7 +596,7 @@ class TimeStamp extends DateAndTime
      */
     public function asUnixTimeStamp()
     {
-        $sinceUnixEpoch = $this->minus(TimeStamp::withYearMonthDayHourMinuteSecondOffset(
+        $sinceUnixEpoch = $this->minus(self::withYearMonthDayHourMinuteSecondOffset(
             1970, 1, 1, 0, 0, 0, Duration::zero()));
 
         return $sinceUnixEpoch->asSeconds();

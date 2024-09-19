@@ -16,7 +16,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 if (!defined('HARMONI')) {
-    require_once dirname(__FILE__).'/../../../../harmoni.inc.php';
+    require_once __DIR__.'/../../../../harmoni.inc.php';
 }
 
 if (!defined('SIMPLE_TEST')) {
@@ -27,19 +27,19 @@ require_once SIMPLE_TEST.'simple_unit.php';
 require_once SIMPLE_TEST.'dobo_simple_html_test.php';
 
 $test = new GroupTest('Chronology Tests');
-$test->addTestFile(dirname(__FILE__).'/DateTestCase.class.php');
-$test->addTestFile(dirname(__FILE__).'/DateAndTimeTestCase.class.php');
-$test->addTestFile(dirname(__FILE__).'/DurationTestCase.class.php');
-$test->addTestFile(dirname(__FILE__).'/MonthTestCase.class.php');
-$test->addTestFile(dirname(__FILE__).'/ScheduleTestCase.class.php');
-$test->addTestFile(dirname(__FILE__).'/TimeTestCase.class.php');
-$test->addTestFile(dirname(__FILE__).'/TimeStampTestCase.class.php');
-$test->addTestFile(dirname(__FILE__).'/TimespanTestCase.class.php');
-$test->addTestFile(dirname(__FILE__).'/YearTestCase.class.php');
-$test->addTestFile(dirname(__FILE__).'/WeekTestCase.class.php');
-$test->addTestFile(dirname(__FILE__).'/SObjectTestCase.class.php');
+$test->addTestFile(__DIR__.'/DateTestCase.class.php');
+$test->addTestFile(__DIR__.'/DateAndTimeTestCase.class.php');
+$test->addTestFile(__DIR__.'/DurationTestCase.class.php');
+$test->addTestFile(__DIR__.'/MonthTestCase.class.php');
+$test->addTestFile(__DIR__.'/ScheduleTestCase.class.php');
+$test->addTestFile(__DIR__.'/TimeTestCase.class.php');
+$test->addTestFile(__DIR__.'/TimeStampTestCase.class.php');
+$test->addTestFile(__DIR__.'/TimespanTestCase.class.php');
+$test->addTestFile(__DIR__.'/YearTestCase.class.php');
+$test->addTestFile(__DIR__.'/WeekTestCase.class.php');
+$test->addTestFile(__DIR__.'/SObjectTestCase.class.php');
 
-$test->addTestFile(dirname(__FILE__).'/../StringParser/tests/test.php');
+$test->addTestFile(__DIR__.'/../StringParser/tests/test.php');
 
 $test->attachObserver(new DoboTestHtmlDisplay());
 $test->run();

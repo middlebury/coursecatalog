@@ -23,7 +23,7 @@ abstract class Catalog_Action_Helper_AbstractOsidIdentifier extends Zend_Control
     {
         if (!isset(self::$idAuthorityToShorten)) {
             $config = Zend_Registry::getInstance()->config;
-            $authority = strval($config->catalog->shorten_ids_for_authority);
+            $authority = (string) $config->catalog->shorten_ids_for_authority;
             if (strlen($authority)) {
                 self::$idAuthorityToShorten = $authority;
             } else {

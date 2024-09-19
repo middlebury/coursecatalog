@@ -1012,7 +1012,7 @@ GROUP BY GTVINSM_CODE
      */
     private function getCatalogWhereTerms()
     {
-        if (is_null($this->catalogId) || $this->catalogId->isEqual($this->getCombinedCatalogId())) {
+        if (null === $this->catalogId || $this->catalogId->isEqual($this->getCombinedCatalogId())) {
             return 'TRUE';
         } else {
             return 'catalog_id = :catalog_id';
@@ -1029,7 +1029,7 @@ GROUP BY GTVINSM_CODE
     private function getCatalogParameters()
     {
         $params = [];
-        if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->getCombinedCatalogId())) {
+        if (null !== $this->catalogId && !$this->catalogId->isEqual($this->getCombinedCatalogId())) {
             $params[':catalog_id'] = $this->getCatalogDatabaseId($this->catalogId);
         }
 

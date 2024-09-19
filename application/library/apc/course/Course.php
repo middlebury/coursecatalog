@@ -126,7 +126,7 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
     public function getDisplayName()
     {
         $val = $this->cacheGetPlain('displayName');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('displayName', $this->getMyCourse()->getDisplayName());
         } else {
             return $val;
@@ -152,7 +152,7 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
     public function getDescription()
     {
         $val = $this->cacheGetPlain('description');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('description', $this->getMyCourse()->getDescription());
         } else {
             return $val;
@@ -175,7 +175,7 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
     public function getRecordTypes()
     {
         $val = $this->cacheGetObj('recordTypes');
-        if (is_null($val)) {
+        if (null === $val) {
             $val = [];
             $types = $this->getMyCourse()->getRecordTypes();
             while ($types->hasNext()) {
@@ -225,7 +225,7 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
     public function getGenusType()
     {
         $val = $this->cacheGetObj('genusType');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetObj('genusType', $this->getMyCourse()->getGenusType());
         } else {
             return $val;
@@ -363,7 +363,7 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
     public function getTitle()
     {
         $val = $this->cacheGetPlain('title');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('title', $this->getMyCourse()->getTitle());
         } else {
             return $val;
@@ -381,7 +381,7 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
     public function getNumber()
     {
         $val = $this->cacheGetPlain('number');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('number', $this->getMyCourse()->getNumber());
         } else {
             return $val;
@@ -398,7 +398,7 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
     public function getCredits()
     {
         $val = $this->cacheGetPlain('credits');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('credits', $this->getMyCourse()->getCredits());
         } else {
             return $val;
@@ -415,7 +415,7 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
     public function getPrereqInfo()
     {
         $val = $this->cacheGetPlain('prerequisites');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('prerequisites', $this->getMyCourse()->getPrereqInfo());
         } else {
             return $val;
@@ -437,7 +437,7 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
     public function getTopicIds()
     {
         $val = $this->cacheGetObj('topic_ids');
-        if (is_null($val)) {
+        if (null === $val) {
             $val = [];
             $ids = $this->getMyCourse()->getTopicIds();
             while ($ids->hasNext()) {
@@ -565,7 +565,7 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
     public function getTermIds()
     {
         $val = $this->cacheGetObj('term_ids');
-        if (is_null($val)) {
+        if (null === $val) {
             $val = [];
             $ids = $this->getMyCourse()->getTermIds();
             while ($ids->hasNext()) {
@@ -608,7 +608,7 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
     public function hasAlternates()
     {
         $val = $this->cacheGetPlain('hasAlternates');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('hasAlternates', $this->getMyCourse()->hasAlternates());
         } else {
             return $val;
@@ -628,7 +628,7 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
     public function getAlternateIds()
     {
         $val = $this->cacheGetObj('alternate_ids');
-        if (is_null($val)) {
+        if (null === $val) {
             $val = [];
             $ids = $this->getMyCourse()->getAlternateIds();
             while ($ids->hasNext()) {
@@ -672,7 +672,7 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
     public function isPrimary()
     {
         $val = $this->cacheGetPlain('isPrimary');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('isPrimary', $this->getMyCourse()->isPrimary());
         } else {
             return $val;
@@ -705,7 +705,7 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
             .$termId->getIdentifier();
 
         $val = $this->cacheGetObj($cacheKey);
-        if (is_null($val)) {
+        if (null === $val) {
             $val = [];
             $ids = $this->getMyCourse()->getLinkSetIdsForTerm($termId);
             while ($ids->hasNext()) {
@@ -743,7 +743,7 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
             .$linkSetId->getIdentifier();
 
         $val = $this->cacheGetObj($cacheKey);
-        if (is_null($val)) {
+        if (null === $val) {
             $val = [];
             $ids = $this->getMyCourse()->getLinkTypeIdsForTermAndSet($termId, $linkSetId);
             while ($ids->hasNext()) {

@@ -35,7 +35,7 @@ class CatalogSync_Syncer_Oci extends CatalogSync_Syncer_Abstract implements Cata
          * Warnings or Errors. This should catch any OCI problems that
          * are not picked up by calls to oci_error().
          */
-        set_error_handler([$this, 'exception_error_handler'], E_ERROR | E_WARNING);
+        set_error_handler([$this, 'exception_error_handler'], \E_ERROR | \E_WARNING);
     }
 
     /**

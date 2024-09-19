@@ -171,7 +171,7 @@ abstract class SObject
      */
     public function asA($aSimilarClass)
     {
-        $obj = SObject::newFrom($aSimilarClass, $this);
+        $obj = self::newFrom($aSimilarClass, $this);
 
         return $obj;
     }
@@ -199,7 +199,7 @@ abstract class SObject
      */
     public function printableString()
     {
-        $classname = get_class($this);
+        $classname = static::class;
         $string = 'a';
 
         if (in_array(strtolower($classname[0]), ['a', 'e', 'i', 'o', 'u'])) {
@@ -247,7 +247,7 @@ abstract class SObject
         $otherVars = get_object_vars($otherObject);
 
         foreach (array_keys($myVars) as $varName) {
-            if (key_exists($varName, $otherVars)) {
+            if (array_key_exists($varName, $otherVars)) {
                 $this->$varName = $otherVars[$varName];
             }
         }
@@ -262,7 +262,7 @@ abstract class SObject
      */
     public function copyTwoLevel()
     {
-        $class = get_class($this);
+        $class = static::class;
         $newObject = new $class();
 
         $varList = array_keys(get_object_vars($this));
@@ -292,7 +292,7 @@ abstract class SObject
      */
     public function deepCopy()
     {
-        $class = get_class($this);
+        $class = static::class;
         $newObject = new $class();
 
         $varList = array_keys(get_object_vars($this));
@@ -305,7 +305,7 @@ abstract class SObject
 
             // If it is an Array, copy the values
             elseif (is_array($this->$varName)) {
-                $newObject->$varName = SObject::_deepCopyArray($this->$varName);
+                $newObject->$varName = self::_deepCopyArray($this->$varName);
             }
 
             // Otherwise use PHP's copy-by-value
@@ -341,7 +341,7 @@ abstract class SObject
 
             // If it is an Array, copy the values
             elseif (is_array($array[$key])) {
-                $newArray[$key] = SObject::_deepCopyArray($array[$key]);
+                $newArray[$key] = self::_deepCopyArray($array[$key]);
             }
 
             // Otherwise use PHP's copy-by-value
@@ -376,7 +376,7 @@ abstract class SObject
      */
     public function shallowCopy()
     {
-        $class = get_class($this);
+        $class = static::class;
         $newObject = new $class();
 
         $varList = array_keys(get_object_vars($this));

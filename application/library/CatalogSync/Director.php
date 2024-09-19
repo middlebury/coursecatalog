@@ -96,17 +96,17 @@ class CatalogSync_Director
             // To:
             if (is_array($this->config->error_mail_to)) {
                 foreach ($this->config->error_mail_to as $email) {
-                    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    if (!filter_var($email, \FILTER_VALIDATE_EMAIL)) {
                         throw new Exception("error_mail_to, '$email', is not a valid email address.");
                     }
                 }
             } else {
-                if (!filter_var($this->config->error_mail_to, FILTER_VALIDATE_EMAIL)) {
+                if (!filter_var($this->config->error_mail_to, \FILTER_VALIDATE_EMAIL)) {
                     throw new Exception("error_mail_to, '".$this->config->error_mail_to."', is not a valid email address.");
                 }
             }
             // From:
-            if (!filter_var($this->config->error_mail_from, FILTER_VALIDATE_EMAIL)) {
+            if (!filter_var($this->config->error_mail_from, \FILTER_VALIDATE_EMAIL)) {
                 throw new Exception("error_mail_from, '".$this->config->error_mail_from."', is not a valid email address.");
             }
         }

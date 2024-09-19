@@ -112,7 +112,7 @@ abstract class banner_course_AbstractSearch
      */
     public function getOrderByTerms()
     {
-        if (is_null($this->order)) {
+        if (null === $this->order) {
             return [];
         } else {
             return $this->order->getOrderByTerms();
@@ -193,7 +193,7 @@ abstract class banner_course_AbstractSearch
      */
     public function limitResultSet($start, $end)
     {
-        if (is_null($start) || is_null($end)) {
+        if (null === $start || null === $end) {
             throw new osid_NullArgumentException('$start and $end must be integers.');
         }
         if (!is_int($start) || !is_int($end)) {

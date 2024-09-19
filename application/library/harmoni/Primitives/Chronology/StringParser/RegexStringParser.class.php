@@ -12,7 +12,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/StringParser.class.php';
+require_once __DIR__.'/StringParser.class.php';
 
 /**
  * RegexStringParser is an abstract class that implements a common canHandle()
@@ -70,7 +70,7 @@ abstract class RegexStringParser extends StringParser
      */
     public function canHandle()
     {
-        $regex = call_user_func([get_class($this), 'getRegex']);
+        $regex = call_user_func([static::class, 'getRegex']);
 
         return preg_match($regex, $this->input);
     }

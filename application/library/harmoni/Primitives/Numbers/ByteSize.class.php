@@ -9,7 +9,7 @@
  * @version $Id: ByteSize.class.php,v 1.6 2007/10/10 22:58:34 adamfranco Exp $
  */
 
-require_once dirname(__FILE__).'/Integer.class.php';
+require_once __DIR__.'/Integer.class.php';
 
 /**
  * A representation of a Byte size. Provides easy conversion between B, KB, MB, etc
@@ -40,7 +40,7 @@ class ByteSize extends Integer
      */
     public static function suffixForPower($power)
     {
-        $multiple = intval($power / 10);
+        $multiple = (int) ($power / 10);
         if ($multiple < 0 || $multiple > 8) {
             throwError(new Error("Invalid power, $power. Valid values are multiples of ten, 0-80.",
                 'ByteSize', true));
@@ -76,10 +76,10 @@ class ByteSize extends Integer
 
             $suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
             if (in_array($suffix, $suffixes)) {
-                $bytes = $matches[1] * pow(2, 10 * array_search($suffix, $suffixes));
+                $bytes = $matches[1] * 2 ** (10 * array_search($suffix, $suffixes));
             } else {
                 $suffixes = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
-                $bytes = $matches[1] * pow(2, 10 * array_search($suffix, $suffixes));
+                $bytes = $matches[1] * 2 ** (10 * array_search($suffix, $suffixes));
             }
         } elseif (preg_match('/^[0-9]+$/', $stringValue)) {
             $bytes = $stringValue * 1;
@@ -141,8 +141,8 @@ class ByteSize extends Integer
      */
     public function printableString()
     {
-        for ($i = 0; $i <= 80; $i = $i + 10) {
-            if ($this->value() < pow(2, $i + 10)) {
+        for ($i = 0; $i <= 80; $i += 10) {
+            if ($this->value() < 2 ** ($i + 10)) {
                 break;
             }
         }
@@ -211,7 +211,7 @@ class ByteSize extends Integer
      */
     public function multipleOfPowerOf2($power)
     {
-        return $this->value() / pow(2, $power);
+        return $this->value() / 2 ** $power;
     }
 
     /**

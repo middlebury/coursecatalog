@@ -13,7 +13,7 @@ trait Catalog_ApplicationTestTrait
         Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH.'/resources/Auth/Action/Helper', 'Auth_Action_Helper');
 
         $registry = Zend_Registry::getInstance();
-        $registry->config = new Zend_Config_Ini(dirname(__FILE__).'/frontend_config.ini', 'development');
+        $registry->config = new Zend_Config_Ini(__DIR__.'/frontend_config.ini', 'development');
     }
 
     /**
@@ -21,6 +21,6 @@ trait Catalog_ApplicationTestTrait
      */
     public function getTestConfigPath()
     {
-        return dirname(__FILE__).'/../apc/configuration.plist';
+        return __DIR__.'/../apc/configuration.plist';
     }
 }

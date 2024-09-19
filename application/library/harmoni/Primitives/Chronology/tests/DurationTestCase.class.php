@@ -12,7 +12,7 @@
  * @since 5/3/05
  */
 
-require_once dirname(__FILE__).'/../Duration.class.php';
+require_once __DIR__.'/../Duration.class.php';
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -36,7 +36,7 @@ class DurationTestCase extends UnitTestCase
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    public function setUp()
+    protected function setUp()
     {
         // perhaps, initialize $obj here
     }
@@ -44,7 +44,7 @@ class DurationTestCase extends UnitTestCase
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    public function tearDown()
+    protected function tearDown()
     {
         // perhaps, unset $obj here
     }

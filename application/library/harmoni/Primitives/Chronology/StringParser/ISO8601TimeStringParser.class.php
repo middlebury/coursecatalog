@@ -12,7 +12,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/StringParser.class.php';
+require_once __DIR__.'/StringParser.class.php';
 // require_once(dirname(__FILE__)."/RegexStringParser.class.php");
 
 /**
@@ -57,7 +57,7 @@ class ISO8601TimeStringParser extends RegexStringParser
 
 	[\sT]?								# Optional delimiter
 
-#-----------------------------------------------------------------------------		
+#-----------------------------------------------------------------------------
 										# The time component
 
 	(									# Two-digit hour
@@ -65,34 +65,34 @@ class ISO8601TimeStringParser extends RegexStringParser
 		|
 		(?: 2[0-4])
 	)
-	
+
 	:?									# Optional Colon
-	
+
 	([0-5][0-9])?						# Two-digit minute
-	
+
 	:?									# Optional Colon
-	
-	(									# Two-digit second 
+
+	(									# Two-digit second
 		[0-5][0-9]
 		(?: \.[0-9]+)?						# followed by an optional decimal.
 	)?
 
 #-----------------------------------------------------------------------------
 	(									# Offset component
-	
+
 		Z								# Zero offset (UTC)
 		|								# OR
 		(?:								# Offset from UTC
 			([+\-])						# Sign of the offset
-		
+
 			(							# Two-digit offset hour
 				(?:  [0-1][0-9])
 				|
 				(?:  2[0-4])
-			)			
+			)
 
 			:?							# Optional Colon
-			
+
 			([0-5][0-9])?				# Two-digit offset minute
 		)
 	)?
@@ -150,8 +150,8 @@ $
             } else {
                 $minute = 0;
             }
-            $this->setOffsetHour(intval($sign.$hour));
-            $this->setOffsetMinute(intval($sign.$minute));
+            $this->setOffsetHour((int) ($sign.$hour));
+            $this->setOffsetMinute((int) ($sign.$minute));
         }
     }
 }

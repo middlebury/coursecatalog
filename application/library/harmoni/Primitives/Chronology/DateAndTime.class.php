@@ -12,7 +12,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/../Magnitudes/Magnitude.class.php';
+require_once __DIR__.'/../Magnitudes/Magnitude.class.php';
 
 /**
  * I represent a point in UTC time as defined by ISO 8601. I have zero duration.
@@ -126,7 +126,7 @@ class DateAndTime extends Magnitude
      */
     public static function localOffset()
     {
-        $timeZone = DateAndTime::localTimeZone();
+        $timeZone = self::localTimeZone();
 
         return $timeZone->offset();
     }
@@ -184,7 +184,7 @@ class DateAndTime extends Magnitude
     public static function epoch($class = 'DateAndTime')
     {
         eval('$result = '.$class.'::withJulianDayNumber(
-					ChronologyConstants::SqueakEpoch(), 
+					ChronologyConstants::SqueakEpoch(),
 					$class
 				);');
 
@@ -227,13 +227,13 @@ class DateAndTime extends Magnitude
             // die("'".$aString."' is not in a valid format.");
         }
 
-        if (!is_null($parser->offsetHour())) {
+        if (null !== $parser->offsetHour()) {
             eval('$result = '.$class.'::withYearMonthDayHourMinuteSecondOffset(
 				$parser->year(), $parser->month(), $parser->day(), $parser->hour(),
-				$parser->minute(), $parser->second(), 
+				$parser->minute(), $parser->second(),
 				Duration::withDaysHoursMinutesSeconds(0, $parser->offsetHour(),
 				$parser->offsetMinute(), $parser->offsetSecond()), $class);');
-        } elseif (!is_null($parser->hour())) {
+        } elseif (null !== $parser->hour()) {
             eval('$result = '.$class.'::withYearMonthDayHourMinuteSecond(
 				$parser->year(), $parser->month(), $parser->day(), $parser->hour(),
 				$parser->minute(), $parser->second(), $class);');
@@ -306,12 +306,12 @@ class DateAndTime extends Magnitude
     public static function now($class = 'DateAndTime')
     {
         eval('$result = '.$class.'::withYearMonthDayHourMinuteSecondOffset(
-				'.intval(date('Y')).',
-				'.intval(date('n')).',
-				'.intval(date('j')).',
-				'.intval(date('G')).',
-				'.intval(date('i')).',
-				'.intval(date('s')).',
+				'.(int) date('Y').',
+				'.(int) date('n').',
+				'.(int) date('j').',
+				'.(int) date('G').',
+				'.(int) date('i').',
+				'.(int) date('s').',
 				$null = NULL,
 				$class
 			);');
@@ -418,7 +418,7 @@ class DateAndTime extends Magnitude
         $days = Duration::withDays($aJulianDayNumber);
 
         $dateAndTime = new $class();
-        $dateAndTime->ticksOffset($days->ticks(), DateAndTime::localOffset());
+        $dateAndTime->ticksOffset($days->ticks(), self::localOffset());
 
         return $dateAndTime;
     }
@@ -441,9 +441,9 @@ class DateAndTime extends Magnitude
     {
         eval('$result = '.$class.'::withYearDayHourMinuteSecond(
 				$anIntYear,
-				$anIntDayOfYear, 
-				0, 
-				0, 
+				$anIntDayOfYear,
+				0,
+				0,
 				0,
 				$class
 			);');
@@ -475,10 +475,10 @@ class DateAndTime extends Magnitude
     {
         eval('$return = '.$class.'::withYearDayHourMinuteSecondOffset(
 				$anIntYear,
-				$anIntDayOfYear, 
-				$anIntHour, 
-				$anIntMinute, 
-				$anIntSecond, 
+				$anIntDayOfYear,
+				$anIntHour,
+				$anIntMinute,
+				$anIntSecond,
 				'.$class.'::localOffset(),
 				$class
 			);');
@@ -511,10 +511,10 @@ class DateAndTime extends Magnitude
     {
         eval('$result = '.$class.'::withYearMonthDayHourMinuteSecondOffset(
 				$anIntYear,
-				1, 
-				1, 
-				$anIntHour, 
-				$anIntMinute, 
+				1,
+				1,
+				$anIntHour,
+				$anIntMinute,
 				$anIntSecond,
 				$aDurationOffset,
 				$class
@@ -549,10 +549,10 @@ class DateAndTime extends Magnitude
     {
         eval('$result = '.$class.'::withYearMonthDayHourMinuteSecondOffset(
 				$anIntYear,
-				$anIntOrStringMonth, 
-				$anIntDay, 
-				0, 
-				0, 
+				$anIntOrStringMonth,
+				$anIntDay,
+				0,
+				0,
 				0,
 				$null = NULL,
 				$class
@@ -585,10 +585,10 @@ class DateAndTime extends Magnitude
     {
         eval('$result = '.$class.'::withYearMonthDayHourMinuteSecondOffset(
 				$anIntYear,
-				$anIntOrStringMonth, 
-				$anIntDay, 
-				$anIntHour, 
-				$anIntMinute, 
+				$anIntOrStringMonth,
+				$anIntDay,
+				$anIntHour,
+				$anIntMinute,
 				0,
 				$null = NULL,
 				$class
@@ -622,10 +622,10 @@ class DateAndTime extends Magnitude
     {
         eval('$result = '.$class.'::withYearMonthDayHourMinuteSecondOffset(
 				$anIntYear,
-				$anIntOrStringMonth, 
-				$anIntDay, 
-				$anIntHour, 
-				$anIntMinute, 
+				$anIntOrStringMonth,
+				$anIntDay,
+				$anIntHour,
+				$anIntMinute,
 				$anIntSecond,
 				$null = NULL,
 				$class
@@ -676,21 +676,21 @@ class DateAndTime extends Magnitude
             $monthIndex = Month::indexOfMonth($anIntOrStringMonth);
         }
 
-        $p = intval(($monthIndex - 14) / 12);
+        $p = (int) (($monthIndex - 14) / 12);
         $q = $anIntYear + 4800 + $p;
         $r = $monthIndex - 2 - (12 * $p);
-        $s = intval(($anIntYear + 4900 + $p) / 100);
+        $s = (int) (($anIntYear + 4900 + $p) / 100);
 
-        $julianDayNumber = intval((1461 * $q) / 4)
-                            + intval((367 * $r) / 12)
-                            - intval((3 * $s) / 4)
+        $julianDayNumber = (int) ((1461 * $q) / 4)
+                            + (int) ((367 * $r) / 12)
+                            - (int) ((3 * $s) / 4)
                             + ($anIntDay - 32075);
 
         $since = Duration::withDaysHoursMinutesSeconds($julianDayNumber,
             $anIntHour, $anIntMinute, $anIntSecond);
 
-        if (is_null($aDurationOffset)) {
-            $offset = DateAndTime::localOffset();
+        if (null === $aDurationOffset) {
+            $offset = self::localOffset();
         } else {
             $offset = $aDurationOffset;
         }
@@ -769,10 +769,10 @@ class DateAndTime extends Magnitude
         $quo = floor(abs($tick) / $base);
         $rem = $tick % $base;
         if ($rem < 0) {
-            $quo = $quo - 1;
+            --$quo;
             $rem = $base + $rem;
         }
-        $ticks[$i - 1] = $ticks[$i - 1] + $quo;
+        $ticks[$i - 1] += $quo;
         $ticks[$i] = $rem;
     }
 
@@ -801,8 +801,8 @@ class DateAndTime extends Magnitude
      */
     public function atMidnight()
     {
-        eval('$result = '.get_class($this).'::withYearMonthDay($this->year(),
-				$this->month(), $this->dayOfMonth(), "'.get_class($this).'");');
+        eval('$result = '.static::class.'::withYearMonthDay($this->year(),
+				$this->month(), $this->dayOfMonth(), "'.static::class.'");');
 
         return $result;
     }
@@ -816,9 +816,9 @@ class DateAndTime extends Magnitude
      */
     public function atNoon()
     {
-        eval('$result = '.get_class($this).'::withYearMonthDayHourMinuteSecond(
-			$this->year(), $this->month(), $this->dayOfMonth(), 12, 0, 0, 
-			'.get_class($this).');');
+        eval('$result = '.static::class.'::withYearMonthDayHourMinuteSecond(
+			$this->year(), $this->month(), $this->dayOfMonth(), 12, 0, 0,
+			'.static::class.');');
 
         return $result;
     }
@@ -851,7 +851,7 @@ class DateAndTime extends Magnitude
     {
         $l = $this->jdn + 68569;
         $n = floor((4 * $l) / 146097);
-        $l = $l - floor(((146097 * $n) + 3) / 4);
+        $l -= floor(((146097 * $n) + 3) / 4);
         $i = floor((4000 * ($l + 1)) / 1461001);
         $l = ($l - floor((1461 * $i) / 4)) + 31;
         $j = floor((80 * $l) / 2447);
@@ -888,7 +888,7 @@ class DateAndTime extends Magnitude
     {
         $x = $this->jdn + 1;
 
-        return ($x - (intval($x / 7) * 7)) + 1;
+        return ($x - ((int) ($x / 7) * 7)) + 1;
     }
 
     /**
@@ -1009,11 +1009,11 @@ class DateAndTime extends Magnitude
     public function hmsString()
     {
         $result = '';
-        $result .= str_pad($this->hour(), 2, '0', STR_PAD_LEFT);
+        $result .= str_pad($this->hour(), 2, '0', \STR_PAD_LEFT);
         $result .= ':';
-        $result .= str_pad($this->minute(), 2, '0', STR_PAD_LEFT);
+        $result .= str_pad($this->minute(), 2, '0', \STR_PAD_LEFT);
         $result .= ':';
-        $result .= str_pad($this->second(), 2, '0', STR_PAD_LEFT);
+        $result .= str_pad($this->second(), 2, '0', \STR_PAD_LEFT);
 
         return $result;
     }
@@ -1056,7 +1056,7 @@ class DateAndTime extends Magnitude
     {
         $x = ($this->hour24() - 1) % 12;
         if ($x < 0) {
-            $x = $x + 12;
+            $x += 12;
         }
 
         return $x + 1;
@@ -1220,13 +1220,13 @@ class DateAndTime extends Magnitude
             $result .= '-';
         }
 
-        $result .= str_pad(abs($this->offset->hours()), 2, '0', STR_PAD_LEFT);
+        $result .= str_pad(abs($this->offset->hours()), 2, '0', \STR_PAD_LEFT);
         $result .= ':';
-        $result .= str_pad(abs($this->offset->minutes()), 2, '0', STR_PAD_LEFT);
+        $result .= str_pad(abs($this->offset->minutes()), 2, '0', \STR_PAD_LEFT);
 
         if (0 != $this->offset->seconds()) {
             $result .= ':';
-            $result .= intval(abs($this->offset->minutes()) / 10);
+            $result .= (int) (abs($this->offset->minutes()) / 10);
         }
 
         return $result;
@@ -1330,11 +1330,11 @@ class DateAndTime extends Magnitude
             }
         }
 
-        $result .= str_pad(abs($year), 4, '0', STR_PAD_LEFT);
+        $result .= str_pad(abs($year), 4, '0', \STR_PAD_LEFT);
         $result .= '-';
-        $result .= str_pad($month, 2, '0', STR_PAD_LEFT);
+        $result .= str_pad($month, 2, '0', \STR_PAD_LEFT);
         $result .= '-';
-        $result .= str_pad($day, 2, '0', STR_PAD_LEFT);
+        $result .= str_pad($day, 2, '0', \STR_PAD_LEFT);
 
         return $result;
     }
@@ -1515,7 +1515,7 @@ class DateAndTime extends Magnitude
             $ticks[$key] = $value + $durationTicks[$key];
         }
 
-        $class = get_class($this);
+        $class = static::class;
         $result = new $class();
         $result->ticksOffset($ticks, $this->offset());
 
@@ -1577,10 +1577,10 @@ class DateAndTime extends Magnitude
     public function asLocal()
     {
         $myOffset = $this->offset();
-        if ($myOffset->isEqualTo(DateAndTime::localOffset())) {
+        if ($myOffset->isEqualTo(self::localOffset())) {
             return $this;
         } else {
-            $obj = $this->utcOffset(DateAndTime::localOffset());
+            $obj = $this->utcOffset(self::localOffset());
 
             return $obj;
         }
@@ -1609,7 +1609,7 @@ class DateAndTime extends Magnitude
      */
     public function asSeconds()
     {
-        eval('$epoch = '.get_class($this).'::epoch();');
+        eval('$epoch = '.static::class.'::epoch();');
         $sinceEpoch = $this->minus($epoch);
 
         return $sinceEpoch->asSeconds();
@@ -1662,14 +1662,14 @@ class DateAndTime extends Magnitude
             $result .= '-';
         }
 
-        $result .= str_pad(abs($this->offset->hours()), 2, '0', STR_PAD_LEFT);
+        $result .= str_pad(abs($this->offset->hours()), 2, '0', \STR_PAD_LEFT);
         $result .= ':';
-        $result .= str_pad(abs($this->offset->minutes()), 2, '0', STR_PAD_LEFT);
+        $result .= str_pad(abs($this->offset->minutes()), 2, '0', \STR_PAD_LEFT);
 
         $resultWithTZ = $result;
         if (0 != $this->offset->seconds()) {
             $resultWithTZ .= ':';
-            $resultWithTZ .= intval(abs($this->offset->minutes()) / 10);
+            $resultWithTZ .= (int) (abs($this->offset->minutes()) / 10);
         }
 
         $dateTime = new DateTime($resultWithTZ);
@@ -1760,7 +1760,7 @@ class DateAndTime extends Magnitude
      */
     public function withOffset($anOffset)
     {
-        $class = get_class($this);
+        $class = static::class;
         $equiv = new $class();
         $equiv->ticksOffset($this->ticks(), $anOffset->asDuration());
 
@@ -1823,12 +1823,12 @@ class DateAndTime extends Magnitude
     }
 }
 
-require_once dirname(__FILE__).'/ChronologyConstants.class.php';
-require_once dirname(__FILE__).'/Date.class.php';
-require_once dirname(__FILE__).'/Duration.class.php';
-require_once dirname(__FILE__).'/Month.class.php';
-require_once dirname(__FILE__).'/Time.class.php';
-require_once dirname(__FILE__).'/TimeStamp.class.php';
-require_once dirname(__FILE__).'/TimeZone.class.php';
-require_once dirname(__FILE__).'/Week.class.php';
-require_once dirname(__FILE__).'/Year.class.php';
+require_once __DIR__.'/ChronologyConstants.class.php';
+require_once __DIR__.'/Date.class.php';
+require_once __DIR__.'/Duration.class.php';
+require_once __DIR__.'/Month.class.php';
+require_once __DIR__.'/Time.class.php';
+require_once __DIR__.'/TimeStamp.class.php';
+require_once __DIR__.'/TimeZone.class.php';
+require_once __DIR__.'/Week.class.php';
+require_once __DIR__.'/Year.class.php';

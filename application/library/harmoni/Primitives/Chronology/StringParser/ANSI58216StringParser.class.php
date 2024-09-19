@@ -12,7 +12,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/StringParser.class.php';
+require_once __DIR__.'/StringParser.class.php';
 // require_once(dirname(__FILE__)."/RegexStringParser.class.php");
 
 /**
@@ -72,30 +72,30 @@ class ANSI58216StringParser extends RegexStringParser
 		\+								# Or a + or space
 		|
 		\s
-	)?							
-	
+	)?
+
 	([0-9]+)							# The number of Days
 
 #-----------------------------------------------------------------------------
 	:									# Colon
-	
+
 	(									# Two-digit hour
 		(?:  [0-1][0-9])
 		|
 		(?: 2[0-4])
 	)
-	
+
 	:									# Colon
-	
+
 	([0-5][0-9])						# Two-digit minute
-	
-	
+
+
 	(?:									# Optional second component
-	
+
 		:								# Colon
 
 		(								# Two-digit second
-			[0-5][0-9]					
+			[0-5][0-9]
 
 			(?: \.[0-9]+)?				# followed by an optional decimal.
 		)

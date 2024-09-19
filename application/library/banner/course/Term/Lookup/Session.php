@@ -50,7 +50,7 @@ class banner_course_Term_Lookup_Session extends banner_course_AbstractSession im
     {
         parent::__construct($manager, 'term/');
 
-        if (is_null($catalogId)) {
+        if (null === $catalogId) {
             $this->catalogId = $manager->getCombinedCatalogId();
         } else {
             $this->catalogId = $catalogId;
@@ -356,7 +356,7 @@ ORDER BY STVTERM_CODE DESC, SOBPTRM_PTRM_CODE ASC
      */
     private function getCatalogWhereTerms()
     {
-        if (is_null($this->catalogId) || $this->catalogId->isEqual($this->getCombinedCatalogId())) {
+        if (null === $this->catalogId || $this->catalogId->isEqual($this->getCombinedCatalogId())) {
             return 'TRUE';
         } else {
             return 'catalog_id = :catalog_id';
@@ -373,7 +373,7 @@ ORDER BY STVTERM_CODE DESC, SOBPTRM_PTRM_CODE ASC
     private function getCatalogParameters()
     {
         $params = [];
-        if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->getCombinedCatalogId())) {
+        if (null !== $this->catalogId && !$this->catalogId->isEqual($this->getCombinedCatalogId())) {
             $params[':catalog_id'] = $this->getDatabaseIdString($this->catalogId, 'catalog/');
         }
 

@@ -12,7 +12,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/StringParser.class.php';
+require_once __DIR__.'/StringParser.class.php';
 // require_once(dirname(__FILE__)."/RegexStringParser.class.php");
 
 /**
@@ -55,18 +55,18 @@ class ISO8601StringParser extends RegexStringParser
 #-----------------------------------------------------------------------------
 	(?:										# The date component
 		([0-9]{4})							# Four-digit year
-		
+
 		[\-\/:]?							# Optional Hyphen, slash, or colon delimiter
-		
+
 		(?:									# Two-digit month
 			(
 			(?:  0[1-9])
 			|
 			(?:  1[0-2])
 			)
-		
+
 			[\-\/:]?						# Optional Hyphen, slash, or colon delimiter
-			
+
 			(?:									# Two-digit day
 				(
 				(?:  0[1-9])
@@ -75,49 +75,49 @@ class ISO8601StringParser extends RegexStringParser
 				|
 				(?:  3[0-1])
 				)
-				
-		
-		
+
+
+
 				[\sT]?									# Optional delimiter
-			
-			#-----------------------------------------------------------------------------		
+
+			#-----------------------------------------------------------------------------
 				(?:										# The time component
-				
+
 					(									# Two-digit hour
 						(?:  [0-1][0-9])
 						|
 						(?: 2[0-4])
 					)
-					
+
 					(?:
 						:?									# Optional Colon
-						
+
 						([0-5][0-9])?						# Two-digit minute
-						
+
 						(?:
 							:?									# Optional Colon
-							
-							(									# Two-digit second 
+
+							(									# Two-digit second
 								[0-5][0-9]
 								(?: \.[0-9]+)?						# followed by an optional decimal.
 							)?
-					
+
 					#-----------------------------------------------------------------------------
 							(									# Offset component
-							
+
 								Z								# Zero offset (UTC)
 								|								# OR
 								(?:								# Offset from UTC
 									([+\-])						# Sign of the offset
-								
+
 									(							# Two-digit offset hour
 										(?:  [0-1][0-9])
 										|
 										(?:  2[0-4])
-									)			
-						
+									)
+
 									:?							# Optional Colon
-									
+
 									([0-5][0-9])?				# Two-digit offset minute
 								)
 							)?
@@ -196,8 +196,8 @@ $
             } else {
                 $minute = 0;
             }
-            $this->setOffsetHour(intval($sign.$hour));
-            $this->setOffsetMinute(intval($sign.$minute));
+            $this->setOffsetHour((int) ($sign.$hour));
+            $this->setOffsetMinute((int) ($sign.$minute));
         }
     }
 }

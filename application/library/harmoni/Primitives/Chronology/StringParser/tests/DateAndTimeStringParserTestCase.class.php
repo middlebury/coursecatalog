@@ -12,7 +12,7 @@
  * @since 5/3/05
  */
 
-require_once dirname(__FILE__).'/../DateAndTimeStringParser.class.php';
+require_once __DIR__.'/../DateAndTimeStringParser.class.php';
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -36,14 +36,14 @@ class DateAndTimeStringParserTestCase extends UnitTestCase
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    public function setUp()
+    protected function setUp()
     {
     }
 
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    public function tearDown()
+    protected function tearDown()
     {
         // perhaps, unset $obj here
     }

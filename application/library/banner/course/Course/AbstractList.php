@@ -47,7 +47,7 @@ abstract class banner_course_Course_AbstractList extends banner_course_CachingPd
      */
     public function debug()
     {
-        return "\n\n".get_class($this)."\nQuery:\n".$this->getQuery()."\nParameters:\n".print_r($this->getAllInputParameters(), true);
+        return "\n\n".static::class."\nQuery:\n".$this->getQuery()."\nParameters:\n".print_r($this->getAllInputParameters(), true);
     }
 
     /**
@@ -119,7 +119,7 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
     protected function getAllInputParameters()
     {
         $params = $this->getInputParameters();
-        if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
+        if (null !== $this->catalogId && !$this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
             $params[':catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
         }
 
@@ -159,7 +159,7 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
      */
     private function getCatalogWhereTerms()
     {
-        if (is_null($this->catalogId) || $this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
+        if (null === $this->catalogId || $this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
             return 'TRUE';
         } else {
             return 'catalog_id = :catalog_id';
@@ -256,7 +256,7 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
         return new banner_course_Course(
             $this->session->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'], 'course/'),
             $row['SCBCRSE_SUBJ_CODE'].' '.$row['SCBCRSE_CRSE_NUMB'],
-            (is_null($row['SCBDESC_TEXT_NARRATIVE'])) ? '' : $row['SCBDESC_TEXT_NARRATIVE'],	// Description
+            (null === $row['SCBDESC_TEXT_NARRATIVE']) ? '' : $row['SCBDESC_TEXT_NARRATIVE'],	// Description
             $row['SCBCRSE_TITLE'],
             $row['SCBCRSE_CREDIT_HR_HIGH'],
             [

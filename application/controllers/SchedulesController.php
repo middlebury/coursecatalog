@@ -90,7 +90,7 @@ class SchedulesController extends AbstractCatalogController
      */
     protected function setSavedCatalogId(osid_id_Id $catalogId)
     {
-        if (!is_null($this->getSavedCatalogId()) && $catalogId->isEqual($this->getSavedCatalogId())) {
+        if (null !== $this->getSavedCatalogId() && $catalogId->isEqual($this->getSavedCatalogId())) {
             return;
         }
 

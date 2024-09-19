@@ -9,7 +9,7 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class Helper_PathAsAbsoluteUrl extends Zend_Controller_Action_Helper_Abstract
+class helper_PathAsAbsoluteUrl extends Zend_Controller_Action_Helper_Abstract
 {
     /**
      * Strategy pattern: call helper as broker method.

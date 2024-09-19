@@ -12,7 +12,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/../Objects/SObject.class.php';
+require_once __DIR__.'/../Objects/SObject.class.php';
 
 /**
  * TimeZone is a simple class to colect the information identifying a UTC time zone.
@@ -60,7 +60,7 @@ class TimeZone extends SObject
      */
     public static function defaultTimeZone()
     {
-        $obj = TimeZone::offsetNameAbbreviation(
+        $obj = self::offsetNameAbbreviation(
             Duration::withHours(0),
             'Greenwich Mean Time',
             'GMT');
@@ -83,7 +83,7 @@ class TimeZone extends SObject
     public static function offsetNameAbbreviation($aDuration, $aStringName = null,
         $aStringAbbreviation = null)
     {
-        $obj = new TimeZone($aDuration, $aStringName, $aStringAbbreviation);
+        $obj = new self($aDuration, $aStringName, $aStringAbbreviation);
 
         return $obj;
     }
@@ -104,47 +104,47 @@ class TimeZone extends SObject
     public static function timeZones()
     {
         $array = [
-            TimeZone::offsetNameAbbreviation(
+            self::offsetNameAbbreviation(
                 Duration::withHours(0),
                 'Universal Time',
                 'UTC'),
-            TimeZone::offsetNameAbbreviation(
+            self::offsetNameAbbreviation(
                 Duration::withHours(0),
                 'Greenwich Mean Time',
                 'GMT'),
-            TimeZone::offsetNameAbbreviation(
+            self::offsetNameAbbreviation(
                 Duration::withHours(0),
                 'British Summer Time',
                 'BST'),
-            TimeZone::offsetNameAbbreviation(
+            self::offsetNameAbbreviation(
                 Duration::withHours(-5),
                 'Eastern Standard Time',
                 'EST'),
-            TimeZone::offsetNameAbbreviation(
+            self::offsetNameAbbreviation(
                 Duration::withHours(-4),
                 'Eastern Daylight Time',
                 'EDT'),
-            TimeZone::offsetNameAbbreviation(
+            self::offsetNameAbbreviation(
                 Duration::withHours(-6),
                 'Central Standard Time',
                 'CST'),
-            TimeZone::offsetNameAbbreviation(
+            self::offsetNameAbbreviation(
                 Duration::withHours(-5),
                 'Central Daylight Time',
                 'CDT'),
-            TimeZone::offsetNameAbbreviation(
+            self::offsetNameAbbreviation(
                 Duration::withHours(-7),
                 'Mountain Standard Time',
                 'MST'),
-            TimeZone::offsetNameAbbreviation(
+            self::offsetNameAbbreviation(
                 Duration::withHours(-6),
                 'Mountain Daylight Time',
                 'MDT'),
-            TimeZone::offsetNameAbbreviation(
+            self::offsetNameAbbreviation(
                 Duration::withHours(-8),
                 'Pacific Standard Time',
                 'PST'),
-            TimeZone::offsetNameAbbreviation(
+            self::offsetNameAbbreviation(
                 Duration::withHours(-7),
                 'Pacific Daylight Time',
                 'PDT'),
@@ -229,8 +229,8 @@ class TimeZone extends SObject
             $string = '+';
         }
 
-        $string .= str_pad(abs($this->offset->hours()), 2, '0', STR_PAD_LEFT);
-        $string .= ':'.str_pad(abs($this->offset->minutes()), 2, '0', STR_PAD_LEFT);
+        $string .= str_pad(abs($this->offset->hours()), 2, '0', \STR_PAD_LEFT);
+        $string .= ':'.str_pad(abs($this->offset->minutes()), 2, '0', \STR_PAD_LEFT);
 
         return $string;
     }

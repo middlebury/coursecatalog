@@ -106,9 +106,9 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
             .'-'.$row['term_display_label']
             .substr($row['STVTERM_START_DATE'], 2, 2));
 
-        if (!is_null($row['SSBDESC_TEXT_NARRATIVE'])) {
+        if (null !== $row['SSBDESC_TEXT_NARRATIVE']) {
             $this->setRawDescription($row['SSBDESC_TEXT_NARRATIVE']);
-        } elseif (!is_null($row['SCBDESC_TEXT_NARRATIVE'])) {
+        } elseif (null !== $row['SCBDESC_TEXT_NARRATIVE']) {
             $this->setRawDescription($row['SCBDESC_TEXT_NARRATIVE']);
         } else {
             $this->setDescription('');
@@ -207,7 +207,7 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
     protected function getMeetingRows()
     {
         if (!isset($this->meetingRows)) {
-            if (intval($this->row['num_meet']) > 1) {
+            if ((int) $this->row['num_meet'] > 1) {
                 $this->meetingRows = $this->session->getCourseOfferingMeetingRows($this->getId());
             } else {
                 $this->meetingRows = [];
@@ -283,7 +283,7 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
     public function getCredits()
     {
         if (isset($this->row['SSBSECT_CREDIT_HRS']) && !empty($this->row['SSBSECT_CREDIT_HRS'])) {
-            return floatval($this->row['SSBSECT_CREDIT_HRS']);
+            return (float) $this->row['SSBSECT_CREDIT_HRS'];
         } else {
             return $this->getCourse()->getCredits();
         }
@@ -769,7 +769,7 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
      */
     protected function getOsidIdFromString($databaseId, $prefix = null)
     {
-        if (is_null($prefix)) {
+        if (null === $prefix) {
             $prefix = $this->idPrefix;
         }
 
@@ -871,7 +871,7 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
      */
     public function getLinkSetId()
     {
-        if (is_null($this->row['SSBSECT_LINK_IDENT'])) {
+        if (null === $this->row['SSBSECT_LINK_IDENT']) {
             $linkId = 'NULL';
         } else {
             // Link ids are of the form L1, L2, D1, D2.
@@ -899,7 +899,7 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
      */
     public function getLinkTypeId()
     {
-        if (is_null($this->row['SSBSECT_LINK_IDENT'])) {
+        if (null === $this->row['SSBSECT_LINK_IDENT']) {
             $linkId = 'NULL';
         } else {
             // Link ids are of the form L1, L2, D1, D2.
@@ -980,7 +980,7 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
      */
     public function isPrimary()
     {
-        return intval($this->row['SSBSECT_MAX_ENRL']) > 0;
+        return (int) $this->row['SSBSECT_MAX_ENRL'] > 0;
     }
 
     /*********************************************************
@@ -1571,7 +1571,7 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
     {
         $parts = date_parse_from_format('Hi', $timeString);
 
-        return (intval($parts['hour']) * 3600) + (intval($parts['minute']) * 60);
+        return ((int) $parts['hour'] * 3600) + ((int) $parts['minute'] * 60);
     }
 
     /*********************************************************
@@ -1589,7 +1589,7 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
      */
     public function getMaxEnrollment()
     {
-        return intval($this->row['SSBSECT_MAX_ENRL']);
+        return (int) $this->row['SSBSECT_MAX_ENRL'];
     }
 
     /**
@@ -1603,7 +1603,7 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
      */
     public function getEnrollment()
     {
-        return intval($this->row['SSBSECT_ENRL']);
+        return (int) $this->row['SSBSECT_ENRL'];
     }
 
     /**
@@ -1618,7 +1618,7 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
      */
     public function getSeatsAvailable()
     {
-        return intval($this->row['SSBSECT_SEATS_AVAIL']);
+        return (int) $this->row['SSBSECT_SEATS_AVAIL'];
     }
 
     /*********************************************************

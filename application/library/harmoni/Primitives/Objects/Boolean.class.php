@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__).'/../Objects/SObject.class.php';
+require_once __DIR__.'/../Objects/SObject.class.php';
 
 /**
  * A simple Boolean data type.
@@ -29,7 +29,7 @@ class Boolean extends SObject
      */
     public static function withValue($value)
     {
-        $temp = new Boolean($value);
+        $temp = new self($value);
 
         return $temp;
     }
@@ -47,7 +47,7 @@ class Boolean extends SObject
      */
     public static function fromString($aString)
     {
-        $temp = new Boolean(('true' == strtolower($aString)) ? true : false);
+        $temp = new self(('true' == strtolower($aString)) ? true : false);
 
         return $temp;
     }
@@ -63,7 +63,7 @@ class Boolean extends SObject
      */
     public static function false()
     {
-        $temp = new Boolean(false);
+        $temp = new self(false);
 
         return $temp;
     }
@@ -79,7 +79,7 @@ class Boolean extends SObject
      */
     public static function true()
     {
-        $temp = new Boolean(true);
+        $temp = new self(true);
 
         return $temp;
     }

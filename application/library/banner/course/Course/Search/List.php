@@ -183,7 +183,7 @@ class banner_course_Course_Search_List extends banner_course_Course_AbstractList
 
                 $stmt = $this->db->prepare($this->getCountQuery($this->getQuery()));
                 $stmt->execute($this->getAllInputParameters());
-                $this->resultSize = intval($stmt->fetchColumn());
+                $this->resultSize = (int) $stmt->fetchColumn();
                 $stmt->closeCursor();
 
                 $this->limit = $tmpLimit;

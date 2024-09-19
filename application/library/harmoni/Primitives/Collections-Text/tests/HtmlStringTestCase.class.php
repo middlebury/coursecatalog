@@ -12,7 +12,7 @@
  * @since 5/3/05
  */
 
-require_once dirname(__FILE__).'/../HtmlString.class.php';
+require_once __DIR__.'/../HtmlString.class.php';
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -36,14 +36,14 @@ class HtmlStringTestCase extends UnitTestCase
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    public function setUp()
+    protected function setUp()
     {
     }
 
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    public function tearDown()
+    protected function tearDown()
     {
         // perhaps, unset $obj here
     }
@@ -55,7 +55,7 @@ class HtmlStringTestCase extends UnitTestCase
     {
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $htmlString = HtmlString::withValue($string);
         $htmlString->trim(100);
@@ -64,7 +64,7 @@ jumped over the lazy <em>dog</em>.</p>";
         // test single html tags <hr/>
         $string =
 "Hello world.<hr/>
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $htmlString = HtmlString::withValue($string);
         $htmlString->trim(100);
@@ -72,7 +72,7 @@ jumped over the lazy <em>dog</em>.</p>";
 
         $string =
 "Hello world.<img src='' border='1' />
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $htmlString = HtmlString::withValue($string);
         $htmlString->trim(100);
@@ -81,11 +81,11 @@ jumped over the lazy <em>dog</em>.</p>";
         // Test bad html tags.
         $string =
 "Hello world.<hr> <img src='' border='1'>
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 "Hello world.<hr/> <img src='' border='1'/>
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $htmlString = HtmlString::withValue($string);
         $htmlString->trim(100);
@@ -94,12 +94,12 @@ jumped over the lazy <em>dog</em>.</p>";
         // test re-nesting
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong><em>fox</strong></em> 
+<p style='font-size: large;'>The quick brown <strong><em>fox</strong></em>
 jumped over the lazy <em>dog</em>.</p>";
         $htmlString = HtmlString::withValue($string);
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong><em>fox</em></strong> 
+<p style='font-size: large;'>The quick brown <strong><em>fox</em></strong>
 jumped over the lazy <em>dog</em>.</p>";
         $htmlString->trim(100);
         $this->assertEqual($htmlString->asString(), $string);
@@ -112,11 +112,11 @@ jumped over the lazy <em>dog</em>.</p>";
     {
         $string =
 "Hello < world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 "Hello &lt; world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $htmlString = HtmlString::withValue($string);
         $htmlString->trim(100);
@@ -124,11 +124,11 @@ jumped over the lazy <em>dog</em>.</p>";
 
         $string =
 "Hello > world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 "Hello &gt; world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $htmlString = HtmlString::withValue($string);
         $htmlString->trim(100);
@@ -144,7 +144,7 @@ jumped over the lazy <em>dog</em>.</p>";
 
         $string =
 "Hello <world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 "Hello &lt;world.
@@ -155,7 +155,7 @@ jumped over the lazy <em>dog</em>.</p>";
 
         $string =
 "Hello<world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 "Hello&lt;world.
@@ -172,7 +172,7 @@ jumped over the lazy <em>dog</em>.</p>";
     {
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 'Hello...';
@@ -182,7 +182,7 @@ jumped over the lazy <em>dog</em>.</p>";
 
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 'Hello world....';
@@ -192,7 +192,7 @@ jumped over the lazy <em>dog</em>.</p>";
 
         $string =
 "Hello   \n \n\t \n\r  world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 "Hello   \n \n\t \n\r  world....";
@@ -202,7 +202,7 @@ jumped over the lazy <em>dog</em>.</p>";
 
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 "Hello world.
@@ -213,7 +213,7 @@ jumped over the lazy <em>dog</em>.</p>";
 
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 "Hello world.
@@ -224,7 +224,7 @@ jumped over the lazy <em>dog</em>.</p>";
 
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 "Hello world.
@@ -235,7 +235,7 @@ jumped over the lazy <em>dog</em>.</p>";
 
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 "Hello world.
@@ -246,11 +246,11 @@ jumped over the lazy <em>dog</em>.</p>";
 
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped...</p>";
         $htmlString = HtmlString::withValue($string);
         $htmlString->trim(7);
@@ -258,11 +258,11 @@ jumped...</p>";
 
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over...</p>";
         $htmlString = HtmlString::withValue($string);
         $htmlString->trim(8);
@@ -270,11 +270,11 @@ jumped over...</p>";
 
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the...</p>";
         $htmlString = HtmlString::withValue($string);
         $htmlString->trim(9);
@@ -282,11 +282,11 @@ jumped over the...</p>";
 
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy...</p>";
         $htmlString = HtmlString::withValue($string);
         $htmlString->trim(10);
@@ -294,11 +294,11 @@ jumped over the lazy...</p>";
 
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $htmlString = HtmlString::withValue($string);
         $htmlString->trim(11);
@@ -306,11 +306,11 @@ jumped over the lazy <em>dog</em>.</p>";
 
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $htmlString = HtmlString::withValue($string);
         $htmlString->trim(12);
@@ -318,11 +318,11 @@ jumped over the lazy <em>dog</em>.</p>";
 
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $htmlString = HtmlString::withValue($string);
         $htmlString->trim(13);
@@ -336,7 +336,7 @@ jumped over the lazy <em>dog</em>.</p>";
     {
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 'Hello world....';
@@ -346,7 +346,7 @@ jumped over the lazy <em>dog</em>.</p>";
 
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 jumped over the lazy <em>dog</em>.</p>";
         $result =
 'Hello world.';
@@ -459,7 +459,7 @@ jumped over the lazy <em>dog</em>.</p>";
         ob_start();
         echo <<<END
 <h2>Dublin Core Metadata Element Set, Version 1.1: Reference Description</h2>
-<a name="introduction" id="introduction"></a> 
+<a name="introduction" id="introduction"></a>
 <h3>Introduction</h3>
 <p>The Dublin Core metadata element set is a standard for cross-domain
 information resource description. Here an information resource is
@@ -484,7 +484,7 @@ END;
         ob_start();
         echo <<<END
 <h2>Dublin Core Metadata Element Set, Version 1.1: Reference Description</h2>
-<a name="introduction" id="introduction"></a> 
+<a name="introduction" id="introduction"></a>
 <h3>Introduction</h3>
 <p>The Dublin Core metadata element set is a standard for cross-domain
 information resource description. Here an information resource is
@@ -507,7 +507,7 @@ END;
         ob_start();
         echo <<<END
 <h2>Dublin Core Metadata Element Set, Version 1.1: Reference Description</h2>
-<a name="introduction" id="introduction"></a> 
+<a name="introduction" id="introduction"></a>
 <h3>Introduction</h3>
 <p>The Dublin Core metadata element set is a standard for cross-domain
 information resource description. Here an information resource is
@@ -532,7 +532,7 @@ END;
         ob_start();
         echo <<<END
 <h2>Dublin Core Metadata Element Set, Version 1.1: Reference Description</h2>
-<a name="introduction" id="introduction"></a> 
+<a name="introduction" id="introduction"></a>
 <h3>Introduction</h3>
 <p>The Dublin Core metadata element set is a standard for cross-domain
 information resource description. Here an information resource is
@@ -617,7 +617,7 @@ Hello.
 '<div>
 	<p>Hello there</p>
 	<style>
-		<![CDATA[ & ]]> 
+		<![CDATA[ & ]]>
 	</style>
 	with CDATA.
 </div>';
@@ -637,7 +637,7 @@ Hello.
 
         $string =
 "Hello world.
-<p style='font-size: large;'>The quick brown <strong>fox</strong> 
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
 
 <![CDATA[
 	& < >
@@ -664,7 +664,7 @@ Hello.
     public function testComments()
     {
         $string =
-'Hello 
+'Hello
 <!---->
 Goodbye';
         $htmlString = HtmlString::withValue($string);
@@ -672,7 +672,7 @@ Goodbye';
         $this->assertEqual($htmlString->asString(), $string);
 
         $string =
-'Hello 
+'Hello
 <!-- -->
 Goodbye';
         $htmlString = HtmlString::withValue($string);
@@ -680,8 +680,8 @@ Goodbye';
         $this->assertEqual($htmlString->asString(), $string);
 
         $string =
-'Hello 
-<!-- You my 
+'Hello
+<!-- You my
 mommy.-->
 Goodbye';
         $htmlString = HtmlString::withValue($string);

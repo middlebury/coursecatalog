@@ -280,7 +280,7 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
      */
     private function getCatalogWhereTerms()
     {
-        if (is_null($this->catalogId) || $this->catalogId->isEqual($this->getCombinedCatalogId())) {
+        if (null === $this->catalogId || $this->catalogId->isEqual($this->getCombinedCatalogId())) {
             return 'TRUE';
         } else {
             return '
@@ -306,7 +306,7 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
     private function getCatalogParameters()
     {
         $params = [];
-        if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->getCombinedCatalogId())) {
+        if (null !== $this->catalogId && !$this->catalogId->isEqual($this->getCombinedCatalogId())) {
             $params[':catalog_id'] = $this->getCatalogDatabaseId($this->catalogId);
             $params[':catalog_id2'] = $this->getCatalogDatabaseId($this->catalogId);
         }

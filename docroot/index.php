@@ -1,7 +1,7 @@
 <?php
 
 $GLOBALS['start_time'] = microtime();
-require_once dirname(__FILE__).'/../application/autoload.php';
+require_once __DIR__.'/../application/autoload.php';
 
 set_exception_handler(['harmoni_ErrorHandler', 'handleException']);
 try {
@@ -25,7 +25,7 @@ try {
 
     // Define application environment
     defined('APPLICATION_ENV')
-        || define('APPLICATION_ENV', getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production');
+        || define('APPLICATION_ENV', getenv('APPLICATION_ENV') ?: 'production');
     $registry = Zend_Registry::getInstance();
     $registry->config = new Zend_Config_Ini(BASE_PATH.'/frontend_config.ini', APPLICATION_ENV, ['allowModifications' => true]);
     // Add our archive-specific config if it exists.

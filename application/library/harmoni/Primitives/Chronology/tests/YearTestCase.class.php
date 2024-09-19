@@ -12,7 +12,7 @@
  * @since 5/3/05
  */
 
-require_once dirname(__FILE__).'/../Year.class.php';
+require_once __DIR__.'/../Year.class.php';
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -36,7 +36,7 @@ class YearTestCase extends UnitTestCase
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    public function setUp()
+    protected function setUp()
     {
         $this->currentYear = date('Y');
     }
@@ -44,7 +44,7 @@ class YearTestCase extends UnitTestCase
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    public function tearDown()
+    protected function tearDown()
     {
         // perhaps, unset $obj here
     }
@@ -56,7 +56,7 @@ class YearTestCase extends UnitTestCase
     {
         $epochYear = Year::epoch();
 
-        $this->assertEqual(strtolower(get_class($epochYear)), 'year');
+        $this->assertEqual(strtolower($epochYear::class), 'year');
         $this->assertEqual($epochYear->dayOfYear(), 1);
         $this->assertEqual($epochYear->daysInYear(), 365);
 
@@ -314,7 +314,7 @@ class YearTestCase extends UnitTestCase
             DateAndTime::withYearMonthDay(
                 2005, 5, 24));
         $result = $timespanC->plus(Duration::withDays(4));
-        $this->assertEqual(strtolower(get_class($result)), 'year');
+        $this->assertEqual(strtolower($result::class), 'year');
         $this->assertTrue($temp->isEqualTo($result));
 
         // minus()
@@ -323,7 +323,7 @@ class YearTestCase extends UnitTestCase
             DateAndTime::withYearMonthDay(
                 2005, 5, 15));
         $result = $timespanC->minus(Duration::withDays(5));
-        $this->assertEqual(strtolower(get_class($result)), 'year');
+        $this->assertEqual(strtolower($result::class), 'year');
         $this->assertTrue($temp->isEqualTo($result));
 
         $tempDuration = Duration::withDays(-12);

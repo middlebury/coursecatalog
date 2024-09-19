@@ -57,7 +57,7 @@ class Helper_RecentCourses_Department extends Helper_RecentCourses_All
             // 			var_dump(array_keys($group));
             // 			var_dump($dates);
             // 			var_dump($names);
-            array_multisort($dates, SORT_NUMERIC, SORT_DESC, $names, SORT_ASC, $group);
+            array_multisort($dates, \SORT_NUMERIC, \SORT_DESC, $names, \SORT_ASC, $group);
 
             // Filter out any groups that don't have courses with recent terms.
             if (!count($group)) {

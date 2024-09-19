@@ -469,7 +469,7 @@ class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSessio
     public function getCourseOfferingGenusTypes()
     {
         $val = $this->cacheGetObj('genus_types');
-        if (is_null($val)) {
+        if (null === $val) {
             $val = [];
             $types = $this->session->getCourseOfferingGenusTypes();
             while ($types->hasNext()) {

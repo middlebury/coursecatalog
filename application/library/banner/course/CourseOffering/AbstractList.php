@@ -45,7 +45,7 @@ abstract class banner_course_CourseOffering_AbstractList extends banner_course_C
      */
     public function debug()
     {
-        return "\n\n".get_class($this)."\nQuery:\n".$this->getQuery()."\nParameters:\n".print_r($this->getAllInputParameters(), true);
+        return "\n\n".static::class."\nQuery:\n".$this->getQuery()."\nParameters:\n".print_r($this->getAllInputParameters(), true);
     }
 
     /**
@@ -169,7 +169,7 @@ HAVING ".$this->getAllHavingTerms().'
     protected function getAllInputParameters()
     {
         $params = $this->getInputParameters();
-        if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
+        if (null !== $this->catalogId && !$this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
             $params[':catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
             $params[':catalog_id2'] = $this->session->getCatalogDatabaseId($this->catalogId);
         }
@@ -203,7 +203,7 @@ HAVING ".$this->getAllHavingTerms().'
      */
     private function getCatalogWhereTerms()
     {
-        if (is_null($this->catalogId) || $this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
+        if (null === $this->catalogId || $this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
             return 'TRUE';
         } else {
             return 'catalog_id = :catalog_id';
@@ -219,7 +219,7 @@ HAVING ".$this->getAllHavingTerms().'
      */
     private function getCatalogWhereTerms2()
     {
-        if (is_null($this->catalogId) || $this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
+        if (null === $this->catalogId || $this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
             return 'TRUE';
         } else {
             return 'catalog_id = :catalog_id2';

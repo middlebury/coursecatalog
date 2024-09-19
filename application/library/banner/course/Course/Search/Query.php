@@ -335,7 +335,7 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
             if (isset($matches[1]) && $matches[1]) {
                 $param = strtoupper(str_replace('*', '%', $matches[1]));
                 if (isset($matches[2]) && $matches[2]) {
-                    $param = $param.'%';
+                    $param .= '%';
                 }
 
                 $clauses[] = 'SCBCRSE_SUBJ_CODE LIKE(?)';
@@ -402,8 +402,8 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
         if (!is_numeric($max)) {
             throw new osid_InvalidArgumentException("\$max must be a float. '$max' given.");
         }
-        $min = floatval($min);
-        $max = floatval($max);
+        $min = (float) $min;
+        $max = (float) $max;
         if ($min < 0) {
             throw new osid_InvalidArgumentException('$min must be a float greater than or equal to zero.');
         }

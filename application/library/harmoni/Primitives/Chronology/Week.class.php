@@ -12,7 +12,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/Timespan.class.php';
+require_once __DIR__.'/Timespan.class.php';
 
 /**
  * I am a Timespan that represents a Week.
@@ -233,8 +233,8 @@ class Week extends Timespan
         $asDateAndTime = $aDateAndTime->asDateAndTime();
         $midnight = $asDateAndTime->atMidnight();
         $dayNames = ChronologyConstants::DayNames();
-        $temp = $midnight->dayOfWeek() + 7 - array_search(Week::startDay(), $dayNames);
-        $delta = abs($temp - (intval($temp / 7) * 7));
+        $temp = $midnight->dayOfWeek() + 7 - array_search(self::startDay(), $dayNames);
+        $delta = abs($temp - ((int) ($temp / 7) * 7));
 
         $adjusted = $midnight->minus(Duration::withDays($delta));
 

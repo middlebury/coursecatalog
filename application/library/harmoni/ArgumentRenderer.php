@@ -33,7 +33,7 @@ class harmoni_ArgumentRenderer
         $result = 'Unknown';
 
         // NULL type
-        if (is_null($argument)) {
+        if (null === $argument) {
             $result = 'NULL';
         }
         // Boolean type
@@ -52,7 +52,7 @@ class harmoni_ArgumentRenderer
             }
         }
         // Integer type
-        elseif (is_integer($argument)) {
+        elseif (is_int($argument)) {
             $result = "Integer: $argument";
         }
         // Float type
@@ -78,7 +78,7 @@ class harmoni_ArgumentRenderer
         }
         // Object type
         elseif (is_object($argument)) {
-            $result = 'Object: '.get_class($argument);
+            $result = 'Object: '.$argument::class;
             if ($isDetailed) {
                 $memberVars = get_object_vars($argument);
                 if (count($memberVars) > 0) {

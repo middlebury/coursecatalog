@@ -40,7 +40,7 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
         $description = trim(preg_replace('/<p>$/si', '', $description));
 
         $tmp = error_reporting();
-        error_reporting(E_WARNING);
+        error_reporting(\E_WARNING);
 
         $parser = self::getFsmParser();
         ob_start();
@@ -84,7 +84,7 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
   )?
 }ix
 ';
-        if (preg_match_all($urlRegex, $output, $matches, PREG_SET_ORDER)) {
+        if (preg_match_all($urlRegex, $output, $matches, \PREG_SET_ORDER)) {
             foreach ($matches as $match) {
                 $start = strpos($output, $match[0]);
 
@@ -308,13 +308,13 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
         parent::__construct();
         $this->setId($id);
         $this->setDisplayName($displayName);
-        if (is_null($description)) {
+        if (null === $description) {
             $this->setDescription('');
         } else {
             $this->setRawDescription($description);
         }
         $this->title = $title;
-        $this->credits = floatval($credits);
+        $this->credits = (float) $credits;
         $this->topicIds = $topicIds;
         $this->hasAlternates = $hasAlternates;
         $this->session = $session;
@@ -585,7 +585,7 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
      */
     public function hasAlternates()
     {
-        return intval($this->hasAlternates) > 0;
+        return (int) $this->hasAlternates > 0;
     }
 
     /**
@@ -683,7 +683,7 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
      */
     public function hasAlternatesInTerms(osid_id_Id $startTerm, osid_id_Id $endTerm)
     {
-        return intval($this->hasAlternates) > 0;
+        return (int) $this->hasAlternates > 0;
     }
 
     /**
@@ -789,7 +789,7 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
     {
         $linkSetIds = [];
         foreach ($this->getLinkIdStrings($termId) as $linkIdString) {
-            if (is_null($linkIdString)) {
+            if (null === $linkIdString) {
                 $linkSetIds[] = 'NULL';
             } else {
                 // Link ids are of the form L1, L2, D1, D2.
@@ -824,7 +824,7 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
     {
         $linkTypeIds = [];
         foreach ($this->getLinkIdStrings($termId) as $linkIdString) {
-            if (!is_null($linkIdString)) {
+            if (null !== $linkIdString) {
                 // Link ids are of the form L1, L2, D1, D2.
                 // The set id is the second charactor.
                 $setId = substr($linkIdString, 1, 1);

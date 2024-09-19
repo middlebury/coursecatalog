@@ -12,7 +12,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/StringParser.class.php';
+require_once __DIR__.'/StringParser.class.php';
 // require_once(dirname(__FILE__)."/RegexStringParser.class.php");
 
 /**
@@ -53,9 +53,9 @@ abstract class TwoDigitYearStringParser extends RegexStringParser
     public function setYear($anInteger)
     {
         if ($anInteger > 70 && $anInteger < 100) {
-            $this->year = intval(1900 + $anInteger);
+            $this->year = (int) (1900 + $anInteger);
         } elseif ($anInteger < 100) {
-            $this->year = intval(2000 + $anInteger);
+            $this->year = (int) (2000 + $anInteger);
         } else {
             $this->year = $anInteger;
         }

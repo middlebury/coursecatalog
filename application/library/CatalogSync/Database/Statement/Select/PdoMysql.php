@@ -42,7 +42,7 @@ class CatalogSync_Database_Statement_Select_PdoMysql implements CatalogSync_Data
      */
     public function fetch()
     {
-        if (!isset($this->statement) || is_null($this->statement)) {
+        if (!isset($this->statement) || null === $this->statement) {
             throw new Exception('Cannot fetch without a statement. Maybe it was already closed?');
         }
         // Fetch

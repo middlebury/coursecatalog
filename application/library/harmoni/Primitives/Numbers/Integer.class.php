@@ -9,7 +9,7 @@
  * @version $Id: Integer.class.php,v 1.7 2007/10/10 22:58:34 adamfranco Exp $
  */
 
-require_once dirname(__FILE__).'/Number.class.php';
+require_once __DIR__.'/Number.class.php';
 
 /**
  * A simple Integer data type.
@@ -92,7 +92,7 @@ class Integer extends Number
     {
         if (!(strtolower($class) == strtolower('Integer')
             || is_subclass_of(new $class(), 'Integer'))) {
-            $obj = Integer::withValue($this->value() + $aNumber->value());
+            $obj = self::withValue($this->value() + $aNumber->value());
 
             return $obj;
         } else {
@@ -115,7 +115,7 @@ class Integer extends Number
     {
         if (!(strtolower($class) == strtolower('Integer')
             || is_subclass_of(new $class(), 'Integer'))) {
-            $obj = Integer::withValue($this->value() * $aNumber->value());
+            $obj = self::withValue($this->value() * $aNumber->value());
 
             return $obj;
         } else {
@@ -154,6 +154,6 @@ class Integer extends Number
      */
     public function _setValue($value)
     {
-        $this->_value = intval($value);
+        $this->_value = (int) $value;
     }
 }

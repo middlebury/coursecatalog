@@ -12,7 +12,7 @@
  * @since 5/3/05
  */
 
-require_once dirname(__FILE__).'/../Date.class.php';
+require_once __DIR__.'/../Date.class.php';
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -36,7 +36,7 @@ class WeekTestCase extends UnitTestCase
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    public function setUp()
+    protected function setUp()
     {
         // perhaps, initialize $obj here
     }
@@ -44,7 +44,7 @@ class WeekTestCase extends UnitTestCase
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    public function tearDown()
+    protected function tearDown()
     {
         // perhaps, unset $obj here
     }
@@ -56,7 +56,7 @@ class WeekTestCase extends UnitTestCase
     {
         $epoch = Week::epoch();
 
-        $this->assertEqual(strtolower(get_class($epoch)), 'week');
+        $this->assertEqual(strtolower($epoch::class), 'week');
         $this->assertEqual($epoch->startYear(), 1900);
         $this->assertEqual($epoch->startMonth(), 12);
         $this->assertEqual($epoch->dayOfMonth(), 30);
@@ -72,7 +72,7 @@ class WeekTestCase extends UnitTestCase
         $week = Week::starting(DateAndTime::withYearMonthDayHourMinuteSecondOffset(
             2005, 5, 4, 15, 25, 10, Duration::withHours(-4)));
 
-        $this->assertEqual(strtolower(get_class($week)), 'week');
+        $this->assertEqual(strtolower($week::class), 'week');
         $this->assertEqual($week->startYear(), 2005);
         $this->assertEqual($week->startMonth(), 5);
         $this->assertEqual($week->dayOfMonth(), 1);

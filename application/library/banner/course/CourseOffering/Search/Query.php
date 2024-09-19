@@ -480,7 +480,7 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
             if (isset($matches[1]) && $matches[1]) {
                 $param = strtoupper(str_replace('*', '%', $matches[1]));
                 if (isset($matches[2]) && $matches[2]) {
-                    $param = $param.'%';
+                    $param .= '%';
                 }
 
                 $clauses[] = 'SSBSECT_SUBJ_CODE LIKE(?)';
@@ -572,8 +572,8 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
         if (!is_numeric($max)) {
             throw new osid_InvalidArgumentException("\$max must be a float. '$max' given.");
         }
-        $min = floatval($min);
-        $max = floatval($max);
+        $min = (float) $min;
+        $max = (float) $max;
         if ($min < 0) {
             throw new osid_InvalidArgumentException('$min must be a float greater than or equal to zero.');
         }
@@ -710,7 +710,7 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
         } catch (osid_NotFoundException $e) {
             $partOfTerm = null;
         }
-        if (is_null($partOfTerm)) {
+        if (null === $partOfTerm) {
             $this->addClause('term_id', 'SSBSECT_TERM_CODE = ?',
                 [$this->session->getTermCodeFromTermId($termId)],
                 $match);
@@ -1417,10 +1417,10 @@ AND SCBCRSE_COLL_CODE IN (
      */
     public function matchMeetingTime($rangeStart, $rangeEnd, $match)
     {
-        if (is_null($rangeStart)) {
+        if (null === $rangeStart) {
             throw new osid_NullArgumentException('$rangeStart cannot be null');
         }
-        if (is_null($rangeEnd)) {
+        if (null === $rangeEnd) {
             throw new osid_NullArgumentException('$rangeEnd start cannot be null');
         }
         if (!is_numeric($rangeStart)) {
@@ -1430,8 +1430,8 @@ AND SCBCRSE_COLL_CODE IN (
             throw new osid_InvalidArgumentException('$rangeEnd must be an integer between 1 and 86400');
         }
 
-        $rangeStart = intval($rangeStart);
-        $rangeEnd = intval($rangeEnd);
+        $rangeStart = (int) $rangeStart;
+        $rangeEnd = (int) $rangeEnd;
         if ($rangeStart < 0 || $rangeStart > 86399) {
             throw new osid_InvalidArgumentException('$rangeStart must be an integer between 0 and 86399');
         }
@@ -1456,7 +1456,7 @@ AND SCBCRSE_COLL_CODE IN (
         $hour = floor($seconds / 3600);
         $minute = floor(($seconds - ($hour * 3600)) / 60);
 
-        return str_pad($hour, 2, '0', STR_PAD_LEFT).str_pad($minute, 2, '0', STR_PAD_LEFT);
+        return str_pad($hour, 2, '0', \STR_PAD_LEFT).str_pad($minute, 2, '0', \STR_PAD_LEFT);
     }
 
     /*********************************************************
@@ -1486,24 +1486,24 @@ AND SCBCRSE_COLL_CODE IN (
      */
     public function matchEnrollment($rangeStart, $rangeEnd, $match)
     {
-        if (is_null($rangeStart)) {
+        if (null === $rangeStart) {
             throw new osid_NullArgumentException('$rangeStart cannot be null');
         }
         if (!is_numeric($rangeStart)) {
             throw new osid_InvalidArgumentException('$rangeStart must be an integer 0 or greater');
         }
-        $rangeStart = intval($rangeStart);
+        $rangeStart = (int) $rangeStart;
         if ($rangeStart < 0) {
             throw new osid_InvalidArgumentException('$rangeStart must be an integer 0 or greater');
         }
 
-        if (is_null($rangeEnd)) {
+        if (null === $rangeEnd) {
             $this->addClause('enrollment', 'SSBSECT_ENRL >= ?', [$rangeStart], $match);
         } else {
             if (!is_numeric($rangeEnd)) {
                 throw new osid_InvalidArgumentException('$rangeEnd must be an integer 0 or greater');
             }
-            $rangeEnd = intval($rangeEnd);
+            $rangeEnd = (int) $rangeEnd;
             if ($rangeEnd < 0) {
                 throw new osid_InvalidArgumentException('$rangeEnd must be an integer 0 or greater');
             }
@@ -1521,11 +1521,11 @@ AND SCBCRSE_COLL_CODE IN (
      */
     public function matchSeatsAvailable($rangeStart, $rangeEnd, $match)
     {
-        if (is_null($rangeStart) && is_null($rangeEnd)) {
+        if (null === $rangeStart && null === $rangeEnd) {
             throw new osid_NullArgumentException('Both $rangeStart and $rangeEnd cannot be null');
         }
 
-        if (is_null($rangeStart)) {
+        if (null === $rangeStart) {
             if (!is_numeric($rangeEnd)) {
                 throw new osid_InvalidArgumentException('$rangeEnd must be an integer');
             }
@@ -1537,16 +1537,16 @@ AND SCBCRSE_COLL_CODE IN (
         if (!is_numeric($rangeStart)) {
             throw new osid_InvalidArgumentException('$rangeStart must be an integer');
         }
-        $rangeStart = intval($rangeStart);
+        $rangeStart = (int) $rangeStart;
 
-        if (is_null($rangeEnd)) {
+        if (null === $rangeEnd) {
             $this->addClause('seats_available', 'SSBSECT_SEATS_AVAIL >= ?', [$rangeStart], $match);
         } else {
             if (!is_numeric($rangeEnd)) {
                 throw new osid_InvalidArgumentException('$rangeEnd must be an integer');
             }
 
-            $rangeEnd = intval($rangeEnd);
+            $rangeEnd = (int) $rangeEnd;
             $this->addClause('seats_available', '(SSBSECT_SEATS_AVAIL >= ? AND SSBSECT_SEATS_AVAIL <= ?)', [$rangeStart, $rangeEnd], $match);
         }
     }

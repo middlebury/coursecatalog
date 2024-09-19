@@ -68,7 +68,7 @@ class ExportController extends AbstractCatalogController
     ) b ON a.arch_conf_id = b.arch_conf_id and a.last_saved = b.latest
      WHERE a.arch_conf_id = ?';
         $stmt = $db->prepare($query);
-        $stmt->execute([filter_input(INPUT_GET, 'configId', FILTER_SANITIZE_SPECIAL_CHARS)]);
+        $stmt->execute([filter_input(\INPUT_GET, 'configId', \FILTER_SANITIZE_SPECIAL_CHARS)]);
         $latestRevision = $stmt->fetch();
         echo $latestRevision['json_data'];
 
@@ -90,7 +90,7 @@ class ExportController extends AbstractCatalogController
             echo 'A config ID must be specified.';
             exit;
         }
-        $this->view->configId = filter_var($request->getParam('config'), FILTER_SANITIZE_NUMBER_INT);
+        $this->view->configId = filter_var($request->getParam('config'), \FILTER_SANITIZE_NUMBER_INT);
         $db = Zend_Registry::get('db');
         $query = 'SELECT label FROM archive_configurations WHERE id = ?';
         $stmt = $db->prepare($query);
@@ -120,10 +120,10 @@ class ExportController extends AbstractCatalogController
             $db = Zend_Registry::get('db');
             $query = 'SELECT * FROM archive_configuration_revisions WHERE id = ?';
             $stmt = $db->prepare($query);
-            $stmt->execute([filter_var($this->_getParam('rev1'), FILTER_SANITIZE_NUMBER_INT)]);
+            $stmt->execute([filter_var($this->_getParam('rev1'), \FILTER_SANITIZE_NUMBER_INT)]);
             $this->rev1 = $stmt->fetch();
             $stmt = $db->prepare($query);
-            $stmt->execute([filter_var($this->_getParam('rev2'), FILTER_SANITIZE_NUMBER_INT)]);
+            $stmt->execute([filter_var($this->_getParam('rev2'), \FILTER_SANITIZE_NUMBER_INT)]);
             $this->rev2 = $stmt->fetch();
 
             $this->view->text1 = $this->rev1['json_data'];
@@ -152,7 +152,7 @@ class ExportController extends AbstractCatalogController
         $db = Zend_Registry::get('db');
         $query = 'SELECT * FROM archive_configuration_revisions WHERE id = ?';
         $stmt = $db->prepare($query);
-        $stmt->execute([filter_var($this->_getParam('revision'), FILTER_SANITIZE_NUMBER_INT)]);
+        $stmt->execute([filter_var($this->_getParam('revision'), \FILTER_SANITIZE_NUMBER_INT)]);
         $this->view->revision = $stmt->fetch();
     }
 
@@ -185,7 +185,7 @@ class ExportController extends AbstractCatalogController
         $db = Zend_Registry::get('db');
         $query = 'DELETE FROM archive_configuration_revisions WHERE arch_conf_id = ?';
         $stmt = $db->prepare($query);
-        $stmt->execute([filter_var($this->getRequest()->getPost('configId'), FILTER_SANITIZE_NUMBER_INT)]);
+        $stmt->execute([filter_var($this->getRequest()->getPost('configId'), \FILTER_SANITIZE_NUMBER_INT)]);
 
         // Delete this config.
         $query = 'DELETE FROM archive_configurations WHERE id = ?';
@@ -203,8 +203,8 @@ class ExportController extends AbstractCatalogController
     public function insertconfigAction()
     {
         if ($this->getRequest()->isPost()) {
-            $safeLabel = filter_input(INPUT_POST, 'label', FILTER_SANITIZE_SPECIAL_CHARS);
-            $safeCatalogId = filter_input(INPUT_POST, 'catalog_id', FILTER_SANITIZE_SPECIAL_CHARS);
+            $safeLabel = filter_input(\INPUT_POST, 'label', \FILTER_SANITIZE_SPECIAL_CHARS);
+            $safeCatalogId = filter_input(\INPUT_POST, 'catalog_id', \FILTER_SANITIZE_SPECIAL_CHARS);
 
             $db = Zend_Registry::get('db');
             $query =
@@ -282,7 +282,7 @@ class ExportController extends AbstractCatalogController
         $db = Zend_Registry::get('db');
         $query = 'DELETE FROM archive_jobs WHERE id = ?';
         $stmt = $db->prepare($query);
-        $stmt->execute([filter_var($this->getRequest()->getPost('jobId'), FILTER_SANITIZE_NUMBER_INT)]);
+        $stmt->execute([filter_var($this->getRequest()->getPost('jobId'), \FILTER_SANITIZE_NUMBER_INT)]);
     }
 
     /**
@@ -295,9 +295,9 @@ class ExportController extends AbstractCatalogController
     public function insertjobAction()
     {
         if ($this->getRequest()->isPost()) {
-            $safeConfigId = filter_input(INPUT_POST, 'configId', FILTER_SANITIZE_SPECIAL_CHARS);
-            $safeExportPath = filter_input(INPUT_POST, 'export_path', FILTER_SANITIZE_SPECIAL_CHARS);
-            $safeTerms = filter_input(INPUT_POST, 'terms', FILTER_SANITIZE_SPECIAL_CHARS);
+            $safeConfigId = filter_input(\INPUT_POST, 'configId', \FILTER_SANITIZE_SPECIAL_CHARS);
+            $safeExportPath = filter_input(\INPUT_POST, 'export_path', \FILTER_SANITIZE_SPECIAL_CHARS);
+            $safeTerms = filter_input(\INPUT_POST, 'terms', \FILTER_SANITIZE_SPECIAL_CHARS);
 
             $db = Zend_Registry::get('db');
             $query =
@@ -323,15 +323,15 @@ class ExportController extends AbstractCatalogController
         $this->_helper->viewRenderer->setNoRender(true);
 
         if ($this->getRequest()->isPost()) {
-            $safeId = filter_input(INPUT_POST, 'jobId', FILTER_SANITIZE_SPECIAL_CHARS);
-            $safeActive = filter_input(INPUT_POST, 'active', FILTER_SANITIZE_SPECIAL_CHARS);
-            $safeExportPath = filter_input(INPUT_POST, 'export_path', FILTER_SANITIZE_SPECIAL_CHARS);
-            $safeConfigId = filter_input(INPUT_POST, 'config_id', FILTER_SANITIZE_SPECIAL_CHARS);
-            $safeRevisionId = filter_input(INPUT_POST, 'revision_id', FILTER_SANITIZE_SPECIAL_CHARS);
+            $safeId = filter_input(\INPUT_POST, 'jobId', \FILTER_SANITIZE_SPECIAL_CHARS);
+            $safeActive = filter_input(\INPUT_POST, 'active', \FILTER_SANITIZE_SPECIAL_CHARS);
+            $safeExportPath = filter_input(\INPUT_POST, 'export_path', \FILTER_SANITIZE_SPECIAL_CHARS);
+            $safeConfigId = filter_input(\INPUT_POST, 'config_id', \FILTER_SANITIZE_SPECIAL_CHARS);
+            $safeRevisionId = filter_input(\INPUT_POST, 'revision_id', \FILTER_SANITIZE_SPECIAL_CHARS);
             if ('latest' === $safeRevisionId) {
                 $safeRevisionId = null;
             }
-            $safeTerms = filter_input(INPUT_POST, 'terms', FILTER_SANITIZE_SPECIAL_CHARS);
+            $safeTerms = filter_input(\INPUT_POST, 'terms', \FILTER_SANITIZE_SPECIAL_CHARS);
 
             $db = Zend_Registry::get('db');
             $query =
@@ -373,7 +373,7 @@ class ExportController extends AbstractCatalogController
         $this->_helper->layout()->disableLayout();
         $this->_helper->viewRenderer->setNoRender(true);
 
-        $safeRevisionId = filter_input(INPUT_POST, 'revId', FILTER_SANITIZE_SPECIAL_CHARS);
+        $safeRevisionId = filter_input(\INPUT_POST, 'revId', \FILTER_SANITIZE_SPECIAL_CHARS);
 
         $db = Zend_Registry::get('db');
         $query = 'SELECT * FROM archive_configuration_revisions WHERE id=:id';
@@ -413,13 +413,13 @@ class ExportController extends AbstractCatalogController
             return;
         }
 
-        $safeConfigId = filter_input(INPUT_POST, 'configId', FILTER_SANITIZE_SPECIAL_CHARS);
-        $safeNote = filter_input(INPUT_POST, 'note', FILTER_SANITIZE_SPECIAL_CHARS);
+        $safeConfigId = filter_input(\INPUT_POST, 'configId', \FILTER_SANITIZE_SPECIAL_CHARS);
+        $safeNote = filter_input(\INPUT_POST, 'note', \FILTER_SANITIZE_SPECIAL_CHARS);
         $jsonArray = json_decode($this->getRequest()->getPost('jsonData'));
         foreach ($jsonArray as $key => $value) {
-            $value = filter_var($value, FILTER_SANITIZE_SPECIAL_CHARS);
+            $value = filter_var($value, \FILTER_SANITIZE_SPECIAL_CHARS);
         }
-        $safeJsonData = json_encode($jsonArray, JSON_PRETTY_PRINT);
+        $safeJsonData = json_encode($jsonArray, \JSON_PRETTY_PRINT);
 
         $db = Zend_Registry::get('db');
         $query =

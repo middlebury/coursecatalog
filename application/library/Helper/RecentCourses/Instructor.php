@@ -175,12 +175,12 @@ class Helper_RecentCourses_Instructor implements Helper_RecentCourses_Interface
         $dtz_original = $dt->getTimezone();
         $dtz_utc = new DateTimeZone('UTC');
         $dt->setTimezone($dtz_utc);
-        $year = intval($dt->format('Y'));
-        $month = intval($dt->format('n'));
-        $day = intval($dt->format('j'));
-        $hour = intval($dt->format('G'));
-        $minute = intval($dt->format('i'));
-        $second = intval($dt->format('s'));
+        $year = (int) $dt->format('Y');
+        $month = (int) $dt->format('n');
+        $day = (int) $dt->format('j');
+        $hour = (int) $dt->format('G');
+        $minute = (int) $dt->format('i');
+        $second = (int) $dt->format('s');
         $dt->setTimezone($dtz_original);
 
         return gmmktime($hour, $minute, $second, $month, $day, $year);

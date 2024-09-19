@@ -44,14 +44,14 @@ trait banner_DatabaseTestTrait
      */
     public static function loadBannerDb()
     {
-        self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(dirname(__FILE__).'/configuration.plist');
+        self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(__DIR__.'/configuration.plist');
         self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
 
         // Initialize our testing database
         $db = self::$courseManager->getDB();
-        harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/drop_tables.sql', $db);
+        harmoni_SQLUtils::runSQLfile(__DIR__.'/sql/drop_tables.sql', $db);
         harmoni_SQLUtils::runSQLfile(APPLICATION_PATH.'/library/banner/sql/table_creation.sql', $db);
-        harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/test_data.sql', $db);
+        harmoni_SQLUtils::runSQLfile(__DIR__.'/sql/test_data.sql', $db);
 
         // Build our full-text search index.
         $searchSession = self::$courseManager->getCourseOfferingSearchSession();
@@ -79,7 +79,7 @@ trait banner_DatabaseTestTrait
             $maxNum = 0;
             foreach ($db->getCounters() as $name => $num) {
                 $maxName = max($maxName, strlen($name));
-                $maxNum = max($maxNum, strlen(strval($num)));
+                $maxNum = max($maxNum, strlen((string) $num));
             }
             echo "\n";
             foreach ($db->getCounters() as $name => $num) {
@@ -87,7 +87,7 @@ trait banner_DatabaseTestTrait
                 for ($i = strlen($name); $i < $maxName + 1; ++$i) {
                     echo ' ';
                 }
-                echo str_pad($num, $maxNum, ' ', STR_PAD_LEFT);
+                echo str_pad($num, $maxNum, ' ', \STR_PAD_LEFT);
             }
             echo "\n";
 
@@ -98,7 +98,7 @@ trait banner_DatabaseTestTrait
                 foreach ($db->getDuplicates() as $dup) {
                     echo "\nDuplicated ".$dup['count']." times:\n";
                     echo $dup['query'];
-                    $totalDupes = $totalDupes + $dup['count'];
+                    $totalDupes += $dup['count'];
                 }
                 $detail = ob_get_clean();
                 echo "\nTotal duplicated statement preparations: ".$totalDupes;
@@ -111,7 +111,7 @@ trait banner_DatabaseTestTrait
                 echo "\nDuplicate statement preparations not recorded.\n";
             }
         }
-        harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/drop_tables.sql', $db);
+        harmoni_SQLUtils::runSQLfile(__DIR__.'/sql/drop_tables.sql', $db);
 
         self::$courseManager->shutdown();
         self::$runtimeManager->shutdown();
@@ -159,7 +159,7 @@ trait banner_DatabaseTestTrait
      */
     protected static function resetMemoryLimit()
     {
-        if (!is_null(self::$currentMemory)) {
+        if (null !== self::$currentMemory) {
             ini_set('memory_limit', self::$currentMemory);
         }
     }

@@ -36,7 +36,7 @@ class SObjectTestCase extends UnitTestCase
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    public function setUp()
+    protected function setUp()
     {
         // TestPeople
         $this->personA = new TestPerson();
@@ -81,7 +81,7 @@ class SObjectTestCase extends UnitTestCase
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    public function tearDown()
+    protected function tearDown()
     {
         // perhaps, unset $obj here
     }
@@ -412,7 +412,7 @@ class OctopusObject extends SObject
      *
      * @since 7/12/05
      */
-    public function OctopusObject()
+    public function __construct()
     {
         $this->numberOfLegs = 8;
         $this->numberOfSuckers = 12345;
@@ -466,7 +466,7 @@ class DogObject extends SObject
      *
      * @since 7/12/05
      */
-    public function DogObject()
+    public function __construct()
     {
         $this->numberOfLegs = 8;
         $this->numberOfTails = 1;

@@ -43,7 +43,7 @@ class ErrorPrinter
     public static function instance()
     {
         if (!isset(self::$instance)) {
-            self::$instance = new ErrorPrinter();
+            self::$instance = new self();
         }
 
         return self::$instance;
@@ -114,7 +114,7 @@ class ErrorPrinter
                 if (in_array($code, $this->userAgentFilters[$userAgent])) {
                     return false;
                 }
-                if (in_array(get_class($e), $this->userAgentFilters[$userAgent])) {
+                if (in_array($e::class, $this->userAgentFilters[$userAgent])) {
                     return false;
                 }
             }
@@ -161,7 +161,7 @@ class ErrorPrinter
         }
         $this->printException($e, $code);
         if ($this->shouldLogException($e, $code)) {
-            error_log('PHP '.get_class($e).': '.$e->getMessage().' in '.$e->getFile().' on line '.$e->getLine());
+            error_log('PHP '.$e::class.': '.$e->getMessage().' in '.$e->getFile().' on line '.$e->getLine());
         }
     }
 
@@ -192,7 +192,7 @@ class ErrorPrinter
         $this->printException($e, $code, ob_get_clean());
 
         if ($this->shouldLogException($e, $code)) {
-            error_log('PHP '.get_class($e).': '.$e->getMessage().' in '.$e->getFile().' on line '.$e->getLine());
+            error_log('PHP '.$e::class.': '.$e->getMessage().' in '.$e->getFile().' on line '.$e->getLine());
         }
     }
 

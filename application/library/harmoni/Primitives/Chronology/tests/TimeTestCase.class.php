@@ -12,7 +12,7 @@
  * @since 5/3/05
  */
 
-require_once dirname(__FILE__).'/../Time.class.php';
+require_once __DIR__.'/../Time.class.php';
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -36,7 +36,7 @@ class TimeTestCase extends UnitTestCase
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    public function setUp()
+    protected function setUp()
     {
         // perhaps, initialize $obj here
     }
@@ -44,7 +44,7 @@ class TimeTestCase extends UnitTestCase
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    public function tearDown()
+    protected function tearDown()
     {
         // perhaps, unset $obj here
     }
@@ -240,24 +240,24 @@ class TimeTestCase extends UnitTestCase
         // asDate ()
         $temp = $time->asDate();
         $this->assertTrue($temp->isEqualTo(Date::today()));
-        $this->assertEqual(strtolower(get_class($temp)), 'date');
+        $this->assertEqual(strtolower($temp::class), 'date');
 
         // asDateAndTime ()
         $temp = $time->asDateAndTime();
         $comparison = DateAndTime::midnight();
         $comparison = $comparison->plus(Duration::withSeconds(55510));
         $this->assertTrue($temp->isEqualTo($comparison));
-        $this->assertEqual(strtolower(get_class($temp)), 'dateandtime');
+        $this->assertEqual(strtolower($temp::class), 'dateandtime');
 
         // asDuration ()
         $temp = $time->asDuration();
         $this->assertTrue($temp->isEqualTo(Duration::withSeconds(55510)));
-        $this->assertEqual(strtolower(get_class($temp)), 'duration');
+        $this->assertEqual(strtolower($temp::class), 'duration');
 
         // asMonth ()
         $temp = $time->asMonth();
         $this->assertTrue($temp->isEqualTo(Month::starting(Date::today())));
-        $this->assertEqual(strtolower(get_class($temp)), 'month');
+        $this->assertEqual(strtolower($temp::class), 'month');
 
         // asSeconds ()
         $this->assertEqual($time->asSeconds(), 55510);
@@ -265,37 +265,37 @@ class TimeTestCase extends UnitTestCase
         // asTime ()
         $temp = $time->asTime();
         $this->assertTrue($temp->isEqualTo($time));
-        $this->assertEqual(strtolower(get_class($temp)), 'time');
+        $this->assertEqual(strtolower($temp::class), 'time');
 
         // asTimeStamp ()
         $temp = $time->asTimeStamp();
         $comparison = TimeStamp::midnight();
         $comparison = $comparison->plus(Duration::withSeconds(55510));
         $this->assertTrue($temp->isEqualTo($comparison));
-        $this->assertEqual(strtolower(get_class($temp)), 'timestamp');
+        $this->assertEqual(strtolower($temp::class), 'timestamp');
 
         // asWeek ()
         $temp = $time->asWeek();
         $this->assertTrue($temp->isEqualTo(Week::starting(Date::today())));
-        $this->assertEqual(strtolower(get_class($temp)), 'week');
+        $this->assertEqual(strtolower($temp::class), 'week');
 
         // asYear ()
         $temp = $time->asYear();
         $this->assertTrue($temp->isEqualTo(Year::starting(Date::today())));
-        $this->assertEqual(strtolower(get_class($temp)), 'year');
+        $this->assertEqual(strtolower($temp::class), 'year');
 
         // to ()
         $today = DateAndTime::today();
         $tomorrow = DateAndTime::tomorrow();
 
         $result = $time->to($tomorrow);
-        $this->assertEqual(strtolower(get_class($result)), 'timespan');
+        $this->assertEqual(strtolower($result::class), 'timespan');
         $this->assertTrue($result->isEqualTo(Timespan::startingDuration(
             $today->plus(Duration::withSeconds(55510)),
             Duration::withDaysHoursMinutesSeconds(0, 8, 34, 50))));
 
         $result = $time->to(Time::withHourMinuteSecond(23, 25, 10));
-        $this->assertEqual(strtolower(get_class($result)), 'timespan');
+        $this->assertEqual(strtolower($result::class), 'timespan');
         $this->assertTrue($result->isEqualTo(Timespan::startingDuration(
             $today->plus(Duration::withSeconds(55510)),
             Duration::withDaysHoursMinutesSeconds(0, 8, 0, 0))));

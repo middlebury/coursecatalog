@@ -12,8 +12,8 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/ChronologyConstants.class.php';
-require_once dirname(__FILE__).'/../Magnitudes/Magnitude.class.php';
+require_once __DIR__.'/ChronologyConstants.class.php';
+require_once __DIR__.'/../Magnitudes/Magnitude.class.php';
 
 /**
  * I represent a duration of time. I have been tested to support durations of
@@ -74,7 +74,7 @@ class Duration extends Magnitude
             // die("'".$aString."' is not in a valid format.");
         }
 
-        $obj = Duration::withDaysHoursMinutesSeconds(
+        $obj = self::withDaysHoursMinutesSeconds(
             $parser->day(), $parser->hour(), $parser->minute(), $parser->second());
 
         return $obj;
@@ -93,7 +93,7 @@ class Duration extends Magnitude
      */
     public static function withDays($days)
     {
-        $obj = Duration::withDaysHoursMinutesSeconds($days, 0, 0, 0);
+        $obj = self::withDaysHoursMinutesSeconds($days, 0, 0, 0);
 
         return $obj;
     }
@@ -114,7 +114,7 @@ class Duration extends Magnitude
      */
     public static function withDaysHoursMinutesSeconds($days, $hours, $minutes, $seconds)
     {
-        $obj = new Duration(
+        $obj = new self(
             ($days * ChronologyConstants::SecondsInDay())
             + ($hours * ChronologyConstants::SecondsInHour())
             + ($minutes * ChronologyConstants::SecondsInMinute())
@@ -136,7 +136,7 @@ class Duration extends Magnitude
      */
     public static function withHours($hours)
     {
-        $obj = Duration::withDaysHoursMinutesSeconds(0, $hours, 0, 0);
+        $obj = self::withDaysHoursMinutesSeconds(0, $hours, 0, 0);
 
         return $obj;
     }
@@ -154,7 +154,7 @@ class Duration extends Magnitude
      */
     public static function withMinutes($minutes)
     {
-        $obj = Duration::withDaysHoursMinutesSeconds(0, 0, $minutes, 0);
+        $obj = self::withDaysHoursMinutesSeconds(0, 0, $minutes, 0);
 
         return $obj;
     }
@@ -192,7 +192,7 @@ class Duration extends Magnitude
      */
     public static function withSeconds($seconds)
     {
-        $obj = Duration::withDaysHoursMinutesSeconds(0, 0, 0, $seconds);
+        $obj = self::withDaysHoursMinutesSeconds(0, 0, 0, $seconds);
 
         return $obj;
     }
@@ -210,7 +210,7 @@ class Duration extends Magnitude
      */
     public static function withWeeks($aNumber)
     {
-        $obj = Duration::withDaysHoursMinutesSeconds($aNumber * 7, 0, 0, 0);
+        $obj = self::withDaysHoursMinutesSeconds($aNumber * 7, 0, 0, 0);
 
         return $obj;
     }
@@ -226,7 +226,7 @@ class Duration extends Magnitude
      */
     public static function zero()
     {
-        $obj = Duration::withDays(0);
+        $obj = self::withDays(0);
 
         return $obj;
     }
@@ -299,8 +299,8 @@ class Duration extends Magnitude
         // and divisions loose precision. This precision loss does not affect
         // the proper value of days up to the maximum duration tested, 50billion
         // years.
-        if (abs($this->seconds) > pow(2, 31)) {
-            $remainderDuration = $this->minus(Duration::withDays($this->days()));
+        if (abs($this->seconds) > 2 ** 31) {
+            $remainderDuration = $this->minus(self::withDays($this->days()));
 
             return $remainderDuration->hours();
         } else {
@@ -331,8 +331,8 @@ class Duration extends Magnitude
         // and divisions loose precision. This precision loss does not affect
         // the proper value of days up to the maximum duration tested, 50billion
         // years.
-        if (abs($this->seconds) > pow(2, 31)) {
-            $remainderDuration = $this->minus(Duration::withDays($this->days()));
+        if (abs($this->seconds) > 2 ** 31) {
+            $remainderDuration = $this->minus(self::withDays($this->days()));
 
             return $remainderDuration->minutes();
         } else {
@@ -364,9 +364,9 @@ class Duration extends Magnitude
         }
 
         $result .= abs($this->days()).':';
-        $result .= str_pad(abs($this->hours()), 2, '0', STR_PAD_LEFT).':';
-        $result .= str_pad(abs($this->minutes()), 2, '0', STR_PAD_LEFT).':';
-        $result .= str_pad(abs($this->seconds()), 2, '0', STR_PAD_LEFT);
+        $result .= str_pad(abs($this->hours()), 2, '0', \STR_PAD_LEFT).':';
+        $result .= str_pad(abs($this->minutes()), 2, '0', \STR_PAD_LEFT).':';
+        $result .= str_pad(abs($this->seconds()), 2, '0', \STR_PAD_LEFT);
 
         return $result;
     }
@@ -386,8 +386,8 @@ class Duration extends Magnitude
         // and divisions loose precision. This precision loss does not affect
         // the proper value of days up to the maximum duration tested, 50billion
         // years.
-        if (abs($this->seconds) > pow(2, 31)) {
-            $remainderDuration = $this->minus(Duration::withDays($this->days()));
+        if (abs($this->seconds) > 2 ** 31) {
+            $remainderDuration = $this->minus(self::withDays($this->days()));
 
             return $remainderDuration->seconds();
         } else {
@@ -469,7 +469,7 @@ class Duration extends Magnitude
      */
     public function abs()
     {
-        $obj = new Duration(abs($this->seconds));
+        $obj = new self(abs($this->seconds));
 
         return $obj;
     }
@@ -486,12 +486,12 @@ class Duration extends Magnitude
     public function dividedBy($operand)
     {
         if (is_numeric($operand)) {
-            $obj = new Duration(intval($this->asSeconds() / $operand));
+            $obj = new self((int) ($this->asSeconds() / $operand));
 
             return $obj;
         } else {
             $denominator = $operand->asDuration();
-            $obj = new Duration(intval($this->asSeconds() / $denominator->asSeconds()));
+            $obj = new self((int) ($this->asSeconds() / $denominator->asSeconds()));
 
             return $obj;
         }
@@ -525,12 +525,12 @@ class Duration extends Magnitude
     public function multipliedBy($operand)
     {
         if (is_numeric($operand)) {
-            $obj = new Duration(intval($this->asSeconds() * $operand));
+            $obj = new self((int) ($this->asSeconds() * $operand));
 
             return $obj;
         } else {
             $duration = $operand->asDuration();
-            $obj = new Duration(intval($this->asSeconds() * $duration->asSeconds()));
+            $obj = new self((int) ($this->asSeconds() * $duration->asSeconds()));
 
             return $obj;
         }
@@ -545,7 +545,7 @@ class Duration extends Magnitude
      */
     public function negated()
     {
-        $obj = new Duration(0 - $this->seconds);
+        $obj = new self(0 - $this->seconds);
 
         return $obj;
     }
@@ -561,7 +561,7 @@ class Duration extends Magnitude
      */
     public function plus($aDuration)
     {
-        $obj = new Duration($this->asSeconds() + $aDuration->asSeconds());
+        $obj = new self($this->asSeconds() + $aDuration->asSeconds());
 
         return $obj;
     }
@@ -577,10 +577,10 @@ class Duration extends Magnitude
      */
     public function roundTo($aDuration)
     {
-        $obj = new Duration(
-            intval(
+        $obj = new self(
+            (int)
                 round(
-                    $this->asSeconds() / $aDuration->asSeconds()))
+                    $this->asSeconds() / $aDuration->asSeconds())
             * $aDuration->asSeconds());
 
         return $obj;
@@ -599,8 +599,8 @@ class Duration extends Magnitude
      */
     public function truncateTo($aDuration)
     {
-        $obj = new Duration(
-            intval($this->asSeconds() / $aDuration->asSeconds())
+        $obj = new self(
+            (int) ($this->asSeconds() / $aDuration->asSeconds())
             * $aDuration->asSeconds());
 
         return $obj;
@@ -637,4 +637,4 @@ class Duration extends Magnitude
 
 // Require the StringParser instead of the ANSI58216StringParser directly so
 // as to make sure that all classes are included in the appropriate order.
-require_once dirname(__FILE__).'/StringParser/StringParser.class.php';
+require_once __DIR__.'/StringParser/StringParser.class.php';

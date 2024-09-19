@@ -12,7 +12,7 @@
  * @since 5/25/05
  */
 
-require_once dirname(__FILE__).'/../ByteSize.class.php';
+require_once __DIR__.'/../ByteSize.class.php';
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -36,7 +36,7 @@ class ByteSizeTestCase extends UnitTestCase
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    public function setUp()
+    protected function setUp()
     {
         $this->bNum = ByteSize::withValue(280);
         $this->kbNum = ByteSize::withValue(2800);
@@ -48,7 +48,7 @@ class ByteSizeTestCase extends UnitTestCase
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    public function tearDown()
+    protected function tearDown()
     {
         // perhaps, unset $obj here
     }

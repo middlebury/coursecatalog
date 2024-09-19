@@ -8,7 +8,7 @@
  * @version $Id: Number.class.php,v 1.6 2007/10/10 22:58:34 adamfranco Exp $
  */
 
-require_once dirname(__FILE__).'/../Magnitudes/Magnitude.class.php';
+require_once __DIR__.'/../Magnitudes/Magnitude.class.php';
 
 /**
  * This is a partial port of the Squeak/Smalltalk Number class.
@@ -362,7 +362,7 @@ abstract class Number extends Magnitude
      */
     public function asDouble()
     {
-        $obj = Double::withValue(doubleval($this->value()));
+        $obj = Double::withValue((float) $this->value());
 
         return $obj;
     }
@@ -376,7 +376,7 @@ abstract class Number extends Magnitude
      */
     public function asFloat()
     {
-        $obj = Float::withValue(floatval($this->value()));
+        $obj = Float::withValue((float) $this->value());
 
         return $obj;
     }

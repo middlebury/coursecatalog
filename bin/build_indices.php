@@ -2,7 +2,7 @@
 <?php
 
 $GLOBALS['start_time'] = microtime();
-require_once dirname(__FILE__).'/../application/autoload.php';
+require_once __DIR__.'/../application/autoload.php';
 
 define('DISPLAY_ERROR_BACKTRACE', true);
 set_exception_handler(['harmoni_ErrorHandler', 'handleException']);
@@ -52,7 +52,7 @@ catch (Exception $e) {
 function asBytes($val)
 {
     $val = trim($val);
-    $num = intval(preg_replace('/^([0-9]+)(.*)$/', '', $val));
+    $num = (int) preg_replace('/^([0-9]+)(.*)$/', '', $val);
     $last = strtolower($val[strlen($val) - 1]);
     switch ($last) {
         // The 'G' modifier is available since PHP 5.1.0

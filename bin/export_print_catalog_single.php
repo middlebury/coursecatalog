@@ -2,8 +2,8 @@
 <?php
 
 // Define application environment
-defined('APPLICATION_ENV') || define('APPLICATION_ENV', getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production');
-require_once dirname(__FILE__).'/../application/autoload.php';
+defined('APPLICATION_ENV') || define('APPLICATION_ENV', getenv('APPLICATION_ENV') ?: 'production');
+require_once __DIR__.'/../application/autoload.php';
 $config = new Zend_Config_Ini(BASE_PATH.'/archive_config.ini', APPLICATION_ENV);
 if (empty($config->catalog->archive_root)) {
     echo 'Invalid configuration: catalog.archive_root must be defined in archive_config.ini';

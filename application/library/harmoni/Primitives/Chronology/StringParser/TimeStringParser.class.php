@@ -12,7 +12,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/StringParser.class.php';
+require_once __DIR__.'/StringParser.class.php';
 // require_once(dirname(__FILE__)."/RegexStringParser.class.php");
 
 /**
@@ -53,7 +53,7 @@ class TimeStringParser extends RegexStringParser
 "/
 ^										# Start of the line
 
-#-----------------------------------------------------------------------------			
+#-----------------------------------------------------------------------------
 	(									# One or Two-digit hour
 		(?: [1-9])
 		|
@@ -61,24 +61,24 @@ class TimeStringParser extends RegexStringParser
 		|
 		(?: 2[0-4])
 	)
-	
+
 	(?:									# Optional :Minute:Seconds component
 		:								# Colon
 		([0-5][0-9])?					# Two-digit minute
-		
+
 		(?:								# Optional :Seconds component
-			:							# Colon				
-			(							# Two-digit second 
+			:							# Colon
+			(							# Two-digit second
 				[0-5][0-9]
 				(?: \.[0-9]+)?			# followed by an optional decimal.
 			)
 		)?
 	)?
-	
+
 	\s?									# Optional space
-	
+
 	(am|pm)?							# Optional AM or PM
-	
+
 $
 /xi";
     }

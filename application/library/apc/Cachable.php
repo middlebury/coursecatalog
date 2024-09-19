@@ -28,7 +28,7 @@ abstract class apc_Cachable
     protected function __construct($idString, $collectionId = null)
     {
         if (!$collectionId) {
-            $collectionId = get_class($this);
+            $collectionId = static::class;
         }
 
         $this->collectionId = $collectionId;

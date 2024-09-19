@@ -12,7 +12,7 @@
  * @since 5/3/05
  */
 
-require_once dirname(__FILE__).'/../Timespan.class.php';
+require_once __DIR__.'/../Timespan.class.php';
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -36,7 +36,7 @@ class TimespanTestCase extends UnitTestCase
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    public function setUp()
+    protected function setUp()
     {
         $this->currentYear = date('Y');
     }
@@ -44,7 +44,7 @@ class TimespanTestCase extends UnitTestCase
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    public function tearDown()
+    protected function tearDown()
     {
         // perhaps, unset $obj here
     }
@@ -62,12 +62,12 @@ class TimespanTestCase extends UnitTestCase
         // startingEnding()
 
         $timespan = Timespan::current();
-        $this->assertEqual($timespan->startYear(), intval(date('Y')));
-        $this->assertEqual($timespan->startMonth(), intval(date('n')));
-        $this->assertEqual($timespan->dayOfMonth(), intval(date('j')));
+        $this->assertEqual($timespan->startYear(), (int) date('Y'));
+        $this->assertEqual($timespan->startMonth(), (int) date('n'));
+        $this->assertEqual($timespan->dayOfMonth(), (int) date('j'));
         $duration = $timespan->duration();
         $this->assertTrue($duration->isEqualTo(Duration::zero()));
-        $this->assertEqual(strtolower(get_class($timespan)), 'timespan');
+        $this->assertEqual(strtolower($timespan::class), 'timespan');
 
         $timespan = Timespan::epoch();
         $this->assertEqual($timespan->startYear(), 1901);
@@ -75,7 +75,7 @@ class TimespanTestCase extends UnitTestCase
         $this->assertEqual($timespan->dayOfMonth(), 1);
         $duration = $timespan->duration();
         $this->assertTrue($duration->isEqualTo(Duration::zero()));
-        $this->assertEqual(strtolower(get_class($timespan)), 'timespan');
+        $this->assertEqual(strtolower($timespan::class), 'timespan');
     }
 
     /**

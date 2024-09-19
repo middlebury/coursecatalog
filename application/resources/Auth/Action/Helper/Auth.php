@@ -67,7 +67,7 @@ class Auth_Action_Helper_Auth extends Zend_Controller_Action_Helper_Abstract
     {
         $authHelper = Zend_Controller_Action_HelperBroker::getStaticHelper($authType);
         if (!($authHelper instanceof Auth_Action_Helper_AuthInterface)) {
-            $class = get_class($authHelper);
+            $class = $authHelper::class;
             throw new Exception("Auth helper for auth-type '$authType' has class '$class' which does not implement Auth_Action_Helper_AuthInterface.");
         }
 
@@ -87,7 +87,7 @@ class Auth_Action_Helper_Auth extends Zend_Controller_Action_Helper_Abstract
             $this->init();
         }
 
-        if (is_null($this->authHelper)) {
+        if (null === $this->authHelper) {
             throw new Exception("No authentication helper is available. Maybe one wasn't configured.", 450);
         }
 

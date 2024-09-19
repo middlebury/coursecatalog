@@ -200,7 +200,7 @@ abstract class Helper_RecentCourses_Abstract implements Helper_RecentCourses_Int
             foreach ($group as $key => $course) {
                 try {
                     $term = $this->getMostRecentTermForCourse($course);
-                    $isPrimary[] = intval($course->isPrimary());
+                    $isPrimary[] = (int) $course->isPrimary();
                     $dates[] = $this->DateTime_getTimestamp($term->getEndTime());
                     $names[] = $course->getDisplayName();
                 } catch (osid_NotFoundException $e) {
@@ -211,7 +211,7 @@ abstract class Helper_RecentCourses_Abstract implements Helper_RecentCourses_Int
             // 			var_dump($isPrimary);
             // 			var_dump($dates);
             // 			var_dump($names);
-            array_multisort($isPrimary, SORT_NUMERIC, SORT_DESC, $dates, SORT_NUMERIC, SORT_DESC, $names, SORT_ASC, $group);
+            array_multisort($isPrimary, \SORT_NUMERIC, \SORT_DESC, $dates, \SORT_NUMERIC, \SORT_DESC, $names, \SORT_ASC, $group);
 
             // Filter out any groups that don't have courses with recent terms.
             if (!count($group)) {
@@ -273,7 +273,7 @@ abstract class Helper_RecentCourses_Abstract implements Helper_RecentCourses_Int
             $dates[$key] = $this->DateTime_getTimestamp($term->getEndTime());
         }
 
-        array_multisort($dates, SORT_NUMERIC, SORT_ASC, $recentTerms);
+        array_multisort($dates, \SORT_NUMERIC, \SORT_ASC, $recentTerms);
 
         return $recentTerms;
     }
@@ -337,12 +337,12 @@ abstract class Helper_RecentCourses_Abstract implements Helper_RecentCourses_Int
         $dtz_original = $dt->getTimezone();
         $dtz_utc = new DateTimeZone('UTC');
         $dt->setTimezone($dtz_utc);
-        $year = intval($dt->format('Y'));
-        $month = intval($dt->format('n'));
-        $day = intval($dt->format('j'));
-        $hour = intval($dt->format('G'));
-        $minute = intval($dt->format('i'));
-        $second = intval($dt->format('s'));
+        $year = (int) $dt->format('Y');
+        $month = (int) $dt->format('n');
+        $day = (int) $dt->format('j');
+        $hour = (int) $dt->format('G');
+        $minute = (int) $dt->format('i');
+        $second = (int) $dt->format('s');
         $dt->setTimezone($dtz_original);
 
         return gmmktime($hour, $minute, $second, $month, $day, $year);

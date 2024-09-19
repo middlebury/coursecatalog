@@ -9,7 +9,7 @@
  * @version $Id: Double.class.php,v 1.6 2007/10/10 22:58:34 adamfranco Exp $
  */
 
-require_once dirname(__FILE__).'/Float.class.php';
+require_once __DIR__.'/Float.class.php';
 
 /**
  * A simple Float data type.
@@ -88,6 +88,6 @@ class Double extends Float
      */
     public function _setValue($value)
     {
-        $this->_value = doubleval($value);
+        $this->_value = (float) $value;
     }
 }

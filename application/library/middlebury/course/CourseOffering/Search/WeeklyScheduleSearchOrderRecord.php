@@ -34,7 +34,7 @@
  *		authority:		middlebury.edu
  *		identifier:		record:weekly_schedule
  */
-interface middlebury_course_CourseOffering_Search_InstructorsSearchOrderRecord extends osid_course_CourseOfferingSearchOrderRecord
+interface WeeklyScheduleSearchOrderRecord extends osid_course_CourseOfferingSearchOrderRecord
 {
     /**
      * Order by meeting on Sunday.

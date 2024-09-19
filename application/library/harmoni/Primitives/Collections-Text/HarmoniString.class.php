@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__).'/../Objects/SObject.class.php';
+require_once __DIR__.'/../Objects/SObject.class.php';
 
 /**
  * A simple String data type.

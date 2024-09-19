@@ -26,7 +26,7 @@ class Blob extends String
      */
     public static function withValue($value)
     {
-        $string = new Blob($value);
+        $string = new self($value);
 
         return $string;
     }
@@ -44,7 +44,7 @@ class Blob extends String
      */
     public static function fromString($aString)
     {
-        $string = new Blob($aString);
+        $string = new self($aString);
 
         return $string;
     }

@@ -139,10 +139,10 @@ class Catalog_Action_Helper_OsidTerms extends Catalog_Action_Helper_AbstractOsid
         $pastIds = [];
         $pastDates = [];
 
-        if (is_null($date)) {
+        if (null === $date) {
             $date = time();
         } else {
-            $date = intval($date->format('U'));
+            $date = (int) $date->format('U');
         }
 
         if (!$terms->hasNext()) {
@@ -151,7 +151,7 @@ class Catalog_Action_Helper_OsidTerms extends Catalog_Action_Helper_AbstractOsid
 
         while ($terms->hasNext()) {
             $term = $terms->getNextTerm();
-            $start = intval($term->getStartTime()->format('U'));
+            $start = (int) $term->getStartTime()->format('U');
 
             // If the term starts in the future, add it to the upcoming list
             if ($start > $date) {
@@ -167,13 +167,13 @@ class Catalog_Action_Helper_OsidTerms extends Catalog_Action_Helper_AbstractOsid
 
         // If we have an upcoming term, return the one that is soonest in the future.
         if (count($upcomingIds)) {
-            array_multisort($upcomingDates, SORT_NUMERIC, SORT_ASC, $upcomingIds);
+            array_multisort($upcomingDates, \SORT_NUMERIC, \SORT_ASC, $upcomingIds);
 
             return $upcomingIds[0];
         }
         // Otherwise return the most recent past term
         else {
-            array_multisort($pastDates, SORT_NUMERIC, SORT_DESC, $pastIds);
+            array_multisort($pastDates, \SORT_NUMERIC, \SORT_DESC, $pastIds);
 
             return $pastIds[0];
         }
@@ -193,10 +193,10 @@ class Catalog_Action_Helper_OsidTerms extends Catalog_Action_Helper_AbstractOsid
         $ids = [];
         $diffs = [];
 
-        if (is_null($date)) {
+        if (null === $date) {
             $date = time();
         } else {
-            $date = intval($date->format('U'));
+            $date = (int) $date->format('U');
         }
 
         if (!$terms->hasNext()) {
@@ -205,8 +205,8 @@ class Catalog_Action_Helper_OsidTerms extends Catalog_Action_Helper_AbstractOsid
 
         while ($terms->hasNext()) {
             $term = $terms->getNextTerm();
-            $start = intval($term->getStartTime()->format('U'));
-            $end = intval($term->getEndTime()->format('U'));
+            $start = (int) $term->getStartTime()->format('U');
+            $end = (int) $term->getEndTime()->format('U');
 
             // If our current time is within the term timespan, return that term's id.
             if ($date >= $start && $date <= $end) {
@@ -217,7 +217,7 @@ class Catalog_Action_Helper_OsidTerms extends Catalog_Action_Helper_AbstractOsid
             $diffs[] = abs($date - $start) + abs($date - $end);
         }
 
-        array_multisort($diffs, SORT_NUMERIC, SORT_ASC, $ids);
+        array_multisort($diffs, \SORT_NUMERIC, \SORT_ASC, $ids);
 
         return $ids[0];
     }

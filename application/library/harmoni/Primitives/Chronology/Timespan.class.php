@@ -12,7 +12,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/../Magnitudes/Magnitude.class.php';
+require_once __DIR__.'/../Magnitudes/Magnitude.class.php';
 
 /**
  * Timespan represents a duration starting at a specific DateAndTime.
@@ -275,7 +275,7 @@ class Timespan extends Magnitude
     public function includes($aDateAndTime)
     {
         // If the argument is a Timespan, check the end-date as well.
-        if ('timespan' == strtolower(get_class($aDateAndTime))
+        if ('timespan' == strtolower($aDateAndTime::class)
             || is_subclass_of($aDateAndTime, 'Timespan')) {
             return $this->includes($aDateAndTime->start())
                 && $this->includes($aDateAndTime->end());
@@ -354,7 +354,7 @@ class Timespan extends Magnitude
 
             return $null;
         } else {
-            eval('$result = '.get_class($this).'::startingEnding($aBeginning, $anEnd);');
+            eval('$result = '.static::class.'::startingEnding($aBeginning, $anEnd);');
 
             return $result;
         }
@@ -397,10 +397,10 @@ class Timespan extends Magnitude
      */
     public function next()
     {
-        eval('$result = '.get_class($this).'::startingDuration(
+        eval('$result = '.static::class.'::startingDuration(
  			$this->start->plus($this->duration),
  			$this->duration,
- 			"'.get_class($this).'");');
+ 			"'.static::class.'");');
 
         return $result;
     }
@@ -416,9 +416,9 @@ class Timespan extends Magnitude
      */
     public function plus($aDuration)
     {
-        $classname = get_class($this);
+        $classname = static::class;
 
-        eval('$result = '.$classname.'::startingDuration($this->start->plus($aDuration), 
+        eval('$result = '.$classname.'::startingDuration($this->start->plus($aDuration),
 			$this->duration());');
 
         return $result;
@@ -433,10 +433,10 @@ class Timespan extends Magnitude
      */
     public function previous()
     {
-        eval('$result = '.get_class($this).'::startingDuration(
+        eval('$result = '.static::class.'::startingDuration(
  			$this->start->minus($this->duration),
  			$this->duration,
- 			"'.get_class($this).'");');
+ 			"'.static::class.'");');
 
         return $result;
     }
@@ -458,7 +458,7 @@ class Timespan extends Magnitude
         $aBeginning = $start->min($aTimespan->start());
         $anEnd = $end->max($aTimespan->end());
 
-        $obj = Timespan::startingEnding(
+        $obj = self::startingEnding(
             $aBeginning,
             $anEnd->plus(DateAndTime::clockPrecision()));
 
@@ -952,10 +952,10 @@ class Timespan extends Magnitude
      */
     public function to($anEnd)
     {
-        $obj = Timespan::startingEnding($this->start(), $anEnd->asDateAndTime());
+        $obj = self::startingEnding($this->start(), $anEnd->asDateAndTime());
 
         return $obj;
     }
 }
 
-require_once dirname(__FILE__).'/DateAndTime.class.php';
+require_once __DIR__.'/DateAndTime.class.php';

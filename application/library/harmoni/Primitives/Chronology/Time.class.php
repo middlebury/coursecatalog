@@ -12,12 +12,12 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/ChronologyConstants.class.php';
-require_once dirname(__FILE__).'/../Magnitudes/Magnitude.class.php';
-require_once dirname(__FILE__).'/Month.class.php';
-require_once dirname(__FILE__).'/TimeZone.class.php';
-require_once dirname(__FILE__).'/Week.class.php';
-require_once dirname(__FILE__).'/Year.class.php';
+require_once __DIR__.'/ChronologyConstants.class.php';
+require_once __DIR__.'/../Magnitudes/Magnitude.class.php';
+require_once __DIR__.'/Month.class.php';
+require_once __DIR__.'/TimeZone.class.php';
+require_once __DIR__.'/Week.class.php';
+require_once __DIR__.'/Year.class.php';
 
 /**
  * This represents a period of time.
@@ -274,7 +274,7 @@ class Time extends Magnitude
     {
         $x = ($this->hour24() - 1) % 12;
         if ($x < 0) {
-            $x = $x + 12;
+            $x += 12;
         }
 
         return $x + 1;
@@ -346,11 +346,11 @@ class Time extends Magnitude
         }
 
         $result .= ':';
-        $result .= str_pad(abs($this->minute()), 2, '0', STR_PAD_LEFT);
+        $result .= str_pad(abs($this->minute()), 2, '0', \STR_PAD_LEFT);
 
         if ($showSeconds) {
             $result .= ':';
-            $result .= str_pad(abs($this->second()), 2, '0', STR_PAD_LEFT);
+            $result .= str_pad(abs($this->second()), 2, '0', \STR_PAD_LEFT);
         }
 
         if ($this->hour() >= 12) {
@@ -373,13 +373,13 @@ class Time extends Magnitude
      */
     public function string24($showSeconds = true)
     {
-        $result = str_pad(abs($this->hour()), 2, '0', STR_PAD_LEFT);
+        $result = str_pad(abs($this->hour()), 2, '0', \STR_PAD_LEFT);
         $result .= ':';
-        $result .= str_pad(abs($this->minute()), 2, '0', STR_PAD_LEFT);
+        $result .= str_pad(abs($this->minute()), 2, '0', \STR_PAD_LEFT);
 
         if ($showSeconds) {
             $result .= ':';
-            $result .= str_pad(abs($this->second()), 2, '0', STR_PAD_LEFT);
+            $result .= str_pad(abs($this->second()), 2, '0', \STR_PAD_LEFT);
         }
 
         return $result;
@@ -430,7 +430,7 @@ class Time extends Magnitude
             return true;
         }
 
-        if ('time' == !strtolower(get_class($comparand))
+        if ('time' == !strtolower($comparand::class)
             && !is_subclass_of($comparand, 'Time')) {
             return false;
         }
@@ -477,7 +477,7 @@ class Time extends Magnitude
      */
     public function addSeconds($anInteger)
     {
-        eval('$result = '.get_class($this).'::withSeconds(
+        eval('$result = '.static::class.'::withSeconds(
  				$this->asSeconds() + $anInteger);');
 
         return $result;
@@ -495,7 +495,7 @@ class Time extends Magnitude
      */
     public function addTime($timeAmount)
     {
-        eval('$result = '.get_class($this).'::withSeconds(
+        eval('$result = '.static::class.'::withSeconds(
  				$this->asSeconds() + $timeAmount->asSeconds());');
 
         return $result;
@@ -513,7 +513,7 @@ class Time extends Magnitude
      */
     public function subtractTime($timeAmount)
     {
-        eval('$result = '.get_class($this).'::withSeconds(
+        eval('$result = '.static::class.'::withSeconds(
  				$this->asSeconds() - $timeAmount->asSeconds());');
 
         return $result;

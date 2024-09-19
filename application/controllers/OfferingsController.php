@@ -553,8 +553,8 @@ class OfferingsController extends AbstractCatalogController
             }
 
             if ($this->_getParam('time_start') || $this->_getParam('time_end')) {
-                $start = intval($this->_getParam('time_start'));
-                $end = intval($this->_getParam('time_end'));
+                $start = (int) $this->_getParam('time_start');
+                $end = (int) $this->_getParam('time_end');
                 if (!$end) {
                     $end = 86400;
                 }

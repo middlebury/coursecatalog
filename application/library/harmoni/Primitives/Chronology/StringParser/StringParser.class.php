@@ -12,8 +12,8 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/../../Objects/SObject.class.php';
-require_once dirname(__FILE__).'/../Month.class.php';
+require_once __DIR__.'/../../Objects/SObject.class.php';
+require_once __DIR__.'/../Month.class.php';
 
 /**
  * StringParser and its decendent classes form a Strategy pattern. They classes
@@ -356,7 +356,7 @@ abstract class StringParser extends SObject
      */
     public function setYear($anInteger)
     {
-        $this->year = intval($anInteger);
+        $this->year = (int) $anInteger;
     }
 
     /**
@@ -371,7 +371,7 @@ abstract class StringParser extends SObject
         if (!$anIntOrString) {
             $this->month = null;
         } elseif (is_numeric($anIntOrString)) {
-            $this->month = intval($anIntOrString);
+            $this->month = (int) $anIntOrString;
         } else {
             $this->month = Month::indexOfMonth($anIntOrString);
         }
@@ -388,7 +388,7 @@ abstract class StringParser extends SObject
      */
     public function setDay($anInteger)
     {
-        $this->day = intval($anInteger);
+        $this->day = (int) $anInteger;
     }
 
     /**
@@ -402,7 +402,7 @@ abstract class StringParser extends SObject
      */
     public function setHour($anInteger)
     {
-        $this->hour = intval($anInteger);
+        $this->hour = (int) $anInteger;
     }
 
     /**
@@ -416,7 +416,7 @@ abstract class StringParser extends SObject
      */
     public function setMinute($anInteger)
     {
-        $this->minute = intval($anInteger);
+        $this->minute = (int) $anInteger;
     }
 
     /**
@@ -442,7 +442,7 @@ abstract class StringParser extends SObject
      */
     public function setOffsetHour($anInteger)
     {
-        $this->offsetHour = intval($anInteger);
+        $this->offsetHour = (int) $anInteger;
     }
 
     /**
@@ -456,7 +456,7 @@ abstract class StringParser extends SObject
      */
     public function setOffsetMinute($anInteger)
     {
-        $this->offsetMinute = intval($anInteger);
+        $this->offsetMinute = (int) $anInteger;
     }
 
     /**
@@ -474,16 +474,16 @@ abstract class StringParser extends SObject
     }
 }
 
-require_once dirname(__FILE__).'/RegexStringParser.class.php';
-require_once dirname(__FILE__).'/TwoDigitYearStringParser.class.php';
+require_once __DIR__.'/RegexStringParser.class.php';
+require_once __DIR__.'/TwoDigitYearStringParser.class.php';
 
-require_once dirname(__FILE__).'/ANSI58216StringParser.class.php';
-require_once dirname(__FILE__).'/ISO8601StringParser.class.php';
-require_once dirname(__FILE__).'/ISO8601TimeStringParser.class.php';
-require_once dirname(__FILE__).'/DayMonthNameYearStringParser.class.php';
-require_once dirname(__FILE__).'/MonthNameDayYearStringParser.class.php';
-require_once dirname(__FILE__).'/MonthNumberDayYearStringParser.class.php';
-require_once dirname(__FILE__).'/KeywordStringParser.class.php';
-require_once dirname(__FILE__).'/TimeStringParser.class.php';
-require_once dirname(__FILE__).'/DateAndTimeStringParser.class.php';
-require_once dirname(__FILE__).'/DateAndISOTimeStringParser.class.php';
+require_once __DIR__.'/ANSI58216StringParser.class.php';
+require_once __DIR__.'/ISO8601StringParser.class.php';
+require_once __DIR__.'/ISO8601TimeStringParser.class.php';
+require_once __DIR__.'/DayMonthNameYearStringParser.class.php';
+require_once __DIR__.'/MonthNameDayYearStringParser.class.php';
+require_once __DIR__.'/MonthNumberDayYearStringParser.class.php';
+require_once __DIR__.'/KeywordStringParser.class.php';
+require_once __DIR__.'/TimeStringParser.class.php';
+require_once __DIR__.'/DateAndTimeStringParser.class.php';
+require_once __DIR__.'/DateAndISOTimeStringParser.class.php';

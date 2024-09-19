@@ -31,7 +31,7 @@ class Paginator_Adaptor_CourseOfferingSearch implements Zend_Paginator_Adapter_I
         $this->session = $session;
         $this->query = $query;
 
-        if (is_null($search)) {
+        if (null === $search) {
             $this->search = $this->session->getCourseOfferingSearch();
         } else {
             $this->search = $search;

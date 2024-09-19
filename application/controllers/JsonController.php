@@ -67,8 +67,8 @@ class JsonController extends AbstractCatalogController
                 'description' => $term->getDisplayName(),
             ];
         }
-        if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
-            echo json_encode($result, JSON_PRETTY_PRINT);
+        if (version_compare(\PHP_VERSION, '5.4.0') >= 0) {
+            echo json_encode($result, \JSON_PRETTY_PRINT);
         } else {
             echo json_encode($result);
         }
@@ -125,8 +125,8 @@ class JsonController extends AbstractCatalogController
                 'name' => $topic->getDisplayName(),
             ];
         }
-        if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
-            echo json_encode($result, JSON_PRETTY_PRINT);
+        if (version_compare(\PHP_VERSION, '5.4.0') >= 0) {
+            echo json_encode($result, \JSON_PRETTY_PRINT);
         } else {
             echo json_encode($result);
         }
@@ -184,8 +184,8 @@ class JsonController extends AbstractCatalogController
         while ($courses->hasNext()) {
             $result['courses'][] = $this->_getCourseResult($courses->getNextCourse(), $termId, $offeringLookupSession);
         }
-        if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
-            echo json_encode($result, JSON_PRETTY_PRINT);
+        if (version_compare(\PHP_VERSION, '5.4.0') >= 0) {
+            echo json_encode($result, \JSON_PRETTY_PRINT);
         } else {
             echo json_encode($result);
         }
@@ -255,8 +255,8 @@ class JsonController extends AbstractCatalogController
             $seen[] = $courseIdString;
             $result['courses'][] = $this->_getCourseResult($course, $termId, $offeringLookupSession);
         }
-        if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
-            echo json_encode($result, JSON_PRETTY_PRINT);
+        if (version_compare(\PHP_VERSION, '5.4.0') >= 0) {
+            echo json_encode($result, \JSON_PRETTY_PRINT);
         } else {
             echo json_encode($result);
         }

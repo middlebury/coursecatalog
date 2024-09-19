@@ -46,7 +46,7 @@ class CatalogSync_Database_Statement_Select_Oci implements CatalogSync_Database_
      */
     public function fetch()
     {
-        if (!isset($this->statement) || is_null($this->statement)) {
+        if (!isset($this->statement) || null === $this->statement) {
             throw new Exception('Cannot fetch without a statement. Maybe it was already closed?');
         }
         // Fetch
@@ -118,7 +118,7 @@ class CatalogSync_Database_Statement_Select_Oci implements CatalogSync_Database_
      */
     protected function loadText($value)
     {
-        if (is_null($value)) {
+        if (null === $value) {
             return null;
         } else {
             return $value->load();

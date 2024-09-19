@@ -252,16 +252,16 @@ class banner_course_CourseOffering_Search_Session extends banner_course_CourseOf
      */
     public function buildIndex($displayStatus = false)
     {
-        harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_drop_index.sql', $this->manager->getDB());
+        harmoni_SQLUtils::runSQLfile(__DIR__.'/sql/fulltext_drop_index.sql', $this->manager->getDB());
         try {
-            harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_create_index_structure.sql', $this->manager->getDB());
+            harmoni_SQLUtils::runSQLfile(__DIR__.'/sql/fulltext_create_index_structure.sql', $this->manager->getDB());
         } catch (PDOException $e) {
             // Ignore "Column already exists" errors.
             if ('42S21' != $e->getCode()) {
                 throw $e;
             }
         }
-        harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/../../../sql/create_views.sql', $this->manager->getDB());
+        harmoni_SQLUtils::runSQLfile(__DIR__.'/../../../sql/create_views.sql', $this->manager->getDB());
 
         $lookupSession = $this->manager->getCourseOfferingLookupSession();
         $lookupSession->useFederatedCourseCatalogView();
@@ -280,7 +280,7 @@ class banner_course_CourseOffering_Search_Session extends banner_course_CourseOf
 
         if ($displayStatus) {
             $total = $offerings->available();
-            $numLength = strlen(strval($total));
+            $numLength = strlen((string) $total);
             echo "\nBuilding Index of $total offerings:\n";
         }
 
@@ -299,7 +299,7 @@ class banner_course_CourseOffering_Search_Session extends banner_course_CourseOf
                     throw new osid_OperationFailedException('FullText update failed with code '.$info[0].'/'.$info[1].' - '.$info[2]);
                 }
             } catch (Exception $e) {
-                echo "\nError of type:\n\t".get_class($e)."\nwith message:\n\t".$e->getMessage()."\n";
+                echo "\nError of type:\n\t".$e::class."\nwith message:\n\t".$e->getMessage()."\n";
             }
 
             ++$i;
@@ -309,7 +309,7 @@ class banner_course_CourseOffering_Search_Session extends banner_course_CourseOf
                 }
                 if (!($i % 10000)) {
                     echo ' ';
-                    echo str_pad($i, $numLength, ' ', STR_PAD_LEFT);
+                    echo str_pad($i, $numLength, ' ', \STR_PAD_LEFT);
                     echo " / $total\n";
                 }
             }
@@ -319,7 +319,7 @@ class banner_course_CourseOffering_Search_Session extends banner_course_CourseOf
             echo "\nData Populated, adding index to columns...";
         }
 
-        harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/sql/fulltext_add_index.sql', $this->manager->getDB());
+        harmoni_SQLUtils::runSQLfile(__DIR__.'/sql/fulltext_add_index.sql', $this->manager->getDB());
 
         if ($displayStatus) {
             echo "\nIndex Built\n";

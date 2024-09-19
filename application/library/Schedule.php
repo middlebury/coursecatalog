@@ -492,7 +492,7 @@ class Schedule
             DateAndTime::today()->plus(Duration::withSeconds($event2['startTime'])),
             DateAndTime::today()->plus(Duration::withSeconds($event2['endTime'])));
 
-        return !is_null($timespan1->intersection($timespan2));
+        return null !== $timespan1->intersection($timespan2);
     }
 
     /**
@@ -666,7 +666,7 @@ class Schedule
             $names[] = $offering->getDisplayName();
         }
 
-        array_multisort($sortkeys, SORT_NUMERIC, SORT_ASC, $names, SORT_STRING, SORT_ASC, array_keys($offerings), $offerings);
+        array_multisort($sortkeys, \SORT_NUMERIC, \SORT_ASC, $names, \SORT_STRING, \SORT_ASC, array_keys($offerings), $offerings);
 
         return $offerings;
     }
@@ -688,7 +688,7 @@ class Schedule
             $names[] = $offering->getDisplayName();
         }
 
-        array_multisort($names, SORT_STRING, SORT_ASC, array_keys($offerings), $offerings);
+        array_multisort($names, \SORT_STRING, \SORT_ASC, array_keys($offerings), $offerings);
 
         return $offerings;
     }

@@ -16,7 +16,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 if (!defined('HARMONI')) {
-    define('HARMONI', dirname(__FILE__).'/../../../');
+    define('HARMONI', __DIR__.'/../../../');
 }
 
 if (!defined('SIMPLE_TEST')) {
@@ -27,7 +27,7 @@ require_once SIMPLE_TEST.'simple_unit.php';
 require_once SIMPLE_TEST.'dobo_simple_html_test.php';
 
 $test = new GroupTest('String Tests');
-$test->addTestFile(dirname(__FILE__).'/HtmlStringTestCase.class.php');
+$test->addTestFile(__DIR__.'/HtmlStringTestCase.class.php');
 
 $test->attachObserver(new DoboTestHtmlDisplay());
 $test->run();

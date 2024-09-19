@@ -192,14 +192,14 @@ abstract class CatalogSync_Syncer_Abstract
         $pdo->commit();
 
         // Rebuild our "materialized views"
-        require_once dirname(__FILE__).'/../../harmoni/SQLUtils.php';
+        require_once __DIR__.'/../../harmoni/SQLUtils.php';
         echo "Updating materialized views\t";
-        harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/../../banner/sql/create_views.sql', $pdo);
+        harmoni_SQLUtils::runSQLfile(__DIR__.'/../../banner/sql/create_views.sql', $pdo);
         echo "...\tUpdated materialized views\n";
 
         // Rebuild our indices now that tables are populated.
         echo "Rebuilding indices and optimizing tables\t";
-        harmoni_SQLUtils::runSQLfile(dirname(__FILE__).'/../../banner/sql/rebuild_indices.sql', $pdo);
+        harmoni_SQLUtils::runSQLfile(__DIR__.'/../../banner/sql/rebuild_indices.sql', $pdo);
         echo "...\tRebuilt indices and optimed tables\n";
     }
 

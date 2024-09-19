@@ -247,7 +247,7 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
         return new banner_course_Course(
             $this->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'], 'course/'),
             $row['SCBCRSE_SUBJ_CODE'].' '.$row['SCBCRSE_CRSE_NUMB'],
-            (is_null($row['SCBDESC_TEXT_NARRATIVE'])) ? '' : $row['SCBDESC_TEXT_NARRATIVE'],	// Description
+            (null === $row['SCBDESC_TEXT_NARRATIVE']) ? '' : $row['SCBDESC_TEXT_NARRATIVE'],	// Description
             $row['SCBCRSE_TITLE'],
             $row['SCBCRSE_CREDIT_HR_HIGH'],
             [
@@ -268,7 +268,7 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
      */
     private function getCatalogWhereTerms()
     {
-        if (is_null($this->catalogId) || $this->catalogId->isEqual($this->getCombinedCatalogId())) {
+        if (null === $this->catalogId || $this->catalogId->isEqual($this->getCombinedCatalogId())) {
             return 'TRUE';
         } else {
             return 'catalog_id = :catalog_id';
@@ -285,7 +285,7 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
     private function getCatalogParameters()
     {
         $params = [];
-        if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->getCombinedCatalogId())) {
+        if (null !== $this->catalogId && !$this->catalogId->isEqual($this->getCombinedCatalogId())) {
             $params[':catalog_id'] = $this->getCatalogDatabaseId($this->catalogId);
         }
 

@@ -12,7 +12,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/Timespan.class.php';
+require_once __DIR__.'/Timespan.class.php';
 
 /**
  * I represent a powerful class for implementing recurring schedules.

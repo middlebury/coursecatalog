@@ -60,7 +60,7 @@ require_once XML_HTMLSAX3.'HTMLSax3.php';
  *
  * @see       http://pear.php.net/package/SafeHTML
  */
-class SafeHTML
+class safehtml
 {
     /**
      * Storage for resulting HTML output.
@@ -295,10 +295,10 @@ class SafeHTML
             foreach ($attrs as $name => $value) {
                 $name = strtolower($name);
 
-                if (0 === strpos($name, 'on')) {
+                if (str_starts_with($name, 'on')) {
                     continue;
                 }
-                if (0 === strpos($name, 'data')) {
+                if (str_starts_with($name, 'data')) {
                     continue;
                 }
                 if (in_array($name, $this->attributes)) {
@@ -310,7 +310,7 @@ class SafeHTML
                     }
                 }
 
-                if ((true === $value) || is_null($value)) {
+                if ((true === $value) || null === $value) {
                     $value = $name;
                 }
 
@@ -347,7 +347,7 @@ class SafeHTML
                 $tempval = preg_replace_callback('/&#x([0-9a-f]+);?/mi', function ($m) { return chr(hexdec($m[1])); }, $tempval);
 
                 if (in_array($name, $this->protocolAttributes)
-                    && (false !== strpos($tempval, ':'))) {
+                    && str_contains($tempval, ':')) {
                     if ('black' == $this->protocolFiltering) {
                         foreach ($this->_protoRegexps as $proto) {
                             if (preg_match($proto, $tempval)) {
@@ -385,7 +385,7 @@ class SafeHTML
         $name = strtolower($name);
 
         if (in_array($name, $this->deleteTagsContent)) {
-            array_push($this->_dcStack, $name);
+            $this->_dcStack[] = $name;
             $this->_dcCounter[$name] = isset($this->_dcCounter[$name]) ? $this->_dcCounter[$name] + 1 : 1;
         }
         if (0 != count($this->_dcStack)) {
@@ -434,13 +434,13 @@ class SafeHTML
             ++$this->_listScope;
         }
         if ('li' == $name) {
-            array_push($this->_liStack, $this->_listScope);
+            $this->_liStack[] = $this->_listScope;
         }
 
         $this->_xhtml .= '<'.$name;
         $this->_writeAttrs($attrs);
         $this->_xhtml .= '>';
-        array_push($this->_stack, $name);
+        $this->_stack[] = $name;
         $this->_counter[$name] = isset($this->_counter[$name]) ? $this->_counter[$name] + 1 : 1;
 
         return true;

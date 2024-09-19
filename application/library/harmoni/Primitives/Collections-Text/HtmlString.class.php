@@ -1,8 +1,8 @@
 <?php
 
-require_once dirname(__FILE__).'/HarmoniString.class.php';
-define('XML_HTMLSAX3', dirname(__FILE__).'/SafeHTML/classes/');
-require_once dirname(__FILE__).'/SafeHTML/classes/safehtml.php';
+require_once __DIR__.'/HarmoniString.class.php';
+define('XML_HTMLSAX3', __DIR__.'/SafeHTML/classes/');
+require_once __DIR__.'/SafeHTML/classes/safehtml.php';
 
 /**
  * A HtmlString data type. This class allows for HTML-safe string shortening.
@@ -35,7 +35,7 @@ class HtmlString extends HarmoniString
      */
     public static function withValue($value)
     {
-        return new HtmlString($value);
+        return new self($value);
     }
 
     /**
@@ -51,7 +51,7 @@ class HtmlString extends HarmoniString
      */
     public static function fromString($aString)
     {
-        return new HtmlString($aString);
+        return new self($aString);
     }
 
     /**
@@ -174,7 +174,7 @@ class HtmlString extends HarmoniString
                                 $output .= $tagHtml;
                             } else {
                                 $output .= $this->ensureNesting($tag, $tags);
-                                array_push($tags, $tag);
+                                $tags[] = $tag;
                                 $output .= $tagHtml;
                             }
                         }
@@ -278,13 +278,13 @@ class HtmlString extends HarmoniString
             case 'td':
                 if ('tr' != $lastTag) {
                     $preString = $this->ensureNesting('tr', $tags).'<tr>';
-                    array_push($tags, 'tr');
+                    $tags[] = 'tr';
                 }
                 break;
             case 'tr':
                 if (!in_array($lastTag, ['table', 'tbody', 'thead', 'tfoot'])) {
                     $preString = '<table>';
-                    array_push($tags, 'table');
+                    $tags[] = 'table';
                 }
                 break;
             case 'thead':
@@ -292,32 +292,32 @@ class HtmlString extends HarmoniString
             case 'tfoot':
                 if ('table' != $lastTag) {
                     $preString = '<table>';
-                    array_push($tags, 'table');
+                    $tags[] = 'table';
                 }
                 break;
             case 'li':
                 if ('ul' != $lastTag && 'ol' != $lastTag) {
                     $preString = '<ul>';
-                    array_push($tags, 'ul');
+                    $tags[] = 'ul';
                 }
                 break;
             case 'dt':
             case 'dd':
                 if ('dl' != $lastTag) {
                     $preString = '<dl>';
-                    array_push($tags, 'dl');
+                    $tags[] = 'dl';
                 }
                 break;
             case 'option':
                 if ('select' != $lastTag && 'optgroup' != $lastTag) {
                     $preString = '<select>';
-                    array_push($tags, 'select');
+                    $tags[] = 'select';
                 }
                 break;
             case 'optgroup':
                 if ('select' != $lastTag) {
                     $preString = '<select>';
-                    array_push($tags, 'select');
+                    $tags[] = 'select';
                 }
                 break;
         }
@@ -344,10 +344,10 @@ class HtmlString extends HarmoniString
         $string = preg_replace("/\040+/", ' ', trim($string));
         $stringc = explode(' ', $string);
 
-        if ($word_count >= sizeof($stringc)) {
+        if ($word_count >= count($stringc)) {
             // nothing to do, our string is smaller than the limit.
             return $string;
-        } elseif ($word_count < sizeof($stringc)) {
+        } elseif ($word_count < count($stringc)) {
             // trim the string to the word count
             for ($i = 0; $i < $word_count; ++$i) {
                 $trimmed .= $stringc[$i].' ';

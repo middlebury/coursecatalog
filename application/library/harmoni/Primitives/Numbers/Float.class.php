@@ -9,7 +9,7 @@
  * @version $Id: Float.class.php,v 1.7 2007/10/10 22:58:34 adamfranco Exp $
  */
 
-require_once dirname(__FILE__).'/Number.class.php';
+require_once __DIR__.'/Number.class.php';
 
 /**
  * A simple Float data type.
@@ -90,7 +90,7 @@ class Float extends Number
      */
     public function plus($aNumber)
     {
-        $class = get_class($this);
+        $class = static::class;
         eval('$obj = '.$class.'::withValue($this->value() + $aNumber->value());');
 
         return $obj;
@@ -107,7 +107,7 @@ class Float extends Number
      */
     public function multipliedBy($aNumber)
     {
-        $class = get_class($this);
+        $class = static::class;
         eval('$obj = '.$class.'::withValue($this->value() * $aNumber->value());');
 
         return $obj;
@@ -124,7 +124,7 @@ class Float extends Number
      */
     public function dividedBy($aNumber)
     {
-        $class = get_class($this);
+        $class = static::class;
         eval('$obj = '.$class.'::withValue($this->value() / $aNumber->value());');
 
         return $obj;
@@ -143,6 +143,6 @@ class Float extends Number
      */
     public function _setValue($value)
     {
-        $this->_value = floatval($value);
+        $this->_value = (float) $value;
     }
 }

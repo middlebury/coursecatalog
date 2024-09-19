@@ -12,7 +12,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/Timespan.class.php';
+require_once __DIR__.'/Timespan.class.php';
 
 /**
  * I am a Timespan that represents a Year.
@@ -171,7 +171,7 @@ class Year extends Timespan
         $midnight = $asDateAndTime->atMidnight();
         $year = new $class();
         $year->setStart($midnight);
-        $year->setDuration(Duration::withDays(Year::getDaysInYear($midnight->year())));
+        $year->setDuration(Duration::withDays(self::getDaysInYear($midnight->year())));
 
         return $year;
     }
@@ -195,7 +195,7 @@ class Year extends Timespan
     {
         $start = DateAndTime::withYearMonthDay($anInteger, 1, 1);
         eval('$result = '.$class.'::startingDuration(
-				$start, 
+				$start,
 				$null = NULL,
 				$class
 			);');
@@ -216,11 +216,11 @@ class Year extends Timespan
      */
     public static function getDaysInYear($anInteger)
     {
-        if (is_null($anInteger)) {
+        if (null === $anInteger) {
             throw new InvalidArgumentException('Cannot execute daysInYear for NULL.');
         }
 
-        if (Year::isYearLeapYear($anInteger)) {
+        if (self::isYearLeapYear($anInteger)) {
             return 365 + 1;
         } else {
             return 365;

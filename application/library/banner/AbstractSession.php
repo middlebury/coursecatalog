@@ -27,7 +27,7 @@ abstract class banner_AbstractSession extends phpkit_AbstractOsidSession
     public function __construct(banner_ManagerInterface $manager, $prefix)
     {
         $this->manager = $manager;
-        $this->idPrefix = strval($prefix);
+        $this->idPrefix = (string) $prefix;
     }
 
     /**
@@ -152,13 +152,13 @@ abstract class banner_AbstractSession extends phpkit_AbstractOsidSession
             throw new osid_NotFoundException('I only know about Ids under the '.$this->manager->getIdAuthority().' authority.');
         }
 
-        if (is_null($prefix)) {
+        if (null === $prefix) {
             $prefix = $this->idPrefix;
         } else {
-            $prefix = strval($prefix);
+            $prefix = (string) $prefix;
         }
 
-        if (0 !== strpos($id->getIdentifier(), $prefix)) {
+        if (!str_starts_with($id->getIdentifier(), $prefix)) {
             throw new osid_NotFoundException('I only know about Ids with the '.$prefix.' prefix.');
         }
 
@@ -177,7 +177,7 @@ abstract class banner_AbstractSession extends phpkit_AbstractOsidSession
      */
     public function getOsidIdFromString($databaseId, $prefix = null)
     {
-        if (is_null($prefix)) {
+        if (null === $prefix) {
             $prefix = $this->idPrefix;
         }
 

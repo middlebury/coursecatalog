@@ -1,11 +1,11 @@
 #!/usr/bin/env php
 <?php
 
-error_reporting(E_ALL & ~E_DEPRECATED);
+error_reporting(\E_ALL & ~\E_DEPRECATED);
 ini_set('display_errors', true);
 date_default_timezone_set('America/New_York');
 
-require_once dirname(__FILE__).'/../application/autoload.php';
+require_once __DIR__.'/../application/autoload.php';
 
 try {
     $opts = new Zend_Console_Getopt(
@@ -59,7 +59,7 @@ if (isset($opts->a)) {
 
     // Define application environment
     defined('APPLICATION_ENV')
-        || define('APPLICATION_ENV', getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production');
+        || define('APPLICATION_ENV', getenv('APPLICATION_ENV') ?: 'production');
     $registry = Zend_Registry::getInstance();
     $registry->config = new Zend_Config_Ini(BASE_PATH.'/frontend_config.ini', APPLICATION_ENV, ['allowModifications' => true]);
     // Add our archive-specific config if it exists.

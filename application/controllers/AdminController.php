@@ -64,7 +64,7 @@ class AdminController extends AbstractCatalogController
             $term = $this->_getParam('term');
             $verifyStmt = $db->prepare('SELECT COUNT(*) FROM STVTERM WHERE STVTERM_CODE = ?');
             $verifyStmt->execute([$term]);
-            $valid = intval($verifyStmt->fetchColumn());
+            $valid = (int) $verifyStmt->fetchColumn();
             $verifyStmt->closeCursor();
             if (!$valid) {
                 throw new InvalidArgumentException('Invalid term-code: '.$term);

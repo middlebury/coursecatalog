@@ -46,7 +46,7 @@ abstract class banner_course_Topic_AbstractList extends banner_course_CachingPdo
      */
     public function debug()
     {
-        return "\n\n".get_class($this)."\nQuery:\n".$this->getQuery()."\nParameters:\n".print_r($this->getAllInputParameters(), true);
+        return "\n\n".static::class."\nQuery:\n".$this->getQuery()."\nParameters:\n".print_r($this->getAllInputParameters(), true);
     }
 
     /**
@@ -219,7 +219,7 @@ GROUP BY SCBCRSE_SUBJ_CODE)
     protected function getAllInputParameters()
     {
         $params = $this->getInputParameters();
-        if (!is_null($this->catalogId) && !$this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
+        if (null !== $this->catalogId && !$this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
             if ($this->includeRequirements()) {
                 $params[':req_catalog_id'] = $this->session->getCatalogDatabaseId($this->catalogId);
             }
@@ -376,7 +376,7 @@ GROUP BY SCBCRSE_SUBJ_CODE)
      */
     private function getCatalogWhereTerms($prefix)
     {
-        if (is_null($this->catalogId) || $this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
+        if (null === $this->catalogId || $this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
             return 'TRUE';
         } else {
             return 'course_catalog_college.catalog_id = :'.$prefix.'_catalog_id';

@@ -370,7 +370,7 @@ class XML_HTMLSax3_StateParser_Lt430 extends XML_HTMLSax3_StateParser
     public function scanUntilCharacters($string)
     {
         $startpos = $this->position;
-        while ($this->position < $this->length && false === strpos($string, $this->rawtext[$this->position])) {
+        while ($this->position < $this->length && !str_contains($string, $this->rawtext[$this->position])) {
             ++$this->position;
         }
 
@@ -385,7 +385,7 @@ class XML_HTMLSax3_StateParser_Lt430 extends XML_HTMLSax3_StateParser
     public function ignoreWhitespace()
     {
         while ($this->position < $this->length
-            && false !== strpos(" \n\r\t", $this->rawtext[$this->position])) {
+            && str_contains(" \n\r\t", $this->rawtext[$this->position])) {
             ++$this->position;
         }
     }
@@ -516,7 +516,7 @@ class XML_HTMLSax3
      */
     public function __construct()
     {
-        if (version_compare(phpversion(), '4.3', 'ge')) {
+        if (version_compare(\PHP_VERSION, '4.3', 'ge')) {
             $this->state_parser = new XML_HTMLSax3_StateParser_Gtet430($this);
         } else {
             $this->state_parser = new XML_HTMLSax3_StateParser_Lt430($this);

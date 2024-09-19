@@ -267,9 +267,9 @@ class XML_HTMLSax3_Entities_Parsed
      */
     public function breakData($parser, $data)
     {
-        $data = preg_split('/(&.+?;)/', $data, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        $data = preg_split('/(&.+?;)/', $data, -1, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
         foreach ($data as $chunk) {
-            $chunk = html_entity_decode($chunk, ENT_NOQUOTES);
+            $chunk = html_entity_decode($chunk, \ENT_NOQUOTES);
             $this->orig_obj->{$this->orig_method}($this, $chunk);
         }
     }
@@ -277,11 +277,11 @@ class XML_HTMLSax3_Entities_Parsed
 /*
  * Compatibility with older PHP versions
  */
-if (version_compare(phpversion(), '4.3', '<') && !function_exists('html_entity_decode')) {
-    function html_entity_decode($str, $style = ENT_NOQUOTES)
+if (version_compare(\PHP_VERSION, '4.3', '<') && !function_exists('html_entity_decode')) {
+    function html_entity_decode($str, $style = \ENT_NOQUOTES)
     {
         return strtr($str,
-            array_flip(get_html_translation_table(HTML_ENTITIES, $style)));
+            array_flip(get_html_translation_table(\HTML_ENTITIES, $style)));
     }
 }
 /**
@@ -323,7 +323,7 @@ class XML_HTMLSax3_Entities_Unparsed
      */
     public function breakData($parser, $data)
     {
-        $data = preg_split('/(&.+?;)/', $data, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        $data = preg_split('/(&.+?;)/', $data, -1, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
         foreach ($data as $chunk) {
             $this->orig_obj->{$this->orig_method}($this, $chunk);
         }

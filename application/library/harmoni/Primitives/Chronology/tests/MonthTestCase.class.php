@@ -12,7 +12,7 @@
  * @since 5/3/05
  */
 
-require_once dirname(__FILE__).'/../Month.class.php';
+require_once __DIR__.'/../Month.class.php';
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -36,7 +36,7 @@ class MonthTestCase extends UnitTestCase
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    public function setUp()
+    protected function setUp()
     {
         // perhaps, initialize $obj here
     }
@@ -44,7 +44,7 @@ class MonthTestCase extends UnitTestCase
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    public function tearDown()
+    protected function tearDown()
     {
         // perhaps, unset $obj here
     }
@@ -56,7 +56,7 @@ class MonthTestCase extends UnitTestCase
     {
         $epochMonth = Month::epoch();
 
-        $this->assertEqual(strtolower(get_class($epochMonth)), 'month');
+        $this->assertEqual(strtolower($epochMonth::class), 'month');
         $this->assertEqual($epochMonth->dayOfMonth(), 1);
         $this->assertEqual($epochMonth->dayOfYear(), 1);
         $this->assertEqual($epochMonth->daysInMonth(), 31);

@@ -71,7 +71,7 @@ class ArchiveController extends AbstractCatalogController
         if (!$target) {
             throw new InvalidArgumentException('The target path is invalid.');
         }
-        if (0 !== strpos($target, $archive_root)) {
+        if (!str_starts_with($target, $archive_root)) {
             throw new InvalidArgumentException('The target path must be located within catalog.archive_root.');
         }
 
@@ -139,7 +139,7 @@ class ArchiveController extends AbstractCatalogController
         if (!$target) {
             throw new InvalidArgumentException('The target path is invalid.');
         }
-        if (0 !== strpos($target, $archive_root)) {
+        if (!str_starts_with($target, $archive_root)) {
             throw new InvalidArgumentException('The target path must be located within catalog.archive_root.');
         }
 
@@ -166,7 +166,7 @@ class ArchiveController extends AbstractCatalogController
             $this->view->breadcrumb[$this->view->baseUrl($url)] = $label;
         }
         $url .= '/'.$request->getParam('file');
-        $this->view->breadcrumb[$this->view->baseUrl($url)] = pathinfo($request->getParam('file'), PATHINFO_FILENAME);
+        $this->view->breadcrumb[$this->view->baseUrl($url)] = pathinfo($request->getParam('file'), \PATHINFO_FILENAME);
         error_reporting($tmp);
     }
 
@@ -366,7 +366,7 @@ class ArchiveController extends AbstractCatalogController
         $config = Zend_Registry::getInstance()->config;
         // Test for a password if we aren't run from the command-line to prevent
         // overloading.
-        if (PHP_SAPI != 'cli') {
+        if (\PHP_SAPI != 'cli') {
             if ($config->catalog->print_password && !$request->getParam('password')) {
                 header('HTTP/1.1 400 Bad Request');
                 echo 'A password must be specified.';
@@ -498,7 +498,7 @@ class ArchiveController extends AbstractCatalogController
                                 case 'h1':
                                 case 'h2':
                                     $vals = explode(';', $sectionValue);
-                                    if (sizeof($vals) > 1) {
+                                    if (count($vals) > 1) {
                                         $section['text'] = $vals[0];
                                         $section['toc_text'] = $vals[1];
                                     } else {
@@ -573,7 +573,7 @@ class ArchiveController extends AbstractCatalogController
                 $text = $this->_helper->osidId->toString($section['id']);
             }
             if ($request->getParam('verbose')) {
-                file_put_contents('php://stderr', str_pad($section['type'].': ', 15, ' ', STR_PAD_RIGHT).$text."\n");
+                file_put_contents('php://stderr', str_pad($section['type'].': ', 15, ' ', \STR_PAD_RIGHT).$text."\n");
             }
             $progressUpdateStmt->execute([
                 substr('Printing section '.$currentSection.' of '.$totalSections.' ('.$section['type'].' '.$text.' )', 0, 250).'...',

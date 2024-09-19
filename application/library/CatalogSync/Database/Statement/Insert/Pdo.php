@@ -47,7 +47,7 @@ class CatalogSync_Database_Statement_Insert_Pdo implements CatalogSync_Database_
     public function insertAll(CatalogSync_Database_Statement_Select $select, ?callable $rowPrepCallback = null)
     {
         while ($row = $select->fetch()) {
-            if (!is_null($rowPrepCallback)) {
+            if (null !== $rowPrepCallback) {
                 call_user_func($rowPrepCallback, $row);
             }
             try {

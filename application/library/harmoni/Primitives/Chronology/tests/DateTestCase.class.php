@@ -12,7 +12,7 @@
  * @since 5/3/05
  */
 
-require_once dirname(__FILE__).'/../Date.class.php';
+require_once __DIR__.'/../Date.class.php';
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -36,7 +36,7 @@ class DateTestCase extends UnitTestCase
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    public function setUp()
+    protected function setUp()
     {
         // perhaps, initialize $obj here
     }
@@ -44,7 +44,7 @@ class DateTestCase extends UnitTestCase
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    public function tearDown()
+    protected function tearDown()
     {
         // perhaps, unset $obj here
     }
@@ -56,7 +56,7 @@ class DateTestCase extends UnitTestCase
     {
         $epoch = Date::epoch();
 
-        $this->assertEqual(strtolower(get_class($epoch)), 'date');
+        $this->assertEqual(strtolower($epoch::class), 'date');
         $this->assertEqual($epoch->dayOfMonth(), 1);
         $this->assertEqual($epoch->dayOfYear(), 1);
         $this->assertEqual($epoch->startMonthIndex(), 1);

@@ -127,7 +127,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getDisplayName()
     {
         $val = $this->cacheGetPlain('displayName');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('displayName', $this->getOffering()->getDisplayName());
         } else {
             return $val;
@@ -153,7 +153,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getDescription()
     {
         $val = $this->cacheGetPlain('description');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('description', $this->getOffering()->getDescription());
         } else {
             return $val;
@@ -176,7 +176,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getRecordTypes()
     {
         $val = $this->cacheGetObj('recordTypes');
-        if (is_null($val)) {
+        if (null === $val) {
             $val = [];
             $types = $this->getOffering()->getRecordTypes();
             while ($types->hasNext()) {
@@ -226,7 +226,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getGenusType()
     {
         $val = $this->cacheGetObj('genusType');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetObj('genusType', $this->getOffering()->getGenusType());
         } else {
             return $val;
@@ -364,7 +364,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getTitle()
     {
         $val = $this->cacheGetPlain('title');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('title', $this->getOffering()->getTitle());
         } else {
             return $val;
@@ -382,7 +382,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getNumber()
     {
         $val = $this->cacheGetPlain('number');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('number', $this->getOffering()->getNumber());
         } else {
             return $val;
@@ -400,7 +400,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getCourseReferenceNumber()
     {
         $val = $this->cacheGetPlain('crn');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('crn', $this->getOffering()->getCourseReferenceNumber());
         } else {
             return $val;
@@ -417,7 +417,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getCredits()
     {
         $val = $this->cacheGetPlain('credits');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('credits', $this->getOffering()->getCredits());
         } else {
             return $val;
@@ -434,7 +434,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getPrereqInfo()
     {
         $val = $this->cacheGetPlain('prerequisites');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('prerequisites', $this->getOffering()->getPrereqInfo());
         } else {
             return $val;
@@ -452,7 +452,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getCourseId()
     {
         $val = $this->cacheGetObj('course_id');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetObj('course_id', $this->getOffering()->getCourseId());
         } else {
             return $val;
@@ -484,7 +484,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getTermId()
     {
         $val = $this->cacheGetObj('term_id');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetObj('term_id', $this->getOffering()->getTermId());
         } else {
             return $val;
@@ -520,7 +520,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getTopicIds()
     {
         $val = $this->cacheGetObj('topic_ids');
-        if (is_null($val)) {
+        if (null === $val) {
             $val = [];
             $ids = $this->getOffering()->getTopicIds();
             while ($ids->hasNext()) {
@@ -559,7 +559,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getLocationInfo()
     {
         $val = $this->cacheGetPlain('location_info');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('location_info', $this->getOffering()->getLocationInfo());
         } else {
             return $val;
@@ -577,7 +577,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function hasLocation()
     {
         $val = $this->cacheGetPlain('has_location');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('has_location', $this->getOffering()->hasLocation());
         } else {
             return $val;
@@ -598,7 +598,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getLocationId()
     {
         $val = $this->cacheGetObj('lcoation_id');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetObj('lcoation_id', $this->getOffering()->getLocationId());
         } else {
             return $val;
@@ -637,7 +637,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getScheduleInfo()
     {
         $val = $this->cacheGetPlain('schedule_info');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('schedule_info', $this->getOffering()->getScheduleInfo());
         } else {
             return $val;
@@ -655,7 +655,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function hasCalendar()
     {
         $val = $this->cacheGetPlain('has_calendar');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('has_calendar', $this->getOffering()->hasCalendar());
         } else {
             return $val;
@@ -682,7 +682,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
         }
 
         $val = $this->cacheGetObj('schedule_info');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetObj('schedule_info', $this->getOffering()->getScheduleInfo());
         } else {
             return $val;
@@ -722,7 +722,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function hasLearningObjective()
     {
         $val = $this->cacheGetPlain('hasLearningObjective');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('hasLearningObjective', $this->getOffering()->hasLearningObjective());
         } else {
             return $val;
@@ -748,7 +748,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
         }
 
         $val = $this->cacheGetObj('learningObjectiveId');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetObj('learningObjectiveId', $this->getOffering()->getLearningObjectiveId());
         } else {
             return $val;
@@ -789,7 +789,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getURL()
     {
         $val = $this->cacheGetPlain('url');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('url', $this->getOffering()->getURL());
         } else {
             return $val;
@@ -894,7 +894,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getInstructorIds()
     {
         $val = $this->cacheGetObj('instructor_ids');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetObj('instructor_ids', $this->getOffering()->getInstructorIds());
         } else {
             return $val;
@@ -939,7 +939,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getLinkSetId()
     {
         $val = $this->cacheGetPlain('link_set_id');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('link_set_id', $this->getOffering()->getLinkSetId());
         } else {
             return $val;
@@ -964,7 +964,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getLinkTypeId()
     {
         $val = $this->cacheGetPlain('link_type_id');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('link_type_id', $this->getOffering()->getLinkTypeId());
         } else {
             return $val;
@@ -985,7 +985,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function hasAlternates()
     {
         $val = $this->cacheGetPlain('hasAlternates');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('hasAlternates', $this->getOffering()->hasAlternates());
         } else {
             return $val;
@@ -1005,7 +1005,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getAlternateIds()
     {
         $val = $this->cacheGetObj('alternate_ids');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetObj('alternate_ids', $this->getOffering()->getAlternateIds());
         } else {
             return $val;
@@ -1041,7 +1041,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function isPrimary()
     {
         $val = $this->cacheGetPlain('isPrimary');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('isPrimary', $this->getOffering()->isPrimary());
         } else {
             return $val;
@@ -1062,7 +1062,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function meetsOnSunday()
     {
         $val = $this->cacheGetPlain('meetsOnSunday');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('meetsOnSunday', $this->getOffering()->meetsOnSunday());
         } else {
             return $val;
@@ -1084,7 +1084,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getSundayStartTimes()
     {
         $val = $this->cacheGetPlain('SundayStartTimes');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('SundayStartTimes', $this->getOffering()->getSundayStartTimes());
         } else {
             return $val;
@@ -1106,7 +1106,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getSundayEndTimes()
     {
         $val = $this->cacheGetPlain('SundayEndTimes');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('SundayEndTimes', $this->getOffering()->getSundayEndTimes());
         } else {
             return $val;
@@ -1123,7 +1123,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function meetsOnMonday()
     {
         $val = $this->cacheGetPlain('meetsOnMonday');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('meetsOnMonday', $this->getOffering()->meetsOnMonday());
         } else {
             return $val;
@@ -1145,7 +1145,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getMondayStartTimes()
     {
         $val = $this->cacheGetPlain('MondayStartTimes');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('MondayStartTimes', $this->getOffering()->getMondayStartTimes());
         } else {
             return $val;
@@ -1167,7 +1167,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getMondayEndTimes()
     {
         $val = $this->cacheGetPlain('MondayEndTimes');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('MondayEndTimes', $this->getOffering()->getMondayEndTimes());
         } else {
             return $val;
@@ -1184,7 +1184,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function meetsOnTuesday()
     {
         $val = $this->cacheGetPlain('meetsOnTuesday');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('meetsOnTuesday', $this->getOffering()->meetsOnTuesday());
         } else {
             return $val;
@@ -1206,7 +1206,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getTuesdayStartTimes()
     {
         $val = $this->cacheGetPlain('TuesdayStartTimes');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('TuesdayStartTimes', $this->getOffering()->getTuesdayStartTimes());
         } else {
             return $val;
@@ -1228,7 +1228,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getTuesdayEndTimes()
     {
         $val = $this->cacheGetPlain('TuesdayEndTimes');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('TuesdayEndTimes', $this->getOffering()->getTuesdayEndTimes());
         } else {
             return $val;
@@ -1245,7 +1245,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function meetsOnWednesday()
     {
         $val = $this->cacheGetPlain('meetsOnWednesday');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('meetsOnWednesday', $this->getOffering()->meetsOnWednesday());
         } else {
             return $val;
@@ -1267,7 +1267,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getWednesdayStartTimes()
     {
         $val = $this->cacheGetPlain('WednesdayStartTimes');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('WednesdayStartTimes', $this->getOffering()->getWednesdayStartTimes());
         } else {
             return $val;
@@ -1289,7 +1289,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getWednesdayEndTimes()
     {
         $val = $this->cacheGetPlain('WednesdayEndTimes');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('WednesdayEndTimes', $this->getOffering()->getWednesdayEndTimes());
         } else {
             return $val;
@@ -1306,7 +1306,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function meetsOnThursday()
     {
         $val = $this->cacheGetPlain('meetsOnThursday');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('meetsOnThursday', $this->getOffering()->meetsOnThursday());
         } else {
             return $val;
@@ -1328,7 +1328,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getThursdayStartTimes()
     {
         $val = $this->cacheGetPlain('ThursdayStartTimes');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('ThursdayStartTimes', $this->getOffering()->getThursdayStartTimes());
         } else {
             return $val;
@@ -1350,7 +1350,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getThursdayEndTimes()
     {
         $val = $this->cacheGetPlain('ThursdayEndTimes');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('ThursdayEndTimes', $this->getOffering()->getThursdayEndTimes());
         } else {
             return $val;
@@ -1367,7 +1367,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function meetsOnFriday()
     {
         $val = $this->cacheGetPlain('meetsOnFriday');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('meetsOnFriday', $this->getOffering()->meetsOnFriday());
         } else {
             return $val;
@@ -1389,7 +1389,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getFridayStartTimes()
     {
         $val = $this->cacheGetPlain('FridayStartTimes');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('FridayStartTimes', $this->getOffering()->getFridayStartTimes());
         } else {
             return $val;
@@ -1411,7 +1411,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getFridayEndTimes()
     {
         $val = $this->cacheGetPlain('FridayEndTimes');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('FridayEndTimes', $this->getOffering()->getFridayEndTimes());
         } else {
             return $val;
@@ -1428,7 +1428,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function meetsOnSaturday()
     {
         $val = $this->cacheGetPlain('meetsOnSaturday');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('meetsOnSaturday', $this->getOffering()->meetsOnSaturday());
         } else {
             return $val;
@@ -1450,7 +1450,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getSaturdayStartTimes()
     {
         $val = $this->cacheGetPlain('SaturdayStartTimes');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('SaturdayStartTimes', $this->getOffering()->getSaturdayStartTimes());
         } else {
             return $val;
@@ -1472,7 +1472,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getSaturdayEndTimes()
     {
         $val = $this->cacheGetPlain('SaturdayEndTimes');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('SaturdayEndTimes', $this->getOffering()->getSaturdayEndTimes());
         } else {
             return $val;
@@ -1488,7 +1488,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function hasMeetingStartDate()
     {
         $val = $this->cacheGetPlain('hasMeetingStartDate');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('hasMeetingStartDate', $this->getOffering()->hasMeetingStartDate());
         } else {
             return $val;
@@ -1504,7 +1504,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getMeetingStartDate()
     {
         $val = $this->cacheGetPlain('MeetingStartDate');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('MeetingStartDate', $this->getOffering()->getMeetingStartDate());
         } else {
             return $val;
@@ -1520,7 +1520,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function hasMeetingEndDate()
     {
         $val = $this->cacheGetPlain('hasMeetingEndDate');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('hasMeetingEndDate', $this->getOffering()->hasMeetingEndDate());
         } else {
             return $val;
@@ -1536,7 +1536,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     public function getMeetingEndDate()
     {
         $val = $this->cacheGetPlain('MeetingEndDate');
-        if (is_null($val)) {
+        if (null === $val) {
             return $this->cacheSetPlain('MeetingEndDate', $this->getOffering()->getMeetingEndDate());
         } else {
             return $val;

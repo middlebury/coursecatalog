@@ -27,7 +27,7 @@ abstract class apc_course_CachableSession extends apc_course_AbstractSession
     {
         parent::__construct($manager);
 
-        $this->collectionId = get_class($this);
+        $this->collectionId = static::class;
 
         $catalogId = $this->getCourseCatalogId();
 

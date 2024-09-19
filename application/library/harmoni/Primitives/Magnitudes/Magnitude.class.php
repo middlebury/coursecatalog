@@ -12,7 +12,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/../Objects/SObject.class.php';
+require_once __DIR__.'/../Objects/SObject.class.php';
 
 /**
  * Magnitude has methods for dealing with linearly ordered collections.

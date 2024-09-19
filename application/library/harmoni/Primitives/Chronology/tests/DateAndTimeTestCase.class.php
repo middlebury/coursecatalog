@@ -12,7 +12,7 @@
  * @since 5/3/05
  */
 
-require_once dirname(__FILE__).'/../DateAndTime.class.php';
+require_once __DIR__.'/../DateAndTime.class.php';
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -36,7 +36,7 @@ class DateAndTimeTestCase extends UnitTestCase
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    public function setUp()
+    protected function setUp()
     {
         // perhaps, initialize $obj here
     }
@@ -44,7 +44,7 @@ class DateAndTimeTestCase extends UnitTestCase
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    public function tearDown()
+    protected function tearDown()
     {
         // perhaps, unset $obj here
     }
@@ -484,7 +484,7 @@ class DateAndTimeTestCase extends UnitTestCase
         $dateAndTime = DateAndTime::withYearDayHourMinuteSecond(2005, 100, 0, 0, 0);
         $result = $dateAndTime->plus(Duration::withSeconds(1));
 
-        $this->assertEqual(strtolower(get_class($result)), 'dateandtime');
+        $this->assertEqual(strtolower($result::class), 'dateandtime');
         $this->assertTrue($result->isEqualTo(DateAndTime::withYearDayHourMinuteSecond(
             2005, 100, 0, 0, 1)));
 
@@ -492,7 +492,7 @@ class DateAndTimeTestCase extends UnitTestCase
         $dateAndTime = DateAndTime::withYearDayHourMinuteSecond(2005, 100, 0, 0, 0);
         $result = $dateAndTime->minus(Duration::withSeconds(1));
 
-        $this->assertEqual(strtolower(get_class($result)), 'dateandtime');
+        $this->assertEqual(strtolower($result::class), 'dateandtime');
         $this->assertEqual($result->year(), 2005);
         $this->assertEqual($result->dayOfYear(), 99);
         $this->assertEqual($result->hour(), 23);
@@ -505,14 +505,14 @@ class DateAndTimeTestCase extends UnitTestCase
         $dateAndTime = DateAndTime::withYearDayHourMinuteSecond(2006, 100, 0, 0, 0);
         $result = $dateAndTime->minus(DateAndTime::withYearDayHourMinuteSecond(2005, 100, 0, 0, 0));
 
-        $this->assertEqual(strtolower(get_class($result)), 'duration');
+        $this->assertEqual(strtolower($result::class), 'duration');
         $this->assertTrue($result->isEqualTo(Duration::withDays(365)));
 
         // Minus a DateAndTime over a leap year
         $dateAndTime = DateAndTime::withYearDayHourMinuteSecond(2005, 10, 0, 0, 0);
         $result = $dateAndTime->minus(DateAndTime::withYearDayHourMinuteSecond(2004, 10, 0, 0, 0));
 
-        $this->assertEqual(strtolower(get_class($result)), 'duration');
+        $this->assertEqual(strtolower($result::class), 'duration');
         $this->assertTrue($result->isEqualTo(Duration::withDays(366)));
 
         // Plus a DateAndTime
@@ -520,7 +520,7 @@ class DateAndTimeTestCase extends UnitTestCase
         $result = $dateAndTime->plus(DateAndTime::withYearDayHourMinuteSecond(
             2000, 100, 5, 30, 15));
 
-        $this->assertEqual(strtolower(get_class($result)), 'dateandtime');
+        $this->assertEqual(strtolower($result::class), 'dateandtime');
         $this->assertEqual($result->year(), 2000);
         $this->assertEqual($result->dayOfYear(), 100);
         $this->assertEqual($result->hour(), 10);
@@ -592,20 +592,20 @@ class DateAndTimeTestCase extends UnitTestCase
     {
         echo '<h4>'.$dateAndTime->asString().'</h4>';
         echo 'Year: ';
-        $this->assertEqual($dateAndTime->year(), intval($dateTime->format('Y')));
+        $this->assertEqual($dateAndTime->year(), (int) $dateTime->format('Y'));
         echo 'Month: ';
-        $this->assertEqual($dateAndTime->month(), intval($dateTime->format('n')));
+        $this->assertEqual($dateAndTime->month(), (int) $dateTime->format('n'));
         echo 'Day of Month: ';
-        $this->assertEqual($dateAndTime->dayOfMonth(), intval($dateTime->format('j')));
+        $this->assertEqual($dateAndTime->dayOfMonth(), (int) $dateTime->format('j'));
         echo 'Day of Year: ';
-        $this->assertEqual($dateAndTime->dayOfYear() - 1, intval($dateTime->format('z')));
+        $this->assertEqual($dateAndTime->dayOfYear() - 1, (int) $dateTime->format('z'));
 
         echo 'Hour: ';
-        $this->assertEqual($dateAndTime->hour(), intval($dateTime->format('G')));
+        $this->assertEqual($dateAndTime->hour(), (int) $dateTime->format('G'));
         echo 'Minute: ';
-        $this->assertEqual($dateAndTime->minute(), intval($dateTime->format('i')));
+        $this->assertEqual($dateAndTime->minute(), (int) $dateTime->format('i'));
         echo 'Second: ';
-        $this->assertEqual($dateAndTime->second(), intval($dateTime->format('s')));
+        $this->assertEqual($dateAndTime->second(), (int) $dateTime->format('s'));
 
         // 		print "TZ abbriviation: ";
         // 		$this->assertEqual($dateAndTime->timeZoneAbbreviation(), $dateTime->format('T'));
@@ -614,7 +614,7 @@ class DateAndTimeTestCase extends UnitTestCase
         $dtTZone = $dateTime->getTimezone();
 
         echo 'TZ seconds: ';
-        $this->assertEqual($datTZone->offset()->asSeconds(), intval($dateTime->format('Z')));
+        $this->assertEqual($datTZone->offset()->asSeconds(), (int) $dateTime->format('Z'));
     }
 }
 

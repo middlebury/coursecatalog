@@ -195,11 +195,11 @@ abstract class AbstractCatalogController extends Zend_Controller_Action
         // Only allow caching if anonymous. This will ensure that users'
         // browser caches will not cache pages if logged in.
         // Ignore for command-line requests.
-        if ('cli' !== php_sapi_name() && !$this->_helper->auth()->isAuthenticated() && !headers_sent()) {
+        if ('cli' !== \PHP_SAPI && !$this->_helper->auth()->isAuthenticated() && !headers_sent()) {
             // Set cache-control headers
             $config = Zend_Registry::getInstance()->config;
-            $maxAge = intval($config->cache_control->max_age);
-            $expirationOffset = intval($config->cache_control->expiration_offset);
+            $maxAge = (int) $config->cache_control->max_age;
+            $expirationOffset = (int) $config->cache_control->expiration_offset;
             if (!$expirationOffset) {
                 $expirationOffset = $maxAge;
             }

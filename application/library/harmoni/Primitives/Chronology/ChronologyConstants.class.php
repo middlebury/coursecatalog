@@ -98,7 +98,7 @@ class ChronologyConstants
      */
     public static function NanosInSecond()
     {
-        return pow(10, 9);
+        return 10 ** 9;
     }
 
     /**
@@ -112,7 +112,7 @@ class ChronologyConstants
      */
     public static function NanosInMillisecond()
     {
-        return pow(10, 6);
+        return 10 ** 6;
     }
 
     /**

@@ -12,7 +12,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 
-require_once dirname(__FILE__).'/Timespan.class.php';
+require_once __DIR__.'/Timespan.class.php';
 
 /**
  * I am a timespan that represents a month.
@@ -115,7 +115,7 @@ class Month extends Timespan
         if (is_numeric($indexOrNameString)) {
             $index = $indexOrNameString;
         } else {
-            $index = Month::indexOfMonth($indexOrNameString);
+            $index = self::indexOfMonth($indexOrNameString);
         }
 
         if ($index < 1 | $index > 12) {
@@ -218,7 +218,7 @@ class Month extends Timespan
             // die("'".$aString."' is not in a valid format.");
         }
 
-        eval('$result = '.$class.'::withMonthYear($parser->month(), 
+        eval('$result = '.$class.'::withMonthYear($parser->month(),
 					$parser->year(), $class);');
 
         return $result;
@@ -297,7 +297,7 @@ class Month extends Timespan
 
         $start = $aDateAndTime->asDateAndTime();
         $adjusted = DateAndTime::withYearMonthDay($start->year(), $start->month(), 1);
-        $days = Month::daysInMonthForYear($adjusted->month(), $adjusted->year());
+        $days = self::daysInMonthForYear($adjusted->month(), $adjusted->year());
 
         $month = new $class();
         $month->setStart($adjusted);
@@ -398,10 +398,10 @@ class Month extends Timespan
      */
     public function previous()
     {
-        eval('$result = '.get_class($this).'::startingDuration(
+        eval('$result = '.static::class.'::startingDuration(
  			$this->start->minus(Duration::withDays(1)),
  			$this->duration,
- 			"'.get_class($this).'");');
+ 			"'.static::class.'");');
 
         return $result;
     }

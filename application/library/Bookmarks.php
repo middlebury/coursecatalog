@@ -100,7 +100,7 @@ class Bookmarks
             $courseId->getAuthority(),
             $courseId->getIdentifierNamespace(),
         ]);
-        $num = intval($stmt->fetchColumn());
+        $num = (int) $stmt->fetchColumn();
 
         return $num > 0;
     }

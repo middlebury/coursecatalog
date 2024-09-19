@@ -159,6 +159,6 @@ class CatalogSync_Database_Source_Oci implements CatalogSync_Database_Source
         $row = $result->fetch();
         $result->closeCursor();
 
-        return intval($row->NUM_ROWS);
+        return (int) $row->NUM_ROWS;
     }
 }

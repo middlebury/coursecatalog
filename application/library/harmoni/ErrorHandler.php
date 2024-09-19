@@ -60,7 +60,7 @@ class harmoni_ErrorHandler
     public static function instance()
     {
         if (!isset(self::$instance)) {
-            self::$instance = new harmoni_ErrorHandler();
+            self::$instance = new self();
         }
 
         return self::$instance;
@@ -106,29 +106,29 @@ class harmoni_ErrorHandler
     private function __construct()
     {
         $this->errorTypes = [
-            E_ERROR => 'Error',
-            E_WARNING => 'Warning',
-            E_PARSE => 'Parsing Error',
-            E_NOTICE => 'Notice',
-            E_CORE_ERROR => 'Core Error',
-            E_CORE_WARNING => 'Core Warning',
-            E_COMPILE_ERROR => 'Compile Error',
-            E_COMPILE_WARNING => 'Compile Warning',
-            E_USER_ERROR => 'User Error',
-            E_USER_WARNING => 'User Warning',
-            E_USER_NOTICE => 'User Notice',
-            E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
-            E_STRICT => 'Runtime Notice',
+            \E_ERROR => 'Error',
+            \E_WARNING => 'Warning',
+            \E_PARSE => 'Parsing Error',
+            \E_NOTICE => 'Notice',
+            \E_CORE_ERROR => 'Core Error',
+            \E_CORE_WARNING => 'Core Warning',
+            \E_COMPILE_ERROR => 'Compile Error',
+            \E_COMPILE_WARNING => 'Compile Warning',
+            \E_USER_ERROR => 'User Error',
+            \E_USER_WARNING => 'User Warning',
+            \E_USER_NOTICE => 'User Notice',
+            \E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
+            \E_STRICT => 'Runtime Notice',
         ];
 
         // Added in PHP 5.3
         if (defined('E_DEPRECATED')) {
-            $this->errorTypes[E_DEPRECATED] = 'Deprecated Warning';
+            $this->errorTypes[\E_DEPRECATED] = 'Deprecated Warning';
         }
         if (defined('E_USER_DEPRECATED')) {
-            $this->errorTypes[E_USER_DEPRECATED] = 'User Deprecated Warning';
+            $this->errorTypes[\E_USER_DEPRECATED] = 'User Deprecated Warning';
         }
-        $this->defaultFatalErrors = (E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR);
+        $this->defaultFatalErrors = (\E_ERROR | \E_PARSE | \E_CORE_ERROR | \E_COMPILE_ERROR | \E_USER_ERROR | \E_RECOVERABLE_ERROR);
         $this->fatalErrors = $this->defaultFatalErrors;
 
         $this->privateRequestItems = [];
@@ -260,7 +260,7 @@ class harmoni_ErrorHandler
         if (method_exists($exception, 'getType') && $exception->getType()) {
             $type = $exception->getType();
         } else {
-            $type = get_class($exception);
+            $type = $exception::class;
         }
 
         // Only print Exceptions to the screen if the display_errors directive instructs
@@ -297,7 +297,7 @@ class harmoni_ErrorHandler
         if (method_exists($exception, 'getType') && $exception->getType()) {
             $type = $exception->getType();
         } else {
-            $type = get_class($exception);
+            $type = $exception::class;
         }
 
         $trace = $exception->getTrace();
@@ -374,8 +374,8 @@ class harmoni_ErrorHandler
     {
         echo "\n<div style='background-color: #FAA; border: 2px dotted #F00; padding: 10px;'><strong>".$errorOrException.'</strong>: ';
         echo "\n\t<div style='padding-left: 20px; font-style: italic;'>".$type;
-        if (!is_null($code)) {
-            echo ' ('.strval($code).')';
+        if (null !== $code) {
+            echo ' ('.(string) $code.')';
         }
         echo '</div>';
         echo 'with message ';
@@ -404,8 +404,8 @@ class harmoni_ErrorHandler
         echo "\n*****************************************************************************";
         echo "\n* ".$errorOrException.': ';
         echo "\n*\t".$type;
-        if (!is_null($code)) {
-            echo ' ('.strval($code).')';
+        if (null !== $code) {
+            echo ' ('.(string) $code.')';
         }
         echo "\n* with message ";
         echo "\n*\t".$message;
@@ -445,7 +445,7 @@ class harmoni_ErrorHandler
         if (method_exists($exception, 'getType') && $exception->getType()) {
             $type = $exception->getType();
         } else {
-            $type = get_class($exception);
+            $type = $exception::class;
         }
 
         $trace = $exception->getTrace();
@@ -642,7 +642,7 @@ class harmoni_ErrorHandler
                 }
             }
         }
-        $filenameSize = $filenameSize + 2;
+        $filenameSize += 2;
 
         echo "\n* # ";
         echo "\tFile";

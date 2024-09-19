@@ -16,7 +16,7 @@
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
 if (!defined('HARMONI')) {
-    define('HARMONI', dirname(__FILE__).'/../../../../');
+    define('HARMONI', __DIR__.'/../../../../');
 }
 
 if (!defined('SIMPLE_TEST')) {
@@ -27,12 +27,12 @@ require_once SIMPLE_TEST.'simple_unit.php';
 require_once SIMPLE_TEST.'dobo_simple_html_test.php';
 
 $test = new GroupTest('Chronology StringParser Tests');
-$test->addTestFile(dirname(__FILE__).'/ISO8601StringParserTestCase.class.php');
-$test->addTestFile(dirname(__FILE__).'/DayMonthNameYearStringParserTestCase.class.php');
-$test->addTestFile(dirname(__FILE__).'/MonthNameDayYearStringParserTestCase.class.php');
-$test->addTestFile(dirname(__FILE__).'/MonthNumberDayYearStringParserTestCase.class.php');
-$test->addTestFile(dirname(__FILE__).'/KeywordStringParserTestCase.class.php');
-$test->addTestFile(dirname(__FILE__).'/DateAndTimeStringParserTestCase.class.php');
+$test->addTestFile(__DIR__.'/ISO8601StringParserTestCase.class.php');
+$test->addTestFile(__DIR__.'/DayMonthNameYearStringParserTestCase.class.php');
+$test->addTestFile(__DIR__.'/MonthNameDayYearStringParserTestCase.class.php');
+$test->addTestFile(__DIR__.'/MonthNumberDayYearStringParserTestCase.class.php');
+$test->addTestFile(__DIR__.'/KeywordStringParserTestCase.class.php');
+$test->addTestFile(__DIR__.'/DateAndTimeStringParserTestCase.class.php');
 
 $test->attachObserver(new DoboTestHtmlDisplay());
 $test->run();
