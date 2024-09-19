@@ -43,7 +43,7 @@ class Catalog_Action_Helper_OsidTopicTest extends TestCase
         $numTopics = $topics->available();
         $topicArray = $this->osidTopicHelper->topicListAsArray($topics);
         $this->assertIsArray($topicArray);
-        $this->assertEquals($numTopics, count($topicArray));
+        $this->assertCount($numTopics, $topicArray);
         $this->assertInstanceOf('osid_course_Topic', $topicArray[0]);
     }
 
@@ -58,7 +58,7 @@ class Catalog_Action_Helper_OsidTopicTest extends TestCase
         $filteredTopics = $this->osidTopicHelper->filterTopicsByType($topicArray, $subjectType);
         $this->assertIsArray($filteredTopics);
         $this->assertLessThan($numTopics, count($filteredTopics));
-        $this->assertEquals(4, count($filteredTopics));
+        $this->assertCount(4, $filteredTopics);
         $this->assertInstanceOf('osid_course_Topic', $filteredTopics[0]);
     }
 }

@@ -524,7 +524,7 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
         $record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
         $times = $record->getSundayStartTimes();
         $this->assertIsArray($times);
-        $this->assertEquals(0, count($times));
+        $this->assertCount(0, $times);
     }
 
     public function testGetSundayEndTimes()
@@ -532,7 +532,7 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
         $record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
         $times = $record->getSundayEndTimes();
         $this->assertIsArray($times);
-        $this->assertEquals(0, count($times));
+        $this->assertCount(0, $times);
     }
 
     public function testMeetsOnMonday()
@@ -546,7 +546,7 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
         $record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
         $times = $record->getMondayStartTimes();
         $this->assertIsArray($times);
-        $this->assertEquals(1, count($times));
+        $this->assertCount(1, $times);
         $this->assertEquals(40500, $times[0]);	// 11:15am
     }
 
@@ -555,7 +555,7 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
         $record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
         $times = $record->getMondayEndTimes();
         $this->assertIsArray($times);
-        $this->assertEquals(1, count($times));
+        $this->assertCount(1, $times);
         $this->assertEquals(43500, $times[0]);	// 12:05pm
     }
 
@@ -570,7 +570,7 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
         $record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
         $times = $record->getTuesdayStartTimes();
         $this->assertIsArray($times);
-        $this->assertEquals(0, count($times));
+        $this->assertCount(0, $times);
     }
 
     public function testGetTuesdayEndTimes()
@@ -578,7 +578,7 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
         $record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
         $times = $record->getTuesdayEndTimes();
         $this->assertIsArray($times);
-        $this->assertEquals(0, count($times));
+        $this->assertCount(0, $times);
     }
 
     public function testMeetsOnWednesday()
@@ -592,7 +592,7 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
         $record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
         $times = $record->getWednesdayStartTimes();
         $this->assertIsArray($times);
-        $this->assertEquals(1, count($times));
+        $this->assertCount(1, $times);
         $this->assertEquals(40500, $times[0]);	// 11:15am
     }
 
@@ -601,7 +601,7 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
         $record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
         $times = $record->getWednesdayEndTimes();
         $this->assertIsArray($times);
-        $this->assertEquals(1, count($times));
+        $this->assertCount(1, $times);
         $this->assertEquals(43500, $times[0]);	// 12:05pm
     }
 
@@ -616,7 +616,7 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
         $record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
         $times = $record->getThursdayStartTimes();
         $this->assertIsArray($times);
-        $this->assertEquals(0, count($times));
+        $this->assertCount(0, $times);
     }
 
     public function testGetThursdayEndTimes()
@@ -624,7 +624,7 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
         $record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
         $times = $record->getThursdayEndTimes();
         $this->assertIsArray($times);
-        $this->assertEquals(0, count($times));
+        $this->assertCount(0, $times);
     }
 
     public function testMeetsOnFriday()
@@ -638,7 +638,7 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
         $record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
         $times = $record->getFridayStartTimes();
         $this->assertIsArray($times);
-        $this->assertEquals(1, count($times));
+        $this->assertCount(1, $times);
         $this->assertEquals(40500, $times[0]);	// 11:15am
     }
 
@@ -647,7 +647,7 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
         $record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
         $times = $record->getFridayEndTimes();
         $this->assertIsArray($times);
-        $this->assertEquals(1, count($times));
+        $this->assertCount(1, $times);
         $this->assertEquals(43500, $times[0]);	// 12:05pm
     }
 
@@ -662,7 +662,7 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
         $record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
         $times = $record->getSaturdayStartTimes();
         $this->assertIsArray($times);
-        $this->assertEquals(0, count($times));
+        $this->assertCount(0, $times);
     }
 
     public function testGetSaturdayEndTimes()
@@ -670,6 +670,6 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
         $record = $this->object->getCourseOfferingRecord($this->weeklyScheduleType);
         $times = $record->getSaturdayEndTimes();
         $this->assertIsArray($times);
-        $this->assertEquals(0, count($times));
+        $this->assertCount(0, $times);
     }
 }

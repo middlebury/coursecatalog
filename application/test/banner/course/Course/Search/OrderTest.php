@@ -101,7 +101,7 @@ class banner_course_Course_Search_OrderTest extends TestCase
         $this->object->orderByDisplayName();
         $this->object->descend();
         $this->assertEquals('ORDER BY SCBCRSE_SUBJ_CODE DESC, SCBCRSE_CRSE_NUMB DESC', $this->object->getOrderByClause());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     /**

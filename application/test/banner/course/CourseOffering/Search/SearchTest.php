@@ -69,13 +69,13 @@ class banner_course_CourseOffering_Search_SearchTest extends TestCase
     public function testGetAdditionalTableJoins()
     {
         $this->assertIsArray($this->object->getAdditionalTableJoins());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     public function testGetParameters()
     {
         $this->assertIsArray($this->object->getParameters());
-        $this->assertEquals(0, count($this->object->getParameters()));
+        $this->assertCount(0, $this->object->getParameters());
     }
 
     public function testLimitResultSet()

@@ -126,7 +126,7 @@ trait banner_DatabaseTestTrait
      *
      * @since 6/3/09
      */
-    protected static function recursiveAddTests(PHPUnit_Framework_TestSuite $suite, $dir)
+    protected static function recursiveAddTests(PHPUnit\Framework\TestSuite $suite, $dir)
     {
         foreach (scandir($dir) as $file) {
             if (preg_match('/Test\.php$/', $file)) {

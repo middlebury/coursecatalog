@@ -106,7 +106,7 @@ class banner_course_CourseOffering_Search_QueryTest extends TestCase
         $params = $this->object->getParameters();
         $this->assertEquals('Quantum', $params[':co_keyword_param']);
         $this->assertEquals('Quantum', $params[':co_relevence_param']);
-        $this->assertEquals(2, count($params));
+        $this->assertCount(2, $params);
 
         $this->assertEquals('(MATCH (SSBSECT_fulltext) AGAINST (:co_keyword_param IN BOOLEAN MODE))', $this->object->getWhereClause());
 
@@ -121,7 +121,7 @@ class banner_course_CourseOffering_Search_QueryTest extends TestCase
         $params = $this->object->getParameters();
         $this->assertEquals('Quantum Environments', $params[':co_keyword_param']);
         $this->assertEquals('Quantum Environments', $params[':co_relevence_param']);
-        $this->assertEquals(2, count($params));
+        $this->assertCount(2, $params);
 
         $this->assertEquals('(MATCH (SSBSECT_fulltext) AGAINST (:co_keyword_param IN BOOLEAN MODE))', $this->object->getWhereClause());
 
@@ -138,7 +138,7 @@ class banner_course_CourseOffering_Search_QueryTest extends TestCase
         $params = $this->object->getParameters();
         $this->assertEquals('Quantum Environment*', $params[':co_keyword_param']);
         $this->assertEquals('Quantum Environment*', $params[':co_relevence_param']);
-        $this->assertEquals(2, count($params));
+        $this->assertCount(2, $params);
 
         $this->assertEquals('(MATCH (SSBSECT_fulltext) AGAINST (:co_keyword_param IN BOOLEAN MODE))', $this->object->getWhereClause());
 
@@ -1476,7 +1476,7 @@ AND SCBCRSE_COLL_CODE IN (
         $record->matchMeetsSunday(true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals(0, count($params));
+        $this->assertCount(0, $params);
 
         $this->assertEquals('(SSRMEET_SUN_DAY IS NOT NULL)', $this->object->getHavingClause());
 
@@ -1491,7 +1491,7 @@ AND SCBCRSE_COLL_CODE IN (
         $record->matchMeetsMonday(true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals(0, count($params));
+        $this->assertCount(0, $params);
 
         $this->assertEquals('(SSRMEET_MON_DAY IS NOT NULL)', $this->object->getHavingClause());
 
@@ -1506,7 +1506,7 @@ AND SCBCRSE_COLL_CODE IN (
         $record->matchMeetsTuesday(true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals(0, count($params));
+        $this->assertCount(0, $params);
 
         $this->assertEquals('(SSRMEET_TUE_DAY IS NOT NULL)', $this->object->getHavingClause());
 
@@ -1521,7 +1521,7 @@ AND SCBCRSE_COLL_CODE IN (
         $record->matchMeetsWednesday(true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals(0, count($params));
+        $this->assertCount(0, $params);
 
         $this->assertEquals('(SSRMEET_WED_DAY IS NOT NULL)', $this->object->getHavingClause());
 
@@ -1536,7 +1536,7 @@ AND SCBCRSE_COLL_CODE IN (
         $record->matchMeetsThursday(true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals(0, count($params));
+        $this->assertCount(0, $params);
 
         $this->assertEquals('(SSRMEET_THU_DAY IS NOT NULL)', $this->object->getHavingClause());
 
@@ -1551,7 +1551,7 @@ AND SCBCRSE_COLL_CODE IN (
         $record->matchMeetsFriday(true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals(0, count($params));
+        $this->assertCount(0, $params);
 
         $this->assertEquals('(SSRMEET_FRI_DAY IS NOT NULL)', $this->object->getHavingClause());
 
@@ -1566,7 +1566,7 @@ AND SCBCRSE_COLL_CODE IN (
         $record->matchMeetsSaturday(true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals(0, count($params));
+        $this->assertCount(0, $params);
 
         $this->assertEquals('(SSRMEET_SAT_DAY IS NOT NULL)', $this->object->getHavingClause());
 
@@ -1683,7 +1683,7 @@ AND SCBCRSE_COLL_CODE IN (
         $record->matchEnrollable(true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals(0, count($params));
+        $this->assertCount(0, $params);
 
         $this->assertEquals('(SSBSECT_MAX_ENRL > 0)', $this->object->getWhereClause());
 
@@ -1698,7 +1698,7 @@ AND SCBCRSE_COLL_CODE IN (
         $record->matchEnrollment(1, null, true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals(1, count($params));
+        $this->assertCount(1, $params);
         $this->assertEquals(1, $params[0]);
 
         $this->assertEquals('(SSBSECT_ENRL >= ?)', $this->object->getWhereClause());
@@ -1714,7 +1714,7 @@ AND SCBCRSE_COLL_CODE IN (
         $record->matchEnrollment(10, 20, true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals(2, count($params));
+        $this->assertCount(2, $params);
         $this->assertEquals(10, $params[0]);
         $this->assertEquals(20, $params[1]);
 
@@ -1747,7 +1747,7 @@ AND SCBCRSE_COLL_CODE IN (
         $record->matchSeatsAvailable(1, null, true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals(1, count($params));
+        $this->assertCount(1, $params);
         $this->assertEquals(1, $params[0]);
 
         $this->assertEquals('(SSBSECT_SEATS_AVAIL >= ?)', $this->object->getWhereClause());
@@ -1763,7 +1763,7 @@ AND SCBCRSE_COLL_CODE IN (
         $record->matchSeatsAvailable(10, 20, true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals(2, count($params));
+        $this->assertCount(2, $params);
         $this->assertEquals(10, $params[0]);
         $this->assertEquals(20, $params[1]);
 
@@ -1788,7 +1788,7 @@ AND SCBCRSE_COLL_CODE IN (
         $record->matchSeatsAvailable(null, -1, true);
 
         $params = $this->object->getParameters();
-        $this->assertEquals(1, count($params));
+        $this->assertCount(1, $params);
         $this->assertEquals(-1, $params[0]);
 
         $this->assertEquals('(SSBSECT_SEATS_AVAIL <= ?)', $this->object->getWhereClause());

@@ -184,7 +184,7 @@ class banner_course_CourseTest extends phpkit_test_phpunit_AbstractOsidObjectTes
         $this->assertInstanceOf('osid_id_Id', $ids->getNextId());
 
         $next4 = $ids->getNextIds(4);
-        $this->assertEquals(4, count($next4));
+        $this->assertCount(4, $next4);
         foreach ($next4 as $id) {
             $this->assertInstanceOf('osid_id_Id', $id);
         }

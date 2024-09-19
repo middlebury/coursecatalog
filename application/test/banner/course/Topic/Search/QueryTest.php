@@ -76,22 +76,22 @@ class banner_course_Topic_Search_QueryTest extends TestCase
 
         $params = $this->object->getRequirementParameters();
         $this->assertEquals('Physics', $params[0]);
-        $this->assertEquals(1, count($params));
+        $this->assertCount(1, $params);
         $params = $this->object->getLevelParameters();
         $this->assertEquals('Physics', $params[0]);
         $params = $this->object->getBlockParameters();
         $this->assertEquals('Physics', $params[0]);
-        $this->assertEquals(1, count($params));
-        $this->assertEquals(1, count($params));
+        $this->assertCount(1, $params);
+        $this->assertCount(1, $params);
         $params = $this->object->getDivisionParameters();
         $this->assertEquals('Physics', $params[0]);
-        $this->assertEquals(1, count($params));
+        $this->assertCount(1, $params);
         $params = $this->object->getDepartmentParameters();
         $this->assertEquals('Physics', $params[0]);
-        $this->assertEquals(1, count($params));
+        $this->assertCount(1, $params);
         $params = $this->object->getSubjectParameters();
         $this->assertEquals('Physics', $params[0]);
-        $this->assertEquals(1, count($params));
+        $this->assertCount(1, $params);
 
         $this->assertEquals('(STVATTR_DESC LIKE(?))', $this->object->getRequirementWhereClause());
         $this->assertEquals('(STVLEVL_DESC LIKE(?))', $this->object->getLevelWhereClause());

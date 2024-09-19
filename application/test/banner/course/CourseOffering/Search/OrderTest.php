@@ -64,7 +64,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
     public function testGetAdditionalTableJoins()
     {
         $this->assertIsArray($this->object->getAdditionalTableJoins());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     public function testAscend()
@@ -92,7 +92,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->object->orderByDisplayName();
         $this->object->descend();
         $this->assertEquals('ORDER BY SSBSECT_SUBJ_CODE DESC, SSBSECT_CRSE_NUMB DESC, SSBSECT_SEQ_NUMB DESC, term_display_label DESC, SSBSECT_TERM_CODE DESC', $this->object->getOrderByClause());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     public function testOrderByGenusType()
@@ -100,7 +100,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->object->orderByGenusType();
         $this->object->descend();
         $this->assertEquals('ORDER BY SSBSECT_SCHD_CODE DESC', $this->object->getOrderByClause());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     public function testHasRecordType()
@@ -149,7 +149,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->object->orderByDisplayName();
         $this->object->descend();
         $this->assertEquals('ORDER BY SSBSECT_SUBJ_CODE DESC, SSBSECT_CRSE_NUMB DESC, SSBSECT_SEQ_NUMB DESC, term_display_label DESC, SSBSECT_TERM_CODE DESC', $this->object->getOrderByClause());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     public function testOrderByCredits()
@@ -157,7 +157,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->object->orderByCredits();
         $this->object->descend();
         $this->assertEquals('ORDER BY SSBSECT_CREDIT_HRS DESC', $this->object->getOrderByClause());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     public function testOrderByPrereqInfo()
@@ -173,7 +173,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->object->orderByCourse();
         $this->object->descend();
         $this->assertEquals('ORDER BY SSBSECT_SUBJ_CODE DESC, SSBSECT_CRSE_NUMB DESC', $this->object->getOrderByClause());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     public function testSupportsCourseSearchOrder()
@@ -193,7 +193,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->object->orderByTerm();
         $this->object->descend();
         $this->assertEquals('ORDER BY SSBSECT_TERM_CODE DESC', $this->object->getOrderByClause());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     public function testSupportsTermSearchOrder()
@@ -213,7 +213,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->object->orderByLocationInfo();
         $this->object->descend();
         $this->assertEquals('ORDER BY SSRMEET_BLDG_CODE DESC, SSRMEET_ROOM_CODE DESC', $this->object->getOrderByClause());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     public function testOrderByLocation()
@@ -221,7 +221,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->object->orderByLocation();
         $this->object->descend();
         $this->assertEquals('ORDER BY SSRMEET_BLDG_CODE DESC, SSRMEET_ROOM_CODE DESC', $this->object->getOrderByClause());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     public function testSupportsLocationSearchOrder()
@@ -241,7 +241,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->object->orderByScheduleInfo();
         $this->object->descend();
         $this->assertEquals('ORDER BY SSRMEET_START_DATE DESC, SSRMEET_END_DATE DESC, SSRMEET_SUN_DAY DESC, SSRMEET_MON_DAY DESC, SSRMEET_TUE_DAY DESC, SSRMEET_WED_DAY DESC, SSRMEET_THU_DAY DESC, SSRMEET_FRI_DAY DESC, SSRMEET_SAT_DAY DESC, SSRMEET_BEGIN_TIME DESC, SSRMEET_END_TIME DESC', $this->object->getOrderByClause());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     public function testOrderByCalendar()
@@ -297,7 +297,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->object->orderByInstructor();
         $this->object->descend();
         $this->assertEquals('ORDER BY SYVINST_LAST_NAME DESC, SYVINST_FIRST_NAME DESC', $this->object->getOrderByClause());
-        $this->assertEquals(1, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(1, $this->object->getAdditionalTableJoins());
     }
 
     /*********************************************************
@@ -309,7 +309,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->object->orderByMeetsSunday();
         $this->object->ascend();
         $this->assertEquals('ORDER BY SSRMEET_SUN_DAY DESC', $this->object->getOrderByClause());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     public function testOrderByMeetsMonday()
@@ -317,7 +317,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->object->orderByMeetsMonday();
         $this->object->ascend();
         $this->assertEquals('ORDER BY SSRMEET_MON_DAY DESC', $this->object->getOrderByClause());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     public function testOrderByMeetsTuesday()
@@ -325,7 +325,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->object->orderByMeetsTuesday();
         $this->object->ascend();
         $this->assertEquals('ORDER BY SSRMEET_TUE_DAY DESC', $this->object->getOrderByClause());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     public function testOrderByMeetsWednesday()
@@ -333,7 +333,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->object->orderByMeetsWednesday();
         $this->object->ascend();
         $this->assertEquals('ORDER BY SSRMEET_WED_DAY DESC', $this->object->getOrderByClause());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     public function testOrderByMeetsThursday()
@@ -341,7 +341,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->object->orderByMeetsThursday();
         $this->object->ascend();
         $this->assertEquals('ORDER BY SSRMEET_THU_DAY DESC', $this->object->getOrderByClause());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     public function testOrderByMeetsFriday()
@@ -349,7 +349,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->object->orderByMeetsFriday();
         $this->object->ascend();
         $this->assertEquals('ORDER BY SSRMEET_FRI_DAY DESC', $this->object->getOrderByClause());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     public function testOrderByMeetsSaturday()
@@ -357,7 +357,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->object->orderByMeetsSaturday();
         $this->object->ascend();
         $this->assertEquals('ORDER BY SSRMEET_SAT_DAY DESC', $this->object->getOrderByClause());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 
     public function testOrderByMeetingTime()
@@ -365,6 +365,6 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->object->orderByMeetingTime();
         $this->object->ascend();
         $this->assertEquals('ORDER BY SSRMEET_BEGIN_TIME ASC', $this->object->getOrderByClause());
-        $this->assertEquals(0, count($this->object->getAdditionalTableJoins()));
+        $this->assertCount(0, $this->object->getAdditionalTableJoins());
     }
 }
