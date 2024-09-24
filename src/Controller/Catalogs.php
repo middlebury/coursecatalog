@@ -8,6 +8,7 @@
 
 namespace App\Controller;
 
+use App\Service\Osid\Runtime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,10 +24,25 @@ use Symfony\Component\Routing\Annotation\Route;
 class Catalogs extends AbstractController
 {
 
+    /**
+     * @var \App\Service\Osid\Runtime
+     */
+    private $osidRuntime;
+
+    /**
+     * Construct a new Catalogs controller.
+     *
+     * @param \App\Service\Osid\Runtime $osidRuntime
+     *   The osid.runtime service.
+     */
+    public function __construct(Runtime $osidRuntime) {
+        $this->osidRuntime = $osidRuntime;
+    }
+
     #[Route('/catalogs/', name: 'List all catalogs')]
     public function listAction()
     {
-        $lookupSession = $this->_helper->osid->getCourseManager()->getCourseCatalogLookupSession();
+        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();
 
         return $this->render('catalogs.html.twig', [
             'title' => 'Available Catalogs',

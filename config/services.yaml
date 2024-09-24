@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.osid.runtime.courseimpl: 'banner_course_CourseManager'
 
 services:
     # default configuration for services in *this* file
@@ -22,3 +23,12 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Service\Osid\Runtime:
+        arguments:
+            $configPath: '../configuration.plist'
+            $courseImpl: '%app.osid.runtime.courseimpl%'
+
+    # Service aliases.
+    osid.runtime:
+        class: App\Service\Osid\Runtime
