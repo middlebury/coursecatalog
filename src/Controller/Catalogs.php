@@ -6,6 +6,12 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
+namespace App\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
 /**
  * A controller for accessing catalogs.
  *
@@ -14,27 +20,18 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class CatalogsController extends AbstractCatalogController
+class Catalogs extends AbstractController
 {
-    public function indexAction()
-    {
-        $this->_forward('list');
-    }
 
-    /**
-     * Print out a list of all catalogs.
-     *
-     * @return void
-     *
-     * @since 4/21/09
-     */
+    #[Route('/catalogs/', name: 'List all catalogs')]
     public function listAction()
     {
         $lookupSession = $this->_helper->osid->getCourseManager()->getCourseCatalogLookupSession();
-        $this->view->catalogs = $lookupSession->getCourseCatalogs();
 
-        $this->view->title = 'Available Catalogs';
-        $this->view->headTitle($this->view->title);
+        return $this->render('catalogs.html.twig', [
+            'title' => 'Available Catalogs',
+            'catalogs' => $lookupSession->getCourseCatalogs(),
+        ]);
     }
 
     /**
