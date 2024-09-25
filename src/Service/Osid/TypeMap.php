@@ -1,14 +1,14 @@
 <?php
 
+namespace App\Service\Osid;
+
 /**
  * A helper to convert between object and string representations of Types.
- *
- * @since 6/9/10
  *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class Catalog_Action_Helper_OsidType extends Catalog_Action_Helper_AbstractOsidIdentifier
+class TypeMap extends AbstractOsidIdentifierMap
 {
     /**
      * Get and OSID type object from a string.
@@ -22,10 +22,10 @@ class Catalog_Action_Helper_OsidType extends Catalog_Action_Helper_AbstractOsidI
     public function fromString($idString)
     {
         try {
-            return new phpkit_type_URNInetType($idString);
-        } catch (osid_InvalidArgumentException $e) {
+            return new \phpkit_type_URNInetType($idString);
+        } catch (\osid_InvalidArgumentException $e) {
             if ($this->getIdAuthorityToShorten()) {
-                return new phpkit_type_Type('urn', $this->getIdAuthorityToShorten(), $idString);
+                return new \phpkit_type_Type('urn', $this->getIdAuthorityToShorten(), $idString);
             } else {
                 throw $e;
             }
@@ -39,14 +39,14 @@ class Catalog_Action_Helper_OsidType extends Catalog_Action_Helper_AbstractOsidI
      *
      * @since 4/21/09
      */
-    public function toString(osid_type_Type $type)
+    public function toString(\osid_type_Type $type)
     {
         if ($this->getIdAuthorityToShorten()
                 && 'urn' == strtolower($type->getIdentifierNamespace())
                 && strtolower($type->getAuthority()) == $this->getIdAuthorityToShorten()) {
             return $type->getIdentifier();
         } else {
-            return phpkit_type_URNInetType::getInetURNString($type);
+            return \phpkit_type_URNInetType::getInetURNString($type);
         }
     }
 }

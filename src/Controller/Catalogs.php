@@ -9,6 +9,7 @@
 namespace App\Controller;
 
 use App\Service\Osid\Runtime;
+use App\Service\Osid\IdMap;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,13 +31,21 @@ class Catalogs extends AbstractController
     private $osidRuntime;
 
     /**
+     * @var \App\Service\Osid\IdMap
+     */
+    private $osidIdMap;
+
+    /**
      * Construct a new Catalogs controller.
      *
      * @param \App\Service\Osid\Runtime $osidRuntime
      *   The osid.runtime service.
+     * @param \App\Service\Osid\Identifier $osidIdentifier
+     *   The osid.identifier service.
      */
-    public function __construct(Runtime $osidRuntime) {
+    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap) {
         $this->osidRuntime = $osidRuntime;
+        $this->osidIdMap = $osidIdMap;
     }
 
     #[Route('/catalogs/', name: 'List all catalogs')]
@@ -44,9 +53,19 @@ class Catalogs extends AbstractController
     {
         $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();
 
+        $catalogs = $lookupSession->getCourseCatalogs();
+        $catalogData = [];
+        while ($catalogs->hasNext()) {
+            $catalog = $catalogs->getNextCourseCatalog();
+            $catalogData[] = [
+                "id" => $this->osidIdMap->toString($catalog->getId()),
+                "display_name" => $catalog->getDisplayName(),
+                "description" => $catalog->getDescription(),
+            ];
+        }
         return $this->render('catalogs.html.twig', [
             'title' => 'Available Catalogs',
-            'catalogs' => $lookupSession->getCourseCatalogs(),
+            'catalogs' => $catalogData,
         ]);
     }
 
