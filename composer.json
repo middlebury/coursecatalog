@@ -32,7 +32,8 @@
         },
         "psr-0": {
             "osid_": "library/osid-phpkit/",
-            "phpkit_": "library/osid-phpkit/"
+            "phpkit_": "library/osid-phpkit/",
+            "": "application/library/"
         }
     },
     "autoload-dev": {
