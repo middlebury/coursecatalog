@@ -29,6 +29,10 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/"
+        },
+        "psr-0": {
+            "osid_": "library/osid-phpkit/",
+            "phpkit_": "library/osid-phpkit/"
         }
     },
     "autoload-dev": {

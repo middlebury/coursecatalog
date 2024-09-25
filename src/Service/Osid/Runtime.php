@@ -59,7 +59,7 @@ class Runtime
     public function setConfigPath($path)
     {
         if (isset($this->configPath) && $this->configPath != $path) {
-            throw new osid_IllegalStateException('the config path has already been set');
+            throw new \osid_IllegalStateException('the config path has already been set');
         }
 
         $this->configPath = $path;
@@ -77,7 +77,7 @@ class Runtime
         if (!isset($this->courseManager)) {
             if (class_exists($this->courseImpl)) {
                 $runtimeManager = $this->getRuntimeManager();
-                $this->courseManager = $runtimeManager->getManager(osid_OSID::COURSE(), $this->courseImpl, '3.0.0');
+                $this->courseManager = $runtimeManager->getManager(\osid_OSID::COURSE(), $this->courseImpl, '3.0.0');
             }
             else {
                 throw new \InvalidArgumentException("Unknown CourseManger implementation class: " . $this->courseImpl);
@@ -98,7 +98,7 @@ class Runtime
     public function getRuntimeManager()
     {
         if (!isset($this->runtimeManager)) {
-            $this->runtimeManager = new phpkit_AutoloadOsidRuntimeManager($this->getConfigPath());
+            $this->runtimeManager = new \phpkit_AutoloadOsidRuntimeManager($this->getConfigPath());
         }
 
         return $this->runtimeManager;
