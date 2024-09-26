@@ -1,0 +1,39 @@
+name: coursecatalog
+recipe: symfony
+config:
+  webroot: public
+  php: 8.1
+services:
+  appserver:
+    build_as_root:
+      - apt update
+      - mkdir /opt/oracle
+      # Fetch binaries directly from Oracle:
+      # https://www.oracle.com/database/technologies/instant-client/downloads.html
+      - curl https://download.oracle.com/otn_software/linux/instantclient/191000/instantclient-basic-linux.arm64-19.10.0.0.0dbru-2.zip > /opt/oracle/instantclient-basic.zip
+      - curl https://download.oracle.com/otn_software/linux/instantclient/191000/instantclient-sdk-linux.arm64-19.10.0.0.0dbru.zip > /opt/oracle/instantclient-sdk.zip
+      # Unzip
+      - unzip /opt/oracle/instantclient-basic.zip -d /opt/oracle
+      - unzip /opt/oracle/instantclient-sdk.zip -d /opt/oracle
+      # Add sqlplus command line Oracle client for debugging.
+      - curl https://download.oracle.com/otn_software/linux/instantclient/191000/instantclient-sqlplus-linux.arm64-19.10.0.0.0dbru.zip > /opt/oracle/instantclient-sqlplus.zip
+      - unzip /opt/oracle/instantclient-sqlplus.zip -d /opt/oracle
+      # Delete all of our downloads.
+      - rm /opt/oracle/*.zip
+      # Make OS aware of newly installed libraries
+      - echo /opt/oracle/instantclient_19_10 > /etc/ld.so.conf.d/oracle-instantclient.conf
+      - ldconfig -v
+      # Set the interpreter for the Oracle command-line tools.
+      # See: https://askubuntu.com/questions/1397724/no-such-file-or-directory-when-running-sqlplus-command
+      # This is not needed for the Oci8 PHP extension itself, but is needed to
+      # get sqlplus command-line Oracle client working for debugging.
+      - apt -y install patchelf
+      - patchelf --set-interpreter /lib/ld-linux-aarch64.so.1 /opt/oracle/instantclient_19_10/adrci
+      - patchelf --set-interpreter /lib/ld-linux-aarch64.so.1 /opt/oracle/instantclient_19_10/genezi
+      - patchelf --set-interpreter /lib/ld-linux-aarch64.so.1 /opt/oracle/instantclient_19_10/sqlplus
+      - patchelf --set-interpreter /lib/ld-linux-aarch64.so.1 /opt/oracle/instantclient_19_10/uidrvci
+      # Install libaio1 -- when missing was preventing the extension from loading.
+      - apt install libaio1
+      # Install and enable OCI8
+      - echo "instantclient,/opt/oracle/instantclient_19_10" | pecl install oci8-3.2.1
+      - docker-php-ext-enable oci8
