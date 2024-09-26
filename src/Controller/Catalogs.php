@@ -6,6 +6,14 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
+namespace App\Controller;
+
+use App\Service\Osid\Runtime;
+use App\Service\Osid\IdMap;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
 /**
  * A controller for accessing catalogs.
  *
@@ -14,27 +22,51 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class CatalogsController extends AbstractCatalogController
+class Catalogs extends AbstractController
 {
-    public function indexAction()
-    {
-        $this->_forward('list');
-    }
 
     /**
-     * Print out a list of all catalogs.
-     *
-     * @return void
-     *
-     * @since 4/21/09
+     * @var \App\Service\Osid\Runtime
      */
+    private $osidRuntime;
+
+    /**
+     * @var \App\Service\Osid\IdMap
+     */
+    private $osidIdMap;
+
+    /**
+     * Construct a new Catalogs controller.
+     *
+     * @param \App\Service\Osid\Runtime $osidRuntime
+     *   The osid.runtime service.
+     * @param \App\Service\Osid\Identifier $osidIdentifier
+     *   The osid.identifier service.
+     */
+    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap) {
+        $this->osidRuntime = $osidRuntime;
+        $this->osidIdMap = $osidIdMap;
+    }
+
+    #[Route('/catalogs/', name: 'List all catalogs')]
     public function listAction()
     {
-        $lookupSession = $this->_helper->osid->getCourseManager()->getCourseCatalogLookupSession();
-        $this->view->catalogs = $lookupSession->getCourseCatalogs();
+        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();
 
-        $this->view->title = 'Available Catalogs';
-        $this->view->headTitle($this->view->title);
+        $catalogs = $lookupSession->getCourseCatalogs();
+        $catalogData = [];
+        while ($catalogs->hasNext()) {
+            $catalog = $catalogs->getNextCourseCatalog();
+            $catalogData[] = [
+                "id" => $this->osidIdMap->toString($catalog->getId()),
+                "display_name" => $catalog->getDisplayName(),
+                "description" => $catalog->getDescription(),
+            ];
+        }
+        return $this->render('catalogs.html.twig', [
+            'title' => 'Available Catalogs',
+            'catalogs' => $catalogData,
+        ]);
     }
 
     /**
