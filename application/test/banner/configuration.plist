@@ -7,11 +7,11 @@
 	<key>urn:inet:middlebury.edu:config:banner_course/pdo_count_queries</key>
 	<false/>
 	<key>urn:inet:middlebury.edu:config:banner_course/pdo_dsn</key>
-	<string>mysql:dbname=afranco_catalog_test;host=localhost</string>
+	<string>mysql:dbname=symfony_test;host=database</string>
 	<key>urn:inet:middlebury.edu:config:banner_course/pdo_password</key>
-	<string>testpassword</string>
+	<string>symfony</string>
 	<key>urn:inet:middlebury.edu:config:banner_course/pdo_username</key>
-	<string>testuser</string>
+	<string>symfony</string>
 
 	<key>urn:inet:middlebury.edu:config:apc_course/impl_class_name</key>
 	<string>banner_course_CourseManager</string>
