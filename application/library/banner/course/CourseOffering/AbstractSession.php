@@ -28,7 +28,7 @@ abstract class banner_course_CourseOffering_AbstractSession extends banner_cours
     {
         $ids = [];
         foreach ($this->getInstructorDataForOffering($offeringId) as $row) {
-            $ids[] = $this->getOsidIdFromString($row['WEB_ID'], 'resource/person/');
+            $ids[] = $this->getOsidIdFromString($row['WEB_ID'], 'resource.person.');
         }
 
         return new phpkit_id_ArrayIdList($ids);
@@ -46,7 +46,7 @@ abstract class banner_course_CourseOffering_AbstractSession extends banner_cours
         $people = [];
         foreach ($this->getInstructorDataForOffering($offeringId) as $row) {
             $people[] = new banner_resource_Resource_Person(
-                $this->getOsidIdFromString($row['WEB_ID'], 'resource/person/'),
+                $this->getOsidIdFromString($row['WEB_ID'], 'resource.person.'),
                 $row['SYVINST_LAST_NAME'],
                 $row['SYVINST_FIRST_NAME']
             );
@@ -190,7 +190,7 @@ WHERE
         self::$requirementTopics_stmt->execute($parameters);
         $topicIds = [];
         while ($row = self::$requirementTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
-            $topicIds[] = $this->getOsidIdFromString($row['SSRATTR_ATTR_CODE'], 'topic/requirement/');
+            $topicIds[] = $this->getOsidIdFromString($row['SSRATTR_ATTR_CODE'], 'topic.requirement.');
         }
         self::$requirementTopics_stmt->closeCursor();
 
@@ -231,7 +231,7 @@ WHERE
         self::$levelTopics_stmt->execute($parameters);
         $topicIds = [];
         while ($row = self::$levelTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
-            $topicIds[] = $this->getOsidIdFromString($row['SCRLEVL_LEVL_CODE'], 'topic/level/');
+            $topicIds[] = $this->getOsidIdFromString($row['SCRLEVL_LEVL_CODE'], 'topic.level.');
         }
         self::$levelTopics_stmt->closeCursor();
 
@@ -271,7 +271,7 @@ WHERE
         self::$blockTopics_stmt->execute($parameters);
         $topicIds = [];
         while ($row = self::$blockTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
-            $topicIds[] = $this->getOsidIdFromString($row['SSRBLCK_BLCK_CODE'], 'topic/block/');
+            $topicIds[] = $this->getOsidIdFromString($row['SSRBLCK_BLCK_CODE'], 'topic.block.');
         }
         self::$blockTopics_stmt->closeCursor();
 

@@ -31,12 +31,12 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
      */
     protected function setUp(): void
     {
-        $this->mcugCatalogId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
-        $this->physCourseId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
-        $this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/90143');
-        $this->geolOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/92418');
-        $this->geogOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/92443');
-        $this->chemOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200520/20022');
+        $this->mcugCatalogId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog.MCUG');
+        $this->physCourseId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course.PHYS0201');
+        $this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200890.90143');
+        $this->geolOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200890.92418');
+        $this->geogOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200890.92443');
+        $this->chemOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200520.20022');
         $this->session = self::$courseManager->getCourseOfferingLookupSessionForCatalog($this->mcugCatalogId);
         $this->object = $this->session->getCourseOffering($this->physOfferingId);
 
@@ -64,7 +64,7 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
     {
         $type = $this->object->getGenusType();
         $this->assertInstanceOf('osid_type_Type', $type);
-        $this->assertEquals('genera:offering/LCT', $type->getIdentifier());
+        $this->assertEquals('genera:offering.LCT', $type->getIdentifier());
         $this->assertEquals('Lecture', trim($type->getDisplayName()));
     }
 
@@ -81,13 +81,13 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
      */
     public function testEffectiveDateTitle()
     {
-        $chem200390 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200390/90085');
-        $chem200420 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200420/20073');
-        $chem200490 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200490/90066');
-        $chem200520 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200520/20019');
-        $chem200590 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200590/90056');
-        $chem200620 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200620/20017');
-        $chem200890 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/90040');
+        $chem200390 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200390.90085');
+        $chem200420 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200420.20073');
+        $chem200490 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200490.90066');
+        $chem200520 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200520.20019');
+        $chem200590 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200590.90056');
+        $chem200620 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200620.20017');
+        $chem200890 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200890.90040');
 
         $this->assertEquals('Fundamentals of Chemistry II', $this->session->getCourseOffering($chem200390)->getTitle());
         $this->assertEquals('Fundamentals of Chemistry II', $this->session->getCourseOffering($chem200420)->getTitle());
@@ -109,13 +109,13 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
      */
     public function testEffectiveDateDescription()
     {
-        $chem200390 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200390/90085');
-        $chem200420 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200420/20073');
-        $chem200490 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200490/90066');
-        $chem200520 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200520/20019');
-        $chem200590 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200590/90056');
-        $chem200620 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200620/20017');
-        $chem200890 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/90040');
+        $chem200390 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200390.90085');
+        $chem200420 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200420.20073');
+        $chem200490 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200490.90066');
+        $chem200520 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200520.20019');
+        $chem200590 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200590.90056');
+        $chem200620 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200620.20017');
+        $chem200890 = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200890.90040');
 
         $description = 'Major topics include chemical kinetics, chemical equilibrium, acid-base equilibria, chemical thermodynamics, electrochemistry, descriptive inorganic chemistry, and coordination chemistry. Lab work includes inorganic synthesis, qualitative analysis, and quantitative analysis in kinetics, acid-base and redox chemistry. (CHEM 0103 or by waiver) 3 hrs. lect., 3 hrs. lab, 1 hr. disc.';
 
@@ -192,12 +192,12 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
     {
         $list = $this->object->getTopicIds();
         $identifiers = [
-            'topic/subject/PHYS',
-            'topic/department/PHYS',
-            'topic/division/NSCI',
-            'topic/requirement/DED',
-            'topic/requirement/SCI',
-            'topic/level/UG',
+            'topic.subject.PHYS',
+            'topic.department.PHYS',
+            'topic.division.NSCI',
+            'topic.requirement.DED',
+            'topic.requirement.SCI',
+            'topic.level.UG',
         ];
         $found = [];
         $this->assertTrue($list->hasNext());
@@ -226,13 +226,13 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
         $list = $offering->getTopicIds();
         $this->assertEquals(7, $list->available());
         $identifiers = [
-            'topic/subject/GEOL',
-            'topic/department/GEOL',
-            'topic/division/NSCI',
-            'topic/requirement/DED',
-            'topic/requirement/SCI',
-            'topic/level/UG',
-            'topic/block/CC',
+            'topic.subject.GEOL',
+            'topic.department.GEOL',
+            'topic.division.NSCI',
+            'topic.requirement.DED',
+            'topic.requirement.SCI',
+            'topic.level.UG',
+            'topic.block.CC',
         ];
         $found = [];
         while ($list->hasNext()) {

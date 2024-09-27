@@ -23,20 +23,20 @@ class banner_course_Topic_Search_SearchTest extends TestCase
     {
         $this->wildcardStringMatchType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:search:wildcard');
 
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
-        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
+        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog.MCUG');
+        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog.MIIS');
 
         $this->session = self::$courseManager->getTopicSearchSessionForCatalog($this->mcugId);
         $this->object = $this->session->getTopicSearch();
 
-        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200820');
+        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term.200820');
 
         $this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
 
-        $this->subjectType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/subject');
-        $this->departmentType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/department');
-        $this->divisionType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/division');
-        $this->requirementType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/requirement');
+        $this->subjectType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject');
+        $this->departmentType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department');
+        $this->divisionType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.division');
+        $this->requirementType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement');
     }
 
     /**
@@ -68,8 +68,8 @@ class banner_course_Topic_Search_SearchTest extends TestCase
     public function testSearchAmongTopics()
     {
         $topicList = new phpkit_id_ArrayIdList([
-            new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/DED'),
-            new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/SCI'),
+            new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic.requirement.DED'),
+            new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic.requirement.SCI'),
         ]);
 
         $this->object->searchAmongTopics($topicList);

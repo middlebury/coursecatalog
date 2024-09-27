@@ -28,7 +28,7 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     {
         parent::__construct();
 
-        $this->setId(new phpkit_id_URNInetId('urn:inet:middlebury.edu:id:implementations/apc_course'));
+        $this->setId(new phpkit_id_URNInetId('urn:inet:middlebury.edu:id:implementations.apc_course'));
         $this->setDisplayName('APC Caching Course Manager');
         $this->setDescription('This is a CourseManager implementation that provides read-only, unauthenticated, access to course information stored in an underlying course manager.');
     }
@@ -74,7 +74,7 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
         try {
             $implClassName = phpkit_configuration_ConfigUtil::getSingleValuedValue(
                 $runtime->getConfiguration(),
-                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:apc_course/impl_class_name'),
+                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:apc_course.impl_class_name'),
                 new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
         } catch (osid_NotFoundException $e) {
             throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode(), $e);

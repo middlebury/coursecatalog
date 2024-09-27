@@ -127,7 +127,7 @@ class ResourcesController extends AbstractCatalogController
      */
     public function listcampusestxtAction()
     {
-        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource/place/campus'));
+        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource.place.campus'));
     }
 
     /**

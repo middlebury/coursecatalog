@@ -137,7 +137,7 @@ class CoursesController extends AbstractCatalogController
     public function viewxmlAction()
     {
         $this->_helper->layout->disableLayout();
-        $this->getResponse()->setHeader('Content-Type', 'text/xml');
+        $this->getResponse()->setHeader('Content-Type', 'text.xml');
 
         $this->viewAction();
     }
@@ -455,8 +455,8 @@ class CoursesController extends AbstractCatalogController
             throw new InvalidArgumentException('An instructor must be specified.');
         }
 
-        $instructorId = $this->_helper->osidId->fromString('resource/person/'.$instructor);
-        $searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'resources', null, ['catalog' => $this->_getParam('catalog'), 'resource' => 'resouce/person/'.$instructor]));
+        $instructorId = $this->_helper->osidId->fromString('resource.person.'.$instructor);
+        $searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'resources', null, ['catalog' => $this->_getParam('catalog'), 'resource' => 'resouce.person.'.$instructor]));
 
         $resourceLookup = $this->_helper->osid->getCourseManager()->getResourceManager()->getResourceLookupSession();
         try {
@@ -610,7 +610,7 @@ class CoursesController extends AbstractCatalogController
             }
 
             $allTopics = $this->_helper->topics->topicListAsArray($course->getTopics());
-            $topicType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/department');
+            $topicType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department');
             $topicTypeString = $this->_helper->osidType->toString($topicType);
             $topics = $this->_helper->topics->filterTopicsByType($allTopics, $topicType);
             foreach ($topics as $topic) {
@@ -620,7 +620,7 @@ class CoursesController extends AbstractCatalogController
                 echo '</catalog:topic> ';
             }
 
-            $topicType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/requirement');
+            $topicType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement');
             $topicTypeString = $this->_helper->osidType->toString($topicType);
             $topics = $this->_helper->topics->filterTopicsByType($allTopics, $topicType);
             foreach ($topics as $topic) {
@@ -630,7 +630,7 @@ class CoursesController extends AbstractCatalogController
                 echo '</catalog:topic> ';
             }
 
-            $topicType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/level');
+            $topicType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.level');
             $topicTypeString = $this->_helper->osidType->toString($topicType);
             $topics = $this->_helper->topics->filterTopicsByType($allTopics, $topicType);
             foreach ($topics as $topic) {

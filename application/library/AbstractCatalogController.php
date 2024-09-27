@@ -96,19 +96,19 @@ abstract class AbstractCatalogController extends Zend_Controller_Action
     {
         $topics = $this->_helper->topics->topicListAsArray($topicList);
 
-        $this->view->subjectTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/subject'));
+        $this->view->subjectTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject'));
 
-        $this->view->departmentTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/department'));
+        $this->view->departmentTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department'));
 
-        $this->view->divisionTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/division'));
+        $this->view->divisionTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.division'));
 
-        $this->view->requirementTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/requirement'));
+        $this->view->requirementTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement'));
 
-        $this->view->levelTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/level'));
+        $this->view->levelTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.level'));
 
-        $this->view->blockTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/block'));
+        $this->view->blockTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.block'));
 
-        $this->view->instructionMethodTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/instruction_method'));
+        $this->view->instructionMethodTopics = $this->_helper->topics->filterTopicsByType($topics, new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.instruction_method'));
     }
 
     private $startTime;

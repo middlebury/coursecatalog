@@ -45,7 +45,7 @@ class banner_resource_Resource_Lookup_PerCatalogSession extends banner_AbstractS
      */
     public function __construct(banner_ManagerInterface $manager, osid_id_Id $binId)
     {
-        parent::__construct($manager, 'resource/');
+        parent::__construct($manager, 'resource.');
 
         $this->binId = $binId;
     }
@@ -80,7 +80,7 @@ class banner_resource_Resource_Lookup_PerCatalogSession extends banner_AbstractS
     {
         $params = [];
         if (null !== $this->binId && !$this->binId->isEqual($this->manager->getCombinedBinId())) {
-            $params[':catalog_id'] = $this->getDatabaseIdString($this->binId, 'catalog/');
+            $params[':catalog_id'] = $this->getDatabaseIdString($this->binId, 'catalog.');
         }
 
         return $params;
@@ -225,11 +225,11 @@ class banner_resource_Resource_Lookup_PerCatalogSession extends banner_AbstractS
         switch ($type) {
             case 'person':
                 return $this->getPersonResource($resourceId);
-            case 'place/room':
+            case 'place.room':
                 return $this->getRoomResource($resourceId);
-            case 'place/building':
+            case 'place.building':
                 return $this->getBuildingResource($resourceId);
-            case 'place/campus':
+            case 'place.campus':
                 return $this->getCampusResource($resourceId);
             default:
                 throw new osid_NotFoundException('No resource found with category '.$type);
@@ -245,8 +245,8 @@ class banner_resource_Resource_Lookup_PerCatalogSession extends banner_AbstractS
      */
     public function getResourceType(osid_id_Id $resourceId)
     {
-        $string = $this->getDatabaseIdString($resourceId, 'resource/');
-        if (!preg_match('#(person|place/room|place/building|place/campus)/(.+)#', $string, $matches)) {
+        $string = $this->getDatabaseIdString($resourceId, 'resource.');
+        if (!preg_match('#(person|place\.room|place\.building|place\.campus)\.(.+)#', $string, $matches)) {
             throw new osid_NotFoundException('Could not turn "'.$string.'" into a resource type.');
         }
 
@@ -262,8 +262,8 @@ class banner_resource_Resource_Lookup_PerCatalogSession extends banner_AbstractS
      */
     public function getResourceValue(osid_id_Id $resourceId)
     {
-        $string = $this->getDatabaseIdString($resourceId, 'resource/');
-        if (!preg_match('#(person|place/room|place/building|place/campus)/(.+)#', $string, $matches)) {
+        $string = $this->getDatabaseIdString($resourceId, 'resource.');
+        if (!preg_match('#(person|place\.room|place\.building|place\.campus)\.(.+)#', $string, $matches)) {
             throw new osid_NotFoundException('Could not turn "'.$string.'" into a resource type.');
         }
 
@@ -311,7 +311,7 @@ WHERE
 
         $parameters = array_merge(
             [
-                ':webid' => $this->getDatabaseIdString($resourceId, 'resource/person/'),
+                ':webid' => $this->getDatabaseIdString($resourceId, 'resource.person.'),
             ],
             $this->getCatalogParameters());
         self::$getPersonResource_stmt->execute($parameters);
@@ -319,11 +319,11 @@ WHERE
         self::$getPersonResource_stmt->closeCursor();
 
         if (!$row['WEB_ID']) {
-            throw new osid_NotFoundException('Could not find a resource  matching the person code '.$this->getDatabaseIdString($resourceId, 'resource/person/').'.');
+            throw new osid_NotFoundException('Could not find a resource  matching the person code '.$this->getDatabaseIdString($resourceId, 'resource.person.').'.');
         }
 
         return new banner_resource_Resource_Person(
-            $this->getOsidIdFromString($row['WEB_ID'], 'resource/person/'),
+            $this->getOsidIdFromString($row['WEB_ID'], 'resource.person.'),
             $row['SYVINST_LAST_NAME'],
             $row['SYVINST_FIRST_NAME']
         );
@@ -373,7 +373,7 @@ GROUP BY WEB_ID
         $resources = [];
         while ($row = self::$getPersonResources_stmt->fetch(PDO::FETCH_ASSOC)) {
             $resources[] = new banner_resource_Resource_Person(
-                $this->getOsidIdFromString($row['WEB_ID'], 'resource/person/'),
+                $this->getOsidIdFromString($row['WEB_ID'], 'resource.person.'),
                 $row['SYVINST_LAST_NAME'],
                 $row['SYVINST_FIRST_NAME']
             );
@@ -425,7 +425,7 @@ GROUP BY STVBLDG_CODE
 
         $parameters = array_merge(
             [
-                ':code' => $this->getDatabaseIdString($resourceId, 'resource/place/building/'),
+                ':code' => $this->getDatabaseIdString($resourceId, 'resource.place.building.'),
             ],
             $this->getCatalogParameters());
         self::$getBuildingResource_stmt->execute($parameters);
@@ -433,11 +433,11 @@ GROUP BY STVBLDG_CODE
         self::$getBuildingResource_stmt->closeCursor();
 
         if (!$row['STVBLDG_CODE']) {
-            throw new osid_NotFoundException('Could not find a resource  matching the building code '.$this->getDatabaseIdString($resourceId, 'resource/place/building/').'.');
+            throw new osid_NotFoundException('Could not find a resource  matching the building code '.$this->getDatabaseIdString($resourceId, 'resource.place.building.').'.');
         }
 
         return new banner_resource_Resource_Building(
-            $this->getOsidIdFromString($row['STVBLDG_CODE'], 'resource/place/building/'),
+            $this->getOsidIdFromString($row['STVBLDG_CODE'], 'resource.place.building.'),
             $row['STVBLDG_DESC'],
             $row['STVBLDG_CODE']
         );
@@ -486,7 +486,7 @@ GROUP BY STVBLDG_CODE
         $resources = [];
         while ($row = self::$getBuildingResources_stmt->fetch(PDO::FETCH_ASSOC)) {
             $resources[] = new banner_resource_Resource_Building(
-                $this->getOsidIdFromString($row['STVBLDG_CODE'], 'resource/place/building/'),
+                $this->getOsidIdFromString($row['STVBLDG_CODE'], 'resource.place.building.'),
                 $row['STVBLDG_DESC'],
                 $row['STVBLDG_CODE']
             );
@@ -537,8 +537,8 @@ GROUP BY
             self::$getRoomResource_stmt = $this->manager->getDB()->prepare($query);
         }
 
-        $roomString = $this->getDatabaseIdString($resourceId, 'resource/place/room/');
-        if (!preg_match('#^([a-z0-9_-]+)/(.+)$#i', $roomString, $matches)) {
+        $roomString = $this->getDatabaseIdString($resourceId, 'resource.place.room.');
+        if (!preg_match('#^([a-z0-9_-]+)\.(.+)$#i', $roomString, $matches)) {
             throw new osid_NotFoundException("Room string '$roomString' doesn't match.");
         }
 
@@ -553,11 +553,11 @@ GROUP BY
         self::$getRoomResource_stmt->closeCursor();
 
         if (!$row['STVBLDG_CODE']) {
-            throw new osid_NotFoundException('Could not find a resource  matching the room code '.$this->getDatabaseIdString($resourceId, 'resource/place/room/').'.');
+            throw new osid_NotFoundException('Could not find a resource  matching the room code '.$this->getDatabaseIdString($resourceId, 'resource.place.room.').'.');
         }
 
         return new banner_resource_Resource_Room(
-            $this->getOsidIdFromString($row['STVBLDG_CODE'].'/'.$row['SSRMEET_ROOM_CODE'], 'resource/place/room/'),
+            $this->getOsidIdFromString($row['STVBLDG_CODE'].'.'.$row['SSRMEET_ROOM_CODE'], 'resource.place.room.'),
             $row['STVBLDG_DESC'],
             $row['STVBLDG_CODE'],
             $row['SSRMEET_ROOM_CODE']
@@ -610,7 +610,7 @@ GROUP BY
         $resources = [];
         while ($row = self::$getRoomResources_stmt->fetch(PDO::FETCH_ASSOC)) {
             $resources[] = new banner_resource_Resource_Room(
-                $this->getOsidIdFromString($row['STVBLDG_CODE'].'/'.$row['SSRMEET_ROOM_CODE'], 'resource/place/room/'),
+                $this->getOsidIdFromString($row['STVBLDG_CODE'].'.'.$row['SSRMEET_ROOM_CODE'], 'resource.place.room.'),
                 $row['STVBLDG_DESC'],
                 $row['STVBLDG_CODE'],
                 $row['SSRMEET_ROOM_CODE']
@@ -649,7 +649,7 @@ ORDER BY STVCAMP_DESC
 
         $parameters = array_merge(
             [
-                ':code' => $this->getDatabaseIdString($resourceId, 'resource/place/campus/'),
+                ':code' => $this->getDatabaseIdString($resourceId, 'resource.place.campus.'),
             ],
             $this->getCatalogParameters());
         self::$getCampusResource_stmt->execute($parameters);
@@ -657,14 +657,14 @@ ORDER BY STVCAMP_DESC
         self::$getCampusResource_stmt->closeCursor();
 
         if (!$row['STVCAMP_CODE']) {
-            throw new osid_NotFoundException('Could not find a resource  matching the campus code '.$this->getDatabaseIdString($resourceId, 'resource/place/campus/').'.');
+            throw new osid_NotFoundException('Could not find a resource  matching the campus code '.$this->getDatabaseIdString($resourceId, 'resource.place.campus.').'.');
         }
 
         return new banner_resource_Resource_Place(
-            $this->getOsidIdFromString($row['STVCAMP_CODE'], 'resource/place/campus/'),
+            $this->getOsidIdFromString($row['STVCAMP_CODE'], 'resource.place.campus.'),
             $row['STVCAMP_DESC'],
             '',
-            new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource/place/campus')
+            new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource.place.campus')
         );
     }
 
@@ -697,10 +697,10 @@ ORDER BY STVCAMP_DESC
         $resources = [];
         while ($row = self::$getCampusResources_stmt->fetch(PDO::FETCH_ASSOC)) {
             $resources[] = new banner_resource_Resource_Place(
-                $this->getOsidIdFromString($row['STVCAMP_CODE'], 'resource/place/campus/'),
+                $this->getOsidIdFromString($row['STVCAMP_CODE'], 'resource.place.campus.'),
                 $row['STVCAMP_DESC'],
                 '',
-                new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource/place/campus')
+                new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource.place.campus')
             );
         }
         self::$getCampusResources_stmt->closeCursor();
@@ -783,15 +783,15 @@ ORDER BY STVCAMP_DESC
             return new phpkit_EmptyList('osid_resource_ResourceList');
         }
         switch ($resourceGenusType->getIdentifier()) {
-            case 'genera:resource/person':
+            case 'genera:resource.person':
                 return $this->getPersonResources();
-            case 'genera:resource/place/campus':
+            case 'genera:resource.place.campus':
                 return $this->getCampusResources();
-            case 'genera:resource/place/building':
+            case 'genera:resource.place.building':
                 return $this->getBuildingResources();
-            case 'genera:resource/place/room':
+            case 'genera:resource.place.room':
                 return $this->getRoomResources();
-                //    			case 'genera:resource/place':
+                //    			case 'genera:resource.place':
                 //    				return $this->getPlaceResources();
             default:
                 return new phpkit_EmptyList('osid_resource_ResourceList');
@@ -827,7 +827,7 @@ ORDER BY STVCAMP_DESC
             return new phpkit_EmptyList('osid_resource_ResourceList');
         }
 
-        if ('genera:resource/place' == $resourceGenusType->getIdentifier()) {
+        if ('genera:resource.place' == $resourceGenusType->getIdentifier()) {
             $resourceList = new phpkit_CombinedList('osid_resource_ResourceList');
             $resourceList->addList($this->getCampusResources());
             $resourceList->addList($this->getBuildingResources());

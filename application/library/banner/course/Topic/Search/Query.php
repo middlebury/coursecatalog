@@ -39,13 +39,13 @@ class banner_course_Topic_Search_Query implements osid_course_TopicQuery, middle
 
         $this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
 
-        $this->subjectType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/subject');
-        $this->departmentType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/department');
-        $this->divisionType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/division');
-        $this->requirementType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/requirement');
-        $this->levelType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/level');
-        $this->blockType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/block');
-        $this->instructionMethodType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/instruction_method');
+        $this->subjectType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject');
+        $this->departmentType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department');
+        $this->divisionType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.division');
+        $this->requirementType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement');
+        $this->levelType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.level');
+        $this->blockType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.block');
+        $this->instructionMethodType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.instruction_method');
 
         $this->toInclude = [];
     }

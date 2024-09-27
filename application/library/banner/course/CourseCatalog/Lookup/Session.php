@@ -48,7 +48,7 @@ class banner_course_CourseCatalog_Lookup_Session extends banner_course_AbstractS
      */
     public function __construct(banner_course_CourseManagerInterface $manager)
     {
-        parent::__construct($manager, 'catalog/');
+        parent::__construct($manager, 'catalog.');
     }
 
     /**

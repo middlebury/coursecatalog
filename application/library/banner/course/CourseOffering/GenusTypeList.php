@@ -121,7 +121,7 @@ ORDER BY STVSCHD_DESC ASC
         return new phpkit_type_Type(
             'urn', 										// namespace
             $this->session->getIdAuthority(), 			// id authority
-            'genera:offering/'.$row['STVSCHD_CODE'], 	// identifier
+            'genera:offering.'.$row['STVSCHD_CODE'], 	// identifier
             'Course Offerings', 						// domain
             $row['STVSCHD_DESC'], 						// display name
             $row['STVSCHD_CODE']						// display label

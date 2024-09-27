@@ -575,7 +575,7 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
 				course_catalog_college
 			WHERE
 				catalog_id = ?)',
-            [$this->session->getDatabaseIdString($courseCatalogId, 'catalog/')],
+            [$this->session->getDatabaseIdString($courseCatalogId, 'catalog.')],
             $match);
     }
 
@@ -752,7 +752,7 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
      */
     public function matchInstructorId(osid_id_Id $instructorId, $match)
     {
-        $this->addClause('instructor_id', 'WEB_ID = ?', [$this->session->getDatabaseIdString($instructorId, 'resource/person/')], $match);
+        $this->addClause('instructor_id', 'WEB_ID = ?', [$this->session->getDatabaseIdString($instructorId, 'resource.person.')], $match);
         $this->addTableJoin('LEFT JOIN SSBSECT ON (SCBCRSE_SUBJ_CODE = SSBSECT_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SSBSECT_CRSE_NUMB)');
         $this->addTableJoin('LEFT JOIN SYVINST ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)');
 
@@ -810,7 +810,7 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
      */
     public function matchTermId(osid_id_Id $termId, $match)
     {
-        $this->addClause('term_id', 'SSBSECT_TERM_CODE = ?', [$this->session->getDatabaseIdString($termId, 'term/')], $match);
+        $this->addClause('term_id', 'SSBSECT_TERM_CODE = ?', [$this->session->getDatabaseIdString($termId, 'term.')], $match);
         $this->addTableJoin('LEFT JOIN SSBSECT ON (SCBCRSE_SUBJ_CODE = SSBSECT_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SSBSECT_CRSE_NUMB)');
 
         $this->addClause('active_sections', 'SSBSECT_SSTS_CODE = ? AND (course_catalog.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != course_catalog.prnt_ind_to_exclude)', ['A'], true);
@@ -867,7 +867,7 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
      */
     public function matchLocationId(osid_id_Id $instructorId, $match)
     {
-        $this->addClause('location_id', 'SSBSECT_CAMP_CODE = ?', [$this->session->getDatabaseIdString($instructorId, 'resource/place/campus/')], $match);
+        $this->addClause('location_id', 'SSBSECT_CAMP_CODE = ?', [$this->session->getDatabaseIdString($instructorId, 'resource.place.campus.')], $match);
         $this->addTableJoin('LEFT JOIN SSBSECT ON (SCBCRSE_SUBJ_CODE = SSBSECT_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SSBSECT_CRSE_NUMB)');
 
         $this->addClause('active_sections', 'SSBSECT_SSTS_CODE = ? AND (course_catalog.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != course_catalog.prnt_ind_to_exclude)', ['A'], true);

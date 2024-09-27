@@ -379,6 +379,6 @@ class banner_course_Topic_Search_Query_Level extends banner_course_AbstractQuery
      */
     public function matchTermId(osid_id_Id $termId, $match)
     {
-        $this->addClause('term', 'SSBSECT_TERM_CODE = ?', [$this->session->getDatabaseIdString($termId, 'term/')], $match);
+        $this->addClause('term', 'SSBSECT_TERM_CODE = ?', [$this->session->getDatabaseIdString($termId, 'term.')], $match);
     }
 }

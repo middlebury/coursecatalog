@@ -39,7 +39,7 @@ class banner_resource_Resource_Building extends phpkit_AbstractOsidObject implem
         $this->setId($id);
         $this->setDisplayName($displayName);
         $this->setDescription($code);
-        $this->setGenusType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource/place/building'));
+        $this->setGenusType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource.place.building'));
 
         $this->buildingDisplayName = $displayName;
         $this->buildingCode = $code;

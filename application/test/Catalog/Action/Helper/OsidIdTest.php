@@ -32,7 +32,7 @@ class Catalog_Action_Helper_OsidIdTest extends TestCase
 
     public function testGetOsidIdFromString()
     {
-        $id = new phpkit_id_Id('example.edu', 'urn', '123456789/abcd');
+        $id = new phpkit_id_Id('example.edu', 'urn', '123456789.abcd');
         $idString = $this->osidIdHelper->toString($id);
 
         $newId = $this->osidIdHelper->fromString($idString);
@@ -42,7 +42,7 @@ class Catalog_Action_Helper_OsidIdTest extends TestCase
 
     public function testGetStringFromOsidId()
     {
-        $id = new phpkit_id_Id('example.edu', 'urn', '123456789/abcd');
+        $id = new phpkit_id_Id('example.edu', 'urn', '123456789.abcd');
         $idString = $this->osidIdHelper->toString($id);
         $this->assertIsString($idString);
 

@@ -450,8 +450,8 @@ class ExportController extends AbstractCatalogController
 
         if ($request->getParam('catalogId')) {
             $catalogId = $this->_helper->osidId->fromString($request->getParam('catalogId'));
-            $this->departmentType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/department');
-            $this->subjectType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/subject');
+            $this->departmentType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department');
+            $this->subjectType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject');
 
             $topicSearchSession = $this->_helper->osid->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
             $topicQuery = $topicSearchSession->getTopicQuery();
@@ -533,7 +533,7 @@ class ExportController extends AbstractCatalogController
         $this->termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 
         try {
-            $termString = 'term/'.$request->getParam('term');
+            $termString = 'term.'.$request->getParam('term');
             $termId = $this->_helper->osidId->fromString($termString);
         } catch (osid_InvalidArgumentException $e) {
             header('HTTP/1.1 400 Bad Request');

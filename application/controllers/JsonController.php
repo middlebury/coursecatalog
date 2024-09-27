@@ -37,7 +37,7 @@ class JsonController extends AbstractCatalogController
     public function termsAction()
     {
         if ($this->_getParam('catalog')) {
-            $catalogId = $this->_helper->osidId->fromString('catalog/'.$this->_getParam('catalog'));
+            $catalogId = $this->_helper->osidId->fromString('catalog.'.$this->_getParam('catalog'));
             $lookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
             $currentTermId = $this->_helper->osidTerms->getNextOrLatestTermId($catalogId);
         } else {
@@ -52,7 +52,7 @@ class JsonController extends AbstractCatalogController
         if ($currentTermId) {
             $term = $lookupSession->getTerm($currentTermId);
             $result['terms'][] = [
-                'code' => preg_replace('/^term\//', '', $term->getId()->getIdentifier()),
+                'code' => preg_replace('/^term\./', '', $term->getId()->getIdentifier()),
                 'description' => $term->getDisplayName(),
             ];
         }
@@ -63,7 +63,7 @@ class JsonController extends AbstractCatalogController
                 continue;
             }
             $result['terms'][] = [
-                'code' => preg_replace('/^term\//', '', $term->getId()->getIdentifier()),
+                'code' => preg_replace('/^term\./', '', $term->getId()->getIdentifier()),
                 'description' => $term->getDisplayName(),
             ];
         }
@@ -83,7 +83,7 @@ class JsonController extends AbstractCatalogController
     public function areasAction()
     {
         if ($this->_getParam('catalog')) {
-            $catalogId = $this->_helper->osidId->fromString('catalog/'.$this->_getParam('catalog'));
+            $catalogId = $this->_helper->osidId->fromString('catalog.'.$this->_getParam('catalog'));
             $termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
             $topicSearchSession = $this->_helper->osid->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
         } else {
@@ -97,10 +97,10 @@ class JsonController extends AbstractCatalogController
         if (empty($code)) {
             throw new InvalidArgumentException('Missing the "code" parameter.');
         }
-        $termId = $this->_helper->osidId->fromString('term/'.$code);
+        $termId = $this->_helper->osidId->fromString('term.'.$code);
         $term = $termLookupSession->getTerm($termId);
 
-        $genera = 'topic/subject';
+        $genera = 'topic.subject';
         $generaType = $this->_helper->osidType->fromString('genera:'.$genera);
         $termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
 
@@ -121,7 +121,7 @@ class JsonController extends AbstractCatalogController
         while ($topics->hasNext()) {
             $topic = $topics->getNextTopic();
             $result['areas'][] = [
-                'area' => preg_replace('/^'.str_replace('/', '\/', $genera).'\//', '', $topic->getId()->getIdentifier()),
+                'area' => preg_replace('/^'.str_replace('.', '\.', $genera).'\./', '', $topic->getId()->getIdentifier()),
                 'name' => $topic->getDisplayName(),
             ];
         }
@@ -141,7 +141,7 @@ class JsonController extends AbstractCatalogController
     public function catalogAction()
     {
         if ($this->_getParam('catalog')) {
-            $catalogId = $this->_helper->osidId->fromString('catalog/'.$this->_getParam('catalog'));
+            $catalogId = $this->_helper->osidId->fromString('catalog.'.$this->_getParam('catalog'));
             $searchSession = $this->_helper->osid->getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
             $termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
             $topicLookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
@@ -158,18 +158,18 @@ class JsonController extends AbstractCatalogController
         $offeringLookupSession->useFederatedCourseCatalogView();
 
         // Validate our arguments.
-        $genera = 'topic/subject';
+        $genera = 'topic.subject';
         $area = $this->_getParam('area');
         if (empty($area)) {
             throw new InvalidArgumentException('Missing the "area" parameter.');
         }
-        $topicId = $this->_helper->osidId->fromString($genera.'/'.$area);
+        $topicId = $this->_helper->osidId->fromString($genera.'.'.$area);
         $topic = $topicLookupSession->getTopic($topicId);
         $code = $this->_getParam('code');
         if (empty($code)) {
             throw new InvalidArgumentException('Missing the "code" parameter.');
         }
-        $termId = $this->_helper->osidId->fromString('term/'.$this->_getParam('code'));
+        $termId = $this->_helper->osidId->fromString('term.'.$this->_getParam('code'));
         $term = $termLookupSession->getTerm($termId);
 
         // Build the query.
@@ -200,7 +200,7 @@ class JsonController extends AbstractCatalogController
     public function searchAction()
     {
         if ($this->_getParam('catalog')) {
-            $catalogId = $this->_helper->osidId->fromString('catalog/'.$this->_getParam('catalog'));
+            $catalogId = $this->_helper->osidId->fromString('catalog.'.$this->_getParam('catalog'));
             $searchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
             $termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
             $topicLookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
@@ -229,15 +229,15 @@ class JsonController extends AbstractCatalogController
         if (empty($code)) {
             throw new InvalidArgumentException('Missing the "code" parameter.');
         }
-        $termId = $this->_helper->osidId->fromString('term/'.$this->_getParam('code'));
+        $termId = $this->_helper->osidId->fromString('term.'.$this->_getParam('code'));
         $term = $termLookupSession->getTerm($termId);
 
         $query->matchTermId($termId, true);
 
-        $genera = 'topic/subject';
+        $genera = 'topic.subject';
         $area = $this->_getParam('area');
         if (!empty($area)) {
-            $topicId = $this->_helper->osidId->fromString($genera.'/'.$area);
+            $topicId = $this->_helper->osidId->fromString($genera.'.'.$area);
             $topic = $topicLookupSession->getTopic($topicId);
             $query->matchTopicId($topicId, true);
         }

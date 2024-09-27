@@ -39,17 +39,17 @@ class banner_course_CourseCatalogTest extends phpkit_test_phpunit_AbstractOsidOb
      */
     protected function setUp(): void
     {
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
-        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
+        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog.MCUG');
+        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog.MIIS');
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
 
         $this->session = self::$courseManager->getCourseLookupSessionForCatalog($this->mcugId);
 
         $this->object = $this->session->getCourseCatalog($this->mcugId);
 
-        $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
-        $this->mathId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/MATH0300');
-        $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/XXXX0101');
+        $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course.PHYS0201');
+        $this->mathId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course.MATH0300');
+        $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course.XXXX0101');
 
         $this->unknownType = new phpkit_type_URNInetType('urn:inet:osid.org:unknown_type');
 

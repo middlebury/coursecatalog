@@ -31,7 +31,7 @@ class banner_course_CourseManagerTest extends phpkit_test_phpunit_AbstractOsidMa
      */
     protected function setUp(): void
     {
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
+        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog.MCUG');
         $this->manager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
     }
 

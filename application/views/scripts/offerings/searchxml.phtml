@@ -109,7 +109,7 @@ print "</catalog:genustype> ";
 
 printTerm($this, $term);
 
-$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject");
+$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic.subject");
 $topicTypeString = $this->getStringFromOsidType($topicType);
 $topics = $this->filterTopicsByType($allTopics, $topicType);
 foreach ($topics as $topic) {
@@ -119,7 +119,7 @@ foreach ($topics as $topic) {
 	print "</catalog:topic> ";
 }
 
-$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department");
+$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic.department");
 $topicTypeString = $this->getStringFromOsidType($topicType);
 $topics = $this->filterTopicsByType($allTopics, $topicType);
 foreach ($topics as $topic) {
@@ -129,7 +129,7 @@ foreach ($topics as $topic) {
 	print "</catalog:topic> ";
 }
 
-$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement");
+$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic.requirement");
 $topicTypeString = $this->getStringFromOsidType($topicType);
 $topics = $this->filterTopicsByType($allTopics, $topicType);
 foreach ($topics as $topic) {
@@ -139,7 +139,7 @@ foreach ($topics as $topic) {
 	print "</catalog:topic> ";
 }
 
-$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/level");
+$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic.level");
 $topicTypeString = $this->getStringFromOsidType($topicType);
 $topics = $this->filterTopicsByType($allTopics, $topicType);
 foreach ($topics as $topic) {
@@ -149,7 +149,7 @@ foreach ($topics as $topic) {
 	print "</catalog:topic> ";
 }
 
-$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block");
+$topicType = new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic.block");
 $topicTypeString = $this->getStringFromOsidType($topicType);
 $topics = $this->filterTopicsByType($allTopics, $topicType);
 foreach ($topics as $topic) {

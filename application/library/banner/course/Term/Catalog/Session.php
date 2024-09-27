@@ -34,7 +34,7 @@ class banner_course_Term_Catalog_Session extends banner_course_AbstractSession i
      */
     public function __construct(banner_course_CourseManagerInterface $manager)
     {
-        parent::__construct($manager, 'catalog/');
+        parent::__construct($manager, 'catalog.');
     }
 
     /**
@@ -232,14 +232,14 @@ class banner_course_Term_Catalog_Session extends banner_course_AbstractSession i
     public function getCatalogIdsByTerm(osid_id_Id $termId)
     {
         $parameters = [
-            ':section_term_code' => $this->getDatabaseIdString($termId, 'term/'),
+            ':section_term_code' => $this->getDatabaseIdString($termId, 'term.'),
         ];
         $statement = $this->getGetCatalogsStatement();
         $statement->execute($parameters);
 
         $ids = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $ids[] = $this->getOsidIdFromString($row['catalog_id'], 'catalog/');
+            $ids[] = $this->getOsidIdFromString($row['catalog_id'], 'catalog.');
         }
         $statement->closeCursor();
 
@@ -267,7 +267,7 @@ class banner_course_Term_Catalog_Session extends banner_course_AbstractSession i
     public function getCatalogsByTerm(osid_id_Id $termId)
     {
         $parameters = [
-            ':section_term_code' => $this->getDatabaseIdString($termId, 'term/'),
+            ':section_term_code' => $this->getDatabaseIdString($termId, 'term.'),
         ];
         $statement = $this->getGetCatalogsStatement();
         $statement->execute($parameters);
@@ -275,7 +275,7 @@ class banner_course_Term_Catalog_Session extends banner_course_AbstractSession i
         $catalogs = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $catalogs[] = new banner_course_CourseCatalog(
-                $this->getOsidIdFromString($row['catalog_id'], 'catalog/'),
+                $this->getOsidIdFromString($row['catalog_id'], 'catalog.'),
                 $row['catalog_title']);
         }
         $statement->closeCursor();

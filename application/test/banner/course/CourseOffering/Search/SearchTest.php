@@ -23,18 +23,18 @@ class banner_course_CourseOffering_Search_SearchTest extends TestCase
     {
         $this->wildcardStringMatchType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:search:wildcard');
 
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
+        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog.MCUG');
         $this->session = self::$courseManager->getCourseOfferingSearchSessionForCatalog($this->mcugId);
         $this->object = $this->session->getCourseOfferingSearch();
 
-        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200420');
+        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term.200420');
 
         $this->query = $this->session->getCourseOfferingQuery();
         $this->query->matchTermId($this->termId, true);
 
-        $this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/90143');
-        $this->geolOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200420/20663');
-        $this->chemOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200420/20073');
+        $this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200890.90143');
+        $this->geolOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200420.20663');
+        $this->chemOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200420.20073');
 
         $this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
         $this->otherType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:other');

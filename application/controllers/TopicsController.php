@@ -241,7 +241,7 @@ class TopicsController extends AbstractCatalogController
      */
     public function listsubjectstxtAction()
     {
-        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/subject'));
+        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject'));
     }
 
     /**
@@ -253,7 +253,7 @@ class TopicsController extends AbstractCatalogController
      */
     public function listrequirementstxtAction()
     {
-        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/requirement'));
+        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement'));
     }
 
     /**
@@ -265,7 +265,7 @@ class TopicsController extends AbstractCatalogController
      */
     public function listlevelstxtAction()
     {
-        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/level'));
+        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.level'));
     }
 
     /**
@@ -277,7 +277,7 @@ class TopicsController extends AbstractCatalogController
      */
     public function listblockstxtAction()
     {
-        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/block'));
+        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.block'));
     }
 
     /**
@@ -289,7 +289,7 @@ class TopicsController extends AbstractCatalogController
      */
     public function listinstructionmethodstxtAction()
     {
-        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/instruction_method'));
+        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.instruction_method'));
     }
 
     /**
@@ -301,7 +301,7 @@ class TopicsController extends AbstractCatalogController
      */
     public function listdepartmentstxtAction()
     {
-        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/department'));
+        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department'));
     }
 
     /**

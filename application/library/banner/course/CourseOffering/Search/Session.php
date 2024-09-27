@@ -47,7 +47,7 @@ class banner_course_CourseOffering_Search_Session extends banner_course_CourseOf
      */
     public function __construct(banner_course_CourseManagerInterface $manager, osid_id_Id $catalogId)
     {
-        parent::__construct($manager, 'section/');
+        parent::__construct($manager, 'section.');
 
         $this->catalogId = $catalogId;
     }
@@ -269,12 +269,12 @@ class banner_course_CourseOffering_Search_Session extends banner_course_CourseOf
         $offerings = $lookupSession->getCourseOfferings();
 
         // Known topic types
-        $this->subjectType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/subject');
-        $this->departmentType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/department');
-        $this->divisionType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/division');
-        $this->requirementType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/requirement');
-        $this->blockType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/block');
-        $this->instructionMethodType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/instruction_method');
+        $this->subjectType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject');
+        $this->departmentType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department');
+        $this->divisionType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.division');
+        $this->requirementType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement');
+        $this->blockType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.block');
+        $this->instructionMethodType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.instruction_method');
         // Known record types
         $this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
 
@@ -296,7 +296,7 @@ class banner_course_CourseOffering_Search_Session extends banner_course_CourseOf
 
                 if (!$insertStmt->execute([':term_code' => $termCode, ':crn' => $crn, ':text' => $text])) {
                     $info = $insertStmt->errorInfo();
-                    throw new osid_OperationFailedException('FullText update failed with code '.$info[0].'/'.$info[1].' - '.$info[2]);
+                    throw new osid_OperationFailedException('FullText update failed with code '.$info[0].'.'.$info[1].' - '.$info[2]);
                 }
             } catch (Exception $e) {
                 echo "\nError of type:\n\t".$e::class."\nwith message:\n\t".$e->getMessage()."\n";

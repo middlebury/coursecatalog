@@ -38,11 +38,11 @@ class banner_course_Term_Catalog_SessionTest extends TestCase
     {
         $this->session = self::$courseManager->getTermCatalogSession();
 
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
-        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
+        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog.MCUG');
+        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog.MIIS');
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
 
-        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200890');
+        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term.200890');
     }
 
     /**

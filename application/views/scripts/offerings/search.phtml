@@ -443,7 +443,7 @@ print "\n\t<dl>";
 print "\n\t\t<dt>Type:</dt>";
 print "\n\t\t<dd>".$this->escape($section->getGenusType()->getDisplayName())."</dd>";
 
-$topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/instruction_method"));
+$topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic.instruction_method"));
 if (!empty($topics)) {
 	print "\n\t\t<dt>Course Modality:</dt>";
 	print "\n\t\t<dd>";
@@ -464,7 +464,7 @@ print "\n\t\t<dt>Term:</dt>";
 +print "\n\t\t</dd>";
 print "\n\t\t<dt>Department:</dt>";
 print "\n\t\t<dd>";
-$topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/department"));
+$topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic.department"));
 foreach ($topics as $topic) {
 	$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
 	print "<a href=\"".$this->url($topicParams)."\">";
@@ -475,7 +475,7 @@ print "</dd>";
 
 print "\n\t\t<dt>Requirements Fulfilled:</dt>";
 print "\n\t\t<dd>";
-$topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/requirement"));
+$topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic.requirement"));
 foreach ($topics as $topic) {
 	$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
 	print "<a href=\"".$this->url($topicParams)."\">";
@@ -486,7 +486,7 @@ print "</dd>";
 
 print "\n\t</dl>";
 
-$topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/block"));
+$topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic.block"));
 if (!empty($topics)) {
 	print "\n\t\t<dt>Additional Details:</dt>";
 	print "\n\t\t<dd>";
@@ -566,7 +566,7 @@ if (!empty($availabilityLink)) {
 
 // print "\n\t<dt>Subject:</dt>";
 // print "\n\t\t<dd>";
-// $topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/subject"));
+// $topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic.subject"));
 // foreach ($topics as $topic) {
 // 	$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
 // 	print "<a href=\"".$this->url($topicParams)."\">";
@@ -577,7 +577,7 @@ if (!empty($availabilityLink)) {
 
 // print "\n\t\t<dt>Division:</dt>";
 // print "\n\t\t<dd>";
-// $topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic/division"));
+// $topics = $this->filterTopicsByType($allTopics, new phpkit_type_URNInetType("urn:inet:middlebury.edu:genera:topic.division"));
 // foreach ($topics as $topic) {
 // 	$topicParams['topic'] = $this->getStringFromOsidId($topic->getId());
 // 	print "<a href=\"".$this->url($topicParams)."\">";

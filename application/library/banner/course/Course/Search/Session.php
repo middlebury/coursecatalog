@@ -45,7 +45,7 @@ class banner_course_Course_Search_Session extends banner_course_Course_AbstractS
      */
     public function __construct(banner_course_CourseManagerInterface $manager, osid_id_Id $catalogId)
     {
-        parent::__construct($manager, 'section/');
+        parent::__construct($manager, 'section.');
 
         $this->catalogId = $catalogId;
     }

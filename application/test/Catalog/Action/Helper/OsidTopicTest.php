@@ -24,7 +24,7 @@ class Catalog_Action_Helper_OsidTopicTest extends TestCase
         $this->osidTopicHelper = new Catalog_Action_Helper_Topics();
         Zend_Controller_Action_HelperBroker::addHelper($this->osidTopicHelper);
 
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
+        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog.MCUG');
 
         $this->topicLookup = $this->osidHelper->getCourseManager()->getTopicLookupSessionForCatalog($this->mcugId);
     }
@@ -53,7 +53,7 @@ class Catalog_Action_Helper_OsidTopicTest extends TestCase
         $numTopics = $topics->available();
         $topicArray = $this->osidTopicHelper->topicListAsArray($topics);
 
-        $subjectType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/subject');
+        $subjectType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject');
 
         $filteredTopics = $this->osidTopicHelper->filterTopicsByType($topicArray, $subjectType);
         $this->assertIsArray($filteredTopics);

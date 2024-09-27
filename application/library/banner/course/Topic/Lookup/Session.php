@@ -46,7 +46,7 @@ class banner_course_Topic_Lookup_Session extends banner_course_AbstractSession i
      */
     public function __construct(banner_course_CourseManagerInterface $manager, osid_id_Id $catalogId)
     {
-        parent::__construct($manager, 'section/');
+        parent::__construct($manager, 'section.');
 
         $this->catalogId = $catalogId;
     }
@@ -215,8 +215,8 @@ class banner_course_Topic_Lookup_Session extends banner_course_AbstractSession i
      */
     public function getTopicType(osid_id_Id $topicId)
     {
-        $string = $this->getDatabaseIdString($topicId, 'topic/');
-        if (!preg_match('#(subject|department|division|requirement|level|block|instruction_method)/.+#', $string, $matches)) {
+        $string = $this->getDatabaseIdString($topicId, 'topic.');
+        if (!preg_match('#(subject|department|division|requirement|level|block|instruction_method)..+#', $string, $matches)) {
             throw new osid_NotFoundException('Could not turn "'.$string.'" into a topic type.');
         }
 
@@ -232,8 +232,8 @@ class banner_course_Topic_Lookup_Session extends banner_course_AbstractSession i
      */
     public function getTopicValue(osid_id_Id $topicId)
     {
-        $string = $this->getDatabaseIdString($topicId, 'topic/');
-        if (!preg_match('#(subject|department|division|requirement|level|block|instruction_method)/(.+)#', $string, $matches)) {
+        $string = $this->getDatabaseIdString($topicId, 'topic.');
+        if (!preg_match('#(subject|department|division|requirement|level|block|instruction_method).(.+)#', $string, $matches)) {
             throw new osid_NotFoundException('Could not turn "'.$string.'" into a topic type.');
         }
 
@@ -278,7 +278,7 @@ GROUP BY SCBCRSE_SUBJ_CODE
 
         $parameters = array_merge(
             [
-                ':subject_code' => $this->getDatabaseIdString($topicId, 'topic/subject/'),
+                ':subject_code' => $this->getDatabaseIdString($topicId, 'topic.subject.'),
             ],
             $this->getCatalogParameters());
         self::$getSubjectTopic_stmts[$catalogWhere]->execute($parameters);
@@ -286,14 +286,14 @@ GROUP BY SCBCRSE_SUBJ_CODE
         self::$getSubjectTopic_stmts[$catalogWhere]->closeCursor();
 
         if (!$row['STVSUBJ_CODE']) {
-            throw new osid_NotFoundException('Could not find a topic  matching the subject code '.$this->getDatabaseIdString($topicId, 'topic/subject/').'.');
+            throw new osid_NotFoundException('Could not find a topic  matching the subject code '.$this->getDatabaseIdString($topicId, 'topic.subject.').'.');
         }
 
         return new banner_course_Topic(
-            $this->getOsidIdFromString($row['STVSUBJ_CODE'], 'topic/subject/'),
+            $this->getOsidIdFromString($row['STVSUBJ_CODE'], 'topic.subject.'),
             trim($row['STVSUBJ_DESC']),
             '',
-            new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/subject')
+            new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject')
         );
     }
 
@@ -339,10 +339,10 @@ GROUP BY SCBCRSE_SUBJ_CODE
         $topics = [];
         while ($row = self::$getSubjectTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
             $topics[] = new banner_course_Topic(
-                $this->getOsidIdFromString($row['STVSUBJ_CODE'], 'topic/subject/'),
+                $this->getOsidIdFromString($row['STVSUBJ_CODE'], 'topic.subject.'),
                 trim($row['STVSUBJ_DESC']),
                 '',
-                new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/subject')
+                new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject')
             );
         }
         self::$getSubjectTopics_stmts[$catalogWhere]->closeCursor();
@@ -388,7 +388,7 @@ GROUP BY SCBCRSE_DEPT_CODE
 
         $parameters = array_merge(
             [
-                ':department_code' => $this->getDatabaseIdString($topicId, 'topic/department/'),
+                ':department_code' => $this->getDatabaseIdString($topicId, 'topic.department.'),
             ],
             $this->getCatalogParameters());
         self::$getDepartmentTopic_stmts[$catalogWhere]->execute($parameters);
@@ -396,14 +396,14 @@ GROUP BY SCBCRSE_DEPT_CODE
         self::$getDepartmentTopic_stmts[$catalogWhere]->closeCursor();
 
         if (!$row['STVDEPT_CODE']) {
-            throw new osid_NotFoundException('Could not find a topic matching the department code '.$this->getDatabaseIdString($topicId, 'topic/department/').'.');
+            throw new osid_NotFoundException('Could not find a topic matching the department code '.$this->getDatabaseIdString($topicId, 'topic.department.').'.');
         }
 
         return new banner_course_Topic(
-            $this->getOsidIdFromString($row['STVDEPT_CODE'], 'topic/department/'),
+            $this->getOsidIdFromString($row['STVDEPT_CODE'], 'topic.department.'),
             trim($row['STVDEPT_DESC']),
             '',
-            new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/department')
+            new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department')
         );
     }
 
@@ -448,10 +448,10 @@ GROUP BY SCBCRSE_DEPT_CODE
         $topics = [];
         while ($row = self::$getDepartmentTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
             $topics[] = new banner_course_Topic(
-                $this->getOsidIdFromString($row['STVDEPT_CODE'], 'topic/department/'),
+                $this->getOsidIdFromString($row['STVDEPT_CODE'], 'topic.department.'),
                 trim($row['STVDEPT_DESC']),
                 '',
-                new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/department')
+                new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department')
             );
         }
         self::$getDepartmentTopics_stmts[$catalogWhere]->closeCursor();
@@ -497,7 +497,7 @@ GROUP BY SCBCRSE_DIVS_CODE
 
         $parameters = array_merge(
             [
-                ':division_code' => $this->getDatabaseIdString($topicId, 'topic/division/'),
+                ':division_code' => $this->getDatabaseIdString($topicId, 'topic.division.'),
             ],
             $this->getCatalogParameters());
         self::$getDivisionTopic_stmts[$catalogWhere]->execute($parameters);
@@ -505,14 +505,14 @@ GROUP BY SCBCRSE_DIVS_CODE
         self::$getDivisionTopic_stmts[$catalogWhere]->closeCursor();
 
         if (!$row['STVDIVS_CODE']) {
-            throw new osid_NotFoundException('Could not find a topic matching the division code '.$this->getDatabaseIdString($topicId, 'topic/division/').'.');
+            throw new osid_NotFoundException('Could not find a topic matching the division code '.$this->getDatabaseIdString($topicId, 'topic.division.').'.');
         }
 
         return new banner_course_Topic(
-            $this->getOsidIdFromString($row['STVDIVS_CODE'], 'topic/division/'),
+            $this->getOsidIdFromString($row['STVDIVS_CODE'], 'topic.division.'),
             trim($row['STVDIVS_DESC']),
             '',
-            new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/division')
+            new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.division')
         );
     }
 
@@ -557,10 +557,10 @@ GROUP BY SCBCRSE_DIVS_CODE
         $topics = [];
         while ($row = self::$getDivisionTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
             $topics[] = new banner_course_Topic(
-                $this->getOsidIdFromString($row['STVDIVS_CODE'], 'topic/division/'),
+                $this->getOsidIdFromString($row['STVDIVS_CODE'], 'topic.division.'),
                 trim($row['STVDIVS_DESC']),
                 '',
-                new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/division')
+                new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.division')
             );
         }
         self::$getDivisionTopics_stmts[$catalogWhere]->closeCursor();
@@ -626,7 +626,7 @@ GROUP BY STVATTR_CODE
 
         $parameters = array_merge(
             [
-                ':requirement_code' => $this->getDatabaseIdString($topicId, 'topic/requirement/'),
+                ':requirement_code' => $this->getDatabaseIdString($topicId, 'topic.requirement.'),
             ],
             $this->getCatalogParameters());
         self::$getRequirementTopic_stmts[$catalogWhere]->execute($parameters);
@@ -640,15 +640,15 @@ GROUP BY STVATTR_CODE
             self::$getCourseRequirementTopic_stmts[$catalogWhere]->closeCursor();
 
             if (!$row['STVATTR_CODE']) {
-                throw new osid_NotFoundException('Could not find a topic matching the requirement code '.$this->getDatabaseIdString($topicId, 'topic/requirement/').'.');
+                throw new osid_NotFoundException('Could not find a topic matching the requirement code '.$this->getDatabaseIdString($topicId, 'topic.requirement.').'.');
             }
         }
 
         return new banner_course_Topic(
-            $this->getOsidIdFromString($row['STVATTR_CODE'], 'topic/requirement/'),
+            $this->getOsidIdFromString($row['STVATTR_CODE'], 'topic.requirement.'),
             trim($row['STVATTR_DESC']),
             '',
-            new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/requirement')
+            new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement')
         );
     }
 
@@ -687,10 +687,10 @@ GROUP BY STVATTR_CODE
         $topics = [];
         while ($row = self::$getRequirementTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
             $topics[] = new banner_course_Topic(
-                $this->getOsidIdFromString($row['STVATTR_CODE'], 'topic/requirement/'),
+                $this->getOsidIdFromString($row['STVATTR_CODE'], 'topic.requirement.'),
                 trim($row['STVATTR_DESC']),
                 '',
-                new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/requirement')
+                new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement')
             );
         }
         self::$getRequirementTopics_stmts[$catalogWhere]->closeCursor();
@@ -737,7 +737,7 @@ GROUP BY STVLEVL_CODE
 
         $parameters = array_merge(
             [
-                ':level_code' => $this->getDatabaseIdString($topicId, 'topic/level/'),
+                ':level_code' => $this->getDatabaseIdString($topicId, 'topic.level.'),
             ],
             $this->getCatalogParameters());
         self::$getLevelTopic_stmts[$catalogWhere]->execute($parameters);
@@ -745,14 +745,14 @@ GROUP BY STVLEVL_CODE
         self::$getLevelTopic_stmts[$catalogWhere]->closeCursor();
 
         if (!$row['STVLEVL_CODE']) {
-            throw new osid_NotFoundException('Could not find a topic matching the level code '.$this->getDatabaseIdString($topicId, 'topic/level/').'.');
+            throw new osid_NotFoundException('Could not find a topic matching the level code '.$this->getDatabaseIdString($topicId, 'topic.level.').'.');
         }
 
         return new banner_course_Topic(
-            $this->getOsidIdFromString($row['STVLEVL_CODE'], 'topic/level/'),
+            $this->getOsidIdFromString($row['STVLEVL_CODE'], 'topic.level.'),
             trim($row['STVLEVL_DESC']),
             '',
-            new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/level')
+            new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.level')
         );
     }
 
@@ -798,10 +798,10 @@ GROUP BY STVLEVL_CODE
         $topics = [];
         while ($row = self::$getLevelTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
             $topics[] = new banner_course_Topic(
-                $this->getOsidIdFromString($row['STVLEVL_CODE'], 'topic/level/'),
+                $this->getOsidIdFromString($row['STVLEVL_CODE'], 'topic.level.'),
                 trim($row['STVLEVL_DESC']),
                 '',
-                new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/level')
+                new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.level')
             );
         }
         self::$getLevelTopics_stmts[$catalogWhere]->closeCursor();
@@ -841,7 +841,7 @@ GROUP BY STVBLCK_CODE
 
         $parameters = array_merge(
             [
-                ':block_code' => $this->getDatabaseIdString($topicId, 'topic/block/'),
+                ':block_code' => $this->getDatabaseIdString($topicId, 'topic.block.'),
             ],
             $this->getCatalogParameters());
         self::$getBlockTopic_stmts[$catalogWhere]->execute($parameters);
@@ -849,14 +849,14 @@ GROUP BY STVBLCK_CODE
         self::$getBlockTopic_stmts[$catalogWhere]->closeCursor();
 
         if (!$row['STVBLCK_CODE']) {
-            throw new osid_NotFoundException('Could not find a topic matching the block code '.$this->getDatabaseIdString($topicId, 'topic/block/').'.');
+            throw new osid_NotFoundException('Could not find a topic matching the block code '.$this->getDatabaseIdString($topicId, 'topic.block.').'.');
         }
 
         return new banner_course_Topic(
-            $this->getOsidIdFromString($row['STVBLCK_CODE'], 'topic/block/'),
+            $this->getOsidIdFromString($row['STVBLCK_CODE'], 'topic.block.'),
             trim($row['STVBLCK_DESC']),
             '',
-            new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/block')
+            new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.block')
         );
     }
 
@@ -895,10 +895,10 @@ GROUP BY STVBLCK_CODE
         $topics = [];
         while ($row = self::$getBlockTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
             $topics[] = new banner_course_Topic(
-                $this->getOsidIdFromString($row['STVBLCK_CODE'], 'topic/block/'),
+                $this->getOsidIdFromString($row['STVBLCK_CODE'], 'topic.block.'),
                 trim($row['STVBLCK_DESC']),
                 '',
-                new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/block')
+                new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.block')
             );
         }
         self::$getBlockTopics_stmts[$catalogWhere]->closeCursor();
@@ -938,7 +938,7 @@ GROUP BY GTVINSM_CODE
 
         $parameters = array_merge(
             [
-                ':insm_code' => $this->getDatabaseIdString($topicId, 'topic/instruction_method/'),
+                ':insm_code' => $this->getDatabaseIdString($topicId, 'topic.instruction_method.'),
             ],
             $this->getCatalogParameters());
         self::$getInstructionMethodTopic_stmts[$catalogWhere]->execute($parameters);
@@ -946,14 +946,14 @@ GROUP BY GTVINSM_CODE
         self::$getInstructionMethodTopic_stmts[$catalogWhere]->closeCursor();
 
         if (!$row['GTVINSM_CODE']) {
-            throw new osid_NotFoundException('Could not find a topic matching the instruction_method code '.$this->getDatabaseIdString($topicId, 'topic/instruction_method/').'.');
+            throw new osid_NotFoundException('Could not find a topic matching the instruction_method code '.$this->getDatabaseIdString($topicId, 'topic.instruction_method.').'.');
         }
 
         return new banner_course_Topic(
-            $this->getOsidIdFromString($row['GTVINSM_CODE'], 'topic/instruction_method/'),
+            $this->getOsidIdFromString($row['GTVINSM_CODE'], 'topic.instruction_method.'),
             trim($row['GTVINSM_DESC']),
             '',
-            new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/instruction_method')
+            new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.instruction_method')
         );
     }
 
@@ -992,10 +992,10 @@ GROUP BY GTVINSM_CODE
         $topics = [];
         while ($row = self::$getInstructionMethodTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
             $topics[] = new banner_course_Topic(
-                $this->getOsidIdFromString($row['GTVINSM_CODE'], 'topic/instruction_method/'),
+                $this->getOsidIdFromString($row['GTVINSM_CODE'], 'topic.instruction_method.'),
                 trim($row['GTVINSM_DESC']),
                 '',
-                new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/instruction_method')
+                new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.instruction_method')
             );
         }
         self::$getInstructionMethodTopics_stmts[$catalogWhere]->closeCursor();
@@ -1111,19 +1111,19 @@ GROUP BY GTVINSM_CODE
             return new phpkit_EmptyList('osid_course_TopicList');
         }
         switch ($topicGenusType->getIdentifier()) {
-            case 'genera:topic/subject':
+            case 'genera:topic.subject':
                 return $this->getSubjectTopics();
-            case 'genera:topic/department':
+            case 'genera:topic.department':
                 return $this->getDepartmentTopics();
-            case 'genera:topic/division':
+            case 'genera:topic.division':
                 return $this->getDivisionTopics();
-            case 'genera:topic/requirement':
+            case 'genera:topic.requirement':
                 return $this->getRequirementTopics();
-            case 'genera:topic/level':
+            case 'genera:topic.level':
                 return $this->getLevelTopics();
-            case 'genera:topic/block':
+            case 'genera:topic.block':
                 return $this->getBlockTopics();
-            case 'genera:topic/instruction_method':
+            case 'genera:topic.instruction_method':
                 return $this->getInstructionMethodTopics();
             default:
                 return new phpkit_EmptyList('osid_course_TopicList');
