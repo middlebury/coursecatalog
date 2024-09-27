@@ -38,3 +38,7 @@ services:
       # Install and enable OCI8
       - echo "instantclient,/opt/oracle/instantclient_19_10" | pecl install oci8-3.2.1
       - docker-php-ext-enable oci8
+  phpmyadmin:
+    type: phpmyadmin
+    hosts:
+      - database
