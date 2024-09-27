@@ -45,3 +45,5 @@ services:
         class: App\Service\Osid\IdMap
     osid.type_map:
         class: App\Service\Osid\TypeMap
+    osid.term_helper:
+        class: App\Service\Osid\TermHelper

@@ -6,6 +6,16 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
+namespace App\Controller;
+
+use App\Service\Osid\IdMap;
+use App\Service\Osid\Runtime;
+use App\Service\Osid\TermHelper;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+
 /**
  * A controller for working with courses.
  *
@@ -14,8 +24,40 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class OfferingsController extends AbstractCatalogController
+class Offerings extends AbstractController
 {
+
+    /**
+     * @var \App\Service\Osid\Runtime
+     */
+    private $osidRuntime;
+
+    /**
+     * @var \App\Service\Osid\IdMap
+     */
+    private $osidIdMap;
+
+    /**
+     * @var \App\Service\Osid\TermHelper
+     */
+    private $osidTermHelper;
+
+    /**
+     * Construct a new Catalogs controller.
+     *
+     * @param \App\Service\Osid\Runtime $osidRuntime
+     *   The osid.runtime service.
+     * @param \App\Service\Osid\IdMap $osidIdMap
+     *   The osid.id_map service.
+     * @param \App\Service\Osid\TermHelper $osidTermHelper
+     *   The osid.term_helper service.
+     */
+    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, TermHelper $osidTermHelper) {
+        $this->osidRuntime = $osidRuntime;
+        $this->osidIdMap = $osidIdMap;
+        $this->osidTermHelper = $osidTermHelper;
+    }
+
     /**
      * Initialize object.
      *
@@ -25,27 +67,27 @@ class OfferingsController extends AbstractCatalogController
      */
     public function init()
     {
-        $this->wildcardStringMatchType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:search:wildcard');
-        $this->booleanStringMatchType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:search:boolean');
-        $this->instructorType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
-        $this->enrollmentType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:enrollment');
-        $this->locationType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:location');
-        $this->alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
-        $this->weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
+        $this->wildcardStringMatchType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:search:wildcard');
+        $this->booleanStringMatchType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:search:boolean');
+        $this->instructorType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+        $this->enrollmentType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:enrollment');
+        $this->locationType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:location');
+        $this->alternateType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
+        $this->weeklyScheduleType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 
         parent::init();
 
-        $this->subjectType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject');
-        $this->departmentType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department');
-        $this->divisionType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.division');
-        $this->requirementType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement');
-        $this->levelType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.level');
-        $this->blockType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.block');
-        $this->instructionMethodType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.instruction_method');
+        $this->subjectType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject');
+        $this->departmentType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department');
+        $this->divisionType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.division');
+        $this->requirementType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement');
+        $this->levelType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.level');
+        $this->blockType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.block');
+        $this->instructionMethodType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.instruction_method');
 
-        $this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
+        $this->termType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
 
-        $this->campusType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource.place.campus');
+        $this->campusType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource.place.campus');
     }
 
     /**
@@ -57,25 +99,25 @@ class OfferingsController extends AbstractCatalogController
      */
     public function listAction()
     {
-        if ($this->_getParam('catalog')) {
-            $catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
-            $lookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
+        if ($catalog) {
+            $catalogId = $this->osidRuntimeId->fromString($catalog);
+            $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
             $this->view->title = $lookupSession->getCourseCatalog()->getDisplayName();
         } else {
-            $lookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
+            $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
             $this->view->title = 'All Catalogs';
         }
         $lookupSession->useFederatedCourseCatalogView();
 
         // Add our parameters to the search query
-        if ($this->_getParam('term')) {
-            if ('CURRENT' == $this->_getParam('term')) {
-                $termId = $this->_helper->osidTerms->getNextOrLatestTermId();
+        if ($term) {
+            if ('CURRENT' == $term) {
+                $termId = $this->osidRuntimeTerms->getNextOrLatestTermId();
             } else {
-                $termId = $this->_helper->osidId->fromString($this->_getParam('term'));
+                $termId = $this->osidRuntimeId->fromString($term);
             }
 
-            $termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $termLookupSession->useFederatedCourseCatalogView();
 
             $this->view->term = $termLookupSession->getTerm($termId);
@@ -108,12 +150,13 @@ class OfferingsController extends AbstractCatalogController
      *
      * @since 10/21/09
      */
-    public function searchxmlAction()
+     #[Route('/offerings/searchxml/{catalog}/{term}', name: 'search_offerings')]
+     public function searchxml(string $catalog = NULL, $term = NULL)
     {
         $this->_helper->layout->disableLayout();
         $this->getResponse()->setHeader('Content-Type', 'text/xml');
 
-        $this->searchAction();
+        $this->search($catalog, $term);
         $this->view->sections = $this->searchSession->getCourseOfferingsByQuery($this->query);
 
         // Set the next and previous terms
@@ -147,29 +190,23 @@ class OfferingsController extends AbstractCatalogController
         $this->postDispatch();
     }
 
-    /**
-     * Display a search form and search results.
-     *
-     * @return void
-     *
-     * @since 6/1/09
-     */
-    public function searchAction()
+    #[Route('/offerings/search/{catalog}/{term}', name: 'search_offerings')]
+    public function search(string $catalog = NULL, $term = NULL)
     {
-        if ($this->_getParam('catalog')) {
-            $catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
-            $offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
-            $offeringLookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
-            $topicSearchSession = $this->_helper->osid->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
-            $termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
-            $resourceLookupSession = $this->_helper->osid->getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalogId);
+        if ($catalog) {
+            $catalogId = $catalogId = $this->osidIdMap->fromString($catalog);
+            $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
+            $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
+            $topicSearchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+            $resourceLookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalogId);
             $this->view->title = 'Search in '.$offeringSearchSession->getCourseCatalog()->getDisplayName();
         } else {
-            $offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSession();
-            $offeringLookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
-            $topicSearchSession = $this->_helper->osid->getCourseManager()->getTopicSearchSession();
-            $termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
-            $resourceLookupSession = $this->_helper->osid->getCourseManager()->getResourceManager()->getResourceLookupSession();
+            $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSession();
+            $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
+            $topicSearchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSession();
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
+            $resourceLookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
             $this->view->title = 'Search in All Catalogs';
         }
         $termLookupSession->useFederatedCourseCatalogView();
@@ -180,18 +217,18 @@ class OfferingsController extends AbstractCatalogController
          *********************************************************/
 
         // Term
-        if ('ANY' == $this->_getParam('term')) {
+        if ('ANY' == $term) {
             // Don't set a term
-        } elseif (!$this->_getParam('term') || 'CURRENT' == $this->_getParam('term')) {
+        } elseif (!$term || 'CURRENT' == $term) {
             // When accessing the "current" term via xml, use the term we are in.
             // When displaying the search interface, use the next upcoming term.
             if ('searchxml' == $this->_getParam('action')) {
-                $termId = $this->_helper->osidTerms->getCurrentTermId($offeringSearchSession->getCourseCatalogId());
+                $termId = $this->osidRuntimeTerms->getCurrentTermId($offeringSearchSession->getCourseCatalogId());
             } else {
-                $termId = $this->_helper->osidTerms->getNextOrLatestTermId($offeringSearchSession->getCourseCatalogId());
+                $termId = $this->osidRuntimeTerms->getNextOrLatestTermId($offeringSearchSession->getCourseCatalogId());
             }
         } else {
-            $termId = $this->_helper->osidId->fromString($this->_getParam('term'));
+            $termId = $this->osidRuntimeId->fromString($term);
         }
 
         // Topics
@@ -282,13 +319,13 @@ class OfferingsController extends AbstractCatalogController
         $this->view->terms = $termLookupSession->getTerms();
 
         // Add our parameters to the search query
-        if ($this->_getParam('term')) {
-            $this->view->searchParams['term'] = $this->_getParam('term');
+        if ($term) {
+            $this->view->searchParams['term'] = $term;
 
             if (isset($termId)) {
                 $query->matchTermId($termId, true);
 
-                $termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
+                $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
                 $termLookupSession->useFederatedCourseCatalogView();
                 $this->view->term = $termLookupSession->getTerm($termId);
                 $this->view->selectedTermId = $termId;
@@ -306,7 +343,7 @@ class OfferingsController extends AbstractCatalogController
 
             if (count($departments)) {
                 foreach ($departments as $idString) {
-                    $id = $this->_helper->osidId->fromString($idString);
+                    $id = $this->osidRuntimeId->fromString($idString);
                     $query->matchTopicId($id, true);
                     // set the first as the selected one if multiple.
                     if (!isset($this->view->selectedDepartmentId)) {
@@ -326,7 +363,7 @@ class OfferingsController extends AbstractCatalogController
 
             if (count($subjects)) {
                 foreach ($subjects as $idString) {
-                    $id = $this->_helper->osidId->fromString($idString);
+                    $id = $this->osidRuntimeId->fromString($idString);
                     $query->matchTopicId($id, true);
                     // set the first as the selected one if multiple.
                     if (!isset($this->view->selectedSubjectId)) {
@@ -346,7 +383,7 @@ class OfferingsController extends AbstractCatalogController
 
             if (count($divisions)) {
                 foreach ($divisions as $idString) {
-                    $id = $this->_helper->osidId->fromString($idString);
+                    $id = $this->osidRuntimeId->fromString($idString);
                     $query->matchTopicId($id, true);
                     // set the first as the selected one if multiple.
                     if (!isset($this->view->selectedDivisionId)) {
@@ -367,7 +404,7 @@ class OfferingsController extends AbstractCatalogController
 
             if (count($requirements)) {
                 foreach ($requirements as $idString) {
-                    $id = $this->_helper->osidId->fromString($idString);
+                    $id = $this->osidRuntimeId->fromString($idString);
                     $query->matchTopicId($id, true);
                     $this->view->selectedRequirementIds[] = $id;
                 }
@@ -385,7 +422,7 @@ class OfferingsController extends AbstractCatalogController
 
             if (count($levels)) {
                 foreach ($levels as $idString) {
-                    $id = $this->_helper->osidId->fromString($idString);
+                    $id = $this->osidRuntimeId->fromString($idString);
                     $query->matchTopicId($id, true);
                     $this->view->selectedLevelIds[] = $id;
                 }
@@ -403,7 +440,7 @@ class OfferingsController extends AbstractCatalogController
 
             if (count($blocks)) {
                 foreach ($blocks as $idString) {
-                    $id = $this->_helper->osidId->fromString($idString);
+                    $id = $this->osidRuntimeId->fromString($idString);
                     $query->matchTopicId($id, true);
                     $this->view->selectedBlockIds[] = $id;
                 }
@@ -421,7 +458,7 @@ class OfferingsController extends AbstractCatalogController
 
             if (count($instructionMethods)) {
                 foreach ($instructionMethods as $idString) {
-                    $id = $this->_helper->osidId->fromString($idString);
+                    $id = $this->osidRuntimeId->fromString($idString);
                     $query->matchTopicId($id, true);
                     $this->view->selectedInstructionMethodIds[] = $id;
                 }
@@ -439,7 +476,7 @@ class OfferingsController extends AbstractCatalogController
 
             if (count($genusTypes)) {
                 foreach ($genusTypes as $typeString) {
-                    $genusType = $this->_helper->osidType->fromString($typeString);
+                    $genusType = $this->osidRuntimeType->fromString($typeString);
                     $query->matchGenusType($genusType, true);
                     $this->view->selectedGenusTypes[] = $genusType;
                 }
@@ -458,7 +495,7 @@ class OfferingsController extends AbstractCatalogController
 
             if (count($campuses)) {
                 foreach ($campuses as $idString) {
-                    $id = $this->_helper->osidId->fromString($idString);
+                    $id = $this->osidRuntimeId->fromString($idString);
                     $query->matchLocationId($id, true);
                     $this->view->selectedCampusIds[] = $id;
                 }
@@ -468,7 +505,7 @@ class OfferingsController extends AbstractCatalogController
 
         // Set the default selection to lecture/seminar if the is a new search
         if (!$this->_getParam('search') && !count($this->view->selectedGenusTypes)) {
-            $this->view->selectedGenusTypes = $this->_helper->osidTypes->getDefaultGenusTypes();
+            $this->view->selectedGenusTypes = $this->osidRuntimeTypes->getDefaultGenusTypes();
         }
 
         if ($query->hasRecordType($this->weeklyScheduleType)) {
@@ -583,7 +620,7 @@ class OfferingsController extends AbstractCatalogController
         if ($this->_getParam('instructor')) {
             if ($query->hasRecordType($this->instructorType)) {
                 $queryRecord = $query->getCourseOfferingQueryRecord($this->instructorType);
-                $queryRecord->matchInstructorId($this->_helper->osidId->fromString($this->_getParam('instructor')), true);
+                $queryRecord->matchInstructorId($this->osidRuntimeId->fromString($this->_getParam('instructor')), true);
             }
             $this->view->searchParams['instructor'] = $this->_getParam('instructor');
         }
@@ -639,8 +676,8 @@ class OfferingsController extends AbstractCatalogController
 
     protected function viewBase()
     {
-        $id = $this->_helper->osidId->fromString($this->_getParam('offering'));
-        $lookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
+        $id = $this->osidRuntimeId->fromString($this->_getParam('offering'));
+        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
         $lookupSession->useFederatedCourseCatalogView();
         $this->view->offering = $lookupSession->getCourseOffering($id);
 
@@ -648,7 +685,7 @@ class OfferingsController extends AbstractCatalogController
         $this->loadTopics($this->view->offering->getTopics());
 
         // Set the selected Catalog Id.
-        $catalogSession = $this->_helper->osid->getCourseManager()->getCourseOfferingCatalogSession();
+        $catalogSession = $this->osidRuntime->getCourseManager()->getCourseOfferingCatalogSession();
         $catalogIds = $catalogSession->getCatalogIdsByCourseOffering($id);
         if ($catalogIds->hasNext()) {
             $this->setSelectedCatalogId($catalogIds->getNextId());
@@ -693,8 +730,8 @@ class OfferingsController extends AbstractCatalogController
         $this->viewBase();
 
         $this->view->feedTitle = $this->view->title;
-        $this->view->feedLink = $this->_helper->pathAsAbsoluteUrl('/offerings/view/'.$this->_getParam('catalog').'/offering/'.$this->_getParam('offering'));
-        $this->view->sections = new phpkit_course_ArrayCourseOfferingList([$this->view->offering]);
+        $this->view->feedLink = $this->_helper->pathAsAbsoluteUrl('/offerings/view/'.$catalog.'/offering/'.$this->_getParam('offering'));
+        $this->view->sections = new \phpkit_course_ArrayCourseOfferingList([$this->view->offering]);
         $this->postDispatch();
     }
 }

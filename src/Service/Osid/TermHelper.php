@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Service\Osid;
+
 /**
  * A helper to with functions for handling terms.
  *
@@ -8,8 +10,34 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class Catalog_Action_Helper_OsidTerms extends Catalog_Action_Helper_AbstractOsidIdentifier
+class TermHelper
 {
+
+    /**
+     * @var \App\Service\Osid\Runtime
+     *   The Runtime service.
+     */
+    private $runtime;
+
+    /**
+     * @var \App\Service\Osid\IdMap
+     *   The IdMap service.
+     */
+    private $idMap;
+
+    /**
+     * Create a new instance of this service.
+     *
+     * @param \App\Service\Osid\Runtime
+     *   The Runtime service.
+     * @param \App\Service\Osid\IdMap
+     *   The IdMap service.
+     */
+    public function __construct(Runtime $runtime, IdMap $idMap) {
+        $this->runtime = $runtime;
+        $this->idMap = $idMap;
+    }
+
     /**
      * Answer the "current" termId for the catalog passed. If multiple terms overlap
      * to be 'current', only one will be returned.
@@ -20,20 +48,20 @@ class Catalog_Action_Helper_OsidTerms extends Catalog_Action_Helper_AbstractOsid
      *
      * @since 6/11/09
      */
-    public function getNextOrLatestTermId(osid_id_Id $catalogId)
+    public function getNextOrLatestTermId(\osid_id_Id $catalogId)
     {
-        $catalogIdString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($catalogId);
+        $catalogIdString = $this->idMap->toString($catalogId);
         $cacheKey = 'upcoming_term::'.$catalogIdString;
         $currentTerm = self::cache_get($cacheKey);
         if (!$currentTerm) {
-            $manager = Zend_Controller_Action_HelperBroker::getStaticHelper('Osid')->getCourseManager();
+            $manager = $this->runtime->getCourseManager();
             if (!$manager->supportsTermLookup()) {
-                throw new osid_NotFoundException('Could not determine a current term id. The manager does not support term lookup.');
+                throw new \osid_NotFoundException('Could not determine a current term id. The manager does not support term lookup.');
             }
             $termLookup = $manager->getTermLookupSessionForCatalog($catalogId);
             $currentTerm = $this->findNextOrLatestTermId($termLookup->getTerms());
             if (!$currentTerm) {
-                throw new osid_NotFoundException('Could not determine an upcoming term id for the catalog passed.');
+                throw new \osid_NotFoundException('Could not determine an upcoming term id for the catalog passed.');
             }
 
             self::cache_set($cacheKey, $currentTerm);
@@ -52,20 +80,20 @@ class Catalog_Action_Helper_OsidTerms extends Catalog_Action_Helper_AbstractOsid
      *
      * @since 6/11/09
      */
-    public function getCurrentTermId(osid_id_Id $catalogId)
+    public function getCurrentTermId(\osid_id_Id $catalogId)
     {
-        $catalogIdString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($catalogId);
+        $catalogIdString = $this->idMap->toString($catalogId);
         $cacheKey = 'current_term::'.$catalogIdString;
         $currentTerm = self::cache_get($cacheKey);
         if (!$currentTerm) {
-            $manager = Zend_Controller_Action_HelperBroker::getStaticHelper('Osid')->getCourseManager();
+            $manager = $this->runtime->getCourseManager();
             if (!$manager->supportsTermLookup()) {
-                throw new osid_NotFoundException('Could not determine a current term id. The manager does not support term lookup.');
+                throw new \osid_NotFoundException('Could not determine a current term id. The manager does not support term lookup.');
             }
             $termLookup = $manager->getTermLookupSessionForCatalog($catalogId);
             $currentTerm = $this->findClosestTermId($termLookup->getTerms());
             if (!$currentTerm) {
-                throw new osid_NotFoundException('Could not determine a current term id for the catalog passed.');
+                throw new \osid_NotFoundException('Could not determine a current term id for the catalog passed.');
             }
 
             self::cache_set($cacheKey, $currentTerm);
@@ -132,7 +160,7 @@ class Catalog_Action_Helper_OsidTerms extends Catalog_Action_Helper_AbstractOsid
      *
      * @since 2/07/13
      */
-    public function findNextOrLatestTermId(osid_course_TermList $terms, ?DateTime $date = null)
+    public function findNextOrLatestTermId(\osid_course_TermList $terms, ?DateTime $date = null)
     {
         $upcomingIds = [];
         $upcomingDates = [];
@@ -146,7 +174,7 @@ class Catalog_Action_Helper_OsidTerms extends Catalog_Action_Helper_AbstractOsid
         }
 
         if (!$terms->hasNext()) {
-            throw new osid_NotFoundException('Could not determine a current term id. No terms found.');
+            throw new \osid_NotFoundException('Could not determine a current term id. No terms found.');
         }
 
         while ($terms->hasNext()) {
@@ -188,7 +216,7 @@ class Catalog_Action_Helper_OsidTerms extends Catalog_Action_Helper_AbstractOsid
      *
      * @since 6/11/09
      */
-    public function findClosestTermId(osid_course_TermList $terms, ?DateTime $date = null)
+    public function findClosestTermId(\osid_course_TermList $terms, ?DateTime $date = null)
     {
         $ids = [];
         $diffs = [];
@@ -200,7 +228,7 @@ class Catalog_Action_Helper_OsidTerms extends Catalog_Action_Helper_AbstractOsid
         }
 
         if (!$terms->hasNext()) {
-            throw new osid_NotFoundException('Could not determine a current term id. No terms found.');
+            throw new \osid_NotFoundException('Could not determine a current term id. No terms found.');
         }
 
         while ($terms->hasNext()) {

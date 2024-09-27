@@ -8,8 +8,9 @@
 
 namespace App\Controller;
 
-use App\Service\Osid\Runtime;
 use App\Service\Osid\IdMap;
+use App\Service\Osid\Runtime;
+use App\Service\Osid\TermHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,19 +37,27 @@ class Catalogs extends AbstractController
     private $osidIdMap;
 
     /**
+     * @var \App\Service\Osid\TermHelper
+     */
+    private $osidTermHelper;
+
+    /**
      * Construct a new Catalogs controller.
      *
      * @param \App\Service\Osid\Runtime $osidRuntime
      *   The osid.runtime service.
-     * @param \App\Service\Osid\Identifier $osidIdentifier
-     *   The osid.identifier service.
+     * @param \App\Service\Osid\IdMap $osidIdMap
+     *   The osid.id_map service.
+     * @param \App\Service\Osid\TermHelper $osidTermHelper
+     *   The osid.term_helper service.
      */
-    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap) {
+    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, TermHelper $osidTermHelper) {
         $this->osidRuntime = $osidRuntime;
         $this->osidIdMap = $osidIdMap;
+        $this->osidTermHelper = $osidTermHelper;
     }
 
-    #[Route('/catalogs/', name: 'List all catalogs')]
+    #[Route('/catalogs/', name: 'list_catalogs')]
     public function listAction()
     {
         $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();
@@ -82,32 +91,26 @@ class Catalogs extends AbstractController
         $this->listAction();
     }
 
-    /**
-     * View a catalog details.
-     *
-     * @return void
-     *
-     * @since 4/21/09
-     */
-    public function viewAction()
+    #[Route('/catalogs/view/{catalog}/{term}', name: 'view_catalog')]
+    public function viewAction(string $catalog, $term = NULL)
     {
-        $catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
-        if ($this->_getParam('term')) {
+        $catalogId = $this->osidIdMap->fromString($catalog);
+        if ($term) {
             try {
                 // Verify that the term is valid in this catalog
-                $termLookup = $this->_helper->osid->getCourseManager()->getTermLookupSession();
+                $termLookup = $this->osidRuntime->getCourseManager()->getTermLookupSession();
                 $termLookup->useFederatedCourseCatalogView();
-                $termId = $termLookup->getTerm($this->_helper->osidId->fromString($this->_getParam('term')))->getId();
-            } catch (osid_NotFoundException $e) {
+                $termId = $termLookup->getTerm($this->osidIdMap->fromString($term))->getId();
+            } catch (\osid_NotFoundException $e) {
             }
         }
         if (!isset($termId)) {
-            $termId = $this->_helper->osidTerms->getNextOrLatestTermId($catalogId);
+            $termId = $this->osidTermHelper->getNextOrLatestTermId($catalogId);
         }
 
-        $this->_forward('search', 'Offerings', null, [
-            'catalog' => $this->_helper->osidId->toString($catalogId),
-            'term' => $this->_helper->osidId->toString($termId),
+        return $this->redirectToRoute('search_offerings', [
+            'catalog' => $this->osidIdMap->toString($catalogId),
+            'term' => $this->osidIdMap->toString($termId),
         ]);
     }
 
@@ -121,9 +124,9 @@ class Catalogs extends AbstractController
         $this->_helper->layout->disableLayout();
         $this->getResponse()->setHeader('Content-Type', 'text/xml');
 
-        $catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
+        $catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
 
-        $lookupSession = $this->_helper->osid->getCourseManager()->getCourseCatalogLookupSession();
+        $lookupSession = $this->runtime->getCourseManager()->getCourseCatalogLookupSession();
         $catalog = $lookupSession->getCourseCatalog($catalogId);
         $this->view->catalogs = new phpkit_course_ArrayCourseCatalogList([$catalog]);
 
