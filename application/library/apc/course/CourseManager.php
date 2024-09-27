@@ -35,6 +35,16 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     // The underlying course manager.
     private $manager;
 
+    /**
+     * Allow access to the underlying database for test setup/tear down.
+     *
+     * @return PDO
+     *   The backing database.
+     */
+    public function getDB() {
+        return $this->manager->getDB();
+    }
+
     /*********************************************************
      * From OsidManager
      *********************************************************/
