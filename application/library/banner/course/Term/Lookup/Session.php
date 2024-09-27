@@ -250,7 +250,7 @@ ORDER BY STVTERM_CODE DESC
         $row = self::$getTerm_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
         self::$getTerm_stmts[$catalogWhere]->closeCursor();
 
-        if (!$row['STVTERM_CODE']) {
+        if (!$row || !$row['STVTERM_CODE']) {
             throw new osid_NotFoundException("Could not find a term matching the term code $idString.");
         }
 
