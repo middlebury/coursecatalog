@@ -2,11 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>urn:inet:middlebury.edu:config:banner_course/id_authority</key>
+	<key>urn:inet:middlebury.edu:config:banner_course.id_authority</key>
 	<string>middlebury.edu</string>
-	<key>urn:inet:middlebury.edu:config:banner_course/pdo_count_queries</key>
+	<key>urn:inet:middlebury.edu:config:banner_course.pdo_count_queries</key>
 	<true/>
-	<key>urn:inet:middlebury.edu:config:banner_course/pdo_driver_options</key>
+	<key>urn:inet:middlebury.edu:config:banner_course.pdo_driver_options</key>
 	<dict>
 <!--
 		<key>PDO::ATTR_PERSISTENT</key>
@@ -17,14 +17,14 @@
 		<string>SET NAMES utf8</string>
  -->
 	</dict>
-	<key>urn:inet:middlebury.edu:config:banner_course/pdo_dsn</key>
+	<key>urn:inet:middlebury.edu:config:banner_course.pdo_dsn</key>
 	<string>mysql:dbname=afranco_catalog;host=localhost</string>
-	<key>urn:inet:middlebury.edu:config:banner_course/pdo_password</key>
+	<key>urn:inet:middlebury.edu:config:banner_course.pdo_password</key>
 	<string>testpassword</string>
-	<key>urn:inet:middlebury.edu:config:banner_course/pdo_username</key>
+	<key>urn:inet:middlebury.edu:config:banner_course.pdo_username</key>
 	<string>testuser</string>
 
-	<key>urn:inet:middlebury.edu:config:apc_course/impl_class_name</key>
+	<key>urn:inet:middlebury.edu:config:apc_course.impl_class_name</key>
 	<string>banner_course_CourseManager</string>
 </dict>
 </plist>

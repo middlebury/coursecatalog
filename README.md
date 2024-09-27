@@ -15,10 +15,10 @@ Examples
 
 Examples of the the Course-Catalog in action at <a href="http://www.middlebury.edu">Middlebury College</a>:
 
-* [Main Search UI](https://catalog.middlebury.edu/catalogs/view/catalog/catalog%2FMCUG) (catalog app)
-* [Section Details Page](https://catalog.middlebury.edu/offerings/view/catalog/catalog%2FMCUG/offering/section%2F201090%2F91241) (catalog app)
-* [Department "courses" RSS feed](https://catalog.middlebury.edu/courses/topicxml/catalog/catalog%2FMCUG/topic/topic%2Fdepartment%2FBIOL) (catalog app)
-* [Departments listing to feed to the Drupal content type form](https://catalog.middlebury.edu/topics/listdepartmentstxt/catalog/catalog%2FMCUG/) (catalog app)
+* [Main Search UI](https://catalog.middlebury.edu/catalogs/view/catalog/catalog.MCUG) (catalog app)
+* [Section Details Page](https://catalog.middlebury.edu/offerings/view/catalog/catalog.MCUG/offering/section.201090.91241) (catalog app)
+* [Department "courses" RSS feed](https://catalog.middlebury.edu/courses/topicxml/catalog/catalog.MCUG/topic/topic.department.BIOL) (catalog app)
+* [Departments listing to feed to the Drupal content type form](https://catalog.middlebury.edu/topics/listdepartmentstxt/catalog/catalog.MCUG/) (catalog app)
 * [Department Course Listing](http://www.middlebury.edu/academics/bio/courses) (Drupal "courses" content-type displaying a feed from the catalog app)
 * [Department Section Listing](http://www.middlebury.edu/academics/bio/courses/offerings) (Drupal "courses" content-type displaying a feed from the catalog app)
 * [Faculty Profile](http://www.middlebury.edu/academics/bio/faculty/node/48111) (Drupal "profile" content-type displaying a feed from the catalog app)</li>
