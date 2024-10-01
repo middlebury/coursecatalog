@@ -47,3 +47,5 @@ services:
         class: App\Service\Osid\TypeMap
     osid.term_helper:
         class: App\Service\Osid\TermHelper
+    osid.topic_helper:
+        class: App\Service\Osid\TopicHelper

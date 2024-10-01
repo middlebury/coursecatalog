@@ -1,21 +1,50 @@
 <?php
 /**
- * @since 4/21/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
+
+namespace App\Controller;
+
+use App\Service\Osid\IdMap;
+use App\Service\Osid\Runtime;
+use App\Service\Osid\TermHelper;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * A controller for working with terms.
  *
- * @since 4/21/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class TermsController extends AbstractCatalogController
+class Terms extends AbstractController
 {
+
+    /**
+     * @var \App\Service\Osid\Runtime
+     */
+    private $osidRuntime;
+
+    /**
+     * @var \App\Service\Osid\IdMap
+     */
+    private $osidIdMap;
+
+    /**
+     * Construct a new Catalogs controller.
+     *
+     * @param \App\Service\Osid\Runtime $osidRuntime
+     *   The osid.runtime service.
+     * @param \App\Service\Osid\IdMap $osidIdMap
+     *   The osid.id_map service.
+     */
+    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap) {
+        $this->osidRuntime = $osidRuntime;
+        $this->osidIdMap = $osidIdMap;
+    }
+
     /**
      * Print out a list of all terms.
      *
@@ -26,11 +55,11 @@ class TermsController extends AbstractCatalogController
     public function listAction()
     {
         if ($this->_getParam('catalog')) {
-            $catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
-            $lookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+            $catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
             $this->view->title = 'Terms in '.$lookupSession->getCourseCatalog()->getDisplayName();
         } else {
-            $lookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $this->view->title = 'Terms in All Catalogs';
         }
         $lookupSession->useFederatedCourseCatalogView();
@@ -56,26 +85,20 @@ class TermsController extends AbstractCatalogController
         $this->listAction();
     }
 
-    /**
-     * View a catalog details.
-     *
-     * @return void
-     *
-     * @since 4/21/09
-     */
-    public function viewAction()
+    #[Route('/terms/view/{id}', name: 'view_term')]
+    public function viewAction($id)
     {
-        $id = $this->_helper->osidId->fromString($this->_getParam('term'));
-        $lookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
+        $id = $this->osidIdMap->fromString($this->_getParam('term'));
+        $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
         $lookupSession->useFederatedCourseCatalogView();
         $this->view->term = $lookupSession->getTerm($id);
 
-        $lookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
+        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
         $lookupSession->useFederatedCourseCatalogView();
         $this->view->offerings = $lookupSession->getCourseOfferingsByTerm($id);
 
         // Set the selected Catalog Id.
-        $catalogSession = $this->_helper->osid->getCourseManager()->getTermCatalogSession();
+        $catalogSession = $this->osidRuntime->getCourseManager()->getTermCatalogSession();
         $catalogIds = $catalogSession->getCatalogIdsByTerm($id);
         if ($catalogIds->hasNext()) {
             $this->setSelectedCatalogId($catalogIds->getNextId());
@@ -95,13 +118,13 @@ class TermsController extends AbstractCatalogController
      */
     public function detailsAction()
     {
-        $id = $this->_helper->osidId->fromString($this->_getParam('term'));
-        $lookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
+        $id = $this->osidIdMap->fromString($this->_getParam('term'));
+        $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
         $lookupSession->useFederatedCourseCatalogView();
         $this->view->term = $lookupSession->getTerm($id);
 
         // Set the selected Catalog Id.
-        $catalogSession = $this->_helper->osid->getCourseManager()->getTermCatalogSession();
+        $catalogSession = $this->osidRuntime->getCourseManager()->getTermCatalogSession();
         $catalogIds = $catalogSession->getCatalogIdsByTerm($id);
         if ($catalogIds->hasNext()) {
             $this->setSelectedCatalogId($catalogIds->getNextId());

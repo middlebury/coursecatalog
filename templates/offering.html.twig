@@ -1,0 +1,128 @@
+print $this->render('schedules/bookmark_control.phtml');
+
+<div>{{ offering.displayname }}</div>
+<h2>{{ offering.title|nl2br }}</h2>
+{% if offering.description %}
+    <div>{{ offering.description|raw }}</div>
+{% endif %}
+
+<dl class='section_info'>
+    <dt>Term:</dt>
+    <dd><a href='{{ url('view_term', {id: osidIdToString(term.id)}) }}'>{{ term.displayname }}</a></dd>
+
+{% if location %}
+    <dt>Location:</dt>
+    <dd>
+        <a href='{{ url('view_resource', {resource: osidIdToString(location.id), term: osidIdToString(term.id)}) }}'>{{ location.displayname }}</a>
+        {% if location.description %}
+            <span class='location_description'>{{ location.description }}</span>
+        {% endif %}
+    </dd>
+{% elseif offering.locationinfo %}
+    <dt>Location:</dt>
+    <dd>{{ offering.locationinfo }}</dd>
+{% endif %}
+
+{% if offering.scheduleinfo %}
+    <dt>Schedule:</dt>
+    <dd>{{ offering.scheduleinfo|nl2br|noWrapParentheticals|raw }}</dd>
+{% endif %}
+
+<dt>Type:</dt>
+<dd>{{ offering.genustype.displayname }}</dd>
+
+{% if instructionMethodTopics is not empty %}
+    <dt>Schedule:</dt>
+    <dd>
+    {% for topic in instructionMethodTopics %}
+        <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+    {% endfor %}
+    </dd>
+{% endif %}
+
+{% if instructors is not null %}
+    <dt>Instructors:</dt>
+    <dd>
+    {% for instructor in instructors %}
+        <a href='{{ url('view_resource', {resource: osidIdToString(instructor.id), term: osidIdToString(term.id)}) }}'>{{ instructor.displayname }}</a>{{ not loop.last ? ',' }}
+    {% endfor %}
+    </dd>
+{% endif %}
+
+<dt>Subject:</dt>
+<dd>
+{% for topic in subjectTopics %}
+    <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+{% endfor %}
+</dd>
+
+<dt>Department:</dt>
+<dd>
+{% for topic in departmentTopics %}
+    <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+{% endfor %}
+</dd>
+
+<dt>Division:</dt>
+<dd>
+{% for topic in divisionTopics %}
+    <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+{% endfor %}
+</dd>
+
+<dt>Requirements Fulfilled:</dt>
+<dd>
+{% for topic in requirementTopics %}
+    <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+{% endfor %}
+</dd>
+
+{% if blockTopics is not empty %}
+    <dt>Additional Details:</dt>
+    <dd>
+    {% for topic in blockTopics %}
+        <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+    {% endfor %}
+    </dd>
+{% endif %}
+
+{% if levelTopics is not empty %}
+    <dt>Levels:</dt>
+    <dd>
+    {% for topic in levelTopics %}
+        <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+    {% endfor %}
+    </dd>
+{% endif %}
+
+{% if alternates is not empty %}
+    <dt>Cross-Listed As:</dt>
+    <dd>
+    {% for alternate in alternates %}
+        <a href='{{ url('view_offering', {id: osidIdToString(alternate.id), term: osidIdToString(term.id)}) }}'>{{ alternate.displayname }}</a>
+        {{ alternate.is_primary ? ' * ' }}
+        <br/>
+    {% endfor %}
+    </dd>
+{% endif %}
+
+{% if availabilityLink is not empty %}
+    <dt>Availability:</dt>
+    <dd>{{ availabilityLink|raw }}</dd>
+{% endif %}
+
+</dl>
+
+<dl class='section_properties'>
+{% for property in properties %}
+    <dt>{{ property.displayname }}{{ property.displayname != property.displaylabel ? " (#{property.displaylabel})" }}:</dt>
+    <dd>{{ property.value }}</dd>
+{% endfor %}
+</dl>
+
+<div class='clear'></div>
+
+<h2>Course</h2>
+<div>
+    <a href='{{ url('view_course', {course: osidIdToString(offering.course.id), term: osidIdToString(term.id) }) }}'>{{ offering.course.displayname }}</a>
+</div>

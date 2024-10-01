@@ -1,8 +1,6 @@
 <?php
 /**
- * @since 4/21/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
@@ -11,6 +9,7 @@ namespace App\Controller;
 use App\Service\Osid\IdMap;
 use App\Service\Osid\Runtime;
 use App\Service\Osid\TermHelper;
+use App\Service\Osid\TopicHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,9 +18,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * A controller for working with courses.
  *
- * @since 4/21/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 class Offerings extends AbstractController
@@ -43,6 +40,11 @@ class Offerings extends AbstractController
     private $osidTermHelper;
 
     /**
+     * @var \App\Service\Osid\TopicHelper
+     */
+    private $osidTopicHelper;
+
+    /**
      * Construct a new Catalogs controller.
      *
      * @param \App\Service\Osid\Runtime $osidRuntime
@@ -51,11 +53,14 @@ class Offerings extends AbstractController
      *   The osid.id_map service.
      * @param \App\Service\Osid\TermHelper $osidTermHelper
      *   The osid.term_helper service.
+     * @param \App\Service\Osid\TopicHelper $osidTopicHelper
+     *   The osid.topic_helper service.
      */
-    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, TermHelper $osidTermHelper) {
+    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, TermHelper $osidTermHelper, TopicHelper $osidTopicHelper) {
         $this->osidRuntime = $osidRuntime;
         $this->osidIdMap = $osidIdMap;
         $this->osidTermHelper = $osidTermHelper;
+        $this->osidTopicHelper = $osidTopicHelper;
     }
 
     /**
@@ -235,8 +240,8 @@ class Offerings extends AbstractController
         $topicQuery = $topicSearchSession->getTopicQuery();
         $topicQuery->matchGenusType($this->departmentType, true);
         // if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
-        // 	$record = $topicQuery->getTopicQueryRecord($this->termType);
-        // 	$record->matchTermId($termId, true);
+        //     $record = $topicQuery->getTopicQueryRecord($this->termType);
+        //     $record->matchTermId($termId, true);
         // }
         $search = $topicSearchSession->getTopicSearch();
         $order = $topicSearchSession->getTopicSearchOrder();
@@ -248,8 +253,8 @@ class Offerings extends AbstractController
         $topicQuery = $topicSearchSession->getTopicQuery();
         $topicQuery->matchGenusType($this->subjectType, true);
         // if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
-        // 	$record = $topicQuery->getTopicQueryRecord($this->termType);
-        // 	$record->matchTermId($termId, true);
+        //     $record = $topicQuery->getTopicQueryRecord($this->termType);
+        //     $record->matchTermId($termId, true);
         // }
         $search = $topicSearchSession->getTopicSearch();
         $order = $topicSearchSession->getTopicSearchOrder();
@@ -654,64 +659,103 @@ class Offerings extends AbstractController
         $this->view->menuIsSearch = true;
     }
 
-    /**
-     * View a catalog details.
-     *
-     * @return void
-     *
-     * @since 4/21/09
-     */
-    public function viewAction()
+    #[Route('/offerings/view/{id}', name: 'view_offering')]
+    public function viewAction($id)
     {
-        $this->viewBase();
+        $data = $this->viewBase($id);
 
         // Bookmarked Courses and Schedules
-        $this->view->bookmarks_CourseId = $this->view->offering->getCourseId();
+        $data['bookmarks_CourseId'] = $data['offering']->getCourseId();
 
-        $this->view->menuIsOfferings = true;
+        $data['menuIsOfferings'] = true;
 
-        $this->render();
-        $this->render('offerings', null, true);
+        return $this->render('offering.html.twig', $data);
     }
 
-    protected function viewBase()
+    protected function viewBase($idString)
     {
-        $id = $this->osidRuntimeId->fromString($this->_getParam('offering'));
+        $data = [];
+        $id = $this->osidIdMap->fromString($idString);
         $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
         $lookupSession->useFederatedCourseCatalogView();
-        $this->view->offering = $lookupSession->getCourseOffering($id);
+        $offering = $data['offering'] = $lookupSession->getCourseOffering($id);
 
         // Load the topics into our view
-        $this->loadTopics($this->view->offering->getTopics());
+        $data = array_merge(
+            $data,
+            $this->osidTopicHelper->asTypedArray($offering->getTopics())
+        );
 
         // Set the selected Catalog Id.
         $catalogSession = $this->osidRuntime->getCourseManager()->getCourseOfferingCatalogSession();
         $catalogIds = $catalogSession->getCatalogIdsByCourseOffering($id);
         if ($catalogIds->hasNext()) {
-            $this->setSelectedCatalogId($catalogIds->getNextId());
+            $catalogId = $catalogIds->getNextId();
+            $data['menuCatalogSelectedId'] = $catalogId;
+            $data['menuCatalogSelected'] = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession()->getCourseCatalog($catalogId);
         }
 
-        // Set the title
-        $this->view->title = $this->view->offering->getDisplayName();
-        $this->view->headTitle($this->view->title);
+        $data['title'] = $offering->getDisplayName();
 
-        // Term
-        $this->view->term = $this->view->offering->getTerm();
+        $data['term'] = $offering->getTerm();
 
-        // Other offerings
-        $this->view->offeringsTitle = 'All Sections';
-        $this->view->offerings = $lookupSession->getCourseOfferingsByTermForCourse(
-            $this->view->offering->getTermId(),
-            $this->view->offering->getCourseId()
-        );
+        $data['location'] = NULL;
+        if ($offering->hasLocation()) {
+            $data['location'] = $offering->getLocation();
+        }
 
-        // Alternates
-        if ($this->view->offering->hasRecordType($this->alternateType)) {
-            $record = $this->view->offering->getCourseOfferingRecord($this->alternateType);
-            if ($record->hasAlternates()) {
-                $this->view->alternates = $record->getAlternates();
+        // Instructors
+        $data['instructors'] = NULL;
+        $instructorsType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
+        if ($offering->hasRecordType($instructorsType)) {
+            $instructorsRecord = $offering->getCourseOfferingRecord($instructorsType);
+            $instructors = $instructorsRecord->getInstructors();
+            $data['instructors'] = [];
+            while ($instructors->hasNext()) {
+                $data['instructors'][] = $instructors->getNextResource();
             }
         }
+
+        // Alternates.
+        $data['alternates'] = NULL;
+        if ($offering->hasRecordType($this->getAlternateType())) {
+            $record = $offering->getCourseOfferingRecord($this->getAlternateType());
+            if ($record->hasAlternates()) {
+                $data['alternates'] = [];
+                $alternates = $record->getAlternates();
+                while ($alternates->hasNext()) {
+                    $alternate = $alternates->getNextCourseOffering();
+                    $alternate->is_primary = FALSE;
+                    if ($alternate->hasRecordType($this->getAlternateType())) {
+                        $alternateRecord = $alternate->getCourseOfferingRecord($this->getAlternateType());
+                        if ($alternateRecord->isPrimary()) {
+                            $alternate->is_primary = TRUE;
+                        }
+                    }
+                    $data['alternates'][] = $alternate;
+                }
+
+            }
+        }
+
+        // Availability link. @todo
+        $data['availabilityLink'] = NULL;
+        //$this->getAvailabilityLink($this->offering);
+
+        $data['properties'] = [];
+        $properties = $offering->getProperties();
+        while ($properties->hasNext()) {
+            $data['properties'][] = $properties->getNextProperty();
+        }
+
+        // Other offerings
+        $data['offeringsTitle'] = 'All Sections';
+        $data['offerings'] = $lookupSession->getCourseOfferingsByTermForCourse(
+            $offering->getTermId(),
+            $offering->getCourseId()
+        );
+
+        return $data;
     }
 
     /**
@@ -733,5 +777,9 @@ class Offerings extends AbstractController
         $this->view->feedLink = $this->_helper->pathAsAbsoluteUrl('/offerings/view/'.$catalog.'/offering/'.$this->_getParam('offering'));
         $this->view->sections = new \phpkit_course_ArrayCourseOfferingList([$this->view->offering]);
         $this->postDispatch();
+    }
+
+    protected function getAlternateType() {
+        return new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
     }
 }

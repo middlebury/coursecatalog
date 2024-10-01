@@ -1,21 +1,50 @@
 <?php
 /**
- * @since 4/21/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
+ namespace App\Controller;
+
+ use App\Service\Osid\IdMap;
+ use App\Service\Osid\Runtime;
+ use App\Service\Osid\TermHelper;
+ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+ use Symfony\Component\HttpFoundation\Response;
+ use Symfony\Component\Routing\Annotation\Route;
+
 /**
- * A controller for working with terms.
+ * A controller for working with topics.
  *
- * @since 4/21/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class TopicsController extends AbstractCatalogController
+class Topics extends AbstractController
 {
+
+    /**
+     * @var \App\Service\Osid\Runtime
+     */
+    private $osidRuntime;
+
+    /**
+     * @var \App\Service\Osid\IdMap
+     */
+    private $osidIdMap;
+
+    /**
+     * Construct a new Catalogs controller.
+     *
+     * @param \App\Service\Osid\Runtime $osidRuntime
+     *   The osid.runtime service.
+     * @param \App\Service\Osid\IdMap $osidIdMap
+     *   The osid.id_map service.
+     */
+    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap) {
+        $this->osidRuntime = $osidRuntime;
+        $this->osidIdMap = $osidIdMap;
+    }
+
     /**
      * Print out a list of all topics.
      *
@@ -26,17 +55,17 @@ class TopicsController extends AbstractCatalogController
     public function listAction()
     {
         if ($this->_getParam('catalog')) {
-            $catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
-            $lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+            $catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
             $this->view->title = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
         } else {
-            $lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSession();
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
             $this->view->title = 'Topics in All Catalogs';
         }
         $lookupSession->useFederatedCourseCatalogView();
 
         if ($this->_getParam('type')) {
-            $genusType = $this->_helper->osidType->fromString($this->_getParam('type'));
+            $genusType = $this->osidRuntimeType->fromString($this->_getParam('type'));
             $topics = $lookupSession->getTopicsByGenusType($genusType);
             $this->view->title .= ' of type '.$this->_getParam('type');
         } else {
@@ -72,13 +101,13 @@ class TopicsController extends AbstractCatalogController
     public function recentAction()
     {
         if ($this->_getParam('catalog')) {
-            $catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
-            $searchSession = $this->_helper->osid->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
-            $termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+            $catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
+            $searchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
             $this->view->title = 'Topics in '.$searchSession->getCourseCatalog()->getDisplayName();
         } else {
-            $searchSession = $this->_helper->osid->getCourseManager()->getTopicSearchSession();
-            $termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
+            $searchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSession();
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
 
             $this->view->title = 'Topics in All Catalogs';
         }
@@ -99,7 +128,7 @@ class TopicsController extends AbstractCatalogController
         }
 
         if ($this->_getParam('type')) {
-            $genusType = $this->_helper->osidType->fromString($this->_getParam('type'));
+            $genusType = $this->osidRuntimeType->fromString($this->_getParam('type'));
             $query->matchGenusType($genusType, true);
             $this->view->title .= ' of type '.$this->_getParam('type');
         }
@@ -144,27 +173,21 @@ class TopicsController extends AbstractCatalogController
         $this->_helper->viewRenderer->setRender('topics/listxml', null, true);
     }
 
-    /**
-     * View a catalog details.
-     *
-     * @return void
-     *
-     * @since 4/21/09
-     */
-    public function viewAction()
+    #[Route('/topics/view/{topic}/{term}', name: 'view_topic')]
+    public function view($topic, $term = NULL)
     {
-        $id = $this->_helper->osidId->fromString($this->_getParam('topic'));
-        $lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSession();
+        $id = $this->osidIdMap->fromString($topic);
+        $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
         $lookupSession->useFederatedCourseCatalogView();
         $this->view->topic = $lookupSession->getTopic($id);
 
-        $lookupSession = $this->_helper->osid->getCourseManager()->getCourseOfferingLookupSession();
+        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
         $lookupSession->useFederatedCourseCatalogView();
         if ($this->_getParam('term')) {
-            $termId = $this->_helper->osidId->fromString($this->_getParam('term'));
+            $termId = $this->osidIdMap->fromString($term);
             $this->view->offerings = $lookupSession->getCourseOfferingsByTermByTopic($termId, $id);
 
-            $termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $termLookupSession->useFederatedCourseCatalogView();
             $this->view->term = $termLookupSession->getTerm($termId);
         } else {
@@ -179,7 +202,7 @@ class TopicsController extends AbstractCatalogController
 
         // Set the selected Catalog Id.
         if ($this->_getParam('catalog')) {
-            $this->setSelectedCatalogId($this->_helper->osidId->fromString($this->_getParam('catalog')));
+            $this->setSelectedCatalogId($this->osidIdMap->fromString($this->_getParam('catalog')));
         }
 
         // Set the title
@@ -191,7 +214,7 @@ class TopicsController extends AbstractCatalogController
         $allParams = [];
         $allParams['topic'] = $this->_getParam('topic');
         if ($this->getSelectedCatalogId()) {
-            $allParams['catalog'] = $this->_helper->osidId->toString($this->getSelectedCatalogId());
+            $allParams['catalog'] = $this->osidIdMap->toString($this->getSelectedCatalogId());
         }
         $this->view->offeringsForAllTermsUrl = $this->_helper->url('view', 'topics', null, $allParams);
 
@@ -209,16 +232,16 @@ class TopicsController extends AbstractCatalogController
         $this->getResponse()->setHeader('Content-Type', 'text/xml');
 
         if ($this->_getParam('catalog')) {
-            $catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
-            $lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+            $catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
             $this->view->title = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
         } else {
-            $lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSession();
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
             $this->view->title = 'Topics in All Catalogs';
         }
         $lookupSession->useFederatedCourseCatalogView();
 
-        $topicId = $this->_helper->osidId->fromString($this->_getParam('topic'));
+        $topicId = $this->osidIdMap->fromString($this->_getParam('topic'));
 
         $topic = $lookupSession->getTopic($topicId);
         $topics = new phpkit_course_ArrayTopicList([$topic]);
@@ -316,11 +339,11 @@ class TopicsController extends AbstractCatalogController
         header('Content-Type: text/plain');
 
         if ($this->_getParam('catalog')) {
-            $catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
-            $lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+            $catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
             $this->view->title = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
         } else {
-            $lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSession();
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
             $this->view->title = 'Topics in All Catalogs';
         }
         $lookupSession->useFederatedCourseCatalogView();
@@ -329,7 +352,7 @@ class TopicsController extends AbstractCatalogController
 
         while ($topics->hasNext()) {
             $topic = $topics->getNextTopic();
-            echo $this->_helper->osidId->toString($topic->getId()).'|'.$this->_helper->osidId->toString($topic->getId()).' - '.$topic->getDisplayName()."\n";
+            echo $this->osidIdMap->toString($topic->getId()).'|'.$this->osidIdMap->toString($topic->getId()).' - '.$topic->getDisplayName()."\n";
         }
 
         exit;

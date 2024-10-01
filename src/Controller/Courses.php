@@ -1,21 +1,67 @@
 <?php
 /**
- * @since 4/21/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
+
+namespace App\Controller;
+
+use App\Service\Osid\IdMap;
+use App\Service\Osid\Runtime;
+use App\Service\Osid\TermHelper;
+use App\Service\Osid\TopicHelper;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * A controller for working with courses.
  *
- * @since 4/21/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class CoursesController extends AbstractCatalogController
+class Courses extends AbstractController
 {
+
+    /**
+     * @var \App\Service\Osid\Runtime
+     */
+    private $osidRuntime;
+
+    /**
+     * @var \App\Service\Osid\IdMap
+     */
+    private $osidIdMap;
+
+    /**
+     * @var \App\Service\Osid\TermHelper
+     */
+    private $osidTermHelper;
+
+    /**
+     * @var \App\Service\Osid\TopicHelper
+     */
+    private $osidTopicHelper;
+
+    /**
+     * Construct a new Catalogs controller.
+     *
+     * @param \App\Service\Osid\Runtime $osidRuntime
+     *   The osid.runtime service.
+     * @param \App\Service\Osid\IdMap $osidIdMap
+     *   The osid.id_map service.
+     * @param \App\Service\Osid\TermHelper $osidTermHelper
+     *   The osid.term_helper service.
+     * @param \App\Service\Osid\TopicHelper $osidTopicHelper
+     *   The osid.topic_helper service.
+     */
+    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, TermHelper $osidTermHelper, TopicHelper $osidTopicHelper) {
+        $this->osidRuntime = $osidRuntime;
+        $this->osidIdMap = $osidIdMap;
+        $this->osidTermHelper = $osidTermHelper;
+        $this->osidTopicHelper = $osidTopicHelper;
+    }
+
     /**
      * Initialize object.
      *
@@ -57,16 +103,10 @@ class CoursesController extends AbstractCatalogController
         $this->view->menuIsCourses = true;
     }
 
-    /**
-     * View a catalog details.
-     *
-     * @return void
-     *
-     * @since 4/21/09
-     */
-    public function viewAction()
+    #[Route('/courses/view/{course}/{term}', name: 'view_course')]
+    public function view($course, $term = NULL)
     {
-        $id = $this->_helper->osidId->fromString($this->_getParam('course'));
+        $id = $this->_helper->osidId->fromString($course);
         $lookupSession = $this->_helper->osid->getCourseManager()->getCourseLookupSession();
         $lookupSession->useFederatedCourseCatalogView();
         $this->view->course = $lookupSession->getCourse($id);
@@ -96,8 +136,8 @@ class CoursesController extends AbstractCatalogController
         }
 
         // Term
-        if ($this->_getParam('term')) {
-            $termId = $this->_helper->osidId->fromString($this->_getParam('term'));
+        if ($term) {
+            $termId = $this->_helper->osidId->fromString($term);
             $termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
             $termLookupSession->useFederatedCourseCatalogView();
             $this->view->term = $termLookupSession->getTerm($termId);

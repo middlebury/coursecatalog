@@ -1,21 +1,50 @@
 <?php
 /**
- * @since 4/21/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
+
+namespace App\Controller;
+
+use App\Service\Osid\IdMap;
+use App\Service\Osid\Runtime;
+use App\Service\Osid\TermHelper;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * A controller for working with resources.
  *
- * @since 4/21/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class ResourcesController extends AbstractCatalogController
+class Resources extends AbstractController
 {
+
+    /**
+     * @var \App\Service\Osid\Runtime
+     */
+    private $osidRuntime;
+
+    /**
+     * @var \App\Service\Osid\IdMap
+     */
+    private $osidIdMap;
+
+    /**
+     * Construct a new Catalogs controller.
+     *
+     * @param \App\Service\Osid\Runtime $osidRuntime
+     *   The osid.runtime service.
+     * @param \App\Service\Osid\IdMap $osidIdMap
+     *   The osid.id_map service.
+     */
+    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap) {
+        $this->osidRuntime = $osidRuntime;
+        $this->osidIdMap = $osidIdMap;
+    }
+
     /**
      * Initialize object.
      *
@@ -38,11 +67,11 @@ class ResourcesController extends AbstractCatalogController
     // 	 */
     // 	public function listAction () {
     // 		if ($this->_getParam('catalog')) {
-    // 			$catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
-    // 			$lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+    // 			$catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
+    // 			$lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
     // 			$this->view->title = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
     // 		} else {
-    // 			$lookupSession = $this->_helper->osid->getCourseManager()->getTopicLookupSession();
+    // 			$lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
     // 			$this->view->title = 'Topics in All Catalogs';
     // 		}
     // 		$lookupSession->useFederatedCourseCatalogView();
@@ -53,30 +82,24 @@ class ResourcesController extends AbstractCatalogController
     // 		$this->view->headTitle($this->view->title);
     // 	}
 
-    /**
-     * View a catalog details.
-     *
-     * @return void
-     *
-     * @since 4/21/09
-     */
-    public function viewAction()
+    #[Route('/resources/view/{resource}/{term}', name: 'view_resource')]
+    public function viewAction($resource, $term = NULL)
     {
-        $id = $this->_helper->osidId->fromString($this->_getParam('resource'));
-        $lookupSession = $this->_helper->osid->getCourseManager()->getResourceManager()->getResourceLookupSession();
+        $id = $this->osidIdMap->fromString($resource);
+        $lookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
         $lookupSession->useFederatedBinView();
         $this->view->resource = $lookupSession->getResource($id);
 
-        $offeringSearchSession = $this->_helper->osid->getCourseManager()->getCourseOfferingSearchSession();
+        $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSession();
         $offeringSearchSession->useFederatedCourseCatalogView();
         $query = $offeringSearchSession->getCourseOfferingQuery();
 
-        if ($this->_getParam('term')) {
-            $termId = $this->_helper->osidId->fromString($this->_getParam('term'));
+        if ($term) {
+            $termId = $this->osidIdMap->fromString($term);
 
             $query->matchTermId($termId, true);
 
-            $termLookupSession = $this->_helper->osid->getCourseManager()->getTermLookupSession();
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $termLookupSession->useFederatedCourseCatalogView();
             $this->view->term = $termLookupSession->getTerm($termId);
         }
@@ -99,7 +122,7 @@ class ResourcesController extends AbstractCatalogController
             $allParams = [];
             $allParams['resource'] = $this->_getParam('resource');
             if ($this->getSelectedCatalogId()) {
-                $allParams['catalog'] = $this->_helper->osidId->toString($this->getSelectedCatalogId());
+                $allParams['catalog'] = $this->osidIdMap->toString($this->getSelectedCatalogId());
             }
             $this->view->offeringsForAllTermsUrl = $this->_helper->url('view', 'resources', null, $allParams);
 
@@ -110,7 +133,7 @@ class ResourcesController extends AbstractCatalogController
 
         // Set the selected Catalog Id.
         if ($this->_getParam('catalog')) {
-            $this->setSelectedCatalogId($this->_helper->osidId->fromString($this->_getParam('catalog')));
+            $this->setSelectedCatalogId($this->osidIdMap->fromString($this->_getParam('catalog')));
         }
 
         // Set the title
@@ -142,11 +165,11 @@ class ResourcesController extends AbstractCatalogController
         header('Content-Type: text/plain');
 
         if ($this->_getParam('catalog')) {
-            $catalogId = $this->_helper->osidId->fromString($this->_getParam('catalog'));
-            $lookupSession = $this->_helper->osid->getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalogId);
+            $catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
+            $lookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalogId);
             $this->view->title = 'Resources in '.$lookupSession->getBin()->getDisplayName();
         } else {
-            $lookupSession = $this->_helper->osid->getCourseManager()->getResourceManager()->getResourceLookupSession();
+            $lookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
             $this->view->title = 'Resources in All Bins';
         }
         $lookupSession->useFederatedBinView();
@@ -155,7 +178,7 @@ class ResourcesController extends AbstractCatalogController
 
         while ($resources->hasNext()) {
             $resource = $resources->getNextResource();
-            echo $this->_helper->osidId->toString($resource->getId()).'|'.$this->_helper->osidId->toString($resource->getId()).' - '.$resource->getDisplayName()."\n";
+            echo $this->osidIdMap->toString($resource->getId()).'|'.$this->osidIdMap->toString($resource->getId()).' - '.$resource->getDisplayName()."\n";
         }
         // 		var_dump($lookupSession);
         // 		var_dump($resources);
