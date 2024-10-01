@@ -38,6 +38,14 @@ services:
         arguments:
             $idAuthorityToShorten: '%app.osid.id.authority_to_shorten%'
 
+    App\Twig\OsidIdExtension:
+        tags:
+            - { name: 'twig.extension' }
+
+    App\Twig\NoWrapParentheticals:
+        tags:
+            - { name: 'twig.extension' }
+
     # Service aliases.
     osid.runtime:
         class: App\Service\Osid\Runtime
