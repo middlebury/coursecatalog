@@ -35,7 +35,11 @@
             "osid_": "library/osid-phpkit/",
             "phpkit_": "library/osid-phpkit/",
             "": "application/library/"
-        }
+        },
+        "classmap": [
+            "library/fsmparser/",
+            "application/library/harmoni/Primitives/"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

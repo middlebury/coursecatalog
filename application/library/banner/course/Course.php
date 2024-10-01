@@ -6,9 +6,6 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
-include_once 'fsmparserclass.inc.php';
-include_once 'harmoni/Primitives/Collections-Text/HtmlString.class.php';
-
 /**
  *  <p>A <code> Course </code> represents a canonical learning unit. A <code>
  *  Course </code> is instantiated at a time and place through the creation of
