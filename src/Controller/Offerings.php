@@ -669,7 +669,7 @@ class Offerings extends AbstractController
 
         $data['menuIsOfferings'] = true;
 
-        return $this->render('offering.html.twig', $data);
+        return $this->render('offerings/view.html.twig', $data);
     }
 
     protected function viewBase($idString)

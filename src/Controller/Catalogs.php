@@ -72,7 +72,7 @@ class Catalogs extends AbstractController
                 "description" => $catalog->getDescription(),
             ];
         }
-        return $this->render('catalogs.html.twig', [
+        return $this->render('catalogs/list.html.twig', [
             'title' => 'Available Catalogs',
             'catalogs' => $catalogData,
         ]);
