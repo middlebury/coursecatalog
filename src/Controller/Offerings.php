@@ -681,6 +681,26 @@ class Offerings extends AbstractController
         return $this->render('offerings/view.html.twig', $data);
     }
 
+    #[Route('/offerings/viewxml/{id}', name: 'view_offering_xml')]
+    public function viewxmlAction($id)
+    {
+        $data = [];
+        $data['offerings'] = [$this->getOfferingDataByIdString($id)];
+        $offering = $data['offerings'][0]['offering'];
+
+        $data['title'] = $offering->getDisplayName();
+        $data['feedLink'] = $this->generateUrl('view_offering', ['id' => $id], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $data['previousTerm'] = NULL;
+        $data['term'] = $offering->getTerm();
+        $data['nextTerm'] = NULL;
+        $data['terms'] = NULL;
+
+        $response = new Response($this->renderView('offerings/search.xml.twig', $data));
+        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+        return $response;
+    }
+
     protected function getOfferingDataByIdString($idString)
     {
         $id = $this->osidIdMap->fromString($idString);
@@ -768,26 +788,6 @@ class Offerings extends AbstractController
         );
 
         return $data;
-    }
-
-    #[Route('/offerings/viewxml/{id}', name: 'view_offering_xml')]
-    public function viewxmlAction($id)
-    {
-        $data = [];
-        $data['offerings'] = [$this->getOfferingDataByIdString($id)];
-        $offering = $data['offerings'][0]['offering'];
-
-        $data['title'] = $offering->getDisplayName();
-        $data['feedLink'] = $this->generateUrl('view_offering', ['id' => $id], UrlGeneratorInterface::ABSOLUTE_URL);
-
-        $data['previousTerm'] = NULL;
-        $data['term'] = $offering->getTerm();
-        $data['nextTerm'] = NULL;
-        $data['terms'] = NULL;
-
-        $response = new Response($this->renderView('offerings/search.xml.twig', $data));
-        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
-        return $response;
     }
 
     protected function getAlternateType() {
