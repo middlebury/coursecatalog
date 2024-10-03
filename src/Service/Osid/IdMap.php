@@ -50,4 +50,44 @@ class IdMap extends AbstractOsidIdentifierMap
             return \phpkit_id_URNInetId::getInetURNString($id);
         }
     }
+
+    /**
+     * Get and OSID Type object from a string.
+     *
+     * @param string $typeString
+     *
+     * @return osid_type_Type
+     *
+     * @since 4/21/09
+     */
+    public function typeFromString($typeString)
+    {
+        try {
+            return new \phpkit_type_URNInetType($typeString);
+        } catch (\osid_InvalidArgumentException $e) {
+            if ($this->getIdAuthorityToShorten()) {
+                return new \phpkit_type_Type($this->getIdAuthorityToShorten(), 'urn', $typeString);
+            } else {
+                throw $e;
+            }
+        }
+    }
+
+    /**
+     * Answer a string representation of an OSID type object.
+     *
+     * @return string
+     *
+     * @since 4/21/09
+     */
+    public function typeToString(\osid_type_Type $type)
+    {
+        if ($this->getIdAuthorityToShorten()
+                && 'urn' == strtolower($type->getIdentifierNamespace())
+                && strtolower($type->getAuthority()) == $this->getIdAuthorityToShorten()) {
+            return $type->getIdentifier();
+        } else {
+            return \phpkit_type_URNInetType::getInetURNString($type);
+        }
+    }
 }

@@ -30,11 +30,17 @@ class OsidIdExtension extends AbstractExtension
     {
         return [
             new TwigFunction('osidIdToString', [$this, 'osidIdToString']),
+            new TwigFunction('osidTypeToString', [$this, 'osidTypeToString']),
         ];
     }
 
     public function osidIdToString(\osid_id_Id $id): string
     {
         return $this->idMap->toString($id);
+    }
+
+    public function osidTypeToString(\osid_type_Type $type): string
+    {
+        return $this->idMap->typeToString($type);
     }
 }

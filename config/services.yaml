@@ -46,6 +46,10 @@ services:
         tags:
             - { name: 'twig.extension' }
 
+    App\Twig\DateRangeFormatter:
+        tags:
+            - { name: 'twig.extension' }
+
     # Service aliases.
     osid.runtime:
         class: App\Service\Osid\Runtime

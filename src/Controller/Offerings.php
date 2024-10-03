@@ -13,7 +13,7 @@ use App\Service\Osid\TopicHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * A controller for working with courses.
@@ -697,11 +697,20 @@ class Offerings extends AbstractController
 
         $data['title'] = $offering->getDisplayName();
 
+        $data['previousTerm'] = NULL;
         $data['term'] = $offering->getTerm();
+        $data['nextTerm'] = NULL;
+        $data['terms'] = NULL;
 
         $data['location'] = NULL;
         if ($offering->hasLocation()) {
             $data['location'] = $offering->getLocation();
+        }
+
+        $data['weekly_schedule'] = NULL;
+        $weeklyScheduleType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
+        if ($offering->hasRecordType($weeklyScheduleType)) {
+            $data['weekly_schedule'] = $offering->getCourseOfferingRecord($weeklyScheduleType);
         }
 
         // Instructors
@@ -717,9 +726,11 @@ class Offerings extends AbstractController
         }
 
         // Alternates.
+        $data['is_primary'] = TRUE;
         $data['alternates'] = NULL;
         if ($offering->hasRecordType($this->getAlternateType())) {
             $record = $offering->getCourseOfferingRecord($this->getAlternateType());
+            $data['is_primary'] = $record->isPrimary();
             if ($record->hasAlternates()) {
                 $data['alternates'] = [];
                 $alternates = $record->getAlternates();
@@ -758,25 +769,19 @@ class Offerings extends AbstractController
         return $data;
     }
 
-    /**
-     * Answer search results as an xml feed.
-     *
-     * @return void
-     *
-     * @since 10/21/09
-     */
-    public function viewxmlAction()
+    #[Route('/offerings/viewxml/{id}', name: 'view_offering_xml')]
+    public function viewxmlAction($id)
     {
-        $this->_helper->layout->disableLayout();
-        $this->_helper->viewRenderer->setRender('searchxml');
-        $this->getResponse()->setHeader('Content-Type', 'text/xml');
+        $data = $this->viewBase($id);
 
-        $this->viewBase();
+        $data['feedLink'] = $this->generateUrl('view_offering', ['id' => $id], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $this->view->feedTitle = $this->view->title;
-        $this->view->feedLink = $this->_helper->pathAsAbsoluteUrl('/offerings/view/'.$catalog.'/offering/'.$this->_getParam('offering'));
-        $this->view->sections = new \phpkit_course_ArrayCourseOfferingList([$this->view->offering]);
-        $this->postDispatch();
+
+        $data['sections'] = [$data['offering']];
+
+        $response = new Response($this->renderView('offerings/search.xml.twig', $data));
+        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+        return $response;
     }
 
     protected function getAlternateType() {
