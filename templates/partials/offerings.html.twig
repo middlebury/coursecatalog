@@ -19,8 +19,8 @@
     {% endif %}
     <a class='offering_link' href="{{ url('view_offering', {id: osidIdToString(offering.id)}) }}">{{offering.displayname}}</a>
     <span class='type'>{{ offering.genustype.displayname }}</span>
-    {% if offering.instructors %}
-    <span class='instructor'>({{ offering.instructors|join(', ') }})</span>
+    {% if offering.instructorNames %}
+    <span class='instructor'>({{ offering.instructorNames|join(', ') }})</span>
     {% endif %}
     </div>
 {% endfor %}

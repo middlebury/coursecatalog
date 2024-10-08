@@ -13,6 +13,7 @@ use App\Service\Osid\TopicHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * A controller for working with courses.
@@ -113,6 +114,20 @@ class Courses extends AbstractController
 
     }
 
+    #[Route('/courses/viewxml/{course}/{term}', name: 'view_course_xml')]
+    public function viewxml($course, $term = NULL)
+    {
+        $data = [];
+        $data['courses'] = [$this->getCourseDataByIdString($course, $term)];
+
+        $data['title'] = $data['courses'][0]['course']->getDisplayName();
+        $data['feedLink'] = $this->generateUrl('view_course', ['course' => $course], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $response = new Response($this->renderView('courses/list.xml.twig', $data));
+        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+        return $response;
+    }
+
     protected function getCourseDataByIdString($idString, $termIdString = NULL)
     {
         $id = $this->osidIdMap->fromString($idString);
@@ -182,16 +197,24 @@ class Courses extends AbstractController
                 $instructorsRecord = $offering->getCourseOfferingRecord($this->instructorsType);
                 $instructors = $instructorsRecord->getInstructors();
                 $offering->instructors = [];
+                $offering->instructorNames = [];
                 if ($instructors->hasNext()) {
-                    $instNames = array();
                     while ($instructors->hasNext()) {
                         $instructor = $instructors->getNextResource();
+                        $instructorData = [
+                            'resource' => $instructor,
+                            'givename' => NULL,
+                            'surname' => NULL,
+                        ];
                         if ($instructor->hasRecordType($this->namesType)) {
                             $namesRecord = $instructor->getResourceRecord($this->namesType);
-                            $offering->instructors[] = $namesRecord->getSurname();
+                            $instructorData['givename'] = $namesRecord->getGivenName();
+                            $instructorData['surname'] = $namesRecord->getSurname();
+                            $offering->instructorNames[] = $namesRecord->getSurname();
                         } else {
-                            $offering->instructors[] = $instructor->getDisplayName();
+                            $offering->instructorNames[] = $instructor->getDisplayName();
                         }
+                        $offering->instructors[] = $instructorData;
                     }
                 }
             }
@@ -200,19 +223,6 @@ class Courses extends AbstractController
         }
 
         return $data;
-    }
-
-    /**
-     * Get an XML view of a course.
-     *
-     * @return void
-     */
-    public function viewxmlAction()
-    {
-        $this->_helper->layout->disableLayout();
-        $this->getResponse()->setHeader('Content-Type', 'text.xml');
-
-        $this->viewAction();
     }
 
     /**
