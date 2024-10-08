@@ -1,0 +1,26 @@
+<div class='offering_list'>
+{% if term %}
+    <h2>Sections in {{ term.displayname }}</h2>
+    <div class='all_terms_link'><a href="{{ offeringsForAllTermsUrl }}">show sections in all terms</a></div>
+{% else %}
+    <h2>Sections</h2>
+{% endif %}
+
+{% set currentTerm = null %}
+{% for offering in offerings %}
+    {% if currentTerm is null or currentTerm.id != offering.termid %}
+        {% set currentTerm = offering.term %}
+        <h4>{{ currentTerm.displayname }}</h4>
+    {% endif %}
+    {% if selectedOffering and selectedOffering.id == offering.id %}
+        <div class='selected_offering'>
+    {% else %}
+        <div>
+    {% endif %}
+    <a class='offering_link' href="{{ url('view_offering', {id: osidIdToString(offering.id)}) }}">{{offering.displayname}}</a>
+    <span class='type'>{{ offering.genustype.displayname }}</span>
+    {% if offering.instructors %}
+    <span class='instructor'>({{ offering.instructors|join(', ') }})</span>
+    {% endif %}
+    </div>
+{% endfor %}
