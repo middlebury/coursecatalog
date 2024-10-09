@@ -1,20 +1,18 @@
 <?php
 /**
- * @since 11/16/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
+
+namespace App\Helper\RecentCourses;
 
 /**
  * A helper for accessing recent courses in a list.
  *
- * @since 11/16/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class Helper_RecentCourses_Department extends Helper_RecentCourses_All
+class Department extends All
 {
     /**
      * Group alternate courses.
@@ -23,11 +21,11 @@ class Helper_RecentCourses_Department extends Helper_RecentCourses_All
      *
      * @since 11/13/09
      */
-    protected function groupAlternates(osid_course_CourseList $courses)
+    protected function groupAlternates(\osid_course_CourseList $courses)
     {
         while ($courses->hasNext()) {
             $course = $courses->getNextCourse();
-            $courseIdString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($course->getId());
+            $courseIdString = $this->osidIdMap->toString($course->getId());
 
             $groupId = $courseIdString;
 
@@ -50,7 +48,7 @@ class Helper_RecentCourses_Department extends Helper_RecentCourses_All
                     $term = $this->getMostRecentTermForCourse($course);
                     $dates[] = $this->DateTime_getTimestamp($term->getEndTime());
                     $names[] = $course->getDisplayName();
-                } catch (osid_NotFoundException $e) {
+                } catch (\osid_NotFoundException $e) {
                     unset($group[$key]);
                 }
             }

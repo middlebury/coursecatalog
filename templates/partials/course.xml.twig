@@ -12,6 +12,11 @@
             <catalog:alternate id="{{ osidIdToString(alternate.id) }}" href="{{ url('view_course', {course: osidIdToString(alternate.id)}) }}" is_primary="{{ alternate.is_primary ? 'true':'false' }}">{{ alternate.displayname }}</catalog:alternate>
 {% endfor ~%}
 {% endif %}
+{%- if terms is not empty %}
+{%- for termData in terms %}
+            <catalog:term id="{{ osidIdToString(termData.term.id) }}" type="{{ termData.type }}">{{ termData.term.displayname }}</catalog:term>
+{% endfor ~%}
+{% endif %}
             <catalog:genustype type="{{ osidTypeToString(course.genustype) }}" id="{{ osidTypeToString(course.genustype) }}">{{ course.genustype.displayname }}</catalog:genustype>
 {% for topic in subjectTopics %}
             <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id)}) }}'>{{ topic.displayname }}</catalog:topic>

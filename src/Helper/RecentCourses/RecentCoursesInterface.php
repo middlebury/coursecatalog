@@ -1,27 +1,25 @@
 <?php
 /**
- * @since 01/07/2016
- *
- * @copyright Copyright &copy; 2016, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
+
+namespace App\Helper\RecentCourses;
 
 /**
  * This interface provides access to recent courses and their terms.
  *
- * @since 01/07/2016
- *
- * @copyright Copyright &copy; 2016, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-interface Helper_RecentCourses_Interface
+interface RecentCoursesInterface
 {
     /**
      * Set the duration considered recent by a DateInterval object.
      *
      * @return null
      */
-    public function setRecentInterval(DateInterval $interval);
+    public function setRecentInterval(\DateInterval $interval);
 
     /**
      * Answer an array of primary courses.
@@ -35,12 +33,12 @@ interface Helper_RecentCourses_Interface
      *
      * @return array
      */
-    public function getAlternatesForCourse(osid_course_Course $course);
+    public function getAlternatesForCourse(\osid_course_Course $course);
 
     /**
      * Answer an array of terms from primary or alternate courses given a primary id.
      *
      * @return array
      */
-    public function getTermsForCourse(osid_course_Course $course);
+    public function getTermsForCourse(\osid_course_Course $course);
 }

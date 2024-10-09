@@ -6,11 +6,14 @@
 
 namespace App\Controller;
 
+use App\Helper\RecentCourses\Department as DepartmentRecentCourses;
+use App\Helper\RecentCourses\RecentCoursesInterface;
 use App\Service\Osid\IdMap;
 use App\Service\Osid\Runtime;
 use App\Service\Osid\TermHelper;
 use App\Service\Osid\TopicHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -118,7 +121,9 @@ class Courses extends AbstractController
     public function viewxml($course, $term = NULL)
     {
         $data = [];
-        $data['courses'] = [$this->getCourseDataByIdString($course, $term)];
+        $courseData = $this->getCourseDataByIdString($course, $term);
+        $courseData['offerings'] = $this->getCourseOfferingsData($courseData['course'], $courseData['term']);
+        $data['courses'] = [$courseData];
 
         $data['title'] = $data['courses'][0]['course']->getDisplayName();
         $data['feedLink'] = $this->generateUrl('view_course', ['course' => $course], UrlGeneratorInterface::ABSOLUTE_URL);
@@ -148,7 +153,11 @@ class Courses extends AbstractController
     }
 
     protected function getCourseData(\osid_course_Course $course, \osid_course_Term|NULL $term = NULL) {
+        $data = [];
         $data['course'] = $course;
+        // Optional add-on data that can be populated by other methods.
+        $data['offerings'] = [];
+        $data['terms'] = [];
         // Load the topics into our view
         $data = array_merge($data, $this->getTopics($course->getTopics()));
 
@@ -178,8 +187,11 @@ class Courses extends AbstractController
         // Term
         $data['term'] = $term;
 
-        // offerings.
-        $data['offerings'] = [];
+        return $data;
+    }
+
+    protected function getCourseOfferingsData(\osid_course_Course $course, \osid_course_Term|NULL $term = NULL) {
+        $data = [];
         $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
         $offeringLookupSession->useFederatedCourseCatalogView();
         if ($term) {
@@ -219,7 +231,7 @@ class Courses extends AbstractController
                 }
             }
 
-            $data['offerings'][] = $offering;
+            $data[] = $offering;
         }
 
         return $data;
@@ -407,75 +419,86 @@ class Courses extends AbstractController
         $topicLookup->useFederatedCourseCatalogView();
         $topic = $topicLookup->getTopic($topicId);
 
-        $recentCourses = new Helper_RecentCourses_Department($courses);
-        if ($this->_getParam('cutoff')) {
-            $recentCourses->setRecentInterval(new DateInterval($this->_getParam('cutoff')));
+        $recentCourses = new DepartmentRecentCourses($this->osidIdMap, $courses);
+        if ($request->get('cutoff')) {
+            $recentCourses->setRecentInterval(new \DateInterval($request->get('cutoff')));
         }
         $this->outputCourseFeed($recentCourses, htmlentities('Courses in  '.$topic->getDisplayName()), $searchUrl);
     }
 
-    /**
-     * Search for courses.
-     *
-     * @return void
-     *
-     * @since 6/15/09
-     */
-    public function byidxmlAction()
+    #[Route('/courses/byidxml/{catalog}', name: 'list_courses_by_ids')]
+    public function byidxmlAction(Request $request, $catalog)
     {
-        $this->_helper->layout->disableLayout();
-        $this->_helper->viewRenderer->setNoRender();
-
-        if (!$this->_getParam('catalog')) {
+        if (!$catalog) {
             header('HTTP/1.1 400 Bad Request');
             echo 'A catalog must be specified.';
             exit;
         }
         try {
-            $catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
+            $catalogId = $this->osidIdMap->fromString($catalog);
             $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
             $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
-        } catch (osid_InvalidArgumentException $e) {
+        } catch (\osid_InvalidArgumentException $e) {
             header('HTTP/1.1 400 Bad Request');
             echo 'The catalog id specified was not of the correct format.';
             exit;
-        } catch (osid_NotFoundException $e) {
+        } catch (\osid_NotFoundException $e) {
             header('HTTP/1.1 404 Not Found');
             echo 'The catalog id specified was not found.';
             exit;
         }
-
-        if (!$this->_getParam('id')) {
+        $ids = $request->get('id', []);
+        if (!$ids) {
             header('HTTP/1.1 400 Bad Request');
             echo "'id[]' must be specified.";
             exit;
         }
 
         $courseIds = [];
-        if (is_array($this->_getParam('id'))) {
-            foreach ($this->_getParam('id') as $idString) {
+        if (is_array($ids)) {
+            foreach ($ids as $idString) {
                 $courseIds[] = $this->osidIdMap->fromString($idString);
             }
         } else {
-            $courseIds[] = $this->osidIdMap->fromString($this->_getParam('id'));
+            $courseIds[] = $this->osidIdMap->fromString($ids);
         }
-
         // Use Comparative view to include any found courses, ignoring missing ids.
         $lookupSession->useComparativeCourseView();
 
-        $courses = $lookupSession->getCoursesByIds(new phpkit_id_ArrayIdList($courseIds));
+        $courses = $lookupSession->getCoursesByIds(new \phpkit_id_ArrayIdList($courseIds));
 
-        $recentCourses = new Helper_RecentCourses_Department($courses);
-        if ($this->_getParam('cutoff')) {
-            $recentCourses->setRecentInterval(new DateInterval($this->_getParam('cutoff')));
+        $recentCourses = new DepartmentRecentCourses($this->osidIdMap, $courses);
+        if ($request->get('cutoff')) {
+            $recentCourses->setRecentInterval(new \DateInterval($request->get('cutoff')));
         }
 
-        $searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('byidxml', 'courses', null, [
-            'catalog' => $this->_getParam('catalog'),
-            'id' => $this->_getParam('id'),
-            'cuttoff' => $this->_getParam('cutoff'),
-        ]));
-        $this->outputCourseFeed($recentCourses, 'Courses by Id', $searchUrl);
+        // Set the next and previous terms.
+        $currentTermId = $this->osidTermHelper->getCurrentTermId($this->termLookupSession->getCourseCatalogId());
+        $currentTerm = $this->termLookupSession->getTerm($currentTermId);
+
+        $data = [
+            'courses' => [],
+        ];
+        foreach ($recentCourses->getPrimaryCourses() as $course) {
+            $courseData = $this->getCourseData($course);
+            $courseData['terms'] = $this->getRecentTermData($currentTerm, $recentCourses, $course);
+            $courseData['offerings'] = [];
+            $data['courses'][] = $courseData;
+        }
+        $data['title'] = 'Courses by Id';
+        $data['feedLink'] = $this->generateUrl(
+            'list_courses_by_ids',
+            [
+                'catalog' => $catalog,
+                'id' => $request->get('id'),
+                'cutoff' => $request->get('cutoff'),
+            ],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
+        $response = new Response($this->renderView('courses/list.xml.twig', $data));
+        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+        return $response;
     }
 
     /**
@@ -733,10 +756,36 @@ class Courses extends AbstractController
         exit;
     }
 
+    protected function getRecentTermData(\osid_course_Term $currentTerm, RecentCoursesInterface $recentCourses, \osid_course_Course $course) {
+        $now = $this->DateTime_getTimestamp(new \DateTime());
+        $currentTermId = $currentTerm->getId();
+        $currentEndTime = $this->DateTime_getTimestamp($currentTerm->getEndTime());
+        $recentTerms = $recentCourses->getTermsForCourse($course);
+        $data = [];
+        if (count($recentTerms)) {
+            foreach ($recentTerms as $term) {
+                if ($term->getId()->isEqual($currentTermId)) {
+                    $type = 'current';
+                } elseif ($currentEndTime < $this->DateTime_getTimestamp($term->getEndTime())) {
+                    $type = 'future';
+                } elseif ($now > $this->DateTime_getTimestamp($term->getStartTime()) && $now < $this->DateTime_getTimestamp($term->getEndTime())) {
+                    $type = 'current';
+                } else {
+                    $type = 'past';
+                }
+                $data[] = [
+                    'term' => $term,
+                    'type' => $type,
+                ];
+            }
+        }
+        return $data;
+    }
+
     public function DateTime_getTimestamp($dt)
     {
         $dtz_original = $dt->getTimezone();
-        $dtz_utc = new DateTimeZone('UTC');
+        $dtz_utc = new \DateTimeZone('UTC');
         $dt->setTimezone($dtz_utc);
         $year = (int) $dt->format('Y');
         $month = (int) $dt->format('n');

@@ -1,21 +1,23 @@
 <?php
 /**
- * @since 11/16/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
+
+namespace App\Helper\RecentCourses;
+
+use App\Service\Osid\IdMap;
 
 /**
  * This class hierarchy provides access to recent courses and their terms.
  *
- * @since 11/16/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-abstract class Helper_RecentCourses_Abstract implements Helper_RecentCourses_Interface
+abstract class RecentCoursesAbstract implements RecentCoursesInterface
 {
+
+    protected $osidIdMap;
     protected $groups;
     private $terms;
     protected $alternateType;
@@ -27,16 +29,14 @@ abstract class Helper_RecentCourses_Abstract implements Helper_RecentCourses_Int
     /**
      * Constructor.
      *
-     * @return void
-     *
-     * @since 11/16/09
      */
-    public function __construct(osid_course_CourseList $courses)
+    public function __construct(IdMap $osidIdMap, \osid_course_CourseList $courses)
     {
-        $this->alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
+        $this->osidIdMap = $osidIdMap;
+        $this->alternateType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
         $this->groups = [];
         $this->terms = [];
-        $this->recentInterval = new DateInterval('P4Y');
+        $this->recentInterval = new \DateInterval('P4Y');
         $this->courses = $courses;
     }
 
@@ -47,7 +47,7 @@ abstract class Helper_RecentCourses_Abstract implements Helper_RecentCourses_Int
      *
      * @since 9/19/14
      */
-    public function setRecentInterval(DateInterval $interval)
+    public function setRecentInterval(\DateInterval $interval)
     {
         $this->recentInterval = $interval;
     }
@@ -56,8 +56,6 @@ abstract class Helper_RecentCourses_Abstract implements Helper_RecentCourses_Int
      * Answer an array of primary courses.
      *
      * @return array
-     *
-     * @since 11/16/09
      */
     public function getPrimaryCourses()
     {
@@ -79,10 +77,8 @@ abstract class Helper_RecentCourses_Abstract implements Helper_RecentCourses_Int
      * Answer an array of alternate courses for a primary course.
      *
      * @return array
-     *
-     * @since 11/16/09
      */
-    public function getAlternatesForCourse(osid_course_Course $course)
+    public function getAlternatesForCourse(\osid_course_Course $course)
     {
         $this->initialize();
 
@@ -99,17 +95,15 @@ abstract class Helper_RecentCourses_Abstract implements Helper_RecentCourses_Int
                 return $alternates;
             }
         }
-        throw new osid_NotFoundException('No primary matches the id given.');
+        throw new \osid_NotFoundException('No primary matches the id given.');
     }
 
     /**
      * Answer an array of terms from primary or alternate courses given a primary id.
      *
      * @return array
-     *
-     * @since 11/16/09
      */
-    public function getTermsForCourse(osid_course_Course $course)
+    public function getTermsForCourse(\osid_course_Course $course)
     {
         $this->initialize();
 
@@ -124,10 +118,8 @@ abstract class Helper_RecentCourses_Abstract implements Helper_RecentCourses_Int
      * Answer the terms for a course. These may be all terms or terms taught.
      *
      * @return array
-     *
-     * @since 11/16/09
      */
-    abstract protected function fetchCourseTerms(osid_course_Course $course);
+    abstract protected function fetchCourseTerms(\osid_course_Course $course);
 
     /*********************************************************
      * Internal methods
@@ -156,13 +148,13 @@ abstract class Helper_RecentCourses_Abstract implements Helper_RecentCourses_Int
      *
      * @since 11/13/09
      */
-    protected function groupAlternates(osid_course_CourseList $courses)
+    protected function groupAlternates(\osid_course_CourseList $courses)
     {
         while ($courses->hasNext()) {
             $groupId = false;
 
             $course = $courses->getNextCourse();
-            $courseIdString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($course->getId());
+            $courseIdString = $this->osidIdMap->toString($course->getId());
 
             // 			print "\n<h2>Grouping $courseIdString</h2>\n";
             // 			print "\n<h3>Current Groups:</h3>\n";
@@ -223,16 +215,14 @@ abstract class Helper_RecentCourses_Abstract implements Helper_RecentCourses_Int
     }
 
     /**
-     * return the id of a group that matches or false.
-     *
-     * @since 11/13/09
+     * Return the id of a group that matches or false.
      */
-    private function findGroupIdMatchingAlternates(osid_id_IdList $altIds)
+    private function findGroupIdMatchingAlternates(\osid_id_IdList $altIds)
     {
         // 		print "\n<h3>Alternates:</h3>\n";
         while ($altIds->hasNext()) {
             $altId = $altIds->getNextId();
-            $altIdString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($altId);
+            $altIdString = $this->osidIdMap->toString($altId);
             // 			var_dump($altIdString);
 
             foreach ($this->groups as $groupId => $group) {
@@ -253,10 +243,8 @@ abstract class Helper_RecentCourses_Abstract implements Helper_RecentCourses_Int
      * @param optional $includeAlternates
      *
      * @return array
-     *
-     * @since 11/16/09
      */
-    private function getRecentTermsForCourse(osid_course_Course $course, $includeAlternates = false)
+    private function getRecentTermsForCourse(\osid_course_Course $course, $includeAlternates = false)
     {
         $recentTerms = $this->filterRecentTerms($this->fetchCourseTerms($course));
 
@@ -282,15 +270,13 @@ abstract class Helper_RecentCourses_Abstract implements Helper_RecentCourses_Int
      * Answer the most recent term for a course.
      *
      * @return osid_course_Term
-     *
-     * @since 11/16/09
      */
-    protected function getMostRecentTermForCourse(osid_course_Course $course)
+    protected function getMostRecentTermForCourse(\osid_course_Course $course)
     {
         $terms = $this->getRecentTermsForCourse($course);
 
         if (!count($terms)) {
-            throw new osid_NotFoundException('No terms available.');
+            throw new \osid_NotFoundException('No terms available.');
         }
 
         foreach ($terms as $term) {
@@ -318,10 +304,10 @@ abstract class Helper_RecentCourses_Abstract implements Helper_RecentCourses_Int
     {
         // Define a cutoff date after which courses will be included in the feed.
         // Currently set to 4 years. Would be good to have as a configurable time.
-        $now = new DateTime();
+        $now = new \DateTime();
         $cutOff = $this->DateTime_getTimestamp($now->sub($this->recentInterval));
         $recentTerms = [];
-        $osidIdHelper = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId');
+        $osidIdHelper = $this->osidIdMap;
         foreach ($allTerms as $term) {
             if ($this->DateTime_getTimestamp($term->getEndTime()) > $cutOff) {
                 $termIdString = $osidIdHelper->toString($term->getId());
@@ -335,7 +321,7 @@ abstract class Helper_RecentCourses_Abstract implements Helper_RecentCourses_Int
     public function DateTime_getTimestamp($dt)
     {
         $dtz_original = $dt->getTimezone();
-        $dtz_utc = new DateTimeZone('UTC');
+        $dtz_utc = new \DateTimeZone('UTC');
         $dt->setTimezone($dtz_utc);
         $year = (int) $dt->format('Y');
         $month = (int) $dt->format('n');

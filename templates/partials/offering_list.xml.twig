@@ -1,3 +1,4 @@
+{% if offerings is not empty %}
             <catalog:offering_list>
 {% set currentTerm = null %}
 {% for offering in offerings %}
@@ -27,3 +28,4 @@
 {% endfor %}
                 </catalog:offering_term>
             </catalog:offering_list>
+{% endif %}

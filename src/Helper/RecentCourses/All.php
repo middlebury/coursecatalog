@@ -1,20 +1,20 @@
 <?php
 /**
- * @since 11/16/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
+
+namespace App\Helper\RecentCourses;
+
+use App\Service\Osid\IdMap;
 
 /**
  * A helper for accessing recent courses in a list.
  *
- * @since 11/16/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class Helper_RecentCourses_All extends Helper_RecentCourses_Abstract
+class All extends RecentCoursesAbstract
 {
     private $termsCache;
 
@@ -25,10 +25,10 @@ class Helper_RecentCourses_All extends Helper_RecentCourses_Abstract
      *
      * @since 11/16/09
      */
-    public function __construct(osid_course_CourseList $courses)
+    public function __construct(IdMap $osidIdMap, \osid_course_CourseList $courses)
     {
         $this->termsCache = [];
-        parent::__construct($courses);
+        parent::__construct($osidIdMap, $courses);
     }
 
     /**
@@ -38,12 +38,12 @@ class Helper_RecentCourses_All extends Helper_RecentCourses_Abstract
      *
      * @since 11/16/09
      */
-    protected function fetchCourseTerms(osid_course_Course $course)
+    protected function fetchCourseTerms(\osid_course_Course $course)
     {
-        $cacheKey = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($course->getId());
+        $cacheKey = $this->osidIdMap->toString($course->getId());
 
         if (!isset($this->termsCache[$cacheKey])) {
-            $termsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
+            $termsType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
             $allTerms = [];
             if ($course->hasRecordType($termsType)) {
                 $termsRecord = $course->getCourseRecord($termsType);
@@ -52,7 +52,7 @@ class Helper_RecentCourses_All extends Helper_RecentCourses_Abstract
                     while ($terms->hasNext()) {
                         $allTerms[] = $terms->getNextTerm();
                     }
-                } catch (osid_OperationFailedException $e) {
+                } catch (\osid_OperationFailedException $e) {
                 }
             }
             $this->termsCache[$cacheKey] = $allTerms;

@@ -1,21 +1,23 @@
 <?php
 /**
- * @since 11/16/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
+
+namespace App\Helper\RecentCourses;
+
+use App\Service\Osid\IdMap;
 
 /**
  * A helper for accessing recent courses for an instructor.
  *
- * @since 11/16/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class Helper_RecentCourses_Instructor implements Helper_RecentCourses_Interface
+class Instructor implements RecentCoursesInterface
 {
+
+    protected $osidIdMap;
     protected $groups = [];
     protected $recentInterval;
     protected $alternatesType;
@@ -26,10 +28,11 @@ class Helper_RecentCourses_Instructor implements Helper_RecentCourses_Interface
      *
      * @return void
      */
-    public function __construct(osid_course_CourseOfferingSearchResults $offerings, osid_course_CourseLookupSession $courseLookupSession)
+    public function __construct(IdMap $osidIdMap, \osid_course_CourseOfferingSearchResults $offerings, \osid_course_CourseLookupSession $courseLookupSession)
     {
-        $this->recentInterval = new DateInterval('P4Y');
-        $this->alternatesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
+        $this->osidIdMap = $osidIdMap;
+        $this->recentInterval = new \DateInterval('P4Y');
+        $this->alternatesType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
         $this->groupCourseOfferings($offerings);
         $this->courseLookupSession = $courseLookupSession;
     }
@@ -39,7 +42,7 @@ class Helper_RecentCourses_Instructor implements Helper_RecentCourses_Interface
      *
      * @return null
      */
-    public function setRecentInterval(DateInterval $interval)
+    public function setRecentInterval(\DateInterval $interval)
     {
         $this->recentInterval = $interval;
     }
@@ -64,11 +67,11 @@ class Helper_RecentCourses_Instructor implements Helper_RecentCourses_Interface
      *
      * @return array
      */
-    public function getAlternatesForCourse(osid_course_Course $course)
+    public function getAlternatesForCourse(\osid_course_Course $course)
     {
-        $idString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($course->getId());
+        $idString = $this->osidIdMap->toString($course->getId());
         if (!isset($this->groups[$idString])) {
-            throw new osid_NotFoundException('The course specified is not one of our primary courses.');
+            throw new \osid_NotFoundException('The course specified is not one of our primary courses.');
         }
         if (!isset($this->groups[$idString]['alternate_courses'])) {
             $this->groups[$idString]['alternate_courses'] = [];
@@ -85,11 +88,11 @@ class Helper_RecentCourses_Instructor implements Helper_RecentCourses_Interface
      *
      * @return array
      */
-    public function getTermsForCourse(osid_course_Course $course)
+    public function getTermsForCourse(\osid_course_Course $course)
     {
-        $idString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($course->getId());
+        $idString = $this->osidIdMap->toString($course->getId());
         if (!isset($this->groups[$idString])) {
-            throw new osid_NotFoundException('The course specified is not one of our primary courses.');
+            throw new \osid_NotFoundException('The course specified is not one of our primary courses.');
         }
         ksort($this->groups[$idString]['terms']);
 
@@ -105,14 +108,14 @@ class Helper_RecentCourses_Instructor implements Helper_RecentCourses_Interface
      *
      * @return null
      */
-    protected function groupCourseOfferings(osid_course_CourseOfferingSearchResults $offerings)
+    protected function groupCourseOfferings(\osid_course_CourseOfferingSearchResults $offerings)
     {
         while ($offerings->hasNext()) {
             $offering = $offerings->getNextCourseOffering();
             if ($this->termIsRecent($offering->getTerm())) {
                 $courseId = $offering->getCourseId();
-                $courseIdString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($courseId);
-                $termIdString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($offering->getTermId());
+                $courseIdString = $this->osidIdMap->toString($courseId);
+                $termIdString = $this->osidIdMap->toString($offering->getTermId());
 
                 $groupAlternateCourseIds = [];
                 $groupTerms = [$termIdString => $offering->getTerm()];
@@ -126,7 +129,7 @@ class Helper_RecentCourses_Instructor implements Helper_RecentCourses_Interface
                     while ($alternates->hasNext()) {
                         $alternate = $alternates->getNextCourseOffering();
                         $alternateCourseId = $alternate->getCourseId();
-                        $alternateCourseIdString = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($alternateCourseId);
+                        $alternateCourseIdString = $this->osidIdMap->toString($alternateCourseId);
                         $groupAlternateCourseIds[$alternateCourseIdString] = $alternateCourseId;
                         // Reset the group key if the primary alternate is later in the search results.
                         if ($alternate->hasRecordType($this->alternatesType)) {
@@ -139,7 +142,7 @@ class Helper_RecentCourses_Instructor implements Helper_RecentCourses_Interface
                     }
                 }
 
-                $groupKey = Zend_Controller_Action_HelperBroker::getStaticHelper('OsidId')->toString($groupPrimaryCourseId);
+                $groupKey = $this->osidIdMap->toString($groupPrimaryCourseId);
                 // Add our group to our result list.
                 if (!isset($this->groups[$groupKey])) {
                     $this->groups[$groupKey] = [
@@ -159,11 +162,11 @@ class Helper_RecentCourses_Instructor implements Helper_RecentCourses_Interface
      *
      * @return bool
      */
-    protected function termIsRecent(osid_course_Term $term)
+    protected function termIsRecent(\osid_course_Term $term)
     {
         // Define a cutoff date after which courses will be included in the feed.
         // Default is 4 years.
-        $now = new DateTime();
+        $now = new \DateTime();
         $cutOff = $this->DateTime_getTimestamp($now->sub($this->recentInterval));
         $termEnd = $this->DateTime_getTimestamp($term->getEndTime());
 
@@ -173,7 +176,7 @@ class Helper_RecentCourses_Instructor implements Helper_RecentCourses_Interface
     public function DateTime_getTimestamp($dt)
     {
         $dtz_original = $dt->getTimezone();
-        $dtz_utc = new DateTimeZone('UTC');
+        $dtz_utc = new \DateTimeZone('UTC');
         $dt->setTimezone($dtz_utc);
         $year = (int) $dt->format('Y');
         $month = (int) $dt->format('n');
