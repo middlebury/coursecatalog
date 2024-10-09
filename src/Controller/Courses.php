@@ -66,31 +66,31 @@ class Courses extends AbstractController
         $this->namesType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:person_names');
     }
 
-    /**
-     * Print out a list of all courses.
-     *
-     * @return void
-     *
-     * @since 4/21/09
-     */
-    public function listAction()
+    #[Route('/courses/list/{catalog}', name: 'list_courses')]
+    public function listAction($catalog = NULL)
     {
-        if ($this->_getParam('catalog')) {
-            $catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
+        $data = [
+            'courses' => [],
+        ];
+        if ($catalog) {
+            $catalogId = $this->osidIdMap->fromString($catalog);
             $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
-            $this->view->title = 'Courses in '.$lookupSession->getCourseCatalog()->getDisplayName();
+            $data['title'] = 'Courses in '.$lookupSession->getCourseCatalog()->getDisplayName();
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSession();
-            $this->view->title = 'Courses in All Catalogs';
+            $data['title'] = 'Courses in All Catalogs';
         }
         $lookupSession->useFederatedCourseCatalogView();
 
-        $this->view->courses = $lookupSession->getCourses();
+        $courses = $lookupSession->getCourses();
+        while ($courses->hasNext()) {
+            $data['courses'][] = $courses->getNextCourse();
+        }
+        // $this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
+        // $this->view->headTitle($this->view->title);
+        // $this->view->menuIsCourses = true;
 
-        $this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
-        $this->view->headTitle($this->view->title);
-
-        $this->view->menuIsCourses = true;
+        return $this->render('courses/list.html.twig', $data);
     }
 
     #[Route('/courses/view/{course}/{term}', name: 'view_course')]

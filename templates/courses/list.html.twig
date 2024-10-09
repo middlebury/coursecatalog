@@ -1,0 +1,4 @@
+{% for course in courses %}
+    <h2><a href="{{ url('view_course', {course: osidIdToString(course.id)}) }}">{{ course.displayname }}</a> - {{ course.title }}</h2>
+    <div>{{ course.description | raw }}</div>
+{% endfor %}
