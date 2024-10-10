@@ -37,6 +37,13 @@ services:
     App\Service\Osid\TypeMap:
         arguments:
             $idAuthorityToShorten: '%app.osid.id.authority_to_shorten%'
+    App\Service\Osid\TypeHelper:
+        arguments:
+            $defaultOfferingGenusTypesToSearch:
+                - 'urn:inet:middlebury.edu:genera:offering.LCT'
+                - 'urn:inet:middlebury.edu:genera:offering.SEM'
+                - 'urn:inet:middlebury.edu:genera:offering.PRC'
+                - 'urn:inet:middlebury.edu:genera:offering.WKS'
 
     App\Twig\OsidIdExtension:
         tags:

@@ -12,8 +12,8 @@
     {% if nextTerm %}{{ include('partials/term.xml.twig', {term: nextTerm, key: 'next_term'}) }}{% endif %}
 {% if terms %}
         <catalog:all_terms>
-        {% for t in terms %}
-            {{ include('partials/term.xml.twig', {term: t, key: 'term'}) }}
+        {%~ for t in terms %}
+            {{ include('partials/term.xml.twig', {term: t, key: 'term'}) -}}
         {% endfor %}
         </catalog:all_terms>
 {% endif %}

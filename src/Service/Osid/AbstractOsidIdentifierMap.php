@@ -21,7 +21,7 @@ abstract class AbstractOsidIdentifierMap
     /**
      * Set up the mapping service.
      *
-     * @string $idAuthorityToShorten
+     * @param string $idAuthorityToShorten
      *   The Identifier authority to shorten.
      */
     public function __construct(string $idAuthorityToShorten) {
