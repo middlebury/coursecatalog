@@ -143,7 +143,7 @@ class Offerings extends AbstractController
      *
      * @since 10/21/09
      */
-     #[Route('/offerings/searchxml/{catalog}/{term}', name: 'search_offerings')]
+     #[Route('/offerings/searchxml/{catalog}/{term}', name: 'search_offerings_xml')]
      public function searchxml(string $catalog = NULL, $term = NULL)
     {
         $this->_helper->layout->disableLayout();
@@ -689,6 +689,15 @@ class Offerings extends AbstractController
         return $response;
     }
 
+    /**
+     * Answer an array of course offering data suitable for templating.
+     *
+     * @param string $idString
+     *   The course offering id string.
+     *
+     * @return array
+     *   An array of data about the course offering.
+     */
     protected function getOfferingDataByIdString($idString)
     {
         $id = $this->osidIdMap->fromString($idString);
@@ -697,6 +706,15 @@ class Offerings extends AbstractController
         return $this->getOfferingData($lookupSession->getCourseOffering($id));
     }
 
+    /**
+     * Answer an array of course offering data suitable for templating.
+     *
+     * @param \osid_course_CourseOffering $offering
+     *   The course.
+     *
+     * @return array
+     *   An array of data about the course offering.
+     */
     protected function getOfferingData(\osid_course_CourseOffering $offering) {
         $id = $offering->getId();
 
