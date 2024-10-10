@@ -61,17 +61,7 @@ class Offerings extends AbstractController
         $this->osidIdMap = $osidIdMap;
         $this->osidTermHelper = $osidTermHelper;
         $this->osidTopicHelper = $osidTopicHelper;
-    }
 
-    /**
-     * Initialize object.
-     *
-     * Called from {@link __construct()} as final step of object instantiation.
-     *
-     * @return void
-     */
-    public function init()
-    {
         $this->wildcardStringMatchType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:search:wildcard');
         $this->booleanStringMatchType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:search:boolean');
         $this->instructorType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
@@ -79,8 +69,6 @@ class Offerings extends AbstractController
         $this->locationType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:location');
         $this->alternateType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
         $this->weeklyScheduleType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
-
-        parent::init();
 
         $this->subjectType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject');
         $this->departmentType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department');
@@ -747,8 +735,8 @@ class Offerings extends AbstractController
         // Alternates.
         $data['is_primary'] = TRUE;
         $data['alternates'] = NULL;
-        if ($offering->hasRecordType($this->getAlternateType())) {
-            $record = $offering->getCourseOfferingRecord($this->getAlternateType());
+        if ($offering->hasRecordType($this->alternateType)) {
+            $record = $offering->getCourseOfferingRecord($this->alternateType);
             $data['is_primary'] = $record->isPrimary();
             if ($record->hasAlternates()) {
                 $data['alternates'] = [];
@@ -756,8 +744,8 @@ class Offerings extends AbstractController
                 while ($alternates->hasNext()) {
                     $alternate = $alternates->getNextCourseOffering();
                     $alternate->is_primary = FALSE;
-                    if ($alternate->hasRecordType($this->getAlternateType())) {
-                        $alternateRecord = $alternate->getCourseOfferingRecord($this->getAlternateType());
+                    if ($alternate->hasRecordType($this->alternateType)) {
+                        $alternateRecord = $alternate->getCourseOfferingRecord($this->alternateType);
                         if ($alternateRecord->isPrimary()) {
                             $alternate->is_primary = TRUE;
                         }
@@ -790,7 +778,4 @@ class Offerings extends AbstractController
         return $data;
     }
 
-    protected function getAlternateType() {
-        return new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
-    }
 }
