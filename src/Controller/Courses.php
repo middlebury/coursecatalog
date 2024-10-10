@@ -135,185 +135,6 @@ class Courses extends AbstractController
         return $response;
     }
 
-    /**
-     * Answer an array of course data suitable for templating.
-     *
-     * @param string $idString
-     *   The course id string.
-     * @param string $termIdString
-     *   A reference term's id string if one is being used for filtering
-     *   offerings.
-     *
-     * @return array
-     *   An array of data about the course.
-     */
-    protected function getCourseDataByIdString($idString, $termIdString = NULL)
-    {
-        $id = $this->osidIdMap->fromString($idString);
-        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSession();
-        $lookupSession->useFederatedCourseCatalogView();
-
-        if ($termIdString) {
-            $termId = $this->osidIdMap->fromString($termIdString);
-            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
-            $termLookupSession->useFederatedCourseCatalogView();
-            $term = $termLookupSession->getTerm($termId);
-        }
-        else {
-            $term = NULL;
-        }
-
-        return $this->getCourseData($lookupSession->getCourse($id), $term);
-    }
-
-    /**
-     * Answer an array of course data suitable for templating.
-     *
-     * @param \osid_course_Course $course
-     *   The course.
-     * @param \osid_course_Term $term
-     *   A reference term if one is being used for filtering offerings.
-     *
-     * @return array
-     *   An array of data about the course.
-     */
-    protected function getCourseData(\osid_course_Course $course, \osid_course_Term|NULL $term = NULL) {
-        $data = [];
-        $data['course'] = $course;
-        $data['term'] = $term;
-        // Optional add-on data that can be populated by other methods.
-        $data['is_primary'] = TRUE;
-        $data['alternates'] = NULL;
-        $data['offerings'] = [];
-        $data['terms'] = [];
-        $data['include_alternates_in_title'] = TRUE;
-        // Load the topics into our view
-        $data = array_merge($data, $this->getTopics($course->getTopics()));
-        // Alternate status.
-        $data['is_primary'] = TRUE;
-        if ($course->hasRecordType($this->alternateType)) {
-            $record = $course->getCourseRecord($this->alternateType);
-            $data['is_primary'] = $record->isPrimary();
-        }
-        return $data;
-    }
-
-    /**
-     * Answer a list of all alternates for a course.
-     *
-     * @param \osid_course_Course $course
-     *   The course to get alternates for.
-     *
-     * @return \osid_course_Course[]
-     *   The courses, annotated with additional is_primary values.
-     */
-    protected function getAllAlternates(\osid_course_Course $course) {
-        $data = NULL;
-        if ($course->hasRecordType($this->alternateType)) {
-            $record = $course->getCourseRecord($this->alternateType);
-            $data = [];
-            if ($record->hasAlternates()) {
-                $alternates = $record->getAlternates();
-                while ($alternates->hasNext()) {
-                    $alternate = $alternates->getNextCourse();
-                    $alternate->is_primary = FALSE;
-                    if ($alternate->hasRecordType($this->alternateType)) {
-                        $alternateRecord = $alternate->getCourseRecord($this->alternateType);
-                        if ($alternateRecord->isPrimary()) {
-                            $alternate->is_primary = TRUE;
-                        }
-                    }
-                    $data[] = $alternate;
-                }
-            }
-        }
-        return $data;
-    }
-
-    /**
-     * Answer a list of alternates for a course filtered to recent ones.
-     *
-     * @param \App\Helper\RecentCourses\RecentCoursesInterface $recentCourses
-     *   The helper used to filter to recent courses.
-     * @param \osid_course_Course $course
-     *   The course to get alternates for.
-     *
-     * @return \osid_course_Course[]
-     *   The courses, annotated with additional is_primary values.
-     */
-    protected function getRecentAlternates(RecentCoursesInterface $recentCourses, $course) {
-        $data = NULL;
-        foreach ($recentCourses->getAlternatesForCourse($course) as $alternate) {
-            $alternate->is_primary = FALSE;
-            if ($alternate->hasRecordType($this->alternateType)) {
-                $alternateRecord = $alternate->getCourseRecord($this->alternateType);
-                if ($alternateRecord->isPrimary()) {
-                    $alternate->is_primary = TRUE;
-                }
-            }
-            $data[] = $alternate;
-        }
-        return $data;
-    }
-
-    /**
-     * Answer an array of course offering data suitable for templating.
-     *
-     * @param \osid_course_Course $course
-     *   The course offerings are associated with.
-     * @param \osid_course_Term $term
-     *   A reference term if one is being used for filtering offerings.
-     *
-     * @return array
-     *   An array of course offering data.
-     */
-    protected function getCourseOfferingsData(\osid_course_Course $course, \osid_course_Term|NULL $term = NULL) {
-        $data = [];
-        $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
-        $offeringLookupSession->useFederatedCourseCatalogView();
-        if ($term) {
-            $offerings = $offeringLookupSession->getCourseOfferingsByTermForCourse(
-                $term->getId(),
-                $course->getId(),
-            );
-        } else {
-            $offerings = $offeringLookupSession->getCourseOfferingsForCourse($course->getId());
-        }
-        while ($offerings->hasNext()) {
-            $offering = $offerings->getNextCourseOffering();
-
-            if ($offering->hasRecordType($this->instructorsType)) {
-                $instructorsRecord = $offering->getCourseOfferingRecord($this->instructorsType);
-                $instructors = $instructorsRecord->getInstructors();
-                $offering->instructors = [];
-                $offering->instructorNames = [];
-                if ($instructors->hasNext()) {
-                    while ($instructors->hasNext()) {
-                        $instructor = $instructors->getNextResource();
-                        $instructorData = [
-                            'resource' => $instructor,
-                            'givename' => NULL,
-                            'surname' => NULL,
-                        ];
-                        if ($instructor->hasRecordType($this->namesType)) {
-                            $namesRecord = $instructor->getResourceRecord($this->namesType);
-                            $instructorData['givename'] = $namesRecord->getGivenName();
-                            $instructorData['surname'] = $namesRecord->getSurname();
-                            $offering->instructorNames[] = $namesRecord->getSurname();
-                        } else {
-                            $offering->instructorNames[] = $instructor->getDisplayName();
-                        }
-                        $offering->instructors[] = $instructorData;
-                    }
-                }
-            }
-
-            $data[] = $offering;
-        }
-
-        return $data;
-    }
-
     #[Route('/courses/searchxml/{catalog}', name: 'search_courses_xml')]
     public function searchxmlAction(Request $request, $catalog)
     {
@@ -690,164 +511,182 @@ class Courses extends AbstractController
     }
 
     /**
-     * Output an RSS feed of courses from results.
+     * Answer an array of course data suitable for templating.
      *
-     * @param Helper_RecentCourses_Abstract $recentCourses
-     * @param string                        $title
-     * @param string                        $url
+     * @param string $idString
+     *   The course id string.
+     * @param string $termIdString
+     *   A reference term's id string if one is being used for filtering
+     *   offerings.
      *
-     * @return void
-     *
-     * @since 10/19/09
+     * @return array
+     *   An array of data about the course.
      */
-    protected function outputCourseFeed(Helper_RecentCourses_Interface $recentCourses, $title, $url)
+    protected function getCourseDataByIdString($idString, $termIdString = NULL)
     {
-        // Set our cache-control headers since we will be flushing content soon.
-        $this->setCacheControlHeaders();
-        $this->getResponse()->sendHeaders();
+        $id = $this->osidIdMap->fromString($idString);
+        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSession();
+        $lookupSession->useFederatedCourseCatalogView();
 
-        $now = $this->DateTime_getTimestamp(new DateTime());
-
-        // Close the session before we send headers and content.
-        session_write_close();
-
-        header('Content-Type: text/xml');
-        echo '<?xml version="1.0" encoding="utf-8" ?>
-<rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
-    <channel>
-        <title>'.htmlspecialchars($title).'</title>
-        <link>'.$url.'</link>
-        <description></description>
-        <lastBuildDate>'.date('r').'</lastBuildDate>
-        <generator>Course Catalog</generator>
-        <docs>http://blogs.law.harvard.edu/tech/rss</docs>
-
-';
-
-        while (ob_get_level()) {
-            ob_end_flush();
+        if ($termIdString) {
+            $termId = $this->osidIdMap->fromString($termIdString);
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
+            $termLookupSession->useFederatedCourseCatalogView();
+            $term = $termLookupSession->getTerm($termId);
         }
-        flush();
+        else {
+            $term = NULL;
+        }
 
-        // Set the next and previous terms
-        $currentTermId = $this->osidTermHelper->getCurrentTermId($this->termLookupSession->getCourseCatalogId());
-        $currentTerm = $this->termLookupSession->getTerm($currentTermId);
-        $currentEndTime = $this->DateTime_getTimestamp($currentTerm->getEndTime());
+        return $this->getCourseData($lookupSession->getCourse($id), $term);
+    }
 
-        //         print "<description><![CDATA[";
-        //         print ($courses->debug());
-        //         print "]]></description>";
+    /**
+     * Answer an array of course data suitable for templating.
+     *
+     * @param \osid_course_Course $course
+     *   The course.
+     * @param \osid_course_Term $term
+     *   A reference term if one is being used for filtering offerings.
+     *
+     * @return array
+     *   An array of data about the course.
+     */
+    protected function getCourseData(\osid_course_Course $course, \osid_course_Term|NULL $term = NULL) {
+        $data = [];
+        $data['course'] = $course;
+        $data['term'] = $term;
+        // Optional add-on data that can be populated by other methods.
+        $data['is_primary'] = TRUE;
+        $data['alternates'] = NULL;
+        $data['offerings'] = [];
+        $data['terms'] = [];
+        $data['include_alternates_in_title'] = TRUE;
+        // Load the topics into our view
+        $data = array_merge($data, $this->getTopics($course->getTopics()));
+        // Alternate status.
+        $data['is_primary'] = TRUE;
+        if ($course->hasRecordType($this->alternateType)) {
+            $record = $course->getCourseRecord($this->alternateType);
+            $data['is_primary'] = $record->isPrimary();
+        }
+        return $data;
+    }
 
-        $catalogSession = $this->osidRuntime->getCourseManager()->getCourseCatalogSession();
-        $termsType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
-
-        //         foreach ($groups as $key => $group) {
-        //             print "\n$key";
-        //             foreach ($group as $course) {
-        //                 print "\n\t".$this->osidIdMap->toString($course->getId());
-        //             }
-        //         }
-
-        foreach ($recentCourses->getPrimaryCourses() as $course) {
-            $courseIdString = $this->osidIdMap->toString($course->getId());
-
-            echo "\n\t\t<item>";
-
-            echo "\n\t\t\t<title>";
-            $alternates = $recentCourses->getAlternatesForCourse($course);
-            $name = $course->getDisplayName();
-            foreach ($alternates as $alt) {
-                $name .= ' / '.$alt->getDisplayName();
-            }
-            echo htmlspecialchars($name.' - '.$course->getTitle());
-            echo '</title>';
-
-            echo "\n\t\t\t<link>";
-            $catalog = $catalogSession->getCatalogIdsByCourse($course->getId());
-            if ($catalog->hasNext()) {
-                $catalogIdString = $this->osidIdMap->toString($catalog->getNextId());
-            } else {
-                $catalogIdString = null;
-            }
-            echo $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'courses', null, ['catalog' => $catalogIdString, 'course' => $courseIdString]));
-            echo '</link>';
-
-            echo "\n\t\t\t<guid isPermaLink='true'>";
-            echo $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'courses', null, ['catalog' => $catalogIdString, 'course' => $courseIdString]));
-            echo '</guid>';
-
-            echo "\n\t\t\t<description><![CDATA[";
-            echo $course->getDescription();
-            echo ']]></description>';
-            echo "\n\t\t\t<catalog:id>".$courseIdString.'</catalog:id>';
-            echo "\n\t\t\t<catalog:display_name>".htmlspecialchars($course->getDisplayName()).'</catalog:display_name>';
-            echo "\n\t\t\t<catalog:title>".htmlspecialchars($course->getTitle()).'</catalog:title>';
-
-            foreach ($alternates as $alt) {
-                echo "\n\t\t\t<catalog:alternate>";
-                echo "\n\t\t\t\t<catalog:id>".$this->osidIdMap->toString($alt->getId()).'</catalog:id>';
-                echo "\n\t\t\t\t<catalog:display_name>".htmlspecialchars($alt->getDisplayName()).'</catalog:display_name>';
-                echo "\n\t\t\t\t<catalog:title>".htmlspecialchars($alt->getTitle()).'</catalog:title>';
-                echo "\n\t\t\t</catalog:alternate>";
-            }
-
-            $recentTerms = $recentCourses->getTermsForCourse($course);
-            if (count($recentTerms)) {
-                $termStrings = [];
-                foreach ($recentTerms as $term) {
-                    echo "\n\t\t\t<catalog:term id=\"".$this->osidIdMap->toString($term->getId()).'"';
-                    if ($term->getId()->isEqual($currentTermId)) {
-                        echo ' type="current"';
-                    } elseif ($currentEndTime < $this->DateTime_getTimestamp($term->getEndTime())) {
-                        echo ' type="future"';
-                    } elseif ($now > $this->DateTime_getTimestamp($term->getStartTime()) && $now < $this->DateTime_getTimestamp($term->getEndTime())) {
-                        echo ' type="current"';
-                    } else {
-                        echo ' type="past"';
+    /**
+     * Answer a list of all alternates for a course.
+     *
+     * @param \osid_course_Course $course
+     *   The course to get alternates for.
+     *
+     * @return \osid_course_Course[]
+     *   The courses, annotated with additional is_primary values.
+     */
+    protected function getAllAlternates(\osid_course_Course $course) {
+        $data = NULL;
+        if ($course->hasRecordType($this->alternateType)) {
+            $record = $course->getCourseRecord($this->alternateType);
+            $data = [];
+            if ($record->hasAlternates()) {
+                $alternates = $record->getAlternates();
+                while ($alternates->hasNext()) {
+                    $alternate = $alternates->getNextCourse();
+                    $alternate->is_primary = FALSE;
+                    if ($alternate->hasRecordType($this->alternateType)) {
+                        $alternateRecord = $alternate->getCourseRecord($this->alternateType);
+                        if ($alternateRecord->isPrimary()) {
+                            $alternate->is_primary = TRUE;
+                        }
                     }
-                    echo '>'.$term->getDisplayName().'</catalog:term>';
+                    $data[] = $alternate;
+                }
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * Answer a list of alternates for a course filtered to recent ones.
+     *
+     * @param \App\Helper\RecentCourses\RecentCoursesInterface $recentCourses
+     *   The helper used to filter to recent courses.
+     * @param \osid_course_Course $course
+     *   The course to get alternates for.
+     *
+     * @return \osid_course_Course[]
+     *   The courses, annotated with additional is_primary values.
+     */
+    protected function getRecentAlternates(RecentCoursesInterface $recentCourses, $course) {
+        $data = NULL;
+        foreach ($recentCourses->getAlternatesForCourse($course) as $alternate) {
+            $alternate->is_primary = FALSE;
+            if ($alternate->hasRecordType($this->alternateType)) {
+                $alternateRecord = $alternate->getCourseRecord($this->alternateType);
+                if ($alternateRecord->isPrimary()) {
+                    $alternate->is_primary = TRUE;
+                }
+            }
+            $data[] = $alternate;
+        }
+        return $data;
+    }
+
+    /**
+     * Answer an array of course offering data suitable for templating.
+     *
+     * @param \osid_course_Course $course
+     *   The course offerings are associated with.
+     * @param \osid_course_Term $term
+     *   A reference term if one is being used for filtering offerings.
+     *
+     * @return array
+     *   An array of course offering data.
+     */
+    protected function getCourseOfferingsData(\osid_course_Course $course, \osid_course_Term|NULL $term = NULL) {
+        $data = [];
+        $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
+        $offeringLookupSession->useFederatedCourseCatalogView();
+        if ($term) {
+            $offerings = $offeringLookupSession->getCourseOfferingsByTermForCourse(
+                $term->getId(),
+                $course->getId(),
+            );
+        } else {
+            $offerings = $offeringLookupSession->getCourseOfferingsForCourse($course->getId());
+        }
+        while ($offerings->hasNext()) {
+            $offering = $offerings->getNextCourseOffering();
+
+            if ($offering->hasRecordType($this->instructorsType)) {
+                $instructorsRecord = $offering->getCourseOfferingRecord($this->instructorsType);
+                $instructors = $instructorsRecord->getInstructors();
+                $offering->instructors = [];
+                $offering->instructorNames = [];
+                if ($instructors->hasNext()) {
+                    while ($instructors->hasNext()) {
+                        $instructor = $instructors->getNextResource();
+                        $instructorData = [
+                            'resource' => $instructor,
+                            'givename' => NULL,
+                            'surname' => NULL,
+                        ];
+                        if ($instructor->hasRecordType($this->namesType)) {
+                            $namesRecord = $instructor->getResourceRecord($this->namesType);
+                            $instructorData['givename'] = $namesRecord->getGivenName();
+                            $instructorData['surname'] = $namesRecord->getSurname();
+                            $offering->instructorNames[] = $namesRecord->getSurname();
+                        } else {
+                            $offering->instructorNames[] = $instructor->getDisplayName();
+                        }
+                        $offering->instructors[] = $instructorData;
+                    }
                 }
             }
 
-            $allTopics = $this->osidTopicHelper->topicListAsArray($course->getTopics());
-            $topicType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department');
-            $topicTypeString = $this->_helper->osidType->toString($topicType);
-            $topics = $this->osidTopicHelper->filterTopicsByType($allTopics, $topicType);
-            foreach ($topics as $topic) {
-                $topicParams['topic'] = $this->osidIdMap->toString($topic->getId());
-                echo "\n\t\t\t<catalog:topic type=\"".$topicTypeString.'" id="'.$this->osidIdMap->toString($topic->getId()).'" href="'.$this->_helper->pathAsAbsoluteUrl($this->view->url($topicParams)).'">';
-                echo $this->view->escape($topic->getDisplayName());
-                echo '</catalog:topic> ';
-            }
-
-            $topicType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement');
-            $topicTypeString = $this->_helper->osidType->toString($topicType);
-            $topics = $this->osidTopicHelper->filterTopicsByType($allTopics, $topicType);
-            foreach ($topics as $topic) {
-                $topicParams['topic'] = $this->osidIdMap->toString($topic->getId());
-                echo "\n\t\t\t<catalog:topic type=\"".$topicTypeString.'" id="'.$this->osidIdMap->toString($topic->getId()).'" href="'.$this->_helper->pathAsAbsoluteUrl($this->view->url($topicParams)).'">';
-                echo $this->view->escape($topic->getDisplayName());
-                echo '</catalog:topic> ';
-            }
-
-            $topicType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.level');
-            $topicTypeString = $this->_helper->osidType->toString($topicType);
-            $topics = $this->osidTopicHelper->filterTopicsByType($allTopics, $topicType);
-            foreach ($topics as $topic) {
-                $topicParams['topic'] = $this->osidIdMap->toString($topic->getId());
-                echo "\n\t\t\t<catalog:topic type=\"".$topicTypeString.'" id="'.$this->osidIdMap->toString($topic->getId()).'" href="'.$this->_helper->pathAsAbsoluteUrl($this->view->url($topicParams)).'">';
-                echo $this->view->escape($topic->getDisplayName());
-                echo '</catalog:topic> ';
-            }
-
-            echo "\n\t\t</item>";
-            flush();
+            $data[] = $offering;
         }
 
-        echo '
-    </channel>
-</rss>';
-        exit;
+        return $data;
     }
 
     /**
