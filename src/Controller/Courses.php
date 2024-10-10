@@ -135,6 +135,18 @@ class Courses extends AbstractController
         return $response;
     }
 
+    /**
+     * Answer an array of course data suitable for templating.
+     *
+     * @param string $idString
+     *   The course id string.
+     * @param string $termIdString
+     *   A reference term's id string if one is being used for filtering
+     *   offerings.
+     *
+     * @return array
+     *   An array of data about the course.
+     */
     protected function getCourseDataByIdString($idString, $termIdString = NULL)
     {
         $id = $this->osidIdMap->fromString($idString);
@@ -154,6 +166,17 @@ class Courses extends AbstractController
         return $this->getCourseData($lookupSession->getCourse($id), $term);
     }
 
+    /**
+     * Answer an array of course data suitable for templating.
+     *
+     * @param \osid_course_Course $course
+     *   The course.
+     * @param \osid_course_Term $term
+     *   A reference term if one is being used for filtering offerings.
+     *
+     * @return array
+     *   An array of data about the course.
+     */
     protected function getCourseData(\osid_course_Course $course, \osid_course_Term|NULL $term = NULL) {
         $data = [];
         $data['course'] = $course;
@@ -233,6 +256,17 @@ class Courses extends AbstractController
         return $data;
     }
 
+    /**
+     * Answer an array of course offering data suitable for templating.
+     *
+     * @param \osid_course_Course $course
+     *   The course offerings are associated with.
+     * @param \osid_course_Term $term
+     *   A reference term if one is being used for filtering offerings.
+     *
+     * @return array
+     *   An array of course offering data.
+     */
     protected function getCourseOfferingsData(\osid_course_Course $course, \osid_course_Term|NULL $term = NULL) {
         $data = [];
         $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
@@ -849,6 +883,20 @@ class Courses extends AbstractController
         exit;
     }
 
+    /**
+     * Answer an array of data that includes the term and past/current/future.
+     *
+     * @param \osid_course_Term $currentTerm
+     *   The current term to compare against.
+     * @param \App\Helper\RecentCourses\RecentCoursesInterface $recentCourses
+     *   The helper used to filter to recent courses.
+     * @param \osid_course_Course $course
+     *   The course to get alternates for.
+     *
+     * @return array
+     *   An array of term data. Sub-keys are 'term' (the Term object) and
+     *   'type' (current/future/past).
+     */
     protected function getRecentTermData(\osid_course_Term $currentTerm, RecentCoursesInterface $recentCourses, \osid_course_Course $course) {
         $now = $this->DateTime_getTimestamp(new \DateTime());
         $currentTermId = $currentTerm->getId();
