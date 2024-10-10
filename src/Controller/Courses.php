@@ -427,8 +427,13 @@ class Courses extends AbstractController
         $topicLookup->useFederatedCourseCatalogView();
         $topicNames = [];
         foreach ($topicIds as $topicId) {
-            $topic = $topicLookup->getTopic($topicId);
-            $topicNames[] = $topic->getDisplayName();
+            try {
+                $topic = $topicLookup->getTopic($topicId);
+                $topicNames[] = $topic->getDisplayName();
+            }
+            catch (\osid_NotFoundException $e) {
+                $topicNames[] = $this->osidIdMap->toString($topicId);
+            }
         }
         $data['title'] = 'Courses in ' . implode(', ', $topicNames);
         $data['feedLink'] = $this->generateUrl(

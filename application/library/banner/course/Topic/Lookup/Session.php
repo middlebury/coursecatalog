@@ -395,7 +395,7 @@ GROUP BY SCBCRSE_DEPT_CODE
         $row = self::$getDepartmentTopic_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
         self::$getDepartmentTopic_stmts[$catalogWhere]->closeCursor();
 
-        if (!$row['STVDEPT_CODE']) {
+        if (empty($row) || !$row['STVDEPT_CODE']) {
             throw new osid_NotFoundException('Could not find a topic matching the department code '.$this->getDatabaseIdString($topicId, 'topic.department.').'.');
         }
 
