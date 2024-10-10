@@ -204,7 +204,7 @@ class Courses extends AbstractController
      * @param \osid_course_Course $course
      *   The course to get alternates for.
      *
-     * @return osid_course_Course[]
+     * @return \osid_course_Course[]
      *   The courses, annotated with additional is_primary values.
      */
     protected function getAllAlternates(\osid_course_Course $course) {
@@ -238,7 +238,7 @@ class Courses extends AbstractController
      * @param \osid_course_Course $course
      *   The course to get alternates for.
      *
-     * @return osid_course_Course[]
+     * @return \osid_course_Course[]
      *   The courses, annotated with additional is_primary values.
      */
     protected function getRecentAlternates(RecentCoursesInterface $recentCourses, $course) {
@@ -611,9 +611,9 @@ class Courses extends AbstractController
 
                 $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
             } catch (\osid_InvalidArgumentException $e) {
-                throw new osid_InvalidArgumentException('The catalog id specified was not of the correct format.');
+                throw new \osid_InvalidArgumentException('The catalog id specified was not of the correct format.');
             } catch (\osid_NotFoundException $e) {
-                throw new osid_NotFoundException('The catalog id specified was not found.');
+                throw new \osid_NotFoundException('The catalog id specified was not found.');
                 exit;
             }
         }
@@ -909,7 +909,7 @@ class Courses extends AbstractController
     /**
      * Load topics into our view.
      *
-     * @param osid_course_TopicList
+     * @param \osid_course_TopicList
      *
      * @return void
      *
