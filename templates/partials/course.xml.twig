@@ -1,9 +1,11 @@
         <item>
-            <title>{{ course.displayname }}</title>
+            <title>{{ course.displayname }} - {{ course.title }}</title>
             <link>{{ url('view_course', {'course': osidIdToString(course.id)}) }}</link>
+            <guid isPermaLink="true">{{ url('view_course', {'course': osidIdToString(course.id)}) }}</guid>
             <description><![CDATA[{{ course.description|raw }}]]></description>
-            <catalog:title>{{ course.title }}</catalog:title>
             <catalog:id>{{ osidIdToString(course.id) }}</catalog:id>
+            <catalog:display_name>{{ course.displayname }}</catalog:display_name>
+            <catalog:title>{{ course.title }}</catalog:title>
 {%~ if is_primary is not null %}
             <catalog:enrollable>{{ is_primary ? 'true':'false' }}</catalog:enrollable>
 {% endif ~%}
@@ -17,7 +19,6 @@
             <catalog:term id="{{ osidIdToString(termData.term.id) }}" type="{{ termData.type }}">{{ termData.term.displayname }}</catalog:term>
 {% endfor ~%}
 {% endif %}
-            <catalog:genustype type="{{ osidTypeToString(course.genustype) }}" id="{{ osidTypeToString(course.genustype) }}">{{ course.genustype.displayname }}</catalog:genustype>
 {% for topic in subjectTopics %}
             <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id)}) }}'>{{ topic.displayname }}</catalog:topic>
 {% endfor %}
