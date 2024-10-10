@@ -314,18 +314,9 @@ class Courses extends AbstractController
         return $data;
     }
 
-    /**
-     * Search for courses.
-     *
-     * @return void
-     *
-     * @since 6/15/09
-     */
-    public function searchxmlAction()
+    #[Route('/courses/searchxml/{catalog}', name: 'search_courses_xml')]
+    public function searchxmlAction(Request $request, $catalog)
     {
-        $this->_helper->layout->disableLayout();
-        $this->_helper->viewRenderer->setNoRender();
-
         if (!$catalog) {
             header('HTTP/1.1 400 Bad Request');
             echo 'A catalog must be specified.';
@@ -334,31 +325,18 @@ class Courses extends AbstractController
         try {
             $catalogId = $this->osidIdMap->fromString($catalog);
             $searchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
-        } catch (osid_InvalidArgumentException $e) {
+        } catch (\osid_InvalidArgumentException $e) {
             header('HTTP/1.1 400 Bad Request');
             echo 'The catalog id specified was not of the correct format.';
             exit;
-        } catch (osid_NotFoundException $e) {
+        } catch (\osid_NotFoundException $e) {
             header('HTTP/1.1 404 Not Found');
             echo 'The catalog id specified was not found.';
             exit;
         }
 
         $keywords = trim($request->get('keywords'));
-        $searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('search', 'offerings', null, ['catalog' => $catalog, 'keywords' => $keywords, 'submit' => 'Search']));
 
-        header('Content-Type: text/xml');
-        echo '<?xml version="1.0" encoding="utf-8" ?>
-<rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
-    <channel>
-        <title>Course Search: "'.htmlspecialchars($keywords).'"</title>
-        <link>'.$searchUrl.'</link>
-        <description></description>
-        <lastBuildDate>'.date('r').'</lastBuildDate>
-        <generator>Course Catalog</generator>
-        <docs>http://blogs.law.harvard.edu/tech/rss</docs>
-
-';
         $courses = [];
         // Fetch courses
         if (strlen($keywords)) {
@@ -378,42 +356,31 @@ class Courses extends AbstractController
                 if (!isset($courses[$courseIdString])) {
                     try {
                         $courses[$courseIdString] = $offering->getCourse();
-                    } catch (osid_OperationFailedException $e) {
-                        //                         print "\n<item><title>Failure on ".$offering->getDisplayName()."</title><description><![CDATA[<pre>OfferingId:\n".print_r($offering->getId(), true)."\n\nCourseId:\n".print_r($offering->getCourseId(), true)."</pre>]]></description></item>";
+                    } catch (\osid_OperationFailedException $e) {
                     }
                 }
             }
         }
 
-        // Print out courses as items.
+        $data = [
+            'courses' => [],
+        ];
         foreach ($courses as $courseIdString => $course) {
-            echo "\n\t\t<item>";
-
-            echo "\n\t\t\t<title>";
-            echo htmlspecialchars($course->getDisplayName().' - '.$course->getTitle());
-            echo '</title>';
-
-            echo "\n\t\t\t<link>";
-            echo $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'courses', null, ['catalog' => $catalog, 'course' => $courseIdString]));
-            echo '</link>';
-
-            echo "\n\t\t\t<guid isPermaLink='true'>";
-            echo $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'courses', null, ['catalog' => $catalog, 'course' => $courseIdString]));
-            echo '</guid>';
-
-            echo "\n\t\t\t<description><![CDATA[";
-            echo $course->getDescription();
-            echo ']]></description>';
-            echo "\n\t\t\t<catalog:id>".$courseIdString.'</catalog:id>';
-
-            echo "\n\t\t</item>";
+            $data['courses'][] = $this->getCourseData($course);
         }
+        $data['title'] = 'Course Search: "' . $keywords . '"';
+        $data['feedLink'] = $this->generateUrl(
+            'search_courses_xml',
+            [
+                'catalog' => $catalog,
+                'keywords' => $request->get('keywords'),
+            ],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
 
-        echo '
-    </channel>
-</rss>';
-
-        exit;
+        $response = new Response($this->renderView('courses/list.xml.twig', $data));
+        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+        return $response;
     }
 
     #[Route('/courses/topicxml/{catalog}', name: 'list_courses_by_topic')]
