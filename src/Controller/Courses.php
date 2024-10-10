@@ -729,7 +729,16 @@ class Courses extends AbstractController
         return $data;
     }
 
-    public function DateTime_getTimestamp($dt)
+    /**
+     * Answer a timestamp in GMT give a DateTime.
+     *
+     * @param \DateTime $dt
+     *   The DateTime to get a timestamp for.
+     *
+     * @return int
+     *   The GMT timestamp.
+     */
+    public function DateTime_getTimestamp(\DateTime $dt)
     {
         $dtz_original = $dt->getTimezone();
         $dtz_utc = new \DateTimeZone('UTC');
