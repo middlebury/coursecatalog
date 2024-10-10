@@ -1,5 +1,5 @@
         <item>
-            <title>{{ course.displayname }} - {{ course.title }}</title>
+            <title>{{ course.displayname }}{% if include_alternates_in_title and alternates is not empty %}{% for alternate in alternates %} / {{ alternate.displayname }}{% endfor %}{% endif %} - {{ course.title }}</title>
             <link>{{ url('view_course', {'course': osidIdToString(course.id)}) }}</link>
             <guid isPermaLink="true">{{ url('view_course', {'course': osidIdToString(course.id)}) }}</guid>
             <description><![CDATA[{{ course.description|raw }}]]></description>
@@ -11,7 +11,11 @@
 {% endif ~%}
 {%- if alternates is not empty %}
 {%- for alternate in alternates %}
-            <catalog:alternate id="{{ osidIdToString(alternate.id) }}" href="{{ url('view_course', {course: osidIdToString(alternate.id)}) }}" is_primary="{{ alternate.is_primary ? 'true':'false' }}">{{ alternate.displayname }}</catalog:alternate>
+            <catalog:alternate id="{{ osidIdToString(alternate.id) }}" href="{{ url('view_course', {course: osidIdToString(alternate.id)}) }}" is_primary="{{ alternate.is_primary ? 'true':'false' }}">
+                <catalog:id>{{ osidIdToString(alternate.id) }}</catalog:id>
+                <catalog:display_name>{{ alternate.displayname }}</catalog:display_name>
+                <catalog:title>{{ alternate.title }}</catalog:title>
+            </catalog:alternate>
 {% endfor ~%}
 {% endif %}
 {%- if terms is not empty %}

@@ -7,6 +7,7 @@
 namespace App\Controller;
 
 use App\Helper\RecentCourses\Department as DepartmentRecentCourses;
+use App\Helper\RecentCourses\Instructor as InstructorRecentCourses;
 use App\Helper\RecentCourses\RecentCoursesInterface;
 use App\Service\Osid\IdMap;
 use App\Service\Osid\Runtime;
@@ -123,6 +124,7 @@ class Courses extends AbstractController
         $data = [];
         $courseData = $this->getCourseDataByIdString($course, $term);
         $courseData['offerings'] = $this->getCourseOfferingsData($courseData['course'], $courseData['term']);
+        $courseData['alternates'] = $this->getAllAlternates($courseData['course']);
         $data['courses'] = [$courseData];
 
         $data['title'] = $data['courses'][0]['course']->getDisplayName();
@@ -155,20 +157,39 @@ class Courses extends AbstractController
     protected function getCourseData(\osid_course_Course $course, \osid_course_Term|NULL $term = NULL) {
         $data = [];
         $data['course'] = $course;
+        $data['term'] = $term;
         // Optional add-on data that can be populated by other methods.
-        $data['offerings'] = [];
-        $data['terms'] = [];
-        // Load the topics into our view
-        $data = array_merge($data, $this->getTopics($course->getTopics()));
-
-        // Alternates
         $data['is_primary'] = TRUE;
         $data['alternates'] = NULL;
+        $data['offerings'] = [];
+        $data['terms'] = [];
+        $data['include_alternates_in_title'] = TRUE;
+        // Load the topics into our view
+        $data = array_merge($data, $this->getTopics($course->getTopics()));
+        // Alternate status.
+        $data['is_primary'] = TRUE;
         if ($course->hasRecordType($this->alternateType)) {
             $record = $course->getCourseRecord($this->alternateType);
             $data['is_primary'] = $record->isPrimary();
+        }
+        return $data;
+    }
+
+    /**
+     * Answer a list of all alternates for a course.
+     *
+     * @param \osid_course_Course $course
+     *   The course to get alternates for.
+     *
+     * @return osid_course_Course[]
+     *   The courses, annotated with additional is_primary values.
+     */
+    protected function getAllAlternates(\osid_course_Course $course) {
+        $data = NULL;
+        if ($course->hasRecordType($this->alternateType)) {
+            $record = $course->getCourseRecord($this->alternateType);
+            $data = [];
             if ($record->hasAlternates()) {
-                $data['alternates'] = [];
                 $alternates = $record->getAlternates();
                 while ($alternates->hasNext()) {
                     $alternate = $alternates->getNextCourse();
@@ -179,14 +200,36 @@ class Courses extends AbstractController
                             $alternate->is_primary = TRUE;
                         }
                     }
-                    $data['alternates'][] = $alternate;
+                    $data[] = $alternate;
                 }
             }
         }
+        return $data;
+    }
 
-        // Term
-        $data['term'] = $term;
-
+    /**
+     * Answer a list of alternates for a course filtered to recent ones.
+     *
+     * @param \App\Helper\RecentCourses\RecentCoursesInterface $recentCourses
+     *   The helper used to filter to recent courses.
+     * @param \osid_course_Course $course
+     *   The course to get alternates for.
+     *
+     * @return osid_course_Course[]
+     *   The courses, annotated with additional is_primary values.
+     */
+    protected function getRecentAlternates(RecentCoursesInterface $recentCourses, $course) {
+        $data = NULL;
+        foreach ($recentCourses->getAlternatesForCourse($course) as $alternate) {
+            $alternate->is_primary = FALSE;
+            if ($alternate->hasRecordType($this->alternateType)) {
+                $alternateRecord = $alternate->getCourseRecord($this->alternateType);
+                if ($alternateRecord->isPrimary()) {
+                    $alternate->is_primary = TRUE;
+                }
+            }
+            $data[] = $alternate;
+        }
         return $data;
     }
 
@@ -249,13 +292,13 @@ class Courses extends AbstractController
         $this->_helper->layout->disableLayout();
         $this->_helper->viewRenderer->setNoRender();
 
-        if (!$this->_getParam('catalog')) {
+        if (!$catalog) {
             header('HTTP/1.1 400 Bad Request');
             echo 'A catalog must be specified.';
             exit;
         }
         try {
-            $catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
+            $catalogId = $this->osidIdMap->fromString($catalog);
             $searchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
         } catch (osid_InvalidArgumentException $e) {
             header('HTTP/1.1 400 Bad Request');
@@ -267,8 +310,8 @@ class Courses extends AbstractController
             exit;
         }
 
-        $keywords = trim($this->_getParam('keywords'));
-        $searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('search', 'offerings', null, ['catalog' => $this->_getParam('catalog'), 'keywords' => $keywords, 'submit' => 'Search']));
+        $keywords = trim($request->get('keywords'));
+        $searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('search', 'offerings', null, ['catalog' => $catalog, 'keywords' => $keywords, 'submit' => 'Search']));
 
         header('Content-Type: text/xml');
         echo '<?xml version="1.0" encoding="utf-8" ?>
@@ -317,11 +360,11 @@ class Courses extends AbstractController
             echo '</title>';
 
             echo "\n\t\t\t<link>";
-            echo $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'courses', null, ['catalog' => $this->_getParam('catalog'), 'course' => $courseIdString]));
+            echo $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'courses', null, ['catalog' => $catalog, 'course' => $courseIdString]));
             echo '</link>';
 
             echo "\n\t\t\t<guid isPermaLink='true'>";
-            echo $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'courses', null, ['catalog' => $this->_getParam('catalog'), 'course' => $courseIdString]));
+            echo $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'courses', null, ['catalog' => $catalog, 'course' => $courseIdString]));
             echo '</guid>';
 
             echo "\n\t\t\t<description><![CDATA[";
@@ -419,6 +462,7 @@ class Courses extends AbstractController
         foreach ($recentCourses->getPrimaryCourses() as $course) {
             $courseData = $this->getCourseData($course);
             $courseData['terms'] = $this->getRecentTermData($currentTerm, $recentCourses, $course);
+            $courseData['alternates'] = $this->getRecentAlternates($recentCourses, $course);
             $courseData['offerings'] = [];
             $data['courses'][] = $courseData;
         }
@@ -508,6 +552,7 @@ class Courses extends AbstractController
         foreach ($recentCourses->getPrimaryCourses() as $course) {
             $courseData = $this->getCourseData($course);
             $courseData['terms'] = $this->getRecentTermData($currentTerm, $recentCourses, $course);
+            $courseData['alternates'] = $this->getRecentAlternates($recentCourses, $course);
             $courseData['offerings'] = [];
             $data['courses'][] = $courseData;
         }
@@ -537,24 +582,19 @@ class Courses extends AbstractController
      *      b. Take the section plus its cross-listed sections, get their course
      *         entries and merge them into a single result.
      *
-     * @return void
-     *
-     * @since 6/15/09
      */
-    public function instructorxmlAction()
+    #[Route('/courses/instructorxml/{instructor}/{catalog}', name: 'list_courses_by_instructor')]
+    public function instructorxmlAction(Request $request, $instructor, $catalog = NULL)
     {
-        $this->_helper->layout->disableLayout();
-        $this->_helper->viewRenderer->setNoRender();
-
-        if (!$this->_getParam('catalog')) {
+        if (!$catalog) {
             $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSession();
             $offeringSearchSession->useFederatedCourseCatalogView();
             $courseLookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSession();
             $courseLookupSession->useFederatedCourseCatalogView();
 
             // Allow term current/past to be limited to a certain catalog while courses are fetched from many
-            if ($this->_getParam('term_catalog')) {
-                $catalogId = $this->osidIdMap->fromString($this->_getParam('term_catalog'));
+            if ($request->get('term_catalog')) {
+                $catalogId = $this->osidIdMap->fromString($request->get('term_catalog'));
                 $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
             }
             // fall back to terms from any catalog.
@@ -564,36 +604,34 @@ class Courses extends AbstractController
             }
         } else {
             try {
-                $catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
+                $catalogId = $this->osidIdMap->fromString($catalog);
                 $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
                 $courseLookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
 
                 $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
-            } catch (osid_InvalidArgumentException $e) {
+            } catch (\osid_InvalidArgumentException $e) {
                 throw new osid_InvalidArgumentException('The catalog id specified was not of the correct format.');
-            } catch (osid_NotFoundException $e) {
+            } catch (\osid_NotFoundException $e) {
                 throw new osid_NotFoundException('The catalog id specified was not found.');
                 exit;
             }
         }
 
-        $instructor = trim($this->_getParam('instructor'));
+        $instructor = trim($instructor);
 
         if (!$instructor || !strlen($instructor)) {
             // Make sure that this error response is cacheable.
             $this->setCacheControlHeaders();
             $this->getResponse()->sendHeaders();
 
-            throw new InvalidArgumentException('An instructor must be specified.');
+            throw new \InvalidArgumentException('An instructor must be specified.');
         }
 
         $instructorId = $this->osidIdMap->fromString('resource.person.'.$instructor);
-        $searchUrl = $this->_helper->pathAsAbsoluteUrl($this->_helper->url('view', 'resources', null, ['catalog' => $this->_getParam('catalog'), 'resource' => 'resouce.person.'.$instructor]));
-
         $resourceLookup = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
         try {
             $instructorResource = $resourceLookup->getResource($instructorId);
-        } catch (osid_NotFoundException $e) {
+        } catch (\osid_NotFoundException $e) {
             // Make sure that this error response is cacheable.
             $this->setCacheControlHeaders();
             $this->getResponse()->sendHeaders();
@@ -614,11 +652,40 @@ class Courses extends AbstractController
 
         $courseOfferings = $offeringSearchSession->getCourseOfferingsBySearch($query, $search);
 
-        $recentCourses = new Helper_RecentCourses_Instructor($courseOfferings, $courseLookupSession);
-        if ($this->_getParam('cutoff')) {
-            $recentCourses->setRecentInterval(new DateInterval($this->_getParam('cutoff')));
+        $recentCourses = new InstructorRecentCourses($this->osidIdMap, $courseOfferings, $courseLookupSession);
+        if ($request->get('cutoff')) {
+            $recentCourses->setRecentInterval(new DateInterval($request->get('cutoff')));
         }
-        $this->outputCourseFeed($recentCourses, 'Courses taught by '.$instructorResource->getDisplayName(), $searchUrl);
+
+        // Set the next and previous terms.
+        $currentTermId = $this->osidTermHelper->getCurrentTermId($this->termLookupSession->getCourseCatalogId());
+        $currentTerm = $this->termLookupSession->getTerm($currentTermId);
+
+        $data = [
+            'courses' => [],
+        ];
+        foreach ($recentCourses->getPrimaryCourses() as $course) {
+            $courseData = $this->getCourseData($course);
+            $courseData['include_alternates_in_title'] = TRUE;
+            $courseData['terms'] = $this->getRecentTermData($currentTerm, $recentCourses, $course);
+            $courseData['alternates'] = $this->getRecentAlternates($recentCourses, $course);
+            $courseData['offerings'] = [];
+            $data['courses'][] = $courseData;
+        }
+        $data['title'] = 'Courses taught by '.$instructorResource->getDisplayName();
+        $data['feedLink'] = $this->generateUrl(
+            'list_courses_by_instructor',
+            [
+                'instructor' => $instructor,
+                'catalog' => $catalog,
+                'term_catalog' => $request->get('term_catalog'),
+            ],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
+        $response = new Response($this->renderView('courses/list.xml.twig', $data));
+        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+        return $response;
     }
 
     /**
