@@ -180,19 +180,6 @@ class Offerings extends AbstractController
                 $lastTerm = $term;
             }
         }
-        // Reset the terms list as due to caching, we will have just wiped out the statement above.
-        //
-        // It would be better to fix this in the banner_course_CachingPdoQueryList, but
-        // I haven't yet figured out how to determine if a result cursor
-        // has been closed or not. See:
-        //
-        // http://stackoverflow.com/questions/1608427/how-can-i-determine-if-a-pdo-statement-cursor-is-closed
-        $data['terms'] = [];
-        $terms = $termLookupSession->getTerms();
-        while ($terms->hasNext()) {
-            $term = $terms->getNextTerm();
-            $data['terms'][] = $term;
-        }
 
         $data['title'] = 'Course Offering Results';
         $data['feedLink'] = $this->generateUrl(
@@ -209,22 +196,26 @@ class Offerings extends AbstractController
     #[Route('/offerings/search/{catalog}/{term}', name: 'search_offerings')]
     public function search(Request $request, string $catalog = NULL, string $term = NULL)
     {
-        $data = $this->prepareSearch($request, $catalog, $term);
+        [$data, $searchSession, $query, $termLookupSession] = $this->prepareSearch($request, $catalog, $term);
+
+        $data['form_action'] = $this->generateUrl('search_offerings', ['catalog' => $catalog]);
 
         // Run the query if submitted.
         if ($request->get('search')) {
             $data['searchParams']['search'] = $request->get('search');
-            $data['paginator'] = new Zend_Paginator(new Paginator_Adaptor_CourseOfferingSearch($offeringSearchSession, $query));
+            throw new \Exception('Todo: implement pagination');
+            $data['paginator'] = new Zend_Paginator(new Paginator_Adaptor_CourseOfferingSearch($searchSession, $query));
             $data['paginator']->setCurrentPageNumber($request->get('page'));
         }
 
         /*********************************************************
          * Data for layouts rendering.
          *********************************************************/
-        $data['selectedCatalogId'] = $offeringSearchSession->getCourseCatalogId();
+        $data['selectedCatalogId'] = $searchSession->getCourseCatalogId();
         $data['menuIsSearch'] = true;
 
-        throw new \Exception('todo');
+
+        return $this->render('offerings/search.html.twig', $data);
     }
 
     /**
@@ -294,7 +285,11 @@ class Offerings extends AbstractController
         $order->orderByDisplayName();
         $search->orderTopicResults($order);
         $searchResults = $topicSearchSession->getTopicsBySearch($topicQuery, $search);
-        $data['departments'] = $searchResults->getTopics();
+        $topics = $searchResults->getTopics();
+        $data['departments'] = [];
+        while ($topics->hasNext()) {
+            $data['departments'][] = $topics->getNextTopic();
+        }
 
         $topicQuery = $topicSearchSession->getTopicQuery();
         $topicQuery->matchGenusType($this->subjectType, true);
@@ -307,7 +302,11 @@ class Offerings extends AbstractController
         $order->orderByDisplayName();
         $search->orderTopicResults($order);
         $searchResults = $topicSearchSession->getTopicsBySearch($topicQuery, $search);
-        $data['subjects'] = $searchResults->getTopics();
+        $topics = $searchResults->getTopics();
+        $data['subjects'] = [];
+        while ($topics->hasNext()) {
+            $data['subjects'][] = $topics->getNextTopic();
+        }
 
         $topicQuery = $topicSearchSession->getTopicQuery();
         $topicQuery->matchGenusType($this->divisionType, true);
@@ -315,7 +314,11 @@ class Offerings extends AbstractController
             $record = $topicQuery->getTopicQueryRecord($this->termType);
             $record->matchTermId($termId, true);
         }
-        $data['divisions'] = $topicSearchSession->getTopicsByQuery($topicQuery);
+        $topics = $topicSearchSession->getTopicsByQuery($topicQuery);
+        $data['divisions'] = [];
+        while ($topics->hasNext()) {
+            $data['divisions'][] = $topics->getNextTopic();
+        }
 
         $topicQuery = $topicSearchSession->getTopicQuery();
         $topicQuery->matchGenusType($this->requirementType, true);
@@ -323,7 +326,11 @@ class Offerings extends AbstractController
             $record = $topicQuery->getTopicQueryRecord($this->termType);
             $record->matchTermId($termId, true);
         }
-        $data['requirements'] = $topicSearchSession->getTopicsByQuery($topicQuery);
+        $topics = $topicSearchSession->getTopicsByQuery($topicQuery);
+        $data['requirements'] = [];
+        while ($topics->hasNext()) {
+            $data['requirements'][] = $topics->getNextTopic();
+        }
 
         $topicQuery = $topicSearchSession->getTopicQuery();
         $topicQuery->matchGenusType($this->levelType, true);
@@ -331,7 +338,11 @@ class Offerings extends AbstractController
             $record = $topicQuery->getTopicQueryRecord($this->termType);
             $record->matchTermId($termId, true);
         }
-        $data['levels'] = $topicSearchSession->getTopicsByQuery($topicQuery);
+        $topics = $topicSearchSession->getTopicsByQuery($topicQuery);
+        $data['levels'] = [];
+        while ($topics->hasNext()) {
+            $data['levels'][] = $topics->getNextTopic();
+        }
 
         $topicQuery = $topicSearchSession->getTopicQuery();
         $topicQuery->matchGenusType($this->blockType, true);
@@ -339,7 +350,11 @@ class Offerings extends AbstractController
             $record = $topicQuery->getTopicQueryRecord($this->termType);
             $record->matchTermId($termId, true);
         }
-        $data['blocks'] = $topicSearchSession->getTopicsByQuery($topicQuery);
+        $topics = $topicSearchSession->getTopicsByQuery($topicQuery);
+        $data['blocks'] = [];
+        while ($topics->hasNext()) {
+            $data['blocks'][] = $topics->getNextTopic();
+        }
 
         $topicQuery = $topicSearchSession->getTopicQuery();
         $topicQuery->matchGenusType($this->instructionMethodType, true);
@@ -347,14 +362,26 @@ class Offerings extends AbstractController
             $record = $topicQuery->getTopicQueryRecord($this->termType);
             $record->matchTermId($termId, true);
         }
-        $data['instructionMethods'] = $topicSearchSession->getTopicsByQuery($topicQuery);
+        $topics = $topicSearchSession->getTopicsByQuery($topicQuery);
+        $data['instructionMethods'] = [];
+        while ($topics->hasNext()) {
+            $data['instructionMethods'][] = $topics->getNextTopic();
+        }
 
-        $data['genusTypes'] = $offeringLookupSession->getCourseOfferingGenusTypes();
+        $genusTypes = $offeringLookupSession->getCourseOfferingGenusTypes();
+        $data['genusTypes'] = [];
+        while ($genusTypes->hasNext()) {
+            $data['genusTypes'][] = $genusTypes->getNextType();
+        };
 
         // Campuses -- only include if we have more than one.
         $campuses = $resourceLookupSession->getResourcesByGenusType($this->campusType);
         if ($campuses->hasNext() && $campuses->getNextResource() && $campuses->hasNext()) {
-            $data['campuses'] = $resourceLookupSession->getResourcesByGenusType($this->campusType);
+            $campuses = $resourceLookupSession->getResourcesByGenusType($this->campusType);
+            $data['campuses'] = [];
+            while ($campuses->hasNext()) {
+                $data['campuses'][] = $campuses->getNextResource();
+            }
         }
 
         /*********************************************************
@@ -368,7 +395,12 @@ class Offerings extends AbstractController
             'term' => $term,
         ];
 
-        $data['terms'] = $termLookupSession->getTerms();
+        $data['terms'] = [];
+        $terms = $termLookupSession->getTerms();
+        while ($terms->hasNext()) {
+            $term = $terms->getNextTerm();
+            $data['terms'][] = $term;
+        }
 
         // Add our parameters to the search query
         if ($term) {
@@ -528,7 +560,7 @@ class Offerings extends AbstractController
 
             if (count($genusTypes)) {
                 foreach ($genusTypes as $typeString) {
-                    $genusType = $this->osidRuntimeType->fromString($typeString);
+                    $genusType = $this->osidIdMap->typeFromString($typeString);
                     $query->matchGenusType($genusType, true);
                     $data['selectedGenusTypes'][] = $genusType;
                 }
@@ -562,6 +594,9 @@ class Offerings extends AbstractController
 
         if ($query->hasRecordType($this->weeklyScheduleType)) {
             $queryRecord = $query->getCourseOfferingQueryRecord($this->weeklyScheduleType);
+
+            $data['searchParams']['days'] = [];
+            $data['searchParams']['days_mode'] = 'inclusive';
 
             if ($request->get('days')) {
                 if (is_array($request->get('days'))) {
@@ -637,8 +672,6 @@ class Offerings extends AbstractController
 
                     $data['searchParams']['days'] = $days;
                 }
-            } else {
-                $data['searchParams']['days'] = [];
             }
 
             if ($request->get('time_start') || $request->get('time_end')) {

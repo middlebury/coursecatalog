@@ -31,6 +31,9 @@ class OsidIdExtension extends AbstractExtension
         return [
             new TwigFunction('osidIdToString', [$this, 'osidIdToString']),
             new TwigFunction('osidTypeToString', [$this, 'osidTypeToString']),
+            new TwigFunction('osidIdsEqual', [$this, 'osidIdsEqual']),
+            new TwigFunction('osidIdInArray', [$this, 'osidIdInArray']),
+            new TwigFunction('osidTypeInArray', [$this, 'osidTypeInArray']),
         ];
     }
 
@@ -42,5 +45,30 @@ class OsidIdExtension extends AbstractExtension
     public function osidTypeToString(\osid_type_Type $type): string
     {
         return $this->idMap->typeToString($type);
+    }
+
+    public function osidIdsEqual(\osid_id_Id $id1, \osid_id_Id $id2): bool
+    {
+        return $id1->isEqual($id2);
+    }
+
+    public function osidIdInArray(\osid_id_Id $id, iterable $ids): bool
+    {
+        foreach ($ids as $comparison) {
+            if ($id->isEqual($comparison)) {
+                return TRUE;
+            }
+        }
+        return FALSE;
+    }
+
+    public function osidTypeInArray(\osid_type_Type $type, iterable $types): bool
+    {
+        foreach ($types as $comparison) {
+            if ($type->isEqual($comparison)) {
+                return TRUE;
+            }
+        }
+        return FALSE;
     }
 }

@@ -1,5 +1,11 @@
 <?php
 
+namespace App\Twig;
+
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
+
 /**
  * A helper to answer a 24-hour time string from an integer number of seconds.
  *
@@ -8,18 +14,32 @@
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class Catalog_View_Helper_GetTimeString extends Zend_View_Helper_Abstract
+class TimeHelper extends AbstractExtension
 {
+
+    public function getFilters(): array
+    {
+        return [
+            new TwigFilter('secondsToTime', [$this, 'secondsToTime']),
+        ];
+    }
+
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction('secondsToTime', [$this, 'secondsToTime']),
+        ];
+    }
+
     /**
      * Answer a 24-hour time string from an integer number of seconds.
      *
      * @param int $seconds
-     *
+     *   Seconds since midnight.
      * @return string
-     *
-     * @since 6/10/09
+     *   A string in am/pm format.
      */
-    public function getTimeString($seconds)
+    public function secondsToTime($seconds)
     {
         $hour = floor($seconds / 3600);
         $minute = floor(($seconds - ($hour * 3600)) / 60);
