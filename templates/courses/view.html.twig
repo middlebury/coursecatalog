@@ -1,3 +1,6 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
 print $this->render('schedules/bookmark_control.phtml');
 
 <div>{{ course.displayname }}</div>
@@ -76,3 +79,4 @@ print $this->render('schedules/bookmark_control.phtml');
     },
     with_context = false
 )}}
+{% endblock %}

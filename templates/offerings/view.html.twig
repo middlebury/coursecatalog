@@ -1,3 +1,6 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
 print $this->render('schedules/bookmark_control.phtml');
 
 <div>{{ offering.displayname }}</div>
@@ -32,7 +35,7 @@ print $this->render('schedules/bookmark_control.phtml');
 <dd>{{ offering.genustype.displayname }}</dd>
 
 {% if instructionMethodTopics is not empty %}
-    <dt>Schedule:</dt>
+    <dt>Course Modality:</dt>
     <dd>
     {% for topic in instructionMethodTopics %}
         <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
@@ -126,3 +129,4 @@ print $this->render('schedules/bookmark_control.phtml');
 <div>
     <a href='{{ url('view_course', {course: osidIdToString(offering.course.id), term: osidIdToString(offering.term.id) }) }}'>{{ offering.course.displayname }}</a>
 </div>
+{% endblock %}
