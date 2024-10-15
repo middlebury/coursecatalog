@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
 
+{% block importmap %}
+    {# do NOT call parent() #}
+    {{ importmap(['app', 'offering_search']) }}
+{% endblock %}
+
 {% block body %}
 <form action="{{ form_action }}" method="get">
     <table class='search_options'>
