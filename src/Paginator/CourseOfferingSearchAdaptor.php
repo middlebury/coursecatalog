@@ -2,36 +2,45 @@
 /**
  * @since 6/2/09
  *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
+namespace App\Paginator;
+
 /**
- * This adapter provides a wrapper to allow usage of the Zend_Paginator with
+ * This adapter provides a wrapper to allow usage of paginators with
  * CourseOfferingSearchResults.
  *
- * @since 6/2/09
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class Paginator_Adaptor_CourseOfferingSearch implements Zend_Paginator_Adapter_Interface
+class CourseOfferingSearchAdaptor
 {
     /**
      * Constructor.
      *
-     * @param optional osid_course_CourseOfferingSearch $search
-     *
-     * @return void
-     *
-     * @since 6/2/09
+     * @param \osid_course_CourseOfferingSearchSession $session
+     *   The search session to run searches against.
+     * @param \osid_course_CourseOfferingQuery $query
+     *   The search query to run to find offerings.
+     * @param \osid_course_CourseOfferingSearch $search
+     *   An optional search criteria (sorting, limits, etc) to apply to the
+     *   query.
+     * @param callable $itemsCallback
+     *   An optional callback to apply to each item returned by getItems().
      */
-    public function __construct(osid_course_CourseOfferingSearchSession $session, osid_course_CourseOfferingQuery $query, ?osid_course_CourseOfferingSearch $search = null)
-    {
+    public function __construct(
+        \osid_course_CourseOfferingSearchSession $session,
+        \osid_course_CourseOfferingQuery $query,
+        ?\osid_course_CourseOfferingSearch $search = NULL,
+        ?callable $itemsCallback = NULL,
+    ) {
         $this->session = $session;
         $this->query = $query;
+        $this->itemsCallback = $itemsCallback;
 
-        if (null === $search) {
+        if (NULL === $search) {
             $this->search = $this->session->getCourseOfferingSearch();
         } else {
             $this->search = $search;
@@ -68,12 +77,18 @@ class Paginator_Adaptor_CourseOfferingSearch implements Zend_Paginator_Adapter_I
         $this->search->limitResultSet($start, $end);
         $this->results = $this->session->getCourseOfferingsBySearch($this->query, $this->search);
 
-        $offerings = [];
+        $items = [];
         $list = $this->results->getCourseOfferings();
         while ($list->hasNext()) {
-            $offerings[] = $list->getNextCourseOffering();
+            $offering = $list->getNextCourseOffering();
+            if ($this->itemsCallback) {
+                $items[] = call_user_func($this->itemsCallback, $offering);
+            }
+            else {
+                $items[] = $offering;
+            }
         }
 
-        return $offerings;
+        return $items;
     }
 }

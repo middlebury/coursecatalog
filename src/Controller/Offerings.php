@@ -6,11 +6,13 @@
 
 namespace App\Controller;
 
+use App\Paginator\CourseOfferingSearchAdaptor;
 use App\Service\Osid\IdMap;
 use App\Service\Osid\Runtime;
 use App\Service\Osid\TermHelper;
 use App\Service\Osid\TopicHelper;
 use App\Service\Osid\TypeHelper;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -193,19 +195,27 @@ class Offerings extends AbstractController
         return $response;
     }
 
-    #[Route('/offerings/search/{catalog}/{term}', name: 'search_offerings')]
-    public function search(Request $request, string $catalog = NULL, string $term = NULL)
+    #[Route('/offerings/search/{catalog}', name: 'search_offerings')]
+    public function search(Request $request, PaginatorInterface $paginator, string $catalog = NULL)
     {
-        [$data, $searchSession, $query, $termLookupSession] = $this->prepareSearch($request, $catalog, $term);
+        [$data, $searchSession, $query, $termLookupSession] = $this->prepareSearch($request, $catalog);
 
         $data['form_action'] = $this->generateUrl('search_offerings', ['catalog' => $catalog]);
 
         // Run the query if submitted.
+        $data['paginator'] = NULL;
         if ($request->get('search')) {
             $data['searchParams']['search'] = $request->get('search');
-            throw new \Exception('Todo: implement pagination');
-            $data['paginator'] = new Zend_Paginator(new Paginator_Adaptor_CourseOfferingSearch($searchSession, $query));
-            $data['paginator']->setCurrentPageNumber($request->get('page'));
+            $data['paginator'] = $paginator->paginate(
+                new CourseOfferingSearchAdaptor(
+                    $searchSession,
+                    $query,
+                    NULL,
+                    [$this, 'getOfferingData'],
+                ),
+                $request->query->getInt('page', 1), /* page number */
+                10 /* limit per page */
+            );
         }
 
         /*********************************************************
@@ -225,15 +235,14 @@ class Offerings extends AbstractController
      *   The request that contains the search parameters.
      * @param string|NULL $catalog
      *   The catalog to search in or NULL for all catalogs.
-     * @param string|NULL $term
-     *   The term to search in or NULL for all catalogs.
      *
      * @return array
      *   The parts of the search preparation in an array: data, searchSession,
      *   and query.
      */
-    protected function prepareSearch(Request $request, string $catalog = NULL, string $term = NULL)
+    protected function prepareSearch(Request $request, string $catalog = NULL)
     {
+        $term = $request->get('term');
         $data = [];
         if ($catalog) {
             $catalogId = $catalogId = $this->osidIdMap->fromString($catalog);
@@ -272,14 +281,17 @@ class Offerings extends AbstractController
         } else {
             $termId = $this->osidIdMap->fromString($term);
         }
+        if (isset($termId)) {
+            $data['term'] = $termLookupSession->getTerm($termId);
+        }
 
         // Topics
         $topicQuery = $topicSearchSession->getTopicQuery();
         $topicQuery->matchGenusType($this->departmentType, true);
-        // if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
-        //     $record = $topicQuery->getTopicQueryRecord($this->termType);
-        //     $record->matchTermId($termId, true);
-        // }
+        if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+            $record = $topicQuery->getTopicQueryRecord($this->termType);
+            $record->matchTermId($termId, true);
+        }
         $search = $topicSearchSession->getTopicSearch();
         $order = $topicSearchSession->getTopicSearchOrder();
         $order->orderByDisplayName();
@@ -293,10 +305,10 @@ class Offerings extends AbstractController
 
         $topicQuery = $topicSearchSession->getTopicQuery();
         $topicQuery->matchGenusType($this->subjectType, true);
-        // if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
-        //     $record = $topicQuery->getTopicQueryRecord($this->termType);
-        //     $record->matchTermId($termId, true);
-        // }
+        if (isset($termId) && $topicQuery->hasRecordType($this->termType)) {
+            $record = $topicQuery->getTopicQueryRecord($this->termType);
+            $record->matchTermId($termId, true);
+        }
         $search = $topicSearchSession->getTopicSearch();
         $order = $topicSearchSession->getTopicSearchOrder();
         $order->orderByDisplayName();
@@ -777,7 +789,7 @@ class Offerings extends AbstractController
      * @return array
      *   An array of data about the course offering.
      */
-    protected function getOfferingDataByIdString($idString)
+    public function getOfferingDataByIdString($idString)
     {
         $id = $this->osidIdMap->fromString($idString);
         $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
@@ -794,7 +806,7 @@ class Offerings extends AbstractController
      * @return array
      *   An array of data about the course offering.
      */
-    protected function getOfferingData(\osid_course_CourseOffering $offering) {
+    public function getOfferingData(\osid_course_CourseOffering $offering) {
         $id = $offering->getId();
 
         // Templates can access basic getter methods on the offering itself.

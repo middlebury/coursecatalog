@@ -29,11 +29,9 @@ services:
         arguments:
             $configPath: '../configuration.plist'
             $courseImpl: '%app.osid.runtime.courseimpl%'
-
     App\Service\Osid\IdMap:
         arguments:
             $idAuthorityToShorten: '%app.osid.id.authority_to_shorten%'
-
     App\Service\Osid\TypeMap:
         arguments:
             $idAuthorityToShorten: '%app.osid.id.authority_to_shorten%'
@@ -44,22 +42,22 @@ services:
                 - 'urn:inet:middlebury.edu:genera:offering.SEM'
                 - 'urn:inet:middlebury.edu:genera:offering.PRC'
                 - 'urn:inet:middlebury.edu:genera:offering.WKS'
-
     App\Twig\OsidIdExtension:
         tags:
             - { name: 'twig.extension' }
-
     App\Twig\NoWrapParentheticals:
         tags:
             - { name: 'twig.extension' }
-
     App\Twig\DateRangeFormatter:
         tags:
             - { name: 'twig.extension' }
-
     App\Twig\TimeHelper:
         tags:
             - { name: 'twig.extension' }
+    App\Paginator\OfferingSearchSubscriber:
+        tags:
+            - { name: 'kernel.event_subscriber' }
+
 
     # Service aliases.
     osid.runtime:
