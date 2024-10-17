@@ -430,6 +430,7 @@ class Offerings extends AbstractController
             }
         }
 
+        $data['selectedDepartmentId'] = NULL;
         if ($request->get('department')) {
             if (is_array($request->get('department'))) {
                 $departments = $request->get('department');
@@ -450,6 +451,7 @@ class Offerings extends AbstractController
             }
         }
 
+        $data['selectedSubjectId'] = NULL;
         if ($request->get('subject')) {
             if (is_array($request->get('subject'))) {
                 $subjects = $request->get('subject');
@@ -470,6 +472,7 @@ class Offerings extends AbstractController
             }
         }
 
+        $data['selectedDivisionId'] = NULL;
         if ($request->get('division')) {
             if (is_array($request->get('division'))) {
                 $divisions = $request->get('division');

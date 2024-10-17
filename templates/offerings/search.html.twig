@@ -30,12 +30,12 @@
                     <option value=''>Any Subject or Department</option>
                     <optgroup label='Subjects'>
 {% for topic in subjects %}
-                        <option value="{{ osidIdToString(topic.id) }}" {{ osidIdsEqual(selectedDepartmentId, topic.id)? 'selected="selected"' }}>{{ topic.displayname }}</option>
+                        <option value="{{ osidIdToString(topic.id) }}" {{ selectedDepartmentId and  osidIdsEqual(selectedDepartmentId, topic.id) ? 'selected="selected"' }}>{{ topic.displayname }}</option>
 {% endfor %}
                     </optgroup>
                     <optgroup label='Departments'>
 {% for topic in departments %}
-                        <option value="{{ osidIdToString(topic.id) }}" {{ osidIdsEqual(selectedDepartmentId, topic.id)? 'selected="selected"' }}>{{ topic.displayname }}</option>
+                        <option value="{{ osidIdToString(topic.id) }}" {{ selectedDepartmentId and  osidIdsEqual(selectedDepartmentId, topic.id) ? 'selected="selected"' }}>{{ topic.displayname }}</option>
 {% endfor %}
                     </optgroup>
                 </select>
