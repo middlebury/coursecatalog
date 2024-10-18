@@ -16,6 +16,9 @@ return [
         'path' => './assets/app.js',
         'entrypoint' => true,
     ],
+    'bookmarks' => [
+        'path' => './assets/bookmarks.js',
+    ],
     'offering_search' => [
         'path' => './assets/offering_search.js',
         'entrypoint' => true,

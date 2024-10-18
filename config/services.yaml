@@ -42,6 +42,9 @@ services:
                 - 'urn:inet:middlebury.edu:genera:offering.SEM'
                 - 'urn:inet:middlebury.edu:genera:offering.PRC'
                 - 'urn:inet:middlebury.edu:genera:offering.WKS'
+    App\Twig\BookmarksExtension:
+        tags:
+            - { name: 'twig.extension' }
     App\Twig\OsidIdExtension:
         tags:
             - { name: 'twig.extension' }

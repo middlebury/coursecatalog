@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-print $this->render('schedules/bookmark_control.phtml');
+{{ include('schedules/bookmark_control.html.twig', {course_id: course.id}, with_context = false) }}
 
 <div>{{ course.displayname }}</div>
 <h2>{{ course.title }}</h2>

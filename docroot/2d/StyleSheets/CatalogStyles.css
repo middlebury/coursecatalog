@@ -167,22 +167,6 @@ div.login_info {
 /*********************************************************
  * Schedule styles
  *********************************************************/
-div.bookmark_controls {
-	float: right;
-	padding: 5px;
-	margin-bottom: 5px;
-	margin-left: 5px;
-	margin-top: -40px;
-}
-
-div.bookmark_controls img {
-	width: 1.5em;
-	vertical-align: middle;
-}
-
-.search_results div.bookmark_controls {
-	margin-top: 0px;
-}
 
 div.schedule {
 	margin: 5px;

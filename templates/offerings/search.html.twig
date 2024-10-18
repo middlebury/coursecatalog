@@ -269,7 +269,13 @@
             </td>
 
             <td class='column2'>
-                print $this->render('schedules/bookmark_control.phtml');
+                {{ include(
+                    'schedules/bookmark_control.html.twig',
+                    {
+                        course_id: item.offering.course.id,
+                    },
+                    with_context = false
+                )}}
 
                 <div class='title'>{{ item.offering.title }}</div>
                 <div class='description'>{{ item.offering.description | raw }}</div>
