@@ -18,6 +18,6 @@
             Save
         </a>
 {% else %}
-    <a href="{{ url("saml_login") }}">Log-in to save</a>
+    <a href="{{ url("login", {returnTo: app.request.uri }) }}">Log-in to save</a>
 {% endif %}
 </div>
