@@ -56,29 +56,29 @@ class Terms extends AbstractController
 
     /**
      * Print out a list of all terms.
-     *
-     * @return void
-     *
-     * @since 4/21/09
      */
-    public function listAction()
+    #[Route('/terms/list/{catalog}', name: 'list_terms')]
+    public function listAction($catalog = NULL)
     {
-        if ($this->_getParam('catalog')) {
-            $catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
+        $data = [];
+        if ($catalog) {
+            $catalogId = $this->osidIdMap->fromString($catalog);
             $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
-            $this->view->title = 'Terms in '.$lookupSession->getCourseCatalog()->getDisplayName();
+            $data['title'] = 'Terms in '.$lookupSession->getCourseCatalog()->getDisplayName();
+            $data['catalog_id'] = $catalogId;
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
-            $this->view->title = 'Terms in All Catalogs';
+            $data['title'] = 'Terms in All Catalogs';
+            $data['catalog_id'] = NULL;
         }
         $lookupSession->useFederatedCourseCatalogView();
 
-        $this->view->terms = $lookupSession->getTerms();
-
-        $this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
-        $this->view->headTitle($this->view->title);
-
-        $this->view->menuIsTerms = true;
+        $terms = $lookupSession->getTerms();
+        $data['terms'] = [];
+        while ($terms->hasNext()) {
+            $data['terms'][] = $terms->getNextTerm();
+        }
+        return $this->render('terms/list.html.twig', $data);
     }
 
     /**
