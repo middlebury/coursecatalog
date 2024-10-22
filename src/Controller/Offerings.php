@@ -228,6 +228,51 @@ class Offerings extends AbstractController
         return $this->render('offerings/search.html.twig', $data);
     }
 
+    #[Route('/offerings/view/{id}', name: 'view_offering')]
+    public function viewAction($id)
+    {
+        $data = $this->osidDataLoader->getOfferingDataByIdString($id);
+        $data['alternates'] = $this->osidDataLoader->getOfferingAlternates($data['offering']);
+
+        // Bookmarked Courses and Schedules
+        $data['bookmarks_CourseId'] = $data['offering']->getCourseId();
+
+        $data['menuIsOfferings'] = true;
+
+        // Set the selected Catalog Id.
+        $catalogSession = $this->osidRuntime->getCourseManager()->getCourseOfferingCatalogSession();
+        $catalogIds = $catalogSession->getCatalogIdsByCourseOffering($data['offering']->getId());
+        if ($catalogIds->hasNext()) {
+            $catalogId = $catalogIds->getNextId();
+            $data['menuCatalogSelectedId'] = $catalogId;
+            $data['menuCatalogSelected'] = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession()->getCourseCatalog($catalogId);
+        }
+
+        return $this->render('offerings/view.html.twig', $data);
+    }
+
+    #[Route('/offerings/viewxml/{id}', name: 'view_offering_xml')]
+    public function viewxmlAction($id)
+    {
+        $data = [];
+        $offeringData = $this->osidDataLoader->getOfferingDataByIdString($id);
+        $offering = $offeringData['offering'];
+        $offeringData['alternates'] = $this->osidDataLoader->getOfferingAlternates($offering);
+        $data['offerings'] = [$offeringData];
+
+        $data['title'] = $offering->getDisplayName();
+        $data['feedLink'] = $this->generateUrl('view_offering', ['id' => $id], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $data['previousTerm'] = NULL;
+        $data['term'] = $offering->getTerm();
+        $data['nextTerm'] = NULL;
+        $data['terms'] = NULL;
+
+        $response = new Response($this->renderView('offerings/search.xml.twig', $data));
+        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+        return $response;
+    }
+
     /**
      * Run a search query and provide the data suitable for templating.
      *
@@ -739,51 +784,6 @@ class Offerings extends AbstractController
             $query,
             $termLookupSession,
         ];
-    }
-
-    #[Route('/offerings/view/{id}', name: 'view_offering')]
-    public function viewAction($id)
-    {
-        $data = $this->osidDataLoader->getOfferingDataByIdString($id);
-        $data['alternates'] = $this->osidDataLoader->getOfferingAlternates($data['offering']);
-
-        // Bookmarked Courses and Schedules
-        $data['bookmarks_CourseId'] = $data['offering']->getCourseId();
-
-        $data['menuIsOfferings'] = true;
-
-        // Set the selected Catalog Id.
-        $catalogSession = $this->osidRuntime->getCourseManager()->getCourseOfferingCatalogSession();
-        $catalogIds = $catalogSession->getCatalogIdsByCourseOffering($data['offering']->getId());
-        if ($catalogIds->hasNext()) {
-            $catalogId = $catalogIds->getNextId();
-            $data['menuCatalogSelectedId'] = $catalogId;
-            $data['menuCatalogSelected'] = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession()->getCourseCatalog($catalogId);
-        }
-
-        return $this->render('offerings/view.html.twig', $data);
-    }
-
-    #[Route('/offerings/viewxml/{id}', name: 'view_offering_xml')]
-    public function viewxmlAction($id)
-    {
-        $data = [];
-        $offeringData = $this->osidDataLoader->getOfferingDataByIdString($id);
-        $offering = $offeringData['offering'];
-        $offeringData['alternates'] = $this->osidDataLoader->getOfferingAlternates($offering);
-        $data['offerings'] = [$offeringData];
-
-        $data['title'] = $offering->getDisplayName();
-        $data['feedLink'] = $this->generateUrl('view_offering', ['id' => $id], UrlGeneratorInterface::ABSOLUTE_URL);
-
-        $data['previousTerm'] = NULL;
-        $data['term'] = $offering->getTerm();
-        $data['nextTerm'] = NULL;
-        $data['terms'] = NULL;
-
-        $response = new Response($this->renderView('offerings/search.xml.twig', $data));
-        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
-        return $response;
     }
 
     /**
