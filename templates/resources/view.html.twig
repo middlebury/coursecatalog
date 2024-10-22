@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>{{ resource.displayname }}</h1>
+<div>{{ resource.description }}</div>
+
+{{ include(
+    'partials/offerings.html.twig',
+    {
+        offerings: offerings,
+        term: term,
+        offeringsForAllTermsUrl: url('view_resource', {resource: osidIdToString(resource.id)}),
+        hideOfferingInstructors: FALSE,
+        selectedOffering: NULL
+    },
+    with_context = false
+)}}
+{% if offering_count > offering_display_limit %}
+    <div class="more">and {{ offering_count -  offering_display_limit }} more...</div>
+{% endif %}
+
+{% endblock %}

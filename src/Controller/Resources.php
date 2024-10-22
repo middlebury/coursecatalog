@@ -6,10 +6,12 @@
 
 namespace App\Controller;
 
+use App\Service\Osid\DataLoader;
 use App\Service\Osid\IdMap;
 use App\Service\Osid\Runtime;
 use App\Service\Osid\TermHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -33,29 +35,25 @@ class Resources extends AbstractController
     private $osidIdMap;
 
     /**
+     * @var \App\Service\Osid\DataLoader
+     */
+    private $osidDataLoader;
+
+    /**
      * Construct a new Catalogs controller.
      *
      * @param \App\Service\Osid\Runtime $osidRuntime
      *   The osid.runtime service.
      * @param \App\Service\Osid\IdMap $osidIdMap
      *   The osid.id_map service.
+     * @param \App\Service\Osid\DataLoader $osidDataLoader
+     *   The osid.topic_helper service.
      */
-    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap) {
+    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, DataLoader $osidDataLoader) {
         $this->osidRuntime = $osidRuntime;
         $this->osidIdMap = $osidIdMap;
-    }
-
-    /**
-     * Initialize object.
-     *
-     * Called from {@link __construct()} as final step of object instantiation.
-     *
-     * @return void
-     */
-    public function init()
-    {
-        $this->instructorType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
-        parent::init();
+        $this->osidDataLoader = $osidDataLoader;
+        $this->instructorType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
     }
 
     // 	/**
@@ -83,12 +81,12 @@ class Resources extends AbstractController
     // 	}
 
     #[Route('/resources/view/{resource}/{term}', name: 'view_resource')]
-    public function viewAction($resource, $term = NULL)
+    public function viewAction(Request $request, $resource, $term = NULL)
     {
         $id = $this->osidIdMap->fromString($resource);
         $lookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
         $lookupSession->useFederatedBinView();
-        $this->view->resource = $lookupSession->getResource($id);
+        $data['resource'] = $lookupSession->getResource($id);
 
         $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSession();
         $offeringSearchSession->useFederatedCourseCatalogView();
@@ -101,44 +99,40 @@ class Resources extends AbstractController
 
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $termLookupSession->useFederatedCourseCatalogView();
-            $this->view->term = $termLookupSession->getTerm($termId);
+            $data['term'] = $termLookupSession->getTerm($termId);
         }
+        else {
+            $data['term'] = NULL;
+        }
+
+        $data['offeringsTitle'] = 'Sections';
+        $data['offerings'] = [];
+        $data['offering_count'] = 0;
+        $data['offering_display_limit'] = 100;
 
         // Match the instructor Id
-        if ($query->hasRecordType($this->instructorType)) {
-            $queryRecord = $query->getCourseOfferingQueryRecord($this->instructorType);
-            $queryRecord->matchInstructorId($id, true);
-
-            $this->view->offerings = $offeringSearchSession->getCourseOfferingsByQuery($query);
-
-            // Don't do the work to display instructors if we have a very large number of
-            // offerings.
-            if ($this->view->offerings->available() > 200) {
-                $this->view->hideOfferingInstructors = true;
+        if (preg_match('/^resource\.person\./', $resource)) {
+            if ($query->hasRecordType($this->instructorType)) {
+                $queryRecord = $query->getCourseOfferingQueryRecord($this->instructorType);
+                $queryRecord->matchInstructorId($id, true);
+                $offerings = $offeringSearchSession->getCourseOfferingsByQuery($query);
             }
-
-            $this->view->offeringsTitle = 'Sections';
-
-            $allParams = [];
-            $allParams['resource'] = $this->_getParam('resource');
-            if ($this->getSelectedCatalogId()) {
-                $allParams['catalog'] = $this->osidIdMap->toString($this->getSelectedCatalogId());
+        }
+        // Match a location id
+        elseif (preg_match('/^resource\.place\./', $resource)) {
+            $query->matchLocationId($id, TRUE);
+            $offerings = $offeringSearchSession->getCourseOfferingsByQuery($query);
+        }
+        if (isset($offerings)) {
+            $data['offering_count'] = $offerings->available();
+            $i = 0;
+            while ($offerings->hasNext() && $i < $data['offering_display_limit']) {
+                $data['offerings'][] = $this->osidDataLoader->getOfferingData($offerings->getNextCourseOffering());
+                $i++;
             }
-            $this->view->offeringsForAllTermsUrl = $this->_helper->url('view', 'resources', null, $allParams);
-
-            $this->render('offerings', null, true);
-        } else {
-            $this->view->hideOfferingInstructors = true;
         }
 
-        // Set the selected Catalog Id.
-        if ($this->_getParam('catalog')) {
-            $this->setSelectedCatalogId($this->osidIdMap->fromString($this->_getParam('catalog')));
-        }
-
-        // Set the title
-        $this->view->title = $this->view->resource->getDisplayName();
-        $this->view->headTitle($this->view->title);
+        return $this->render('resources/view.html.twig', $data);
     }
 
     /**
@@ -150,7 +144,7 @@ class Resources extends AbstractController
      */
     public function listcampusestxtAction()
     {
-        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource.place.campus'));
+        $this->renderTextList(new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource.place.campus'));
     }
 
     /**
@@ -160,7 +154,7 @@ class Resources extends AbstractController
      *
      * @since 11/17/09
      */
-    private function renderTextList(osid_type_Type $genusType)
+    private function renderTextList(\osid_type_Type $genusType)
     {
         header('Content-Type: text/plain');
 
