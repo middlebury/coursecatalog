@@ -137,45 +137,29 @@ class Resources extends AbstractController
 
     /**
      * List all department topics as a text file with each line being Id|DisplayName.
-     *
-     * @return void
-     *
-     * @since 10/20/09
      */
-    public function listcampusestxtAction()
+    #[Route('/resources/listcampusestxt/{catalog}', name: 'list_campuses_txt')]
+    public function listcampusestxt(Request $request, $catalog = NULL)
     {
-        $this->renderTextList(new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource.place.campus'));
-    }
-
-    /**
-     * Render a text feed for a given topic type.
-     *
-     * @return void
-     *
-     * @since 11/17/09
-     */
-    private function renderTextList(\osid_type_Type $genusType)
-    {
-        header('Content-Type: text/plain');
-
-        if ($this->_getParam('catalog')) {
-            $catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
+        $data = [];
+        if ($catalog) {
+            $catalogId = $this->osidIdMap->fromString($catalog);
             $lookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalogId);
-            $this->view->title = 'Resources in '.$lookupSession->getBin()->getDisplayName();
+            $data['title'] = 'Resources in '.$lookupSession->getBin()->getDisplayName();
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
-            $this->view->title = 'Resources in All Bins';
+            $data['title'] = 'Resources in All Bins';
         }
         $lookupSession->useFederatedBinView();
 
-        $resources = $lookupSession->getResourcesByGenusType($genusType);
-
+        $data['resources'] = [];
+        $resources = $lookupSession->getResourcesByGenusType(new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource.place.campus'));
         while ($resources->hasNext()) {
-            $resource = $resources->getNextResource();
-            echo $this->osidIdMap->toString($resource->getId()).'|'.$this->osidIdMap->toString($resource->getId()).' - '.$resource->getDisplayName()."\n";
+            $data['resources'][] = $resources->getNextResource();
         }
-        // 		var_dump($lookupSession);
-        // 		var_dump($resources);
-        exit;
+
+        $response = new Response($this->renderView('resources/list.txt.twig', $data));
+        $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
+        return $response;
     }
 }
