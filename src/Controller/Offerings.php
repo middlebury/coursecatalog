@@ -7,10 +7,10 @@
 namespace App\Controller;
 
 use App\Paginator\CourseOfferingSearchAdaptor;
+use App\Service\Osid\DataLoader;
 use App\Service\Osid\IdMap;
 use App\Service\Osid\Runtime;
 use App\Service\Osid\TermHelper;
-use App\Service\Osid\TopicHelper;
 use App\Service\Osid\TypeHelper;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -44,9 +44,9 @@ class Offerings extends AbstractController
     private $osidTermHelper;
 
     /**
-     * @var \App\Service\Osid\TopicHelper
+     * @var \App\Service\Osid\DataLoader
      */
-    private $osidTopicHelper;
+    private $osidDataLoader;
 
     /**
      * @var \App\Service\Osid\TypeHelper
@@ -62,22 +62,20 @@ class Offerings extends AbstractController
      *   The osid.id_map service.
      * @param \App\Service\Osid\TermHelper $osidTermHelper
      *   The osid.term_helper service.
-     * @param \App\Service\Osid\TopicHelper $osidTopicHelper
+     * @param \App\Service\Osid\DataLoader $osidDataLoader
      *   The osid.topic_helper service.
      */
-    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, TermHelper $osidTermHelper, TopicHelper $osidTopicHelper, TypeHelper $osidTypeHelper) {
+    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, TermHelper $osidTermHelper, DataLoader $osidDataLoader, TypeHelper $osidTypeHelper) {
         $this->osidRuntime = $osidRuntime;
         $this->osidIdMap = $osidIdMap;
         $this->osidTermHelper = $osidTermHelper;
-        $this->osidTopicHelper = $osidTopicHelper;
+        $this->osidDataLoader = $osidDataLoader;
         $this->osidTypeHelper = $osidTypeHelper;
 
         $this->wildcardStringMatchType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:search:wildcard');
         $this->booleanStringMatchType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:search:boolean');
         $this->instructorType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
         $this->enrollmentType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:enrollment');
-        $this->locationType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:location');
-        $this->alternateType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
         $this->weeklyScheduleType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 
         $this->subjectType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject');
@@ -162,7 +160,9 @@ class Offerings extends AbstractController
         $data['offerings'] = [];
         while ($offerings->hasNext()) {
             $offering = $offerings->getNextCourseOffering();
-            $data['offerings'][] = $this->getOfferingData($offering);
+            $offeringData = $this->osidDataLoader->getOfferingData($offering);
+            $offeringData['alternates'] = $this->osidDataLoader->getOfferingAlternates($offering);
+            $data['offerings'][] = $offeringData;
         }
 
         // Set the next and previous terms
@@ -744,7 +744,8 @@ class Offerings extends AbstractController
     #[Route('/offerings/view/{id}', name: 'view_offering')]
     public function viewAction($id)
     {
-        $data = $this->getOfferingDataByIdString($id);
+        $data = $this->osidDataLoader->getOfferingDataByIdString($id);
+        $data['alternates'] = $this->osidDataLoader->getOfferingAlternates($data['offering']);
 
         // Bookmarked Courses and Schedules
         $data['bookmarks_CourseId'] = $data['offering']->getCourseId();
@@ -767,8 +768,10 @@ class Offerings extends AbstractController
     public function viewxmlAction($id)
     {
         $data = [];
-        $data['offerings'] = [$this->getOfferingDataByIdString($id)];
-        $offering = $data['offerings'][0]['offering'];
+        $offeringData = $this->osidDataLoader->getOfferingDataByIdString($id);
+        $offering = $offeringData['offering'];
+        $offeringData['alternates'] = $this->osidDataLoader->getOfferingAlternates($offering);
+        $data['offerings'] = [$offeringData];
 
         $data['title'] = $offering->getDisplayName();
         $data['feedLink'] = $this->generateUrl('view_offering', ['id' => $id], UrlGeneratorInterface::ABSOLUTE_URL);
@@ -784,24 +787,7 @@ class Offerings extends AbstractController
     }
 
     /**
-     * Answer an array of course offering data suitable for templating.
-     *
-     * @param string $idString
-     *   The course offering id string.
-     *
-     * @return array
-     *   An array of data about the course offering.
-     */
-    public function getOfferingDataByIdString($idString)
-    {
-        $id = $this->osidIdMap->fromString($idString);
-        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
-        $lookupSession->useFederatedCourseCatalogView();
-        return $this->getOfferingData($lookupSession->getCourseOffering($id));
-    }
-
-    /**
-     * Answer an array of course offering data suitable for templating.
+     * Callback to get offering data for paginated search results.
      *
      * @param \osid_course_CourseOffering $offering
      *   The course.
@@ -810,83 +796,8 @@ class Offerings extends AbstractController
      *   An array of data about the course offering.
      */
     public function getOfferingData(\osid_course_CourseOffering $offering) {
-        $id = $offering->getId();
-
-        // Templates can access basic getter methods on the offering itself.
-        $data = ['offering' => $offering];
-
-        // Load the topics into our view
-        $data = array_merge(
-            $data,
-            $this->osidTopicHelper->asTypedArray($offering->getTopics())
-        );
-
-        $data['location'] = NULL;
-        if ($offering->hasLocation()) {
-            $data['location'] = $offering->getLocation();
-        }
-
-        $data['weekly_schedule'] = NULL;
-        $weeklyScheduleType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
-        if ($offering->hasRecordType($weeklyScheduleType)) {
-            $data['weekly_schedule'] = $offering->getCourseOfferingRecord($weeklyScheduleType);
-        }
-
-        // Instructors
-        $data['instructors'] = NULL;
-        $instructorsType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
-        if ($offering->hasRecordType($instructorsType)) {
-            $instructorsRecord = $offering->getCourseOfferingRecord($instructorsType);
-            $instructors = $instructorsRecord->getInstructors();
-            $data['instructors'] = [];
-            while ($instructors->hasNext()) {
-                $data['instructors'][] = $instructors->getNextResource();
-            }
-        }
-
-        // Alternates.
-        $data['is_primary'] = TRUE;
-        $data['alternates'] = NULL;
-        if ($offering->hasRecordType($this->alternateType)) {
-            $record = $offering->getCourseOfferingRecord($this->alternateType);
-            $data['is_primary'] = $record->isPrimary();
-            if ($record->hasAlternates()) {
-                $data['alternates'] = [];
-                $alternates = $record->getAlternates();
-                while ($alternates->hasNext()) {
-                    $alternate = $alternates->getNextCourseOffering();
-                    $alternate->is_primary = FALSE;
-                    if ($alternate->hasRecordType($this->alternateType)) {
-                        $alternateRecord = $alternate->getCourseOfferingRecord($this->alternateType);
-                        if ($alternateRecord->isPrimary()) {
-                            $alternate->is_primary = TRUE;
-                        }
-                    }
-                    $data['alternates'][] = $alternate;
-                }
-
-            }
-        }
-
-        // Availability link. @todo
-        $data['availabilityLink'] = NULL;
-        //$this->getAvailabilityLink($this->offering);
-
-        $data['properties'] = [];
-        $properties = $offering->getProperties();
-        while ($properties->hasNext()) {
-            $data['properties'][] = $properties->getNextProperty();
-        }
-
-        // Other offerings.
-        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
-        $lookupSession->useFederatedCourseCatalogView();
-        $data['offeringsTitle'] = 'All Sections';
-        $data['offerings'] = $lookupSession->getCourseOfferingsByTermForCourse(
-            $offering->getTermId(),
-            $offering->getCourseId()
-        );
-
+        $data = $this->osidDataLoader->getOfferingData($offering);
+        $data['alternates'] = $this->osidDataLoader->getOfferingAlternates($offering);
         return $data;
     }
 
