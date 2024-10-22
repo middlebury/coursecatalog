@@ -11,7 +11,7 @@
 
 <dl class='section_info'>
     <dt>Term:</dt>
-    <dd><a href='{{ url('view_term', {id: osidIdToString(offering.term.id)}) }}'>{{ offering.term.displayname }}</a></dd>
+    <dd><a href='{{ url('view_term', {term: osidIdToString(offering.term.id)}) }}'>{{ offering.term.displayname }}</a></dd>
 
 {% if location %}
     <dt>Location:</dt>

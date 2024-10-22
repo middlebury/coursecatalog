@@ -240,7 +240,7 @@
                 {% endif %}
 
                     <dt>Term:</dt>
-                    <dd><a href='{{ url('view_term', {id: osidIdToString(item.offering.term.id)}) }}'>{{ item.offering.term.displayname }}</a></dd>
+                    <dd><a href='{{ url('view_term', {term: osidIdToString(item.offering.term.id)}) }}'>{{ item.offering.term.displayname }}</a></dd>
 
                     <dt>Department:</dt>
                     <dd>
