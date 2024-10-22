@@ -446,7 +446,12 @@ class Courses extends AbstractController
             throw new \InvalidArgumentException('An instructor must be specified.');
         }
 
-        $instructorId = $this->osidIdMap->fromString('resource.person.'.$instructor);
+        if (preg_match('/^resource\.person\./', $instructor)) {
+            $instructorId = $this->osidIdMap->fromString($instructor);
+        }
+        else {
+            $instructorId = $this->osidIdMap->fromString('resource.person.'.$instructor);
+        }
         $resourceLookup = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
         try {
             $instructorResource = $resourceLookup->getResource($instructorId);

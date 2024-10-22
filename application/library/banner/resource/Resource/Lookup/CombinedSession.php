@@ -258,7 +258,7 @@ WHERE
         $row = self::$getPersonResource_stmt->fetch(PDO::FETCH_ASSOC);
         self::$getPersonResource_stmt->closeCursor();
 
-        if (!$row['WEB_ID']) {
+        if (empty($row) || !$row['WEB_ID']) {
             throw new osid_NotFoundException('Could not find a resource  matching the person code '.$this->getDatabaseIdString($resourceId, 'resource.person.').'.');
         }
 
