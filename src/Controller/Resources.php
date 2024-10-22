@@ -56,30 +56,6 @@ class Resources extends AbstractController
         $this->instructorType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
     }
 
-    // 	/**
-    // 	 * Print out a list of all topics
-    // 	 *
-    // 	 * @return void
-    // 	 * @access public
-    // 	 * @since 4/21/09
-    // 	 */
-    // 	public function listAction () {
-    // 		if ($this->_getParam('catalog')) {
-    // 			$catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
-    // 			$lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
-    // 			$this->view->title = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
-    // 		} else {
-    // 			$lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
-    // 			$this->view->title = 'Topics in All Catalogs';
-    // 		}
-    // 		$lookupSession->useFederatedCourseCatalogView();
-    //
-    // 		$this->loadTopics($lookupSession->getTopics());
-    //
-    // 		$this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
-    // 		$this->view->headTitle($this->view->title);
-    // 	}
-
     #[Route('/resources/view/{resource}/{term}', name: 'view_resource')]
     public function viewAction(Request $request, $resource, $term = NULL)
     {
