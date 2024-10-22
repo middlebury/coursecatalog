@@ -13,6 +13,7 @@ use App\Service\Osid\TermHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * A controller for working with terms.
@@ -83,15 +84,32 @@ class Terms extends AbstractController
 
     /**
      * Print out an XML list of all terms.
-     *
-     * @return void
      */
-    public function listxmlAction()
+    #[Route('/terms/listxml/{catalog}', name: 'list_terms_xml')]
+    public function listxmlAction($catalog = NULL)
     {
-        $this->_helper->layout->disableLayout();
-        $this->getResponse()->setHeader('Content-Type', 'text/xml');
+        $data = [];
+        if ($catalog) {
+            $catalogId = $this->osidIdMap->fromString($catalog);
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+            $data['title'] = 'Terms in '.$lookupSession->getCourseCatalog()->getDisplayName();
+            $data['catalog_id'] = $catalogId;
+        } else {
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
+            $data['title'] = 'Terms in All Catalogs';
+            $data['catalog_id'] = NULL;
+        }
+        $lookupSession->useFederatedCourseCatalogView();
 
-        $this->listAction();
+        $terms = $lookupSession->getTerms();
+        $data['terms'] = [];
+        while ($terms->hasNext()) {
+            $data['terms'][] = $terms->getNextTerm();
+        }
+        $data['feedLink'] = $this->generateUrl('list_terms_xml', ['catalog' => $catalog], UrlGeneratorInterface::ABSOLUTE_URL);
+        $response = new Response($this->renderView('terms/list.xml.twig', $data));
+        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+        return $response;
     }
 
     #[Route('/terms/view/{term}/{catalog}', name: 'view_term')]
