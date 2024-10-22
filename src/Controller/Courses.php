@@ -101,6 +101,7 @@ class Courses extends AbstractController
     public function view($course, $term = NULL)
     {
         $data = $this->getCourseDataByIdString($course, $term);
+        $data['offerings'] = $this->getCourseOfferingsData($data['course'], $data['term']);
 
         // Set the selected Catalog Id.
         // $catalogSession = $this->osidRuntime->getCourseManager()->getCourseCatalogSession();
