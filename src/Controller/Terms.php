@@ -141,39 +141,52 @@ class Terms extends AbstractController
     }
 
     /**
-     * View a catalog details.
-     *
-     * @return void
+     * View term details.
      */
-    public function detailsAction()
+    #[Route('/terms/details/{term}/{catalog}', name: 'view_term_details')]
+    public function detailsAction($term, $catalog = NULL)
     {
-        $id = $this->osidIdMap->fromString($this->_getParam('term'));
-        $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
-        $lookupSession->useFederatedCourseCatalogView();
-        $this->view->term = $lookupSession->getTerm($id);
-
-        // Set the selected Catalog Id.
-        $catalogSession = $this->osidRuntime->getCourseManager()->getTermCatalogSession();
-        $catalogIds = $catalogSession->getCatalogIdsByTerm($id);
-        if ($catalogIds->hasNext()) {
-            $this->setSelectedCatalogId($catalogIds->getNextId());
+        $id = $this->osidIdMap->fromString($term);
+        $data = [];
+        if ($catalog) {
+            $catalogId = $this->osidIdMap->fromString($catalog);
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+            $termLookupSession->useIsolatedCourseCatalogView();
+            $data['catalog_id'] = $catalogId;
+        } else {
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
+            $termLookupSession->useFederatedCourseCatalogView();
+            $data['catalog_id'] = NULL;
         }
+        $data['term'] = $termLookupSession->getTerm($id);
 
-        // Set the title
-        $this->view->title = $this->view->term->getDisplayName();
-        $this->view->headTitle($this->view->title);
-
-        $this->view->menuIsTerms = true;
+        return $this->render('terms/details.html.twig', $data);
     }
 
     /**
      * View a catalog details.
-     *
-     * @return void
      */
-    public function detailsxmlAction()
+    #[Route('/terms/detailsxml/{term}/{catalog}', name: 'view_term_details_xml')]
+    public function detailsxmlAction($term, $catalog = NULL)
     {
-        $this->_helper->layout->disableLayout();
-        $this->detailsAction();
+        $id = $this->osidIdMap->fromString($term);
+        $data = [];
+        if ($catalog) {
+            $catalogId = $this->osidIdMap->fromString($catalog);
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+            $termLookupSession->useIsolatedCourseCatalogView();
+            $data['catalog_id'] = $catalogId;
+        } else {
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
+            $termLookupSession->useFederatedCourseCatalogView();
+            $data['catalog_id'] = NULL;
+        }
+        $data['term'] = $termLookupSession->getTerm($id);
+
+        $data['feedLink'] = $this->generateUrl('view_term_details_xml', ['term' => $term, 'catalog' => $catalog], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $response = new Response($this->renderView('terms/details.xml.twig', $data));
+        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+        return $response;
     }
 }

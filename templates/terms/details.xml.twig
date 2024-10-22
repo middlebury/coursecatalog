@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<term>
+    <id>{{ osidIdToString(term.id) }}</id>
+    <name>{{ term.displayname }}</name>
+    <start_date>{{ term.starttime | date('Y-m-d') }}</start_date>
+    <end_date>{{ term.endtime | date('Y-m-d') }}</end_date>
+    <weeks>{{ dateRangeToWeeks(term.starttime, term.endtime) }}</weeks>
+</term>
