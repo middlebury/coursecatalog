@@ -36,11 +36,11 @@ class banner_course_CourseOffering_Catalog_SessionTest extends phpkit_test_phpun
     {
         $this->session = self::$courseManager->getCourseOfferingCatalogSession();
 
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
-        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
+        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog.MCUG');
+        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog.MIIS');
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
 
-        $this->sectionId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/92418');
+        $this->sectionId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section.200890.92418');
     }
 
     /**

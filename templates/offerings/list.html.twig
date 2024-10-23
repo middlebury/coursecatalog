@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>{{ title }}</h1>
+
+    {{ include(
+        'partials/offerings.html.twig',
+        {
+            offerings: offerings,
+            term: term,
+            offeringsForAllTermsUrl: NULL,
+            hideOfferingInstructors: FALSE,
+            selectedOffering: NULL
+        },
+        with_context = false
+    )}}
+{% endblock %}

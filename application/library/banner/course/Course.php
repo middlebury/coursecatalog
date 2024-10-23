@@ -6,9 +6,6 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
-include_once 'fsmparserclass.inc.php';
-include_once 'harmoni/Primitives/Collections-Text/HtmlString.class.php';
-
 /**
  *  <p>A <code> Course </code> represents a canonical learning unit. A <code>
  *  Course </code> is instantiated at a time and place through the creation of
@@ -799,7 +796,7 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
         }
         $linkSetIds = array_unique($linkSetIds);
         foreach ($linkSetIds as $key => $val) {
-            $linkSetIds[$key] = $this->session->getOsidIdFromString($val, 'link_set/');
+            $linkSetIds[$key] = $this->session->getOsidIdFromString($val, 'link_set.');
         }
 
         return new phpkit_id_ArrayIdList($linkSetIds);
@@ -830,7 +827,7 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
                 $setId = substr($linkIdString, 1, 1);
                 // The type id is the first charactor.
                 $typeId = substr($linkIdString, 0, 1);
-                if ($linkSetId->isEqual($this->session->getOsidIdFromString($setId, 'link_set/'))) {
+                if ($linkSetId->isEqual($this->session->getOsidIdFromString($setId, 'link_set.'))) {
                     $linkTypeIds[] = $typeId;
                 }
             }
@@ -843,7 +840,7 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
         }
 
         foreach ($linkTypeIds as $key => $val) {
-            $linkTypeIds[$key] = $this->session->getOsidIdFromString($val, 'link_type/');
+            $linkTypeIds[$key] = $this->session->getOsidIdFromString($val, 'link_type.');
         }
 
         return new phpkit_id_ArrayIdList($linkTypeIds);

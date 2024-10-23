@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<dl>
+    <dt>Name</dt>
+    <dd>{{ term.displayname }}</dd>
+    <dt>Start Date</dt>
+    <dd>{{ term.starttime | date('Y-m-d') }}</dd>
+    <dt>End Date</dt>
+    <dd>{{ term.endtime | date('Y-m-d') }}</dd>
+    <dt>Weeks (including exams)</dt>
+    <dd>{{ dateRangeToWeeks(term.starttime, term.endtime) }}</dd>
+</dl>
+
+{% endblock %}

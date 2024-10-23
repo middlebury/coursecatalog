@@ -36,10 +36,10 @@ class banner_resource_Resource_PersonTest extends phpkit_test_phpunit_AbstractOs
     {
         $this->namesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:person_names');
         $this->unknownType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:unknown');
-        $this->personType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource/person');
+        $this->personType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource.person');
 
         $this->object = new banner_resource_Resource_Person(
-            new phpkit_id_Id('urn', 'middlebury.edu', 'person/12345'),
+            new phpkit_id_Id('urn', 'middlebury.edu', 'person.12345'),
             "O'Brien",
             'Thaddeus',
             'Peter Michael',
@@ -50,7 +50,7 @@ class banner_resource_Resource_PersonTest extends phpkit_test_phpunit_AbstractOs
         $this->names = $this->object->getResourceRecord($this->namesType);
 
         $this->object2 = new banner_resource_Resource_Person(
-            new phpkit_id_Id('urn', 'middlebury.edu', 'person/54321'),
+            new phpkit_id_Id('urn', 'middlebury.edu', 'person.54321'),
             'Jones',
             'Howard'
         );
@@ -147,7 +147,7 @@ class banner_resource_Resource_PersonTest extends phpkit_test_phpunit_AbstractOs
         $this->assertInstanceOf('osid_type_Type', $type);
         $this->assertEquals('urn', $type->getIdentifierNamespace());
         $this->assertEquals('middlebury.edu', $type->getAuthority());
-        $this->assertEquals('genera:resource/person', $type->getIdentifier());
+        $this->assertEquals('genera:resource.person', $type->getIdentifier());
         $this->assertTrue($type->isEqual($this->personType));
     }
 }

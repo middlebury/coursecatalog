@@ -256,7 +256,7 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
             return null;
         }
 
-        if (!preg_match('/^genera:offering\/([a-z]+)$/i', $genusType->getIdentifier(), $matches)) {
+        if (!preg_match('/^genera:offering\.([a-z]+)$/i', $genusType->getIdentifier(), $matches)) {
             return null;
         }
 
@@ -895,8 +895,8 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
     {
         // Try room locations
         try {
-            $locationString = $this->session->getDatabaseIdString($resourceId, 'resource/place/room/');
-            $locationParts = explode('/', $locationString);
+            $locationString = $this->session->getDatabaseIdString($resourceId, 'resource.place.room.');
+            $locationParts = explode('.', $locationString);
             $this->addClause(
                 'location',
                 '(SSRMEET_BLDG_CODE = ? AND SSRMEET_ROOM_CODE = ?)',
@@ -906,7 +906,7 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
         // Try building locations
         catch (osid_NotFoundException $e) {
             try {
-                $building = $this->session->getDatabaseIdString($resourceId, 'resource/place/building/');
+                $building = $this->session->getDatabaseIdString($resourceId, 'resource.place.building.');
                 $this->addClause(
                     'location',
                     'SSRMEET_BLDG_CODE = ?',
@@ -915,7 +915,7 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
             }
             // Try campus locations
             catch (osid_NotFoundException $e) {
-                $campus = $this->session->getDatabaseIdString($resourceId, 'resource/place/campus/');
+                $campus = $this->session->getDatabaseIdString($resourceId, 'resource.place.campus.');
                 $this->addClause(
                     'location',
                     'SSBSECT_CAMP_CODE = ?',
@@ -1178,8 +1178,8 @@ AND SCBCRSE_COLL_CODE IN (
 			catalog_id = ?
 	))',
             [
-                $this->session->getDatabaseIdString($courseCatalogId, 'catalog/'),
-                $this->session->getDatabaseIdString($courseCatalogId, 'catalog/'),
+                $this->session->getDatabaseIdString($courseCatalogId, 'catalog.'),
+                $this->session->getDatabaseIdString($courseCatalogId, 'catalog.'),
             ],
             $match);
     }
@@ -1273,7 +1273,7 @@ AND SCBCRSE_COLL_CODE IN (
      */
     public function matchInstructorId(osid_id_Id $instructorId, $match)
     {
-        $this->addClause('instructor_id', 'WEB_ID = ?', [$this->session->getDatabaseIdString($instructorId, 'resource/person/')], $match);
+        $this->addClause('instructor_id', 'WEB_ID = ?', [$this->session->getDatabaseIdString($instructorId, 'resource.person.')], $match);
         $this->addTableJoin('LEFT JOIN SYVINST ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)');
     }
 

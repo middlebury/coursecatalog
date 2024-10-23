@@ -831,9 +831,9 @@ class ArchiveController extends AbstractCatalogController
         // Look for different Section Descriptions
         $offeringQuery = $this->offeringSearchSession->getCourseOfferingQuery();
         $offeringQuery->matchCourseId($course->getId(), true);
-        $offeringQuery->matchGenusType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/LCT'), true);
-        $offeringQuery->matchGenusType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/SEM'), true);
-        $offeringQuery->matchGenusType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/IND'), true);
+        $offeringQuery->matchGenusType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering.LCT'), true);
+        $offeringQuery->matchGenusType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering.SEM'), true);
+        $offeringQuery->matchGenusType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering.IND'), true);
         foreach ($this->selectedTerms as $termId) {
             $offeringQuery->matchTermId($termId, true);
         }
@@ -856,7 +856,7 @@ class ArchiveController extends AbstractCatalogController
         $instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
         $identifiersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
         $namesType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:person_names');
-        $requirementType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/requirement');
+        $requirementType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement');
         $enrollmentNumbersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:enrollment_numbers');
         while ($offerings->hasNext()) {
             $offering = $offerings->getNextCourseOffering();
@@ -1028,7 +1028,7 @@ class ArchiveController extends AbstractCatalogController
         // Apply all course-level topics.
         $allTopics = $this->_helper->topics->topicListAsArray($course->getTopics());
         $reqs = [];
-        $topicType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/requirement');
+        $topicType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement');
         $topicTypeString = $this->_helper->osidType->toString($topicType);
         $topics = $this->_helper->topics->filterTopicsByType($allTopics, $topicType);
         foreach ($topics as $topic) {

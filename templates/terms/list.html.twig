@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>{{ title }}</h1>
+{% for term in terms %}
+    <h2><a href='{{ url('view_term', {term: osidIdToString(term.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}'>{{ term.displayname }}</a></h2>
+    <div>{{ term.description }}</div>
+{% endfor %}
+
+{% endblock %}

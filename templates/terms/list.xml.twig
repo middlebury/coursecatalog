@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
+    <channel>
+        <title>{{ title }}</title>
+        <link>{{ feedLink }}</link>
+        <lastBuildDate>{{ 'now' | date('r') }}</lastBuildDate>
+        <generator>Course Catalog</generator>
+        <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+
+{%~ for term in terms %}
+        <item>
+            <title>{{ term.displayname }}</title>
+            <link>{{ url('view_term', {term: osidIdToString(term.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}</link>
+            <description><![CDATA[{{ term.description | raw }}]]></description>
+            <catalog:id>{{ osidIdToString(term.id) }}</catalog:id>
+            <catalog:start_date>{{ term.starttime | date('Y-m-d') }}</catalog:start_date>
+            <catalog:end_date>{{ term.endtime | date('Y-m-d') }}</catalog:end_date>
+            <catalog:weeks>{{ dateRangeToWeeks(term.starttime, term.endtime) }}</catalog:weeks>
+        </item>
+{% endfor %}
+    </channel>
+</rss>

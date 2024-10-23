@@ -32,7 +32,7 @@ class banner_resource_Resource_Room extends banner_resource_Resource_Building
     public function __construct(osid_id_Id $id, $buildingDisplayName, $buildingCode, $room)
     {
         parent::__construct($id, $buildingDisplayName, $buildingCode);
-        $this->setGenusType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource/place/room'));
+        $this->setGenusType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource.place.room'));
         $this->setDisplayName($buildingDisplayName.' '.$room);
         $this->setDescription($buildingCode.' '.$room);
         $this->room = $room;

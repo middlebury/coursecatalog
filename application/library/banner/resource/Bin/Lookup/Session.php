@@ -40,7 +40,7 @@ class banner_resource_Bin_Lookup_Session extends banner_AbstractSession implemen
      */
     public function __construct(banner_ManagerInterface $manager)
     {
-        parent::__construct($manager, 'catalog/');
+        parent::__construct($manager, 'catalog.');
     }
 
     /**

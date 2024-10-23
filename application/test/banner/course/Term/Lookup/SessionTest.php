@@ -31,11 +31,11 @@ class banner_course_Term_Lookup_SessionTest extends phpkit_test_phpunit_Abstract
      */
     protected function setUp(): void
     {
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
+        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog.MCUG');
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
-        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200890');
-        $this->springTermId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200920');
-        $this->badTermId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200866');
+        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term.200890');
+        $this->springTermId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term.200920');
+        $this->badTermId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term.200866');
 
         $this->session = self::$courseManager->getTermLookupSessionForCatalog($this->mcugId);
 

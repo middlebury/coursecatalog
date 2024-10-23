@@ -78,7 +78,7 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
      */
     public function getCombinedBinId()
     {
-        return new phpkit_id_Id($this->getIdAuthority(), 'urn', 'resource/all');
+        return new phpkit_id_Id($this->getIdAuthority(), 'urn', 'resource.all');
     }
 
     /*********************************************************
@@ -120,17 +120,17 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
         try {
             $dsn = phpkit_configuration_ConfigUtil::getSingleValuedValue(
                 $runtime->getConfiguration(),
-                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/pdo_dsn'),
+                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course.pdo_dsn'),
                 new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
 
             $username = phpkit_configuration_ConfigUtil::getSingleValuedValue(
                 $runtime->getConfiguration(),
-                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/pdo_username'),
+                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course.pdo_username'),
                 new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
 
             $password = phpkit_configuration_ConfigUtil::getSingleValuedValue(
                 $runtime->getConfiguration(),
-                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/pdo_password'),
+                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course.pdo_password'),
                 new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
         } catch (osid_NotFoundException $e) {
             throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode());
@@ -139,7 +139,7 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
         try {
             $debug = phpkit_configuration_ConfigUtil::getSingleValuedValue(
                 $runtime->getConfiguration(),
-                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/pdo_count_queries'),
+                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course.pdo_count_queries'),
                 new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/Boolean'));
         } catch (osid_ConfigurationErrorException $e) {
             $debug = false;
@@ -158,10 +158,10 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
         try {
             $this->idAuthority = phpkit_configuration_ConfigUtil::getSingleValuedValue(
                 $runtime->getConfiguration(),
-                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/id_authority'),
+                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course.id_authority'),
                 new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
             if (!strlen($this->idAuthority)) {
-                throw new osid_ConfigurationErrorException('urn:inet:middlebury.edu:config:banner_course/id_authority must be specified.');
+                throw new osid_ConfigurationErrorException('urn:inet:middlebury.edu:config:banner_course.id_authority must be specified.');
             }
         } catch (osid_NotFoundException $e) {
             throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode());

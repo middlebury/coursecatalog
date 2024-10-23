@@ -1,0 +1,59 @@
+        <item>
+            <title>{{ offering.displayname }}</title>
+            <link>{{ url('view_offering', {'id': osidIdToString(offering.id)}) }}</link>
+            <description><![CDATA[{{ offering.description|raw }}]]></description>
+            <catalog:title>{{ offering.title }}</catalog:title>
+            <catalog:id>{{ osidIdToString(offering.id) }}</catalog:id>
+{%~ if is_primary is not null %}
+            <catalog:enrollable>{{ is_primary ? 'true':'false' }}</catalog:enrollable>
+{% endif ~%}
+{%- if alternates is not empty %}
+{%- for alternate in alternates %}
+            <catalog:alternate id="{{ osidIdToString(alternate.id) }}" href="{{ url('view_offering', {id: osidIdToString(alternate.id), term: osidIdToString(offering.term.id)}) }}" is_primary="{{ alternate.is_primary ? 'true':'false' }}">{{ alternate.displayname }}</catalog:alternate>
+{% endfor ~%}
+{% endif %}
+            <catalog:genustype type="{{ osidTypeToString(offering.genustype) }}" id="{{ osidTypeToString(offering.genustype) }}">{{ offering.genustype.displayname }}</catalog:genustype>
+            {{ include('partials/term.xml.twig', {term: offering.term, key: 'term'}) }}
+
+{%- for topic in subjectTopics %}
+            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id)}) }}'>{{ topic.displayname }}</catalog:topic>
+{% endfor %}
+{%- for topic in departmentTopics %}
+            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id)}) }}'>{{ topic.displayname }}</catalog:topic>
+{% endfor %}
+{%- for topic in divisionTopics %}
+            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id)}) }}'>{{ topic.displayname }}</catalog:topic>
+{% endfor %}
+{%- for topic in requirementTopics %}
+            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id)}) }}'>{{ topic.displayname }}</catalog:topic>
+{% endfor %}
+{%- if blockTopics is not empty %}
+{%- for topic in blockTopics %}
+            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id)}) }}'>{{ topic.displayname }}</catalog:topic>
+{% endfor %}
+{% endif %}
+{%- if levelTopics is not empty %}
+{%- for topic in levelTopics %}
+            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id)}) }}'>{{ topic.displayname }}</catalog:topic>
+{% endfor ~%}
+{% endif %}
+{%- if instructors is not null %}
+{%- for instructor in instructors %}
+            <catalog:instructor id="{{ osidIdToString(instructor.id) }}" href="{{ url('view_resource', {resource: osidIdToString(instructor.id), term: osidIdToString(offering.term.id)}) }}">{{ instructor.displayname }}</catalog:instructor>
+{% endfor %}
+{% endif %}
+{%- if location %}
+            <catalog:location id="{{ osidIdToString(location.id) }}" href="{{ url('view_resource', {resource: osidIdToString(location.id), term: osidIdToString(offering.term.id)}) }}">{{ location.displayname }}</catalog:location>
+{% elseif offering.locationinfo %}
+            <catalog:location>{{ offering.locationinfo }}</catalog:location>
+{% endif %}
+            <catalog:schedule{% if weekly_schedule %} meeting_start_date="{{ weekly_schedule.meetingstartdate|date('Y-m-d') }}" meeting_end_date="{{ weekly_schedule.meetingenddate|date('Y-m-d') }}"{% endif %}>{{ offering.scheduleinfo|raw }}</catalog:schedule>
+{% for property in properties %}
+            <catalog:property>
+                <catalog:display_name>{{ property.displayname }}</catalog:display_name>
+                <catalog:display_label>{{ property.displaylabel}}</catalog:display_label>
+                <catalog:description><![CDATA[{{ property.description }}]]></catalog:description>
+                <catalog:value><![CDATA[{{ property.value }}]]></catalog:value>
+            </catalog:property>
+{% endfor %}
+        </item>

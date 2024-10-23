@@ -34,7 +34,7 @@ class Catalog_Action_Helper_OsidTypeTest extends TestCase
 
     public function testGetOsidTypeFromString()
     {
-        $type = new phpkit_type_Type('urn', 'example.edu', '123456789/abcd');
+        $type = new phpkit_type_Type('urn', 'example.edu', '123456789.abcd');
         $typeString = $this->osidTypeHelper->toString($type);
 
         $newType = $this->osidTypeHelper->fromString($typeString);
@@ -44,7 +44,7 @@ class Catalog_Action_Helper_OsidTypeTest extends TestCase
 
     public function testGetStringFromOsidType()
     {
-        $type = new phpkit_type_Type('urn', 'example.edu', '123456789/abcd');
+        $type = new phpkit_type_Type('urn', 'example.edu', '123456789.abcd');
         $typeString = $this->osidTypeHelper->toString($type);
         $this->assertIsString($typeString);
 

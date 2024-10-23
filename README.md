@@ -15,10 +15,10 @@ Examples
 
 Examples of the the Course-Catalog in action at <a href="http://www.middlebury.edu">Middlebury College</a>:
 
-* [Main Search UI](https://catalog.middlebury.edu/catalogs/view/catalog/catalog%2FMCUG) (catalog app)
-* [Section Details Page](https://catalog.middlebury.edu/offerings/view/catalog/catalog%2FMCUG/offering/section%2F201090%2F91241) (catalog app)
-* [Department "courses" RSS feed](https://catalog.middlebury.edu/courses/topicxml/catalog/catalog%2FMCUG/topic/topic%2Fdepartment%2FBIOL) (catalog app)
-* [Departments listing to feed to the Drupal content type form](https://catalog.middlebury.edu/topics/listdepartmentstxt/catalog/catalog%2FMCUG/) (catalog app)
+* [Main Search UI](https://catalog.middlebury.edu/catalogs/view/catalog/catalog.MCUG) (catalog app)
+* [Section Details Page](https://catalog.middlebury.edu/offerings/view/catalog/catalog.MCUG/offering/section.201090.91241) (catalog app)
+* [Department "courses" RSS feed](https://catalog.middlebury.edu/courses/topicxml/catalog/catalog.MCUG/topic/topic.department.BIOL) (catalog app)
+* [Departments listing to feed to the Drupal content type form](https://catalog.middlebury.edu/topics/listdepartmentstxt/catalog/catalog.MCUG/) (catalog app)
 * [Department Course Listing](http://www.middlebury.edu/academics/bio/courses) (Drupal "courses" content-type displaying a feed from the catalog app)
 * [Department Section Listing](http://www.middlebury.edu/academics/bio/courses/offerings) (Drupal "courses" content-type displaying a feed from the catalog app)
 * [Faculty Profile](http://www.middlebury.edu/academics/bio/faculty/node/48111) (Drupal "profile" content-type displaying a feed from the catalog app)</li>
@@ -39,15 +39,39 @@ These instructions assume that you have a POSIX machine running Apache with PHP 
    cd coursecatalog
    git-submodule update --init --recursive
    ```
-3. Make a symbolic link to the `coursecatalog/docroot/` directory in a web-accessible directory or add a virtualhost rooted in the `coursecatalog/docroot/` directory.
-4. Create a MySQL database for the catalogs data and a cache of Banner data.
-5. Make copies of the example config files at `configuration.plist`, `frontend_config.ini`, and `update_config.ini` and edit values to match your environment.
-6. Create the database tables defined in `application/library/banner/course/sql/table_creation.sql`
-7. Run the script at `bin/update-from-banner.php` to dump Banner data into the the MySQL database:
+3. Install additional dependencies with Composer:
+   ```
+   composer install
+   ```
+4. Make a symbolic link to the `coursecatalog/docroot/` directory in a web-accessible directory or add a virtualhost rooted in the `coursecatalog/docroot/` directory.
+5. Create a MySQL database for the catalogs data and a cache of Banner data.
+6. Make copies of the example config files at `configuration.plist`, `frontend_config.ini`, and `update_config.ini` and edit values to match your environment.
+7. Create the database tables defined in `application/library/banner/course/sql/table_creation.sql`
+8. Run the script at `bin/update-from-banner.php` to dump Banner data into the the MySQL database:
    ```
    php bin/update-from-banner.php
    php bin/build_indices.php
    ```
+
+## Development environment setup
+
+### Lando
+Install Docker and Lando to provide a local containerized environment
+
+In the code directory, start the local containers with `lando start`
+
+### Copying the production database
+Dump the production database to a non version-controlled file path like `var/catalog_prod.sql`.
+
+Strip out any `DEFINER` statements that will break the import:
+```
+sed -i '' 's/DEFINER=[^*]*\*/\*/g' var/catalog_prod.sql
+```
+
+Import the database into the local container:
+```
+lando db-import var/catalog_prod.sql
+```
 
 Unit Tests
 ----------

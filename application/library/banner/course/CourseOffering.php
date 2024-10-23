@@ -117,7 +117,7 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
         $this->setGenusType(new phpkit_type_Type(
             'urn', 										// namespace
             $this->session->getIdAuthority(), 			// id authority
-            'genera:offering/'.$row['STVSCHD_CODE'], 	// identifier
+            'genera:offering.'.$row['STVSCHD_CODE'], 	// identifier
             'Course Offerings', 						// domain
             trim($row['STVSCHD_DESC']), 						// display name
             trim($row['STVSCHD_CODE'])						// display label
@@ -350,10 +350,10 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
     {
         $termCode = $this->row['SSBSECT_TERM_CODE'];
         if (!empty($this->row['SSBSECT_PTRM_CODE']) && 1 != $this->row['SSBSECT_PTRM_CODE']) {
-            $termCode .= '/'.$this->row['SSBSECT_PTRM_CODE'];
+            $termCode .= '.'.$this->row['SSBSECT_PTRM_CODE'];
         }
 
-        return $this->getOsidIdFromString($termCode, 'term/');
+        return $this->getOsidIdFromString($termCode, 'term.');
     }
 
     /**
@@ -387,16 +387,16 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
         if (!isset($this->topicIds)) {
             $this->topicIds = [];
             if ($this->row['SCBCRSE_DEPT_CODE']) {
-                $this->topicIds[] = $this->getOsidIdFromString($this->row['SCBCRSE_DEPT_CODE'], 'topic/department/');
+                $this->topicIds[] = $this->getOsidIdFromString($this->row['SCBCRSE_DEPT_CODE'], 'topic.department.');
             }
             if ($this->row['SSBSECT_SUBJ_CODE']) {
-                $this->topicIds[] = $this->getOsidIdFromString($this->row['SSBSECT_SUBJ_CODE'], 'topic/subject/');
+                $this->topicIds[] = $this->getOsidIdFromString($this->row['SSBSECT_SUBJ_CODE'], 'topic.subject.');
             }
             if ($this->row['SCBCRSE_DIVS_CODE']) {
-                $this->topicIds[] = $this->getOsidIdFromString($this->row['SCBCRSE_DIVS_CODE'], 'topic/division/');
+                $this->topicIds[] = $this->getOsidIdFromString($this->row['SCBCRSE_DIVS_CODE'], 'topic.division.');
             }
             if ($this->row['GTVINSM_CODE']) {
-                $this->topicIds[] = $this->getOsidIdFromString($this->row['GTVINSM_CODE'], 'topic/instruction_method/');
+                $this->topicIds[] = $this->getOsidIdFromString($this->row['GTVINSM_CODE'], 'topic.instruction_method.');
             }
 
             $this->topicIds = array_merge(
@@ -484,8 +484,8 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
     public function getLocationId()
     {
         return $this->getOsidIdFromString(
-            $this->row['SSRMEET_BLDG_CODE'].'/'.$this->row['SSRMEET_ROOM_CODE'],
-            'resource/place/room/');
+            $this->row['SSRMEET_BLDG_CODE'].'.'.$this->row['SSRMEET_ROOM_CODE'],
+            'resource.place.room.');
     }
 
     /**
@@ -633,8 +633,8 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
         throw new osid_IllegalStateException('This version of the OSID does not support Learning Objectives');
 
         return $this->getOsidIdFromString(
-            $this->row['SSBSECT_TERM_CODE'].'/'.$this->row['SSBSECT_CRN'],
-            'CourseSchedule/');
+            $this->row['SSBSECT_TERM_CODE'].'.'.$this->row['SSBSECT_CRN'],
+            'CourseSchedule.');
     }
 
     /**
@@ -879,7 +879,7 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
             $linkId = substr($this->row['SSBSECT_LINK_IDENT'], 1, 1);
         }
 
-        return $this->getOsidIdFromString($linkId, 'link_set/');
+        return $this->getOsidIdFromString($linkId, 'link_set.');
     }
 
     /**
@@ -907,7 +907,7 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
             $linkId = substr($this->row['SSBSECT_LINK_IDENT'], 0, 1);
         }
 
-        return $this->getOsidIdFromString($linkId, 'link_type/');
+        return $this->getOsidIdFromString($linkId, 'link_type.');
     }
 
     /*********************************************************

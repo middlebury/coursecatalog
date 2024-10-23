@@ -31,7 +31,7 @@ class banner_resource_ResourceManagerTest extends phpkit_test_phpunit_AbstractOs
      */
     protected function setUp(): void
     {
-        $this->allBinId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/all');
+        $this->allBinId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource.all');
         $this->manager = self::$courseManager->getResourceManager();
     }
 

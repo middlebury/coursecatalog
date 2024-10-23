@@ -1,0 +1,3 @@
+{% for resource in resources %}
+{{ osidIdToString(resource.id) }}|{{ osidIdToString(resource.id) }} - {{ resource.displayname }}
+{% endfor %}

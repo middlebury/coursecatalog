@@ -35,7 +35,7 @@ class banner_course_CourseManager extends phpkit_AbstractOsidManager implements 
     {
         parent::__construct();
 
-        $this->setId(new phpkit_id_URNInetId('urn:inet:middlebury.edu:id:implementations/banner_course'));
+        $this->setId(new phpkit_id_URNInetId('urn:inet:middlebury.edu:id:implementations.banner_course'));
         $this->setDisplayName('Banner Course Manager');
         $this->setDescription('This is a CourseManager implementation that provides read-only, unauthenticated, access to course information stored in Banner database tables.');
     }
@@ -76,7 +76,7 @@ class banner_course_CourseManager extends phpkit_AbstractOsidManager implements 
      */
     public function getCombinedCatalogId()
     {
-        return new phpkit_id_Id($this->getIdAuthority(), 'urn', 'catalog/all');
+        return new phpkit_id_Id($this->getIdAuthority(), 'urn', 'catalog.all');
     }
 
     /*********************************************************
@@ -118,17 +118,17 @@ class banner_course_CourseManager extends phpkit_AbstractOsidManager implements 
         try {
             $dsn = phpkit_configuration_ConfigUtil::getSingleValuedValue(
                 $runtime->getConfiguration(),
-                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/pdo_dsn'),
+                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course.pdo_dsn'),
                 new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
 
             $username = phpkit_configuration_ConfigUtil::getSingleValuedValue(
                 $runtime->getConfiguration(),
-                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/pdo_username'),
+                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course.pdo_username'),
                 new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
 
             $password = phpkit_configuration_ConfigUtil::getSingleValuedValue(
                 $runtime->getConfiguration(),
-                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/pdo_password'),
+                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course.pdo_password'),
                 new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
         } catch (osid_NotFoundException $e) {
             throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode(), $e);
@@ -137,7 +137,7 @@ class banner_course_CourseManager extends phpkit_AbstractOsidManager implements 
         try {
             $debug = phpkit_configuration_ConfigUtil::getSingleValuedValue(
                 $runtime->getConfiguration(),
-                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/pdo_count_queries'),
+                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course.pdo_count_queries'),
                 new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/Boolean'));
         } catch (osid_ConfigurationErrorException $e) {
             $debug = false;
@@ -147,7 +147,7 @@ class banner_course_CourseManager extends phpkit_AbstractOsidManager implements 
             $driverOptions = [];
             $options = phpkit_configuration_ConfigUtil::getMultiValuedValueOfAnyType(
                 $runtime->getConfiguration(),
-                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/pdo_driver_options'));
+                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course.pdo_driver_options'));
             foreach ($options as $key => $value) {
                 $option = constant($key);
                 if (null === $option) {
@@ -172,10 +172,10 @@ class banner_course_CourseManager extends phpkit_AbstractOsidManager implements 
         try {
             $this->idAuthority = phpkit_configuration_ConfigUtil::getSingleValuedValue(
                 $runtime->getConfiguration(),
-                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/id_authority'),
+                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course.id_authority'),
                 new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
             if (!strlen($this->idAuthority)) {
-                throw new osid_ConfigurationErrorException('urn:inet:middlebury.edu:config:banner_course/id_authority must be specified.');
+                throw new osid_ConfigurationErrorException('urn:inet:middlebury.edu:config:banner_course.id_authority must be specified.');
             }
         } catch (osid_NotFoundException $e) {
             throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode(), $e);
@@ -213,7 +213,7 @@ class banner_course_CourseManager extends phpkit_AbstractOsidManager implements 
     public function getCourseLookupSession()
     {
         return new banner_course_Course_Lookup_CombinedSession($this,
-            new phpkit_id_URNInetId('urn:inet:'.$this->idAuthority.':catalog/all'));
+            new phpkit_id_URNInetId('urn:inet:'.$this->idAuthority.':catalog.all'));
     }
 
     /**
@@ -268,7 +268,7 @@ class banner_course_CourseManager extends phpkit_AbstractOsidManager implements 
     public function getCourseSearchSession()
     {
         return new banner_course_Course_Search_Session($this,
-            new phpkit_id_URNInetId('urn:inet:'.$this->idAuthority.':catalog/all'));
+            new phpkit_id_URNInetId('urn:inet:'.$this->idAuthority.':catalog.all'));
     }
 
     /**

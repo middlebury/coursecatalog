@@ -77,7 +77,7 @@ class banner_resource_Resource_Person extends phpkit_AbstractOsidObject implemen
 
         $this->addRecordType($this->namesType);
 
-        $this->setGenusType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource/person'));
+        $this->setGenusType(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource.person'));
     }
 
     /**

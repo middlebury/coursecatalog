@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
+    <channel>
+        <title>{{ title }}</title>
+        <link>{{ feedLink }}</link>
+        <description></description>
+        <lastBuildDate>{{ 'now' | date('r') }}</lastBuildDate>
+        <generator>Course Catalog</generator>
+        <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+    {% if previousTerm %}{{ include('partials/term.xml.twig', {term: previousTerm, key: 'previous_term'}) }}{% endif %}
+    {% if term %}{{ include('partials/term.xml.twig', {term: term, key: 'chosen_term'}) }}{% endif %}
+    {% if nextTerm %}{{ include('partials/term.xml.twig', {term: nextTerm, key: 'next_term'}) }}{% endif %}
+{% if terms %}
+        <catalog:all_terms>
+        {%~ for t in terms %}
+            {{ include('partials/term.xml.twig', {term: t, key: 'term'}) -}}
+        {% endfor %}
+        </catalog:all_terms>
+{% endif %}
+
+{% for offering in offerings %}
+{{ include('partials/offering.xml.twig', offering, with_context = false) }}
+{% endfor %}
+    </channel>
+</rss>

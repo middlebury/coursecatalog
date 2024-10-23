@@ -1,0 +1,16 @@
+# If you need to set more values beyond the 4 specified in the environmental
+# variables, copy this file to config/packages/<env>/nbgrp_onelogin_saml.yaml
+# and put in values that match your IDP & application (SP).
+#
+# The configuration parameters available are documented at:
+# https://github.com/nbgrp/onelogin-saml-bundle?tab=readme-ov-file#configuration
+nbgrp_onelogin_saml:
+    onelogin_settings:
+        default:
+            idp:
+                entityId: '%env(SAML_IDP_ENTITYID)%'
+                singleSignOnService:
+                    url: '%env(SAML_IDP_SINGLESIGNONSERVICE)%'
+                singleLogoutService:
+                    url: '%env(SAML_IDP_SINGLELOGOUTSERVICE)%'
+                x509cert: '%env(SAML_IDP_X509CERT)%'

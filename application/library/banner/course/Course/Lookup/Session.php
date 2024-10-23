@@ -52,7 +52,7 @@ class banner_course_Course_Lookup_Session extends banner_course_Course_AbstractS
      */
     public function __construct(banner_course_CourseManagerInterface $manager, osid_id_Id $catalogId)
     {
-        parent::__construct($manager, 'course/');
+        parent::__construct($manager, 'course.');
 
         $this->catalogId = $catalogId;
     }
@@ -228,7 +228,7 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
             self::$getCourse_stmts[$catalogWhere] = $this->manager->getDB()->prepare($query);
         }
 
-        $courseIdString = $this->getDatabaseIdString($courseId, 'course/');
+        $courseIdString = $this->getDatabaseIdString($courseId, 'course.');
 
         $parameters = array_merge(
             [
@@ -241,19 +241,19 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
         self::$getCourse_stmts[$catalogWhere]->closeCursor();
 
         if (!$row || !($row['SCBCRSE_SUBJ_CODE'] && $row['SCBCRSE_CRSE_NUMB'])) {
-            throw new osid_NotFoundException("Could not find a course matching the id-component '$courseIdString' for the catalog '".$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog/')."'.");
+            throw new osid_NotFoundException("Could not find a course matching the id-component '$courseIdString' for the catalog '".$this->getDatabaseIdString($this->getCourseCatalogId(), 'catalog.')."'.");
         }
 
         return new banner_course_Course(
-            $this->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'], 'course/'),
+            $this->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'], 'course.'),
             $row['SCBCRSE_SUBJ_CODE'].' '.$row['SCBCRSE_CRSE_NUMB'],
             (null === $row['SCBDESC_TEXT_NARRATIVE']) ? '' : $row['SCBDESC_TEXT_NARRATIVE'],	// Description
             $row['SCBCRSE_TITLE'],
             $row['SCBCRSE_CREDIT_HR_HIGH'],
             [
-                $this->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'], 'topic/subject/'),
-                $this->getOsidIdFromString($row['SCBCRSE_DEPT_CODE'], 'topic/department/'),
-                $this->getOsidIdFromString($row['SCBCRSE_DIVS_CODE'], 'topic/division/'),
+                $this->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'], 'topic.subject.'),
+                $this->getOsidIdFromString($row['SCBCRSE_DEPT_CODE'], 'topic.department.'),
+                $this->getOsidIdFromString($row['SCBCRSE_DIVS_CODE'], 'topic.division.'),
             ],
             $row['has_alternates'],
             $this);
