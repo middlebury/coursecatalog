@@ -64,6 +64,8 @@ class Offerings extends AbstractController
      *   The osid.term_helper service.
      * @param \App\Service\Osid\DataLoader $osidDataLoader
      *   The osid.topic_helper service.
+     * @param \App\Service\Osid\TypeHelper $osidTypeHelper
+     *   The osid type helper service.
      */
     public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, TermHelper $osidTermHelper, DataLoader $osidDataLoader, TypeHelper $osidTypeHelper) {
         $this->osidRuntime = $osidRuntime;
@@ -233,8 +235,10 @@ class Offerings extends AbstractController
         $catalogIds = $catalogSession->getCatalogIdsByCourseOffering($data['offering']->getId());
         if ($catalogIds->hasNext()) {
             $catalogId = $catalogIds->getNextId();
-            $data['menuCatalogSelectedId'] = $catalogId;
-            $data['menuCatalogSelected'] = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession()->getCourseCatalog($catalogId);
+            $data['catalog_id'] = $catalogId;
+        }
+        else {
+            $data['catalog_id'] = NULL;
         }
 
         return $this->render('offerings/view.html.twig', $data);

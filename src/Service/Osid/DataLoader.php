@@ -281,7 +281,7 @@ class DataLoader {
      *
      * @since 4/28/09
      */
-    protected function getTopics(\osid_course_TopicList $topicList)
+    public function getTopics(\osid_course_TopicList $topicList)
     {
         $data = [];
         $topics = $this->osidTopicHelper->topicListAsArray($topicList);

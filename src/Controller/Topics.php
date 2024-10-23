@@ -4,14 +4,16 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
- namespace App\Controller;
+namespace App\Controller;
 
- use App\Service\Osid\IdMap;
- use App\Service\Osid\Runtime;
- use App\Service\Osid\TermHelper;
- use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
- use Symfony\Component\HttpFoundation\Response;
- use Symfony\Component\Routing\Annotation\Route;
+use App\Service\Osid\DataLoader;
+use App\Service\Osid\IdMap;
+use App\Service\Osid\Runtime;
+use App\Service\Osid\TermHelper;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * A controller for working with topics.
@@ -33,49 +35,56 @@ class Topics extends AbstractController
     private $osidIdMap;
 
     /**
+     * @var \App\Service\Osid\DataLoader
+     */
+    private $osidDataLoader;
+
+
+    /**
      * Construct a new Catalogs controller.
      *
      * @param \App\Service\Osid\Runtime $osidRuntime
      *   The osid.runtime service.
      * @param \App\Service\Osid\IdMap $osidIdMap
      *   The osid.id_map service.
+     * @param \App\Service\Osid\DataLoader $osidDataLoader
+     *   The osid.topic_helper service.
      */
-    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap) {
+    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, DataLoader $osidDataLoader) {
         $this->osidRuntime = $osidRuntime;
         $this->osidIdMap = $osidIdMap;
+        $this->osidDataLoader = $osidDataLoader;
     }
 
     /**
      * Print out a list of all topics.
-     *
-     * @return void
-     *
-     * @since 4/21/09
      */
-    public function listAction()
+    #[Route('/topics/list/{catalog}/{type}', name: 'list_topics')]
+    public function listAction(string $catalog = NULL, string $type = NULL)
     {
-        if ($this->_getParam('catalog')) {
-            $catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
+        if ($catalog) {
+            $catalogId = $this->osidIdMap->fromString($catalog);
             $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
-            $this->view->title = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
+            $data['title'] = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
+            $data['catalog_id'] = $catalogId;
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
-            $this->view->title = 'Topics in All Catalogs';
+            $data['title'] = 'Topics in All Catalogs';
+            $data['catalog_id'] = NULL;
         }
         $lookupSession->useFederatedCourseCatalogView();
 
-        if ($this->_getParam('type')) {
-            $genusType = $this->osidRuntimeType->fromString($this->_getParam('type'));
+        if ($type) {
+            $genusType = $this->osidIdMap->typeFromString($type);
             $topics = $lookupSession->getTopicsByGenusType($genusType);
-            $this->view->title .= ' of type '.$this->_getParam('type');
+            $data['title'] .= ' of type ' . $type;
         } else {
             $topics = $lookupSession->getTopics();
         }
 
-        $this->loadTopics($topics);
+        $data = array_merge($data, $this->osidDataLoader->getTopics($topics));
 
-        $this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
-        $this->view->headTitle($this->view->title);
+        return $this->render('topics/list.html.twig', $data);
     }
 
     /**
@@ -128,7 +137,7 @@ class Topics extends AbstractController
         }
 
         if ($this->_getParam('type')) {
-            $genusType = $this->osidRuntimeType->fromString($this->_getParam('type'));
+            $genusType = $this->osidTypeHelper->fromString($this->_getParam('type'));
             $query->matchGenusType($genusType, true);
             $this->view->title .= ' of type '.$this->_getParam('type');
         }
@@ -173,52 +182,68 @@ class Topics extends AbstractController
         $this->_helper->viewRenderer->setRender('topics/listxml', null, true);
     }
 
-    #[Route('/topics/view/{topic}/{term}', name: 'view_topic')]
-    public function view($topic, $term = NULL)
+    #[Route('/topics/view/{topic}/{catalog}/{term}', name: 'view_topic')]
+    public function view($topic, $catalog = NULL, $term = NULL)
     {
+        $data = [];
         $id = $this->osidIdMap->fromString($topic);
-        $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
-        $lookupSession->useFederatedCourseCatalogView();
-        $this->view->topic = $lookupSession->getTopic($id);
 
-        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
-        $lookupSession->useFederatedCourseCatalogView();
-        if ($this->_getParam('term')) {
-            $termId = $this->osidIdMap->fromString($term);
-            $this->view->offerings = $lookupSession->getCourseOfferingsByTermByTopic($termId, $id);
-
+        if ($catalog) {
+            $catalogId = $this->osidIdMap->fromString($catalog);
+            $topicLookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+            $topicLookupSession->useIsolatedCourseCatalogView();
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+            $termLookupSession->useIsolatedCourseCatalogView();
+            $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
+            $offeringLookupSession->useIsolatedCourseCatalogView();
+            $data['catalog_id'] = $catalogId;
+        }
+        else {
+            $topicLookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
+            $topicLookupSession->useFederatedCourseCatalogView();
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $termLookupSession->useFederatedCourseCatalogView();
-            $this->view->term = $termLookupSession->getTerm($termId);
+            $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
+            $offeringLookupSession->useFederatedCourseCatalogView();
+            $data['catalog_id'] = NULL;
+        }
+
+        $data['topic'] = $topicLookupSession->getTopic($id);
+
+        if ($term) {
+            $termId = $this->osidIdMap->fromString($term);
+            $offerings = $offeringLookupSession->getCourseOfferingsByTermByTopic($termId, $id);
+            $data['term'] = $termLookupSession->getTerm($termId);
+            $data['offeringsForAllTermsUrl'] = $this->generateUrl(
+                'view_topic',
+                [
+                    'topic' => $topic,
+                    'catalog' => $catalog,
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
         } else {
-            $this->view->offerings = $lookupSession->getCourseOfferingsByTopic($id);
+            $offerings = $offeringLookupSession->getCourseOfferingsByTopic($id);
+            $data['term'] = NULL;
+            $data['offeringsForAllTermsUrl'] = NULL;
         }
 
-        // Don't do the work to display instructors if we have a very large number of
-        // offerings.
-        if ($this->view->offerings->available() > 200) {
-            $this->view->hideOfferingInstructors = true;
+        // Don't do the work to display all offerings if we have a very large
+        // number of offerings.
+        $data['offerings'] = [];
+        $data['offering_count'] = 0;
+        $data['offering_display_limit'] = 200;
+        $data['offeringsTitle'] = 'Sections';
+        if (isset($offerings)) {
+            $data['offering_count'] = $offerings->available();
+            $i = 0;
+            while ($offerings->hasNext() && $i < $data['offering_display_limit']) {
+                $data['offerings'][] = $this->osidDataLoader->getOfferingData($offerings->getNextCourseOffering());
+                $i++;
+            }
         }
 
-        // Set the selected Catalog Id.
-        if ($this->_getParam('catalog')) {
-            $this->setSelectedCatalogId($this->osidIdMap->fromString($this->_getParam('catalog')));
-        }
-
-        // Set the title
-        $this->view->title = $this->view->topic->getDisplayName();
-        $this->view->headTitle($this->view->title);
-
-        $this->view->offeringsTitle = 'Sections';
-
-        $allParams = [];
-        $allParams['topic'] = $this->_getParam('topic');
-        if ($this->getSelectedCatalogId()) {
-            $allParams['catalog'] = $this->osidIdMap->toString($this->getSelectedCatalogId());
-        }
-        $this->view->offeringsForAllTermsUrl = $this->_helper->url('view', 'topics', null, $allParams);
-
-        $this->render('offerings', null, true);
+        return $this->render('topics/view.html.twig', $data);
     }
 
     /**

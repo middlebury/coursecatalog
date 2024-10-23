@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+{% if subjectTopics | length %}
+    <h2>Subjects:</h2>
+    <ul>
+    {% for topic in subjectTopics %}
+        <li><a href="{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}">{{ topic.displayname }}</a></li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+{% if departmentTopics | length %}
+    <h2>Departments:</h2>
+    <ul>
+    {% for topic in departmentTopics %}
+        <li><a href="{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}">{{ topic.displayname }}</a></li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+{% if divisionTopics | length %}
+    <h2>Divisions:</h2>
+    <ul>
+    {% for topic in divisionTopics %}
+        <li><a href="{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}">{{ topic.displayname }}</a></li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+{% if requirementTopics | length %}
+    <h2>Requirements Fulfilled:</h2>
+    <ul>
+    {% for topic in requirementTopics %}
+        <li><a href="{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}">{{ topic.displayname }}</a></li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+{% endblock %}
