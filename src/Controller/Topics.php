@@ -89,15 +89,49 @@ class Topics extends AbstractController
 
     /**
      * Print out an XML list of all catalogs.
-     *
-     * @return void
      */
-    public function listxmlAction()
+    #[Route('/topics/listxml/{catalog}/{type}', name: 'list_topics_xml')]
+    public function listxmlAction(string $catalog = NULL, string $type = NULL)
     {
-        $this->_helper->layout->disableLayout();
-        $this->getResponse()->setHeader('Content-Type', 'text/xml');
+        if ($catalog) {
+            $catalogId = $this->osidIdMap->fromString($catalog);
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+            $data['title'] = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
+            $data['catalog_id'] = $catalogId;
+        } else {
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
+            $data['title'] = 'Topics in All Catalogs';
+            $data['catalog_id'] = NULL;
+        }
+        $lookupSession->useFederatedCourseCatalogView();
 
-        $this->listAction();
+        if ($type) {
+            $genusType = $this->osidIdMap->typeFromString($type);
+            $topics = $lookupSession->getTopicsByGenusType($genusType);
+            $data['title'] .= ' of type ' . $type;
+        } else {
+            $topics = $lookupSession->getTopics();
+        }
+
+        $topicData = $this->osidDataLoader->getTopics($topics);
+        $data['topics'] = array_merge(
+            $topicData['subjectTopics'],
+            $topicData['departmentTopics'],
+            $topicData['divisionTopics'],
+            $topicData['requirementTopics'],
+        );
+
+        $data['feedLink'] = $this->generateUrl(
+            'list_topics_xml',
+            [
+                'catalog' => $catalog,
+                'type' => $type,
+            ],
+            UrlGeneratorInterface::ABSOLUTE_URL,
+        );
+        $response = new Response($this->renderView('topics/list.xml.twig', $data));
+        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+        return $response;
     }
 
     /**
