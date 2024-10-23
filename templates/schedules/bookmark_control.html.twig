@@ -17,6 +17,7 @@
             <img src=" {{ asset("images/Crystal_Clear/Crystal_Clear_action_bookmark_Silver.png") }}" alt="star icon"/>
             Save
         </a>
+    </div>
 {% else %}
     <a href="{{ url("login", {returnTo: app.request.uri }) }}">Log-in to save</a>
 {% endif %}
