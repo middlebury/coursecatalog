@@ -93,55 +93,44 @@ class Offerings extends AbstractController
 
     /**
      * Print out a list of all courses.
-     *
-     * @return void
-     *
-     * @since 4/21/09
      */
-    public function listAction()
+    #[Route('/offerings/list/{catalog}/{term}', name: 'list_offerings')]
+    public function listAction(string $catalog, string $term)
     {
         $data = [];
-        if ($catalog) {
-            $catalogId = $this->osidIdMap->fromString($catalog);
-            $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
-            $data['title'] = $lookupSession->getCourseCatalog()->getDisplayName();
-        } else {
-            $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
-            $data['title'] = 'All Catalogs';
-        }
+        $catalogId = $this->osidIdMap->fromString($catalog);
+        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
+        $data['title'] = $lookupSession->getCourseCatalog()->getDisplayName();
         $lookupSession->useFederatedCourseCatalogView();
 
         // Add our parameters to the search query
-        if ($term) {
-            if ('CURRENT' == $term) {
-                $termId = $this->osidTermHelper->getNextOrLatestTermId();
-            } else {
-                $termId = $this->osidIdMap->fromString($term);
-            }
-
-            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
-            $termLookupSession->useFederatedCourseCatalogView();
-
-            $data['term'] = $termLookupSession->getTerm($termId);
-
-            $data['offerings'] = $lookupSession->getCourseOfferingsByTerm($data['term']->getId());
+        if ('CURRENT' == $term) {
+            $termId = $this->osidTermHelper->getNextOrLatestTermId();
         } else {
-            $data['offerings'] = $lookupSession->getCourseOfferings();
+            $termId = $this->osidIdMap->fromString($term);
         }
 
-        $this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
+        $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
+        $termLookupSession->useFederatedCourseCatalogView();
 
-        $data['menuIsOfferings'] = true;
+        $data['term'] = $termLookupSession->getTerm($termId);
+
+        $offerings = $lookupSession->getCourseOfferingsByTerm($data['term']->getId());
+        $data['offerings'] = [];
+        while ($offerings->hasNext()) {
+            $offering = $offerings->getNextCourseOffering();
+            $data['offerings'][] = $this->osidDataLoader->getOfferingData($offering);
+        }
 
         $data['offeringsTitle'] = 'Sections';
 
         // Don't do the work to display instructors if we have a very large number of
         // offerings.
-        if ($data['offerings']->available() > 200) {
+        if ($offerings->available() > 200) {
             $data['hideOfferingInstructors'] = true;
         }
 
-        $this->render('offerings', null, true);
+        return $this->render('offerings/list.html.twig', $data);
     }
 
     /**
