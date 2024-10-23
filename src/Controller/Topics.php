@@ -62,28 +62,7 @@ class Topics extends AbstractController
     #[Route('/topics/list/{catalog}/{type}', name: 'list_topics')]
     public function listAction(string $catalog = NULL, string $type = NULL)
     {
-        if ($catalog) {
-            $catalogId = $this->osidIdMap->fromString($catalog);
-            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
-            $data['title'] = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
-            $data['catalog_id'] = $catalogId;
-        } else {
-            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
-            $data['title'] = 'Topics in All Catalogs';
-            $data['catalog_id'] = NULL;
-        }
-        $lookupSession->useFederatedCourseCatalogView();
-
-        if ($type) {
-            $genusType = $this->osidIdMap->typeFromString($type);
-            $topics = $lookupSession->getTopicsByGenusType($genusType);
-            $data['title'] .= ' of type ' . $type;
-        } else {
-            $topics = $lookupSession->getTopics();
-        }
-
-        $data = array_merge($data, $this->osidDataLoader->getTopics($topics));
-
+        $data = $this->getTopicData($catalog, $type);
         return $this->render('topics/list.html.twig', $data);
     }
 
@@ -93,34 +72,7 @@ class Topics extends AbstractController
     #[Route('/topics/listxml/{catalog}/{type}', name: 'list_topics_xml')]
     public function listxmlAction(string $catalog = NULL, string $type = NULL)
     {
-        if ($catalog) {
-            $catalogId = $this->osidIdMap->fromString($catalog);
-            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
-            $data['title'] = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
-            $data['catalog_id'] = $catalogId;
-        } else {
-            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
-            $data['title'] = 'Topics in All Catalogs';
-            $data['catalog_id'] = NULL;
-        }
-        $lookupSession->useFederatedCourseCatalogView();
-
-        if ($type) {
-            $genusType = $this->osidIdMap->typeFromString($type);
-            $topics = $lookupSession->getTopicsByGenusType($genusType);
-            $data['title'] .= ' of type ' . $type;
-        } else {
-            $topics = $lookupSession->getTopics();
-        }
-
-        $topicData = $this->osidDataLoader->getTopics($topics);
-        $data['topics'] = array_merge(
-            $topicData['subjectTopics'],
-            $topicData['departmentTopics'],
-            $topicData['divisionTopics'],
-            $topicData['requirementTopics'],
-        );
-
+        $data = $this->getTopicData($catalog, $type);
         $data['feedLink'] = $this->generateUrl(
             'list_topics_xml',
             [
@@ -136,84 +88,32 @@ class Topics extends AbstractController
 
     /**
      * Print out a list of all topics.
-     *
-     * @return void
-     *
-     * @since 4/21/09
      */
-    public function recentAction()
+    #[Route('/topics/recent/{catalog}/{type}', name: 'list_recent_topics')]
+    public function recentAction(string $catalog = NULL, string $type = NULL)
     {
-        if ($this->_getParam('catalog')) {
-            $catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
-            $searchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
-            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
-            $this->view->title = 'Topics in '.$searchSession->getCourseCatalog()->getDisplayName();
-        } else {
-            $searchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSession();
-            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
-
-            $this->view->title = 'Topics in All Catalogs';
-        }
-        $searchSession->useFederatedCourseCatalogView();
-        $query = $searchSession->getTopicQuery();
-
-        // Match recent terms
-        $terms = $termLookupSession->getTerms();
-        // Define a cutoff date after which courses will be included in the feed.
-        // Currently set to 4 years. Would be good to have as a configurable time.
-        $now = new DateTime();
-        $cutOff = $this->DateTime_getTimestamp($now) - (60 * 60 * 24 * 365 * 4);
-        while ($terms->hasNext()) {
-            $term = $terms->getNextTerm();
-            if ($this->DateTime_getTimestamp($term->getEndTime()) > $cutOff) {
-                $query->matchTermId($term->getId(), true);
-            }
-        }
-
-        if ($this->_getParam('type')) {
-            $genusType = $this->osidTypeHelper->fromString($this->_getParam('type'));
-            $query->matchGenusType($genusType, true);
-            $this->view->title .= ' of type '.$this->_getParam('type');
-        }
-
-        $topics = $searchSession->getTopicsByQuery($query);
-
-        $this->loadTopics($topics);
-
-        $this->setSelectedCatalogId($searchSession->getCourseCatalogId());
-        $this->view->headTitle($this->view->title);
-
-        $this->_helper->viewRenderer->setRender('topics/list', null, true);
-    }
-
-    public function DateTime_getTimestamp($dt)
-    {
-        $dtz_original = $dt->getTimezone();
-        $dtz_utc = new DateTimeZone('UTC');
-        $dt->setTimezone($dtz_utc);
-        $year = (int) $dt->format('Y');
-        $month = (int) $dt->format('n');
-        $day = (int) $dt->format('j');
-        $hour = (int) $dt->format('G');
-        $minute = (int) $dt->format('i');
-        $second = (int) $dt->format('s');
-        $dt->setTimezone($dtz_original);
-
-        return gmmktime($hour, $minute, $second, $month, $day, $year);
+        $data = $this->getRecentTopicData($catalog, $type);
+        return $this->render('topics/list.html.twig', $data);
     }
 
     /**
      * Print out an XML list of all catalogs.
-     *
-     * @return void
      */
-    public function recentxmlAction()
+    #[Route('/topics/recentxml/{catalog}/{type}', name: 'list_recent_topics_xml')]
+    public function recentxmlAction(string $catalog = NULL, string $type = NULL)
     {
-        $this->_helper->layout->disableLayout();
-        $this->getResponse()->setHeader('Content-Type', 'text/xml');
-
-        $this->recentAction();
-        $this->_helper->viewRenderer->setRender('topics/listxml', null, true);
+        $data = $this->getRecentTopicData($catalog, $type);
+        $data['feedLink'] = $this->generateUrl(
+            'list_recent_topics_xml',
+            [
+                'catalog' => $catalog,
+                'type' => $type,
+            ],
+            UrlGeneratorInterface::ABSOLUTE_URL,
+        );
+        $response = new Response($this->renderView('topics/list.xml.twig', $data));
+        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+        return $response;
     }
 
     #[Route('/topics/view/{topic}/{catalog}/{term}', name: 'view_topic')]
@@ -384,6 +284,109 @@ class Topics extends AbstractController
     public function listdepartmentstxtAction()
     {
         $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department'));
+    }
+
+    /**
+     * Answer an array of topic data for an optional catalog and type.
+     *
+     * @param string $catalog
+     *   The catalog id to search within.
+     * @param string  $type
+     *   The type id to search within.
+     * @return array
+     *   The topic data ready for templating.
+     */
+    protected function getTopicData(string $catalog = NULL, string $type = NULL) {
+        $data = [];
+        if ($catalog) {
+            $catalogId = $this->osidIdMap->fromString($catalog);
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+            $data['title'] = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
+            $data['catalog_id'] = $catalogId;
+        } else {
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
+            $data['title'] = 'Topics in All Catalogs';
+            $data['catalog_id'] = NULL;
+        }
+        $lookupSession->useFederatedCourseCatalogView();
+
+        if ($type) {
+            $genusType = $this->osidIdMap->typeFromString($type);
+            $topics = $lookupSession->getTopicsByGenusType($genusType);
+            $data['title'] .= ' of type ' . $type;
+        } else {
+            $topics = $lookupSession->getTopics();
+        }
+
+        $data = array_merge($data, $this->osidDataLoader->getTopics($topics));
+        return $data;
+    }
+
+    /**
+     * Answer an array of recent topic data for an optional catalog and type.
+     *
+     * @param string $catalog
+     *   The catalog id to search within.
+     * @param string  $type
+     *   The type id to search within.
+     * @return array
+     *   The topic data ready for templating.
+     */
+    protected function getRecentTopicData(string $catalog = NULL, string $type = NULL) {
+        if ($catalog) {
+            $catalogId = $this->osidIdMap->fromString($catalog);
+            $searchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+            $data['title'] = 'Topics in '.$searchSession->getCourseCatalog()->getDisplayName();
+            $data['catalog_id'] = $catalogId;
+        } else {
+            $searchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSession();
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
+            $data['title'] = 'Topics in All Catalogs';
+            $data['catalog_id'] = $catalogId;
+        }
+        $searchSession->useFederatedCourseCatalogView();
+        $query = $searchSession->getTopicQuery();
+
+        // Match recent terms
+        $terms = $termLookupSession->getTerms();
+        // Define a cutoff date after which courses will be included in the feed.
+        // Currently set to 4 years. Would be good to have as a configurable time.
+        $now = new \DateTime();
+        $cutOff = $this->DateTime_getTimestamp($now) - (60 * 60 * 24 * 365 * 4);
+        while ($terms->hasNext()) {
+            $term = $terms->getNextTerm();
+            if ($this->DateTime_getTimestamp($term->getEndTime()) > $cutOff) {
+                $query->matchTermId($term->getId(), true);
+            }
+        }
+
+        if ($type) {
+            $genusType = $this->osidIdMap->typeFromString($type);
+            $query->matchGenusType($genusType, true);
+            $data['title'] .= ' of type ' . $type;
+        }
+
+        $topics = $searchSession->getTopicsByQuery($query);
+        $data = array_merge($data, $this->osidDataLoader->getTopics($topics));
+
+        return $data;
+    }
+
+    protected function DateTime_getTimestamp($dt)
+    {
+        $dtz_original = $dt->getTimezone();
+        $dtz_utc = new \DateTimeZone('UTC');
+        $dt->setTimezone($dtz_utc);
+        $year = (int) $dt->format('Y');
+        $month = (int) $dt->format('n');
+        $day = (int) $dt->format('j');
+        $hour = (int) $dt->format('G');
+        $minute = (int) $dt->format('i');
+        $second = (int) $dt->format('s');
+        $dt->setTimezone($dtz_original);
+
+        return gmmktime($hour, $minute, $second, $month, $day, $year);
     }
 
     /**

@@ -7,7 +7,7 @@
         <generator>Course Catalog</generator>
         <docs>http://blogs.law.harvard.edu/tech/rss</docs>
 
-{%~ for topic in topics %}
+{%~ for topic in subjectTopics|merge(departmentTopics, divisionTopics, requirementTopics) %}
         <item>
             <title>{{ topic.displayname }}</title>
             <link>{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}</link>
