@@ -238,8 +238,9 @@ class banner_course_CourseOffering_Catalog_Session extends banner_course_CourseO
     {
         $parameters = [
             ':section_term_code' => $this->getTermCodeFromOfferingId($courseOfferingId),
+            ':section_crn' => $this->getCrnFromOfferingId($courseOfferingId),
         ];
-        $statement = $this->getGetCatalogsStatement();
+        $statement = $this->getGetCatalogsByOfferingStatement();
         $statement->execute($parameters);
 
         $ids = [];
@@ -274,8 +275,9 @@ class banner_course_CourseOffering_Catalog_Session extends banner_course_CourseO
     {
         $parameters = [
             ':section_term_code' => $this->getTermCodeFromOfferingId($courseOfferingId),
+            ':section_crn' => $this->getCrnFromOfferingId($courseOfferingId),
         ];
-        $statement = $this->getGetCatalogsStatement();
+        $statement = $this->getGetCatalogsByOfferingStatement();
         $statement->execute($parameters);
 
         $catalogs = [];
@@ -298,19 +300,24 @@ class banner_course_CourseOffering_Catalog_Session extends banner_course_CourseO
      *
      * @since 4/23/09
      */
-    private function getGetCatalogsStatement()
+    private function getGetCatalogsByOfferingStatement()
     {
         if (!isset(self::$getCatalogsByCourse_stmt)) {
             self::$getCatalogsByCourse_stmt = $this->manager->getDB()->prepare(
-                'SELECT
-	course_catalog.catalog_id,
-	catalog_title
+                '
+SELECT
+    cat.catalog_id,
+    cat.catalog_title
 FROM
-	catalog_term
-	LEFT JOIN course_catalog ON catalog_term.catalog_id = course_catalog.catalog_id
+    ssbsect_scbcrse s
+    INNER JOIN course_catalog_college c ON s.SCBCRSE_COLL_CODE = c.coll_code
+    INNER JOIN catalog_term t ON s.SSBSECT_TERM_CODE = t.term_code
+    INNER JOIN course_catalog cat ON t.catalog_id = cat.catalog_id AND c.catalog_id = cat.catalog_id
+
 WHERE
-	term_code = :section_term_code
-GROUP BY course_catalog.catalog_id
+    SSBSECT_TERM_CODE = :section_term_code
+    AND SSBSECT_CRN = :section_crn
+GROUP BY cat.catalog_id
 ');
         }
 
