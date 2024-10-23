@@ -140,8 +140,8 @@ class Offerings extends AbstractController
      *
      * @since 10/21/09
      */
-     #[Route('/offerings/searchxml/{catalog}/{term}', name: 'search_offerings_xml')]
-     public function searchxml(Request $request, string $catalog = NULL, string $term = NULL)
+    #[Route('/offerings/searchxml/{catalog}/{term}', name: 'search_offerings_xml')]
+    public function searchxml(Request $request, string $catalog = NULL, string $term = NULL)
     {
         [$data, $searchSession, $query, $termLookupSession] = $this->prepareSearch($request, $catalog, $term);
         // Actually run the query.
