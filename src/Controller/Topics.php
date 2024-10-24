@@ -182,36 +182,39 @@ class Topics extends AbstractController
 
     /**
      * Print out an XML listing of a topic.
-     *
-     * @return void
      */
-    public function viewxmlAction()
+    #[Route('/topics/viewxml/{topic}/{catalog}', name: 'view_topic_xml')]
+    public function viewxmlAction(string $topic, string $catalog = NULL)
     {
-        $this->_helper->layout->disableLayout();
-        $this->getResponse()->setHeader('Content-Type', 'text/xml');
+        $data = [];
 
-        if ($this->_getParam('catalog')) {
-            $catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
+        if ($catalog) {
+            $catalogId = $this->osidIdMap->fromString($catalog);
             $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
-            $this->view->title = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
+            $data['title'] = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
+            $data['catalog_id'] = $catalogId;
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
-            $this->view->title = 'Topics in All Catalogs';
+            $data['title'] = 'Topics in All Catalogs';
+            $data['catalog_id'] = NULL;
         }
         $lookupSession->useFederatedCourseCatalogView();
 
-        $topicId = $this->osidIdMap->fromString($this->_getParam('topic'));
+        $topicId = $this->osidIdMap->fromString($topic);
+        $topics = new \phpkit_course_ArrayTopicList([$lookupSession->getTopic($topicId)]);
+        $data = array_merge($data, $this->osidDataLoader->getTopics($topics));
 
-        $topic = $lookupSession->getTopic($topicId);
-        $topics = new phpkit_course_ArrayTopicList([$topic]);
-
-        $this->loadTopics($topics);
-
-        $this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
-        $this->view->title = 'Catalog Details';
-        $this->view->headTitle($this->view->title);
-
-        $this->render('topics/listxml', null, true);
+        $data['feedLink'] = $this->generateUrl(
+            'view_topic_xml',
+            [
+                'catalog' => $catalog,
+                'topic' => $topic,
+            ],
+            UrlGeneratorInterface::ABSOLUTE_URL,
+        );
+        $response = new Response($this->renderView('topics/list.xml.twig', $data));
+        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+        return $response;
     }
 
     /**
