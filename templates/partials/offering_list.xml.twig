@@ -1,7 +1,8 @@
 {% if offerings is not empty %}
             <catalog:offering_list>
 {% set currentTerm = null %}
-{% for offering in offerings %}
+{% for item in offerings %}
+{% set offering = item.offering %}
 {% if currentTerm is null or currentTerm.id != offering.termid %}
 {% if currentTerm is not null %}
                 </catalog:offering_term>
