@@ -376,7 +376,7 @@ class Topics extends AbstractController
         return $data;
     }
 
-    protected function DateTime_getTimestamp($dt)
+    protected function DateTime_getTimestamp(\DateTime $dt)
     {
         $dtz_original = $dt->getTimezone();
         $dtz_utc = new \DateTimeZone('UTC');
