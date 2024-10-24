@@ -12,6 +12,6 @@
 {% endif %}
 
 {% for offering in offerings %}
-{{ include('partials/offering.xml.twig', offering, with_context = false) }}
+{{ include('partials/offering.xml.twig', offering | merge({catalog_id: catalog_id}), with_context = false) }}
 {% endfor %}
 {% endblock %}

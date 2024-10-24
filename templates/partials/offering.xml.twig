@@ -16,34 +16,34 @@
             {{ include('partials/term.xml.twig', {term: offering.term, key: 'term'}) }}
 
 {%- for topic in subjectTopics %}
-            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id)}) }}'>{{ topic.displayname }}</catalog:topic>
+            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}'>{{ topic.displayname }}</catalog:topic>
 {% endfor %}
 {%- for topic in departmentTopics %}
-            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id)}) }}'>{{ topic.displayname }}</catalog:topic>
+            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}'>{{ topic.displayname }}</catalog:topic>
 {% endfor %}
 {%- for topic in divisionTopics %}
-            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id)}) }}'>{{ topic.displayname }}</catalog:topic>
+            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}'>{{ topic.displayname }}</catalog:topic>
 {% endfor %}
 {%- for topic in requirementTopics %}
-            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id)}) }}'>{{ topic.displayname }}</catalog:topic>
+            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}'>{{ topic.displayname }}</catalog:topic>
 {% endfor %}
 {%- if blockTopics is not empty %}
 {%- for topic in blockTopics %}
-            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id)}) }}'>{{ topic.displayname }}</catalog:topic>
+            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}'>{{ topic.displayname }}</catalog:topic>
 {% endfor %}
 {% endif %}
 {%- if levelTopics is not empty %}
 {%- for topic in levelTopics %}
-            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id)}) }}'>{{ topic.displayname }}</catalog:topic>
+            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(offering.term.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}'>{{ topic.displayname }}</catalog:topic>
 {% endfor ~%}
 {% endif %}
 {%- if instructors is not null %}
 {%- for instructor in instructors %}
-            <catalog:instructor id="{{ osidIdToString(instructor.id) }}" href="{{ url('view_resource', {resource: osidIdToString(instructor.id), term: osidIdToString(offering.term.id)}) }}">{{ instructor.displayname }}</catalog:instructor>
+            <catalog:instructor id="{{ osidIdToString(instructor.id) }}" href="{{ url('view_resource', {resource: osidIdToString(instructor.id), term: osidIdToString(offering.term.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}">{{ instructor.displayname }}</catalog:instructor>
 {% endfor %}
 {% endif %}
 {%- if location %}
-            <catalog:location id="{{ osidIdToString(location.id) }}" href="{{ url('view_resource', {resource: osidIdToString(location.id), term: osidIdToString(offering.term.id)}) }}">{{ location.displayname }}</catalog:location>
+            <catalog:location id="{{ osidIdToString(location.id) }}" href="{{ url('view_resource', {resource: osidIdToString(location.id), term: osidIdToString(offering.term.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}">{{ location.displayname }}</catalog:location>
 {% elseif offering.locationinfo %}
             <catalog:location>{{ offering.locationinfo }}</catalog:location>
 {% endif %}

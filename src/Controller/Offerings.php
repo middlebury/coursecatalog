@@ -101,6 +101,7 @@ class Offerings extends AbstractController
     {
         $data = [];
         $catalogId = $this->osidIdMap->fromString($catalog);
+        $data['catalog_id'] = $catalogId;
         $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
         $data['title'] = $lookupSession->getCourseCatalog()->getDisplayName();
         $lookupSession->useFederatedCourseCatalogView();
@@ -253,6 +254,17 @@ class Offerings extends AbstractController
         $offeringData['alternates'] = $this->osidDataLoader->getOfferingAlternates($offering);
         $data['offerings'] = [$offeringData];
 
+        // Set the selected Catalog Id.
+        $catalogSession = $this->osidRuntime->getCourseManager()->getCourseOfferingCatalogSession();
+        $catalogIds = $catalogSession->getCatalogIdsByCourseOffering($offering->getId());
+        if ($catalogIds->hasNext()) {
+            $catalogId = $catalogIds->getNextId();
+            $data['catalog_id'] = $catalogId;
+        }
+        else {
+            $data['catalog_id'] = NULL;
+        }
+
         $data['title'] = $offering->getDisplayName();
         $data['feedLink'] = $this->generateUrl('view_offering', ['id' => $id], UrlGeneratorInterface::ABSOLUTE_URL);
 
@@ -290,6 +302,7 @@ class Offerings extends AbstractController
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
             $resourceLookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalogId);
             $data['title'] = 'Search in '.$offeringSearchSession->getCourseCatalog()->getDisplayName();
+            $data['catalog_id'] = $catalogId;
         } else {
             $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSession();
             $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
@@ -297,6 +310,7 @@ class Offerings extends AbstractController
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $resourceLookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
             $data['title'] = 'Search in All Catalogs';
+            $data['catalog_id'] = NULL;
         }
         $termLookupSession->useFederatedCourseCatalogView();
         $offeringSearchSession->useFederatedCourseCatalogView();

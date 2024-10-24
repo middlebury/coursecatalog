@@ -234,7 +234,7 @@
                     <dt>Course Modality:</dt>
                     <dd>
                     {% for topic in item.instructionMethodTopics %}
-                        <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(item.offering.term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+                        <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: osidIdToString(catalog_id), term: osidIdToString(item.offering.term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
                     {% endfor %}
                     </dd>
                 {% endif %}
@@ -245,14 +245,14 @@
                     <dt>Department:</dt>
                     <dd>
                     {% for topic in item.departmentTopics %}
-                        <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(item.offering.term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+                        <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: osidIdToString(catalog_id), term: osidIdToString(item.offering.term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
                     {% endfor %}
                     </dd>
 
                     <dt>Requirements Fulfilled:</dt>
                     <dd>
                     {% for topic in item.requirementTopics %}
-                        <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(item.offering.term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+                        <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: osidIdToString(catalog_id), term: osidIdToString(item.offering.term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
                     {% endfor %}
                     </dd>
 
@@ -260,7 +260,7 @@
                     <dt>Additional Details:</dt>
                     <dd>
                     {% for topic in item.blockTopics %}
-                        <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), term: osidIdToString(item.offering.term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+                        <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: osidIdToString(catalog_id), term: osidIdToString(item.offering.term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
                     {% endfor %}
                     </dd>
                 {% endif %}

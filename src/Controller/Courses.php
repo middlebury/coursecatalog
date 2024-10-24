@@ -76,9 +76,11 @@ class Courses extends AbstractController
             $catalogId = $this->osidIdMap->fromString($catalog);
             $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
             $data['title'] = 'Courses in '.$lookupSession->getCourseCatalog()->getDisplayName();
+            $data['catalog_id'] = $catalogId;
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSession();
             $data['title'] = 'Courses in All Catalogs';
+            $data['catalog_id'] = NULL;
         }
         $lookupSession->useFederatedCourseCatalogView();
 
@@ -100,16 +102,12 @@ class Courses extends AbstractController
         $data['offerings'] = $this->osidDataLoader->getCourseOfferingsData($data['course'], $data['term']);
 
         // Set the selected Catalog Id.
-        // $catalogSession = $this->osidRuntime->getCourseManager()->getCourseCatalogSession();
-        // $catalogIds = $catalogSession->getCatalogIdsByCourse($id);
-        // if ($catalogIds->hasNext()) {
-        //     $this->setSelectedCatalogId($catalogIds->getNextId());
-        // }
-
-        // $this->view->menuIsCourses = true;
-
-        // Bookmarked Courses and Schedules
-        // $data['bookmarks_CourseId'] = $course->getId();
+        $data['catalog_id'] = NULL;
+        $catalogSession = $this->osidRuntime->getCourseManager()->getCourseCatalogSession();
+        $catalogIds = $catalogSession->getCatalogIdsByCourse($data['course']->getId());
+        if ($catalogIds->hasNext()) {
+            $data['catalog_id'] = $catalogIds->getNextId();
+        }
 
         return $this->render('courses/view.html.twig', $data);
 
