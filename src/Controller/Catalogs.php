@@ -14,6 +14,7 @@ use App\Service\Osid\TermHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * A controller for accessing catalogs.
@@ -57,38 +58,43 @@ class Catalogs extends AbstractController
         $this->osidTermHelper = $osidTermHelper;
     }
 
-    #[Route('/catalogs/', name: 'list_catalogs')]
+    #[Route('/catalogs/list', name: 'list_catalogs')]
     public function listAction()
     {
-        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();
+        $data = [];
+        $data['title'] = 'Available Catalogs';
 
+        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();
         $catalogs = $lookupSession->getCourseCatalogs();
-        $catalogData = [];
+        $data['catalogs'] = [];
         while ($catalogs->hasNext()) {
-            $catalog = $catalogs->getNextCourseCatalog();
-            $catalogData[] = [
-                "id" => $this->osidIdMap->toString($catalog->getId()),
-                "display_name" => $catalog->getDisplayName(),
-                "description" => $catalog->getDescription(),
-            ];
+            $data['catalogs'][] = $catalogs->getNextCourseCatalog();
         }
-        return $this->render('catalogs/list.html.twig', [
-            'title' => 'Available Catalogs',
-            'catalogs' => $catalogData,
-        ]);
+        return $this->render('catalogs/list.html.twig', $data);
     }
 
     /**
      * Print out an XML list of all catalogs.
-     *
-     * @return void
      */
+    #[Route('/catalogs/listxml', name: 'list_catalogs_xml')]
     public function listxmlAction()
     {
-        $this->_helper->layout->disableLayout();
-        $this->getResponse()->setHeader('Content-Type', 'text/xml');
-
-        $this->listAction();
+        $data = [];
+        $data['title'] = 'All Catalogs';
+        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();
+        $catalogs = $lookupSession->getCourseCatalogs();
+        $data['catalogs'] = [];
+        while ($catalogs->hasNext()) {
+            $data['catalogs'][] = $catalogs->getNextCourseCatalog();
+        }
+        $data['feedLink'] = $this->generateUrl(
+            'list_catalogs_xml',
+            [],
+            UrlGeneratorInterface::ABSOLUTE_URL,
+        );
+        $response = new Response($this->renderView('catalogs/list.xml.twig', $data));
+        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+        return $response;
     }
 
     #[Route('/catalogs/view/{catalog}/{term}', name: 'view_catalog')]

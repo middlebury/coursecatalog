@@ -2,7 +2,7 @@
 
 {% block body %}
     {% for catalog in catalogs %}
-        <h2><a href="{{ url('view_catalog', { catalog: catalog.id }) }}">{{ catalog.display_name }}</a></h2>
-        <div>{{ catalog.description }}</div>
+        <h2><a href="{{ url('view_catalog', { catalog: osidIdToString(catalog.id) }) }}">{{ catalog.displayname }}</a></h2>
+        <div>{{ catalog.description | raw }}</div>
     {% endfor %}
 {% endblock %}
