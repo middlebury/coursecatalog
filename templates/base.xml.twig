@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0" xmlns:catalog="http://www.middlebury.edu/course_catalog">
+    <channel>
+{% block channel_meta %}
+        <title>{{ title }}</title>
+        <link>{{ feedLink }}</link>
+        <lastBuildDate>{{ 'now' | date('r') }}</lastBuildDate>
+        <generator>Course Catalog</generator>
+        <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+{% endblock %}
+{% block items %}{% endblock %}
+    </channel>
+</rss>
