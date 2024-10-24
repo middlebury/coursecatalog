@@ -218,75 +218,75 @@ class Topics extends AbstractController
     }
 
     /**
-     * List all department topics as a text file with each line being Id|DisplayName.
-     *
-     * @return void
-     *
-     * @since 10/20/09
+     * List all subject topics as a text file with each line being Id|DisplayName.
      */
-    public function listsubjectstxtAction()
+    #[Route('/topics/listsubjectstxt/{catalog}', name: 'list_subjects_txt')]
+    public function listsubjectstxtAction($catalog = NULL)
     {
-        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject'));
+        return $this->renderTextList(
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject'),
+            $catalog,
+        );
     }
 
     /**
      * List all requirement topics as a text file with each line being Id|DisplayName.
-     *
-     * @return void
-     *
-     * @since 10/20/09
      */
-    public function listrequirementstxtAction()
+    #[Route('/topics/listrequirementstxt/{catalog}', name: 'list_requirements_txt')]
+    public function listrequirementstxtAction($catalog = NULL)
     {
-        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement'));
+        return $this->renderTextList(
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement'),
+            $catalog,
+        );
     }
 
     /**
      * List all level topics as a text file with each line being Id|DisplayName.
-     *
-     * @return void
-     *
-     * @since 1/15/10
      */
-    public function listlevelstxtAction()
+    #[Route('/topics/listlevelstxt/{catalog}', name: 'list_levels_txt')]
+    public function listlevelstxtAction($catalog = NULL)
     {
-        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.level'));
+        return $this->renderTextList(
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.level'),
+            $catalog,
+        );
     }
 
     /**
      * List all block topics as a text file with each line being Id|DisplayName.
-     *
-     * @return void
-     *
-     * @since 10/20/09
      */
-    public function listblockstxtAction()
+    #[Route('/topics/listblockstxt/{catalog}', name: 'list_blocks_txt')]
+    public function listblockstxtAction($catalog = NULL)
     {
-        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.block'));
+        return $this->renderTextList(
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.block'),
+            $catalog,
+        );
     }
 
     /**
      * List all instruction-methods topics as a text file with each line being Id|DisplayName.
-     *
-     * @return void
-     *
-     * @since 10/20/09
      */
-    public function listinstructionmethodstxtAction()
+    #[Route('/topics/listinstructionmethodstxt/{catalog}', name: 'list_instructionmethods_txt')]
+    public function listinstructionmethodstxtAction($catalog = NULL)
     {
-        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.instruction_method'));
+        return $this->renderTextList(
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.instruction_method'),
+            $catalog,
+        );
     }
 
     /**
      * List all department topics as a text file with each line being Id|DisplayName.
-     *
-     * @return void
-     *
-     * @since 10/20/09
      */
-    public function listdepartmentstxtAction()
+    #[Route('/topics/listdepartmentstxt/{catalog}', name: 'list_departments_txt')]
+    public function listdepartmentstxtAction($catalog = NULL)
     {
-        $this->renderTextList(new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department'));
+        return $this->renderTextList(
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department'),
+            $catalog,
+        );
     }
 
     /**
@@ -395,31 +395,34 @@ class Topics extends AbstractController
     /**
      * Render a text feed for a given topic type.
      *
-     * @return void
+     * @param \osid_type_Type $genusType
+     *   The type of topics to list.
+     * @param string $catalog
+     *   An optional catalog to limit results to.
      *
-     * @since 11/17/09
+     * @return \Symfony\Component\HttpFoundation\Response
+     *   The rendered response.
      */
-    private function renderTextList(osid_type_Type $genusType)
+    private function renderTextList(\osid_type_Type $genusType, string $catalog = NULL)
     {
-        header('Content-Type: text/plain');
+        $data = [];
 
-        if ($this->_getParam('catalog')) {
-            $catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
+        if ($catalog) {
+            $catalogId = $this->osidIdMap->fromString($catalog);
             $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
-            $this->view->title = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
-            $this->view->title = 'Topics in All Catalogs';
         }
         $lookupSession->useFederatedCourseCatalogView();
 
         $topics = $lookupSession->getTopicsByGenusType($genusType);
-
         while ($topics->hasNext()) {
-            $topic = $topics->getNextTopic();
-            echo $this->osidIdMap->toString($topic->getId()).'|'.$this->osidIdMap->toString($topic->getId()).' - '.$topic->getDisplayName()."\n";
+            $data['topics'][] = $topics->getNextTopic();
         }
 
-        exit;
+        $response = new Response($this->renderView('topics/list.txt.twig', $data));
+        $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
+        return $response;
     }
+
 }
