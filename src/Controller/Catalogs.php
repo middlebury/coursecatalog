@@ -122,23 +122,23 @@ class Catalogs extends AbstractController
 
     /**
      * Print out an XML listing of a catalog.
-     *
-     * @return void
      */
-    public function viewxmlAction()
+    #[Route('/catalogs/viewxml/{catalog}', name: 'view_catalog_xml')]
+    public function viewxmlAction(string $catalog)
     {
-        $this->_helper->layout->disableLayout();
-        $this->getResponse()->setHeader('Content-Type', 'text/xml');
-
-        $catalogId = $this->osidIdMap->fromString($this->_getParam('catalog'));
-
-        $lookupSession = $this->runtime->getCourseManager()->getCourseCatalogLookupSession();
-        $catalog = $lookupSession->getCourseCatalog($catalogId);
-        $this->view->catalogs = new phpkit_course_ArrayCourseCatalogList([$catalog]);
-
-        $this->view->title = 'Catalog Details';
-        $this->view->headTitle($this->view->title);
-
-        $this->render('catalogs/listxml', null, true);
+        $data = [];
+        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();
+        $data['title'] = 'View Catalog';
+        $data['catalogs'] = [$lookupSession->getCourseCatalog($this->osidIdMap->fromString($catalog))];
+        $data['feedLink'] = $this->generateUrl(
+            'list_catalogs_xml',
+            [
+                'catalog' => $catalog,
+            ],
+            UrlGeneratorInterface::ABSOLUTE_URL,
+        );
+        $response = new Response($this->renderView('catalogs/list.xml.twig', $data));
+        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+        return $response;
     }
 }
