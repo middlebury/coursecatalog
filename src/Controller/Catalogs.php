@@ -33,6 +33,7 @@ class Catalogs extends AbstractController
     ) {
     }
 
+    #[Route('/', name: 'home')]
     #[Route('/catalogs/list', name: 'list_catalogs')]
     public function listAction()
     {
