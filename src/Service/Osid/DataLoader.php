@@ -12,44 +12,12 @@ use App\Helper\RecentCourses\RecentCoursesInterface;
  */
 class DataLoader
 {
-    /**
-     * @var Runtime
-     */
-    private $osidRuntime;
-
-    /**
-     * @var IdMap
-     */
-    private $osidIdMap;
-
-    /**
-     * @var TermHelper
-     */
-    private $osidTermHelper;
-
-    /**
-     * @var TopicHelper
-     */
-    private $osidTopicHelper;
-
-    /**
-     * Construct a new Catalogs controller.
-     *
-     * @param Runtime     $osidRuntime
-     *                                     The osid.runtime service.
-     * @param IdMap       $osidIdMap
-     *                                     The osid.id_map service.
-     * @param TermHelper  $osidTermHelper
-     *                                     The osid.term_helper service.
-     * @param TopicHelper $osidTopicHelper
-     *                                     The osid.topic_helper service.
-     */
-    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, TermHelper $osidTermHelper, TopicHelper $osidTopicHelper)
-    {
-        $this->osidRuntime = $osidRuntime;
-        $this->osidIdMap = $osidIdMap;
-        $this->osidTermHelper = $osidTermHelper;
-        $this->osidTopicHelper = $osidTopicHelper;
+    public function __construct(
+        private Runtime $osidRuntime,
+        private IdMap $osidIdMap,
+        private TermHelper $osidTermHelper,
+        private TopicHelper $osidTopicHelper,
+    ) {
         $this->alternateType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
         $this->instructorsType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
         $this->locationType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:location');

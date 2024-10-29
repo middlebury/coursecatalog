@@ -25,8 +25,10 @@ class Runtime
      * @param string $courseImpl
      *                           The OSID CourseManager implementation class to use
      */
-    public function __construct(string $configPath, string $courseImpl = 'banner_course_CourseManager')
-    {
+    public function __construct(
+        string $configPath,
+        string $courseImpl = 'banner_course_CourseManager',
+    ) {
         $this->setConfigPath($configPath);
         $this->courseImpl = $courseImpl;
     }

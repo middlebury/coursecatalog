@@ -13,19 +13,14 @@ namespace App\Service\Osid;
 abstract class AbstractOsidIdentifierMap
 {
     /**
-     * @var string
-     */
-    private $idAuthorityToShorten;
-
-    /**
      * Set up the mapping service.
      *
      * @param string $idAuthorityToShorten
      *                                     The Identifier authority to shorten
      */
-    public function __construct(string $idAuthorityToShorten)
-    {
-        $this->idAuthorityToShorten = $idAuthorityToShorten;
+    public function __construct(
+        private string $idAuthorityToShorten,
+    ) {
     }
 
     /**

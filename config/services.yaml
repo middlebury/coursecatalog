@@ -60,16 +60,3 @@ services:
     App\Paginator\OfferingSearchSubscriber:
         tags:
             - { name: 'kernel.event_subscriber' }
-
-
-    # Service aliases.
-    osid.runtime:
-        class: App\Service\Osid\Runtime
-    osid.id_map:
-        class: App\Service\Osid\IdMap
-    osid.type_map:
-        class: App\Service\Osid\TypeMap
-    osid.term_helper:
-        class: App\Service\Osid\TermHelper
-    osid.topic_helper:
-        class: App\Service\Osid\TopicHelper

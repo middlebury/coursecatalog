@@ -16,24 +16,23 @@ use App\Service\Osid\IdMap;
  */
 class Instructor implements RecentCoursesInterface
 {
-    protected $osidIdMap;
     protected $groups = [];
     protected $recentInterval;
     protected $alternatesType;
-    protected $courseLookupSession;
 
     /**
      * Constructor.
      *
      * @return void
      */
-    public function __construct(IdMap $osidIdMap, \osid_course_CourseOfferingSearchResults $offerings, \osid_course_CourseLookupSession $courseLookupSession)
-    {
-        $this->osidIdMap = $osidIdMap;
+    public function __construct(
+        protected IdMap $osidIdMap,
+        \osid_course_CourseOfferingSearchResults $offerings,
+        protected \osid_course_CourseLookupSession $courseLookupSession,
+    ) {
         $this->recentInterval = new \DateInterval('P4Y');
         $this->alternatesType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
         $this->groupCourseOfferings($offerings);
-        $this->courseLookupSession = $courseLookupSession;
     }
 
     /**

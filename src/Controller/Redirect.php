@@ -12,12 +12,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class Redirect extends AbstractController
 {
-    /**
-     * Construct a new Redirect controller.
-     *
-     * @param AssetMapperInterface $assetMapper
-     *                                          The asset mapper service
-     */
     public function __construct(
         private AssetMapperInterface $assetMapper,
     ) {

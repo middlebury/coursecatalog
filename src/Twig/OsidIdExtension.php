@@ -10,21 +10,9 @@ use Twig\TwigFunction;
 
 class OsidIdExtension extends AbstractExtension
 {
-    /**
-     * @var IdMap
-     *            The IdMap service
-     */
-    private $idMap;
-
-    /**
-     * Create a new instance of this service.
-     *
-     * @param IdMap
-     *   The IdMap service
-     */
-    public function __construct(IdMap $idMap)
-    {
-        $this->idMap = $idMap;
+    public function __construct(
+        private IdMap $idMap,
+    ) {
     }
 
     public function getFunctions(): array

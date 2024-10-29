@@ -25,8 +25,10 @@ class All extends RecentCoursesAbstract
      *
      * @since 11/16/09
      */
-    public function __construct(IdMap $osidIdMap, \osid_course_CourseList $courses)
-    {
+    public function __construct(
+        IdMap $osidIdMap,
+        \osid_course_CourseList $courses,
+    ) {
         $this->termsCache = [];
         parent::__construct($osidIdMap, $courses);
     }

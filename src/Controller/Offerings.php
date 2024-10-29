@@ -27,53 +27,13 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class Offerings extends AbstractController
 {
-    /**
-     * @var Runtime
-     */
-    private $osidRuntime;
-
-    /**
-     * @var IdMap
-     */
-    private $osidIdMap;
-
-    /**
-     * @var TermHelper
-     */
-    private $osidTermHelper;
-
-    /**
-     * @var DataLoader
-     */
-    private $osidDataLoader;
-
-    /**
-     * @var TypeHelper
-     */
-    private $osidTypeHelper;
-
-    /**
-     * Construct a new Catalogs controller.
-     *
-     * @param Runtime    $osidRuntime
-     *                                   The osid.runtime service.
-     * @param IdMap      $osidIdMap
-     *                                   The osid.id_map service.
-     * @param TermHelper $osidTermHelper
-     *                                   The osid.term_helper service.
-     * @param DataLoader $osidDataLoader
-     *                                   The osid.topic_helper service.
-     * @param TypeHelper $osidTypeHelper
-     *                                   The osid type helper service
-     */
-    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, TermHelper $osidTermHelper, DataLoader $osidDataLoader, TypeHelper $osidTypeHelper)
-    {
-        $this->osidRuntime = $osidRuntime;
-        $this->osidIdMap = $osidIdMap;
-        $this->osidTermHelper = $osidTermHelper;
-        $this->osidDataLoader = $osidDataLoader;
-        $this->osidTypeHelper = $osidTypeHelper;
-
+    public function __construct(
+        private Runtime $osidRuntime,
+        private IdMap $osidIdMap,
+        private TermHelper $osidTermHelper,
+        private DataLoader $osidDataLoader,
+        private TypeHelper $osidTypeHelper,
+    ) {
         $this->wildcardStringMatchType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:search:wildcard');
         $this->booleanStringMatchType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:search:boolean');
         $this->instructorType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');

@@ -13,19 +13,14 @@ namespace App\Service\Osid;
 class TypeHelper
 {
     /**
-     * @var array
-     */
-    private $defaultOfferingGenusTypesToSearch = [];
-
-    /**
      * Set up the service.
      *
      * @param array $defaultOfferingGenusTypesToSearch
      *                                                 The default genus types to search
      */
-    public function __construct(array $defaultOfferingGenusTypesToSearch)
-    {
-        $this->defaultOfferingGenusTypesToSearch = $defaultOfferingGenusTypesToSearch;
+    public function __construct(
+        private array $defaultOfferingGenusTypesToSearch,
+    ) {
     }
 
     /**

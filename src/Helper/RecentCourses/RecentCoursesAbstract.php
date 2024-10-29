@@ -16,26 +16,24 @@ use App\Service\Osid\IdMap;
  */
 abstract class RecentCoursesAbstract implements RecentCoursesInterface
 {
-    protected $osidIdMap;
     protected $groups;
     private $terms;
     protected $alternateType;
 
     protected $recentInterval;
-    private $courses;
     private $initialized = false;
 
     /**
      * Constructor.
      */
-    public function __construct(IdMap $osidIdMap, \osid_course_CourseList $courses)
-    {
-        $this->osidIdMap = $osidIdMap;
+    public function __construct(
+        protected IdMap $osidIdMap,
+        private \osid_course_CourseList $courses,
+    ) {
         $this->alternateType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
         $this->groups = [];
         $this->terms = [];
         $this->recentInterval = new \DateInterval('P4Y');
-        $this->courses = $courses;
     }
 
     /**

@@ -26,44 +26,12 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class Courses extends AbstractController
 {
-    /**
-     * @var Runtime
-     */
-    private $osidRuntime;
-
-    /**
-     * @var IdMap
-     */
-    private $osidIdMap;
-
-    /**
-     * @var TermHelper
-     */
-    private $osidTermHelper;
-
-    /**
-     * @var DataLoader
-     */
-    private $osidDataLoader;
-
-    /**
-     * Construct a new Catalogs controller.
-     *
-     * @param Runtime    $osidRuntime
-     *                                   The osid.runtime service.
-     * @param IdMap      $osidIdMap
-     *                                   The osid.id_map service.
-     * @param TermHelper $osidTermHelper
-     *                                   The osid.term_helper service.
-     * @param DataLoader $osidDataLoader
-     *                                   The osid.topic_helper service.
-     */
-    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, TermHelper $osidTermHelper, DataLoader $osidDataLoader)
-    {
-        $this->osidRuntime = $osidRuntime;
-        $this->osidIdMap = $osidIdMap;
-        $this->osidTermHelper = $osidTermHelper;
-        $this->osidDataLoader = $osidDataLoader;
+    public function __construct(
+        private Runtime $osidRuntime,
+        private IdMap $osidIdMap,
+        private TermHelper $osidTermHelper,
+        private DataLoader $osidDataLoader,
+    ) {
     }
 
     #[Route('/courses/list/{catalog}', name: 'list_courses')]

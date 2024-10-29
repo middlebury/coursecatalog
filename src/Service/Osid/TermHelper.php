@@ -12,30 +12,10 @@ namespace App\Service\Osid;
  */
 class TermHelper
 {
-    /**
-     * @var Runtime
-     *              The Runtime service
-     */
-    private $runtime;
-
-    /**
-     * @var IdMap
-     *            The IdMap service
-     */
-    private $idMap;
-
-    /**
-     * Create a new instance of this service.
-     *
-     * @param Runtime
-     *   The Runtime service
-     * @param IdMap
-     *   The IdMap service
-     */
-    public function __construct(Runtime $runtime, IdMap $idMap)
-    {
-        $this->runtime = $runtime;
-        $this->idMap = $idMap;
+    public function __construct(
+        private Runtime $runtime,
+        private IdMap $idMap,
+    ) {
     }
 
     /**

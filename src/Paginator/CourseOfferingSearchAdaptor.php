@@ -17,6 +17,8 @@ namespace App\Paginator;
  */
 class CourseOfferingSearchAdaptor
 {
+    private $itemsCallback;
+
     /**
      * Constructor.
      *
@@ -31,20 +33,17 @@ class CourseOfferingSearchAdaptor
      *                                                                An optional callback to apply to each item returned by getItems()
      */
     public function __construct(
-        \osid_course_CourseOfferingSearchSession $session,
-        \osid_course_CourseOfferingQuery $query,
+        private \osid_course_CourseOfferingSearchSession $session,
+        private \osid_course_CourseOfferingQuery $query,
         ?\osid_course_CourseOfferingSearch $search = null,
         ?callable $itemsCallback = null,
     ) {
-        $this->session = $session;
-        $this->query = $query;
-        $this->itemsCallback = $itemsCallback;
-
         if (null === $search) {
             $this->search = $this->session->getCourseOfferingSearch();
         } else {
             $this->search = $search;
         }
+        $this->itemsCallback = $itemsCallback;
     }
 
     /**
