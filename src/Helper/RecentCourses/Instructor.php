@@ -16,7 +16,6 @@ use App\Service\Osid\IdMap;
  */
 class Instructor implements RecentCoursesInterface
 {
-
     protected $osidIdMap;
     protected $groups = [];
     protected $recentInterval;

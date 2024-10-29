@@ -23,10 +23,7 @@ class Bookmarks
     /**
      * Constructor.
      *
-     * @param string $userId
-     *
      * @return void
-     *
      */
     public function __construct(
         private EntityManagerInterface $entityManager,
@@ -39,7 +36,6 @@ class Bookmarks
      * Add a bookmark.
      *
      * @return void
-     *
      */
     public function add(\osid_id_Id $courseId)
     {
@@ -60,7 +56,6 @@ class Bookmarks
      * Remove a bookmark.
      *
      * @return void
-     *
      */
     public function remove(\osid_id_Id $courseId)
     {
@@ -77,7 +72,6 @@ class Bookmarks
      * Answer true if the course Id passed is bookmarked.
      *
      * @return bool
-     *
      */
     public function isBookmarked(\osid_id_Id $courseId)
     {
@@ -97,7 +91,6 @@ class Bookmarks
      * Answer an array of all bookmarked courseIds.
      *
      * @return \osid_id_IdList[]
-     *
      */
     public function getAllBookmarkedCourseIds()
     {
@@ -117,7 +110,6 @@ class Bookmarks
      * Answer an array of all bookmarked courses.
      *
      * @return \osid_course_CourseList
-     *
      */
     public function getAllBookmarkedCourses()
     {
@@ -136,7 +128,6 @@ class Bookmarks
      * Answer an array of all bookmarked courses that match a given catalog and term.
      *
      * @return \osid_course_CourseList
-     *
      */
     public function getBookmarkedCoursesInCatalogForTerm(\osid_id_Id $catalogId, \osid_id_Id $termId)
     {
@@ -162,11 +153,13 @@ class Bookmarks
         return $results->getCourses();
     }
 
-    protected function getUserIdentifier() {
+    protected function getUserIdentifier()
+    {
         $user = $this->security->getUser();
         if (!$user) {
-            throw new \Exception("No authenticated user found.");
+            throw new \Exception('No authenticated user found.');
         }
+
         return $user->getUserIdentifier();
     }
 }

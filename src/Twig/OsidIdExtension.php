@@ -1,6 +1,7 @@
 <?php
 
 // src/Twig/AppExtension.php
+
 namespace App\Twig;
 
 use App\Service\Osid\IdMap;
@@ -9,20 +10,20 @@ use Twig\TwigFunction;
 
 class OsidIdExtension extends AbstractExtension
 {
-
     /**
-     * @var \App\Service\Osid\IdMap
-     *   The IdMap service.
+     * @var IdMap
+     *            The IdMap service
      */
     private $idMap;
 
     /**
      * Create a new instance of this service.
      *
-     * @param \App\Service\Osid\IdMap
-     *   The IdMap service.
+     * @param IdMap
+     *   The IdMap service
      */
-    public function __construct(IdMap $idMap) {
+    public function __construct(IdMap $idMap)
+    {
         $this->idMap = $idMap;
     }
 
@@ -56,19 +57,21 @@ class OsidIdExtension extends AbstractExtension
     {
         foreach ($ids as $comparison) {
             if ($id->isEqual($comparison)) {
-                return TRUE;
+                return true;
             }
         }
-        return FALSE;
+
+        return false;
     }
 
     public function osidTypeInArray(\osid_type_Type $type, iterable $types): bool
     {
         foreach ($types as $comparison) {
             if ($type->isEqual($comparison)) {
-                return TRUE;
+                return true;
             }
         }
-        return FALSE;
+
+        return false;
     }
 }

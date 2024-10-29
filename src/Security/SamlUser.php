@@ -6,13 +6,13 @@ use Nbgrp\OneloginSamlBundle\Security\User\SamlUserInterface;
 
 class SamlUser implements SamlUserInterface
 {
-
     private $id;
     private $email;
     private $givenName;
     private $surname;
 
-    public function __construct(string $id) {
+    public function __construct(string $id)
+    {
         $this->id = $id;
     }
 
@@ -27,7 +27,6 @@ class SamlUser implements SamlUserInterface
         if (!empty($attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'][0])) {
             $this->surname = $attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'][0];
         }
-
     }
 
     /**
@@ -44,7 +43,8 @@ class SamlUser implements SamlUserInterface
      *
      * @return string[]
      */
-    public function getRoles(): array {
+    public function getRoles(): array
+    {
         return ['ROLE_USER'];
     }
 
@@ -56,14 +56,16 @@ class SamlUser implements SamlUserInterface
      *
      * @return void
      */
-    public function eraseCredentials() {
+    public function eraseCredentials()
+    {
         // Nothing to do.
     }
 
     /**
      * Returns the identifier for this user (e.g. username or email address).
      */
-    public function getUserIdentifier(): string {
+    public function getUserIdentifier(): string
+    {
         return $this->id;
     }
 }

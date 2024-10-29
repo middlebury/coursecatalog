@@ -16,7 +16,6 @@ use App\Service\Osid\IdMap;
  */
 abstract class RecentCoursesAbstract implements RecentCoursesInterface
 {
-
     protected $osidIdMap;
     protected $groups;
     private $terms;
@@ -28,7 +27,6 @@ abstract class RecentCoursesAbstract implements RecentCoursesInterface
 
     /**
      * Constructor.
-     *
      */
     public function __construct(IdMap $osidIdMap, \osid_course_CourseList $courses)
     {

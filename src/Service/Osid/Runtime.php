@@ -12,7 +12,6 @@ namespace App\Service\Osid;
  */
 class Runtime
 {
-
     private $runtimeManager;
     private $courseManager;
     private $configPath;
@@ -22,11 +21,12 @@ class Runtime
      * Create a new OSID service instance.
      *
      * @param string $configPath
-     *   The path to the Osid Configuration XML file.
+     *                           The path to the Osid Configuration XML file
      * @param string $courseImpl
-     *   The OSID CourseManager implementation class to use.
+     *                           The OSID CourseManager implementation class to use
      */
-    public function __construct(string $configPath, string $courseImpl = 'banner_course_CourseManager') {
+    public function __construct(string $configPath, string $courseImpl = 'banner_course_CourseManager')
+    {
         $this->setConfigPath($configPath);
         $this->courseImpl = $courseImpl;
     }
@@ -78,11 +78,9 @@ class Runtime
             if (class_exists($this->courseImpl)) {
                 $runtimeManager = $this->getRuntimeManager();
                 $this->courseManager = $runtimeManager->getManager(\osid_OSID::COURSE(), $this->courseImpl, '3.0.0');
+            } else {
+                throw new \InvalidArgumentException('Unknown CourseManger implementation class: '.$this->courseImpl);
             }
-            else {
-                throw new \InvalidArgumentException("Unknown CourseManger implementation class: " . $this->courseImpl);
-            }
-
         }
 
         return $this->courseManager;

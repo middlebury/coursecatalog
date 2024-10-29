@@ -1,6 +1,7 @@
 <?php
 
 // src/Twig/AppExtension.php
+
 namespace App\Twig;
 
 use App\Service\Bookmarks;
@@ -9,15 +10,14 @@ use Twig\TwigFunction;
 
 class BookmarksExtension extends AbstractExtension
 {
-
     /**
      * Create a new instance of this service.
      *
      * @param \App\Service\Osid\IdMap
-     *   The IdMap service.
+     *   The IdMap service
      */
     public function __construct(
-        private Bookmarks $bookmarks
+        private Bookmarks $bookmarks,
     ) {
     }
 

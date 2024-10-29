@@ -24,7 +24,7 @@ class OfferingSearchSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            'knp_pager.items' => ['items', 1/* increased priority to override any internal */]
+            'knp_pager.items' => ['items', 1/* increased priority to override any internal */],
         ];
     }
 }

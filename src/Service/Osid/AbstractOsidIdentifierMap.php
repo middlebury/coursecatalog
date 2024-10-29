@@ -12,7 +12,6 @@ namespace App\Service\Osid;
  */
 abstract class AbstractOsidIdentifierMap
 {
-
     /**
      * @var string
      */
@@ -22,9 +21,10 @@ abstract class AbstractOsidIdentifierMap
      * Set up the mapping service.
      *
      * @param string $idAuthorityToShorten
-     *   The Identifier authority to shorten.
+     *                                     The Identifier authority to shorten
      */
-    public function __construct(string $idAuthorityToShorten) {
+    public function __construct(string $idAuthorityToShorten)
+    {
         $this->idAuthorityToShorten = $idAuthorityToShorten;
     }
 
@@ -39,10 +39,8 @@ abstract class AbstractOsidIdentifierMap
     {
         if (isset($this->idAuthorityToShorten)) {
             return $this->idAuthorityToShorten;
-        }
-        else {
-            return FALSE;
+        } else {
+            return false;
         }
     }
-
 }

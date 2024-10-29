@@ -9,7 +9,6 @@ namespace App\Controller;
 use App\Service\Osid\DataLoader;
 use App\Service\Osid\IdMap;
 use App\Service\Osid\Runtime;
-use App\Service\Osid\TermHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,33 +22,33 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class Terms extends AbstractController
 {
-
     /**
-     * @var \App\Service\Osid\Runtime
+     * @var Runtime
      */
     private $osidRuntime;
 
     /**
-     * @var \App\Service\Osid\IdMap
+     * @var IdMap
      */
     private $osidIdMap;
 
     /**
-     * @var \App\Service\Osid\DataLoader
+     * @var DataLoader
      */
     private $osidDataLoader;
 
     /**
      * Construct a new Catalogs controller.
      *
-     * @param \App\Service\Osid\Runtime $osidRuntime
-     *   The osid.runtime service.
-     * @param \App\Service\Osid\IdMap $osidIdMap
-     *   The osid.id_map service.
-     * @param \App\Service\Osid\DataLoader $osidDataLoader
-     *   The data loader service.
+     * @param Runtime    $osidRuntime
+     *                                   The osid.runtime service.
+     * @param IdMap      $osidIdMap
+     *                                   The osid.id_map service.
+     * @param DataLoader $osidDataLoader
+     *                                   The data loader service
      */
-    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, DataLoader $osidDataLoader) {
+    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, DataLoader $osidDataLoader)
+    {
         $this->osidRuntime = $osidRuntime;
         $this->osidIdMap = $osidIdMap;
         $this->osidDataLoader = $osidDataLoader;
@@ -59,7 +58,7 @@ class Terms extends AbstractController
      * Print out a list of all terms.
      */
     #[Route('/terms/list/{catalog}', name: 'list_terms')]
-    public function listAction($catalog = NULL)
+    public function listAction($catalog = null)
     {
         $data = [];
         if ($catalog) {
@@ -70,7 +69,7 @@ class Terms extends AbstractController
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $data['title'] = 'Terms in All Catalogs';
-            $data['catalog_id'] = NULL;
+            $data['catalog_id'] = null;
         }
         $lookupSession->useFederatedCourseCatalogView();
 
@@ -79,6 +78,7 @@ class Terms extends AbstractController
         while ($terms->hasNext()) {
             $data['terms'][] = $terms->getNextTerm();
         }
+
         return $this->render('terms/list.html.twig', $data);
     }
 
@@ -86,7 +86,7 @@ class Terms extends AbstractController
      * Print out an XML list of all terms.
      */
     #[Route('/terms/listxml/{catalog}', name: 'list_terms_xml')]
-    public function listxmlAction($catalog = NULL)
+    public function listxmlAction($catalog = null)
     {
         $data = [];
         if ($catalog) {
@@ -97,7 +97,7 @@ class Terms extends AbstractController
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $data['title'] = 'Terms in All Catalogs';
-            $data['catalog_id'] = NULL;
+            $data['catalog_id'] = null;
         }
         $lookupSession->useFederatedCourseCatalogView();
 
@@ -109,11 +109,12 @@ class Terms extends AbstractController
         $data['feedLink'] = $this->generateUrl('list_terms_xml', ['catalog' => $catalog], UrlGeneratorInterface::ABSOLUTE_URL);
         $response = new Response($this->renderView('terms/list.xml.twig', $data));
         $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+
         return $response;
     }
 
     #[Route('/terms/view/{term}/{catalog}', name: 'view_term')]
-    public function viewAction($term, $catalog = NULL)
+    public function viewAction($term, $catalog = null)
     {
         $data = [];
         $id = $this->osidIdMap->fromString($term);
@@ -144,7 +145,7 @@ class Terms extends AbstractController
      * View term details.
      */
     #[Route('/terms/details/{term}/{catalog}', name: 'view_term_details')]
-    public function detailsAction($term, $catalog = NULL)
+    public function detailsAction($term, $catalog = null)
     {
         $id = $this->osidIdMap->fromString($term);
         $data = [];
@@ -156,7 +157,7 @@ class Terms extends AbstractController
         } else {
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $termLookupSession->useFederatedCourseCatalogView();
-            $data['catalog_id'] = NULL;
+            $data['catalog_id'] = null;
         }
         $data['term'] = $termLookupSession->getTerm($id);
 
@@ -167,7 +168,7 @@ class Terms extends AbstractController
      * View a catalog details.
      */
     #[Route('/terms/detailsxml/{term}/{catalog}', name: 'view_term_details_xml')]
-    public function detailsxmlAction($term, $catalog = NULL)
+    public function detailsxmlAction($term, $catalog = null)
     {
         $id = $this->osidIdMap->fromString($term);
         $data = [];
@@ -179,7 +180,7 @@ class Terms extends AbstractController
         } else {
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $termLookupSession->useFederatedCourseCatalogView();
-            $data['catalog_id'] = NULL;
+            $data['catalog_id'] = null;
         }
         $data['term'] = $termLookupSession->getTerm($id);
 
@@ -187,6 +188,7 @@ class Terms extends AbstractController
 
         $response = new Response($this->renderView('terms/details.xml.twig', $data));
         $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+
         return $response;
     }
 }

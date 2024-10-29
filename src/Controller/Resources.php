@@ -9,7 +9,6 @@ namespace App\Controller;
 use App\Service\Osid\DataLoader;
 use App\Service\Osid\IdMap;
 use App\Service\Osid\Runtime;
-use App\Service\Osid\TermHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,33 +22,33 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class Resources extends AbstractController
 {
-
     /**
-     * @var \App\Service\Osid\Runtime
+     * @var Runtime
      */
     private $osidRuntime;
 
     /**
-     * @var \App\Service\Osid\IdMap
+     * @var IdMap
      */
     private $osidIdMap;
 
     /**
-     * @var \App\Service\Osid\DataLoader
+     * @var DataLoader
      */
     private $osidDataLoader;
 
     /**
      * Construct a new Catalogs controller.
      *
-     * @param \App\Service\Osid\Runtime $osidRuntime
-     *   The osid.runtime service.
-     * @param \App\Service\Osid\IdMap $osidIdMap
-     *   The osid.id_map service.
-     * @param \App\Service\Osid\DataLoader $osidDataLoader
-     *   The osid.topic_helper service.
+     * @param Runtime    $osidRuntime
+     *                                   The osid.runtime service.
+     * @param IdMap      $osidIdMap
+     *                                   The osid.id_map service.
+     * @param DataLoader $osidDataLoader
+     *                                   The osid.topic_helper service.
      */
-    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, DataLoader $osidDataLoader) {
+    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, DataLoader $osidDataLoader)
+    {
         $this->osidRuntime = $osidRuntime;
         $this->osidIdMap = $osidIdMap;
         $this->osidDataLoader = $osidDataLoader;
@@ -57,7 +56,7 @@ class Resources extends AbstractController
     }
 
     #[Route('/resources/view/{resource}/{term}', name: 'view_resource')]
-    public function viewAction(Request $request, $resource, $term = NULL)
+    public function viewAction(Request $request, $resource, $term = null)
     {
         $id = $this->osidIdMap->fromString($resource);
         $lookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
@@ -76,9 +75,8 @@ class Resources extends AbstractController
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $termLookupSession->useFederatedCourseCatalogView();
             $data['term'] = $termLookupSession->getTerm($termId);
-        }
-        else {
-            $data['term'] = NULL;
+        } else {
+            $data['term'] = null;
         }
 
         $data['offeringsTitle'] = 'Sections';
@@ -96,7 +94,7 @@ class Resources extends AbstractController
         }
         // Match a location id
         elseif (preg_match('/^resource\.place\./', $resource)) {
-            $query->matchLocationId($id, TRUE);
+            $query->matchLocationId($id, true);
             $offerings = $offeringSearchSession->getCourseOfferingsByQuery($query);
         }
         if (isset($offerings)) {
@@ -104,7 +102,7 @@ class Resources extends AbstractController
             $i = 0;
             while ($offerings->hasNext() && $i < $data['offering_display_limit']) {
                 $data['offerings'][] = $this->osidDataLoader->getOfferingData($offerings->getNextCourseOffering());
-                $i++;
+                ++$i;
             }
         }
 
@@ -115,7 +113,7 @@ class Resources extends AbstractController
      * List all department topics as a text file with each line being Id|DisplayName.
      */
     #[Route('/resources/listcampusestxt/{catalog}', name: 'list_campuses_txt')]
-    public function listcampusestxt(Request $request, $catalog = NULL)
+    public function listcampusestxt(Request $request, $catalog = null)
     {
         $data = [];
         if ($catalog) {
@@ -136,6 +134,7 @@ class Resources extends AbstractController
 
         $response = new Response($this->renderView('resources/list.txt.twig', $data));
         $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
+
         return $response;
     }
 }

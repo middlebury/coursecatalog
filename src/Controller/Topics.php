@@ -9,7 +9,6 @@ namespace App\Controller;
 use App\Service\Osid\DataLoader;
 use App\Service\Osid\IdMap;
 use App\Service\Osid\Runtime;
-use App\Service\Osid\TermHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,34 +22,33 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class Topics extends AbstractController
 {
-
     /**
-     * @var \App\Service\Osid\Runtime
+     * @var Runtime
      */
     private $osidRuntime;
 
     /**
-     * @var \App\Service\Osid\IdMap
+     * @var IdMap
      */
     private $osidIdMap;
 
     /**
-     * @var \App\Service\Osid\DataLoader
+     * @var DataLoader
      */
     private $osidDataLoader;
-
 
     /**
      * Construct a new Catalogs controller.
      *
-     * @param \App\Service\Osid\Runtime $osidRuntime
-     *   The osid.runtime service.
-     * @param \App\Service\Osid\IdMap $osidIdMap
-     *   The osid.id_map service.
-     * @param \App\Service\Osid\DataLoader $osidDataLoader
-     *   The osid.topic_helper service.
+     * @param Runtime    $osidRuntime
+     *                                   The osid.runtime service.
+     * @param IdMap      $osidIdMap
+     *                                   The osid.id_map service.
+     * @param DataLoader $osidDataLoader
+     *                                   The osid.topic_helper service.
      */
-    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, DataLoader $osidDataLoader) {
+    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, DataLoader $osidDataLoader)
+    {
         $this->osidRuntime = $osidRuntime;
         $this->osidIdMap = $osidIdMap;
         $this->osidDataLoader = $osidDataLoader;
@@ -60,9 +58,10 @@ class Topics extends AbstractController
      * Print out a list of all topics.
      */
     #[Route('/topics/list/{catalog}/{type}', name: 'list_topics')]
-    public function listAction(string $catalog = NULL, string $type = NULL)
+    public function listAction(?string $catalog = null, ?string $type = null)
     {
         $data = $this->getTopicData($catalog, $type);
+
         return $this->render('topics/list.html.twig', $data);
     }
 
@@ -70,7 +69,7 @@ class Topics extends AbstractController
      * Print out an XML list of all catalogs.
      */
     #[Route('/topics/listxml/{catalog}/{type}', name: 'list_topics_xml')]
-    public function listxmlAction(string $catalog = NULL, string $type = NULL)
+    public function listxmlAction(?string $catalog = null, ?string $type = null)
     {
         $data = $this->getTopicData($catalog, $type);
         $data['feedLink'] = $this->generateUrl(
@@ -83,6 +82,7 @@ class Topics extends AbstractController
         );
         $response = new Response($this->renderView('topics/list.xml.twig', $data));
         $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+
         return $response;
     }
 
@@ -90,9 +90,10 @@ class Topics extends AbstractController
      * Print out a list of all topics.
      */
     #[Route('/topics/recent/{catalog}/{type}', name: 'list_recent_topics')]
-    public function recentAction(string $catalog = NULL, string $type = NULL)
+    public function recentAction(?string $catalog = null, ?string $type = null)
     {
         $data = $this->getRecentTopicData($catalog, $type);
+
         return $this->render('topics/list.html.twig', $data);
     }
 
@@ -100,7 +101,7 @@ class Topics extends AbstractController
      * Print out an XML list of all catalogs.
      */
     #[Route('/topics/recentxml/{catalog}/{type}', name: 'list_recent_topics_xml')]
-    public function recentxmlAction(string $catalog = NULL, string $type = NULL)
+    public function recentxmlAction(?string $catalog = null, ?string $type = null)
     {
         $data = $this->getRecentTopicData($catalog, $type);
         $data['feedLink'] = $this->generateUrl(
@@ -113,11 +114,12 @@ class Topics extends AbstractController
         );
         $response = new Response($this->renderView('topics/list.xml.twig', $data));
         $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+
         return $response;
     }
 
     #[Route('/topics/view/{topic}/{catalog}/{term}', name: 'view_topic')]
-    public function view($topic, $catalog = NULL, $term = NULL)
+    public function view($topic, $catalog = null, $term = null)
     {
         $data = [];
         $id = $this->osidIdMap->fromString($topic);
@@ -131,15 +133,14 @@ class Topics extends AbstractController
             $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
             $offeringLookupSession->useIsolatedCourseCatalogView();
             $data['catalog_id'] = $catalogId;
-        }
-        else {
+        } else {
             $topicLookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
             $topicLookupSession->useFederatedCourseCatalogView();
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $termLookupSession->useFederatedCourseCatalogView();
             $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
             $offeringLookupSession->useFederatedCourseCatalogView();
-            $data['catalog_id'] = NULL;
+            $data['catalog_id'] = null;
         }
 
         $data['topic'] = $topicLookupSession->getTopic($id);
@@ -158,8 +159,8 @@ class Topics extends AbstractController
             );
         } else {
             $offerings = $offeringLookupSession->getCourseOfferingsByTopic($id);
-            $data['term'] = NULL;
-            $data['offeringsForAllTermsUrl'] = NULL;
+            $data['term'] = null;
+            $data['offeringsForAllTermsUrl'] = null;
         }
 
         // Don't do the work to display all offerings if we have a very large
@@ -173,7 +174,7 @@ class Topics extends AbstractController
             $i = 0;
             while ($offerings->hasNext() && $i < $data['offering_display_limit']) {
                 $data['offerings'][] = $this->osidDataLoader->getOfferingData($offerings->getNextCourseOffering());
-                $i++;
+                ++$i;
             }
         }
 
@@ -184,7 +185,7 @@ class Topics extends AbstractController
      * Print out an XML listing of a topic.
      */
     #[Route('/topics/viewxml/{topic}/{catalog}', name: 'view_topic_xml')]
-    public function viewxmlAction(string $topic, string $catalog = NULL)
+    public function viewxmlAction(string $topic, ?string $catalog = null)
     {
         $data = [];
 
@@ -196,7 +197,7 @@ class Topics extends AbstractController
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
             $data['title'] = 'Topics in All Catalogs';
-            $data['catalog_id'] = NULL;
+            $data['catalog_id'] = null;
         }
         $lookupSession->useFederatedCourseCatalogView();
 
@@ -214,6 +215,7 @@ class Topics extends AbstractController
         );
         $response = new Response($this->renderView('topics/list.xml.twig', $data));
         $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+
         return $response;
     }
 
@@ -221,7 +223,7 @@ class Topics extends AbstractController
      * List all subject topics as a text file with each line being Id|DisplayName.
      */
     #[Route('/topics/listsubjectstxt/{catalog}', name: 'list_subjects_txt')]
-    public function listsubjectstxtAction($catalog = NULL)
+    public function listsubjectstxtAction($catalog = null)
     {
         return $this->renderTextList(
             new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject'),
@@ -233,7 +235,7 @@ class Topics extends AbstractController
      * List all requirement topics as a text file with each line being Id|DisplayName.
      */
     #[Route('/topics/listrequirementstxt/{catalog}', name: 'list_requirements_txt')]
-    public function listrequirementstxtAction($catalog = NULL)
+    public function listrequirementstxtAction($catalog = null)
     {
         return $this->renderTextList(
             new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement'),
@@ -245,7 +247,7 @@ class Topics extends AbstractController
      * List all level topics as a text file with each line being Id|DisplayName.
      */
     #[Route('/topics/listlevelstxt/{catalog}', name: 'list_levels_txt')]
-    public function listlevelstxtAction($catalog = NULL)
+    public function listlevelstxtAction($catalog = null)
     {
         return $this->renderTextList(
             new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.level'),
@@ -257,7 +259,7 @@ class Topics extends AbstractController
      * List all block topics as a text file with each line being Id|DisplayName.
      */
     #[Route('/topics/listblockstxt/{catalog}', name: 'list_blocks_txt')]
-    public function listblockstxtAction($catalog = NULL)
+    public function listblockstxtAction($catalog = null)
     {
         return $this->renderTextList(
             new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.block'),
@@ -269,7 +271,7 @@ class Topics extends AbstractController
      * List all instruction-methods topics as a text file with each line being Id|DisplayName.
      */
     #[Route('/topics/listinstructionmethodstxt/{catalog}', name: 'list_instructionmethods_txt')]
-    public function listinstructionmethodstxtAction($catalog = NULL)
+    public function listinstructionmethodstxtAction($catalog = null)
     {
         return $this->renderTextList(
             new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.instruction_method'),
@@ -281,7 +283,7 @@ class Topics extends AbstractController
      * List all department topics as a text file with each line being Id|DisplayName.
      */
     #[Route('/topics/listdepartmentstxt/{catalog}', name: 'list_departments_txt')]
-    public function listdepartmentstxtAction($catalog = NULL)
+    public function listdepartmentstxtAction($catalog = null)
     {
         return $this->renderTextList(
             new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department'),
@@ -293,13 +295,15 @@ class Topics extends AbstractController
      * Answer an array of topic data for an optional catalog and type.
      *
      * @param string $catalog
-     *   The catalog id to search within.
-     * @param string  $type
-     *   The type id to search within.
+     *                        The catalog id to search within
+     * @param string $type
+     *                        The type id to search within
+     *
      * @return array
-     *   The topic data ready for templating.
+     *               The topic data ready for templating
      */
-    protected function getTopicData(string $catalog = NULL, string $type = NULL) {
+    protected function getTopicData(?string $catalog = null, ?string $type = null)
+    {
         $data = [];
         if ($catalog) {
             $catalogId = $this->osidIdMap->fromString($catalog);
@@ -309,19 +313,20 @@ class Topics extends AbstractController
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
             $data['title'] = 'Topics in All Catalogs';
-            $data['catalog_id'] = NULL;
+            $data['catalog_id'] = null;
         }
         $lookupSession->useFederatedCourseCatalogView();
 
         if ($type) {
             $genusType = $this->osidIdMap->typeFromString($type);
             $topics = $lookupSession->getTopicsByGenusType($genusType);
-            $data['title'] .= ' of type ' . $type;
+            $data['title'] .= ' of type '.$type;
         } else {
             $topics = $lookupSession->getTopics();
         }
 
         $data = array_merge($data, $this->osidDataLoader->getTopics($topics));
+
         return $data;
     }
 
@@ -329,13 +334,15 @@ class Topics extends AbstractController
      * Answer an array of recent topic data for an optional catalog and type.
      *
      * @param string $catalog
-     *   The catalog id to search within.
-     * @param string  $type
-     *   The type id to search within.
+     *                        The catalog id to search within
+     * @param string $type
+     *                        The type id to search within
+     *
      * @return array
-     *   The topic data ready for templating.
+     *               The topic data ready for templating
      */
-    protected function getRecentTopicData(string $catalog = NULL, string $type = NULL) {
+    protected function getRecentTopicData(?string $catalog = null, ?string $type = null)
+    {
         if ($catalog) {
             $catalogId = $this->osidIdMap->fromString($catalog);
             $searchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
@@ -367,7 +374,7 @@ class Topics extends AbstractController
         if ($type) {
             $genusType = $this->osidIdMap->typeFromString($type);
             $query->matchGenusType($genusType, true);
-            $data['title'] .= ' of type ' . $type;
+            $data['title'] .= ' of type '.$type;
         }
 
         $topics = $searchSession->getTopicsByQuery($query);
@@ -396,14 +403,14 @@ class Topics extends AbstractController
      * Render a text feed for a given topic type.
      *
      * @param \osid_type_Type $genusType
-     *   The type of topics to list.
-     * @param string $catalog
-     *   An optional catalog to limit results to.
+     *                                   The type of topics to list
+     * @param string          $catalog
+     *                                   An optional catalog to limit results to
      *
-     * @return \Symfony\Component\HttpFoundation\Response
-     *   The rendered response.
+     * @return Response
+     *                  The rendered response
      */
-    private function renderTextList(\osid_type_Type $genusType, string $catalog = NULL)
+    private function renderTextList(\osid_type_Type $genusType, ?string $catalog = null)
     {
         $data = [];
 
@@ -422,7 +429,7 @@ class Topics extends AbstractController
 
         $response = new Response($this->renderView('topics/list.txt.twig', $data));
         $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
+
         return $response;
     }
-
 }

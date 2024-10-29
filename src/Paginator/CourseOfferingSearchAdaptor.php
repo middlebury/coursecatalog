@@ -21,26 +21,26 @@ class CourseOfferingSearchAdaptor
      * Constructor.
      *
      * @param \osid_course_CourseOfferingSearchSession $session
-     *   The search session to run searches against.
-     * @param \osid_course_CourseOfferingQuery $query
-     *   The search query to run to find offerings.
-     * @param \osid_course_CourseOfferingSearch $search
-     *   An optional search criteria (sorting, limits, etc) to apply to the
-     *   query.
-     * @param callable $itemsCallback
-     *   An optional callback to apply to each item returned by getItems().
+     *                                                                The search session to run searches against
+     * @param \osid_course_CourseOfferingQuery         $query
+     *                                                                The search query to run to find offerings
+     * @param \osid_course_CourseOfferingSearch        $search
+     *                                                                An optional search criteria (sorting, limits, etc) to apply to the
+     *                                                                query
+     * @param callable                                 $itemsCallback
+     *                                                                An optional callback to apply to each item returned by getItems()
      */
     public function __construct(
         \osid_course_CourseOfferingSearchSession $session,
         \osid_course_CourseOfferingQuery $query,
-        ?\osid_course_CourseOfferingSearch $search = NULL,
-        ?callable $itemsCallback = NULL,
+        ?\osid_course_CourseOfferingSearch $search = null,
+        ?callable $itemsCallback = null,
     ) {
         $this->session = $session;
         $this->query = $query;
         $this->itemsCallback = $itemsCallback;
 
-        if (NULL === $search) {
+        if (null === $search) {
             $this->search = $this->session->getCourseOfferingSearch();
         } else {
             $this->search = $search;
@@ -83,8 +83,7 @@ class CourseOfferingSearchAdaptor
             $offering = $list->getNextCourseOffering();
             if ($this->itemsCallback) {
                 $items[] = call_user_func($this->itemsCallback, $offering);
-            }
-            else {
+            } else {
                 $items[] = $offering;
             }
         }

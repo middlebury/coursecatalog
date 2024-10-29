@@ -27,47 +27,47 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class Offerings extends AbstractController
 {
-
     /**
-     * @var \App\Service\Osid\Runtime
+     * @var Runtime
      */
     private $osidRuntime;
 
     /**
-     * @var \App\Service\Osid\IdMap
+     * @var IdMap
      */
     private $osidIdMap;
 
     /**
-     * @var \App\Service\Osid\TermHelper
+     * @var TermHelper
      */
     private $osidTermHelper;
 
     /**
-     * @var \App\Service\Osid\DataLoader
+     * @var DataLoader
      */
     private $osidDataLoader;
 
     /**
-     * @var \App\Service\Osid\TypeHelper
+     * @var TypeHelper
      */
     private $osidTypeHelper;
 
     /**
      * Construct a new Catalogs controller.
      *
-     * @param \App\Service\Osid\Runtime $osidRuntime
-     *   The osid.runtime service.
-     * @param \App\Service\Osid\IdMap $osidIdMap
-     *   The osid.id_map service.
-     * @param \App\Service\Osid\TermHelper $osidTermHelper
-     *   The osid.term_helper service.
-     * @param \App\Service\Osid\DataLoader $osidDataLoader
-     *   The osid.topic_helper service.
-     * @param \App\Service\Osid\TypeHelper $osidTypeHelper
-     *   The osid type helper service.
+     * @param Runtime    $osidRuntime
+     *                                   The osid.runtime service.
+     * @param IdMap      $osidIdMap
+     *                                   The osid.id_map service.
+     * @param TermHelper $osidTermHelper
+     *                                   The osid.term_helper service.
+     * @param DataLoader $osidDataLoader
+     *                                   The osid.topic_helper service.
+     * @param TypeHelper $osidTypeHelper
+     *                                   The osid type helper service
      */
-    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, TermHelper $osidTermHelper, DataLoader $osidDataLoader, TypeHelper $osidTypeHelper) {
+    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, TermHelper $osidTermHelper, DataLoader $osidDataLoader, TypeHelper $osidTypeHelper)
+    {
         $this->osidRuntime = $osidRuntime;
         $this->osidIdMap = $osidIdMap;
         $this->osidTermHelper = $osidTermHelper;
@@ -144,7 +144,7 @@ class Offerings extends AbstractController
      * @since 10/21/09
      */
     #[Route('/offerings/searchxml/{catalog}/{term}', name: 'search_offerings_xml')]
-    public function searchxml(Request $request, string $catalog = NULL, string $term = NULL)
+    public function searchxml(Request $request, ?string $catalog = null, ?string $term = null)
     {
         [$data, $searchSession, $query, $termLookupSession] = $this->prepareSearch($request, $catalog, $term);
         // Actually run the query.
@@ -184,25 +184,26 @@ class Offerings extends AbstractController
 
         $response = new Response($this->renderView('offerings/search.xml.twig', $data));
         $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+
         return $response;
     }
 
     #[Route('/offerings/search/{catalog}', name: 'search_offerings')]
-    public function search(Request $request, PaginatorInterface $paginator, string $catalog = NULL)
+    public function search(Request $request, PaginatorInterface $paginator, ?string $catalog = null)
     {
         [$data, $searchSession, $query, $termLookupSession] = $this->prepareSearch($request, $catalog);
 
         $data['form_action'] = $this->generateUrl('search_offerings', ['catalog' => $catalog]);
 
         // Run the query if submitted.
-        $data['paginator'] = NULL;
+        $data['paginator'] = null;
         if ($request->get('search')) {
             $data['searchParams']['search'] = $request->get('search');
             $data['paginator'] = $paginator->paginate(
                 new CourseOfferingSearchAdaptor(
                     $searchSession,
                     $query,
-                    NULL,
+                    null,
                     [$this, 'getOfferingData'],
                 ),
                 $request->query->getInt('page', 1), /* page number */
@@ -215,7 +216,6 @@ class Offerings extends AbstractController
          *********************************************************/
         $data['selectedCatalogId'] = $searchSession->getCourseCatalogId();
         $data['menuIsSearch'] = true;
-
 
         return $this->render('offerings/search.html.twig', $data);
     }
@@ -237,9 +237,8 @@ class Offerings extends AbstractController
         if ($catalogIds->hasNext()) {
             $catalogId = $catalogIds->getNextId();
             $data['catalog_id'] = $catalogId;
-        }
-        else {
-            $data['catalog_id'] = NULL;
+        } else {
+            $data['catalog_id'] = null;
         }
 
         return $this->render('offerings/view.html.twig', $data);
@@ -260,37 +259,37 @@ class Offerings extends AbstractController
         if ($catalogIds->hasNext()) {
             $catalogId = $catalogIds->getNextId();
             $data['catalog_id'] = $catalogId;
-        }
-        else {
-            $data['catalog_id'] = NULL;
+        } else {
+            $data['catalog_id'] = null;
         }
 
         $data['title'] = $offering->getDisplayName();
         $data['feedLink'] = $this->generateUrl('view_offering', ['id' => $id], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $data['previousTerm'] = NULL;
+        $data['previousTerm'] = null;
         $data['term'] = $offering->getTerm();
-        $data['nextTerm'] = NULL;
-        $data['terms'] = NULL;
+        $data['nextTerm'] = null;
+        $data['terms'] = null;
 
         $response = new Response($this->renderView('offerings/search.xml.twig', $data));
         $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+
         return $response;
     }
 
     /**
      * Run a search query and provide the data suitable for templating.
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     *   The request that contains the search parameters.
-     * @param string|NULL $catalog
-     *   The catalog to search in or NULL for all catalogs.
+     * @param Request     $request
+     *                             The request that contains the search parameters
+     * @param string|null $catalog
+     *                             The catalog to search in or NULL for all catalogs
      *
      * @return array
-     *   The parts of the search preparation in an array: data, searchSession,
-     *   and query.
+     *               The parts of the search preparation in an array: data, searchSession,
+     *               and query
      */
-    protected function prepareSearch(Request $request, string $catalog = NULL)
+    protected function prepareSearch(Request $request, ?string $catalog = null)
     {
         $term = $request->get('term');
         $data = [];
@@ -310,7 +309,7 @@ class Offerings extends AbstractController
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $resourceLookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
             $data['title'] = 'Search in All Catalogs';
-            $data['catalog_id'] = NULL;
+            $data['catalog_id'] = null;
         }
         $termLookupSession->useFederatedCourseCatalogView();
         $offeringSearchSession->useFederatedCourseCatalogView();
@@ -436,7 +435,7 @@ class Offerings extends AbstractController
         $data['genusTypes'] = [];
         while ($genusTypes->hasNext()) {
             $data['genusTypes'][] = $genusTypes->getNextType();
-        };
+        }
 
         // Campuses -- only include if we have more than one.
         $campuses = $resourceLookupSession->getResourcesByGenusType($this->campusType);
@@ -482,7 +481,7 @@ class Offerings extends AbstractController
             }
         }
 
-        $data['selectedDepartmentId'] = NULL;
+        $data['selectedDepartmentId'] = null;
         if ($request->get('department')) {
             if (is_array($request->get('department'))) {
                 $departments = $request->get('department');
@@ -503,7 +502,7 @@ class Offerings extends AbstractController
             }
         }
 
-        $data['selectedSubjectId'] = NULL;
+        $data['selectedSubjectId'] = null;
         if ($request->get('subject')) {
             if (is_array($request->get('subject'))) {
                 $subjects = $request->get('subject');
@@ -524,7 +523,7 @@ class Offerings extends AbstractController
             }
         }
 
-        $data['selectedDivisionId'] = NULL;
+        $data['selectedDivisionId'] = null;
         if ($request->get('division')) {
             if (is_array($request->get('division'))) {
                 $divisions = $request->get('division');
@@ -797,15 +796,16 @@ class Offerings extends AbstractController
      * Callback to get offering data for paginated search results.
      *
      * @param \osid_course_CourseOffering $offering
-     *   The course.
+     *                                              The course
      *
      * @return array
-     *   An array of data about the course offering.
+     *               An array of data about the course offering
      */
-    public function getOfferingData(\osid_course_CourseOffering $offering) {
+    public function getOfferingData(\osid_course_CourseOffering $offering)
+    {
         $data = $this->osidDataLoader->getOfferingData($offering);
         $data['alternates'] = $this->osidDataLoader->getOfferingAlternates($offering);
+
         return $data;
     }
-
 }

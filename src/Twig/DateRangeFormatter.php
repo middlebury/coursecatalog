@@ -1,15 +1,14 @@
 <?php
 
 // src/Twig/AppExtension.php
+
 namespace App\Twig;
 
-use App\Service\Osid\IdMap;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 class DateRangeFormatter extends AbstractExtension
 {
-
     public function getFunctions(): array
     {
         return [
@@ -19,6 +18,6 @@ class DateRangeFormatter extends AbstractExtension
 
     public function dateRangeToWeeks(\Date|\DateTime $start, \Date|\DateTime $end): int
     {
-        return ceil(abs($end->format('U') - $start->format('U'))/60/60/24/7);
+        return ceil(abs($end->format('U') - $start->format('U')) / 60 / 60 / 24 / 7);
     }
 }

@@ -16,7 +16,7 @@ class TopicHelper
      * Answer an array containing the list items.
      *
      * @param osid_course_TopicList $topicList
-     *   The topic list to convert.
+     *                                         The topic list to convert
      *
      * @return array
      */
@@ -33,10 +33,10 @@ class TopicHelper
     /**
      * Return an array of topics matching a type.
      *
-     * @param array $topics
-     *   An array of osid_course_TopicList objects.
+     * @param array          $topics
+     *                               An array of osid_course_TopicList objects
      * @param osid_type_Type $type
-     *   The type of topic to filter for.
+     *                               The type of topic to filter for
      *
      * @return array
      */
@@ -58,7 +58,6 @@ class TopicHelper
      * @param osid_course_TopicList $topicList
      *
      * @return array
-     *
      */
     public function asTypedArray(\osid_course_TopicList $topicList)
     {

@@ -10,7 +10,6 @@ namespace App\Service\Osid;
  */
 class IdMap extends AbstractOsidIdentifierMap
 {
-
     /**
      * Get and OSID id object from a string.
      *

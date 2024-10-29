@@ -16,7 +16,6 @@ use Twig\TwigFunction;
  */
 class TimeHelper extends AbstractExtension
 {
-
     public function getFilters(): array
     {
         return [
@@ -35,9 +34,10 @@ class TimeHelper extends AbstractExtension
      * Answer a 24-hour time string from an integer number of seconds.
      *
      * @param int $seconds
-     *   Seconds since midnight.
+     *                     Seconds since midnight
+     *
      * @return string
-     *   A string in am/pm format.
+     *                A string in am/pm format
      */
     public function secondsToTime($seconds)
     {

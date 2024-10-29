@@ -26,33 +26,33 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class Catalogs extends AbstractController
 {
-
     /**
-     * @var \App\Service\Osid\Runtime
+     * @var Runtime
      */
     private $osidRuntime;
 
     /**
-     * @var \App\Service\Osid\IdMap
+     * @var IdMap
      */
     private $osidIdMap;
 
     /**
-     * @var \App\Service\Osid\TermHelper
+     * @var TermHelper
      */
     private $osidTermHelper;
 
     /**
      * Construct a new Catalogs controller.
      *
-     * @param \App\Service\Osid\Runtime $osidRuntime
-     *   The osid.runtime service.
-     * @param \App\Service\Osid\IdMap $osidIdMap
-     *   The osid.id_map service.
-     * @param \App\Service\Osid\TermHelper $osidTermHelper
-     *   The osid.term_helper service.
+     * @param Runtime    $osidRuntime
+     *                                   The osid.runtime service.
+     * @param IdMap      $osidIdMap
+     *                                   The osid.id_map service.
+     * @param TermHelper $osidTermHelper
+     *                                   The osid.term_helper service.
      */
-    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, TermHelper $osidTermHelper) {
+    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, TermHelper $osidTermHelper)
+    {
         $this->osidRuntime = $osidRuntime;
         $this->osidIdMap = $osidIdMap;
         $this->osidTermHelper = $osidTermHelper;
@@ -70,6 +70,7 @@ class Catalogs extends AbstractController
         while ($catalogs->hasNext()) {
             $data['catalogs'][] = $catalogs->getNextCourseCatalog();
         }
+
         return $this->render('catalogs/list.html.twig', $data);
     }
 
@@ -94,11 +95,12 @@ class Catalogs extends AbstractController
         );
         $response = new Response($this->renderView('catalogs/list.xml.twig', $data));
         $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+
         return $response;
     }
 
     #[Route('/catalogs/view/{catalog}/{term}', name: 'view_catalog')]
-    public function viewAction(string $catalog, $term = NULL)
+    public function viewAction(string $catalog, $term = null)
     {
         $catalogId = $this->osidIdMap->fromString($catalog);
         if ($term) {
@@ -139,6 +141,7 @@ class Catalogs extends AbstractController
         );
         $response = new Response($this->renderView('catalogs/list.xml.twig', $data));
         $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+
         return $response;
     }
 }

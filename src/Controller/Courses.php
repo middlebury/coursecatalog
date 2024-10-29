@@ -26,40 +26,40 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class Courses extends AbstractController
 {
-
     /**
-     * @var \App\Service\Osid\Runtime
+     * @var Runtime
      */
     private $osidRuntime;
 
     /**
-     * @var \App\Service\Osid\IdMap
+     * @var IdMap
      */
     private $osidIdMap;
 
     /**
-     * @var \App\Service\Osid\TermHelper
+     * @var TermHelper
      */
     private $osidTermHelper;
 
     /**
-     * @var \App\Service\Osid\DataLoader
+     * @var DataLoader
      */
     private $osidDataLoader;
 
     /**
      * Construct a new Catalogs controller.
      *
-     * @param \App\Service\Osid\Runtime $osidRuntime
-     *   The osid.runtime service.
-     * @param \App\Service\Osid\IdMap $osidIdMap
-     *   The osid.id_map service.
-     * @param \App\Service\Osid\TermHelper $osidTermHelper
-     *   The osid.term_helper service.
-     * @param \App\Service\Osid\DataLoader $osidDataLoader
-     *   The osid.topic_helper service.
+     * @param Runtime    $osidRuntime
+     *                                   The osid.runtime service.
+     * @param IdMap      $osidIdMap
+     *                                   The osid.id_map service.
+     * @param TermHelper $osidTermHelper
+     *                                   The osid.term_helper service.
+     * @param DataLoader $osidDataLoader
+     *                                   The osid.topic_helper service.
      */
-    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, TermHelper $osidTermHelper, DataLoader $osidDataLoader) {
+    public function __construct(Runtime $osidRuntime, IdMap $osidIdMap, TermHelper $osidTermHelper, DataLoader $osidDataLoader)
+    {
         $this->osidRuntime = $osidRuntime;
         $this->osidIdMap = $osidIdMap;
         $this->osidTermHelper = $osidTermHelper;
@@ -67,7 +67,7 @@ class Courses extends AbstractController
     }
 
     #[Route('/courses/list/{catalog}', name: 'list_courses')]
-    public function listAction($catalog = NULL)
+    public function listAction($catalog = null)
     {
         $data = [
             'courses' => [],
@@ -80,7 +80,7 @@ class Courses extends AbstractController
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSession();
             $data['title'] = 'Courses in All Catalogs';
-            $data['catalog_id'] = NULL;
+            $data['catalog_id'] = null;
         }
         $lookupSession->useFederatedCourseCatalogView();
 
@@ -96,13 +96,13 @@ class Courses extends AbstractController
     }
 
     #[Route('/courses/view/{course}/{term}', name: 'view_course')]
-    public function view($course, $term = NULL)
+    public function view($course, $term = null)
     {
         $data = $this->osidDataLoader->getCourseDataByIdString($course, $term);
         $data['offerings'] = $this->osidDataLoader->getCourseOfferingsData($data['course'], $data['term']);
 
         // Set the selected Catalog Id.
-        $data['catalog_id'] = NULL;
+        $data['catalog_id'] = null;
         $catalogSession = $this->osidRuntime->getCourseManager()->getCourseCatalogSession();
         $catalogIds = $catalogSession->getCatalogIdsByCourse($data['course']->getId());
         if ($catalogIds->hasNext()) {
@@ -110,11 +110,10 @@ class Courses extends AbstractController
         }
 
         return $this->render('courses/view.html.twig', $data);
-
     }
 
     #[Route('/courses/viewxml/{course}/{term}', name: 'view_course_xml')]
-    public function viewxml($course, $term = NULL)
+    public function viewxml($course, $term = null)
     {
         $data = [];
         $courseData = $this->osidDataLoader->getCourseDataByIdString($course, $term);
@@ -127,6 +126,7 @@ class Courses extends AbstractController
 
         $response = new Response($this->renderView('courses/list.xml.twig', $data));
         $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+
         return $response;
     }
 
@@ -184,7 +184,7 @@ class Courses extends AbstractController
         foreach ($courses as $courseIdString => $course) {
             $data['courses'][] = $this->osidDataLoader->getCourseData($course);
         }
-        $data['title'] = 'Course Search: "' . $keywords . '"';
+        $data['title'] = 'Course Search: "'.$keywords.'"';
         $data['feedLink'] = $this->generateUrl(
             'search_courses_xml',
             [
@@ -196,6 +196,7 @@ class Courses extends AbstractController
 
         $response = new Response($this->renderView('courses/list.xml.twig', $data));
         $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+
         return $response;
     }
 
@@ -291,12 +292,11 @@ class Courses extends AbstractController
             try {
                 $topic = $topicLookup->getTopic($topicId);
                 $topicNames[] = $topic->getDisplayName();
-            }
-            catch (\osid_NotFoundException $e) {
+            } catch (\osid_NotFoundException $e) {
                 $topicNames[] = $this->osidIdMap->toString($topicId);
             }
         }
-        $data['title'] = 'Courses in ' . implode(', ', $topicNames);
+        $data['title'] = 'Courses in '.implode(', ', $topicNames);
         $data['feedLink'] = $this->generateUrl(
             'list_courses_by_topic',
             [
@@ -310,6 +310,7 @@ class Courses extends AbstractController
 
         $response = new Response($this->renderView('courses/list.xml.twig', $data));
         $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+
         return $response;
     }
 
@@ -386,6 +387,7 @@ class Courses extends AbstractController
 
         $response = new Response($this->renderView('courses/list.xml.twig', $data));
         $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+
         return $response;
     }
 
@@ -398,10 +400,9 @@ class Courses extends AbstractController
      *      a. Get the cross-listed sections from SSB_XLST
      *      b. Take the section plus its cross-listed sections, get their course
      *         entries and merge them into a single result.
-     *
      */
     #[Route('/courses/instructorxml/{instructor}/{catalog}', name: 'list_courses_by_instructor')]
-    public function instructorxmlAction(Request $request, $instructor, $catalog = NULL)
+    public function instructorxmlAction(Request $request, $instructor, $catalog = null)
     {
         if (!$catalog) {
             $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSession();
@@ -446,8 +447,7 @@ class Courses extends AbstractController
 
         if (preg_match('/^resource\.person\./', $instructor)) {
             $instructorId = $this->osidIdMap->fromString($instructor);
-        }
-        else {
+        } else {
             $instructorId = $this->osidIdMap->fromString('resource.person.'.$instructor);
         }
         $resourceLookup = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
@@ -488,7 +488,7 @@ class Courses extends AbstractController
         ];
         foreach ($recentCourses->getPrimaryCourses() as $course) {
             $courseData = $this->osidDataLoader->getCourseData($course);
-            $courseData['include_alternates_in_title'] = TRUE;
+            $courseData['include_alternates_in_title'] = true;
             $courseData['terms'] = $this->osidDataLoader->getRecentTermDataForCourse($currentTerm, $recentCourses, $course);
             $courseData['alternates'] = $this->osidDataLoader->getRecentCourseAlternates($recentCourses, $course);
             $courseData['offerings'] = [];
@@ -507,8 +507,7 @@ class Courses extends AbstractController
 
         $response = new Response($this->renderView('courses/list.xml.twig', $data));
         $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+
         return $response;
     }
-
-
 }

@@ -12,7 +12,6 @@ namespace App\Service\Osid;
  */
 class TypeHelper
 {
-
     /**
      * @var array
      */
@@ -22,9 +21,10 @@ class TypeHelper
      * Set up the service.
      *
      * @param array $defaultOfferingGenusTypesToSearch
-     *   The default genus types to search.
+     *                                                 The default genus types to search
      */
-    public function __construct(array $defaultOfferingGenusTypesToSearch) {
+    public function __construct(array $defaultOfferingGenusTypesToSearch)
+    {
         $this->defaultOfferingGenusTypesToSearch = $defaultOfferingGenusTypesToSearch;
     }
 
@@ -42,6 +42,7 @@ class TypeHelper
         foreach ($this->defaultOfferingGenusTypesToSearch as $typeString) {
             $types[] = new \phpkit_type_URNInetType($typeString);
         }
+
         return $types;
     }
 }
