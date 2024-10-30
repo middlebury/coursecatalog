@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Service\Bookmarks as BookmarksService;
-use App\Service\Osid\IdMap;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,7 +11,6 @@ class Bookmarks extends AbstractController
 {
     public function __construct(
         private BookmarksService $bookmarks,
-        private IdMap $osidIdMap,
     ) {
     }
 
@@ -20,7 +18,7 @@ class Bookmarks extends AbstractController
      * Bookmark a course.
      */
     #[Route('/bookmarks/add/{course}', name: 'add_bookmark')]
-    public function add(string $course)
+    public function add(\osid_id_Id $course)
     {
         ob_start();
         echo '<?xml version="1.0" encoding="UTF-8"?>';
@@ -29,7 +27,7 @@ class Bookmarks extends AbstractController
             if (!$course) {
                 throw new \InvalidArgumentException('No Course Id specified.');
             }
-            $this->bookmarks->add($this->osidIdMap->fromString($course));
+            $this->bookmarks->add($course);
             echo '<success/>';
         } catch (\Exception $e) {
             echo '<error code="'.$e->getCode().'">'.$e->getMessage().'</error>';
@@ -47,7 +45,7 @@ class Bookmarks extends AbstractController
      * @since 7/29/10
      */
     #[Route('/bookmarks/remove/{course}', name: 'remove_bookmark')]
-    public function remove(string $course)
+    public function remove(\osid_id_Id $course)
     {
         ob_start();
         echo '<?xml version="1.0" encoding="UTF-8"?>';
@@ -56,7 +54,7 @@ class Bookmarks extends AbstractController
             if (!$course) {
                 throw new \InvalidArgumentException('No Course Id specified.');
             }
-            $this->bookmarks->remove($this->osidIdMap->fromString($course));
+            $this->bookmarks->remove($course);
             echo '<success/>';
         } catch (\Exception $e) {
             echo '<error code="'.$e->getCode().'">'.$e->getMessage().'</error>';
