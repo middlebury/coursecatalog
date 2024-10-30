@@ -264,10 +264,10 @@ class Topics extends AbstractController
     /**
      * Answer an array of topic data for an optional catalog and type.
      *
-     * @param osid_id_Id $catalogId
-     *                        The catalog id to search within
+     * @param osid_id_Id     $catalogId
+     *                                  The catalog id to search within
      * @param osid_type_Type $type
-     *                        The type id to search within
+     *                                  The type id to search within
      *
      * @return array
      *               The topic data ready for templating
@@ -301,10 +301,10 @@ class Topics extends AbstractController
     /**
      * Answer an array of recent topic data for an optional catalog and type.
      *
-     * @param osid_id_Id $catalogId
-     *                        The catalog id to search within
+     * @param osid_id_Id     $catalogId
+     *                                  The catalog id to search within
      * @param osid_type_Type $type
-     *                        The type id to search within
+     *                                  The type id to search within
      *
      * @return array
      *               The topic data ready for templating
@@ -370,7 +370,7 @@ class Topics extends AbstractController
      *
      * @param \osid_type_Type $genusType
      *                                   The type of topics to list
-     * @param \osid_id_Id          $catalogId
+     * @param \osid_id_Id     $catalogId
      *                                   An optional catalog to limit results to
      *
      * @return Response

@@ -242,10 +242,10 @@ class Offerings extends AbstractController
     /**
      * Run a search query and provide the data suitable for templating.
      *
-     * @param Request     $request
-     *                             The request that contains the search parameters
+     * @param Request         $request
+     *                                   The request that contains the search parameters
      * @param osid_id_Id|null $catalogId
-     *                             The catalog to search in or NULL for all catalogs
+     *                                   The catalog to search in or NULL for all catalogs
      *
      * @return array
      *               The parts of the search preparation in an array: data, searchSession,
