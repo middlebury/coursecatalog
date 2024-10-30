@@ -11,7 +11,7 @@ use Twig\TwigFunction;
 class OsidIdExtension extends AbstractExtension
 {
     public function __construct(
-        private IdMap $idMap,
+        private IdMap $osidIdMap,
     ) {
     }
 
@@ -28,12 +28,12 @@ class OsidIdExtension extends AbstractExtension
 
     public function osidIdToString(\osid_id_Id $id): string
     {
-        return $this->idMap->toString($id);
+        return $this->osidIdMap->toString($id);
     }
 
     public function osidTypeToString(\osid_type_Type $type): string
     {
-        return $this->idMap->typeToString($type);
+        return $this->osidIdMap->typeToString($type);
     }
 
     public function osidIdsEqual(\osid_id_Id $id1, \osid_id_Id $id2): bool

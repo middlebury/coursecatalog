@@ -1,7 +1,7 @@
         <item>
             <title>{{ course.displayname }}{% if include_alternates_in_title and alternates is not empty %}{% for alternate in alternates %} / {{ alternate.displayname }}{% endfor %}{% endif %} - {{ course.title }}</title>
-            <link>{{ url('view_course', {'course': osidIdToString(course.id)}) }}</link>
-            <guid isPermaLink="true">{{ url('view_course', {'course': osidIdToString(course.id)}) }}</guid>
+            <link>{{ url('view_course', {'course': course}) }}</link>
+            <guid isPermaLink="true">{{ url('view_course', {'course': course}) }}</guid>
             <description><![CDATA[{{ course.description|raw }}]]></description>
             <catalog:id>{{ osidIdToString(course.id) }}</catalog:id>
             <catalog:display_name>{{ course.displayname }}</catalog:display_name>
@@ -11,7 +11,7 @@
 {% endif ~%}
 {%- if alternates is not empty %}
 {%- for alternate in alternates %}
-            <catalog:alternate id="{{ osidIdToString(alternate.id) }}" href="{{ url('view_course', {course: osidIdToString(alternate.id)}) }}" is_primary="{{ alternate.is_primary ? 'true':'false' }}">
+            <catalog:alternate id="{{ osidIdToString(alternate.id) }}" href="{{ url('view_course', {course: alternate}) }}" is_primary="{{ alternate.is_primary ? 'true':'false' }}">
                 <catalog:id>{{ osidIdToString(alternate.id) }}</catalog:id>
                 <catalog:display_name>{{ alternate.displayname }}</catalog:display_name>
                 <catalog:title>{{ alternate.title }}</catalog:title>
@@ -24,25 +24,25 @@
 {% endfor ~%}
 {% endif %}
 {% for topic in subjectTopics %}
-            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id)}) }}'>{{ topic.displayname }}</catalog:topic>
+            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: topic}) }}'>{{ topic.displayname }}</catalog:topic>
 {% endfor %}
 {%- for topic in departmentTopics %}
-            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id)}) }}'>{{ topic.displayname }}</catalog:topic>
+            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: topic}) }}'>{{ topic.displayname }}</catalog:topic>
 {% endfor %}
 {%- for topic in divisionTopics %}
-            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id)}) }}'>{{ topic.displayname }}</catalog:topic>
+            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: topic}) }}'>{{ topic.displayname }}</catalog:topic>
 {% endfor %}
 {%- for topic in requirementTopics %}
-            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id)}) }}'>{{ topic.displayname }}</catalog:topic>
+            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: topic}) }}'>{{ topic.displayname }}</catalog:topic>
 {% endfor %}
 {%- if blockTopics is not empty %}
 {%- for topic in blockTopics %}
-            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id)}) }}'>{{ topic.displayname }}</catalog:topic>
+            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: topic}) }}'>{{ topic.displayname }}</catalog:topic>
 {% endfor %}
 {% endif %}
 {%- if levelTopics is not empty %}
 {%- for topic in levelTopics %}
-            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: osidIdToString(topic.id)}) }}'>{{ topic.displayname }}</catalog:topic>
+            <catalog:topic type="{{ osidTypeToString(topic.genustype) }}" id="{{ osidIdToString(topic.id) }}" href='{{ url('view_topic', {topic: topic}) }}'>{{ topic.displayname }}</catalog:topic>
 {% endfor ~%}
 {% endif %}
 {{ include('partials/offering_list.xml.twig', {offerings: offerings}, with_context = false) }}

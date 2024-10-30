@@ -12,28 +12,28 @@
     <dt>Subject:</dt>
     <dd>
     {% for topic in subjectTopics %}
-        <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: catalog_id ? osidIdToString(catalog_id), term: term ? osidIdToString(term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+        <a href='{{ url('view_topic', {topic: topic.id, catalog: catalog_id, term: term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
     {% endfor %}
     </dd>
 
     <dt>Department:</dt>
     <dd>
     {% for topic in departmentTopics %}
-        <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: catalog_id ? osidIdToString(catalog_id), term: term ? osidIdToString(term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+        <a href='{{ url('view_topic', {topic: topic, catalog: catalog_id, term: term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
     {% endfor %}
     </dd>
 
     <dt>Division:</dt>
     <dd>
     {% for topic in divisionTopics %}
-        <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: catalog_id ? osidIdToString(catalog_id), term: term ? osidIdToString(term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+        <a href='{{ url('view_topic', {topic: topic, catalog: catalog_id, term: term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
     {% endfor %}
     </dd>
 
     <dt>Requirements Fulfilled:</dt>
     <dd>
     {% for topic in requirementTopics %}
-        <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: catalog_id ? osidIdToString(catalog_id), term: term ? osidIdToString(term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+        <a href='{{ url('view_topic', {topic: topic, catalog: catalog_id, term: term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
     {% endfor %}
     </dd>
 
@@ -41,7 +41,7 @@
     <dt>Additional Details:</dt>
     <dd>
     {% for topic in blockTopics %}
-        <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: catalog_id ? osidIdToString(catalog_id), term: term ? osidIdToString(term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+        <a href='{{ url('view_topic', {topic: topic, catalog: catalog_id, term: term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
     {% endfor %}
     </dd>
 {% endif %}
@@ -50,7 +50,7 @@
     <dt>Levels:</dt>
     <dd>
     {% for topic in levelTopics %}
-        <a href='{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: catalog_id ? osidIdToString(catalog_id), term: term ? osidIdToString(term.id)}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+        <a href='{{ url('view_topic', {topic: topic, catalog: catalog_id, term: term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
     {% endfor %}
     </dd>
 {% endif %}
@@ -59,7 +59,7 @@
     <dt>Equivalent Courses:</dt>
     <dd>
     {% for alternate in alternates %}
-        <a href='{{ url('view_course', {course: osidIdToString(alternate.id), term: term ? osidIdToString(term.id)}) }}'>{{ alternate.displayname }}</a>
+        <a href='{{ url('view_course', {course: alternate, term: term}) }}'>{{ alternate.displayname }}</a>
         {{ alternate.is_primary ? ' * ' }}
         <br/>
     {% endfor %}
@@ -73,7 +73,7 @@
     {
         offerings: offerings,
         term: term,
-        offeringsForAllTermsUrl: url('view_course', {course: osidIdToString(course.id)}),
+        offeringsForAllTermsUrl: url('view_course', {course: course}),
         hideOfferingInstructors: FALSE,
         selectedOffering: NULL
     },

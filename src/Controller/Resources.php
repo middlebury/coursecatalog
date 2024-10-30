@@ -31,25 +31,22 @@ class Resources extends AbstractController
     }
 
     #[Route('/resources/view/{resource}/{term}', name: 'view_resource')]
-    public function viewAction(Request $request, $resource, $term = null)
+    public function viewAction(Request $request, \osid_id_Id $resource, ?\osid_id_Id $term = null)
     {
-        $id = $this->osidIdMap->fromString($resource);
         $lookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
         $lookupSession->useFederatedBinView();
-        $data['resource'] = $lookupSession->getResource($id);
+        $data['resource'] = $lookupSession->getResource($resource);
 
         $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSession();
         $offeringSearchSession->useFederatedCourseCatalogView();
         $query = $offeringSearchSession->getCourseOfferingQuery();
 
         if ($term) {
-            $termId = $this->osidIdMap->fromString($term);
-
-            $query->matchTermId($termId, true);
+            $query->matchTermId($term, true);
 
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $termLookupSession->useFederatedCourseCatalogView();
-            $data['term'] = $termLookupSession->getTerm($termId);
+            $data['term'] = $termLookupSession->getTerm($term);
         } else {
             $data['term'] = null;
         }
@@ -60,16 +57,16 @@ class Resources extends AbstractController
         $data['offering_display_limit'] = 100;
 
         // Match the instructor Id
-        if (preg_match('/^resource\.person\./', $resource)) {
+        if (preg_match('/^resource\.person\./', $this->osidIdMap->toString($resource))) {
             if ($query->hasRecordType($this->instructorType)) {
                 $queryRecord = $query->getCourseOfferingQueryRecord($this->instructorType);
-                $queryRecord->matchInstructorId($id, true);
+                $queryRecord->matchInstructorId($resource, true);
                 $offerings = $offeringSearchSession->getCourseOfferingsByQuery($query);
             }
         }
         // Match a location id
-        elseif (preg_match('/^resource\.place\./', $resource)) {
-            $query->matchLocationId($id, true);
+        elseif (preg_match('/^resource\.place\./', $this->osidIdMap->toString($resource))) {
+            $query->matchLocationId($resource, true);
             $offerings = $offeringSearchSession->getCourseOfferingsByQuery($query);
         }
         if (isset($offerings)) {
@@ -88,12 +85,11 @@ class Resources extends AbstractController
      * List all department topics as a text file with each line being Id|DisplayName.
      */
     #[Route('/resources/listcampusestxt/{catalog}', name: 'list_campuses_txt')]
-    public function listcampusestxt(Request $request, $catalog = null)
+    public function listcampusestxt(Request $request, ?\osid_id_Id $catalog = null)
     {
         $data = [];
         if ($catalog) {
-            $catalogId = $this->osidIdMap->fromString($catalog);
-            $lookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalogId);
+            $lookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalog);
             $data['title'] = 'Resources in '.$lookupSession->getBin()->getDisplayName();
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();

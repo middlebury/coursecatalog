@@ -33,14 +33,13 @@ class Terms extends AbstractController
      * Print out a list of all terms.
      */
     #[Route('/terms/list/{catalog}', name: 'list_terms')]
-    public function listAction($catalog = null)
+    public function listAction(?\osid_id_Id $catalog = null)
     {
         $data = [];
         if ($catalog) {
-            $catalogId = $this->osidIdMap->fromString($catalog);
-            $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalog);
             $data['title'] = 'Terms in '.$lookupSession->getCourseCatalog()->getDisplayName();
-            $data['catalog_id'] = $catalogId;
+            $data['catalog_id'] = $catalog;
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $data['title'] = 'Terms in All Catalogs';
@@ -61,14 +60,13 @@ class Terms extends AbstractController
      * Print out an XML list of all terms.
      */
     #[Route('/terms/listxml/{catalog}', name: 'list_terms_xml')]
-    public function listxmlAction($catalog = null)
+    public function listxmlAction(?\osid_id_Id $catalog = null)
     {
         $data = [];
         if ($catalog) {
-            $catalogId = $this->osidIdMap->fromString($catalog);
-            $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalog);
             $data['title'] = 'Terms in '.$lookupSession->getCourseCatalog()->getDisplayName();
-            $data['catalog_id'] = $catalogId;
+            $data['catalog_id'] = $catalog;
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $data['title'] = 'Terms in All Catalogs';
@@ -89,16 +87,13 @@ class Terms extends AbstractController
     }
 
     #[Route('/terms/view/{term}/{catalog}', name: 'view_term')]
-    public function viewAction($term, $catalog = null)
+    public function viewAction(\osid_id_Id $term, ?\osid_id_Id $catalog = null)
     {
         $data = [];
-        $id = $this->osidIdMap->fromString($term);
-
         if ($catalog) {
-            $catalogId = $this->osidIdMap->fromString($catalog);
-            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalog);
             $termLookupSession->useIsolatedCourseCatalogView();
-            $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
+            $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalog);
             $offeringLookupSession->useIsolatedCourseCatalogView();
         } else {
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
@@ -106,8 +101,8 @@ class Terms extends AbstractController
             $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
             $offeringLookupSession->useFederatedCourseCatalogView();
         }
-        $data['term'] = $termLookupSession->getTerm($id);
-        $offerings = $offeringLookupSession->getCourseOfferingsByTerm($id);
+        $data['term'] = $termLookupSession->getTerm($term);
+        $offerings = $offeringLookupSession->getCourseOfferingsByTerm($term);
         $data['offerings'] = [];
         while ($offerings->hasNext()) {
             $data['offerings'][] = $this->osidDataLoader->getOfferingData($offerings->getNextCourseOffering());
@@ -120,21 +115,19 @@ class Terms extends AbstractController
      * View term details.
      */
     #[Route('/terms/details/{term}/{catalog}', name: 'view_term_details')]
-    public function detailsAction($term, $catalog = null)
+    public function detailsAction(\osid_id_Id $term, ?\osid_id_Id $catalog = null)
     {
-        $id = $this->osidIdMap->fromString($term);
         $data = [];
         if ($catalog) {
-            $catalogId = $this->osidIdMap->fromString($catalog);
-            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalog);
             $termLookupSession->useIsolatedCourseCatalogView();
-            $data['catalog_id'] = $catalogId;
+            $data['catalog_id'] = $catalog;
         } else {
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $termLookupSession->useFederatedCourseCatalogView();
             $data['catalog_id'] = null;
         }
-        $data['term'] = $termLookupSession->getTerm($id);
+        $data['term'] = $termLookupSession->getTerm($term);
 
         return $this->render('terms/details.html.twig', $data);
     }
@@ -143,23 +136,28 @@ class Terms extends AbstractController
      * View a catalog details.
      */
     #[Route('/terms/detailsxml/{term}/{catalog}', name: 'view_term_details_xml')]
-    public function detailsxmlAction($term, $catalog = null)
+    public function detailsxmlAction(\osid_id_Id $term, ?\osid_id_Id $catalog = null)
     {
-        $id = $this->osidIdMap->fromString($term);
         $data = [];
         if ($catalog) {
-            $catalogId = $this->osidIdMap->fromString($catalog);
-            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalog);
             $termLookupSession->useIsolatedCourseCatalogView();
-            $data['catalog_id'] = $catalogId;
+            $data['catalog_id'] = $catalog;
         } else {
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $termLookupSession->useFederatedCourseCatalogView();
             $data['catalog_id'] = null;
         }
-        $data['term'] = $termLookupSession->getTerm($id);
+        $data['term'] = $termLookupSession->getTerm($term);
 
-        $data['feedLink'] = $this->generateUrl('view_term_details_xml', ['term' => $term, 'catalog' => $catalog], UrlGeneratorInterface::ABSOLUTE_URL);
+        $data['feedLink'] = $this->generateUrl(
+            'view_term_details_xml',
+            [
+                'term' => $term,
+                'catalog' => $catalog,
+            ],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
 
         $response = new Response($this->renderView('terms/details.xml.twig', $data));
         $response->headers->set('Content-Type', 'text/xml; charset=utf-8');

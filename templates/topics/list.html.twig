@@ -6,7 +6,7 @@
     <h2>Subjects:</h2>
     <ul>
     {% for topic in subjectTopics %}
-        <li><a href="{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}">{{ topic.displayname }}</a></li>
+        <li><a href="{{ url('view_topic', {topic: topic, catalog: catalog_id}) }}">{{ topic.displayname }}</a></li>
     {% endfor %}
     </ul>
 {% endif %}
@@ -15,7 +15,7 @@
     <h2>Departments:</h2>
     <ul>
     {% for topic in departmentTopics %}
-        <li><a href="{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}">{{ topic.displayname }}</a></li>
+        <li><a href="{{ url('view_topic', {topic: topic, catalog: catalog_id}) }}">{{ topic.displayname }}</a></li>
     {% endfor %}
     </ul>
 {% endif %}
@@ -24,7 +24,7 @@
     <h2>Divisions:</h2>
     <ul>
     {% for topic in divisionTopics %}
-        <li><a href="{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}">{{ topic.displayname }}</a></li>
+        <li><a href="{{ url('view_topic', {topic: topic, catalog: catalog_id}) }}">{{ topic.displayname }}</a></li>
     {% endfor %}
     </ul>
 {% endif %}
@@ -33,7 +33,7 @@
     <h2>Requirements Fulfilled:</h2>
     <ul>
     {% for topic in requirementTopics %}
-        <li><a href="{{ url('view_topic', {topic: osidIdToString(topic.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}">{{ topic.displayname }}</a></li>
+        <li><a href="{{ url('view_topic', {topic: topic, catalog: catalog_id}) }}">{{ topic.displayname }}</a></li>
     {% endfor %}
     </ul>
 {% endif %}

@@ -3,7 +3,7 @@
 {%~ for term in terms %}
         <item>
             <title>{{ term.displayname }}</title>
-            <link>{{ url('view_term', {term: osidIdToString(term.id), catalog: catalog_id ? osidIdToString(catalog_id)}) }}</link>
+            <link>{{ url('view_term', {term: term, catalog: catalog_id}) }}</link>
             <description><![CDATA[{{ term.description | raw }}]]></description>
             <catalog:id>{{ osidIdToString(term.id) }}</catalog:id>
             <catalog:start_date>{{ term.starttime | date('Y-m-d') }}</catalog:start_date>

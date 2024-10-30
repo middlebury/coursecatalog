@@ -35,16 +35,15 @@ class Courses extends AbstractController
     }
 
     #[Route('/courses/list/{catalog}', name: 'list_courses')]
-    public function listAction($catalog = null)
+    public function listAction(?\osid_id_Id $catalog = null)
     {
         $data = [
             'courses' => [],
         ];
         if ($catalog) {
-            $catalogId = $this->osidIdMap->fromString($catalog);
-            $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
+            $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSessionForCatalog($catalog);
             $data['title'] = 'Courses in '.$lookupSession->getCourseCatalog()->getDisplayName();
-            $data['catalog_id'] = $catalogId;
+            $data['catalog_id'] = $catalog;
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSession();
             $data['title'] = 'Courses in All Catalogs';
@@ -64,9 +63,9 @@ class Courses extends AbstractController
     }
 
     #[Route('/courses/view/{course}/{term}', name: 'view_course')]
-    public function view($course, $term = null)
+    public function view(\osid_id_Id $course, ?\osid_id_Id $term = null)
     {
-        $data = $this->osidDataLoader->getCourseDataByIdString($course, $term);
+        $data = $this->osidDataLoader->getCourseDataById($course, $term);
         $data['offerings'] = $this->osidDataLoader->getCourseOfferingsData($data['course'], $data['term']);
 
         // Set the selected Catalog Id.
@@ -81,10 +80,10 @@ class Courses extends AbstractController
     }
 
     #[Route('/courses/viewxml/{course}/{term}', name: 'view_course_xml')]
-    public function viewxml($course, $term = null)
+    public function viewxml(\osid_id_Id $course, ?\osid_id_Id $term = null)
     {
         $data = [];
-        $courseData = $this->osidDataLoader->getCourseDataByIdString($course, $term);
+        $courseData = $this->osidDataLoader->getCourseDataById($course, $term);
         $courseData['offerings'] = $this->osidDataLoader->getCourseOfferingsData($courseData['course'], $courseData['term']);
         $courseData['alternates'] = $this->osidDataLoader->getAllCourseAlternates($courseData['course']);
         $data['courses'] = [$courseData];
@@ -99,7 +98,7 @@ class Courses extends AbstractController
     }
 
     #[Route('/courses/searchxml/{catalog}', name: 'search_courses_xml')]
-    public function searchxmlAction(Request $request, $catalog)
+    public function searchxmlAction(Request $request, \osid_id_Id $catalog)
     {
         if (!$catalog) {
             header('HTTP/1.1 400 Bad Request');
@@ -107,8 +106,7 @@ class Courses extends AbstractController
             exit;
         }
         try {
-            $catalogId = $this->osidIdMap->fromString($catalog);
-            $searchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
+            $searchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalog);
         } catch (\osid_InvalidArgumentException $e) {
             header('HTTP/1.1 400 Bad Request');
             echo 'The catalog id specified was not of the correct format.';
@@ -169,7 +167,7 @@ class Courses extends AbstractController
     }
 
     #[Route('/courses/topicxml/{catalog}', name: 'list_courses_by_topic')]
-    public function topicxmlAction(Request $request, $catalog)
+    public function topicxmlAction(Request $request, \osid_id_Id $catalog)
     {
         if (!$catalog) {
             header('HTTP/1.1 400 Bad Request');
@@ -177,10 +175,9 @@ class Courses extends AbstractController
             exit;
         }
         try {
-            $catalogId = $this->osidIdMap->fromString($catalog);
-            $searchSession = $this->osidRuntime->getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
+            $searchSession = $this->osidRuntime->getCourseManager()->getCourseSearchSessionForCatalog($catalog);
 
-            $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+            $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalog);
         } catch (\osid_InvalidArgumentException $e) {
             header('HTTP/1.1 400 Bad Request');
             echo 'The catalog id specified was not of the correct format.';
@@ -283,7 +280,7 @@ class Courses extends AbstractController
     }
 
     #[Route('/courses/byidxml/{catalog}', name: 'list_courses_by_ids')]
-    public function byidxmlAction(Request $request, $catalog)
+    public function byidxmlAction(Request $request, \osid_id_Id $catalog)
     {
         if (!$catalog) {
             header('HTTP/1.1 400 Bad Request');
@@ -291,9 +288,8 @@ class Courses extends AbstractController
             exit;
         }
         try {
-            $catalogId = $this->osidIdMap->fromString($catalog);
-            $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
-            $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+            $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSessionForCatalog($catalog);
+            $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalog);
         } catch (\osid_InvalidArgumentException $e) {
             header('HTTP/1.1 400 Bad Request');
             echo 'The catalog id specified was not of the correct format.';
@@ -370,7 +366,7 @@ class Courses extends AbstractController
      *         entries and merge them into a single result.
      */
     #[Route('/courses/instructorxml/{instructor}/{catalog}', name: 'list_courses_by_instructor')]
-    public function instructorxmlAction(Request $request, $instructor, $catalog = null)
+    public function instructorxmlAction(Request $request, string $instructor, ?\osid_id_Id $catalog = null)
     {
         if (!$catalog) {
             $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSession();
@@ -380,8 +376,8 @@ class Courses extends AbstractController
 
             // Allow term current/past to be limited to a certain catalog while courses are fetched from many
             if ($request->get('term_catalog')) {
-                $catalogId = $this->osidIdMap->fromString($request->get('term_catalog'));
-                $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+                $catalog = $this->osidIdMap->fromString($request->get('term_catalog'));
+                $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalog);
             }
             // fall back to terms from any catalog.
             else {
@@ -390,11 +386,10 @@ class Courses extends AbstractController
             }
         } else {
             try {
-                $catalogId = $this->osidIdMap->fromString($catalog);
-                $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
-                $courseLookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
+                $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalog);
+                $courseLookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSessionForCatalog($catalog);
 
-                $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+                $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalog);
             } catch (\osid_InvalidArgumentException $e) {
                 throw new \osid_InvalidArgumentException('The catalog id specified was not of the correct format.');
             } catch (\osid_NotFoundException $e) {

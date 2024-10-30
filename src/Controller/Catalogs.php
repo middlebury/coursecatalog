@@ -76,25 +76,24 @@ class Catalogs extends AbstractController
     }
 
     #[Route('/catalogs/view/{catalog}/{term}', name: 'view_catalog')]
-    public function viewAction(string $catalog, $term = null)
+    public function viewAction(\osid_id_Id $catalog, ?\osid_id_Id $term = null)
     {
-        $catalogId = $this->osidIdMap->fromString($catalog);
         if ($term) {
             try {
                 // Verify that the term is valid in this catalog
                 $termLookup = $this->osidRuntime->getCourseManager()->getTermLookupSession();
                 $termLookup->useFederatedCourseCatalogView();
-                $termId = $termLookup->getTerm($this->osidIdMap->fromString($term))->getId();
+                $termLookup->getTerm($term);
             } catch (\osid_NotFoundException $e) {
             }
         }
-        if (!isset($termId)) {
-            $termId = $this->osidTermHelper->getNextOrLatestTermId($catalogId);
+        if (!isset($term)) {
+            $term = $this->osidTermHelper->getNextOrLatestTermId($catalog);
         }
 
         return $this->redirectToRoute('search_offerings', [
-            'catalog' => $this->osidIdMap->toString($catalogId),
-            'term' => $this->osidIdMap->toString($termId),
+            'catalog' => $catalog,
+            'term' => $term,
         ]);
     }
 
@@ -102,12 +101,12 @@ class Catalogs extends AbstractController
      * Print out an XML listing of a catalog.
      */
     #[Route('/catalogs/viewxml/{catalog}', name: 'view_catalog_xml')]
-    public function viewxmlAction(string $catalog)
+    public function viewxmlAction(\osid_id_Id $catalog)
     {
         $data = [];
         $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();
         $data['title'] = 'View Catalog';
-        $data['catalogs'] = [$lookupSession->getCourseCatalog($this->osidIdMap->fromString($catalog))];
+        $data['catalogs'] = [$lookupSession->getCourseCatalog($catalog)];
         $data['feedLink'] = $this->generateUrl(
             'list_catalogs_xml',
             [

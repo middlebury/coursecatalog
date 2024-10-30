@@ -57,12 +57,11 @@ class Offerings extends AbstractController
      * Print out a list of all courses.
      */
     #[Route('/offerings/list/{catalog}/{term}', name: 'list_offerings')]
-    public function listAction(string $catalog, string $term)
+    public function listAction(\osid_id_Id $catalog, string $term)
     {
         $data = [];
-        $catalogId = $this->osidIdMap->fromString($catalog);
-        $data['catalog_id'] = $catalogId;
-        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
+        $data['catalog_id'] = $catalog;
+        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalog);
         $data['title'] = $lookupSession->getCourseCatalog()->getDisplayName();
         $lookupSession->useFederatedCourseCatalogView();
 
@@ -104,7 +103,7 @@ class Offerings extends AbstractController
      * @since 10/21/09
      */
     #[Route('/offerings/searchxml/{catalog}/{term}', name: 'search_offerings_xml')]
-    public function searchxml(Request $request, ?string $catalog = null, ?string $term = null)
+    public function searchxml(Request $request, ?\osid_id_Id $catalog = null, ?\osid_id_Id $term = null)
     {
         [$data, $searchSession, $query, $termLookupSession] = $this->prepareSearch($request, $catalog, $term);
         // Actually run the query.
@@ -149,11 +148,16 @@ class Offerings extends AbstractController
     }
 
     #[Route('/offerings/search/{catalog}', name: 'search_offerings')]
-    public function search(Request $request, PaginatorInterface $paginator, ?string $catalog = null)
+    public function search(Request $request, PaginatorInterface $paginator, ?\osid_id_Id $catalog = null)
     {
         [$data, $searchSession, $query, $termLookupSession] = $this->prepareSearch($request, $catalog);
 
-        $data['form_action'] = $this->generateUrl('search_offerings', ['catalog' => $catalog]);
+        $data['form_action'] = $this->generateUrl(
+            'search_offerings',
+            [
+                'catalog' => $catalog,
+            ]
+        );
 
         // Run the query if submitted.
         $data['paginator'] = null;
@@ -181,9 +185,9 @@ class Offerings extends AbstractController
     }
 
     #[Route('/offerings/view/{id}', name: 'view_offering')]
-    public function viewAction($id)
+    public function viewAction(\osid_id_Id $id)
     {
-        $data = $this->osidDataLoader->getOfferingDataByIdString($id);
+        $data = $this->osidDataLoader->getOfferingDataById($id);
         $data['alternates'] = $this->osidDataLoader->getOfferingAlternates($data['offering']);
 
         // Bookmarked Courses and Schedules
@@ -205,10 +209,10 @@ class Offerings extends AbstractController
     }
 
     #[Route('/offerings/viewxml/{id}', name: 'view_offering_xml')]
-    public function viewxmlAction($id)
+    public function viewxmlAction(\osid_id_Id $id)
     {
         $data = [];
-        $offeringData = $this->osidDataLoader->getOfferingDataByIdString($id);
+        $offeringData = $this->osidDataLoader->getOfferingDataById($id);
         $offering = $offeringData['offering'];
         $offeringData['alternates'] = $this->osidDataLoader->getOfferingAlternates($offering);
         $data['offerings'] = [$offeringData];
@@ -249,19 +253,18 @@ class Offerings extends AbstractController
      *               The parts of the search preparation in an array: data, searchSession,
      *               and query
      */
-    protected function prepareSearch(Request $request, ?string $catalog = null)
+    protected function prepareSearch(Request $request, ?\osid_id_Id $catalog = null)
     {
         $term = $request->get('term');
         $data = [];
         if ($catalog) {
-            $catalogId = $catalogId = $this->osidIdMap->fromString($catalog);
-            $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
-            $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
-            $topicSearchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
-            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
-            $resourceLookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalogId);
+            $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalog);
+            $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalog);
+            $topicSearchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSessionForCatalog($catalog);
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalog);
+            $resourceLookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalog);
             $data['title'] = 'Search in '.$offeringSearchSession->getCourseCatalog()->getDisplayName();
-            $data['catalog_id'] = $catalogId;
+            $data['catalog_id'] = $catalog;
         } else {
             $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSession();
             $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();

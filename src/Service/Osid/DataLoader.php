@@ -27,23 +27,21 @@ class DataLoader
     /**
      * Answer an array of course data suitable for templating.
      *
-     * @param string $idString
-     *                             The course id string
-     * @param string $termIdString
-     *                             A reference term's id string if one is being used for filtering
-     *                             offerings
+     * @param \osid_id_Id $id
+     *                            The course id
+     * @param \osid_id_Id $termId
+     *                            A reference term's id if one is being used for filtering
+     *                            offerings
      *
      * @return array
      *               An array of data about the course
      */
-    public function getCourseDataByIdString($idString, $termIdString = null)
+    public function getCourseDataById(\osid_id_Id $id, ?\osid_id_Id $termId = null)
     {
-        $id = $this->osidIdMap->fromString($idString);
         $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSession();
         $lookupSession->useFederatedCourseCatalogView();
 
-        if ($termIdString) {
-            $termId = $this->osidIdMap->fromString($termIdString);
+        if ($termId) {
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $termLookupSession->useFederatedCourseCatalogView();
             $term = $termLookupSession->getTerm($termId);
@@ -283,15 +281,14 @@ class DataLoader
     /**
      * Answer an array of course offering data suitable for templating.
      *
-     * @param string $idString
-     *                         The course offering id string
+     * @param \osid_id_Id $id
+     *                        The course offering id
      *
      * @return array
      *               An array of data about the course offering
      */
-    public function getOfferingDataByIdString($idString)
+    public function getOfferingDataById(\osid_id_Id $id)
     {
-        $id = $this->osidIdMap->fromString($idString);
         $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
         $lookupSession->useFederatedCourseCatalogView();
 
