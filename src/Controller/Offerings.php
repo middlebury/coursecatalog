@@ -57,7 +57,7 @@ class Offerings extends AbstractController
      * Print out a list of all courses.
      */
     #[Route('/offerings/list/{catalogId}/{termId}', name: 'list_offerings')]
-    public function listAction(\osid_id_Id $catalogId, string $termId)
+    public function listAction(\osid_id_Id $catalogId, \osid_id_Id $termId)
     {
         $data = [];
         $data['catalogId'] = $catalogId;
@@ -66,10 +66,8 @@ class Offerings extends AbstractController
         $lookupSession->useFederatedCourseCatalogView();
 
         // Add our parameters to the search query
-        if ('CURRENT' == $termId) {
+        if ('CURRENT' == $this->osidIdMap->toString($termId)) {
             $termId = $this->osidTermHelper->getNextOrLatestTermId();
-        } else {
-            $termId = $this->osidIdMap->fromString($termId);
         }
 
         $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
@@ -246,7 +244,7 @@ class Offerings extends AbstractController
      *
      * @param Request     $request
      *                             The request that contains the search parameters
-     * @param string|null $catalogId
+     * @param osid_id_Id|null $catalogId
      *                             The catalog to search in or NULL for all catalogs
      *
      * @return array

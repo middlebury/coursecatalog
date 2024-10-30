@@ -366,7 +366,7 @@ class Courses extends AbstractController
      *         entries and merge them into a single result.
      */
     #[Route('/courses/instructorxml/{instructorId}/{catalogId}', name: 'list_courses_by_instructor')]
-    public function instructorxmlAction(Request $request, string $instructorId, ?\osid_id_Id $catalogId = null)
+    public function instructorxmlAction(Request $request, \osid_id_Id $instructorId, ?\osid_id_Id $catalogId = null)
     {
         if (!$catalogId) {
             $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSession();
@@ -398,9 +398,7 @@ class Courses extends AbstractController
             }
         }
 
-        $instructorId = trim($instructorId);
-
-        if (!$instructorId || !strlen($instructorId)) {
+        if (!$instructorId) {
             // Make sure that this error response is cacheable.
             $this->setCacheControlHeaders();
             $this->getResponse()->sendHeaders();
@@ -408,10 +406,9 @@ class Courses extends AbstractController
             throw new \InvalidArgumentException('An instructor must be specified.');
         }
 
-        if (preg_match('/^resource\.person\./', $instructorId)) {
-            $instructorId = $this->osidIdMap->fromString($instructorId);
-        } else {
-            $instructorId = $this->osidIdMap->fromString('resource.person.'.$instructorId);
+        // Expand plain instructor Ids to fully qualified ones.
+        if (!preg_match('/^resource\.person\./', $this->osidIdMap->toString($instructorId))) {
+            $instructorId = $this->osidIdMap->fromString('resource.person.'.$this->osidIdMap->toString($instructorId));
         }
         $resourceLookup = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
         try {
