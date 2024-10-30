@@ -3,7 +3,7 @@
 {% block body %}
 <h1>{{ title }}</h1>
 {% for term in terms %}
-    <h2><a href='{{ url('view_term', {term: term, catalog: catalog_id}) }}'>{{ term.displayname }}</a></h2>
+    <h2><a href='{{ url('view_term', {termId: term, catalogId: catalogId}) }}'>{{ term.displayname }}</a></h2>
     <div>{{ term.description }}</div>
 {% endfor %}
 

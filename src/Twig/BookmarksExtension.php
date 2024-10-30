@@ -28,8 +28,8 @@ class BookmarksExtension extends AbstractExtension
         ];
     }
 
-    public function isBookmarked(\osid_id_Id $id): string
+    public function isBookmarked(\osid_id_Id $courseId): string
     {
-        return $this->bookmarks->isBookmarked($id);
+        return $this->bookmarks->isBookmarked($courseId);
     }
 }

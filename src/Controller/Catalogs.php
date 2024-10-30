@@ -75,42 +75,42 @@ class Catalogs extends AbstractController
         return $response;
     }
 
-    #[Route('/catalogs/view/{catalog}/{term}', name: 'view_catalog')]
-    public function viewAction(\osid_id_Id $catalog, ?\osid_id_Id $term = null)
+    #[Route('/catalogs/view/{catalogId}/{termId}', name: 'view_catalog')]
+    public function viewAction(\osid_id_Id $catalogId, ?\osid_id_Id $termId = null)
     {
-        if ($term) {
+        if ($termId) {
             try {
                 // Verify that the term is valid in this catalog
                 $termLookup = $this->osidRuntime->getCourseManager()->getTermLookupSession();
                 $termLookup->useFederatedCourseCatalogView();
-                $termLookup->getTerm($term);
+                $termLookup->getTerm($termId);
             } catch (\osid_NotFoundException $e) {
             }
         }
-        if (!isset($term)) {
-            $term = $this->osidTermHelper->getNextOrLatestTermId($catalog);
+        if (!isset($termId)) {
+            $termId = $this->osidTermHelper->getNextOrLatestTermId($catalogId);
         }
 
         return $this->redirectToRoute('search_offerings', [
-            'catalog' => $catalog,
-            'term' => $term,
+            'catalogId' => $catalogId,
+            'termId' => $termId,
         ]);
     }
 
     /**
      * Print out an XML listing of a catalog.
      */
-    #[Route('/catalogs/viewxml/{catalog}', name: 'view_catalog_xml')]
-    public function viewxmlAction(\osid_id_Id $catalog)
+    #[Route('/catalogs/viewxml/{catalogId}', name: 'view_catalog_xml')]
+    public function viewxmlAction(\osid_id_Id $catalogId)
     {
         $data = [];
         $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();
         $data['title'] = 'View Catalog';
-        $data['catalogs'] = [$lookupSession->getCourseCatalog($catalog)];
+        $data['catalogs'] = [$lookupSession->getCourseCatalog($catalogId)];
         $data['feedLink'] = $this->generateUrl(
             'list_catalogs_xml',
             [
-                'catalog' => $catalog,
+                'catalogId' => $catalogId,
             ],
             UrlGeneratorInterface::ABSOLUTE_URL,
         );

@@ -17,17 +17,17 @@ class Bookmarks extends AbstractController
     /**
      * Bookmark a course.
      */
-    #[Route('/bookmarks/add/{course}', name: 'add_bookmark')]
-    public function add(\osid_id_Id $course)
+    #[Route('/bookmarks/add/{courseId}', name: 'add_bookmark')]
+    public function add(\osid_id_Id $courseId)
     {
         ob_start();
         echo '<?xml version="1.0" encoding="UTF-8"?>';
         echo '<response>';
         try {
-            if (!$course) {
+            if (!$courseId) {
                 throw new \InvalidArgumentException('No Course Id specified.');
             }
-            $this->bookmarks->add($course);
+            $this->bookmarks->add($courseId);
             echo '<success/>';
         } catch (\Exception $e) {
             echo '<error code="'.$e->getCode().'">'.$e->getMessage().'</error>';
@@ -44,17 +44,17 @@ class Bookmarks extends AbstractController
      *
      * @since 7/29/10
      */
-    #[Route('/bookmarks/remove/{course}', name: 'remove_bookmark')]
-    public function remove(\osid_id_Id $course)
+    #[Route('/bookmarks/remove/{courseId}', name: 'remove_bookmark')]
+    public function remove(\osid_id_Id $courseId)
     {
         ob_start();
         echo '<?xml version="1.0" encoding="UTF-8"?>';
         echo '<response>';
         try {
-            if (!$course) {
+            if (!$courseId) {
                 throw new \InvalidArgumentException('No Course Id specified.');
             }
-            $this->bookmarks->remove($course);
+            $this->bookmarks->remove($courseId);
             echo '<success/>';
         } catch (\Exception $e) {
             echo '<error code="'.$e->getCode().'">'.$e->getMessage().'</error>';

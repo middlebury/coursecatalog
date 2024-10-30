@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-{{ include('schedules/bookmark_control.html.twig', {course_id: offering.course.id}, with_context = false) }}
+{{ include('schedules/bookmark_control.html.twig', {courseId: offering.course.id}, with_context = false) }}
 
 <div>{{ offering.displayname }}</div>
 <h2>{{ offering.title|nl2br }}</h2>
@@ -11,12 +11,12 @@
 
 <dl class='section_info'>
     <dt>Term:</dt>
-    <dd><a href='{{ url('view_term', {term: offering.term}) }}'>{{ offering.term.displayname }}</a></dd>
+    <dd><a href='{{ url('view_term', {termId: offering.term}) }}'>{{ offering.term.displayname }}</a></dd>
 
 {% if location %}
     <dt>Location:</dt>
     <dd>
-        <a href='{{ url('view_resource', {resource: location, catalog: catalog_id, term: offering.term}) }}'>{{ location.displayname }}</a>
+        <a href='{{ url('view_resource', {resourceId: location, catalogId: catalogId, termId: offering.term}) }}'>{{ location.displayname }}</a>
         {% if location.description %}
             <span class='location_description'>{{ location.description }}</span>
         {% endif %}
@@ -38,7 +38,7 @@
     <dt>Course Modality:</dt>
     <dd>
     {% for topic in instructionMethodTopics %}
-        <a href='{{ url('view_topic', {topic: topic, catalog: catalog_id, term: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+        <a href='{{ url('view_topic', {topicId: topic, catalogId: catalogId, termId: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
     {% endfor %}
     </dd>
 {% endif %}
@@ -47,7 +47,7 @@
     <dt>Instructors:</dt>
     <dd>
     {% for instructor in instructors %}
-        <a href='{{ url('view_resource', {resource: instructor, catalog: catalog_id, term: offering.term}) }}'>{{ instructor.displayname }}</a>{{ not loop.last ? ',' }}
+        <a href='{{ url('view_resource', {resourceId: instructor, catalogId: catalogId, termId: offering.term}) }}'>{{ instructor.displayname }}</a>{{ not loop.last ? ',' }}
     {% endfor %}
     </dd>
 {% endif %}
@@ -55,28 +55,28 @@
 <dt>Subject:</dt>
 <dd>
 {% for topic in subjectTopics %}
-    <a href='{{ url('view_topic', {topic: topic, catalog: catalog_id, term: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+    <a href='{{ url('view_topic', {topicId: topic, catalogId: catalogId, termId: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
 {% endfor %}
 </dd>
 
 <dt>Department:</dt>
 <dd>
 {% for topic in departmentTopics %}
-    <a href='{{ url('view_topic', {topic: topic, catalog: catalog_id, term: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+    <a href='{{ url('view_topic', {topicId: topic, catalogId: catalogId, termId: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
 {% endfor %}
 </dd>
 
 <dt>Division:</dt>
 <dd>
 {% for topic in divisionTopics %}
-    <a href='{{ url('view_topic', {topic: topic, catalog: catalog_id, term: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+    <a href='{{ url('view_topic', {topicId: topic, catalogId: catalogId, termId: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
 {% endfor %}
 </dd>
 
 <dt>Requirements Fulfilled:</dt>
 <dd>
 {% for topic in requirementTopics %}
-    <a href='{{ url('view_topic', {topic: topic, catalog: catalog_id, term: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+    <a href='{{ url('view_topic', {topicId: topic, catalogId: catalogId, termId: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
 {% endfor %}
 </dd>
 
@@ -84,7 +84,7 @@
     <dt>Additional Details:</dt>
     <dd>
     {% for topic in blockTopics %}
-        <a href='{{ url('view_topic', {topic: topic, catalog: catalog_id, term: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+        <a href='{{ url('view_topic', {topicId: topic, catalogId: catalogId, termId: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
     {% endfor %}
     </dd>
 {% endif %}
@@ -93,7 +93,7 @@
     <dt>Levels:</dt>
     <dd>
     {% for topic in levelTopics %}
-        <a href='{{ url('view_topic', {topic: topic, catalog: catalog_id, term: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+        <a href='{{ url('view_topic', {topicId: topic, catalogId: catalogId, termId: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
     {% endfor %}
     </dd>
 {% endif %}
@@ -102,7 +102,7 @@
     <dt>Cross-Listed As:</dt>
     <dd>
     {% for alternate in alternates %}
-        <a href='{{ url('view_offering', {id: alternate, catalog: catalog_id, term: offering.term}) }}'>{{ alternate.displayname }}</a>
+        <a href='{{ url('view_offering', {offeringId: alternate, catalogId: catalogId, termId: offering.term}) }}'>{{ alternate.displayname }}</a>
         {{ alternate.is_primary ? ' * ' }}
         <br/>
     {% endfor %}
@@ -127,6 +127,6 @@
 
 <h2>Course</h2>
 <div>
-    <a href='{{ url('view_course', {course: offering.course, catalog: catalog_id, term: offering.term }) }}'>{{ offering.course.displayname }}</a>
+    <a href='{{ url('view_course', {courseId: offering.course, catalogId: catalogId, termId: offering.term }) }}'>{{ offering.course.displayname }}</a>
 </div>
 {% endblock %}

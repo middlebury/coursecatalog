@@ -32,10 +32,10 @@ class Topics extends AbstractController
     /**
      * Print out a list of all topics.
      */
-    #[Route('/topics/list/{catalog}/{type}', name: 'list_topics')]
-    public function listAction(?\osid_id_Id $catalog = null, ?\osid_type_Type $type = null)
+    #[Route('/topics/list/{catalogId}/{type}', name: 'list_topics')]
+    public function listAction(?\osid_id_Id $catalogId = null, ?\osid_type_Type $type = null)
     {
-        $data = $this->getTopicData($catalog, $type);
+        $data = $this->getTopicData($catalogId, $type);
 
         return $this->render('topics/list.html.twig', $data);
     }
@@ -43,14 +43,14 @@ class Topics extends AbstractController
     /**
      * Print out an XML list of all catalogs.
      */
-    #[Route('/topics/listxml/{catalog}/{type}', name: 'list_topics_xml')]
-    public function listxmlAction(?\osid_id_Id $catalog = null, ?\osid_type_Type $type = null)
+    #[Route('/topics/listxml/{catalogId}/{type}', name: 'list_topics_xml')]
+    public function listxmlAction(?\osid_id_Id $catalogId = null, ?\osid_type_Type $type = null)
     {
-        $data = $this->getTopicData($catalog, $type);
+        $data = $this->getTopicData($catalogId, $type);
         $data['feedLink'] = $this->generateUrl(
             'list_topics_xml',
             [
-                'catalog' => $catalog,
+                'catalogId' => $catalogId,
                 'type' => $type,
             ],
             UrlGeneratorInterface::ABSOLUTE_URL,
@@ -64,10 +64,10 @@ class Topics extends AbstractController
     /**
      * Print out a list of all topics.
      */
-    #[Route('/topics/recent/{catalog}/{type}', name: 'list_recent_topics')]
-    public function recentAction(?\osid_id_Id $catalog = null, ?\osid_type_Type $type = null)
+    #[Route('/topics/recent/{catalogId}/{type}', name: 'list_recent_topics')]
+    public function recentAction(?\osid_id_Id $catalogId = null, ?\osid_type_Type $type = null)
     {
-        $data = $this->getRecentTopicData($catalog, $type);
+        $data = $this->getRecentTopicData($catalogId, $type);
 
         return $this->render('topics/list.html.twig', $data);
     }
@@ -75,14 +75,14 @@ class Topics extends AbstractController
     /**
      * Print out an XML list of all catalogs.
      */
-    #[Route('/topics/recentxml/{catalog}/{type}', name: 'list_recent_topics_xml')]
-    public function recentxmlAction(?\osid_id_Id $catalog = null, ?\osid_type_Type $type = null)
+    #[Route('/topics/recentxml/{catalogId}/{type}', name: 'list_recent_topics_xml')]
+    public function recentxmlAction(?\osid_id_Id $catalogId = null, ?\osid_type_Type $type = null)
     {
-        $data = $this->getRecentTopicData($catalog, $type);
+        $data = $this->getRecentTopicData($catalogId, $type);
         $data['feedLink'] = $this->generateUrl(
             'list_recent_topics_xml',
             [
-                'catalog' => $catalog,
+                'catalogId' => $catalogId,
                 'type' => $type,
             ],
             UrlGeneratorInterface::ABSOLUTE_URL,
@@ -93,19 +93,19 @@ class Topics extends AbstractController
         return $response;
     }
 
-    #[Route('/topics/view/{topic}/{catalog}/{term}', name: 'view_topic')]
-    public function view(\osid_id_Id $topic, ?\osid_id_Id $catalog = null, ?\osid_id_Id $term = null)
+    #[Route('/topics/view/{topicId}/{catalogId}/{termId}', name: 'view_topic')]
+    public function view(\osid_id_Id $topicId, ?\osid_id_Id $catalogId = null, ?\osid_id_Id $termId = null)
     {
         $data = [];
 
-        if ($catalog) {
-            $topicLookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalog);
+        if ($catalogId) {
+            $topicLookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
             $topicLookupSession->useIsolatedCourseCatalogView();
-            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalog);
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
             $termLookupSession->useIsolatedCourseCatalogView();
-            $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalog);
+            $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
             $offeringLookupSession->useIsolatedCourseCatalogView();
-            $data['catalog_id'] = $catalog;
+            $data['catalogId'] = $catalogId;
         } else {
             $topicLookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
             $topicLookupSession->useFederatedCourseCatalogView();
@@ -113,24 +113,24 @@ class Topics extends AbstractController
             $termLookupSession->useFederatedCourseCatalogView();
             $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
             $offeringLookupSession->useFederatedCourseCatalogView();
-            $data['catalog_id'] = null;
+            $data['catalogId'] = null;
         }
 
-        $data['topic'] = $topicLookupSession->getTopic($topic);
+        $data['topic'] = $topicLookupSession->getTopic($topicId);
 
-        if ($term) {
-            $offerings = $offeringLookupSession->getCourseOfferingsByTermByTopic($term, $topic);
-            $data['term'] = $termLookupSession->getTerm($term);
+        if ($termId) {
+            $offerings = $offeringLookupSession->getCourseOfferingsByTermByTopic($termId, $topicId);
+            $data['term'] = $termLookupSession->getTerm($termId);
             $data['offeringsForAllTermsUrl'] = $this->generateUrl(
                 'view_topic',
                 [
-                    'topic' => $topic,
-                    'catalog' => $catalog,
+                    'topicId' => $topicId,
+                    'catalogId' => $catalogId,
                 ],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
         } else {
-            $offerings = $offeringLookupSession->getCourseOfferingsByTopic($topic);
+            $offerings = $offeringLookupSession->getCourseOfferingsByTopic($topicId);
             $data['term'] = null;
             $data['offeringsForAllTermsUrl'] = null;
         }
@@ -156,30 +156,30 @@ class Topics extends AbstractController
     /**
      * Print out an XML listing of a topic.
      */
-    #[Route('/topics/viewxml/{topic}/{catalog}', name: 'view_topic_xml')]
-    public function viewxmlAction(\osid_id_Id $topic, ?\osid_id_Id $catalog = null)
+    #[Route('/topics/viewxml/{topicId}/{catalogId}', name: 'view_topic_xml')]
+    public function viewxmlAction(\osid_id_Id $topicId, ?\osid_id_Id $catalogId = null)
     {
         $data = [];
 
-        if ($catalog) {
-            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalog);
+        if ($catalogId) {
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
             $data['title'] = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
-            $data['catalog_id'] = $catalog;
+            $data['catalogId'] = $catalogId;
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
             $data['title'] = 'Topics in All Catalogs';
-            $data['catalog_id'] = null;
+            $data['catalogId'] = null;
         }
         $lookupSession->useFederatedCourseCatalogView();
 
-        $topics = new \phpkit_course_ArrayTopicList([$lookupSession->getTopic($topic)]);
+        $topics = new \phpkit_course_ArrayTopicList([$lookupSession->getTopic($topicId)]);
         $data = array_merge($data, $this->osidDataLoader->getTopics($topics));
 
         $data['feedLink'] = $this->generateUrl(
             'view_topic_xml',
             [
-                'catalog' => $catalog,
-                'topic' => $topic,
+                'catalogId' => $catalogId,
+                'topicId' => $topicId,
             ],
             UrlGeneratorInterface::ABSOLUTE_URL,
         );
@@ -192,97 +192,97 @@ class Topics extends AbstractController
     /**
      * List all subject topics as a text file with each line being Id|DisplayName.
      */
-    #[Route('/topics/listsubjectstxt/{catalog}', name: 'list_subjects_txt')]
-    public function listsubjectstxtAction(?\osid_id_Id $catalog = null)
+    #[Route('/topics/listsubjectstxt/{catalogId}', name: 'list_subjects_txt')]
+    public function listsubjectstxtAction(?\osid_id_Id $catalogId = null)
     {
         return $this->renderTextList(
             new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject'),
-            $catalog,
+            $catalogId,
         );
     }
 
     /**
      * List all requirement topics as a text file with each line being Id|DisplayName.
      */
-    #[Route('/topics/listrequirementstxt/{catalog}', name: 'list_requirements_txt')]
-    public function listrequirementstxtAction(?\osid_id_Id $catalog = null)
+    #[Route('/topics/listrequirementstxt/{catalogId}', name: 'list_requirements_txt')]
+    public function listrequirementstxtAction(?\osid_id_Id $catalogId = null)
     {
         return $this->renderTextList(
             new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement'),
-            $catalog,
+            $catalogId,
         );
     }
 
     /**
      * List all level topics as a text file with each line being Id|DisplayName.
      */
-    #[Route('/topics/listlevelstxt/{catalog}', name: 'list_levels_txt')]
-    public function listlevelstxtAction(?\osid_id_Id $catalog = null)
+    #[Route('/topics/listlevelstxt/{catalogId}', name: 'list_levels_txt')]
+    public function listlevelstxtAction(?\osid_id_Id $catalogId = null)
     {
         return $this->renderTextList(
             new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.level'),
-            $catalog,
+            $catalogId,
         );
     }
 
     /**
      * List all block topics as a text file with each line being Id|DisplayName.
      */
-    #[Route('/topics/listblockstxt/{catalog}', name: 'list_blocks_txt')]
-    public function listblockstxtAction(?\osid_id_Id $catalog = null)
+    #[Route('/topics/listblockstxt/{catalogId}', name: 'list_blocks_txt')]
+    public function listblockstxtAction(?\osid_id_Id $catalogId = null)
     {
         return $this->renderTextList(
             new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.block'),
-            $catalog,
+            $catalogId,
         );
     }
 
     /**
      * List all instruction-methods topics as a text file with each line being Id|DisplayName.
      */
-    #[Route('/topics/listinstructionmethodstxt/{catalog}', name: 'list_instructionmethods_txt')]
-    public function listinstructionmethodstxtAction(?\osid_id_Id $catalog = null)
+    #[Route('/topics/listinstructionmethodstxt/{catalogId}', name: 'list_instructionmethods_txt')]
+    public function listinstructionmethodstxtAction(?\osid_id_Id $catalogId = null)
     {
         return $this->renderTextList(
             new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.instruction_method'),
-            $catalog,
+            $catalogId,
         );
     }
 
     /**
      * List all department topics as a text file with each line being Id|DisplayName.
      */
-    #[Route('/topics/listdepartmentstxt/{catalog}', name: 'list_departments_txt')]
-    public function listdepartmentstxtAction(?\osid_id_Id $catalog = null)
+    #[Route('/topics/listdepartmentstxt/{catalogId}', name: 'list_departments_txt')]
+    public function listdepartmentstxtAction(?\osid_id_Id $catalogId = null)
     {
         return $this->renderTextList(
             new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department'),
-            $catalog,
+            $catalogId,
         );
     }
 
     /**
      * Answer an array of topic data for an optional catalog and type.
      *
-     * @param string $catalog
+     * @param osid_id_Id $catalogId
      *                        The catalog id to search within
-     * @param string $type
+     * @param osid_type_Type $type
      *                        The type id to search within
      *
      * @return array
      *               The topic data ready for templating
      */
-    protected function getTopicData(?\osid_id_Id $catalog = null, ?\osid_type_Type $type = null)
+    protected function getTopicData(?\osid_id_Id $catalogId = null, ?\osid_type_Type $type = null)
     {
         $data = [];
-        if ($catalog) {
-            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalog);
+        if ($catalogId) {
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
             $data['title'] = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
-            $data['catalog_id'] = $catalog;
+            $data['catalogId'] = $catalogId;
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
             $data['title'] = 'Topics in All Catalogs';
-            $data['catalog_id'] = null;
+            $data['catalogId'] = null;
         }
         $lookupSession->useFederatedCourseCatalogView();
 
@@ -301,26 +301,26 @@ class Topics extends AbstractController
     /**
      * Answer an array of recent topic data for an optional catalog and type.
      *
-     * @param string $catalog
+     * @param osid_id_Id $catalogId
      *                        The catalog id to search within
-     * @param string $type
+     * @param osid_type_Type $type
      *                        The type id to search within
      *
      * @return array
      *               The topic data ready for templating
      */
-    protected function getRecentTopicData(?\osid_id_Id $catalog = null, ?\osid_type_Type $type = null)
+    protected function getRecentTopicData(?\osid_id_Id $catalogId = null, ?\osid_type_Type $type = null)
     {
-        if ($catalog) {
-            $searchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSessionForCatalog($catalog);
-            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalog);
+        if ($catalogId) {
+            $searchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
             $data['title'] = 'Topics in '.$searchSession->getCourseCatalog()->getDisplayName();
-            $data['catalog_id'] = $catalog;
+            $data['catalogId'] = $catalogId;
         } else {
             $searchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSession();
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $data['title'] = 'Topics in All Catalogs';
-            $data['catalog_id'] = null;
+            $data['catalogId'] = null;
         }
         $searchSession->useFederatedCourseCatalogView();
         $query = $searchSession->getTopicQuery();
@@ -370,18 +370,18 @@ class Topics extends AbstractController
      *
      * @param \osid_type_Type $genusType
      *                                   The type of topics to list
-     * @param string          $catalog
+     * @param \osid_id_Id          $catalogId
      *                                   An optional catalog to limit results to
      *
      * @return Response
      *                  The rendered response
      */
-    private function renderTextList(\osid_type_Type $genusType, ?\osid_id_Id $catalog = null)
+    private function renderTextList(\osid_type_Type $genusType, ?\osid_id_Id $catalogId = null)
     {
         $data = [];
 
-        if ($catalog) {
-            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalog);
+        if ($catalogId) {
+            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
         }

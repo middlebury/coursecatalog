@@ -2,7 +2,7 @@
 
 {% block body %}
     {% for course in courses %}
-        <h2><a href="{{ url('view_course', {course: course.id}) }}">{{ course.displayname }}</a> - {{ course.title }}</h2>
+        <h2><a href="{{ url('view_course', {courseId: course.id}) }}">{{ course.displayname }}</a> - {{ course.title }}</h2>
         <div>{{ course.description | raw }}</div>
     {% endfor %}
 {% endblock %}

@@ -3,7 +3,7 @@
 {%~ for catalog in catalogs %}
         <item>
             <title>{{ catalog.displayname }}</title>
-            <link>{{ url('view_catalog', {catalog: catalog.id}) }}</link>
+            <link>{{ url('view_catalog', {catalogId: catalog.id}) }}</link>
             <description><![CDATA[{{ catalog.description | raw }}]]></description>
             <catalog:id>{{ osidIdToString(catalog.id) }}</catalog:id>
         </item>

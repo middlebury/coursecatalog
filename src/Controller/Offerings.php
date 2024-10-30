@@ -56,20 +56,20 @@ class Offerings extends AbstractController
     /**
      * Print out a list of all courses.
      */
-    #[Route('/offerings/list/{catalog}/{term}', name: 'list_offerings')]
-    public function listAction(\osid_id_Id $catalog, string $term)
+    #[Route('/offerings/list/{catalogId}/{termId}', name: 'list_offerings')]
+    public function listAction(\osid_id_Id $catalogId, string $termId)
     {
         $data = [];
-        $data['catalog_id'] = $catalog;
-        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalog);
+        $data['catalogId'] = $catalogId;
+        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
         $data['title'] = $lookupSession->getCourseCatalog()->getDisplayName();
         $lookupSession->useFederatedCourseCatalogView();
 
         // Add our parameters to the search query
-        if ('CURRENT' == $term) {
+        if ('CURRENT' == $termId) {
             $termId = $this->osidTermHelper->getNextOrLatestTermId();
         } else {
-            $termId = $this->osidIdMap->fromString($term);
+            $termId = $this->osidIdMap->fromString($termId);
         }
 
         $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
@@ -102,10 +102,10 @@ class Offerings extends AbstractController
      *
      * @since 10/21/09
      */
-    #[Route('/offerings/searchxml/{catalog}/{term}', name: 'search_offerings_xml')]
-    public function searchxml(Request $request, ?\osid_id_Id $catalog = null, ?\osid_id_Id $term = null)
+    #[Route('/offerings/searchxml/{catalogId}/{termId}', name: 'search_offerings_xml')]
+    public function searchxml(Request $request, ?\osid_id_Id $catalogId = null, ?\osid_id_Id $termId = null)
     {
-        [$data, $searchSession, $query, $termLookupSession] = $this->prepareSearch($request, $catalog, $term);
+        [$data, $searchSession, $query, $termLookupSession] = $this->prepareSearch($request, $catalogId, $termId);
         // Actually run the query.
         $offerings = $searchSession->getCourseOfferingsByQuery($query);
         $data['offerings'] = [];
@@ -147,15 +147,15 @@ class Offerings extends AbstractController
         return $response;
     }
 
-    #[Route('/offerings/search/{catalog}', name: 'search_offerings')]
-    public function search(Request $request, PaginatorInterface $paginator, ?\osid_id_Id $catalog = null)
+    #[Route('/offerings/search/{catalogId}', name: 'search_offerings')]
+    public function search(Request $request, PaginatorInterface $paginator, ?\osid_id_Id $catalogId = null)
     {
-        [$data, $searchSession, $query, $termLookupSession] = $this->prepareSearch($request, $catalog);
+        [$data, $searchSession, $query, $termLookupSession] = $this->prepareSearch($request, $catalogId);
 
         $data['form_action'] = $this->generateUrl(
             'search_offerings',
             [
-                'catalog' => $catalog,
+                'catalogId' => $catalogId,
             ]
         );
 
@@ -184,10 +184,10 @@ class Offerings extends AbstractController
         return $this->render('offerings/search.html.twig', $data);
     }
 
-    #[Route('/offerings/view/{id}', name: 'view_offering')]
-    public function viewAction(\osid_id_Id $id)
+    #[Route('/offerings/view/{offeringId}', name: 'view_offering')]
+    public function viewAction(\osid_id_Id $offeringId)
     {
-        $data = $this->osidDataLoader->getOfferingDataById($id);
+        $data = $this->osidDataLoader->getOfferingDataById($offeringId);
         $data['alternates'] = $this->osidDataLoader->getOfferingAlternates($data['offering']);
 
         // Bookmarked Courses and Schedules
@@ -200,19 +200,19 @@ class Offerings extends AbstractController
         $catalogIds = $catalogSession->getCatalogIdsByCourseOffering($data['offering']->getId());
         if ($catalogIds->hasNext()) {
             $catalogId = $catalogIds->getNextId();
-            $data['catalog_id'] = $catalogId;
+            $data['catalogId'] = $catalogId;
         } else {
-            $data['catalog_id'] = null;
+            $data['catalogId'] = null;
         }
 
         return $this->render('offerings/view.html.twig', $data);
     }
 
-    #[Route('/offerings/viewxml/{id}', name: 'view_offering_xml')]
-    public function viewxmlAction(\osid_id_Id $id)
+    #[Route('/offerings/viewxml/{offeringId}', name: 'view_offering_xml')]
+    public function viewxmlAction(\osid_id_Id $offeringId)
     {
         $data = [];
-        $offeringData = $this->osidDataLoader->getOfferingDataById($id);
+        $offeringData = $this->osidDataLoader->getOfferingDataById($offeringId);
         $offering = $offeringData['offering'];
         $offeringData['alternates'] = $this->osidDataLoader->getOfferingAlternates($offering);
         $data['offerings'] = [$offeringData];
@@ -222,13 +222,13 @@ class Offerings extends AbstractController
         $catalogIds = $catalogSession->getCatalogIdsByCourseOffering($offering->getId());
         if ($catalogIds->hasNext()) {
             $catalogId = $catalogIds->getNextId();
-            $data['catalog_id'] = $catalogId;
+            $data['catalogId'] = $catalogId;
         } else {
-            $data['catalog_id'] = null;
+            $data['catalogId'] = null;
         }
 
         $data['title'] = $offering->getDisplayName();
-        $data['feedLink'] = $this->generateUrl('view_offering', ['id' => $id], UrlGeneratorInterface::ABSOLUTE_URL);
+        $data['feedLink'] = $this->generateUrl('view_offering', ['offeringId' => $offeringId], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $data['previousTerm'] = null;
         $data['term'] = $offering->getTerm();
@@ -246,25 +246,25 @@ class Offerings extends AbstractController
      *
      * @param Request     $request
      *                             The request that contains the search parameters
-     * @param string|null $catalog
+     * @param string|null $catalogId
      *                             The catalog to search in or NULL for all catalogs
      *
      * @return array
      *               The parts of the search preparation in an array: data, searchSession,
      *               and query
      */
-    protected function prepareSearch(Request $request, ?\osid_id_Id $catalog = null)
+    protected function prepareSearch(Request $request, ?\osid_id_Id $catalogId = null)
     {
-        $term = $request->get('term');
+        $termIdString = $request->get('term');
         $data = [];
-        if ($catalog) {
-            $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalog);
-            $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalog);
-            $topicSearchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSessionForCatalog($catalog);
-            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalog);
-            $resourceLookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalog);
+        if ($catalogId) {
+            $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
+            $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
+            $topicSearchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+            $resourceLookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalogId);
             $data['title'] = 'Search in '.$offeringSearchSession->getCourseCatalog()->getDisplayName();
-            $data['catalog_id'] = $catalog;
+            $data['catalogId'] = $catalogId;
         } else {
             $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSession();
             $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
@@ -272,7 +272,7 @@ class Offerings extends AbstractController
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $resourceLookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
             $data['title'] = 'Search in All Catalogs';
-            $data['catalog_id'] = null;
+            $data['catalogId'] = null;
         }
         $termLookupSession->useFederatedCourseCatalogView();
         $offeringSearchSession->useFederatedCourseCatalogView();
@@ -282,9 +282,9 @@ class Offerings extends AbstractController
          *********************************************************/
 
         // Term
-        if ('ANY' == $term) {
+        if ('ANY' == $termIdString) {
             // Don't set a term
-        } elseif (!$term || 'CURRENT' == $term) {
+        } elseif (!$termIdString || 'CURRENT' == $termIdString) {
             // When accessing the "current" term via xml, use the term we are in.
             // When displaying the search interface, use the next upcoming term.
             if ('searchxml' == $request->get('action')) {
@@ -293,7 +293,7 @@ class Offerings extends AbstractController
                 $termId = $this->osidTermHelper->getNextOrLatestTermId($offeringSearchSession->getCourseCatalogId());
             }
         } else {
-            $termId = $this->osidIdMap->fromString($term);
+            $termId = $this->osidIdMap->fromString($termIdString);
         }
         if (isset($termId)) {
             $data['term'] = $termLookupSession->getTerm($termId);
@@ -417,20 +417,21 @@ class Offerings extends AbstractController
         $query = $offeringSearchSession->getCourseOfferingQuery();
         $search = $offeringSearchSession->getCourseOfferingSearch();
         $data['searchParams'] = [
-            'catalog' => $catalog,
-            'term' => $term,
+            'catalogId' => $catalogId,
+            'termId' => $termId,
         ];
 
         $data['terms'] = [];
         $terms = $termLookupSession->getTerms();
+        $data['selectedTermId'] = null;
         while ($terms->hasNext()) {
             $term = $terms->getNextTerm();
             $data['terms'][] = $term;
         }
 
         // Add our parameters to the search query
-        if ($term) {
-            $data['searchParams']['term'] = $term;
+        if ($termIdString) {
+            $data['searchParams']['termId'] = $termId;
 
             if (isset($termId)) {
                 $query->matchTermId($termId, true);
