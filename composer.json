@@ -43,7 +43,7 @@
         "psr-0": {
             "osid_": "library/osid-phpkit/",
             "phpkit_": "library/osid-phpkit/",
-            "": "application/library/"
+            "": ["application/library/", "application/test/"]
         },
         "classmap": [
             "library/fsmparser/",

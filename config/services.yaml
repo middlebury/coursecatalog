@@ -4,8 +4,12 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.osid.runtime.config_path: '../configuration.plist'
     app.osid.runtime.courseimpl: 'banner_course_CourseManager'
     app.osid.id.authority_to_shorten: 'middlebury.edu'
+when@test:
+    parameters:
+        app.osid.runtime.config_path: '../application/test/banner/configuration.plist'
 
 services:
     # default configuration for services in *this* file
@@ -34,7 +38,7 @@ services:
                 priority: 150
     App\Service\Osid\Runtime:
         arguments:
-            $configPath: '../configuration.plist'
+            $configPath: '%app.osid.runtime.config_path%'
             $courseImpl: '%app.osid.runtime.courseimpl%'
     App\Service\Osid\IdMap:
         arguments:

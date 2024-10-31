@@ -15,11 +15,27 @@
         <server name="SHELL_VERBOSITY" value="-1" />
         <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
         <server name="SYMFONY_PHPUNIT_VERSION" value="9.6" />
+        <env name="KERNEL_CLASS" value="App\Kernel" />
     </php>
 
     <testsuites>
-        <testsuite name="Project Test Suite">
-            <directory>tests</directory>
+        <testsuite name="acceptance">
+            <directory>tests/Controller</directory>
+        </testsuite>
+        <testsuite name="model">
+            <directory>application/test/banner</directory>
+        </testsuite>
+        <testsuite name="cached_model">
+            <directory>application/test/apc</directory>
+        </testsuite>
+        <testsuite name="application">
+            <directory>application/test/Catalog</directory>
+        </testsuite>
+        <testsuite name="all">
+            <directory>application/test/banner</directory>
+            <directory>application/test/apc</directory>
+            <directory>tests/Controller</directory>
+            <directory>application/test/Catalog</directory>
         </testsuite>
     </testsuites>
 
