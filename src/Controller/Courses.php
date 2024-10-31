@@ -35,20 +35,14 @@ class Courses extends AbstractController
     }
 
     #[Route('/courses/list/{catalogId}', name: 'list_courses')]
-    public function listAction(?\osid_id_Id $catalogId = null)
+    public function listAction(\osid_id_Id $catalogId)
     {
         $data = [
             'courses' => [],
         ];
-        if ($catalogId) {
-            $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
-            $data['title'] = 'Courses in '.$lookupSession->getCourseCatalog()->getDisplayName();
-            $data['catalogId'] = $catalogId;
-        } else {
-            $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSession();
-            $data['title'] = 'Courses in All Catalogs';
-            $data['catalogId'] = null;
-        }
+        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
+        $data['title'] = 'Courses in '.$lookupSession->getCourseCatalog()->getDisplayName();
+        $data['catalogId'] = $catalogId;
         $lookupSession->useFederatedCourseCatalogView();
 
         $courses = $lookupSession->getCourses();
