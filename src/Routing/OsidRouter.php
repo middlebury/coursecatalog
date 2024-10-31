@@ -76,7 +76,7 @@ class OsidRouter implements RouterInterface, WarmableInterface
      */
     public function warmUp(string $cacheDir /* , string $buildDir = null */)
     {
-        return $this->router->warmUp($cachDir);
+        return call_user_func_array([$this->router, 'warmUp'], func_get_args());
     }
 
     /**
