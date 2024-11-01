@@ -167,7 +167,8 @@ class Instructor implements RecentCoursesInterface
     {
         // Define a cutoff date after which courses will be included in the feed.
         // Default is 4 years.
-        $cutOff = $this->DateTime_getTimestamp($this->referenceDate->sub($this->recentInterval));
+        $referenceDate = clone $this->referenceDate;
+        $cutOff = $this->DateTime_getTimestamp($referenceDate->sub($this->recentInterval));
         $termEnd = $this->DateTime_getTimestamp($term->getEndTime());
 
         return $termEnd > $cutOff;

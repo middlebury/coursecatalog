@@ -303,7 +303,8 @@ abstract class RecentCoursesAbstract implements RecentCoursesInterface
     {
         // Define a cutoff date after which courses will be included in the feed.
         // Currently set to 4 years. Would be good to have as a configurable time.
-        $cutOff = $this->DateTime_getTimestamp($this->referenceDate->sub($this->recentInterval));
+        $referenceDate = clone $this->referenceDate;
+        $cutOff = $this->DateTime_getTimestamp($referenceDate->sub($this->recentInterval));
         $recentTerms = [];
         $osidIdHelper = $this->osidIdMap;
         foreach ($allTerms as $term) {
