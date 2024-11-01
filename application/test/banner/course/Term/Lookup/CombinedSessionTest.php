@@ -196,7 +196,7 @@ class banner_course_Term_Lookup_CombinedSessionTest extends phpkit_test_phpunit_
     {
         $terms = $this->session->getTerms();
         $this->assertInstanceOf('osid_course_TermList', $terms);
-        $this->assertEquals(14, $terms->available());
+        $this->assertEquals(16, $terms->available());
         $this->assertInstanceOf('osid_course_Term', $terms->getNextTerm());
         $this->assertInstanceOf('osid_course_Term', $terms->getNextTerm());
     }

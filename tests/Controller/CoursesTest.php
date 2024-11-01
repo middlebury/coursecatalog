@@ -190,4 +190,15 @@ class CoursesTest extends WebTestCase
         $item = $crawler->filterXpath('//item');
         $this->assertEquals(1, $item->count());
     }
+
+    public function testInstructorXmlWithOtherCatalog(): void
+    {
+        $client = static::createClient();
+        $crawler = $client->request('GET', '/courses/instructorxml/resource.person.WEBID1000004/catalog.BLSE');
+
+        $this->assertResponseIsSuccessful();
+
+        $item = $crawler->filterXpath('//item');
+        $this->assertEquals(0, $item->count());
+    }
 }
