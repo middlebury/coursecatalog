@@ -19,6 +19,7 @@ class Instructor implements RecentCoursesInterface
     protected $groups = [];
     protected $recentInterval;
     protected $alternatesType;
+    protected $referenceDate;
 
     /**
      * Constructor.
@@ -29,7 +30,9 @@ class Instructor implements RecentCoursesInterface
         protected IdMap $osidIdMap,
         \osid_course_CourseOfferingSearchResults $offerings,
         protected \osid_course_CourseLookupSession $courseLookupSession,
+        string $referenceDate = 'now',
     ) {
+        $this->referenceDate = new \DateTime($referenceDate);
         $this->recentInterval = new \DateInterval('P4Y');
         $this->alternatesType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
         $this->groupCourseOfferings($offerings);
@@ -164,8 +167,7 @@ class Instructor implements RecentCoursesInterface
     {
         // Define a cutoff date after which courses will be included in the feed.
         // Default is 4 years.
-        $now = new \DateTime();
-        $cutOff = $this->DateTime_getTimestamp($now->sub($this->recentInterval));
+        $cutOff = $this->DateTime_getTimestamp($this->referenceDate->sub($this->recentInterval));
         $termEnd = $this->DateTime_getTimestamp($term->getEndTime());
 
         return $termEnd > $cutOff;

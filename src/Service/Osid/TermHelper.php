@@ -12,15 +12,35 @@ namespace App\Service\Osid;
  */
 class TermHelper
 {
+    /**
+     * @var \DateTime
+     *                The date to reference as "now" when calculating
+     *                past/current/future
+     */
+    private $referenceDate;
+
+    /**
+     * @param runtime $runtime
+     *                               The Osid Runtime service
+     * @param idMap   $idMap
+     *                               The Osid IdMap service
+     * @param string  $referenceDate
+     *                               A date string to reference as "now" when calculating
+     *                               past/current/future. This should be of a date-string
+     *                               supported by DateTime.
+     */
     public function __construct(
         private Runtime $runtime,
         private IdMap $idMap,
+        ?string $referenceDate = 'now',
     ) {
+        $this->referenceDate = new \DateTime($referenceDate);
     }
 
     /**
-     * Answer the "current" termId for the catalog passed. If multiple terms overlap
-     * to be 'current', only one will be returned.
+     * Answer the "current" termId for the catalog passed.
+     *
+     * If multiple terms overlap to be 'current', only one will be returned.
      *
      * @return osid_id_Id the current term id
      *
@@ -39,7 +59,7 @@ class TermHelper
                 throw new \osid_NotFoundException('Could not determine a current term id. The manager does not support term lookup.');
             }
             $termLookup = $manager->getTermLookupSessionForCatalog($catalogId);
-            $currentTerm = $this->findNextOrLatestTermId($termLookup->getTerms());
+            $currentTerm = $this->findNextOrLatestTermId($termLookup->getTerms(), $this->referenceDate);
             if (!$currentTerm) {
                 throw new \osid_NotFoundException('Could not determine an upcoming term id for the catalog passed.');
             }
@@ -71,7 +91,7 @@ class TermHelper
                 throw new \osid_NotFoundException('Could not determine a current term id. The manager does not support term lookup.');
             }
             $termLookup = $manager->getTermLookupSessionForCatalog($catalogId);
-            $currentTerm = $this->findClosestTermId($termLookup->getTerms());
+            $currentTerm = $this->findClosestTermId($termLookup->getTerms(), $this->referenceDate);
             if (!$currentTerm) {
                 throw new \osid_NotFoundException('Could not determine a current term id for the catalog passed.');
             }
@@ -140,7 +160,7 @@ class TermHelper
      *
      * @since 2/07/13
      */
-    public function findNextOrLatestTermId(\osid_course_TermList $terms, ?DateTime $date = null)
+    public function findNextOrLatestTermId(\osid_course_TermList $terms, ?\DateTime $date = null)
     {
         $upcomingIds = [];
         $upcomingDates = [];
@@ -196,7 +216,7 @@ class TermHelper
      *
      * @since 6/11/09
      */
-    public function findClosestTermId(\osid_course_TermList $terms, ?DateTime $date = null)
+    public function findClosestTermId(\osid_course_TermList $terms, ?\DateTime $date = null)
     {
         $ids = [];
         $diffs = [];

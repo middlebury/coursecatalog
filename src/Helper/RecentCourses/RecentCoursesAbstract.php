@@ -20,6 +20,7 @@ abstract class RecentCoursesAbstract implements RecentCoursesInterface
     private $terms;
     protected $alternateType;
 
+    protected $referenceDate;
     protected $recentInterval;
     private $initialized = false;
 
@@ -29,10 +30,12 @@ abstract class RecentCoursesAbstract implements RecentCoursesInterface
     public function __construct(
         protected IdMap $osidIdMap,
         private \osid_course_CourseList $courses,
+        string $referenceDate = 'now',
     ) {
         $this->alternateType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
         $this->groups = [];
         $this->terms = [];
+        $this->referenceDate = new \DateTime($referenceDate);
         $this->recentInterval = new \DateInterval('P4Y');
     }
 
@@ -300,8 +303,7 @@ abstract class RecentCoursesAbstract implements RecentCoursesInterface
     {
         // Define a cutoff date after which courses will be included in the feed.
         // Currently set to 4 years. Would be good to have as a configurable time.
-        $now = new \DateTime();
-        $cutOff = $this->DateTime_getTimestamp($now->sub($this->recentInterval));
+        $cutOff = $this->DateTime_getTimestamp($this->referenceDate->sub($this->recentInterval));
         $recentTerms = [];
         $osidIdHelper = $this->osidIdMap;
         foreach ($allTerms as $term) {

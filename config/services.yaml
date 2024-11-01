@@ -7,9 +7,11 @@ parameters:
     app.osid.runtime.config_path: '../configuration.plist'
     app.osid.runtime.courseimpl: 'banner_course_CourseManager'
     app.osid.id.authority_to_shorten: 'middlebury.edu'
+    app.osid.reference_date: 'now'
 when@test:
     parameters:
         app.osid.runtime.config_path: '../application/test/banner/configuration.plist'
+        app.osid.reference_date: '2009-08-15'
 
 services:
     # default configuration for services in *this* file
@@ -43,6 +45,9 @@ services:
     App\Service\Osid\IdMap:
         arguments:
             $idAuthorityToShorten: '%app.osid.id.authority_to_shorten%'
+    App\Service\Osid\TermHelper:
+        arguments:
+            $referenceDate: '%app.osid.reference_date%'
     App\Service\Osid\TypeMap:
         arguments:
             $idAuthorityToShorten: '%app.osid.id.authority_to_shorten%'

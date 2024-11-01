@@ -224,7 +224,7 @@ class Courses extends AbstractController
 
         $courses = $searchSession->getCoursesByQuery($query)->getCourses();
 
-        $recentCourses = new DepartmentRecentCourses($this->osidIdMap, $courses);
+        $recentCourses = new DepartmentRecentCourses($this->osidIdMap, $courses, $this->getParameter('app.osid.reference_date'));
         if ($request->get('cutoff')) {
             $recentCourses->setRecentInterval(new \DateInterval($request->get('cutoff')));
         }
@@ -313,7 +313,7 @@ class Courses extends AbstractController
 
         $courses = $lookupSession->getCoursesByIds(new \phpkit_id_ArrayIdList($courseIds));
 
-        $recentCourses = new DepartmentRecentCourses($this->osidIdMap, $courses);
+        $recentCourses = new DepartmentRecentCourses($this->osidIdMap, $courses, $this->getParameter('app.osid.reference_date'));
         if ($request->get('cutoff')) {
             $recentCourses->setRecentInterval(new \DateInterval($request->get('cutoff')));
         }
@@ -428,7 +428,7 @@ class Courses extends AbstractController
 
         $courseOfferings = $offeringSearchSession->getCourseOfferingsBySearch($query, $search);
 
-        $recentCourses = new InstructorRecentCourses($this->osidIdMap, $courseOfferings, $courseLookupSession);
+        $recentCourses = new InstructorRecentCourses($this->osidIdMap, $courseOfferings, $courseLookupSession, $this->getParameter('app.osid.reference_date'));
         if ($request->get('cutoff')) {
             $recentCourses->setRecentInterval(new DateInterval($request->get('cutoff')));
         }
