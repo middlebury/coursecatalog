@@ -7,7 +7,7 @@
 	<key>urn:inet:middlebury.edu:config:banner_course.pdo_count_queries</key>
 	<false/>
 	<key>urn:inet:middlebury.edu:config:banner_course.pdo_dsn</key>
-	<string>mysql:dbname=test;host=database</string>
+	<string>mysql:dbname=symfony_test;host=database</string>
 	<key>urn:inet:middlebury.edu:config:banner_course.pdo_password</key>
 	<string>symfony</string>
 	<key>urn:inet:middlebury.edu:config:banner_course.pdo_username</key>
