@@ -131,6 +131,6 @@ class banner_course_Course_Search_Order extends banner_course_AbstractSearchOrde
      */
     public function getCourseSearchOrderRecord(osid_type_Type $courseRecordType)
     {
-        throw new osid_UnsupportedException("The CourseRecordType passed is not supported.");
+        throw new osid_UnsupportedException('The CourseRecordType passed is not supported.');
     }
 }
