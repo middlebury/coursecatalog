@@ -67,7 +67,7 @@ class Offerings extends AbstractController
 
         // Add our parameters to the search query
         if ('CURRENT' == $this->osidIdMap->toString($termId)) {
-            $termId = $this->osidTermHelper->getNextOrLatestTermId();
+            $termId = $this->osidTermHelper->getNextOrLatestTermId($catalogId);
         }
 
         $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
