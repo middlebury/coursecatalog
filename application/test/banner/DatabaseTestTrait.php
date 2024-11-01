@@ -37,6 +37,16 @@ trait banner_DatabaseTestTrait
         self::resetMemoryLimit();
     }
 
+    public static function getDB()
+    {
+        if (empty(self::$courseManager)) {
+            self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(__DIR__.'/configuration.plist');
+            self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
+        }
+
+        return self::$courseManager->getDB();
+    }
+
     /**
      * Load the banner testing database.
      *
@@ -44,11 +54,8 @@ trait banner_DatabaseTestTrait
      */
     public static function loadBannerDb()
     {
-        self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(__DIR__.'/configuration.plist');
-        self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
-
         // Initialize our testing database
-        $db = self::$courseManager->getDB();
+        $db = self::getDB();
         harmoni_SQLUtils::runSQLfile(__DIR__.'/sql/drop_tables.sql', $db);
         harmoni_SQLUtils::runSQLfile(APPLICATION_PATH.'/library/banner/sql/table_creation.sql', $db);
         harmoni_SQLUtils::runSQLfile(__DIR__.'/sql/test_data.sql', $db);
@@ -73,7 +80,7 @@ trait banner_DatabaseTestTrait
     public static function emptyBannerDbAndClose()
     {
         // Remove our testing database
-        $db = self::$courseManager->getDB();
+        $db = self::getDB();
         if (method_exists($db, 'getCounters')) {
             $maxName = 0;
             $maxNum = 0;
