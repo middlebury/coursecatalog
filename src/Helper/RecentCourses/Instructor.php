@@ -16,7 +16,8 @@ use App\Service\Osid\IdMap;
  */
 class Instructor implements RecentCoursesInterface
 {
-    protected $groups = [];
+    private $allOfferings = [];
+    protected $groups;
     protected $recentInterval;
     protected $alternatesType;
     protected $referenceDate;
@@ -35,7 +36,9 @@ class Instructor implements RecentCoursesInterface
         $this->referenceDate = new \DateTime($referenceDate);
         $this->recentInterval = new \DateInterval('P4Y');
         $this->alternatesType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
-        $this->groupCourseOfferings($offerings);
+        while ($offerings->hasNext()) {
+            $this->allOfferings[] = $offerings->getNextCourseOffering();
+        }
     }
 
     /**
@@ -46,6 +49,7 @@ class Instructor implements RecentCoursesInterface
     public function setRecentInterval(\DateInterval $interval)
     {
         $this->recentInterval = $interval;
+        $this->groups = null;
     }
 
     /**
@@ -55,6 +59,9 @@ class Instructor implements RecentCoursesInterface
      */
     public function getPrimaryCourses()
     {
+        if (is_null($this->groups)) {
+            $this->groupCourseOfferings();
+        }
         $courses = [];
         foreach ($this->groups as $group) {
             $courses[] = $this->courseLookupSession->getCourse($group['primary_course_id']);
@@ -70,6 +77,9 @@ class Instructor implements RecentCoursesInterface
      */
     public function getAlternatesForCourse(\osid_course_Course $course)
     {
+        if (is_null($this->groups)) {
+            $this->groupCourseOfferings();
+        }
         $idString = $this->osidIdMap->toString($course->getId());
         if (!isset($this->groups[$idString])) {
             throw new \osid_NotFoundException('The course specified is not one of our primary courses.');
@@ -91,6 +101,9 @@ class Instructor implements RecentCoursesInterface
      */
     public function getTermsForCourse(\osid_course_Course $course)
     {
+        if (is_null($this->groups)) {
+            $this->groupCourseOfferings();
+        }
         $idString = $this->osidIdMap->toString($course->getId());
         if (!isset($this->groups[$idString])) {
             throw new \osid_NotFoundException('The course specified is not one of our primary courses.');
@@ -109,10 +122,10 @@ class Instructor implements RecentCoursesInterface
      *
      * @return null
      */
-    protected function groupCourseOfferings(\osid_course_CourseOfferingSearchResults $offerings)
+    protected function groupCourseOfferings()
     {
-        while ($offerings->hasNext()) {
-            $offering = $offerings->getNextCourseOffering();
+        $this->groups = [];
+        foreach ($this->allOfferings as $offering) {
             if ($this->termIsRecent($offering->getTerm())) {
                 $courseId = $offering->getCourseId();
                 $courseIdString = $this->osidIdMap->toString($courseId);

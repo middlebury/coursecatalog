@@ -433,7 +433,7 @@ class Courses extends AbstractController
 
         $recentCourses = new InstructorRecentCourses($this->osidIdMap, $courseOfferings, $courseLookupSession, $this->getParameter('app.osid.reference_date'));
         if ($request->get('cutoff')) {
-            $recentCourses->setRecentInterval(new DateInterval($request->get('cutoff')));
+            $recentCourses->setRecentInterval(new \DateInterval($request->get('cutoff')));
         }
 
         // Set the next and previous terms.
