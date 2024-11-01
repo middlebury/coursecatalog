@@ -65,7 +65,7 @@ class IdMap extends AbstractOsidIdentifierMap
             return new \phpkit_type_URNInetType($typeString);
         } catch (\osid_InvalidArgumentException $e) {
             if ($this->getIdAuthorityToShorten()) {
-                return new \phpkit_type_Type($this->getIdAuthorityToShorten(), 'urn', $typeString);
+                return new \phpkit_type_Type('urn', $this->getIdAuthorityToShorten(), $typeString);
             } else {
                 throw $e;
             }

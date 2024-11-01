@@ -50,4 +50,29 @@ class IdMapTest extends TestCase
         $this->assertTrue($otherId->isEqual($newId));
         $this->assertFalse($shortenedId->isEqual($newId));
     }
+
+    public function testGetOsidTypeFromString()
+    {
+        $type = new \phpkit_type_Type('urn', 'example.edu', '123456789.abcd');
+        $typeString = $this->osidIdMap->typeToString($type);
+        $this->assertEquals('123456789.abcd', $typeString);
+
+        $newType = $this->osidIdMap->typeFromString($typeString);
+        $this->assertInstanceOf('osid_type_Type', $newType);
+        $this->assertTrue($type->isEqual($newType));
+    }
+
+    public function testOtherTypeAuthority()
+    {
+        $shortenedType = new \phpkit_type_Type('urn', 'example.edu', '123456789.abcd');
+        $shortenedTypeString = $this->osidIdMap->typeToString($shortenedType);
+        $otherType = new \phpkit_type_Type('urn', 'example.com', '123456789.abcd');
+        $otherTypeString = $this->osidIdMap->typeToString($otherType);
+        $this->assertNotEquals($shortenedTypeString, $otherTypeString);
+
+        $newType = $this->osidIdMap->typeFromString($otherTypeString);
+        $this->assertInstanceOf('osid_type_Type', $newType);
+        $this->assertTrue($otherType->isEqual($newType));
+        $this->assertFalse($shortenedType->isEqual($newType));
+    }
 }
