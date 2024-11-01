@@ -318,7 +318,7 @@ WHERE
         $row = self::$getPersonResource_stmt->fetch(PDO::FETCH_ASSOC);
         self::$getPersonResource_stmt->closeCursor();
 
-        if (!$row['WEB_ID']) {
+        if (!$row || !$row['WEB_ID']) {
             throw new osid_NotFoundException('Could not find a resource  matching the person code '.$this->getDatabaseIdString($resourceId, 'resource.person.').'.');
         }
 
@@ -432,7 +432,7 @@ GROUP BY STVBLDG_CODE
         $row = self::$getBuildingResource_stmt->fetch(PDO::FETCH_ASSOC);
         self::$getBuildingResource_stmt->closeCursor();
 
-        if (!$row['STVBLDG_CODE']) {
+        if (!$row || !$row['STVBLDG_CODE']) {
             throw new osid_NotFoundException('Could not find a resource  matching the building code '.$this->getDatabaseIdString($resourceId, 'resource.place.building.').'.');
         }
 
@@ -552,7 +552,7 @@ GROUP BY
         $row = self::$getRoomResource_stmt->fetch(PDO::FETCH_ASSOC);
         self::$getRoomResource_stmt->closeCursor();
 
-        if (!$row['STVBLDG_CODE']) {
+        if (!$row || !$row['STVBLDG_CODE']) {
             throw new osid_NotFoundException('Could not find a resource  matching the room code '.$this->getDatabaseIdString($resourceId, 'resource.place.room.').'.');
         }
 
@@ -656,7 +656,7 @@ ORDER BY STVCAMP_DESC
         $row = self::$getCampusResource_stmt->fetch(PDO::FETCH_ASSOC);
         self::$getCampusResource_stmt->closeCursor();
 
-        if (!$row['STVCAMP_CODE']) {
+        if (!$row || !$row['STVCAMP_CODE']) {
             throw new osid_NotFoundException('Could not find a resource  matching the campus code '.$this->getDatabaseIdString($resourceId, 'resource.place.campus.').'.');
         }
 

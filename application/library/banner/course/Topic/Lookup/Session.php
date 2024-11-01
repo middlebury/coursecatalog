@@ -285,7 +285,7 @@ GROUP BY SCBCRSE_SUBJ_CODE
         $row = self::$getSubjectTopic_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
         self::$getSubjectTopic_stmts[$catalogWhere]->closeCursor();
 
-        if (!$row['STVSUBJ_CODE']) {
+        if (!$row || !$row['STVSUBJ_CODE']) {
             throw new osid_NotFoundException('Could not find a topic  matching the subject code '.$this->getDatabaseIdString($topicId, 'topic.subject.').'.');
         }
 
@@ -504,7 +504,7 @@ GROUP BY SCBCRSE_DIVS_CODE
         $row = self::$getDivisionTopic_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
         self::$getDivisionTopic_stmts[$catalogWhere]->closeCursor();
 
-        if (!$row['STVDIVS_CODE']) {
+        if (!$row || !$row['STVDIVS_CODE']) {
             throw new osid_NotFoundException('Could not find a topic matching the division code '.$this->getDatabaseIdString($topicId, 'topic.division.').'.');
         }
 
@@ -633,13 +633,13 @@ GROUP BY STVATTR_CODE
         $row = self::$getRequirementTopic_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
         self::$getRequirementTopic_stmts[$catalogWhere]->closeCursor();
 
-        if (!$row['STVATTR_CODE']) {
+        if (!$row || !$row['STVATTR_CODE']) {
             // Try the course-only requirements
             self::$getCourseRequirementTopic_stmts[$catalogWhere]->execute($parameters);
             $row = self::$getCourseRequirementTopic_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
             self::$getCourseRequirementTopic_stmts[$catalogWhere]->closeCursor();
 
-            if (!$row['STVATTR_CODE']) {
+            if (!$row || !$row['STVATTR_CODE']) {
                 throw new osid_NotFoundException('Could not find a topic matching the requirement code '.$this->getDatabaseIdString($topicId, 'topic.requirement.').'.');
             }
         }
@@ -744,7 +744,7 @@ GROUP BY STVLEVL_CODE
         $row = self::$getLevelTopic_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
         self::$getLevelTopic_stmts[$catalogWhere]->closeCursor();
 
-        if (!$row['STVLEVL_CODE']) {
+        if (!$row || !$row['STVLEVL_CODE']) {
             throw new osid_NotFoundException('Could not find a topic matching the level code '.$this->getDatabaseIdString($topicId, 'topic.level.').'.');
         }
 
@@ -848,7 +848,7 @@ GROUP BY STVBLCK_CODE
         $row = self::$getBlockTopic_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
         self::$getBlockTopic_stmts[$catalogWhere]->closeCursor();
 
-        if (!$row['STVBLCK_CODE']) {
+        if (!$row || !$row['STVBLCK_CODE']) {
             throw new osid_NotFoundException('Could not find a topic matching the block code '.$this->getDatabaseIdString($topicId, 'topic.block.').'.');
         }
 
@@ -945,7 +945,7 @@ GROUP BY GTVINSM_CODE
         $row = self::$getInstructionMethodTopic_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
         self::$getInstructionMethodTopic_stmts[$catalogWhere]->closeCursor();
 
-        if (!$row['GTVINSM_CODE']) {
+        if (!$row || !$row['GTVINSM_CODE']) {
             throw new osid_NotFoundException('Could not find a topic matching the instruction_method code '.$this->getDatabaseIdString($topicId, 'topic.instruction_method.').'.');
         }
 

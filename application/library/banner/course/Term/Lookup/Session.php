@@ -321,7 +321,7 @@ ORDER BY STVTERM_CODE DESC, SOBPTRM_PTRM_CODE ASC
         $row = self::$getPartOfTerm_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
         self::$getPartOfTerm_stmts[$catalogWhere]->closeCursor();
 
-        if (!$row['STVTERM_CODE']) {
+        if (!$row || !$row['STVTERM_CODE']) {
             throw new osid_NotFoundException("Could not find a term matching the term code $termCode and part-of-term code $pTermCode.");
         }
 
