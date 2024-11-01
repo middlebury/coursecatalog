@@ -4,6 +4,7 @@ trait banner_DatabaseTestTrait
 {
     public static $runtimeManager;
     public static $courseManager;
+    public static $db;
 
     public static function setUpBeforeClass(): void
     {
@@ -39,12 +40,13 @@ trait banner_DatabaseTestTrait
 
     public static function getDB()
     {
-        if (empty(self::$courseManager)) {
+        if (empty(self::$db)) {
             self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(__DIR__.'/configuration.plist');
             self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
+            self::$db = self::$courseManager->getDB();
         }
 
-        return self::$courseManager->getDB();
+        return self::$db;
     }
 
     /**
@@ -55,7 +57,9 @@ trait banner_DatabaseTestTrait
     public static function loadBannerDb()
     {
         // Initialize our testing database
-        $db = self::getDB();
+        self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(__DIR__.'/configuration.plist');
+        self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
+        $db = self::$courseManager->getDB();
         harmoni_SQLUtils::runSQLfile(__DIR__.'/sql/drop_tables.sql', $db);
         harmoni_SQLUtils::runSQLfile(APPLICATION_PATH.'/library/banner/sql/table_creation.sql', $db);
         harmoni_SQLUtils::runSQLfile(__DIR__.'/sql/test_data.sql', $db);
