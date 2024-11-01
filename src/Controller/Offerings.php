@@ -280,8 +280,12 @@ class Offerings extends AbstractController
          *********************************************************/
 
         // Term
+        $data['term'] = null;
+        $data['nextTerm'] = null;
+        $data['previousTerm'] = null;
         if ('ANY' == $termIdString) {
             // Don't set a term
+            $termId = null;
         } elseif (!$termIdString || 'CURRENT' == $termIdString) {
             // When accessing the "current" term via xml, use the term we are in.
             // When displaying the search interface, use the next upcoming term.
@@ -399,10 +403,10 @@ class Offerings extends AbstractController
         }
 
         // Campuses -- only include if we have more than one.
+        $data['campuses'] = [];
         $campuses = $resourceLookupSession->getResourcesByGenusType($this->campusType);
         if ($campuses->hasNext() && $campuses->getNextResource() && $campuses->hasNext()) {
             $campuses = $resourceLookupSession->getResourcesByGenusType($this->campusType);
-            $data['campuses'] = [];
             while ($campuses->hasNext()) {
                 $data['campuses'][] = $campuses->getNextResource();
             }
