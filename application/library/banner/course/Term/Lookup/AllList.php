@@ -91,6 +91,8 @@ ORDER BY STVTERM_CODE DESC
      * Answer an object from a result row.
      *
      * @since 4/13/09
+     * @return osid_course_Term
+     *   An object for the row data.
      */
     protected function getObjectFromRow(array $row)
     {

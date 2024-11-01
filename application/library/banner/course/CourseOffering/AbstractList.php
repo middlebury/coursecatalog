@@ -329,6 +329,8 @@ HAVING ".$this->getAllHavingTerms().'
      * Answer an object from a result row.
      *
      * @since 4/13/09
+     * @return osid_course_CourseOffering
+     *   The object from a row.
      */
     final protected function getObjectFromRow(array $row)
     {
