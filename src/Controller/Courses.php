@@ -111,11 +111,14 @@ class Courses extends AbstractController
             exit;
         }
 
-        $keywords = trim($request->get('keywords'));
+        $keywords = $request->get('keywords');
+        if (!empty($keywords)) {
+            $keywords = trim($keywords);
+        }
 
         $courses = [];
         // Fetch courses
-        if (strlen($keywords)) {
+        if ($keywords && strlen($keywords)) {
             // For now we will do an offering search and return courses
             // only from it. If a course search session is available, it would
             // be preferable to use that.
