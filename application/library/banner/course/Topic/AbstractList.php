@@ -562,8 +562,9 @@ GROUP BY SCBCRSE_SUBJ_CODE)
      * Answer an object from a result row.
      *
      * @since 4/13/09
+     *
      * @return osid_course_Topic
-     *   An object for the row data.
+     *                           An object for the row data
      */
     final protected function getObjectFromRow(array $row)
     {

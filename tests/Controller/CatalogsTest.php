@@ -75,6 +75,4 @@ class CatalogsTest extends WebTestCase
         $this->assertGreaterThan(0, $item->filter('title:contains("Middlebury College")')->count());
         $this->assertGreaterThan(0, $item->filter('catalog\:id:contains("catalog.MCUG")')->count());
     }
-
-
 }

@@ -115,8 +115,9 @@ ORDER BY STVSCHD_DESC ASC
      * Answer an object from a result row.
      *
      * @since 4/13/09
+     *
      * @return osid_type_Type
-     *   An object for the row data.
+     *                        An object for the row data
      */
     protected function getObjectFromRow(array $row)
     {
