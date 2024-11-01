@@ -28,14 +28,13 @@
         <testsuite name="cached_model">
             <directory>application/test/apc</directory>
         </testsuite>
-        <testsuite name="application">
-            <directory>application/test/Catalog</directory>
+        <testsuite name="service">
+            <directory>tests/Service</directory>
         </testsuite>
         <testsuite name="all">
             <directory>application/test/banner</directory>
             <directory>application/test/apc</directory>
-            <directory>tests/Controller</directory>
-            <directory>application/test/Catalog</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
 
