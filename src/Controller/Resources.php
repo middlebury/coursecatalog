@@ -10,7 +10,6 @@ use App\Service\Osid\DataLoader;
 use App\Service\Osid\IdMap;
 use App\Service\Osid\Runtime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -31,7 +30,7 @@ class Resources extends AbstractController
     }
 
     #[Route('/resources/view/{resourceId}/{termId}', name: 'view_resource')]
-    public function viewAction(Request $request, \osid_id_Id $resourceId, ?\osid_id_Id $termId = null)
+    public function viewAction(\osid_id_Id $resourceId, ?\osid_id_Id $termId = null)
     {
         $lookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
         $lookupSession->useFederatedBinView();
@@ -85,7 +84,7 @@ class Resources extends AbstractController
      * List all department topics as a text file with each line being Id|DisplayName.
      */
     #[Route('/resources/listcampusestxt/{catalogId}', name: 'list_campuses_txt')]
-    public function listcampusestxt(Request $request, ?\osid_id_Id $catalogId = null)
+    public function listcampusestxt(?\osid_id_Id $catalogId = null)
     {
         $data = [];
         if ($catalogId) {
