@@ -19,7 +19,7 @@ class ResourcesTest extends WebTestCase
         $this->assertMatchesRegularExpression('/Off-Campus/i', $response->getContent());
     }
 
-    public function testListCampusesByCataloog(): void
+    public function testListCampusesByCatalog(): void
     {
         $client = static::createClient();
         $client->request('GET', '/resources/listcampusestxt/catalog.MCUG');
