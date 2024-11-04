@@ -341,7 +341,7 @@ class banner_course_Topic_Lookup_CombinedSessionTest extends TestCase
         $topics = $this->session->getTopics();
         $this->assertInstanceOf('osid_course_TopicList', $topics);
         $this->assertTrue($topics->hasNext());
-        $this->assertEquals(17, $topics->available());
+        $this->assertEquals(18, $topics->available());
         $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
         $this->assertInstanceOf('osid_course_Topic', $topics->getNextTopic());
     }

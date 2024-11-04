@@ -11,6 +11,7 @@ use App\Service\Osid\IdMap;
 use App\Service\Osid\Runtime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -35,9 +36,13 @@ class Topics extends AbstractController
     #[Route('/topics/list/{catalogId}/{type}', name: 'list_topics')]
     public function listAction(?\osid_id_Id $catalogId = null, ?\osid_type_Type $type = null)
     {
-        $data = $this->getTopicData($catalogId, $type);
+        try {
+            $data = $this->getTopicData($catalogId, $type);
 
-        return $this->render('topics/list.html.twig', $data);
+            return $this->render('topics/list.html.twig', $data);
+        } catch (\osid_NotFoundException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        }
     }
 
     /**
@@ -46,19 +51,23 @@ class Topics extends AbstractController
     #[Route('/topics/listxml/{catalogId}/{type}', name: 'list_topics_xml')]
     public function listxmlAction(?\osid_id_Id $catalogId = null, ?\osid_type_Type $type = null)
     {
-        $data = $this->getTopicData($catalogId, $type);
-        $data['feedLink'] = $this->generateUrl(
-            'list_topics_xml',
-            [
-                'catalogId' => $catalogId,
-                'type' => $type,
-            ],
-            UrlGeneratorInterface::ABSOLUTE_URL,
-        );
-        $response = new Response($this->renderView('topics/list.xml.twig', $data));
-        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+        try {
+            $data = $this->getTopicData($catalogId, $type);
+            $data['feedLink'] = $this->generateUrl(
+                'list_topics_xml',
+                [
+                    'catalogId' => $catalogId,
+                    'type' => $type,
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL,
+            );
+            $response = new Response($this->renderView('topics/list.xml.twig', $data));
+            $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
 
-        return $response;
+            return $response;
+        } catch (\osid_NotFoundException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        }
     }
 
     /**
@@ -67,9 +76,13 @@ class Topics extends AbstractController
     #[Route('/topics/recent/{catalogId}/{type}', name: 'list_recent_topics')]
     public function recentAction(?\osid_id_Id $catalogId = null, ?\osid_type_Type $type = null)
     {
-        $data = $this->getRecentTopicData($catalogId, $type);
+        try {
+            $data = $this->getRecentTopicData($catalogId, $type);
 
-        return $this->render('topics/list.html.twig', $data);
+            return $this->render('topics/list.html.twig', $data);
+        } catch (\osid_NotFoundException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        }
     }
 
     /**
@@ -78,79 +91,87 @@ class Topics extends AbstractController
     #[Route('/topics/recentxml/{catalogId}/{type}', name: 'list_recent_topics_xml')]
     public function recentxmlAction(?\osid_id_Id $catalogId = null, ?\osid_type_Type $type = null)
     {
-        $data = $this->getRecentTopicData($catalogId, $type);
-        $data['feedLink'] = $this->generateUrl(
-            'list_recent_topics_xml',
-            [
-                'catalogId' => $catalogId,
-                'type' => $type,
-            ],
-            UrlGeneratorInterface::ABSOLUTE_URL,
-        );
-        $response = new Response($this->renderView('topics/list.xml.twig', $data));
-        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+        try {
+            $data = $this->getRecentTopicData($catalogId, $type);
+            $data['feedLink'] = $this->generateUrl(
+                'list_recent_topics_xml',
+                [
+                    'catalogId' => $catalogId,
+                    'type' => $type,
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL,
+            );
+            $response = new Response($this->renderView('topics/list.xml.twig', $data));
+            $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
 
-        return $response;
+            return $response;
+        } catch (\osid_NotFoundException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        }
     }
 
     #[Route('/topics/view/{topicId}/{catalogId}/{termId}', name: 'view_topic')]
     public function view(\osid_id_Id $topicId, ?\osid_id_Id $catalogId = null, ?\osid_id_Id $termId = null)
     {
-        $data = [];
+        try {
+            $data = [];
 
-        if ($catalogId) {
-            $topicLookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
-            $topicLookupSession->useIsolatedCourseCatalogView();
-            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
-            $termLookupSession->useIsolatedCourseCatalogView();
-            $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
-            $offeringLookupSession->useIsolatedCourseCatalogView();
-            $data['catalogId'] = $catalogId;
-        } else {
-            $topicLookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
-            $topicLookupSession->useFederatedCourseCatalogView();
-            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
-            $termLookupSession->useFederatedCourseCatalogView();
-            $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
-            $offeringLookupSession->useFederatedCourseCatalogView();
-            $data['catalogId'] = null;
-        }
-
-        $data['topic'] = $topicLookupSession->getTopic($topicId);
-
-        if ($termId) {
-            $offerings = $offeringLookupSession->getCourseOfferingsByTermByTopic($termId, $topicId);
-            $data['term'] = $termLookupSession->getTerm($termId);
-            $data['offeringsForAllTermsUrl'] = $this->generateUrl(
-                'view_topic',
-                [
-                    'topicId' => $topicId,
-                    'catalogId' => $catalogId,
-                ],
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
-        } else {
-            $offerings = $offeringLookupSession->getCourseOfferingsByTopic($topicId);
-            $data['term'] = null;
-            $data['offeringsForAllTermsUrl'] = null;
-        }
-
-        // Don't do the work to display all offerings if we have a very large
-        // number of offerings.
-        $data['offerings'] = [];
-        $data['offering_count'] = 0;
-        $data['offering_display_limit'] = 200;
-        $data['offeringsTitle'] = 'Sections';
-        if (isset($offerings)) {
-            $data['offering_count'] = $offerings->available();
-            $i = 0;
-            while ($offerings->hasNext() && $i < $data['offering_display_limit']) {
-                $data['offerings'][] = $this->osidDataLoader->getOfferingData($offerings->getNextCourseOffering());
-                ++$i;
+            if ($catalogId) {
+                $topicLookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+                $topicLookupSession->useIsolatedCourseCatalogView();
+                $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+                $termLookupSession->useIsolatedCourseCatalogView();
+                $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
+                $offeringLookupSession->useIsolatedCourseCatalogView();
+                $data['catalogId'] = $catalogId;
+            } else {
+                $topicLookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
+                $topicLookupSession->useFederatedCourseCatalogView();
+                $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
+                $termLookupSession->useFederatedCourseCatalogView();
+                $offeringLookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSession();
+                $offeringLookupSession->useFederatedCourseCatalogView();
+                $data['catalogId'] = null;
             }
-        }
 
-        return $this->render('topics/view.html.twig', $data);
+            $data['topic'] = $topicLookupSession->getTopic($topicId);
+
+            if ($termId) {
+                $offerings = $offeringLookupSession->getCourseOfferingsByTermByTopic($termId, $topicId);
+                $data['term'] = $termLookupSession->getTerm($termId);
+                $data['offeringsForAllTermsUrl'] = $this->generateUrl(
+                    'view_topic',
+                    [
+                        'topicId' => $topicId,
+                        'catalogId' => $catalogId,
+                    ],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            } else {
+                $offerings = $offeringLookupSession->getCourseOfferingsByTopic($topicId);
+                $data['term'] = null;
+                $data['offeringsForAllTermsUrl'] = null;
+            }
+
+            // Don't do the work to display all offerings if we have a very large
+            // number of offerings.
+            $data['offerings'] = [];
+            $data['offering_count'] = 0;
+            $data['offering_display_limit'] = 200;
+            $data['offeringsTitle'] = 'Sections';
+            if (isset($offerings)) {
+                $data['offering_count'] = $offerings->available();
+                $i = 0;
+                while ($offerings->hasNext() && $i < $data['offering_display_limit']) {
+                    $data['offerings'][] = $this->osidDataLoader->getOfferingData($offerings->getNextCourseOffering());
+                    ++$i;
+                }
+            }
+
+            return $this->render('topics/view.html.twig', $data);
+        } catch (\osid_NotFoundException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        }
     }
 
     /**
@@ -159,34 +180,38 @@ class Topics extends AbstractController
     #[Route('/topics/viewxml/{topicId}/{catalogId}', name: 'view_topic_xml')]
     public function viewxmlAction(\osid_id_Id $topicId, ?\osid_id_Id $catalogId = null)
     {
-        $data = [];
+        try {
+            $data = [];
 
-        if ($catalogId) {
-            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
-            $data['title'] = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
-            $data['catalogId'] = $catalogId;
-        } else {
-            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
-            $data['title'] = 'Topics in All Catalogs';
-            $data['catalogId'] = null;
+            if ($catalogId) {
+                $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+                $data['title'] = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
+                $data['catalogId'] = $catalogId;
+            } else {
+                $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
+                $data['title'] = 'Topics in All Catalogs';
+                $data['catalogId'] = null;
+            }
+            $lookupSession->useFederatedCourseCatalogView();
+
+            $topics = new \phpkit_course_ArrayTopicList([$lookupSession->getTopic($topicId)]);
+            $data = array_merge($data, $this->osidDataLoader->getTopics($topics));
+
+            $data['feedLink'] = $this->generateUrl(
+                'view_topic_xml',
+                [
+                    'catalogId' => $catalogId,
+                    'topicId' => $topicId,
+                ],
+                UrlGeneratorInterface::ABSOLUTE_URL,
+            );
+            $response = new Response($this->renderView('topics/list.xml.twig', $data));
+            $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
+
+            return $response;
+        } catch (\osid_NotFoundException $e) {
+            throw new NotFoundHttpException($e->getMessage());
         }
-        $lookupSession->useFederatedCourseCatalogView();
-
-        $topics = new \phpkit_course_ArrayTopicList([$lookupSession->getTopic($topicId)]);
-        $data = array_merge($data, $this->osidDataLoader->getTopics($topics));
-
-        $data['feedLink'] = $this->generateUrl(
-            'view_topic_xml',
-            [
-                'catalogId' => $catalogId,
-                'topicId' => $topicId,
-            ],
-            UrlGeneratorInterface::ABSOLUTE_URL,
-        );
-        $response = new Response($this->renderView('topics/list.xml.twig', $data));
-        $response->headers->set('Content-Type', 'text/xml; charset=utf-8');
-
-        return $response;
     }
 
     /**
@@ -378,23 +403,29 @@ class Topics extends AbstractController
      */
     private function renderTextList(\osid_type_Type $genusType, ?\osid_id_Id $catalogId = null)
     {
-        $data = [];
+        try {
+            $data = [
+                'topics' => [],
+            ];
 
-        if ($catalogId) {
-            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
-        } else {
-            $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
+            if ($catalogId) {
+                $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
+            } else {
+                $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
+            }
+            $lookupSession->useFederatedCourseCatalogView();
+
+            $topics = $lookupSession->getTopicsByGenusType($genusType);
+            while ($topics->hasNext()) {
+                $data['topics'][] = $topics->getNextTopic();
+            }
+
+            $response = new Response($this->renderView('topics/list.txt.twig', $data));
+            $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
+
+            return $response;
+        } catch (\osid_NotFoundException $e) {
+            throw new NotFoundHttpException($e->getMessage());
         }
-        $lookupSession->useFederatedCourseCatalogView();
-
-        $topics = $lookupSession->getTopicsByGenusType($genusType);
-        while ($topics->hasNext()) {
-            $data['topics'][] = $topics->getNextTopic();
-        }
-
-        $response = new Response($this->renderView('topics/list.txt.twig', $data));
-        $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
-
-        return $response;
     }
 }

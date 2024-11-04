@@ -103,6 +103,23 @@ INSERT INTO `catalog_term_match` (`catalog_id`, `term_code_match`, `term_display
 -- Dumping data for table `GTVINSM`
 --
 
+INSERT INTO `GTVINSM` (`GTVINSM_CODE`, `GTVINSM_DESC`, `GTVINSM_ACTIVITY_DATE`, `GTVINSM_USER_ID`, `GTVINSM_VR_MSG_NO`) VALUES
+('BL', 'Blended', '2020-07-08', 'JENTHOMPSON', NULL),
+('EJ', 'Japan SA mainly in English', '2010-10-11', 'KWEISS', NULL),
+('ENGL', 'Japan SA in English', '2010-10-11', 'KWEISS', NULL),
+('FON', 'Flexible Online', '2020-07-08', 'JENTHOMPSON', NULL),
+('HX', 'Hyflex', '2020-07-08', 'JENTHOMPSON', NULL),
+('HYB', 'Hybrid', '2014-09-12', 'KWEISS', NULL),
+('JAPNS', 'Japan SA in language', '2010-10-11', 'KWEISS', NULL),
+('JE', 'Japan SA mainly in Japanese', '2010-10-11', 'KWEISS', NULL),
+('MM', 'Multimodal', '2020-07-08', 'JENTHOMPSON', NULL),
+('ONASY', 'Asynchronous Online', '2022-07-27', 'JENTHOMPSON', NULL),
+('ONL', 'Online', '2009-06-17', 'LEROYG', '8'),
+('ONL5', 'Online, Half-Credit', '2023-01-03', 'JENTHOMPSON', NULL),
+('PERS', 'In-Person', '2020-07-08', 'JENTHOMPSON', NULL),
+('PERS5', 'In-Person, Half-Credit', '2022-03-30', 'JENTHOMPSON', NULL),
+('SON', 'Scheduled Online', '2020-07-08', 'JENTHOMPSON', NULL),
+('WAIVE', 'MIIS Course Waiver', '2010-10-11', 'KWEISS', '8');
 
 --
 -- Dumping data for table `GTVINTP`
