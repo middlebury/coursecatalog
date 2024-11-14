@@ -10,8 +10,7 @@ $('document').ready(function() {
         var emailDialog = $(this).dialog({
                 autoOpen: false,
                 width:  700,
-                modal: true,
-                position: 'top'
+                modal: true
             });
 
         button.data("emailDialog", emailDialog);

@@ -70,8 +70,7 @@ $('document').ready(function() {
         var removeDialog = $(this).dialog({
                 autoOpen: false,
                 width:  600,
-                modal: true,
-                position: 'top'
+                modal: true
             });
 
         button.data("removeDialog", removeDialog);
@@ -121,7 +120,6 @@ $('document').ready(function() {
                 autoOpen: false,
                 width:  900,
                 modal: true,
-                position: 'top'
             });
 
         button.data("calendar", calendar);
