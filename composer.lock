@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "48b27d3c51d8c4e59c007aa24ceab13c",
+    "content-hash": "9d5d3eaa3a3ee84957fd94304406b347",
     "packages": [
         {
             "name": "brick/math",
@@ -8020,16 +8020,6 @@
             "time": "2024-10-04T16:36:12+00:00"
         },
         {
-            "name": "themouette/jquery-week-calendar",
-            "version": "v2.0-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/themouette/jquery-week-calendar",
-                "reference": "master"
-            },
-            "type": "library"
-        },
-        {
             "name": "twig/twig",
             "version": "v3.14.2",
             "source": {
@@ -11459,9 +11449,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "themouette/jquery-week-calendar": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

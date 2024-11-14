@@ -33,14 +33,4 @@ return [
     'jquery' => [
         'version' => '3.7.1',
     ],
-    'jquery_week_calendar' => [
-        'path' => 'jquery-week-calendar/jquery.weekcalendar.js',
-    ],
-    'jquery_week_calendar_date' => [
-        'path' => 'jquery-week-calendar/libs/date.js',
-    ],
-    '/assets/jquery-week-calendar/jquery.weekcalendar.css' => [
-        'path' => 'jquery-week-calendar/jquery.weekcalendar.css',
-        'type' => 'css',
-    ],
 ];

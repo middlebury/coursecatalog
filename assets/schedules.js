@@ -1,9 +1,6 @@
 import './styles/schedules.css';
 import $ from 'jquery';
 import './email_controls.js';
-import './jquery-week-calendar/jquery.weekcalendar.css'
-import 'jquery_week_calendar_date'
-import 'jquery_week_calendar'
 
 $('document').ready(function() {
 
@@ -129,6 +126,8 @@ $('document').ready(function() {
     });
 
     $(".calendar_button").click(function(){
+        alert('not yet re-implemented. Needs a new calendar library.');
+        return false;
         var jsonUrl = $(this).attr('href');
         var calendar = $(this).data('calendar');
         calendar.dialog("open");
