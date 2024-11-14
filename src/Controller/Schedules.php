@@ -210,7 +210,7 @@ class Schedules extends AbstractController
      * @since 8/2/10
      */
     #[Route('/schedules/add/{catalogId}/{termId}', name: 'add_to_schedule', methods: ['POST'])]
-    public function addAction(Request $request, string $scheduleId, ?\osid_id_Id $catalogId = null, ?\osid_id_Id $termId = null)
+    public function addAction(Request $request, ?\osid_id_Id $catalogId = null, ?\osid_id_Id $termId = null)
     {
         if (!$this->isCsrfTokenValid('add-to-schedule', $request->get('csrf_key'))) {
             throw new AccessDeniedException('Invalid CSRF key.');

@@ -19,11 +19,11 @@
             <input type="submit" value="Save Changes"/>
         </form>
         <input type='hidden' name='courseId' value="{{ osidIdToString(offering.course.id) }}" />
-        <input type='hidden' name='section_lookup_url' value='{{ url('schedule_sections_for_course', {courseId: offering.course.id, termId: schedule.termid }) }}' />
+        <input type='hidden' name='section_lookup_url' value='{{ url('schedule_sections_for_course', {scheduleId: schedule.id, courseId: offering.course.id, termId: schedule.termid }) }}' />
     </div>
 
 
-    <form class='remove_offering_form' action="{{ url('remove_from_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId})}}" method='post'>";
+    <form class='remove_offering_form' action="{{ url('remove_from_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId})}}" method='post'>
         <input type='hidden' name='csrf_key' value='{{ csrf_token('remove-from-schedule') }}' />
         <input type='hidden' name='offering' value='{{ osidIdToString(offering.id) }}'/>
         <input type='submit' value='Remove all sections of {{ offering.course.displayname }}'/>
