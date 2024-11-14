@@ -33,4 +33,7 @@ return [
     'jquery' => [
         'version' => '3.7.1',
     ],
+    'jquery-ui' => [
+        'path' => 'jquery-ui/jquery-ui.js',
+    ],
 ];

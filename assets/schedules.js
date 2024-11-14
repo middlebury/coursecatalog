@@ -1,5 +1,7 @@
+import './jquery-ui/jquery-ui.css'
 import './styles/schedules.css';
 import $ from 'jquery';
+import 'jquery-ui';
 import './email_controls.js';
 
 $('document').ready(function() {
