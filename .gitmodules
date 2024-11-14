@@ -7,9 +7,6 @@
 [submodule "library/lazy_sessions"]
 	path = library/lazy_sessions
 	url = https://github.com/middlebury/lazy_sessions.git
-[submodule "docroot/javascript/jquery-week-calendar"]
-	path = docroot/javascript/jquery-week-calendar
-	url = https://github.com/themouette/jquery-week-calendar.git
 [submodule "library/jsdifflib"]
 	path = library/jsdifflib
 	url = https://github.com/cemerick/jsdifflib.git

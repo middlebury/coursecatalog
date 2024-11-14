@@ -8,6 +8,12 @@ parameters:
     app.osid.runtime.courseimpl: 'banner_course_CourseManager'
     app.osid.id.authority_to_shorten: 'middlebury.edu'
     app.osid.reference_date: 'now'
+    app.catalog.banner_web_url: '%env(CATALOG_BANNER_WEB_URL)%'
+    app.schedules.email.enabled: '%env(bool:SCHEDULES_EMAIL_ENABLED)%'
+    app.schedules.email.send_mail_as_user: '%env(bool:SCHEDULES_EMAIL_SEND_MAIL_AS_USER)%'
+    app.schedules.email.send_mail_as: '%env(SCHEDULES_SEND_MAIL_AS)%'
+    app.schedules.image.font_file: '%env(SCHEDULES_IMAGE_FONT_FILE)%'
+
 when@test:
     parameters:
         app.osid.runtime.config_path: '../application/test/banner/configuration.plist'
@@ -42,6 +48,9 @@ services:
         arguments:
             $configPath: '%app.osid.runtime.config_path%'
             $courseImpl: '%app.osid.runtime.courseimpl%'
+    App\Service\Osid\DataLoader:
+        arguments:
+            $bannerWebUrl: '%app.catalog.banner_web_url%'
     App\Service\Osid\IdMap:
         arguments:
             $idAuthorityToShorten: '%app.osid.id.authority_to_shorten%'

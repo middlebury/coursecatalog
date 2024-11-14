@@ -1,0 +1,11 @@
+                <select name="term">
+{% if selectedCatalogId %}
+                    <option value='{{ url('schedules', {catalogId: selectedCatalogId, termId: null}) }}'>All Terms</option>
+{% for term in terms %}
+                    <option value="{{ url('schedules', {catalogId: selectedCatalogId, termId: term}) }}" {{ selectedTermId and osidIdsEqual(selectedTermId, term.id) ? 'selected="selected"' }}>{{ term.displayname }}</option>
+{% endfor %}
+{% else %}
+                    <option value='{{ url('schedules') }}'>Select a catalog to choose terms...</option>
+{% endif %}
+
+                </select>

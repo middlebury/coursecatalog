@@ -1,0 +1,5 @@
+                <select name="term">
+{% for term in terms %}
+                    <option value="{{ osidIdToString(term.id) }}" {{ selectedTermId and osidIdsEqual(selectedTermId, term.id) ? ' selected="selected"' }}>{{ term.displayname }}</option>
+{% endfor %}
+                </select>

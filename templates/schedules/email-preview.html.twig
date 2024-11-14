@@ -1,0 +1,3 @@
+<img class='calendar_img' src='{{ url('schedule_png', {scheduleId: schedule.id}) }}' alt='Weekly Schedule Image'/>
+
+{{ include('schedules/email-offering-list.html.twig', {schedule: schedule}, with_context = false) }}

@@ -1,0 +1,21 @@
+{% if schedule.offerings is not empty %}
+<table style='border: 0px; width: 100%; font-size: 12px;'>
+{% for offering in schedule.offerings %}
+    <tr>
+        <td style='border-top: 1px dotted; vertical-align: top; white-space: nowrap;'>
+            <a href='{{ url('view_offering', {offeringId: offering}) }}' target='_blank'>";{{ offering.displayname }}</a>
+            </br>CRN: {{ offering.coursereferencenumber }}
+        </td>
+        <td style='border-top: 1px dotted; vertical-align: top; white-space: nowrap;'>
+            <a href='{{ url('view_offering', {offeringId: offering}) }}' target='_blank'>";{{ offering.title | nl2br }}</a>
+        </td>
+        <td style='border-top: 1px dotted; vertical-align: top; {{ scheduleHasCollisions(schedule, offering.id) }}'>
+            {{ formatScheduleInfo(offering.scheduleinfo) | raw }}
+        </td>
+        <td style='border-top: 1px dotted; vertical-align: top;'>
+            {{ offering.locationinfo | nl2br }}
+        </td>
+    </tr>
+{% endfor %}
+</table>
+{% endif %}

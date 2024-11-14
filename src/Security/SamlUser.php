@@ -44,7 +44,14 @@ class SamlUser implements SamlUserInterface
      */
     public function getRoles(): array
     {
-        return ['ROLE_USER'];
+        $roles = ['ROLE_USER'];
+
+        // This is just a placeholder implementation. It should be configurable.
+        if ($this->email && preg_match('/@middlebury\.edu$/', $this->email)) {
+            $roles[] = 'ROLE_CAN_SEND_EMAIL';
+        }
+
+        return $roles;
     }
 
     /**
@@ -66,5 +73,30 @@ class SamlUser implements SamlUserInterface
     public function getUserIdentifier(): string
     {
         return $this->id;
+    }
+
+    /**
+     * Returns a name for the user.
+     */
+    public function getName(): string
+    {
+        if ($this->givenName || $this->surname) {
+            return trim($this->givenName . ' ' . $this->surname);
+        } elseif ($this->email) {
+            return $this->email;
+        } else {
+            return $this->id;
+        }
+    }
+
+    /**
+     * Answer the email address for the user.
+     */
+    public function getEmail(): string {
+        if ($this->email) {
+            return $this->email;
+        } else {
+            throw new \Exception('No email is set for user '.$this->id);
+        }
     }
 }

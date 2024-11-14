@@ -17,6 +17,7 @@ class DataLoader
         private IdMap $osidIdMap,
         private TermHelper $osidTermHelper,
         private TopicHelper $osidTopicHelper,
+        private ?string $bannerWebUrl = null,
     ) {
         $this->alternateType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
         $this->instructorsType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
@@ -362,7 +363,7 @@ class DataLoader
 
         // Availability link. @todo
         $data['availabilityLink'] = null;
-        // $this->getAvailabilityLink($this->offering);
+        $this->getAvailabilityLink($offering);
 
         $data['properties'] = [];
         $properties = $offering->getProperties();
@@ -415,5 +416,22 @@ class DataLoader
         }
 
         return $data;
+    }
+
+    /**
+     * Answer a safe HTML string for the schedule info passed.
+     *
+     * @return string
+     */
+    public function getAvailabilityLink(\osid_course_CourseOffering $courseOffering)
+    {
+        $bannerIdRecordType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
+        if (!empty($this->bannerWebUrl) && $courseOffering->hasRecordType($bannerIdRecordType)) {
+            $bannerIdRecord = $courseOffering->getCourseOfferingRecord($bannerIdRecordType);
+
+            return '<a href="'.$this->bannerWebUrl.'?term_in='.$bannerIdRecord->getTermCode().'&crn_in='.$bannerIdRecord->getCourseReferenceNumber()."\" target='_blank' class='availability_link'>View availability, prerequisites, and other requirements.</a>";
+        }
+
+        return null;
     }
 }

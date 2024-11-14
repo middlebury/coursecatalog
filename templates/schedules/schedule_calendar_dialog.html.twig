@@ -1,0 +1,10 @@
+<a class='calendar_button' href='{{ url('schedule_events_json', {scheduleId: schedule.id}) }}' title='Click to zoom'>
+    <img class='calendar_img' src='{{ url('schedule_png', {scheduleId: schedule.id}) }}' alt='Weekly Schedule Image'/>
+</a>
+
+<div class='calendar' style='display: none;' title="{{ schedule.name }}">
+    <input type='hidden' name='start_hour' value='{{ schedule.earliesthour }}'/>
+    <input type='hidden' name='end_hour' value='{{ schedule.latesthour + 1 }}'/>
+    <input type='hidden' name='show_sunday' value='{{ schedule.hasEventsOnSunday ?  'yes' : 'no' }}'/>
+    <input type='hidden' name='show_saturday' value='{{ schedule.hasEventsOnSaturday ?  'yes' : 'no' }}'/>
+</div>

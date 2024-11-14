@@ -13,14 +13,18 @@
  */
 return [
     'app' => [
-        'path' => './assets/app.js',
+        'path' => 'app.js',
         'entrypoint' => true,
     ],
     'bookmarks' => [
-        'path' => './assets/bookmarks.js',
+        'path' => 'bookmarks.js',
     ],
     'offering_search' => [
-        'path' => './assets/offering_search.js',
+        'path' => 'offering_search.js',
+        'entrypoint' => true,
+    ],
+    'schedules' => [
+        'path' => 'schedules.js',
         'entrypoint' => true,
     ],
     'jquery-expander' => [
@@ -28,5 +32,15 @@ return [
     ],
     'jquery' => [
         'version' => '3.7.1',
+    ],
+    'jquery_week_calendar' => [
+        'path' => 'jquery-week-calendar/jquery.weekcalendar.js',
+    ],
+    'jquery_week_calendar_date' => [
+        'path' => 'jquery-week-calendar/libs/date.js',
+    ],
+    '/assets/jquery-week-calendar/jquery.weekcalendar.css' => [
+        'path' => 'jquery-week-calendar/jquery.weekcalendar.css',
+        'type' => 'css',
     ],
 ];

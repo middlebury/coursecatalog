@@ -73,7 +73,7 @@ class Bookmarks
      *
      * @return bool
      */
-    public function isBookmarked(\osid_id_Id $courseId)
+    public function isBookmarked(\osid_id_Id $courseId): bool
     {
         $stmt = $this->entityManager->getConnection()->prepare('SELECT COUNT(*) as is_bookmarked FROM user_savedcourses WHERE user_id = ? AND course_id_keyword = ? AND course_id_authority = ? AND course_id_namespace = ?');
         $result = $stmt->executeQuery([
@@ -90,56 +90,61 @@ class Bookmarks
     /**
      * Answer an array of all bookmarked courseIds.
      *
-     * @return \osid_id_IdList[]
+     * @return []
      */
-    public function getAllBookmarkedCourseIds()
+    public function getAllBookmarkedCourseIds(): array
     {
         $stmt = $this->entityManager->getConnection()->prepare('SELECT * FROM user_savedcourses WHERE user_id = ?');
         $result = $stmt->executeQuery([
             $this->getUserIdentifier(),
         ]);
         $ids = [];
-        foreach ($stmt->fetchAll() as $row) {
+        while (($row = $result->fetchAssociative()) !== false) {
             $ids[] = new \phpkit_id_Id($row['course_id_authority'], $row['course_id_namespace'], $row['course_id_keyword']);
         }
 
-        return new \phpkit_id_ArrayIdList($ids);
+        return $ids;
     }
 
     /**
      * Answer an array of all bookmarked courses.
      *
-     * @return \osid_course_CourseList
+     * @return array
      */
-    public function getAllBookmarkedCourses()
+    public function getAllBookmarkedCourses(): array
     {
         $courseIdList = $this->getAllBookmarkedCourseIds();
         if (!$courseIdList->hasNext()) {
             return new \phpkit_course_ArrayCourseList([]);
         }
 
-        $courseLookupSession = $this->courseManager->getCourseLookupSession();
+        $courseLookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSession();
         $courseLookupSession->useFederatedCourseCatalogView();
 
-        return $courseLookupSession->getCoursesByIds($courseIdList);
+        $courseList = $courseLookupSession->getCoursesByIds($courseIdList);
+        $courses = [];
+        while ($courseList->hasNext()) {
+            $courses[] = $courseList->getNextCourse();
+        }
+        return $courses;
     }
 
     /**
      * Answer an array of all bookmarked courses that match a given catalog and term.
      *
-     * @return \osid_course_CourseList
+     * @return array
      */
-    public function getBookmarkedCoursesInCatalogForTerm(\osid_id_Id $catalogId, \osid_id_Id $termId)
+    public function getBookmarkedCoursesInCatalogForTerm(\osid_id_Id $catalogId, \osid_id_Id $termId): array
     {
         $courseIdList = $this->getAllBookmarkedCourseIds();
-        if (!$courseIdList->hasNext()) {
-            return new \phpkit_course_ArrayCourseList([]);
+        if (empty($courseIdList)) {
+            return [];
         }
 
-        $searchSession = $this->courseManager->getCourseSearchSessionForCatalog($catalogId);
+        $searchSession = $this->osidRuntime->getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
 
         $search = $searchSession->getCourseSearch();
-        $search->searchAmongCourses($courseIdList);
+        $search->searchAmongCourses(new \phpkit_id_ArrayIdList($courseIdList));
 
         $query = $searchSession->getCourseQuery();
         $record = $query->getCourseQueryRecord(new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:term'));
@@ -150,10 +155,21 @@ class Bookmarks
 
         $results = $searchSession->getCoursesBySearch($query, $search);
 
-        return $results->getCourses();
+        $courseList = $results->getCourses();
+        $courses = [];
+        while ($courseList->hasNext()) {
+            $courses[] = $courseList->getNextCourse();
+        }
+        return $courses;
     }
 
-    protected function getUserIdentifier()
+    /**
+     * Get the ID of the currently authenticated user.
+     *
+     * @return string
+     *                The currently authenticated user's ID
+     */
+    protected function getUserIdentifier(): string
     {
         $user = $this->security->getUser();
         if (!$user) {

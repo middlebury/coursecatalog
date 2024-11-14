@@ -1,0 +1,48 @@
+{% if bookmarked_courses is empty %}
+    <p class='notice'>You have no starred courses for this term. Please <a href="{{ url('search_offerings', {catalogId: catalogId, termId: selectedTermId})}}">search for courses</a> and star interesting ones first.</p>
+
+{% else %}
+    <ul id="bookmarked_courses">
+{% for course in bookmarked_courses %}
+        <li class='bookmarked_course'>
+            <div class='course_info'>
+                <a href="{{ url('view_course', {courseId: course, termId: selectedTermId}) }}"  target="_blank">{{ course.displayname }} - {{ course.title }}</a>
+            </div>
+            <div class='remove_course'>
+                <a class='remove_course' title='Remove Course Bookmark' href='{{ url('remove_bookmark', {courseId: course}) }}'>
+                    <button>X</button>
+                </a>
+            </div>
+            <form class='add_to_schedule_form' action="{{ url('add_to_schedule', {catalogId: selectedCatalogId, termId: selectedTermId}) }}" method='post'>
+                <select name='scheduleId'>";
+                    <option value=''>Add to schedule...</option>
+{% for schedule in schedules %}
+                    <option value="{{ schedule.id }}">{{ schedule.name }}</option>
+{% endfor %}
+                </select>
+            </form>
+            <div class="add_section_dialog section_dialog" title="Add which sections?" style='display: none'>
+                <form action="{{ url('add_to_schedule', {catalogId: selectedCatalogId, termId: selectedTermId}) }}" class="add_section_form" method="post">
+                    <div class='section_set' style='display: none'>Choose a group:
+                        <select class="section_set" name="section_set">
+                            <option value='' class='loading'>Loading...</option>
+                        </select>
+                    </div>
+
+                    <div class='section_types'>Choose one option of each type:
+                        <ul class="section_types">
+                            <li class='loading'>Loading...</li>
+                        </ul>
+                    </div>
+
+                    <input type='hidden' name='csrf_key' value='{{ csrf_token('add-to-schedule') }}' />
+                    <input type='hidden' name='scheduleId' value='' />
+                    <input type="submit" value="Add Sections"/>
+                </form>
+                <input type='hidden' name='courseId' value="{{ osidIdToString(course.id) }}" />
+                <input type='hidden' name='section_lookup_url' value='{{ url('schedule_sections_for_course', {courseId: course, termId: selectedTermId}) }}' />
+            </div>
+        </li>
+{% endfor %}
+    </ul>
+{% endif %}

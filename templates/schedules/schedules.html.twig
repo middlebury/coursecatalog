@@ -1,0 +1,61 @@
+{% for schedule in schedules %}
+    <div class='schedule'>
+        {% if selectedTermId is empty %}
+        <div class='term_name'>{{ schedule.termname }}</div>
+        {% endif %}
+
+        <form class='delete_schedule' action="{{ url('delete_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}" method='post'>
+            <input type='hidden' name='csrf_key' value='{{ csrf_token('delete-schedule') }}' />
+            <input type='submit' value='Delete'/>
+        </form>
+
+        <form action='{{ url('update_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}' method='post'>
+            <input type='text' name='name' value="{{ schedule.name }}"/>
+            <input type='hidden' name='csrf_key' value='{{ csrf_token('update-schedule') }}' />
+            <input type='submit' value='Save Name'/>
+        </form>
+
+        <a class='print_button' href='{{ url('print_schedule', {scheduleId: schedule.id}) }}' title='Click for print view.' target='print_view'>
+            <button>Print</button>
+        </a>
+
+        {{ include('schedules/email-dialog.html.twig', {schedule: schedule, emailEnabled: emailEnabled}, with_context = false) }}
+
+        {{ include('schedules/schedule_calendar_dialog.html.twig', {schedule: schedule}, with_context = false) }}
+
+        <ul class='offerings'>
+        {% if schedule.offerings is empty %}
+            <li style='visibility: hidden'> &nbsp; </li>
+        {% else %}
+        {% for offering in schedule.offerings %}
+            <li class='offering'>
+                {{ include('schedules/remove_offering_dialog.html.twig', {schedule: schedule, selectedCatalogId: selectedCatalogId, selectedTermId: selectedTermId, offering: offering}, with_context = false) }}
+                <div class='offering_name'>
+                    <a href='{{ url('view_offering', {offeringId: offering}) }}' target='_blank'>
+                        {{ offering.displayname}}
+                    </a>
+                </div>
+                <div class='separator'> - </div>
+                <div class='offering_title'>
+                    <a href='{{ url('view_offering', {offeringId: offering}) }}' target='_blank'>
+                        {{ offering.title | nl2br }}
+                    </a>
+                </div>
+                <div class="time {{ scheduleHasCollisions(schedule, offering.id) ? "conflicting" }}">
+                    {{ formatScheduleInfo(offering.scheduleinfo) | raw }}
+                </div>
+                <div class='location'>{{ offering.locationinfo | nl2br }}</div>
+            </li>
+        {% endfor %}
+        {% endif %}
+
+        </ul>
+
+    </div>
+{% endfor %}
+
+<form id='schedule_create' action="{{ url('create_schedule', {catalogId: selectedCatalogId}) }}" method="post">
+    <input type="submit" value="Create new schedule"/> for
+    {{ include('schedules/terms.html.twig', {terms: terms, selectedTermId: selectedTermId}, with_context = false) }}
+    <input type='hidden' name='csrf_key' value='{{ csrf_token('create-schedule') }}' />
+</form>

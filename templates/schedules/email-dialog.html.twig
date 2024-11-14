@@ -1,0 +1,46 @@
+{% if emailEnabled %}
+    <a class='email_button' href='#' title='Click to preview and send as email.'><button>E-Mail</button></a>
+
+    <div class='email_dialog' style='display: none;' title="{{ schedule.name }}">
+
+        <form action='{{ url('email_schedule') }}' method='post'>
+            <div class='row controls'>
+                <input type='submit' value='Send'/>
+            </div>
+
+            <div class='row'>
+                <label for='from-{{ schedule.id }}'>From: </label>
+                <input id='from-{{ schedule.id }}' name='from' type='text' value="{{ app.user.email }}" readonly='readonly' disabled='disabled' size='42'/>
+            </div>
+
+            <div class='row'>
+                <label for='to-{{ schedule.id }}'>To: </label>
+                <input id='to-{{ schedule.id }}' name='to' type='text' size='42'/>
+                <span class='hint'>(comma separated)</span>
+            </div>
+
+            <div class='row'>
+                <label for='cc-{{ schedule.id }}'>CC: </label>
+                <input id='cc-{{ schedule.id }}' name='cc' type='text' value="{{ app.user.email }}" readonly='readonly' disabled='disabled' size='42'/>
+            </div>
+
+            <div class='row'>
+                <label for='subject-{{ schedule.id }}'>Subject:</label>
+                <input id='subject-{{ schedule.id }}' name='subject' type='text' value="{{ schedule.name }}" size='42'/>
+            </div>
+
+            <div class='row'>
+                <label for='message-{{ schedule.id }}'>Message: </label>
+                <textarea id='message-{{ schedule.id }}' name='message' cols='40' rows='10'>Below is my schedule, '{{ schedule.name }}'.</textarea>
+            </div>
+
+            <input type='hidden' name='csrf_key' value='<?php print $this->csrfKey(); ?>' />
+            <input type='hidden' name='schedule_id' value='{{ schedule.id }}'/>
+        </form>
+
+        <hr/>
+
+        {{ include('schedules/email-preview.html.twig', {schedule: schedule}, with_context = false) }}
+
+    </div>
+{% endif %}

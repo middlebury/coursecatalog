@@ -1,19 +1,19 @@
 <?php
 /**
- * @since 8/2/10
- *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
-require_once 'harmoni/Primitives/Chronology/Week.class.php';
+namespace App;
+
+use Doctrine\DBAL\Connection;
 
 /**
  * A class for working with user-created schedules.
  *
  * @since 8/2/10
  *
- * @copyright Copyright &copy; 2009, Middlebury College
+ * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 class Schedule
@@ -21,40 +21,28 @@ class Schedule
     /**
      * Constructor.
      *
-     * @param string $id
-     * @param string $userId
-     * @param string $name
-     *
      * @return void
      *
      * @since 7/29/10
      */
-    public function __construct($id, Zend_Db_Adapter_Abstract $db, $userId, osid_course_CourseManager $courseManager, $name, osid_id_Id $termId)
-    {
+    public function __construct(
+        private string $id,
+        private Connection $db,
+        private string $userId,
+        private \osid_course_CourseManager $courseManager,
+        private string $name,
+        private \osid_id_Id $termId,
+    ) {
         if (!strlen($userId)) {
-            throw new InvalidArgumentException('No $userId passed.');
+            throw new \InvalidArgumentException('No $userId passed.');
         }
         if (!strlen($id)) {
-            throw new InvalidArgumentException('No $id passed.');
+            throw new \InvalidArgumentException('No $id passed.');
         }
         if (!strlen($name)) {
-            throw new InvalidArgumentException('No $name passed.');
+            throw new \InvalidArgumentException('No $name passed.');
         }
-
-        $this->db = $db;
-        $this->userId = $userId;
-        $this->courseManager = $courseManager;
-        $this->id = $id;
-        $this->name = $name;
-        $this->termId = $termId;
     }
-
-    private $db;
-    private $userId;
-    private $courseManager;
-    private $name;
-    private $id;
-    private $termId;
 
     /**
      * Answer the name of the Schedule.
@@ -81,7 +69,7 @@ class Schedule
     {
         $name = trim(preg_replace('/\W/', ' ', $name));
         if (!strlen($name)) {
-            throw new InvalidArgumentException('Name is invalid.');
+            throw new \InvalidArgumentException('Name is invalid.');
         }
 
         $stmt = $this->db->prepare('UPDATE user_schedules SET name = ? WHERE id = ? AND user_id = ?;');
@@ -108,7 +96,7 @@ class Schedule
     /**
      * Answer the Id of the term this schedule is associated with.
      *
-     * @return osid_id_Id
+     * @return \osid_id_Id
      *
      * @since 8/16/10
      */
@@ -131,7 +119,7 @@ class Schedule
             $session->useFederatedCourseCatalogView();
 
             return $session->getTerm($this->termId)->getDisplayName();
-        } catch (osid_NotFoundException $e) {
+        } catch (\osid_NotFoundException $e) {
             return $this->termId->getIdentifier();
         }
     }
@@ -143,7 +131,7 @@ class Schedule
      *
      * @since 8/3/10
      */
-    public function add(osid_id_Id $offeringId)
+    public function add(\osid_id_Id $offeringId)
     {
         unset($this->offerings);
         $stmt = $this->db->prepare('INSERT INTO user_schedule_offerings (schedule_id, offering_id_keyword, offering_id_authority, offering_id_namespace) VALUES (?, ?, ?, ?);');
@@ -157,7 +145,7 @@ class Schedule
             ]);
         } catch (Zend_Db_Statement_Exception $e) {
             if (23000 == $e->getCode()) {
-                throw new Exception('Offering already added.', 23000);
+                throw new \Exception('Offering already added.', 23000);
             } else {
                 throw $e;
             }
@@ -171,7 +159,7 @@ class Schedule
      *
      * @since 8/3/10
      */
-    public function includes(osid_id_Id $offeringId)
+    public function includes(\osid_id_Id $offeringId)
     {
         // If we've already loaded our offerings, look at the object properties
         // rather than doing another query.
@@ -187,14 +175,13 @@ class Schedule
 
         // Do the lookup in the database.
         $stmt = $this->db->prepare('SELECT * FROM user_schedule_offerings WHERE schedule_id = ? AND offering_id_keyword = ? AND offering_id_authority = ? AND offering_id_namespace = ? LIMIT 1;');
-        $stmt->execute([
+        $result = $stmt->execute([
             $this->getId(),
             $offeringId->getIdentifier(),
             $offeringId->getAuthority(),
             $offeringId->getIdentifierNamespace(),
         ]);
-
-        return count($stmt->fetchAll()) > 0;
+        return $result->fetchAssociative() !== false;
     }
 
     /**
@@ -204,7 +191,7 @@ class Schedule
      *
      * @since 8/3/10
      */
-    public function remove(osid_id_Id $offeringId)
+    public function remove(\osid_id_Id $offeringId)
     {
         unset($this->offerings);
         $stmt = $this->db->prepare('DELETE FROM user_schedule_offerings WHERE schedule_id = ? AND offering_id_keyword = ? AND offering_id_authority = ? AND offering_id_namespace = ? LIMIT 1;');
@@ -227,7 +214,7 @@ class Schedule
     {
         if (!isset($this->offerings)) {
             $stmt = $this->db->prepare('SELECT * FROM user_schedule_offerings WHERE schedule_id = ?;');
-            $stmt->execute([
+            $result = $stmt->execute([
                 $this->getId(),
             ]);
 
@@ -235,8 +222,8 @@ class Schedule
             $lookupSession->useFederatedCourseCatalogView();
 
             $offerings = [];
-            foreach ($stmt->fetchAll() as $row) {
-                $offeringId = new phpkit_id_Id($row['offering_id_authority'], $row['offering_id_namespace'], $row['offering_id_keyword']);
+            while (($row = $result->fetchAssociative()) !== false) {
+                $offeringId = new \phpkit_id_Id($row['offering_id_authority'], $row['offering_id_namespace'], $row['offering_id_keyword']);
                 try {
                     $offering = $lookupSession->getCourseOffering($offeringId);
 
@@ -248,7 +235,7 @@ class Schedule
                     $offering->getDisplayName();
 
                     $offerings[] = $offering;
-                } catch (osid_NotFoundException $e) {
+                } catch (\osid_NotFoundException $e) {
                     // Ignore offerings that are no longer being offered.
                 }
             }
@@ -272,7 +259,7 @@ class Schedule
     {
         if (!isset($this->events)) {
             $this->events = [];
-            $scheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
+            $scheduleType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 
             foreach ($this->getOfferings() as $offering) {
                 $this->events = array_merge($this->events, $this->getWeeklyOfferingEvents($offering));
@@ -327,9 +314,9 @@ class Schedule
      *
      * @since 8/9/10
      */
-    private function getWeeklyOfferingEvents(osid_course_CourseOffering $offering)
+    private function getWeeklyOfferingEvents(\osid_course_CourseOffering $offering)
     {
-        $scheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
+        $scheduleType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
         $events = [];
 
         $name = $offering->getDisplayName();
@@ -341,8 +328,8 @@ class Schedule
         $crn = $offering->getCourseReferenceNumber();
         try {
             $rec = $offering->getCourseOfferingRecord($scheduleType);
-        } catch (osid_UnsupportedException $e) {
-            throw new InvalidArgumentException($e->getMessage(), $e->getCode());
+        } catch (\osid_UnsupportedException $e) {
+            throw new \InvalidArgumentException($e->getMessage(), $e->getCode());
         }
 
         $idString = $this->idToString($offering->getId());
@@ -381,7 +368,7 @@ class Schedule
      *
      * @since 8/9/10
      */
-    public function conflicts(osid_course_CourseOffering $offering)
+    public function conflicts(\osid_course_CourseOffering $offering)
     {
         $events = $this->getWeeklyOfferingEvents($offering);
         foreach ($events as $event) {
@@ -400,7 +387,7 @@ class Schedule
      *
      * @since 8/9/10
      */
-    public function getConflictingEvents(osid_course_CourseOffering $offering)
+    public function getConflictingEvents(\osid_course_CourseOffering $offering)
     {
         $myEvents = $this->getWeeklyOfferingEvents($offering);
         $conflictingEvents = [];
@@ -422,16 +409,16 @@ class Schedule
      * The offering must exist in the schedule to obtain a result.
      * An InvalidArgumentException will be thrown if the offering is not in the schedule.
      *
-     * @param osid_id_Id
+     * @param \osid_id_Id
      *
      * @return bool
      *
      * @since 8/9/10
      */
-    public function hasCollisions(osid_id_Id $id)
+    public function hasCollisions(\osid_id_Id $id)
     {
         if (!$this->includes($id)) {
-            throw new InvalidArgumentException('The offering Id passed is not in the schedule.');
+            throw new \InvalidArgumentException('The offering Id passed is not in the schedule.');
         }
         $idString = $this->idToString($id);
         foreach ($this->getWeeklyEvents() as $event) {
@@ -485,12 +472,12 @@ class Schedule
             return false;
         }
 
-        $timespan1 = Timespan::startingEnding(
-            DateAndTime::today()->plus(Duration::withSeconds($event1['startTime'])),
-            DateAndTime::today()->plus(Duration::withSeconds($event1['endTime'])));
-        $timespan2 = Timespan::startingEnding(
-            DateAndTime::today()->plus(Duration::withSeconds($event2['startTime'])),
-            DateAndTime::today()->plus(Duration::withSeconds($event2['endTime'])));
+        $timespan1 = \Timespan::startingEnding(
+            \DateAndTime::today()->plus(\Duration::withSeconds($event1['startTime'])),
+            \DateAndTime::today()->plus(\Duration::withSeconds($event1['endTime'])));
+        $timespan2 = \Timespan::startingEnding(
+            \DateAndTime::today()->plus(\Duration::withSeconds($event2['startTime'])),
+            \DateAndTime::today()->plus(\Duration::withSeconds($event2['endTime'])));
 
         return null !== $timespan1->intersection($timespan2);
     }
@@ -612,7 +599,7 @@ class Schedule
         $sortkeys = [];
         $names = [];
 
-        $weeklyScheduleType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
+        $weeklyScheduleType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule');
 
         foreach ($offerings as $offering) {
             $key = 0;
@@ -700,7 +687,7 @@ class Schedule
      *
      * @since 8/9/10
      */
-    private function idToString(osid_id_Id $id)
+    private function idToString(\osid_id_Id $id)
     {
         return $id->getIdentifierNamespace().':'.$id->getAuthority().':'.$id->getIdentifier();
     }

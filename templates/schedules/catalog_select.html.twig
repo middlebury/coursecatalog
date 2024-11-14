@@ -1,0 +1,6 @@
+                <select name="catalog">
+                    <option value='{{ url('schedules') }}'>All Catalogs</option>
+{% for catalog in catalogs %}
+                    <option value="{{ url('schedules', {catalogId: catalog, termId: null}) }}" {{ selectedCatalogId and osidIdsEqual(selectedCatalogId, catalog.id) ? 'selected="selected"' }}>{{ catalog.displayname }}</option>
+{% endfor %}
+                </select>

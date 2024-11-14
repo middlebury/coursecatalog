@@ -2,4 +2,5 @@ framework:
     asset_mapper:
         # The paths to make available to the asset mapper.
         paths:
-            - assets/
+            assets/: ''
+            vendor/themouette/jquery-week-calendar/: 'jquery-week-calendar'
