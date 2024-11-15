@@ -463,38 +463,34 @@ class Schedules extends AbstractController
      * @since 8/5/10
      */
     #[Route('/schedules/eventsjson/{scheduleId}.json', name: 'schedule_events_json')]
-    public function eventsjsonAction()
+    public function eventsjsonAction(string $scheduleId)
     {
-        $schedule = $this->schedules->getSchedule($this->_getParam('scheduleId'));
+        $schedule = $this->schedules->getSchedule($scheduleId);
 
-        $thisWeek = Week::current();
+        $thisWeek = \Week::current();
 
         $events = $schedule->getWeeklyEvents();
         foreach ($events as $i => &$event) {
             $event['title'] = $event['name'];
 
-            if ($event['location']) {
-                $event['title'] .= '<br/>'.$event['location'];
-            }
-
             if ($event['crn']) {
-                $event['title'] .= ' - CRN: '.$event['crn'];
+                $event['raw']['crn'] = $event['crn'];
             }
 
             $day = $thisWeek->asDateAndTime();
             if ($event['dayOfWeek']) {
-                $day = $day->plus(Duration::withDays($event['dayOfWeek']));
+                $day = $day->plus(\Duration::withDays($event['dayOfWeek']));
             }
 
-            $dateTime = $day->plus(Duration::withSeconds($event['startTime']));
+            $dateTime = $day->plus(\Duration::withSeconds($event['startTime']));
             $event['start'] = $dateTime->ymdString().' '.$dateTime->hmsString();
-            $dateTime = $day->plus(Duration::withSeconds($event['endTime']));
+            $dateTime = $day->plus(\Duration::withSeconds($event['endTime']));
             $event['end'] = $dateTime->ymdString().' '.$dateTime->hmsString();
 
             $event['id'] = $i;
         }
 
-        echo json_encode($events);
+        return new JsonResponse($events);
     }
 
     /**
@@ -552,9 +548,10 @@ class Schedules extends AbstractController
     #[Route('/schedules/print/{scheduleId}', name: 'print_schedule')]
     public function printAction(string $scheduleId)
     {
-        $this->_helper->layout->disableLayout();
-
-        $this->initializeSchedule();
+        $data = [
+            'schedule' => $this->schedules->getSchedule($scheduleId),
+        ];
+        return $this->render('schedules/print.html.twig', $data);
     }
 
     /**

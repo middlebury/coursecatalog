@@ -36,4 +36,17 @@ return [
     'jquery-ui' => [
         'path' => 'jquery-ui/jquery-ui.js',
     ],
+    '@toast-ui/calendar' => [
+        'version' => '2.1.3',
+    ],
+    'tui-date-picker' => [
+        'version' => '4.3.3',
+    ],
+    'tui-time-picker' => [
+        'version' => '2.1.6',
+    ],
+    '@toast-ui/calendar/dist/toastui-calendar.min.css' => [
+        'version' => '2.1.3',
+        'type' => 'css',
+    ],
 ];

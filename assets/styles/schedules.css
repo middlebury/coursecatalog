@@ -1,9 +1,30 @@
-div.wc-toolbar {display: none;}
-.wc-time-slots .wc-today { background-color: #FFF; }
-.wc-header .wc-today { font-weight: normal; }
-
 table.schedule_planner td#bookmarks_column, table.schedule_planner td#schedules_column {
     vertical-align: top;
+}
+
+/*********************************************************
+ * Print view calendar styles
+ *********************************************************/
+
+.toastui-calendar-timegrid {
+    min-height: auto;
+    height: 95%;
+}
+
+.toastui-calendar-day-name__date {
+    display: none;
+}
+.toastui-calendar-day-name__name {
+    font-size: 1.5em;
+}
+.calendar_event_title {
+    font-weight: bold;
+}
+.calendar_event_time {
+    background-color: darkgreen;
+    color: white;
+    padding-left: 2px;
+    padding-right: 2px;
 }
 
 /*********************************************************

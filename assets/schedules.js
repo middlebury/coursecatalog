@@ -1,8 +1,10 @@
 import './jquery-ui/jquery-ui.css'
+import '@toast-ui/calendar/dist/toastui-calendar.min.css';
 import './styles/schedules.css';
 import $ from 'jquery';
 import 'jquery-ui';
 import './email_controls.js';
+import Calendar from '@toast-ui/calendar';
 
 $('document').ready(function() {
 
@@ -140,10 +142,14 @@ $('document').ready(function() {
         return false;
     });
 
+    // Render the #calender item on a page if it exists (such as on preview)
+    $("#calendar").each(function() {
+        renderSchedule($(this), $(this).children('input[name=jsonUrl]').val(), 45, 11);
+    });
 
 });
 
-function renderSchedule(calendarJQ, jsonUrl, timeslotHeight, textSize) {
+function renderSchedule(calendarElement, jsonUrl, timeslotHeight, textSize) {
     if (!timeslotHeight)
         timeslotHeight = 20;
     if (!textSize)
@@ -153,58 +159,84 @@ function renderSchedule(calendarJQ, jsonUrl, timeslotHeight, textSize) {
     var month = new Date().getMonth();
     var day = new Date().getDate();
 
-    var startHour = new Number(calendarJQ.find('input:hidden[name=start_hour]').val());
-    var endHour = new Number(calendarJQ.find('input:hidden[name=end_hour]').val());
+    var startHour = new Number(calendarElement.find('input:hidden[name=start_hour]').val());
+    var endHour = new Number(calendarElement.find('input:hidden[name=end_hour]').val());
 
-    // 4 timeslots per hour, 20 height per slot.
-    // Add on the approximate size of the header.
-    var scheduleHeight = ((endHour - startHour + 1) * 4 * timeslotHeight) + 70;
+    var scheduleHeight = ((endHour - startHour + 1) * timeslotHeight) + 45;
+    calendarElement.css({height: scheduleHeight + "px"});
 
-    var daysToShow = 7;
-    var firstDayOfWeek = 0;
-    if (calendarJQ.find('input:hidden[name=show_sunday]').val() == 'no') {
-        daysToShow--;
-        firstDayOfWeek = 1;
-    }
-    if (calendarJQ.find('input:hidden[name=show_saturday]').val() == 'no') {
-        daysToShow--;
+
+    var showWeekend = true;
+    if (calendarElement.find('input:hidden[name=show_sunday]').val() == 'no' && calendarElement.find('input:hidden[name=show_saturday]').val() == 'no') {
+        showWeekend = false;
     }
 
-    calendarJQ.weekCalendar({
-        date:new Date(year, month, day, 9),
-        readonly: true,
-        allowCalEventOverlap: true,
-        overlapEventsSeparate: true,
-        timeslotsPerHour: 4,
-        timeslotHeight: timeslotHeight,
-        textSize: textSize,
-        businessHours : {
-            start: startHour,
-            end: endHour,
-            limitDisplay : true
-        },
-        daysToShow: daysToShow,
-        firstDayOfWeek: firstDayOfWeek,
-        height: function($calendarJQ){
-            var maxHeight = $(window).height() - $("h1").outerHeight(true);
-            if (maxHeight > scheduleHeight)
-                return scheduleHeight;
-            else
-                return maxHeight;
-        },
-        eventRender : function(calEvent, $event) {
-            if(calEvent.collisions > 0) {
-                $event.css({"backgroundColor":"#F77", "border":"1px solid #F00"});
-                $event.find(".wc-time").css({"backgroundColor": "#F22", "border":"1px solid #F00"});
+    const formatTime = function(date) {
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var meridian = "am";
+        if (hours > 11) {
+            meridian = "pm";
+            if (hours > 12) {
+                hours = hours - 12;
             }
-        },
-        noEvents : function() {
-            displayMessage("There are no events for this week");
-        },
-        data: jsonUrl
+        }
+        return hours + ":" + minutes.toString().padStart(2, '0') + " " + meridian;
+    }
+
+    $.getJSON(jsonUrl, function (data) {
+        console.log(data);
+        const calendar = new Calendar(
+            calendarElement.get(0),
+            {
+                defaultView: 'week',
+                usageStatistics: false,
+                isReadOnly: true,
+                week: {
+                    taskView: false,
+                    eventView: ['time'],
+                    hourStart: startHour,
+                    hourEnd: endHour,
+                    dayNames: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+                    showNowIndicator: false,
+                    workweek: !showWeekend,
+                },
+                theme: {
+                    week: {
+                        today: {
+                            color: 'black',
+                            backgroundColor: 'transparent',
+                        },
+                        pastDay: {
+                            color: 'black',
+                        },
+                    },
+                    common: {
+                        holiday: {
+                            color: 'black',
+                        }
+                    }
+                },
+                calendars: [
+                    {
+                        id: 'sections',
+                        name: 'Sections',
+                        backgroundColor: '#03bd9e',
+                    }
+                ],
+                template: {
+                    time(event) {
+
+                        return `<div class="calendar_event_time">${formatTime(event.start)} - ${formatTime(event.end)}</div><div class="calendar_event_title">${event.title}</div><div class="calendar_event_location">${event.location} - CRN: ${event.raw.crn}</div>`;
+                    },
+                }
+            }
+        );
+        console.log(calendar);
+        calendar.createEvents(data);
     });
 
-    calendarJQ.find('td.wc-day-column-header').each(function() {
+    calendarElement.find('td.wc-day-column-header').each(function() {
         $(this).html($(this).html().replace(/<.*$/, ''));
     });
 
