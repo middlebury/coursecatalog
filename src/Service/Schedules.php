@@ -43,13 +43,12 @@ class Schedules
     {
         $stmt = $this->entityManager->getConnection()->prepare('INSERT INTO user_schedules (user_id, term_id_keyword, term_id_authority, term_id_namespace, name) VALUES (?, ?, ?, ?, ?);');
         $name = 'Untitled Schedule';
-        $stmt->execute([
-            $this->getUserIdentifier(),
-            $termId->getIdentifier(),
-            $termId->getAuthority(),
-            $termId->getIdentifierNamespace(),
-            $name,
-        ]);
+        $stmt->bindValue(1, $this->getUserIdentifier());
+        $stmt->bindValue(2, $termId->getIdentifier());
+        $stmt->bindValue(3, $termId->getAuthority());
+        $stmt->bindValue(4, $termId->getIdentifierNamespace());
+        $stmt->bindValue(5, $name);
+        $stmt->executeQuery();
         $id = $this->entityManager->getConnection()->lastInsertId();
 
         return new Schedule($id, $this->entityManager->getConnection(), $this->getUserIdentifier(), $this->osidRuntime->getCourseManager(), $name, $termId);
@@ -67,10 +66,9 @@ class Schedules
     public function deleteSchedule($scheduleId)
     {
         $stmt = $this->entityManager->getConnection()->prepare('DELETE FROM user_schedules WHERE id = ? AND user_id = ? LIMIT 1;');
-        $stmt->execute([
-            $scheduleId,
-            $this->getUserIdentifier(),
-        ]);
+        $stmt->bindValue(1, $scheduleId);
+        $stmt->bindValue(2, $this->getUserIdentifier());
+        $stmt->executeQuery();
     }
 
     /**
@@ -85,10 +83,9 @@ class Schedules
     public function getSchedule($scheduleId)
     {
         $stmt = $this->entityManager->getConnection()->prepare('SELECT * FROM user_schedules WHERE id = ? AND user_id = ? LIMIT 1;');
-        $result = $stmt->execute([
-            $scheduleId,
-            $this->getUserIdentifier(),
-        ]);
+        $stmt->bindValue(1, $scheduleId);
+        $stmt->bindValue(2, $this->getUserIdentifier());
+        $result = $stmt->executeQuery();
         while (($row = $result->fetchAssociative()) !== false) {
             return new Schedule(
                 $row['id'],
@@ -116,9 +113,8 @@ class Schedules
     public function getSchedules()
     {
         $stmt = $this->entityManager->getConnection()->prepare('SELECT * FROM user_schedules WHERE user_id = ?;');
-        $result = $stmt->execute([
-            $this->getUserIdentifier(),
-        ]);
+        $stmt->bindValue(1, $this->getUserIdentifier());
+        $result = $stmt->executeQuery();
 
         $schedules = [];
         while (($row = $result->fetchAssociative()) !== false) {
@@ -148,12 +144,11 @@ class Schedules
     public function getSchedulesByTerm(\osid_id_Id $termId)
     {
         $stmt = $this->entityManager->getConnection()->prepare('SELECT * FROM user_schedules WHERE user_id = ? AND term_id_keyword = ? AND term_id_authority = ? AND term_id_namespace = ?;');
-        $result = $stmt->execute([
-            $this->getUserIdentifier(),
-            $termId->getIdentifier(),
-            $termId->getAuthority(),
-            $termId->getIdentifierNamespace(),
-        ]);
+        $stmt->bindValue(1, $this->getUserIdentifier());
+        $stmt->bindValue(2, $termId->getIdentifier());
+        $stmt->bindValue(3, $termId->getAuthority());
+        $stmt->bindValue(4, $termId->getIdentifierNamespace());
+        $result = $stmt->executeQuery();
 
         $schedules = [];
         while (($row = $result->fetchAssociative()) !== false) {
@@ -197,7 +192,8 @@ class Schedules
     {
         if (!isset($this->savedCatalogId)) {
             $stmt = $this->entityManager->getConnection()->prepare('SELECT * FROM user_catalog WHERE user_id = ?');
-            $result = $stmt->execute([$this->getUserIdentifier()]);
+            $stmt->bindValue(1, $this->getUserIdentifier());
+            $result = $stmt->executeQuery();
             $row = $result->fetchAssociative();
             if ($row) {
                 $this->savedCatalogId = new \phpkit_id_Id(
@@ -226,11 +222,19 @@ class Schedules
 
         $insert = $this->entityManager->getConnection()->prepare('INSERT INTO user_catalog (user_id, catalog_id_authority, catalog_id_namespace, catalog_id_keyword) VALUES (?, ?, ?, ?);');
         try {
-            $insert->execute([$this->getUserIdentifier(), $catalogId->getAuthority(), $catalogId->getIdentifierNamespace(), $catalogId->getIdentifier()]);
+            $insert->bindValue(1, $this->getUserIdentifier());
+            $insert->bindValue(2, $catalogId->getAuthority());
+            $insert->bindValue(3, $catalogId->getIdentifierNamespace());
+            $insert->bindValue(4, $catalogId->getIdentifier());
+            $insert->executeQuery();
         } catch (UniqueConstraintViolationException $e) {
             // Already exists
             $update = $this->entityManager->getConnection()->prepare('UPDATE user_catalog SET catalog_id_authority = ?, catalog_id_namespace = ?, catalog_id_keyword = ? WHERE user_id = ?');
-            $update->execute([$catalogId->getAuthority(), $catalogId->getIdentifierNamespace(), $catalogId->getIdentifier(), $this->getUserIdentifier()]);
+            $update->bindValue(1, $catalogId->getAuthority());
+            $update->bindValue(2, $catalogId->getIdentifierNamespace());
+            $update->bindValue(3, $catalogId->getIdentifier());
+            $update->bindValue(4, $this->getUserIdentifier());
+            $update->executeQuery();
         }
 
         $this->savedCatalogId = $catalogId;

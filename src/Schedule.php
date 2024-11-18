@@ -73,11 +73,10 @@ class Schedule
         }
 
         $stmt = $this->db->prepare('UPDATE user_schedules SET name = ? WHERE id = ? AND user_id = ?;');
-        $stmt->execute([
-            $name,
-            $this->id,
-            $this->userId,
-        ]);
+        $stmt->bindValue(1, $name);
+        $stmt->bindValue(2, $this->id);
+        $stmt->bindValue(3, $this->userId);
+        $stmt->executeQuery();
         $this->name = $name;
     }
 
@@ -136,13 +135,12 @@ class Schedule
         unset($this->offerings);
         $stmt = $this->db->prepare('INSERT INTO user_schedule_offerings (schedule_id, offering_id_keyword, offering_id_authority, offering_id_namespace) VALUES (?, ?, ?, ?);');
         $name = 'Untitled Schedule';
+        $stmt->bindValue(1, $this->getId());
+        $stmt->bindValue(2, $offeringId->getIdentifier());
+        $stmt->bindValue(3, $offeringId->getAuthority());
+        $stmt->bindValue(4, $offeringId->getIdentifierNamespace());
         try {
-            $stmt->execute([
-                $this->getId(),
-                $offeringId->getIdentifier(),
-                $offeringId->getAuthority(),
-                $offeringId->getIdentifierNamespace(),
-            ]);
+            $stmt->executeQuery();
         } catch (Zend_Db_Statement_Exception $e) {
             if (23000 == $e->getCode()) {
                 throw new \Exception('Offering already added.', 23000);
@@ -175,12 +173,11 @@ class Schedule
 
         // Do the lookup in the database.
         $stmt = $this->db->prepare('SELECT * FROM user_schedule_offerings WHERE schedule_id = ? AND offering_id_keyword = ? AND offering_id_authority = ? AND offering_id_namespace = ? LIMIT 1;');
-        $result = $stmt->execute([
-            $this->getId(),
-            $offeringId->getIdentifier(),
-            $offeringId->getAuthority(),
-            $offeringId->getIdentifierNamespace(),
-        ]);
+        $stmt->bindValue(1, $this->getId());
+        $stmt->bindValue(2, $offeringId->getIdentifier());
+        $stmt->bindValue(3, $offeringId->getAuthority());
+        $stmt->bindValue(4, $offeringId->getIdentifierNamespace());
+        $result = $stmt->executeQuery();
         return $result->fetchAssociative() !== false;
     }
 
@@ -195,12 +192,11 @@ class Schedule
     {
         unset($this->offerings);
         $stmt = $this->db->prepare('DELETE FROM user_schedule_offerings WHERE schedule_id = ? AND offering_id_keyword = ? AND offering_id_authority = ? AND offering_id_namespace = ? LIMIT 1;');
-        $stmt->execute([
-            $this->getId(),
-            $offeringId->getIdentifier(),
-            $offeringId->getAuthority(),
-            $offeringId->getIdentifierNamespace(),
-        ]);
+        $stmt->bindValue(1, $this->getId());
+        $stmt->bindValue(2, $offeringId->getIdentifier());
+        $stmt->bindValue(3, $offeringId->getAuthority());
+        $stmt->bindValue(4, $offeringId->getIdentifierNamespace());
+        $stmt->executeQuery();
     }
 
     /**
@@ -214,9 +210,8 @@ class Schedule
     {
         if (!isset($this->offerings)) {
             $stmt = $this->db->prepare('SELECT * FROM user_schedule_offerings WHERE schedule_id = ?;');
-            $result = $stmt->execute([
-                $this->getId(),
-            ]);
+            $stmt->bindValue(1, $this->getId());
+            $result = $stmt->executeQuery();
 
             $lookupSession = $this->courseManager->getCourseOfferingLookupSession();
             $lookupSession->useFederatedCourseCatalogView();

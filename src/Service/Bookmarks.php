@@ -41,12 +41,11 @@ class Bookmarks
     {
         $stmt = $this->entityManager->getConnection()->prepare('INSERT INTO user_savedcourses (user_id, course_id_keyword, course_id_authority, course_id_namespace) VALUES (?, ?, ?, ?);');
         try {
-            $stmt->executeQuery([
-                $this->getUserIdentifier(),
-                $courseId->getIdentifier(),
-                $courseId->getAuthority(),
-                $courseId->getIdentifierNamespace(),
-            ]);
+            $stmt->bindValue(1, $this->getUserIdentifier());
+            $stmt->bindValue(2, $courseId->getIdentifier());
+            $stmt->bindValue(3, $courseId->getAuthority());
+            $stmt->bindValue(4, $courseId->getIdentifierNamespace());
+            $stmt->executeQuery();
         } catch (UniqueConstraintViolationException $e) {
             throw new \Exception('Bookmark already added.', 23000, $e);
         }
@@ -60,12 +59,11 @@ class Bookmarks
     public function remove(\osid_id_Id $courseId)
     {
         $stmt = $this->entityManager->getConnection()->prepare('DELETE FROM user_savedcourses WHERE user_id = ? AND course_id_keyword = ? AND course_id_authority = ? AND course_id_namespace = ? LIMIT 1;');
-        $stmt->executeQuery([
-            $this->getUserIdentifier(),
-            $courseId->getIdentifier(),
-            $courseId->getAuthority(),
-            $courseId->getIdentifierNamespace(),
-        ]);
+        $stmt->bindValue(1, $this->getUserIdentifier());
+        $stmt->bindValue(2, $courseId->getIdentifier());
+        $stmt->bindValue(3, $courseId->getAuthority());
+        $stmt->bindValue(4, $courseId->getIdentifierNamespace());
+        $stmt->executeQuery();
     }
 
     /**
@@ -76,12 +74,11 @@ class Bookmarks
     public function isBookmarked(\osid_id_Id $courseId): bool
     {
         $stmt = $this->entityManager->getConnection()->prepare('SELECT COUNT(*) as is_bookmarked FROM user_savedcourses WHERE user_id = ? AND course_id_keyword = ? AND course_id_authority = ? AND course_id_namespace = ?');
-        $result = $stmt->executeQuery([
-            $this->getUserIdentifier(),
-            $courseId->getIdentifier(),
-            $courseId->getAuthority(),
-            $courseId->getIdentifierNamespace(),
-        ]);
+        $stmt->bindValue(1, $this->getUserIdentifier());
+        $stmt->bindValue(2, $courseId->getIdentifier());
+        $stmt->bindValue(3, $courseId->getAuthority());
+        $stmt->bindValue(4, $courseId->getIdentifierNamespace());
+        $result = $stmt->executeQuery();
         $num = (int) $result->fetchOne();
 
         return $num > 0;
@@ -95,9 +92,8 @@ class Bookmarks
     public function getAllBookmarkedCourseIds(): array
     {
         $stmt = $this->entityManager->getConnection()->prepare('SELECT * FROM user_savedcourses WHERE user_id = ?');
-        $result = $stmt->executeQuery([
-            $this->getUserIdentifier(),
-        ]);
+        $stmt->bindValue(1, $this->getUserIdentifier());
+        $result = $stmt->executeQuery();
         $ids = [];
         while (($row = $result->fetchAssociative()) !== false) {
             $ids[] = new \phpkit_id_Id($row['course_id_authority'], $row['course_id_namespace'], $row['course_id_keyword']);
