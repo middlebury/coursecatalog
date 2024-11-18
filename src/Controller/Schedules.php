@@ -96,46 +96,6 @@ class Schedules extends AbstractController
     }
 
     /**
-     * Initialize the catalog and term we are working with.
-     *
-     * Sets the following member properties:
-     * 		catalogId				osid_id_Id or NULL
-     *		termLookupSession		osid_course_TermLookupSession
-     *		termId					osid_id_Id or NULL
-     *
-     * @return void
-     */
-    protected function initializeCatalogAndTerm(?\osid_id_Id $catalogId = null, ?\osid_id_Id $termId = null)
-    {
-        // Select the catalog.
-        if ($catalogId) {
-            $this->catalogId = $catalogId;
-            $this->schedules->setSavedUserCatalogId($catalogId);
-        } else {
-            // Check for a saved catalog id.
-            $this->catalogId = $this->schedules->getSavedUserCatalogId();
-        }
-
-        // Load the termLookupSession
-        if ($this->catalogId) {
-            $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($this->catalogId);
-        } else {
-            $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
-            $this->catalogId = $this->termLookupSession->getCourseCatalogId();
-        }
-
-        // Select the term
-        if ($termId && 'ANY' == $termId->getIdentifier()) {
-            // Don't set a term
-            $this->termId = null;
-        } elseif (!$termId || 'CURRENT' == $termId->getIdentifier()) {
-            $this->termId = $this->osidTermHelper->getNextOrLatestTermId($this->catalogId);
-        } else {
-            $this->termId = $termId;
-        }
-    }
-
-    /**
      * Create a new schedule.
      *
      * @return void
@@ -514,31 +474,6 @@ class Schedules extends AbstractController
     }
 
     /**
-     * Get data needed for rendering the schedule image.
-     *
-     * @return array
-     */
-    protected function getScheduleImageData(string $scheduleId): array
-    {
-        $data = [];
-        $schedule = $this->schedules->getSchedule($scheduleId);
-        $data['fontFile'] = $this->getParameter('app.schedules.image.font_file');
-        $data['schedule'] = $schedule;
-        $data['events'] = $schedule->getWeeklyEvents();
-        $data['minTime'] = $schedule->getEarliestTime();
-        $data['events'] = $schedule->getWeeklyEvents();
-        if ($schedule->getLatestTime()) {
-            $data['maxTime'] = $schedule->getLatestTime();
-        } else {
-            $data['minTime'] = 9 * 3600;
-            $data['maxTime'] = 17 * 3600;
-        }
-        $data['width'] = null;
-        $data['height'] = 600;
-        return $data;
-    }
-
-    /**
      * Answer a print-view of the schedule.
      *
      * @return void
@@ -552,38 +487,6 @@ class Schedules extends AbstractController
             'schedule' => $this->schedules->getSchedule($scheduleId),
         ];
         return $this->render('schedules/print.html.twig', $data);
-    }
-
-    /**
-     * Answer true if sending email is enabled.
-     *
-     * @return bool
-     */
-    protected function emailEnabled()
-    {
-        if (!$this->getParameter('app.schedules.email.enabled')) {
-            return false;
-        }
-
-        // Allow enabling email for only some users
-        return in_array('ROLE_CAN_SEND_EMAIL', $this->getUser()->getRoles());
-    }
-
-    /**
-     * Answer the email address to send mail from.
-     *
-     * @return string
-     */
-    protected function getFromEmail()
-    {
-        $name = $this->getUser()->getName();
-        if ($this->getParameter('app.schedules.email.send_mail_as_user')) {
-            return $name.' <'.$this->getUser()->getEmail().'>';
-        } elseif ($this->getParameter('app.schedules.email.send_mail_as')) {
-            return $name.' - Catalog <'.$this->getParameter('app.schedules.email.send_mail_as').'>';
-        } else {
-            throw new \Exception('schedules.email.send_mail_as_user is false, but schedules.email.send_mail_as is not set.');
-        }
     }
 
     /**
@@ -658,6 +561,103 @@ class Schedules extends AbstractController
             $this->getResponse()->setHttpResponseCode(500);
             $this->getResponse()->setBody($e->getMessage());
         }
+    }
+
+    /**
+     * Initialize the catalog and term we are working with.
+     *
+     * Sets the following member properties:
+     * 		catalogId				osid_id_Id or NULL
+     *		termLookupSession		osid_course_TermLookupSession
+     *		termId					osid_id_Id or NULL
+     *
+     * @return void
+     */
+    protected function initializeCatalogAndTerm(?\osid_id_Id $catalogId = null, ?\osid_id_Id $termId = null)
+    {
+        // Select the catalog.
+        if ($catalogId) {
+            $this->catalogId = $catalogId;
+            $this->schedules->setSavedUserCatalogId($catalogId);
+        } else {
+            // Check for a saved catalog id.
+            $this->catalogId = $this->schedules->getSavedUserCatalogId();
+        }
+
+        // Load the termLookupSession
+        if ($this->catalogId) {
+            $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($this->catalogId);
+        } else {
+            $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
+            $this->catalogId = $this->termLookupSession->getCourseCatalogId();
+        }
+
+        // Select the term
+        if ($termId && 'ANY' == $termId->getIdentifier()) {
+            // Don't set a term
+            $this->termId = null;
+        } elseif (!$termId || 'CURRENT' == $termId->getIdentifier()) {
+            $this->termId = $this->osidTermHelper->getNextOrLatestTermId($this->catalogId);
+        } else {
+            $this->termId = $termId;
+        }
+    }
+
+    /**
+     * Answer true if sending email is enabled.
+     *
+     * @return bool
+     */
+    protected function emailEnabled()
+    {
+        if (!$this->getParameter('app.schedules.email.enabled')) {
+            return false;
+        }
+
+        // Allow enabling email for only some users
+        return in_array('ROLE_CAN_SEND_EMAIL', $this->getUser()->getRoles());
+    }
+
+    /**
+     * Answer the email address to send mail from.
+     *
+     * @return string
+     */
+    protected function getFromEmail()
+    {
+        $name = $this->getUser()->getName();
+        if ($this->getParameter('app.schedules.email.send_mail_as_user')) {
+            return $name.' <'.$this->getUser()->getEmail().'>';
+        } elseif ($this->getParameter('app.schedules.email.send_mail_as')) {
+            return $name.' - Catalog <'.$this->getParameter('app.schedules.email.send_mail_as').'>';
+        } else {
+            throw new \Exception('schedules.email.send_mail_as_user is false, but schedules.email.send_mail_as is not set.');
+        }
+    }
+
+    /**
+     * Get data needed for rendering the schedule image.
+     *
+     * @return array
+     */
+    protected function getScheduleImageData(string $scheduleId): array
+    {
+        $data = [];
+        $schedule = $this->schedules->getSchedule($scheduleId);
+        $data['fontFile'] = $this->getParameter('app.schedules.image.font_file');
+        $data['schedule'] = $schedule;
+        $data['events'] = $schedule->getWeeklyEvents();
+        $data['minTime'] = $schedule->getEarliestTime();
+        $data['events'] = $schedule->getWeeklyEvents();
+        if ($schedule->getLatestTime()) {
+            $data['maxTime'] = $schedule->getLatestTime();
+        } else {
+            $data['minTime'] = 9 * 3600;
+            $data['maxTime'] = 17 * 3600;
+        }
+        $data['width'] = null;
+        $data['height'] = 600;
+        return $data;
     }
 
     protected function generateImage(array $data): \GdImage
