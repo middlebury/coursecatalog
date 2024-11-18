@@ -220,7 +220,7 @@ class Schedules extends AbstractController
 
         // Get our ids from the POST
         $offeringIds = [];
-        foreach ($_POST as $key => $val) {
+        foreach ($request->request->all() as $key => $val) {
             if (preg_match('/^section_group_[0-9]+$/', $key)) {
                 $offeringIds[] = $this->osidIdMap->fromString($val);
             }

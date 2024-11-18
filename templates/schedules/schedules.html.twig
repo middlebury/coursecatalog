@@ -1,18 +1,18 @@
 {% for schedule in schedules %}
-    <div class='schedule'>
+    <div class='schedule' id='schedule_{{ schedule.id }}'>
         {% if selectedTermId is empty %}
         <div class='term_name'>{{ schedule.termname }}</div>
         {% endif %}
 
-        <form class='delete_schedule' action="{{ url('delete_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}" method='post'>
+        <form class='delete_schedule' id='delete_schedule_{{ schedule.id }}' action="{{ url('delete_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}" method='post'>
             <input type='hidden' name='csrf_key' value='{{ csrf_token('delete-schedule') }}' />
-            <input type='submit' value='Delete'/>
+            <input type='submit' id='submit_delete_schedule_{{ schedule.id }}' value='Delete'/>
         </form>
 
-        <form action='{{ url('update_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}' method='post'>
+        <form  id='update_schedule_{{ schedule.id }}' action='{{ url('update_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}' method='post'>
             <input type='text' name='name' value="{{ schedule.name }}"/>
             <input type='hidden' name='csrf_key' value='{{ csrf_token('update-schedule') }}' />
-            <input type='submit' value='Save Name'/>
+            <input type='submit' id='submit_update_schedule_{{ schedule.id }}' value='Save Name'/>
         </form>
 
         <a class='print_button' href='{{ url('print_schedule', {scheduleId: schedule.id}) }}' title='Click for print view.' target='print_view'>
@@ -55,7 +55,7 @@
 {% endfor %}
 
 <form id='schedule_create' action="{{ url('create_schedule', {catalogId: selectedCatalogId}) }}" method="post">
-    <input type="submit" value="Create new schedule"/> for
+    <input type="submit" id="submit_schedule_create" value="Create new schedule"/> for
     {{ include('schedules/terms.html.twig', {terms: terms, selectedTermId: selectedTermId}, with_context = false) }}
     <input type='hidden' name='csrf_key' value='{{ csrf_token('create-schedule') }}' />
 </form>
