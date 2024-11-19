@@ -39,6 +39,7 @@ class SchedulesExtension extends AbstractExtension
     {
         $scheduleInfo = nl2br(strip_tags($scheduleInfo));
         $scheduleInfo = preg_replace('/\([^\)]+\)/', '<span style="white-space: nowrap">$0</span>', $scheduleInfo);
+
         return $scheduleInfo;
     }
 }

@@ -81,7 +81,7 @@ class SamlUser implements SamlUserInterface
     public function getName(): string
     {
         if ($this->givenName || $this->surname) {
-            return trim($this->givenName . ' ' . $this->surname);
+            return trim($this->givenName.' '.$this->surname);
         } elseif ($this->email) {
             return $this->email;
         } else {
@@ -92,7 +92,8 @@ class SamlUser implements SamlUserInterface
     /**
      * Answer the email address for the user.
      */
-    public function getEmail(): string {
+    public function getEmail(): string
+    {
         if ($this->email) {
             return $this->email;
         } else {

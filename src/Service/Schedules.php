@@ -131,6 +131,7 @@ class Schedules
                 ),
             );
         }
+
         return $schedules;
     }
 
@@ -165,6 +166,7 @@ class Schedules
                 ),
             );
         }
+
         return $schedules;
     }
 
@@ -180,6 +182,7 @@ class Schedules
         if (!$user) {
             throw new \Exception('No authenticated user found.');
         }
+
         return $user->getUserIdentifier();
     }
 

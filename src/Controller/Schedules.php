@@ -34,7 +34,7 @@ class Schedules extends AbstractController
         private TermHelper $osidTermHelper,
         private DataLoader $osidDataLoader,
         private SchedulesExtension $schedulesExtension,
-        private Bookmarks $bookmarks
+        private Bookmarks $bookmarks,
     ) {
     }
 
@@ -473,6 +473,7 @@ class Schedules extends AbstractController
         imagedestroy($image);
         $response = new Response(ob_get_clean());
         $response->headers->set('Content-Type', 'image/png');
+
         return $response;
     }
 
@@ -489,6 +490,7 @@ class Schedules extends AbstractController
         $data = [
             'schedule' => $this->schedules->getSchedule($scheduleId),
         ];
+
         return $this->render('schedules/print.html.twig', $data);
     }
 
@@ -636,8 +638,6 @@ class Schedules extends AbstractController
 
     /**
      * Get data needed for rendering the schedule image.
-     *
-     * @return array
      */
     protected function getScheduleImageData(string $scheduleId): array
     {
@@ -656,6 +656,7 @@ class Schedules extends AbstractController
         }
         $data['width'] = null;
         $data['height'] = 600;
+
         return $data;
     }
 
@@ -667,58 +668,60 @@ class Schedules extends AbstractController
         $hasSunday = false;
         $hasSaturday = false;
         foreach ($data['events'] as $event) {
-            if ($event['dayOfWeek'] == 0)
+            if (0 == $event['dayOfWeek']) {
                 $hasSunday = true;
-            if ($event['dayOfWeek'] == 6)
+            }
+            if (6 == $event['dayOfWeek']) {
                 $hasSaturday = true;
+            }
         }
         $numDays = 7;
         $startDay = 0;
         $endDay = 6;
         if (!$hasSunday) {
-            $numDays--;
+            --$numDays;
             $startDay = 1;
         }
         if (!$hasSaturday) {
-            $numDays--;
+            --$numDays;
             $endDay = 5;
         }
-
 
         /*********************************************************
          * Set up our image.
          *********************************************************/
 
         $width = 910;
-        if ($data['width'])
+        if ($data['width']) {
             $width = $data['width'];
+        }
         $height = 800;
-        if ($data['height'])
+        if ($data['height']) {
             $height = $data['height'];
+        }
 
         if (empty($data['fontFile'])) {
-            throw new \Exception("No font-file configured.");
+            throw new \Exception('No font-file configured.');
         }
         if (!file_exists($data['fontFile'])) {
-            throw new \Exception("Font-file missing, not found at ".$data['fontFile']);
+            throw new \Exception('Font-file missing, not found at '.$data['fontFile']);
         }
 
-        $im = ImageCreateTrueColor($width, $height);
+        $im = imagecreatetruecolor($width, $height);
 
         // Set colors
-        $black = ImageColorAllocate($im, 0, 0, 0);
-        $white = ImageColorAllocate($im, 255, 255, 255);
-        $orange = ImageColorAllocate($im, 255, 200, 0);
-        $yellow = ImageColorAllocate($im, 255, 255, 0);
-        $tan = ImageColorAllocate($im, 255, 255, 190);
-        $ltgrey = ImageColorAllocate($im, 235, 235, 235);
-        $grey = ImageColorAllocate($im, 200, 200, 200);
-        $dkgrey = ImageColorAllocate($im, 140, 140, 140);
-        $blue = ImageColorAllocate($im, 0, 90, 207);
-        $red = ImageColorAllocate($im, 255, 50, 50);
-        $darkred = ImageColorAllocate($im, 0, 0, 0);
-        $ltblue = ImageColorAllocate($im, 175, 210, 255);
-
+        $black = imagecolorallocate($im, 0, 0, 0);
+        $white = imagecolorallocate($im, 255, 255, 255);
+        $orange = imagecolorallocate($im, 255, 200, 0);
+        $yellow = imagecolorallocate($im, 255, 255, 0);
+        $tan = imagecolorallocate($im, 255, 255, 190);
+        $ltgrey = imagecolorallocate($im, 235, 235, 235);
+        $grey = imagecolorallocate($im, 200, 200, 200);
+        $dkgrey = imagecolorallocate($im, 140, 140, 140);
+        $blue = imagecolorallocate($im, 0, 90, 207);
+        $red = imagecolorallocate($im, 255, 50, 50);
+        $darkred = imagecolorallocate($im, 0, 0, 0);
+        $ltblue = imagecolorallocate($im, 175, 210, 255);
 
         // Background color
         imagefilledrectangle($im, 0, 0, $width, $height, $white);
@@ -727,9 +730,9 @@ class Schedules extends AbstractController
         $gridWidth = $width - $timeWidth;
         $dayWidth = floor($gridWidth / $numDays);
 
-        $firstHour = floor($data['minTime']/3600);
+        $firstHour = floor($data['minTime'] / 3600);
         $gridStartTime = $firstHour * 3600;
-        $hoursToShow = ceil(($data['maxTime'] - $data['minTime'])/3600);
+        $hoursToShow = ceil(($data['maxTime'] - $data['minTime']) / 3600);
 
         $headerHeight = 48;
         $gridHeight = $height - $headerHeight;
@@ -740,22 +743,22 @@ class Schedules extends AbstractController
         imagefilledrectangle($im, 1, 1, $timeWidth - 1, $height - 2, $ltgrey);
 
         // Hours
-        for ($h = 0; $h < $hoursToShow; $h++) {
+        for ($h = 0; $h < $hoursToShow; ++$h) {
             $top = $headerHeight + ($hourHeight * $h);
             $bottom = $top + $hourHeight;
             imagerectangle($im, 0, $top, $width, $bottom, $grey);
         }
 
         // Days
-        for ($d = $startDay; $d < $numDays; $d++) {
+        for ($d = $startDay; $d < $numDays; ++$d) {
             $left = $timeWidth + ($dayWidth * $d);
             $right = $left + $dayWidth;
             imagerectangle($im, $left, 0, $right, $height, $black);
         }
 
         // Day Labels
-        $days = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
-        for ($d = $startDay; $d <= $endDay; $d++) {
+        $days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        for ($d = $startDay; $d <= $endDay; ++$d) {
             $label = $days[$d];
 
             $dayPosition = $d - $startDay;
@@ -763,26 +766,27 @@ class Schedules extends AbstractController
             $size = 24;
             $bb = imagettfbbox($size, 0, $data['fontFile'], $label);
             $textWidth = $bb[2] - $bb[0];
-            ImageTTFText($im, $size, 0, round($left + (($dayWidth - $textWidth)/2)), $headerHeight - 5, $black, $data['fontFile'], $label);
+            imagettftext($im, $size, 0, round($left + (($dayWidth - $textWidth) / 2)), $headerHeight - 5, $black, $data['fontFile'], $label);
         }
 
         // Hour Labels
-        for($i = 0; $i < $hoursToShow; $i++) {
+        for ($i = 0; $i < $hoursToShow; ++$i) {
             $hour = $firstHour + $i;
-            if ($hour < 12)
+            if ($hour < 12) {
                 $hourString = $hour.':00 am';
-            else if ($hour == 12)
+            } elseif (12 == $hour) {
                 $hourString = '12:00 pm';
-            else
+            } else {
                 $hourString = ($hour - 12).':00 pm';
+            }
 
             $size = 12;
             $bb = imagettfbbox($size, 0, $data['fontFile'], $hourString);
             $textWidth = $bb[2] - $bb[0];
             $textHeight = $bb[1] - $bb[5];
-            $top = $headerHeight + ($hourHeight * $i) + $textHeight + intval(($hourHeight - $textHeight)/2);
+            $top = $headerHeight + ($hourHeight * $i) + $textHeight + intval(($hourHeight - $textHeight) / 2);
             $left = $timeWidth - $textWidth - 10;
-            ImageTTFText($im, $size, 0, $left, $top, $black, $data['fontFile'], $hourString);
+            imagettftext($im, $size, 0, $left, $top, $black, $data['fontFile'], $hourString);
         }
 
         /*********************************************************
@@ -815,36 +819,34 @@ class Schedules extends AbstractController
             $textWidth = $bb[2] - $bb[0];
             $textHeight = $bb[1] - $bb[5];
             $textTop = $top + $textHeight + 3;
-            $textLeft = $left + round(($dayWidth - $textWidth)/2);
-            ImageTTFText($im, $size, 0, $textLeft, $textTop, $black, $data['fontFile'], $string);
+            $textLeft = $left + round(($dayWidth - $textWidth) / 2);
+            imagettftext($im, $size, 0, $textLeft, $textTop, $black, $data['fontFile'], $string);
 
             $size = 10;
             $bb = imagettfbbox($size, 0, $data['fontFile'], $event['name']);
             $textWidth = $bb[2] - $bb[0];
             $textHeight = $bb[1] - $bb[5];
             $textTop = $top + $textHeight + 16;
-            $textLeft = $left + round(($dayWidth - $textWidth)/2);
-            ImageTTFText($im, $size, 0, $textLeft, $textTop, $black, $data['fontFile'], $event['name']);
+            $textLeft = $left + round(($dayWidth - $textWidth) / 2);
+            imagettftext($im, $size, 0, $textLeft, $textTop, $black, $data['fontFile'], $event['name']);
 
             $size = 10;
             $bb = imagettfbbox($size, 0, $data['fontFile'], $event['location']);
             $textWidth = $bb[2] - $bb[0];
             $textHeight = $bb[1] - $bb[5];
-            $textTop = $top + $textHeight +$textHeight + 22;
-            $textLeft = $left + round(($dayWidth - $textWidth)/2);
-            ImageTTFText($im, $size, 0, $textLeft, $textTop, $black, $data['fontFile'], $event['location']);
+            $textTop = $top + $textHeight + $textHeight + 22;
+            $textLeft = $left + round(($dayWidth - $textWidth) / 2);
+            imagettftext($im, $size, 0, $textLeft, $textTop, $black, $data['fontFile'], $event['location']);
 
             $size = 10;
             $bb = imagettfbbox($size, 0, $data['fontFile'], $event['crn']);
             $textWidth = $bb[2] - $bb[0];
             $textHeight = $bb[1] - $bb[5];
-            //$textTop = $top + $textHeight +$textHeight + 34;
+            // $textTop = $top + $textHeight +$textHeight + 34;
             $textTop += 14;
-            $textLeft = $left + round(($dayWidth - $textWidth)/3);
-            ImageTTFText($im, $size, 0, $textLeft, $textTop, $black, $data['fontFile'], "CRN: ".$event['crn']);
-
+            $textLeft = $left + round(($dayWidth - $textWidth) / 3);
+            imagettftext($im, $size, 0, $textLeft, $textTop, $black, $data['fontFile'], 'CRN: '.$event['crn']);
         }
-
 
         /*********************************************************
          * Final Outlines.
@@ -856,16 +858,17 @@ class Schedules extends AbstractController
         imagerectangle($im, 0, 0, $width, $headerHeight, $black);
         imagerectangle($im, 0, 0, $timeWidth, $height, $black);
 
-
         /*********************************************************
          * Return the image for output by another view.
          *********************************************************/
         return $im;
     }
 
-    protected function timePosition($gridStartTime, $hourHeight, $time) {
+    protected function timePosition($gridStartTime, $hourHeight, $time)
+    {
         $diff = $time - $gridStartTime;
-        $hours = $diff/3600;
+        $hours = $diff / 3600;
+
         return round($hours * $hourHeight);
     }
 }

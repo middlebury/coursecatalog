@@ -178,7 +178,8 @@ class Schedule
         $stmt->bindValue(3, $offeringId->getAuthority());
         $stmt->bindValue(4, $offeringId->getIdentifierNamespace());
         $result = $stmt->executeQuery();
-        return $result->fetchAssociative() !== false;
+
+        return false !== $result->fetchAssociative();
     }
 
     /**

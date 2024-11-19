@@ -68,8 +68,6 @@ class Bookmarks
 
     /**
      * Answer true if the course Id passed is bookmarked.
-     *
-     * @return bool
      */
     public function isBookmarked(\osid_id_Id $courseId): bool
     {
@@ -104,8 +102,6 @@ class Bookmarks
 
     /**
      * Answer an array of all bookmarked courses.
-     *
-     * @return array
      */
     public function getAllBookmarkedCourses(): array
     {
@@ -122,13 +118,12 @@ class Bookmarks
         while ($courseList->hasNext()) {
             $courses[] = $courseList->getNextCourse();
         }
+
         return $courses;
     }
 
     /**
      * Answer an array of all bookmarked courses that match a given catalog and term.
-     *
-     * @return array
      */
     public function getBookmarkedCoursesInCatalogForTerm(\osid_id_Id $catalogId, \osid_id_Id $termId): array
     {
@@ -156,6 +151,7 @@ class Bookmarks
         while ($courseList->hasNext()) {
             $courses[] = $courseList->getNextCourse();
         }
+
         return $courses;
     }
 

@@ -11,7 +11,8 @@ class SchedulesTest extends WebTestCase
 {
     use AppDatabaseTestTrait;
 
-    private function setUpClient(): KernelBrowser {
+    private function setUpClient(): KernelBrowser
+    {
         $this->user = new SamlUser('WEBID99999990');
         $this->user->setSamlAttributes([
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress' => 'honeybear@milne.example.com',
@@ -29,7 +30,8 @@ class SchedulesTest extends WebTestCase
         return $client;
     }
 
-    private function createSchedule(KernelBrowser $client, $name): int {
+    private function createSchedule(KernelBrowser $client, $name): int
+    {
         $crawler = $client->request('GET', '/schedules/list/catalog.MCUG/term.200990');
         $crawler = $client->submitForm('Create new schedule');
         $this->assertResponseIsSuccessful();
@@ -41,12 +43,12 @@ class SchedulesTest extends WebTestCase
                 $scheduleId = $id;
             }
         }
-        if ($scheduleId === 0) {
+        if (0 === $scheduleId) {
             throw new \Exception('Unable to find the last schedule id.');
         }
 
         // Update the name.
-        $updateNameButton = $crawler->selectButton('submit_update_schedule_' . $scheduleId);
+        $updateNameButton = $crawler->selectButton('submit_update_schedule_'.$scheduleId);
         $form = $updateNameButton->form();
         $form['name'] = $name;
         $crawler = $client->submit($form);
@@ -56,7 +58,8 @@ class SchedulesTest extends WebTestCase
         return $scheduleId;
     }
 
-    private function addSectionsToSchedule(KernelBrowser $client, int $scheduleId, array $sectionIds) {
+    private function addSectionsToSchedule(KernelBrowser $client, int $scheduleId, array $sectionIds)
+    {
         $crawler = $client->request('GET', '/schedules/list/catalog.MCUG/term.200990');
 
         // Add a section to the schedule.
@@ -71,13 +74,14 @@ class SchedulesTest extends WebTestCase
             $args['section_set'] = 'link_set.NULL';
         }
         foreach ($sectionIds as $i => $sectionId) {
-            $args['section_group_' . $i] = $sectionId;
+            $args['section_group_'.$i] = $sectionId;
         }
         $crawler = $client->request('POST',
             '/schedules/add/catalog.MCUG/term.200990',
             $args,
         );
         $this->assertResponseIsSuccessful();
+
         return $crawler;
     }
 
@@ -113,7 +117,8 @@ class SchedulesTest extends WebTestCase
         $this->assertEquals($client->getResponse()->headers->get('Content-Type'), 'image/png');
     }
 
-    public function testPrintView() {
+    public function testPrintView()
+    {
         $client = $this->setUpClient();
         $scheduleId = $this->createSchedule($client, 'Print Test');
         // Add a section to the schedule.
@@ -141,7 +146,8 @@ class SchedulesTest extends WebTestCase
         $this->assertStringContainsString('section.200990.90045', $jsonString);
     }
 
-    public function testRemoveSection() {
+    public function testRemoveSection()
+    {
         $client = $this->setUpClient();
         $scheduleId = $this->createSchedule($client, 'Remove Test');
         // Add a section to the schedule.
@@ -166,7 +172,7 @@ class SchedulesTest extends WebTestCase
         // print $crawler->outerHtml();
 
         // Remove the Chemistry sections.
-        $form = $crawler->filter("#remove_section_form_${scheduleId}_section_200990_90036")->form();
+        $form = $crawler->filter("#remove_section_form_{$scheduleId}_section_200990_90036")->form();
         $crawler = $client->submit($form);
         $this->assertResponseIsSuccessful();
 
