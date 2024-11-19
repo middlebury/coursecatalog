@@ -3,7 +3,7 @@ recipe: symfony
 config:
   webroot: public
   php: 8.1
-  database: mariadb
+  database: mariadb:10.11
 services:
   appserver:
     build_as_root:
