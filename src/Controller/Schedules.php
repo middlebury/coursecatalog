@@ -9,10 +9,13 @@ use App\Service\Osid\Runtime;
 use App\Service\Osid\TermHelper;
 use App\Service\Schedules as SchedulesService;
 use App\Twig\SchedulesExtension;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Part\DataPart;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -494,72 +497,68 @@ class Schedules extends AbstractController
      *
      * @return void
      */
-    #[Route('/schedules/email', name: 'email_schedule')]
-    public function emailAction()
+    #[Route('/schedules/email', name: 'email_schedule', methods: ['POST'])]
+    public function emailAction(Request $request, MailerInterface $mailer)
     {
         try {
             if (!$this->emailEnabled()) {
-                throw new \Exception('Emailing of schedules is not enabled in frontend_config.ini.');
+                throw new \Exception('Emailing of schedules is not enabled in configuration.');
             }
-            $this->verifyChangeRequest();
+            if (!$this->isCsrfTokenValid('send-email', $request->get('csrf_key'))) {
+                throw new AccessDeniedException('Invalid CSRF key.');
+            }
 
-            $this->initializeSchedule();
-            $this->view->messageBody = $this->_getParam('message');
-
-            // Generate the text version of the email.
-            $this->render('email-text');
-            $text = $this->getResponse()->getBody();
-            $this->getResponse()->setBody('');
-
-            // Generate the html version of the email.
-            $this->render('email-html');
-            $html = $this->getResponse()->getBody();
-            $this->getResponse()->setBody('');
+            $scheduleId = $request->get('scheduleId');
+            $data = [];
+            $data['schedule'] = $this->schedules->getSchedule($scheduleId);
+            $data['messageBody'] = $request->get('message');
 
             // Generate the Schedule image.
-            $data = $this->getScheduleImageData($scheduleId);
-            $this->render('generate-image');
+            $imageData = $this->getScheduleImageData($scheduleId);
+            $image = $this->generateImage($imageData);
             ob_start();
-            imagepng($this->view->image, null, 5);
-            imagedestroy($this->view->image);
+            imagepng($image);
+            imagedestroy($image);
             $imageData = ob_get_clean();
 
-            // To
-            $to = $this->_helper->auth()->getUserEmail();
-            if (strlen(trim($this->_getParam('to'))) && trim($this->_getParam('to')) != $to) {
-                $to .= ', '.trim($this->_getParam('to'));
-            }
+            $userEmail = $this->getUser()->getEmail();
 
             // Build the email
-            $mime = new \Mail_mime();
-            $headers = [
-                'From' => $this->getFromEmail(),
-                'Reply-To' => $this->_helper->auth()->getUserEmail(),
-                'CC' => $this->_helper->auth()->getUserEmail(),
-                'Subject' => preg_replace('/[^\w \'"&-_.,\/*%#$@!()=+:;<>?]/', '', $this->_getParam('subject')),
-            ];
-            $mime->setTXTBody($text);
-            $mime->setHTMLBody($html);
-            $mime->addHTMLImage($imageData, 'image/png', 'schedule_image.png', false);
-            $mime->addAttachment($imageData, 'image/png', 'schedule_image.png', false);
+            $imagePart = new DataPart($imageData, 'schedule_image.png', 'image/png');
+            $email = (new TemplatedEmail())
+                ->from($this->getFromEmail())
+                ->replyTo($userEmail)
+                ->cc($userEmail)
+                ->subject(preg_replace('/[^\w \'"&-_.,\/*%#$@!()=+:;<>?]/', '', $request->get('subject')))
+                ->textTemplate('schedules/email.txt.twig')
+                ->htmlTemplate('schedules/email.html.twig')
+                ->context($data)
+                ->addPart($imagePart) // Add it as an attachment.
+                ->addPart($imagePart->asInline()); // Add it inline for HTML.
 
-            // Send the email
-            $body = $mime->get();
-            $headers = $mime->headers($headers);
-
-            $mail = Mail::factory('mail');
-            $result = $mail->send($to, $headers, $body);
-
-            if (true === $result) {
-                echo 'Email sent.';
-            } else {
-                throw $result;
+            // Add additional recipients.
+            if (strlen(trim($request->get('to'))) && trim($request->get('to')) != $userEmail) {
+                $addresses = explode(',', str_replace(';', ',', $request->get('to')));
+                foreach ($addresses as $address) {
+                    $address = trim($address);
+                    if ($address != $userEmail) {
+                        $email->addTo($address);
+                    }
+                }
             }
-        } catch (Exception $e) {
-            error_log($e->getMessage());
 
-            $this->getResponse()->setHttpResponseCode(500);
-            $this->getResponse()->setBody($e->getMessage());
+            $mailer->send($email);
+
+            $response = new Response('Email sent.');
+            $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
+
+            return $response;
+        } catch (\Exception $e) {
+            $response = new Response($e->message);
+            $response->setStatusCode(500);
+            $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
+
+            return $response;
         }
     }
 

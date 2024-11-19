@@ -1,0 +1,15 @@
+{{ messageBody }}
+
+
+--------------------------------------------------------
+
+{% for offering in schedule.offerings %}
+{{ offering.displayname }} - {{ offering.title }}
+{% if scheduleHasCollisions(schedule, offering.id) %}
+    ** conflicting **
+{% endif %}
+    {{ offering.scheduleinfo | replace({"\n": "\n    "}) }}
+    {{ offering.locationinfo | replace({"\n": "\n    "}) }}
+    CRN: {{ offering.coursereferencenumber }}
+
+{% endfor %}

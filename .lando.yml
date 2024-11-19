@@ -41,7 +41,32 @@ services:
       # Install and enable OCI8
       - echo "instantclient,/opt/oracle/instantclient" | pecl install oci8-3.2.1
       - docker-php-ext-enable oci8
+    overrides:
+      environment:
+        MAILER_DSN: smtp://mailpit:1025
   phpmyadmin:
     type: phpmyadmin
     hosts:
       - database
+  mailpit:
+    scanner: false
+    api: 3
+    type: lando
+    services:
+      image: axllent/mailpit
+      volumes:
+        - mailpit:/data
+      ports:
+        - 8025 # Web UI.
+        - 1025 # SMTP.
+      environment:
+        MP_MAX_MESSAGES: 5000
+        MP_DATA_FILE: /data/mailpit.db
+        MP_SMTP_AUTH_ACCEPT_ANY: 1
+        MP_SMTP_AUTH_ALLOW_INSECURE: 1
+      command: '/mailpit'
+    volumes:
+      mailpit:
+proxy:
+    mailpit:
+        - mail.coursecatalog.lndo.site:8025

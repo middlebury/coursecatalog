@@ -34,8 +34,8 @@
                 <textarea id='message-{{ schedule.id }}' name='message' cols='40' rows='10'>Below is my schedule, '{{ schedule.name }}'.</textarea>
             </div>
 
-            <input type='hidden' name='csrf_key' value='<?php print $this->csrfKey(); ?>' />
-            <input type='hidden' name='schedule_id' value='{{ schedule.id }}'/>
+            <input type='hidden' name='csrf_key' value='{{ csrf_token('send-email') }}' />
+            <input type='hidden' name='scheduleId' value='{{ schedule.id }}'/>
         </form>
 
         <hr/>
