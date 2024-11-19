@@ -14,9 +14,9 @@ class BookmarksTest extends WebTestCase
     {
         $this->user = new SamlUser('WEBID99999990');
         $this->user->setSamlAttributes([
-            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress' => 'honeybear@milne.example.com',
-            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname' => 'Winnie',
-            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname' => 'The-Pooh',
+            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress' => ['honeybear@milne.example.com'],
+            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname' => ['Winnie'],
+            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname' => ['The-Pooh'],
         ]);
     }
 

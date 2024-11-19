@@ -15,9 +15,9 @@ class SchedulesTest extends WebTestCase
     {
         $this->user = new SamlUser('WEBID99999990');
         $this->user->setSamlAttributes([
-            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress' => 'honeybear@milne.example.com',
-            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname' => 'Winnie',
-            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname' => 'The-Pooh',
+            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress' => ['honeybear@middlebury.edu'],
+            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname' => ['Winnie'],
+            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname' => ['The-Pooh'],
         ]);
 
         // Bookmark some courses so they are available for schedule building.
@@ -181,5 +181,27 @@ class SchedulesTest extends WebTestCase
         $this->assertEquals(0, $crawler->filter("#schedule_$scheduleId .offering .offering_name a:contains('CHEM0104A-F09')")->count());
         $this->assertEquals(0, $crawler->filter("#schedule_$scheduleId .offering .offering_name a:contains('CHEM0104T-F09')")->count());
         $this->assertEquals(0, $crawler->filter("#schedule_$scheduleId .offering .offering_name a:contains('CHEM0104W-F09')")->count());
+    }
+
+    public function testEmail()
+    {
+        $client = $this->setUpClient();
+        $scheduleId = $this->createSchedule($client, 'Email Test');
+        // Add a section to the schedule.
+        $crawler = $this->addSectionsToSchedule($client, $scheduleId,
+            [
+                'section.200990.90036', // CHEM0104 A - Lecture.
+                'section.200990.90041', // CHEM0104 T - Discussion.
+                'section.200990.90045', // CHEM0104 W - Lab.
+            ]
+        );
+
+        // print $crawler->outerHtml();
+
+        $form = $crawler->filter("#send_email_form_$scheduleId")->form();
+        $crawler = $client->submit($form, [
+            'to' => 'person1@example.edu, person2@example.org',
+        ]);
+        $this->assertResponseIsSuccessful();
     }
 }
