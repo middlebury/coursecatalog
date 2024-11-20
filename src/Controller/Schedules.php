@@ -269,7 +269,7 @@ class Schedules extends AbstractController
         foreach ($offeringIds as $offeringId) {
             try {
                 $schedule->add($offeringId);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 if (23000 != $e->getCode()) {
                     throw $e;
                 }

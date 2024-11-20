@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -94,22 +95,7 @@ class Courses extends AbstractController
     #[Route('/courses/searchxml/{catalogId}', name: 'search_courses_xml')]
     public function searchxmlAction(Request $request, \osid_id_Id $catalogId)
     {
-        if (!$catalogId) {
-            header('HTTP/1.1 400 Bad Request');
-            echo 'A catalog must be specified.';
-            exit;
-        }
-        try {
-            $searchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
-        } catch (\osid_InvalidArgumentException $e) {
-            header('HTTP/1.1 400 Bad Request');
-            echo 'The catalog id specified was not of the correct format.';
-            exit;
-        } catch (\osid_NotFoundException $e) {
-            header('HTTP/1.1 404 Not Found');
-            echo 'The catalog id specified was not found.';
-            exit;
-        }
+        $searchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
 
         $keywords = $request->get('keywords');
         if (!empty($keywords)) {
@@ -166,29 +152,11 @@ class Courses extends AbstractController
     #[Route('/courses/topicxml/{catalogId}', name: 'list_courses_by_topic')]
     public function topicxmlAction(Request $request, \osid_id_Id $catalogId)
     {
-        if (!$catalogId) {
-            header('HTTP/1.1 400 Bad Request');
-            echo 'A catalog must be specified.';
-            exit;
-        }
-        try {
-            $searchSession = $this->osidRuntime->getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
-
-            $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
-        } catch (\osid_InvalidArgumentException $e) {
-            header('HTTP/1.1 400 Bad Request');
-            echo 'The catalog id specified was not of the correct format.';
-            exit;
-        } catch (\osid_NotFoundException $e) {
-            header('HTTP/1.1 404 Not Found');
-            echo 'The catalog id specified was not found.';
-            exit;
-        }
+        $searchSession = $this->osidRuntime->getCourseManager()->getCourseSearchSessionForCatalog($catalogId);
+        $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
 
         if (!$request->get('topic')) {
-            header('HTTP/1.1 400 Bad Request');
-            echo 'A topic must be specified.';
-            exit;
+            throw new BadRequestHttpException('A topic must be specified.');
         }
 
         $topicsIds = [];
@@ -279,28 +247,12 @@ class Courses extends AbstractController
     #[Route('/courses/byidxml/{catalogId}', name: 'list_courses_by_ids')]
     public function byidxmlAction(Request $request, \osid_id_Id $catalogId)
     {
-        if (!$catalogId) {
-            header('HTTP/1.1 400 Bad Request');
-            echo 'A catalog must be specified.';
-            exit;
-        }
-        try {
-            $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
-            $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
-        } catch (\osid_InvalidArgumentException $e) {
-            header('HTTP/1.1 400 Bad Request');
-            echo 'The catalog id specified was not of the correct format.';
-            exit;
-        } catch (\osid_NotFoundException $e) {
-            header('HTTP/1.1 404 Not Found');
-            echo 'The catalog id specified was not found.';
-            exit;
-        }
+        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
+        $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+
         $ids = $request->get('id', []);
         if (!$ids) {
-            header('HTTP/1.1 400 Bad Request');
-            echo "'id[]' must be specified.";
-            exit;
+            throw new BadRequestHttpException("'id[]' must be specified.");
         }
 
         $courseIds = [];
@@ -382,25 +334,14 @@ class Courses extends AbstractController
                 $this->termLookupSession->useFederatedCourseCatalogView();
             }
         } else {
-            try {
-                $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
-                $courseLookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
-
-                $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
-            } catch (\osid_InvalidArgumentException $e) {
-                throw new \osid_InvalidArgumentException('The catalog id specified was not of the correct format.');
-            } catch (\osid_NotFoundException $e) {
-                throw new \osid_NotFoundException('The catalog id specified was not found.');
-                exit;
-            }
+            $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
+            $courseLookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
+            $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
         }
 
         if (!$instructorId) {
-            // Make sure that this error response is cacheable.
-            $this->setCacheControlHeaders();
-            $this->getResponse()->sendHeaders();
-
-            throw new \InvalidArgumentException('An instructor must be specified.');
+            // @todo Make sure that this error response is cacheable.
+            throw new BadRequestHttpException('An instructor must be specified.');
         }
 
         // Expand plain instructor Ids to fully qualified ones.
@@ -408,15 +349,7 @@ class Courses extends AbstractController
             $instructorId = $this->osidIdMap->fromString('resource.person.'.$this->osidIdMap->toString($instructorId));
         }
         $resourceLookup = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
-        try {
-            $instructorResource = $resourceLookup->getResource($instructorId);
-        } catch (\osid_NotFoundException $e) {
-            // Make sure that this error response is cacheable.
-            $this->setCacheControlHeaders();
-            $this->getResponse()->sendHeaders();
-
-            throw $e;
-        }
+        $instructorResource = $resourceLookup->getResource($instructorId);
 
         // Fetch Offerings
         $query = $offeringSearchSession->getCourseOfferingQuery();
