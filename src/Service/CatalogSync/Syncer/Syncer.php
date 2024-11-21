@@ -6,6 +6,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
+namespace App\Service\CatalogSync\Syncer;
+
 /**
  * This interface defines the requirements of Sync classes. Classes SHOULD throw.
  *
@@ -14,15 +16,8 @@
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-interface CatalogSync_Syncer
+interface Syncer
 {
-    /**
-     * Configure this sync instance.
-     *
-     * @return void
-     */
-    public function configure(Zend_Config $config);
-
     /**
      * Roll back any changes to the destination.
      *

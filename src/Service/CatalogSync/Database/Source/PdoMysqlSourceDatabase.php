@@ -6,6 +6,11 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
+namespace App\Service\CatalogSync\Database\Source;
+
+use App\Service\CatalogSync\Database\AbstractPdoDatabase;
+use App\Service\CatalogSync\Database\SourceDatabase;
+
 /**
  * This interface defines the requirements of source databases.
  *
@@ -14,7 +19,7 @@
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class CatalogSync_Database_Source_PdoMysql extends CatalogSync_Database_PdoAbstract implements CatalogSync_Database_Source
+class PdoMysqlSourceDatabase extends AbstractPdoDatabase implements SourceDatabase
 {
     /**
      * Answer some database options for our connection.
@@ -26,7 +31,7 @@ class CatalogSync_Database_Source_PdoMysql extends CatalogSync_Database_PdoAbstr
     protected function getDatabaseOptions($type)
     {
         $options = parent::getDatabaseOptions($type);
-        $options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+        $options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
 
         return $options;
     }
@@ -38,7 +43,7 @@ class CatalogSync_Database_Source_PdoMysql extends CatalogSync_Database_PdoAbstr
      * @param optional array $columns
      * @param optional string $where
      *
-     * @return CatalogSync_Database_Statement_Select
+     * @return App\Service\CatalogSync\Database\SelectStatement
      */
     public function query($table, array $columns = [], $where = '')
     {
@@ -61,7 +66,7 @@ class CatalogSync_Database_Source_PdoMysql extends CatalogSync_Database_PdoAbstr
         $statement = $this->pdo->query($query);
 
         // Return our Select object that can handle converting results.
-        return new CatalogSync_Database_Statement_Select_PdoMysql($statement);
+        return new PdoMysqlSelectStatement($statement);
     }
 
     /**

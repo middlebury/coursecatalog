@@ -6,6 +6,10 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
+namespace App\Service\CatalogSync\Syncer;
+
+use App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase;
+
 /**
  * This class implements the Banner-to-Catalog sync using the Banner OCI connection
  * on the source side and a MySQL-PDO connection on the temporary cache side,
@@ -16,29 +20,20 @@
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-abstract class CatalogSync_Syncer_Abstract
+abstract class AbstractSyncer
 {
-    protected $destination_db;
-    protected $allowedBlckCodes = [];
     protected $nonFatalErrors = [];
 
-    /**
-     * Configure this sync instance.
-     *
-     * @return void
-     */
-    public function configure(Zend_Config $config)
-    {
-        $this->destination_db = new CatalogSync_Database_Destination_Pdo('destination_db');
-        $this->destination_db->configure($config->destination_db);
-
+    public function __construct(
+        protected PdoDestinationDatabase $destination_db,
+        protected array $allowedBlckCodes = [],
+    ) {
         // Configure our block codes to import.
-        if (!empty($config->allowedBlckCodes)) {
-            foreach ($config->allowedBlckCodes as $code) {
+        if (!empty($allowedBlckCodes)) {
+            foreach ($allowedBlckCodes as $code) {
                 if (!is_string($code)) {
-                    throw new Exception('allowedBlckCodes[] must be an array of strings in the config.');
+                    throw new \InvalidArgumentException('allowedBlckCodes[] must be an array of strings in the config.');
                 }
-                $this->allowedBlckCodes[] = $code;
             }
         }
     }
@@ -54,7 +49,7 @@ abstract class CatalogSync_Syncer_Abstract
             while ($this->destination_db->rollBack()) {
                 // Keep rolling back all nested transactions.
             }
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             // We will get a PDOException after the last transaction is rolled back.
             // We can now just move on.
         }
@@ -169,7 +164,7 @@ abstract class CatalogSync_Syncer_Abstract
 			WHERE
 				catalog_id = ?
 				AND term_code = ?');
-        foreach ($empty_term_results->fetchAll(PDO::FETCH_OBJ) as $term) {
+        foreach ($empty_term_results->fetchAll(\PDO::FETCH_OBJ) as $term) {
             $delete->execute([$term->catalog_id, $term->term_code]);
         }
         $pdo->query('DROP TEMPORARY TABLE temp_scbcrse_recent');
@@ -184,7 +179,7 @@ abstract class CatalogSync_Syncer_Abstract
 			FROM
 				catalog_term_inactive
 			');
-        foreach ($deactivated_term_results->fetchAll(PDO::FETCH_OBJ) as $term) {
+        foreach ($deactivated_term_results->fetchAll(\PDO::FETCH_OBJ) as $term) {
             $delete->execute([$term->catalog_id, $term->term_code]);
         }
         echo "...\tRemoved deactivated terms from derived table: catalog_term\n";
@@ -192,14 +187,13 @@ abstract class CatalogSync_Syncer_Abstract
         $pdo->commit();
 
         // Rebuild our "materialized views"
-        require_once __DIR__.'/../../harmoni/SQLUtils.php';
         echo "Updating materialized views\t";
-        harmoni_SQLUtils::runSQLfile(__DIR__.'/../../banner/sql/create_views.sql', $pdo);
+        \harmoni_SQLUtils::runSQLfile(__DIR__.'/../../../../application/library/banner/sql/create_views.sql', $pdo);
         echo "...\tUpdated materialized views\n";
 
         // Rebuild our indices now that tables are populated.
         echo "Rebuilding indices and optimizing tables\t";
-        harmoni_SQLUtils::runSQLfile(__DIR__.'/../../banner/sql/rebuild_indices.sql', $pdo);
+        \harmoni_SQLUtils::runSQLfile(__DIR__.'/../../../../application/library/banner/sql/rebuild_indices.sql', $pdo);
         echo "...\tRebuilt indices and optimed tables\n";
     }
 
@@ -216,7 +210,7 @@ abstract class CatalogSync_Syncer_Abstract
     /**
      * Answer the database we should copy into during copy.
      *
-     * @return CatalogSync_Database_Destination
+     * @return App\Service\CatalogSync\Database\DestinationDatabase
      */
     protected function getCopyTargetDatabase()
     {
@@ -250,15 +244,16 @@ abstract class CatalogSync_Syncer_Abstract
     protected function validateSource()
     {
         $source_db = $this->getCopySourceDatabase();
+
         // Verify that we have data in several key tables.
         if ($source_db->count('SSBSECT') < 1) {
-            throw new Exception('Source validation failed, SSBSECT has no rows.');
+            throw new \Exception('Source validation failed, SSBSECT has no rows.');
         }
         if ($source_db->count('SCBCRSE') < 1) {
-            throw new Exception('Source validation failed, SCBCRSE has no rows.');
+            throw new \Exception('Source validation failed, SCBCRSE has no rows.');
         }
         if ($source_db->count('STVTERM') < 1) {
-            throw new Exception('Source validation failed, STVTERM has no rows.');
+            throw new \Exception('Source validation failed, STVTERM has no rows.');
         }
     }
 

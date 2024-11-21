@@ -6,6 +6,11 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
+namespace App\Service\CatalogSync\Syncer;
+
+use App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase;
+use App\Service\CatalogSync\Database\Source\OciSourceDatabase;
+
 /**
  * This class implements the Banner-to-Catalog sync using the Banner OCI connection
  * on the source side and a MySQL-PDO connection on the destination side.
@@ -15,20 +20,14 @@
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class CatalogSync_Syncer_Oci extends CatalogSync_Syncer_Abstract implements CatalogSync_Syncer
+class OciSyncer extends AbstractSyncer implements Syncer
 {
-    protected $source_db;
-
-    /**
-     * Configure this sync instance.
-     *
-     * @return void
-     */
-    public function configure(Zend_Config $config)
-    {
-        parent::configure($config);
-        $this->source_db = new CatalogSync_Database_Source_Oci('source_banner_db');
-        $this->source_db->configure($config->source_banner_db);
+    public function __construct(
+        protected OciSourceDatabase $source_db,
+        protected PdoDestinationDatabase $destination_db,
+        protected array $allowedBlckCodes = [],
+    ) {
+        parent::__construct($destination_db, $allowedBlckCodes);
 
         /*
          * Custom Error handler function to throw exceptions on any PHP
@@ -45,7 +44,7 @@ class CatalogSync_Syncer_Oci extends CatalogSync_Syncer_Abstract implements Cata
      */
     public function exception_error_handler($errno, $errstr, $errfile = null, $errLine = null, $errcontext = null)
     {
-        throw new Exception($errstr, $errno);
+        throw new \Exception($errstr, $errno);
     }
 
     /**
@@ -75,7 +74,7 @@ class CatalogSync_Syncer_Oci extends CatalogSync_Syncer_Abstract implements Cata
     /**
      * Answer the database we should copy from.
      *
-     * @return CatalogSync_Database_Source
+     * @return App\Service\CatalogSync\Database\DestinationDatabase
      */
     protected function getCopySourceDatabase()
     {

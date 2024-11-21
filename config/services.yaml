@@ -67,3 +67,17 @@ services:
                 - 'urn:inet:middlebury.edu:genera:offering.SEM'
                 - 'urn:inet:middlebury.edu:genera:offering.PRC'
                 - 'urn:inet:middlebury.edu:genera:offering.WKS'
+    App\Service\CatalogSync\Director:
+        arguments:
+            $errorMailTo: '%env(SYNC_ERROR_MAIL_TO)%'
+            $errorMailFrom: '%env(SYNC_ERROR_MAIL_FROM)%'
+    App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase:
+        arguments:
+            $dsn: '%env(SYNC_DESTINATION_DSN)%'
+            $username: '%env(SYNC_DESTINATION_USERNAME)%'
+            $password: '%env(SYNC_DESTINATION_PASSWORD)%'
+    App\Service\CatalogSync\Database\Source\OciSourceDatabase:
+        arguments:
+            $tns: '%env(SYNC_SOURCE_OCI_TNS)%'
+            $username: '%env(SYNC_SOURCE_OCI_USERNAME)%'
+            $password: '%env(SYNC_SOURCE_OCI_PASSWORD)%'

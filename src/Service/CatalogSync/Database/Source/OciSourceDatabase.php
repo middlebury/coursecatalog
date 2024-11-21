@@ -6,6 +6,10 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
+namespace App\Service\CatalogSync\Database\Source;
+
+use App\Service\CatalogSync\Database\SourceDatabase;
+
 /**
  * This interface defines the requirements of source databases.
  *
@@ -14,51 +18,18 @@
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class CatalogSync_Database_Source_Oci implements CatalogSync_Database_Source
+class OciSourceDatabase implements SourceDatabase
 {
-    protected $config;
     protected $handle;
-    protected $name;
 
     /**
      * Constructor.
-     *
-     * @param string $name
      */
-    public function __construct($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * Configure this sync instance.
-     *
-     * @return void
-     */
-    public function configure(Zend_Config $config)
-    {
-        $this->config = $this->validateConfig($config);
-    }
-
-    /**
-     * Validate options for a banner configuration.
-     *
-     * @return Zend_Config
-     */
-    protected function validateConfig(Zend_Config $config)
-    {
-        // Check our configuration
-        if (empty($config->tns)) {
-            throw new Exception($this->name.'.tns must be specified in the config.');
-        }
-        if (empty($config->username)) {
-            throw new Exception($this->name.'.username must be specified in the config.');
-        }
-        if (empty($config->password)) {
-            $config->password = '';
-        }
-
-        return $config;
+    public function __construct(
+        private string $tns,
+        private string $username,
+        private string $password,
+    ) {
     }
 
     /**
@@ -68,10 +39,10 @@ class CatalogSync_Database_Source_Oci implements CatalogSync_Database_Source
      */
     public function connect()
     {
-        $this->handle = oci_connect($this->config->username, $this->config->password, $this->config->tns, 'UTF8');
+        $this->handle = oci_connect($this->username, $this->password, $this->tns, 'UTF8');
         if (!$this->handle) {
             $error = oci_error();
-            throw new Exception('Oracle connect failed with message: '.$error['message'], $error['code']);
+            throw new \Exception('Oracle connect failed with message: '.$error['message'], $error['code']);
         }
     }
 
@@ -96,7 +67,7 @@ class CatalogSync_Database_Source_Oci implements CatalogSync_Database_Source
      *     $where = 'first_name = :fname AND surname = :lname'
      *     $whereArgs = [':fname' => 'John', ':lname' => 'Doe']
      *
-     * @return CatalogSync_Database_Statement_Select
+     * @return App\Service\CatalogSync\Database\SelectStatement
      */
     public function query($table, array $columns = [], $where = '', $whereArgs = [])
     {
@@ -114,7 +85,7 @@ class CatalogSync_Database_Source_Oci implements CatalogSync_Database_Source
         // Parse and Execute the statement
         $statement = oci_parse($this->handle, $query);
         if ($error = oci_error($this->handle)) {
-            throw new Exception($error['message'], $error['code']);
+            throw new \Exception($error['message'], $error['code']);
         }
         if (!empty($whereArgs)) {
             foreach ($whereArgs as $name => $value) {
@@ -123,11 +94,11 @@ class CatalogSync_Database_Source_Oci implements CatalogSync_Database_Source
         }
         oci_execute($statement);
         if ($error = oci_error($this->handle)) {
-            throw new Exception($error['message'], $error['code']);
+            throw new \Exception($error['message'], $error['code']);
         }
 
         // Return our Select object that can handle converting results.
-        return new CatalogSync_Database_Statement_Select_Oci($statement);
+        return new OciSelectStatement($statement);
     }
 
     /**
@@ -148,14 +119,14 @@ class CatalogSync_Database_Source_Oci implements CatalogSync_Database_Source
         // Parse and Execute the statement
         $statement = oci_parse($this->handle, $query);
         if ($error = oci_error($this->handle)) {
-            throw new Exception($error['message'], $error['code']);
+            throw new \Exception($error['message'], $error['code']);
         }
         oci_execute($statement);
         if ($error = oci_error($this->handle)) {
-            throw new Exception($error['message'], $error['code']);
+            throw new \Exception($error['message'], $error['code']);
         }
 
-        $result = new CatalogSync_Database_Statement_Select_Oci($statement);
+        $result = new OciSelectStatement($statement);
         $row = $result->fetch();
         $result->closeCursor();
 

@@ -6,6 +6,12 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
+namespace App\Service\CatalogSync\Syncer;
+
+use App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase;
+use App\Service\CatalogSync\Database\Source\PdoMysqlSourceDatabase;
+use App\Service\CatalogSync\Syncer;
+
 /**
  * This class implements the Banner-to-Catalog sync using Pdo connection
  * on the source side and a MySQL-PDO connection on the destination side.
@@ -15,20 +21,14 @@
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class CatalogSync_Syncer_PdoMysql extends CatalogSync_Syncer_Abstract implements CatalogSync_Syncer
+class PdoMysqlSyncer extends AbstractSyncer implements Syncer
 {
-    protected $source_db;
-
-    /**
-     * Configure this sync instance.
-     *
-     * @return void
-     */
-    public function configure(Zend_Config $config)
-    {
-        parent::configure($config);
-        $this->source_db = new CatalogSync_Database_Source_PdoMysql('source_mysql_db');
-        $this->source_db->configure($config->source_mysql_db);
+    public function __construct(
+        protected PdoMysqlSourceDatabase $source_db,
+        protected PdoDestinationDatabase $destination_db,
+        protected array $allowedBlckCodes = [],
+    ) {
+        parent::__construct($destination_db, $allowedBlckCodes);
     }
 
     /**
@@ -58,7 +58,7 @@ class CatalogSync_Syncer_PdoMysql extends CatalogSync_Syncer_Abstract implements
     /**
      * Answer the database we should copy from.
      *
-     * @return CatalogSync_Database_Source
+     * @return App\Service\CatalogSync\Database\DestinationDatabase
      */
     protected function getCopySourceDatabase()
     {

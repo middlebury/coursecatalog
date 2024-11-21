@@ -6,6 +6,10 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
+namespace App\Service\CatalogSync\Database\Source;
+
+use App\Service\CatalogSync\Database\SelectStatement;
+
 /**
  * This interface defines the requirements of source databases.
  *
@@ -14,7 +18,7 @@
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class CatalogSync_Database_Statement_Select_PdoMysql implements CatalogSync_Database_Statement_Select
+class PdoMysqlSelectStatement implements SelectStatement
 {
     protected $statement;
     protected $column_conversions = [];
@@ -22,7 +26,7 @@ class CatalogSync_Database_Statement_Select_PdoMysql implements CatalogSync_Data
     /**
      * Constructor.
      */
-    public function __construct(PDOStatement $statement)
+    public function __construct(\PDOStatement $statement)
     {
         $this->statement = $statement;
     }
@@ -43,10 +47,10 @@ class CatalogSync_Database_Statement_Select_PdoMysql implements CatalogSync_Data
     public function fetch()
     {
         if (!isset($this->statement) || null === $this->statement) {
-            throw new Exception('Cannot fetch without a statement. Maybe it was already closed?');
+            throw new \Exception('Cannot fetch without a statement. Maybe it was already closed?');
         }
         // Fetch
-        $row = $this->statement->fetch(PDO::FETCH_OBJ, PDO::FETCH_ORI_NEXT);
+        $row = $this->statement->fetch(\PDO::FETCH_OBJ, \PDO::FETCH_ORI_NEXT);
         // End of results
         if (!$row) {
             return false;

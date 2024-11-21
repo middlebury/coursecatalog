@@ -6,6 +6,11 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
+namespace App\Service\CatalogSync\Database\Destination;
+
+use App\Service\CatalogSync\Database\AbstractPdoDatabase;
+use App\Service\CatalogSync\Database\DestinationDatabase;
+
 /**
  * This interface defines the requirements of destination databases.
  *
@@ -14,7 +19,7 @@
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class CatalogSync_Database_Destination_Pdo extends CatalogSync_Database_PdoAbstract implements CatalogSync_Database_Destination
+class PdoDestinationDatabase extends AbstractPdoDatabase implements DestinationDatabase
 {
     /**
      * Begin a transaction.
@@ -64,11 +69,11 @@ class CatalogSync_Database_Destination_Pdo extends CatalogSync_Database_PdoAbstr
      *
      * @param string $table
      *
-     * @return CatalogSync_Database_Statement_Insert
+     * @return App\Service\CatalogSync\Database\InsertStatement
      */
     public function prepareInsert($table, array $columns)
     {
-        return new CatalogSync_Database_Statement_Insert_Pdo($this->pdo, $table, $columns);
+        return new PdoInsertStatement($this->pdo, $table, $columns);
     }
 
     /**

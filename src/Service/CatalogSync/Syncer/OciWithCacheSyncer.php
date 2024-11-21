@@ -6,6 +6,12 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
+namespace App\Service\CatalogSync\Syncer;
+
+use App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase;
+use App\Service\CatalogSync\Database\Source\OciSourceDatabase;
+use App\Service\CatalogSync\Syncer;
+
 /**
  * This class implements the Banner-to-Catalog sync using the Banner OCI connection
  * on the source side and a MySQL-PDO connection on the temporary cache side,
@@ -16,38 +22,17 @@
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class CatalogSync_Syncer_OciWithCache extends CatalogSync_Syncer_Oci implements CatalogSync_Syncer
+class OciWithCacheSyncer extends OciSyncer implements Syncer
 {
-    protected $temp_db;
-    protected $temp_db_config;
-    protected $destination_db_config;
-
-    /**
-     * Configure this sync instance.
-     *
-     * @return void
-     */
-    public function configure(Zend_Config $config)
-    {
-        parent::configure($config);
-        $this->temp_db = new CatalogSync_Database_Destination_Pdo('temp_db');
-        $this->temp_db->configure($config->temp_db);
-
-        // Store our configurations for use with shell commands.
-        $this->temp_db_config = $this->temp_db->validateConfig($config->temp_db);
-        $this->destination_db_config = $this->destination_db->validateConfig($config->destination_db);
-
-        // Configure paths to shell commands.
-        if (!empty($config->mysqldump)) {
-            $this->mysqldump = $config->mysqldump;
-        } else {
-            $this->mysqldump = 'mysqldump';
-        }
-        if (!empty($config->mysql)) {
-            $this->mysql = $config->mysql;
-        } else {
-            $this->mysql = 'mysql';
-        }
+    public function __construct(
+        protected OciSourceDatabase $source_db,
+        protected PdoDestinationDatabase $destination_db,
+        protected PdoDestinationDatabase $temp_db,
+        protected array $allowedBlckCodes = [],
+        private string $mysqlCommand = 'mysql',
+        private string $mysqldumpCommand = 'mysqldump',
+    ) {
+        parent::__construct($source_db, $destination_db, $allowedBlckCodes);
     }
 
     /**
@@ -64,7 +49,7 @@ class CatalogSync_Syncer_OciWithCache extends CatalogSync_Syncer_Oci implements 
     /**
      * Answer the database we should copy into during copy.
      *
-     * @return CatalogSync_Database_Destination
+     * @return App\Service\CatalogSync\Database\DestinationDatabase
      */
     protected function getCopyTargetDatabase()
     {
@@ -82,13 +67,13 @@ class CatalogSync_Syncer_OciWithCache extends CatalogSync_Syncer_Oci implements 
 
         // Create the cache tables
         // Copy the primary table definitions into our temporary database
-        $command = $this->mysqldump.' --add-drop-table --single-transaction --no-data '
+        $command = $this->mysqldumpCommand.' --add-drop-table --single-transaction --no-data '
         .' -h '.escapeshellarg($this->destination_db_config->host)
         .' -u '.escapeshellarg($this->destination_db_config->username)
         .' -p'.escapeshellarg($this->destination_db_config->password)
         .' '.escapeshellarg($this->destination_db_config->database)
         .' '.implode(' ', $this->getBannerTables())
-        .' | '.$this->mysql
+        .' | '.$this->mysqlCommand
         .' -h '.escapeshellarg($this->temp_db_config->host)
         .' -u '.escapeshellarg($this->temp_db_config->username)
         .' -p'.escapeshellarg($this->temp_db_config->password)
@@ -97,7 +82,7 @@ class CatalogSync_Syncer_OciWithCache extends CatalogSync_Syncer_Oci implements 
         exec($command, $output, $return_var);
         echo "	done\n";
         if ($return_var) {
-            throw new Exception('Moving from temp database to primary database failed: '.implode("\n", $output));
+            throw new \Exception('Moving from temp database to primary database failed: '.implode("\n", $output));
         }
     }
 
@@ -110,13 +95,13 @@ class CatalogSync_Syncer_OciWithCache extends CatalogSync_Syncer_Oci implements 
     {
         // Copy the temporary tables into our primary database
         // If we haven't had any problems updating from banner, import into our primary database
-        $command = $this->mysqldump.' --add-drop-table --single-transaction '
+        $command = $this->mysqldumpCommand.' --add-drop-table --single-transaction '
             .' -h '.escapeshellarg($this->temp_db_config->host)
             .' -u '.escapeshellarg($this->temp_db_config->username)
             .' -p'.escapeshellarg($this->temp_db_config->password)
             .' '.escapeshellarg($this->temp_db_config->database)
             .' '.implode(' ', $this->getBannerTables())
-            .' | '.$this->mysql
+            .' | '.$this->mysqlCommand
             .' -h '.escapeshellarg($this->destination_db_config->host)
             .' -u '.escapeshellarg($this->destination_db_config->username)
             .' -p'.escapeshellarg($this->destination_db_config->password)
@@ -125,7 +110,7 @@ class CatalogSync_Syncer_OciWithCache extends CatalogSync_Syncer_Oci implements 
         exec($command, $output, $return_var);
         echo "	done\n";
         if ($return_var) {
-            throw new Exception('Moving from temp database to primary database failed: '.implode("\n", $output));
+            throw new \Exception('Moving from temp database to primary database failed: '.implode("\n", $output));
         }
     }
 

@@ -6,6 +6,10 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
+namespace App\Service\CatalogSync;
+
+use App\Service\CatalogSync\Syncer\Syncer;
+
 /**
  * This is an abstract class that should be extended by any controller that needs
  * access to the the OSID course manager or runtime manager.
@@ -15,25 +19,33 @@
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class CatalogSync_Director
+class Director
 {
-    protected $config;
-    protected $sync;
-
     /**
      * Set-up a new synchronization.
      *
      * @return void
      */
-    public function __construct(Zend_Config $config)
-    {
-        $this->config = $this->validateConfig($config);
-        $sync_class = $this->config->sync_class;
-        $this->sync = new $sync_class();
-        if (!$this->sync instanceof CatalogSync_Syncer) {
-            throw new Exception('sync_class '.$sync_class." doesn't implement the required CatalogSync_Syncer.");
+    public function __construct(
+        private Syncer $sync,
+        private string|array $errorMailTo,
+        private string $errorMailFrom,
+    ) {
+        if (is_array($errorMailTo)) {
+            foreach ($errorMailTo as $email) {
+                if (!filter_var($email, \FILTER_VALIDATE_EMAIL)) {
+                    throw new \InvalidArgumentException("errorMailTo, '$email', is not a valid email address.");
+                }
+            }
+        } else {
+            if (!filter_var($errorMailTo, \FILTER_VALIDATE_EMAIL)) {
+                throw new \InvalidArgumentException("errorMailTo, '".$errorMailTo."', is not a valid email address.");
+            }
         }
-        $this->sync->configure($this->config);
+        // From:
+        if (!filter_var($errorMailFrom, \FILTER_VALIDATE_EMAIL)) {
+            throw new \InvalidArgumentException("errorMailFrom, '".$errorMailFrom."', is not a valid email address.");
+        }
     }
 
     /**
@@ -81,40 +93,6 @@ class CatalogSync_Director
     }
 
     /**
-     * Validate our configuration.
-     *
-     * @return Zend_Config
-     */
-    protected function validateConfig(Zend_Config $config)
-    {
-        // Validate that our sync_class is defined.
-        if (empty($config->sync_class)) {
-            throw new Exception('sync_class is missing from the CatalogSync configuration.');
-        }
-        // Error mail-sending addresses -- Only needed if we have at least one To: address.
-        if (!empty($this->config->error_mail_to)) {
-            // To:
-            if (is_array($this->config->error_mail_to)) {
-                foreach ($this->config->error_mail_to as $email) {
-                    if (!filter_var($email, \FILTER_VALIDATE_EMAIL)) {
-                        throw new Exception("error_mail_to, '$email', is not a valid email address.");
-                    }
-                }
-            } else {
-                if (!filter_var($this->config->error_mail_to, \FILTER_VALIDATE_EMAIL)) {
-                    throw new Exception("error_mail_to, '".$this->config->error_mail_to."', is not a valid email address.");
-                }
-            }
-            // From:
-            if (!filter_var($this->config->error_mail_from, \FILTER_VALIDATE_EMAIL)) {
-                throw new Exception("error_mail_from, '".$this->config->error_mail_from."', is not a valid email address.");
-            }
-        }
-
-        return $config;
-    }
-
-    /**
      * Send messages to administrators on fatal exceptions.
      *
      * @return null
@@ -154,22 +132,22 @@ class CatalogSync_Director
      */
     protected function sendAdminMessage($subject, $message)
     {
-        if (empty($this->config->error_mail_to)) {
+        if (empty($this->errorMailTo)) {
             return;
         }
-        if (is_string($this->config->error_mail_to)) {
-            $to = $this->config->error_mail_to;
+        if (is_string($this->errorMailTo)) {
+            $to = $this->errorMailTo;
         } else {
-            $error_mail_to = [];
-            foreach ($this->config->error_mail_to as $email) {
-                $error_mail_to[] = $email;
+            $errorMailTo = [];
+            foreach ($this->errorMailTo as $email) {
+                $errorMailTo[] = $email;
             }
-            $to = implode(', ', $error_mail_to);
+            $to = implode(', ', $errorMailTo);
         }
         $host = trim(shell_exec('hostname'));
         $subject = "$host - COURSE CATALOG: $subject";
 
-        $headers = 'From: '.$this->config->error_mail_from."\r\n";
+        $headers = 'From: '.$this->errorMailFrom."\r\n";
         mail($to, $subject, $message, $headers);
     }
 }

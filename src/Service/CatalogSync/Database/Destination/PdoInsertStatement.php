@@ -6,6 +6,11 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
+namespace App\Service\CatalogSync\Database\Destination;
+
+use App\Service\CatalogSync\Database\InsertStatement;
+use App\Service\CatalogSync\Database\SelectStatement;
+
 /**
  * This interface defines an API for Insert statements.
  *
@@ -14,7 +19,7 @@
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class CatalogSync_Database_Statement_Insert_Pdo implements CatalogSync_Database_Statement_Insert
+class PdoInsertStatement implements InsertStatement
 {
     protected $statement;
     protected $columns = [];
@@ -22,7 +27,7 @@ class CatalogSync_Database_Statement_Insert_Pdo implements CatalogSync_Database_
     /**
      * Constructor.
      */
-    public function __construct(PDO $pdo, $table, array $columns)
+    public function __construct(\PDO $pdo, $table, array $columns)
     {
         // Build an array mapping columns to placeholder names.
         foreach ($columns as $column) {
@@ -44,7 +49,7 @@ class CatalogSync_Database_Statement_Insert_Pdo implements CatalogSync_Database_
      *
      * @return null
      */
-    public function insertAll(CatalogSync_Database_Statement_Select $select, ?callable $rowPrepCallback = null)
+    public function insertAll(SelectStatement $select, ?callable $rowPrepCallback = null)
     {
         while ($row = $select->fetch()) {
             if (null !== $rowPrepCallback) {
@@ -55,11 +60,11 @@ class CatalogSync_Database_Statement_Insert_Pdo implements CatalogSync_Database_
                     $this->statement->bindValue($placeholder, $row->$column);
                 }
                 $this->statement->execute();
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 ob_start();
                 $p = $this->statement->debugDumpParams();
                 $params = str_replace("\n", '; ', ob_get_clean());
-                throw new Exception(sprintf('Insert Error: %s. %s', $e->getMessage(), $params), $e->getCode(), $e);
+                throw new \Exception(sprintf('Insert Error: %s. %s', $e->getMessage(), $params), $e->getCode(), $e);
             }
         }
     }

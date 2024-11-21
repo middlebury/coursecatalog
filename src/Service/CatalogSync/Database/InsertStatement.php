@@ -6,6 +6,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
+namespace App\Service\CatalogSync\Database;
+
 /**
  * This interface defines an API for Insert statements.
  *
@@ -14,7 +16,7 @@
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-interface CatalogSync_Database_Statement_Insert
+interface InsertStatement
 {
     /**
      * Insert all rows found in the SelectStatement.
@@ -25,5 +27,5 @@ interface CatalogSync_Database_Statement_Insert
      *
      * @return null
      */
-    public function insertAll(CatalogSync_Database_Statement_Select $select, ?callable $rowPrepCallback = null);
+    public function insertAll(SelectStatement $select, ?callable $rowPrepCallback = null);
 }

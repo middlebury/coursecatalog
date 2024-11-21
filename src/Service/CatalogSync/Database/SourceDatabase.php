@@ -6,6 +6,8 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
+namespace App\Service\CatalogSync\Database;
+
 /**
  * This interface defines the requirements of source databases.
  *
@@ -14,7 +16,7 @@
  * @copyright Copyright &copy; 2016, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-interface CatalogSync_Database_Source extends CatalogSync_Database
+interface SourceDatabase extends Database
 {
     /**
      * Select results from a table.
