@@ -14,7 +14,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:update:build-indices',
     description: 'Build search indices in the local database.',
 )]
-class UpdateFromBannerCommand extends Command
+class BuildIndiciesCommand extends Command
 {
     public function __construct(
         private Runtime $osidRuntime,

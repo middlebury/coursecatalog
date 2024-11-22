@@ -14,7 +14,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:update:derived-tables-only',
     description: 'Update the derived tables in the local database.',
 )]
-class UpdateFromBannerCommand extends Command
+class UpdateDerivedTablesOnlyCommand extends Command
 {
     public function __construct(
         private Director $director,
