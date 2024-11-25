@@ -71,6 +71,10 @@ services:
         arguments:
             $errorMailTo: '%env(SYNC_ERROR_MAIL_TO)%'
             $errorMailFrom: '%env(SYNC_ERROR_MAIL_FROM)%'
+    App\Service\CatalogSync\Syncer\OciSyncer:
+        arguments:
+            $allowedBlckCodes:
+                - "CC"
     App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase:
         arguments:
             $dsn: '%env(SYNC_DESTINATION_DSN)%'
