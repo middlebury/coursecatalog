@@ -27,5 +27,5 @@ interface InsertStatement
      *
      * @return null
      */
-    public function insertAll(SelectStatement $select, ?callable $rowPrepCallback = null);
+    public function insertAll(SelectStatement $select, ?callable $rowPrepCallback = null): void;
 }

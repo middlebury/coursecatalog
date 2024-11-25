@@ -20,17 +20,15 @@ interface SelectStatement
 {
     /**
      * Fetch the next row of values.
-     *
-     * @return object
      */
-    public function fetch();
+    public function fetch(): object|false;
 
     /**
      * Close this query's cursor if open.
      *
      * @return null
      */
-    public function closeCursor();
+    public function closeCursor(): void;
 
     /**
      * Configure conversion for a column value.
@@ -39,7 +37,7 @@ interface SelectStatement
      *
      * @return null
      */
-    public function convertDate($column);
+    public function convertDate($column): void;
 
     /**
      * Configure conversion for a column value.
@@ -48,7 +46,7 @@ interface SelectStatement
      *
      * @return null
      */
-    public function convertText($column);
+    public function convertText($column): void;
 
     /**
      * Configure conversion for a column value.
@@ -57,5 +55,5 @@ interface SelectStatement
      *
      * @return null
      */
-    public function convertBin2Hex($column);
+    public function convertBin2Hex($column): void;
 }

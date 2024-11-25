@@ -20,52 +20,38 @@ interface Syncer
 {
     /**
      * Roll back any changes to the destination.
-     *
-     * @return void
      */
-    public function rollback();
+    public function rollback(): void;
 
     /**
      * Set up connections to our source and destination.
-     *
-     * @return void
      */
-    public function connect();
+    public function connect(): void;
 
     /**
      * Take actions before copying data.
-     *
-     * @return void
      */
-    public function preCopy();
+    public function preCopy(): void;
 
     /**
      * Copy data.
-     *
-     * @return void
      */
-    public function copy();
+    public function copy(): void;
 
     /**
      * Take actions after copying data.
-     *
-     * @return void
      */
-    public function postCopy();
+    public function postCopy(): void;
 
     /**
      * Update derived data in the destination database.
-     *
-     * @return void
      */
-    public function updateDerived();
+    public function updateDerived(): void;
 
     /**
      * Disconnect from our databases.
-     *
-     * @return void
      */
-    public function disconnect();
+    public function disconnect(): void;
 
     /**
      * Answer an array of non-fatal errors that should be mailed.
@@ -73,5 +59,5 @@ interface Syncer
      * @return array
      *               An array of error messages
      */
-    public function getNonFatalErrors();
+    public function getNonFatalErrors(): array;
 }

@@ -45,10 +45,8 @@ class OciSelectStatement implements SelectStatement
 
     /**
      * Fetch the next row of values.
-     *
-     * @return object
      */
-    public function fetch()
+    public function fetch(): object|false
     {
         if (!isset($this->statement) || null === $this->statement) {
             throw new \Exception('Cannot fetch without a statement. Maybe it was already closed?');
@@ -73,7 +71,7 @@ class OciSelectStatement implements SelectStatement
      *
      * @return null
      */
-    public function closeCursor()
+    public function closeCursor(): void
     {
         oci_free_statement($this->statement);
         unset($this->statement);
@@ -86,7 +84,7 @@ class OciSelectStatement implements SelectStatement
      *
      * @return null
      */
-    public function convertDate($column)
+    public function convertDate($column): void
     {
         $this->column_conversions[$column] = 'toMySQLDate';
     }
@@ -95,10 +93,8 @@ class OciSelectStatement implements SelectStatement
      * Convert an Oracle date to a MySQL date.
      *
      * @param string $value
-     *
-     * @return string
      */
-    protected function toMySQLDate($value)
+    protected function toMySQLDate($value): string
     {
         return date('Y-m-d', strtotime($value));
     }
@@ -110,17 +106,15 @@ class OciSelectStatement implements SelectStatement
      *
      * @return null
      */
-    public function convertText($column)
+    public function convertText($column): void
     {
         $this->column_conversions[$column] = 'loadText';
     }
 
     /**
      * Load text from an Oracle column if it exists.
-     *
-     * @return string
      */
-    protected function loadText($value)
+    protected function loadText($value): ?string
     {
         if (null === $value) {
             return null;
@@ -136,17 +130,15 @@ class OciSelectStatement implements SelectStatement
      *
      * @return null
      */
-    public function convertBin2Hex($column)
+    public function convertBin2Hex($column): void
     {
         $this->column_conversions[$column] = 'bin2Hex';
     }
 
     /**
      * Convert an Oracle binary column to a hex representation.
-     *
-     * @return string
      */
-    protected function bin2Hex($value)
+    protected function bin2Hex($value): string
     {
         return bin2hex($value);
     }

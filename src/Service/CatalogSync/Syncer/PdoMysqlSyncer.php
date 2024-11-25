@@ -9,6 +9,7 @@
 namespace App\Service\CatalogSync\Syncer;
 
 use App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase;
+use App\Service\CatalogSync\Database\DestinationDatabase;
 use App\Service\CatalogSync\Database\Source\PdoMysqlSourceDatabase;
 use App\Service\CatalogSync\Syncer;
 
@@ -33,10 +34,8 @@ class PdoMysqlSyncer extends AbstractSyncer implements Syncer
 
     /**
      * Set up connections to our source and destination.
-     *
-     * @return void
      */
-    public function connect()
+    public function connect(): void
     {
         parent::connect();
 
@@ -46,10 +45,8 @@ class PdoMysqlSyncer extends AbstractSyncer implements Syncer
 
     /**
      * Disconnect from our databases.
-     *
-     * @return void
      */
-    public function disconnect()
+    public function disconnect(): void
     {
         parent::disconnect();
         $this->source_db->disconnect();
@@ -60,7 +57,7 @@ class PdoMysqlSyncer extends AbstractSyncer implements Syncer
      *
      * @return App\Service\CatalogSync\Database\DestinationDatabase
      */
-    protected function getCopySourceDatabase()
+    protected function getCopySourceDatabase(): DestinationDatabase
     {
         return $this->source_db;
     }

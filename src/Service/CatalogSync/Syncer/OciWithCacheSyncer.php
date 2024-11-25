@@ -9,6 +9,7 @@
 namespace App\Service\CatalogSync\Syncer;
 
 use App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase;
+use App\Service\CatalogSync\Database\DestinationDatabase;
 use App\Service\CatalogSync\Database\Source\OciSourceDatabase;
 use App\Service\CatalogSync\Syncer;
 
@@ -37,10 +38,8 @@ class OciWithCacheSyncer extends OciSyncer implements Syncer
 
     /**
      * Set up connections to our source and destination.
-     *
-     * @return void
      */
-    public function connect()
+    public function connect(): void
     {
         parent::connect();
         $this->temp_db->connect();
@@ -51,17 +50,15 @@ class OciWithCacheSyncer extends OciSyncer implements Syncer
      *
      * @return App\Service\CatalogSync\Database\DestinationDatabase
      */
-    protected function getCopyTargetDatabase()
+    protected function getCopyTargetDatabase(): DestinationDatabase
     {
         return $this->temp_db;
     }
 
     /**
      * Take actions before copying data.
-     *
-     * @return void
      */
-    public function preCopy()
+    public function preCopy(): void
     {
         parent::preCopy();
 
@@ -88,10 +85,8 @@ class OciWithCacheSyncer extends OciSyncer implements Syncer
 
     /**
      * Take actions after copying data.
-     *
-     * @return void
      */
-    public function postCopy()
+    public function postCopy(): void
     {
         // Copy the temporary tables into our primary database
         // If we haven't had any problems updating from banner, import into our primary database
@@ -116,10 +111,8 @@ class OciWithCacheSyncer extends OciSyncer implements Syncer
 
     /**
      * Disconnect from our databases.
-     *
-     * @return void
      */
-    public function disconnect()
+    public function disconnect(): void
     {
         parent::disconnect();
         $this->temp_db->disconnect();
@@ -127,10 +120,8 @@ class OciWithCacheSyncer extends OciSyncer implements Syncer
 
     /**
      * Answer a list of the Banner tables.
-     *
-     * @return array
      */
-    protected function getBannerTables()
+    protected function getBannerTables(): array
     {
         return [
             'GORINTG',

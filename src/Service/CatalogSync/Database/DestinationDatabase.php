@@ -20,24 +20,18 @@ interface DestinationDatabase extends Database
 {
     /**
      * Begin a transaction.
-     *
-     * @return bool
      */
-    public function beginTransaction();
+    public function beginTransaction(): bool;
 
     /**
      * Commit a transaction.
-     *
-     * @return bool
      */
-    public function commit();
+    public function commit(): bool;
 
     /**
      * Roll back an open transaction.
-     *
-     * @return bool
      */
-    public function rollBack();
+    public function rollBack(): bool;
 
     /**
      * Truncate a table.
@@ -46,14 +40,14 @@ interface DestinationDatabase extends Database
      *
      * @return null
      */
-    public function truncate($table);
+    public function truncate($table): void;
 
     /**
      * Prepare an insert statement.
      *
      * @param string $table
      *
-     * @return CatalogSync_Database_Statement_Insert
+     * @return App\Service\CatalogSync\Database\InsertStatement
      */
-    public function prepareInsert($table, array $columns);
+    public function prepareInsert($table, array $columns): InsertStatement;
 }

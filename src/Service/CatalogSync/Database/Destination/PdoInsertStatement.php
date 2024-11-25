@@ -49,7 +49,7 @@ class PdoInsertStatement implements InsertStatement
      *
      * @return null
      */
-    public function insertAll(SelectStatement $select, ?callable $rowPrepCallback = null)
+    public function insertAll(SelectStatement $select, ?callable $rowPrepCallback = null): void
     {
         while ($row = $select->fetch()) {
             if (null !== $rowPrepCallback) {

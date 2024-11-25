@@ -10,6 +10,7 @@ namespace App\Service\CatalogSync\Database\Destination;
 
 use App\Service\CatalogSync\Database\AbstractPdoDatabase;
 use App\Service\CatalogSync\Database\DestinationDatabase;
+use App\Service\CatalogSync\Database\InsertStatement;
 
 /**
  * This interface defines the requirements of destination databases.
@@ -23,30 +24,24 @@ class PdoDestinationDatabase extends AbstractPdoDatabase implements DestinationD
 {
     /**
      * Begin a transaction.
-     *
-     * @return bool
      */
-    public function beginTransaction()
+    public function beginTransaction(): bool
     {
         return $this->pdo->beginTransaction();
     }
 
     /**
      * Commit a transaction.
-     *
-     * @return bool
      */
-    public function commit()
+    public function commit(): bool
     {
         return $this->pdo->commit();
     }
 
     /**
      * Roll back an open transaction.
-     *
-     * @return bool
      */
-    public function rollBack()
+    public function rollBack(): bool
     {
         return $this->pdo->rollBack();
     }
@@ -58,7 +53,7 @@ class PdoDestinationDatabase extends AbstractPdoDatabase implements DestinationD
      *
      * @return null
      */
-    public function truncate($table)
+    public function truncate($table): void
     {
         $statement = $this->pdo->prepare("DELETE FROM $table");
         $statement->execute();
@@ -71,7 +66,7 @@ class PdoDestinationDatabase extends AbstractPdoDatabase implements DestinationD
      *
      * @return App\Service\CatalogSync\Database\InsertStatement
      */
-    public function prepareInsert($table, array $columns)
+    public function prepareInsert($table, array $columns): InsertStatement
     {
         return new PdoInsertStatement($this->pdo, $table, $columns);
     }
@@ -81,7 +76,7 @@ class PdoDestinationDatabase extends AbstractPdoDatabase implements DestinationD
      *
      * @return PDO
      */
-    public function getPdo()
+    public function getPdo(): \PDO
     {
         return $this->pdo;
     }

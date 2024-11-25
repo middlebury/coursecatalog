@@ -25,17 +25,15 @@ interface SourceDatabase extends Database
      * @param optional array $columns
      * @param optional string $where
      *
-     * @return CatalogSync_Database_Statement_Select
+     * @return App\Service\CatalogSync\Database\SelectStatement
      */
-    public function query($table, array $columns = [], $where = '');
+    public function query($table, array $columns = [], $where = ''): SelectStatement;
 
     /**
      * Count results in a table.
      *
      * @param string $table
      * @param optional string $where
-     *
-     * @return int
      */
-    public function count($table, $where = '');
+    public function count($table, $where = ''): int;
 }

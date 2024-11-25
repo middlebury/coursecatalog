@@ -9,6 +9,7 @@
 namespace App\Service\CatalogSync\Database\Source;
 
 use App\Service\CatalogSync\Database\AbstractPdoDatabase;
+use App\Service\CatalogSync\Database\SelectStatement;
 use App\Service\CatalogSync\Database\SourceDatabase;
 
 /**
@@ -25,10 +26,8 @@ class PdoMysqlSourceDatabase extends AbstractPdoDatabase implements SourceDataba
      * Answer some database options for our connection.
      *
      * @param string $type
-     *
-     * @return array
      */
-    protected function getDatabaseOptions($type)
+    protected function getDatabaseOptions($type): array
     {
         $options = parent::getDatabaseOptions($type);
         $options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
@@ -45,7 +44,7 @@ class PdoMysqlSourceDatabase extends AbstractPdoDatabase implements SourceDataba
      *
      * @return App\Service\CatalogSync\Database\SelectStatement
      */
-    public function query($table, array $columns = [], $where = '')
+    public function query($table, array $columns = [], $where = ''): SelectStatement
     {
         // Strip the 'SATURN.' or 'GENERAL.' prefixes from table-names.
         preg_match('/^(.+\.)?(.+)$/', $table, $m);
@@ -74,10 +73,8 @@ class PdoMysqlSourceDatabase extends AbstractPdoDatabase implements SourceDataba
      *
      * @param string $table
      * @param optional string $where
-     *
-     * @return int
      */
-    public function count($table, $where = '')
+    public function count($table, $where = ''): int
     {
         $query = "SELECT COUNT(*) as num_rows FROM $table";
         if (!empty($where)) {

@@ -9,6 +9,7 @@
 namespace App\Service\CatalogSync\Syncer;
 
 use App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase;
+use App\Service\CatalogSync\Database\DestinationDatabase;
 
 /**
  * This class implements the Banner-to-Catalog sync using the Banner OCI connection
@@ -40,10 +41,8 @@ abstract class AbstractSyncer
 
     /**
      * Roll back any changes to the destination.
-     *
-     * @return void
      */
-    public function rollback()
+    public function rollback(): void
     {
         try {
             while ($this->destination_db->rollBack()) {
@@ -57,20 +56,16 @@ abstract class AbstractSyncer
 
     /**
      * Set up connections to our source and destination.
-     *
-     * @return void
      */
-    public function connect()
+    public function connect(): void
     {
         $this->destination_db->connect();
     }
 
     /**
      * Update derived data in the destination database.
-     *
-     * @return void
      */
-    public function updateDerived()
+    public function updateDerived(): void
     {
         $pdo = $this->destination_db->getPdo();
 
@@ -199,10 +194,8 @@ abstract class AbstractSyncer
 
     /**
      * Disconnect from our databases.
-     *
-     * @return void
      */
-    public function disconnect()
+    public function disconnect(): void
     {
         $this->destination_db->disconnect();
     }
@@ -212,17 +205,15 @@ abstract class AbstractSyncer
      *
      * @return App\Service\CatalogSync\Database\DestinationDatabase
      */
-    protected function getCopyTargetDatabase()
+    protected function getCopyTargetDatabase(): DestinationDatabase
     {
         return $this->destination_db;
     }
 
     /**
      * Take actions before copying data.
-     *
-     * @return void
      */
-    public function preCopy()
+    public function preCopy(): void
     {
         $this->validateSource();
         // Override if needed.
@@ -230,10 +221,8 @@ abstract class AbstractSyncer
 
     /**
      * Take actions after copying data.
-     *
-     * @return void
      */
-    public function postCopy()
+    public function postCopy(): void
     {
         // Override if needed.
     }
@@ -241,7 +230,7 @@ abstract class AbstractSyncer
     /**
      * Validate that the source database has data.
      */
-    protected function validateSource()
+    protected function validateSource(): void
     {
         $source_db = $this->getCopySourceDatabase();
 
@@ -259,10 +248,8 @@ abstract class AbstractSyncer
 
     /**
      * Copy data.
-     *
-     * @return void
      */
-    public function copy()
+    public function copy(): void
     {
         $source_db = $this->getCopySourceDatabase();
         $target_db = $this->getCopyTargetDatabase();
@@ -1190,7 +1177,7 @@ abstract class AbstractSyncer
      * Validate that user rows contain valid data and fix to avoid failure on
      * user accounts.
      */
-    public function preprocessSyvinstRow(object $row)
+    public function preprocessSyvinstRow(object $row): void
     {
         $missing = [];
         if (empty($row->SYVINST_FIRST_NAME)) {
@@ -1214,7 +1201,7 @@ abstract class AbstractSyncer
      * @return array
      *               An array of error messages
      */
-    public function getNonFatalErrors()
+    public function getNonFatalErrors(): array
     {
         return array_unique($this->nonFatalErrors);
     }

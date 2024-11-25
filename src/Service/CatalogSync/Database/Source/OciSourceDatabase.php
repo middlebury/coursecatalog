@@ -8,6 +8,7 @@
 
 namespace App\Service\CatalogSync\Database\Source;
 
+use App\Service\CatalogSync\Database\SelectStatement;
 use App\Service\CatalogSync\Database\SourceDatabase;
 
 /**
@@ -34,10 +35,8 @@ class OciSourceDatabase implements SourceDatabase
 
     /**
      * Set up connections to our source and destination.
-     *
-     * @return void
      */
-    public function connect()
+    public function connect(): void
     {
         $this->handle = oci_connect($this->username, $this->password, $this->tns, 'UTF8');
         if (!$this->handle) {
@@ -48,10 +47,8 @@ class OciSourceDatabase implements SourceDatabase
 
     /**
      * Disconnect from our databases.
-     *
-     * @return void
      */
-    public function disconnect()
+    public function disconnect(): void
     {
         oci_close($this->handle);
     }
@@ -69,7 +66,7 @@ class OciSourceDatabase implements SourceDatabase
      *
      * @return App\Service\CatalogSync\Database\SelectStatement
      */
-    public function query($table, array $columns = [], $where = '', $whereArgs = [])
+    public function query($table, array $columns = [], $where = '', $whereArgs = []): SelectStatement
     {
         // Build the query.
         if (empty($columns)) {
@@ -106,10 +103,8 @@ class OciSourceDatabase implements SourceDatabase
      *
      * @param string $table
      * @param optional string $where
-     *
-     * @return int
      */
-    public function count($table, $where = '')
+    public function count($table, $where = ''): int
     {
         $query = "SELECT COUNT(*) as NUM_ROWS FROM $table";
         if (!empty($where)) {

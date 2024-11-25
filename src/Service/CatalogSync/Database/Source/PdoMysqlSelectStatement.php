@@ -41,10 +41,8 @@ class PdoMysqlSelectStatement implements SelectStatement
 
     /**
      * Fetch the next row of values.
-     *
-     * @return object
      */
-    public function fetch()
+    public function fetch(): object|false
     {
         if (!isset($this->statement) || null === $this->statement) {
             throw new \Exception('Cannot fetch without a statement. Maybe it was already closed?');
@@ -69,7 +67,7 @@ class PdoMysqlSelectStatement implements SelectStatement
      *
      * @return null
      */
-    public function closeCursor()
+    public function closeCursor(): void
     {
         $this->statement->closeCursor();
     }
@@ -81,7 +79,7 @@ class PdoMysqlSelectStatement implements SelectStatement
      *
      * @return null
      */
-    public function convertDate($column)
+    public function convertDate($column): void
     {
         // Do nothing -- data should already be converted.
     }
@@ -93,7 +91,7 @@ class PdoMysqlSelectStatement implements SelectStatement
      *
      * @return null
      */
-    public function convertText($column)
+    public function convertText($column): void
     {
         // Do nothing -- data should already be converted.
     }
@@ -105,7 +103,7 @@ class PdoMysqlSelectStatement implements SelectStatement
      *
      * @return null
      */
-    public function convertBin2Hex($column)
+    public function convertBin2Hex($column): void
     {
         // Do nothing -- data should already be converted.
     }

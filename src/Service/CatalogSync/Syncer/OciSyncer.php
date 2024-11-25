@@ -10,6 +10,7 @@ namespace App\Service\CatalogSync\Syncer;
 
 use App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase;
 use App\Service\CatalogSync\Database\Source\OciSourceDatabase;
+use App\Service\CatalogSync\Database\SourceDatabase;
 
 /**
  * This class implements the Banner-to-Catalog sync using the Banner OCI connection
@@ -49,10 +50,8 @@ class OciSyncer extends AbstractSyncer implements Syncer
 
     /**
      * Set up connections to our source and destination.
-     *
-     * @return void
      */
-    public function connect()
+    public function connect(): void
     {
         parent::connect();
 
@@ -62,10 +61,8 @@ class OciSyncer extends AbstractSyncer implements Syncer
 
     /**
      * Disconnect from our databases.
-     *
-     * @return void
      */
-    public function disconnect()
+    public function disconnect(): void
     {
         parent::disconnect();
         $this->source_db->disconnect();
@@ -74,9 +71,9 @@ class OciSyncer extends AbstractSyncer implements Syncer
     /**
      * Answer the database we should copy from.
      *
-     * @return App\Service\CatalogSync\Database\DestinationDatabase
+     * @return App\Service\CatalogSync\Database\SourceDatabase
      */
-    protected function getCopySourceDatabase()
+    protected function getCopySourceDatabase(): SourceDatabase
     {
         return $this->source_db;
     }

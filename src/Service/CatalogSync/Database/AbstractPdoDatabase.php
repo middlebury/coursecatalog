@@ -41,10 +41,8 @@ class AbstractPdoDatabase
 
     /**
      * Set up connections to our source and destination.
-     *
-     * @return void
      */
-    public function connect()
+    public function connect(): void
     {
         $this->pdo = $this->createPdo();
     }
@@ -54,7 +52,7 @@ class AbstractPdoDatabase
      *
      * @return PDO
      */
-    private function createPdo()
+    private function createPdo(): \PDO
     {
         $dsn = $this->dsn;
         // Ensure that we have a charset specified.
@@ -73,10 +71,8 @@ class AbstractPdoDatabase
      * Answer some database options for our connection.
      *
      * @param string $type
-     *
-     * @return array
      */
-    private function getDatabaseOptions($type)
+    private function getDatabaseOptions($type): array
     {
         $options = [];
         $options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
@@ -95,10 +91,8 @@ class AbstractPdoDatabase
 
     /**
      * Disconnect from our databases.
-     *
-     * @return void
      */
-    public function disconnect()
+    public function disconnect(): void
     {
         $this->pdo = null;
     }

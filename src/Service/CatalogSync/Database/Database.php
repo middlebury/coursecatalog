@@ -20,15 +20,11 @@ interface Database
 {
     /**
      * Set up connections to our source and destination.
-     *
-     * @return void
      */
-    public function connect();
+    public function connect(): void;
 
     /**
      * Disconnect from our databases.
-     *
-     * @return void
      */
-    public function disconnect();
+    public function disconnect(): void;
 }
