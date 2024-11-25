@@ -43,7 +43,11 @@ class PdoDestinationDatabase extends AbstractPdoDatabase implements DestinationD
      */
     public function rollBack(): bool
     {
-        return $this->pdo->rollBack();
+        if ($this->pdo) {
+            return $this->pdo->rollBack();
+        }
+
+        return false;
     }
 
     /**

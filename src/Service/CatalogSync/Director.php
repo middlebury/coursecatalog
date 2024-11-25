@@ -65,7 +65,7 @@ class Director
             if (!empty($this->sync->getNonFatalErrors())) {
                 $this->sendNonFatalErrorMessage($this->sync->getNonFatalErrors());
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->sync->rollback();
             if (!empty($this->sync->getNonFatalErrors())) {
                 $this->sendNonFatalErrorMessage($this->sync->getNonFatalErrors());
@@ -85,7 +85,7 @@ class Director
             $this->sync->connect();
             $this->sync->updateDerived();
             $this->sync->disconnect();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->sync->rollback();
             $this->sendException($e);
             throw $e;
@@ -97,7 +97,7 @@ class Director
      *
      * @return null
      */
-    protected function sendException(Exception $e)
+    protected function sendException(\Exception $e)
     {
         $host = trim(shell_exec('hostname'));
         $subject = 'Synchonization Exception';
