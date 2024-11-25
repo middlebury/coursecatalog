@@ -11,7 +11,6 @@ use App\Service\Osid\IdMap;
 use App\Service\Osid\Runtime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -37,6 +36,7 @@ class Topics extends AbstractController
     public function listAction(?\osid_id_Id $catalogId = null, ?\osid_type_Type $type = null)
     {
         $data = $this->getTopicData($catalogId, $type);
+
         return $this->render('topics/list.html.twig', $data);
     }
 
