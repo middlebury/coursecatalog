@@ -39,6 +39,7 @@ class UpdateFromBannerCommand extends Command
             ini_set('memory_limit', $input->getOption('memory-limit'));
         }
 
+        $this->director->setOutput($output);
         $this->director->sync();
         $io->success('The local catalog database has been updated from Banner.');
 

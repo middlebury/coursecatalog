@@ -10,6 +10,7 @@ namespace App\Service\CatalogSync\Syncer;
 
 use App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase;
 use App\Service\CatalogSync\Database\DestinationDatabase;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * This class implements the Banner-to-Catalog sync using the Banner OCI connection
@@ -24,6 +25,7 @@ use App\Service\CatalogSync\Database\DestinationDatabase;
 abstract class AbstractSyncer
 {
     protected $nonFatalErrors = [];
+    protected $output;
 
     public function __construct(
         protected PdoDestinationDatabase $destination_db,
@@ -37,6 +39,16 @@ abstract class AbstractSyncer
                 }
             }
         }
+    }
+
+    /**
+     * Set the Output iterface to write status lines to.
+     *
+     * @param Symfony\Component\Console\Output\OutputInterface $output
+     */
+    public function setOutput(OutputInterface $output): void
+    {
+        $this->output = $output;
     }
 
     /**
@@ -70,7 +82,7 @@ abstract class AbstractSyncer
         $pdo = $this->destination_db->getPdo();
 
         // Build derived table for easier term-catalog lookups
-        echo "Updating derived tables\t";
+        $this->output->write("Updating derived tables\t");
         $pdo->beginTransaction();
         $ttermcat = $pdo->prepare('DELETE FROM catalog_term');
         $ttermcat->execute();
@@ -99,10 +111,10 @@ abstract class AbstractSyncer
             ]);
         }
 
-        echo "...\tUpdated derived table: catalog_term\n";
+        $this->output->write("...\tUpdated derived table: catalog_term\n");
 
         // Delete terms that have no sections in them.
-        echo "Removing empty terms\t";
+        $this->output->write("Removing empty terms\t");
 
         // We can't rely on our view to be created yet, so built the most recent version of
         // course rows data into a temporary table.
@@ -164,10 +176,10 @@ abstract class AbstractSyncer
         }
         $pdo->query('DROP TEMPORARY TABLE temp_scbcrse_recent');
         $pdo->query('DROP TEMPORARY TABLE temp_section_catalog');
-        echo "...\tRemoved empty terms from derived table: catalog_term\n";
+        $this->output->write("...\tRemoved empty terms from derived table: catalog_term\n");
 
         // Delete terms that are manually inactivated.
-        echo "Removing deactivated terms\t";
+        $this->output->write("Removing deactivated terms\t");
         $deactivated_term_results = $pdo->query(
             'SELECT
 				*
@@ -177,19 +189,19 @@ abstract class AbstractSyncer
         foreach ($deactivated_term_results->fetchAll(\PDO::FETCH_OBJ) as $term) {
             $delete->execute([$term->catalog_id, $term->term_code]);
         }
-        echo "...\tRemoved deactivated terms from derived table: catalog_term\n";
+        $this->output->write("...\tRemoved deactivated terms from derived table: catalog_term\n");
 
         $pdo->commit();
 
         // Rebuild our "materialized views"
-        echo "Updating materialized views\t";
+        $this->output->write("Updating materialized views\t");
         \harmoni_SQLUtils::runSQLfile(__DIR__.'/../../../../application/library/banner/sql/create_views.sql', $pdo);
-        echo "...\tUpdated materialized views\n";
+        $this->output->write("...\tUpdated materialized views\n");
 
         // Rebuild our indices now that tables are populated.
-        echo "Rebuilding indices and optimizing tables\t";
+        $this->output->write("Rebuilding indices and optimizing tables\t");
         \harmoni_SQLUtils::runSQLfile(__DIR__.'/../../../../application/library/banner/sql/rebuild_indices.sql', $pdo);
-        echo "...\tRebuilt indices and optimed tables\n";
+        $this->output->write("...\tRebuilt indices and optimed tables\n");
     }
 
     /**
@@ -256,7 +268,7 @@ abstract class AbstractSyncer
         $target_db->beginTransaction();
 
         // GENERAL.GORINTG
-        echo "Updating GORINTG\t";
+        $this->output->write("Updating GORINTG\t");
         $target_db->truncate('GORINTG');
         $insert = $target_db->prepareInsert('GORINTG', [
             'GORINTG_INTEGRATION_CDE',
@@ -269,10 +281,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('GENERAL.GORINTG');
         $select->convertDate('GORINTG_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated GORINTG\n";
+        $this->output->write("...\tUpdated GORINTG\n");
 
         // GENERAL.GTVDUNT
-        echo "Updating GTVDUNT\t";
+        $this->output->write("Updating GTVDUNT\t");
         $target_db->truncate('GTVDUNT');
         $insert = $target_db->prepareInsert('GTVDUNT', [
             'GTVDUNT_CODE',
@@ -285,10 +297,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('GENERAL.GTVDUNT');
         $select->convertDate('GTVDUNT_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated GTVDUNT\n";
+        $this->output->write("...\tUpdated GTVDUNT\n");
 
         // GENERAL.GTVINSM
-        echo "Updating GTVINSM\t";
+        $this->output->write("Updating GTVINSM\t");
         $target_db->truncate('GTVINSM');
         $insert = $target_db->prepareInsert('GTVINSM', [
             'GTVINSM_CODE',
@@ -300,10 +312,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('GENERAL.GTVINSM');
         $select->convertDate('GTVINSM_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated GTVINSM\n";
+        $this->output->write("...\tUpdated GTVINSM\n");
 
         // GENERAL.GTVINTP
-        echo "Updating GTVINTP\t";
+        $this->output->write("Updating GTVINTP\t");
         $target_db->truncate('GTVINTP');
         $insert = $target_db->prepareInsert('GTVINTP', [
             'GTVINTP_CODE',
@@ -315,10 +327,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('GENERAL.GTVINTP');
         $select->convertDate('GTVINTP_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated GTVINTP\n";
+        $this->output->write("...\tUpdated GTVINTP\n");
 
         // GENERAL.GTVMTYP
-        echo "Updating GTVMTYP\t";
+        $this->output->write("Updating GTVMTYP\t");
         $target_db->truncate('GTVMTYP');
         $insert = $target_db->prepareInsert('GTVMTYP', [
             'GTVMTYP_CODE',
@@ -331,10 +343,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('GENERAL.GTVMTYP');
         $select->convertDate('GTVMTYP_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated GTVMTYP\n";
+        $this->output->write("...\tUpdated GTVMTYP\n");
 
         // GENERAL.GTVSCHS
-        echo "Updating GTVSCHS\t";
+        $this->output->write("Updating GTVSCHS\t");
         $target_db->truncate('GTVSCHS');
         $insert = $target_db->prepareInsert('GTVSCHS', [
             'GTVSCHS_CODE',
@@ -345,10 +357,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('GENERAL.GTVSCHS');
         $select->convertDate('GTVSCHS_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated GTVSCHS\n";
+        $this->output->write("...\tUpdated GTVSCHS\n");
 
         // SATURN.SCBCRSE
-        echo "Updating SCBCRSE\t";
+        $this->output->write("Updating SCBCRSE\t");
         $target_db->truncate('SCBCRSE');
         $insert = $target_db->prepareInsert('SCBCRSE', [
             'SCBCRSE_SUBJ_CODE',
@@ -396,10 +408,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.SCBCRSE');
         $select->convertDate('SCBCRSE_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated SCBCRSE\n";
+        $this->output->write("...\tUpdated SCBCRSE\n");
 
         // SATURN.SCBDESC
-        echo "Updating SCBDESC\t";
+        $this->output->write("Updating SCBDESC\t");
         $target_db->truncate('SCBDESC');
         $insert = $target_db->prepareInsert('SCBDESC', [
             'SCBDESC_SUBJ_CODE',
@@ -422,10 +434,10 @@ abstract class AbstractSyncer
         $select->convertDate('SCBDESC_ACTIVITY_DATE');
         $select->convertText('SCBDESC_TEXT_NARRATIVE');
         $insert->insertAll($select);
-        echo "...\tUpdated SCBDESC\n";
+        $this->output->write("...\tUpdated SCBDESC\n");
 
         // SATURN.SCRATTR
-        echo "Updating SCRATTR\t";
+        $this->output->write("Updating SCRATTR\t");
         $target_db->truncate('SCRATTR');
         $insert = $target_db->prepareInsert('SCRATTR', [
             'SCRATTR_SUBJ_CODE',
@@ -443,10 +455,10 @@ abstract class AbstractSyncer
         ]);
         $select->convertDate('SCRATTR_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated SCRATTR\n";
+        $this->output->write("...\tUpdated SCRATTR\n");
 
         // SATURN.SCREQIV
-        echo "Updating SCREQIV\t";
+        $this->output->write("Updating SCREQIV\t");
         $target_db->truncate('SCREQIV');
         $insert = $target_db->prepareInsert('SCREQIV', [
             'SCREQIV_SUBJ_CODE',
@@ -470,10 +482,10 @@ abstract class AbstractSyncer
         ]);
         $select->convertDate('SCREQIV_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated SCREQIV\n";
+        $this->output->write("...\tUpdated SCREQIV\n");
 
         // SATURN.SCRLEVL
-        echo "Updating SCRLEVL\t";
+        $this->output->write("Updating SCRLEVL\t");
         $target_db->truncate('SCRLEVL');
         $insert = $target_db->prepareInsert('SCRLEVL', [
             'SCRLEVL_SUBJ_CODE',
@@ -491,10 +503,10 @@ abstract class AbstractSyncer
         ]);
         $select->convertDate('SCRLEVL_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated SCRLEVL\n";
+        $this->output->write("...\tUpdated SCRLEVL\n");
 
         // SATURN.SOBPTRM
-        echo "Updating SOBPTRM\t";
+        $this->output->write("Updating SOBPTRM\t");
         $target_db->truncate('SOBPTRM');
         $insert = $target_db->prepareInsert('SOBPTRM', [
             'SOBPTRM_TERM_CODE',
@@ -542,10 +554,10 @@ abstract class AbstractSyncer
         $select->convertDate('SOBPTRM_REAS_SCORE_OPEN_DATE');
         $select->convertDate('SOBPTRM_REAS_SCORE_CUTOFF_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated SOBPTRM\n";
+        $this->output->write("...\tUpdated SOBPTRM\n");
 
         // SATURN.SSBXLST
-        echo "Updating SSBXLST\t";
+        $this->output->write("Updating SSBXLST\t");
         $target_db->truncate('SSBXLST');
         $insert = $target_db->prepareInsert('SSBXLST', [
             'SSBXLST_TERM_CODE',
@@ -559,10 +571,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.SSBXLST');
         $select->convertDate('SSBXLST_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated SSBXLST\n";
+        $this->output->write("...\tUpdated SSBXLST\n");
 
         // SATURN.SSRXLST
-        echo "Updating SSRXLST\t";
+        $this->output->write("Updating SSRXLST\t");
         $target_db->truncate('SSRXLST');
         $insert = $target_db->prepareInsert('SSRXLST', [
             'SSRXLST_TERM_CODE',
@@ -573,10 +585,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.SSRXLST');
         $select->convertDate('SSRXLST_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated SSRXLST\n";
+        $this->output->write("...\tUpdated SSRXLST\n");
 
         // SATURN.SIRASGN
-        echo "Updating SIRASGN\t";
+        $this->output->write("Updating SIRASGN\t");
         $target_db->truncate('SIRASGN');
         $insert = $target_db->prepareInsert('SIRASGN', [
             'SIRASGN_TERM_CODE',
@@ -600,10 +612,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.SIRASGN');
         $select->convertDate('SIRASGN_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated SIRASGN\n";
+        $this->output->write("...\tUpdated SIRASGN\n");
 
         // SATURN.SSBDESC
-        echo "Updating SSBDESC\t";
+        $this->output->write("Updating SSBDESC\t");
         $target_db->truncate('SSBDESC');
         $insert = $target_db->prepareInsert('SSBDESC', [
             'SSBDESC_TERM_CODE',
@@ -622,10 +634,10 @@ abstract class AbstractSyncer
         $select->convertDate('SSBDESC_ACTIVITY_DATE');
         $select->convertText('SSBDESC_TEXT_NARRATIVE');
         $insert->insertAll($select);
-        echo "...\tUpdated SSBDESC\n";
+        $this->output->write("...\tUpdated SSBDESC\n");
 
         // SATURN.SSBSECT
-        echo "Updating SSBSECT\t";
+        $this->output->write("Updating SSBSECT\t");
         $target_db->truncate('SSBSECT');
         $insert = $target_db->prepareInsert('SSBSECT', [
             'SSBSECT_TERM_CODE',
@@ -706,10 +718,10 @@ abstract class AbstractSyncer
         $select->convertDate('SSBSECT_LEARNER_REGSTART_FDATE');
         $select->convertDate('SSBSECT_LEARNER_REGSTART_TDATE');
         $insert->insertAll($select);
-        echo "...\tUpdated SSBSECT\n";
+        $this->output->write("...\tUpdated SSBSECT\n");
 
         // SATURN.SSRATTR
-        echo "Updating SSRATTR\t";
+        $this->output->write("Updating SSRATTR\t");
         $target_db->truncate('SSRATTR');
         $insert = $target_db->prepareInsert('SSRATTR', [
             'SSRATTR_TERM_CODE',
@@ -720,10 +732,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.SSRATTR');
         $select->convertDate('SSRATTR_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated SSRATTR\n";
+        $this->output->write("...\tUpdated SSRATTR\n");
 
         // SATURN.SSRBLCK
-        echo "Updating SSRBLCK\t";
+        $this->output->write("Updating SSRBLCK\t");
         $target_db->truncate('SSRBLCK');
         $insert = $target_db->prepareInsert('SSRBLCK', [
             'SSRBLCK_TERM_CODE',
@@ -748,10 +760,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.SSRBLCK', [], $where);
         $select->convertDate('SSRBLCK_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated SSRBLCK\n";
+        $this->output->write("...\tUpdated SSRBLCK\n");
 
         // SATURN.SSRMEET
-        echo "Updating SSRMEET\t";
+        $this->output->write("Updating SSRMEET\t");
         $target_db->truncate('SSRMEET');
         $insert = $target_db->prepareInsert('SSRMEET', [
             'SSRMEET_TERM_CODE',
@@ -790,10 +802,10 @@ abstract class AbstractSyncer
         $select->convertDate('SSRMEET_START_DATE');
         $select->convertDate('SSRMEET_END_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated SSRMEET\n";
+        $this->output->write("...\tUpdated SSRMEET\n");
 
         // SATURN.STVACYR
-        echo "Updating STVACYR\t";
+        $this->output->write("Updating STVACYR\t");
         $target_db->truncate('STVACYR');
         $insert = $target_db->prepareInsert('STVACYR', [
             'STVACYR_CODE',
@@ -804,10 +816,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVACYR');
         $select->convertDate('STVACYR_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVACYR\n";
+        $this->output->write("...\tUpdated STVACYR\n");
 
         // SATURN.STVAPRV
-        echo "Updating STVAPRV\t";
+        $this->output->write("Updating STVAPRV\t");
         $target_db->truncate('STVAPRV');
         $insert = $target_db->prepareInsert('STVAPRV', [
             'STVAPRV_CODE',
@@ -817,10 +829,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVAPRV');
         $select->convertDate('STVAPRV_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVAPRV\n";
+        $this->output->write("...\tUpdated STVAPRV\n");
 
         // SATURN.STVASTY
-        echo "Updating STVASTY\t";
+        $this->output->write("Updating STVASTY\t");
         $target_db->truncate('STVASTY');
         $insert = $target_db->prepareInsert('STVASTY', [
             'STVASTY_CODE',
@@ -830,10 +842,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVASTY');
         $select->convertDate('STVASTY_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVASTY\n";
+        $this->output->write("...\tUpdated STVASTY\n");
 
         // SATURN.STVATTR
-        echo "Updating STVATTR\t";
+        $this->output->write("Updating STVATTR\t");
         $target_db->truncate('STVATTR');
         $insert = $target_db->prepareInsert('STVATTR', [
             'STVATTR_CODE',
@@ -843,10 +855,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVATTR');
         $select->convertDate('STVATTR_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVATTR\n";
+        $this->output->write("...\tUpdated STVATTR\n");
 
         // SATURN.STVBLCK
-        echo "Updating STVBLCK\t";
+        $this->output->write("Updating STVBLCK\t");
         $target_db->truncate('STVBLCK');
         $insert = $target_db->prepareInsert('STVBLCK', [
             'STVBLCK_CODE',
@@ -856,10 +868,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVBLCK');
         $select->convertDate('STVBLCK_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVBLCK\n";
+        $this->output->write("...\tUpdated STVBLCK\n");
 
         // SATURN.STVBLDG
-        echo "Updating STVBLDG\t";
+        $this->output->write("Updating STVBLDG\t");
         $target_db->truncate('STVBLDG');
         $insert = $target_db->prepareInsert('STVBLDG', [
             'STVBLDG_CODE',
@@ -870,10 +882,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVBLDG');
         $select->convertDate('STVBLDG_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVBLDG\n";
+        $this->output->write("...\tUpdated STVBLDG\n");
 
         // SATURN.STVCAMP
-        echo "Updating STVCAMP\t";
+        $this->output->write("Updating STVCAMP\t");
         $target_db->truncate('STVCAMP');
         $insert = $target_db->prepareInsert('STVCAMP', [
             'STVCAMP_CODE',
@@ -884,10 +896,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVCAMP');
         $select->convertDate('STVCAMP_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVCAMP\n";
+        $this->output->write("...\tUpdated STVCAMP\n");
 
         // SATURN.STVCIPC
-        echo "Updating STVCIPC\t";
+        $this->output->write("Updating STVCIPC\t");
         $target_db->truncate('STVCIPC');
         $insert = $target_db->prepareInsert('STVCIPC', [
             'STVCIPC_CODE',
@@ -901,10 +913,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVCIPC');
         $select->convertDate('STVCIPC_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVCIPC\n";
+        $this->output->write("...\tUpdated STVCIPC\n");
 
         // SATURN.STVCOLL
-        echo "Updating STVCOLL\t";
+        $this->output->write("Updating STVCOLL\t");
         $target_db->truncate('STVCOLL');
         $insert = $target_db->prepareInsert('STVCOLL', [
             'STVCOLL_CODE',
@@ -925,10 +937,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVCOLL');
         $select->convertDate('STVCOLL_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVCOLL\n";
+        $this->output->write("...\tUpdated STVCOLL\n");
 
         // SATURN.STVCOMT
-        echo "Updating STVCOMT\t";
+        $this->output->write("Updating STVCOMT\t");
         $target_db->truncate('STVCOMT');
         $insert = $target_db->prepareInsert('STVCOMT', [
             'STVCOMT_CODE',
@@ -939,10 +951,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVCOMT');
         $select->convertDate('STVCOMT_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVCOMT\n";
+        $this->output->write("...\tUpdated STVCOMT\n");
 
         // SATURN.STVCSTA
-        echo "Updating STVCSTA\t";
+        $this->output->write("Updating STVCSTA\t");
         $target_db->truncate('STVCSTA');
         $insert = $target_db->prepareInsert('STVCSTA', [
             'STVCSTA_CODE',
@@ -953,10 +965,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVCSTA');
         $select->convertDate('STVCSTA_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVCSTA\n";
+        $this->output->write("...\tUpdated STVCSTA\n");
 
         // SATURN.STVDEPT
-        echo "Updating STVDEPT\t";
+        $this->output->write("Updating STVDEPT\t");
         $target_db->truncate('STVDEPT');
         $insert = $target_db->prepareInsert('STVDEPT', [
             'STVDEPT_CODE',
@@ -968,10 +980,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVDEPT');
         $select->convertDate('STVDEPT_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVDEPT\n";
+        $this->output->write("...\tUpdated STVDEPT\n");
 
         // SATURN.STVDIVS
-        echo "Updating STVDIVS\t";
+        $this->output->write("Updating STVDIVS\t");
         $target_db->truncate('STVDIVS');
         $insert = $target_db->prepareInsert('STVDIVS', [
             'STVDIVS_CODE',
@@ -981,10 +993,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVDIVS');
         $select->convertDate('STVDIVS_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVDIVS\n";
+        $this->output->write("...\tUpdated STVDIVS\n");
 
         // SATURN.STVFCNT
-        echo "Updating STVFCNT\t";
+        $this->output->write("Updating STVFCNT\t");
         $target_db->truncate('STVFCNT');
         $insert = $target_db->prepareInsert('STVFCNT', [
             'STVFCNT_CODE',
@@ -994,10 +1006,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVFCNT');
         $select->convertDate('STVFCNT_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVFCNT\n";
+        $this->output->write("...\tUpdated STVFCNT\n");
 
         // SATURN.STVLEVL
-        echo "Updating STVLEVL\t";
+        $this->output->write("Updating STVLEVL\t");
         $target_db->truncate('STVLEVL');
         $insert = $target_db->prepareInsert('STVLEVL', [
             'STVLEVL_CODE',
@@ -1012,10 +1024,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVLEVL');
         $select->convertDate('STVLEVL_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVLEVL\n";
+        $this->output->write("...\tUpdated STVLEVL\n");
 
         // SATURN.STVMEET
-        echo "Updating STVMEET\t";
+        $this->output->write("Updating STVMEET\t");
         $target_db->truncate('STVMEET');
         $insert = $target_db->prepareInsert('STVMEET', [
             'STVMEET_CODE',
@@ -1033,10 +1045,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVMEET');
         $select->convertDate('STVMEET_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVMEET\n";
+        $this->output->write("...\tUpdated STVMEET\n");
 
         // SATURN.STVPTRM
-        echo "Updating STVPTRM\t";
+        $this->output->write("Updating STVPTRM\t");
         $target_db->truncate('STVPTRM');
         $insert = $target_db->prepareInsert('STVPTRM', [
             'STVPTRM_CODE',
@@ -1052,10 +1064,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVPTRM');
         $select->convertDate('STVPTRM_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVPTRM\n";
+        $this->output->write("...\tUpdated STVPTRM\n");
 
         // SATURN.STVPWAV
-        echo "Updating STVPWAV\t";
+        $this->output->write("Updating STVPWAV\t");
         $target_db->truncate('STVPWAV');
         $insert = $target_db->prepareInsert('STVPWAV', [
             'STVPWAV_CODE',
@@ -1065,10 +1077,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVPWAV');
         $select->convertDate('STVPWAV_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVPWAV\n";
+        $this->output->write("...\tUpdated STVPWAV\n");
 
         // SATURN.STVREPS
-        echo "Updating STVREPS\t";
+        $this->output->write("Updating STVREPS\t");
         $target_db->truncate('STVREPS');
         $insert = $target_db->prepareInsert('STVREPS', [
             'STVREPS_CODE',
@@ -1078,10 +1090,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVREPS');
         $select->convertDate('STVREPS_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVREPS\n";
+        $this->output->write("...\tUpdated STVREPS\n");
 
         // SATURN.STVSCHD
-        echo "Updating STVSCHD\t";
+        $this->output->write("Updating STVSCHD\t");
         $target_db->truncate('STVSCHD');
         $insert = $target_db->prepareInsert('STVSCHD', [
             'STVSCHD_CODE',
@@ -1096,10 +1108,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVSCHD');
         $select->convertDate('STVSCHD_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVSCHD\n";
+        $this->output->write("...\tUpdated STVSCHD\n");
 
         // SATURN.STVSUBJ
-        echo "Updating STVSUBJ\t";
+        $this->output->write("Updating STVSUBJ\t");
         $target_db->truncate('STVSUBJ');
         $insert = $target_db->prepareInsert('STVSUBJ', [
             'STVSUBJ_CODE',
@@ -1111,10 +1123,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVSUBJ');
         $select->convertDate('STVSUBJ_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVSUBJ\n";
+        $this->output->write("...\tUpdated STVSUBJ\n");
 
         // SATURN.STVTERM
-        echo "Updating STVTERM\t";
+        $this->output->write("Updating STVTERM\t");
         $target_db->truncate('STVTERM');
         $insert = $target_db->prepareInsert('STVTERM', [
             'STVTERM_CODE',
@@ -1139,10 +1151,10 @@ abstract class AbstractSyncer
         $select->convertDate('STVTERM_HOUSING_START_DATE');
         $select->convertDate('STVTERM_HOUSING_END_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVTERM\n";
+        $this->output->write("...\tUpdated STVTERM\n");
 
         // SATURN.STVTRMT
-        echo "Updating STVTRMT\t";
+        $this->output->write("Updating STVTRMT\t");
         $target_db->truncate('STVTRMT');
         $insert = $target_db->prepareInsert('STVTRMT', [
             'STVTRMT_CODE',
@@ -1152,10 +1164,10 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN.STVTRMT');
         $select->convertDate('STVTRMT_ACTIVITY_DATE');
         $insert->insertAll($select);
-        echo "...\tUpdated STVTRMT\n";
+        $this->output->write("...\tUpdated STVTRMT\n");
 
         // SATURN_MIDD.SYVINST
-        echo "Updating SYVINST\t";
+        $this->output->write("Updating SYVINST\t");
         $target_db->truncate('SYVINST');
         $insert = $target_db->prepareInsert('SYVINST', [
             'SYVINST_TERM_CODE',
@@ -1168,7 +1180,7 @@ abstract class AbstractSyncer
         $select = $source_db->query('SATURN_MIDD.SYVINST');
         $select->convertBin2Hex('WEB_ID');
         $insert->insertAll($select, [$this, 'preprocessSyvinstRow']);
-        echo "...\tUpdated SYVINST\n";
+        $this->output->write("...\tUpdated SYVINST\n");
 
         $target_db->commit();
     }

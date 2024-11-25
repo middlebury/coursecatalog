@@ -8,6 +8,8 @@
 
 namespace App\Service\CatalogSync\Syncer;
 
+use Symfony\Component\Console\Output\OutputInterface;
+
 /**
  * This interface defines the requirements of Sync classes. Classes SHOULD throw.
  *
@@ -18,6 +20,13 @@ namespace App\Service\CatalogSync\Syncer;
  */
 interface Syncer
 {
+    /**
+     * Set the Output iterface to write status lines to.
+     *
+     * @param Symfony\Component\Console\Output\OutputInterface $output
+     */
+    public function setOutput(OutputInterface $output): void;
+
     /**
      * Roll back any changes to the destination.
      */

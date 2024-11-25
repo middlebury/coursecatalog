@@ -75,9 +75,9 @@ class OciWithCacheSyncer extends OciSyncer implements Syncer
         .' -u '.escapeshellarg($this->temp_db_config->username)
         .' -p'.escapeshellarg($this->temp_db_config->password)
         .' -D '.escapeshellarg($this->temp_db_config->database);
-        echo 'Creating cache tables	...';
+        $this->output->write('Creating cache tables	...');
         exec($command, $output, $return_var);
-        echo "	done\n";
+        $this->output->write("	done\n");
         if ($return_var) {
             throw new \Exception('Moving from temp database to primary database failed: '.implode("\n", $output));
         }
@@ -101,9 +101,9 @@ class OciWithCacheSyncer extends OciSyncer implements Syncer
             .' -u '.escapeshellarg($this->destination_db_config->username)
             .' -p'.escapeshellarg($this->destination_db_config->password)
             .' -D '.escapeshellarg($this->destination_db_config->database);
-        echo 'Moving from cache database to primary database 	...';
+        $this->output->write('Moving from cache database to primary database 	...');
         exec($command, $output, $return_var);
-        echo "	done\n";
+        $this->output->write("	done\n");
         if ($return_var) {
             throw new \Exception('Moving from temp database to primary database failed: '.implode("\n", $output));
         }

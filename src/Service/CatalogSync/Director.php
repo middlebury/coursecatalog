@@ -9,6 +9,7 @@
 namespace App\Service\CatalogSync;
 
 use App\Service\CatalogSync\Syncer\Syncer;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
@@ -23,6 +24,8 @@ use Symfony\Component\Mime\Email;
  */
 class Director
 {
+    protected $output;
+
     /**
      * Set-up a new synchronization.
      *
@@ -49,6 +52,17 @@ class Director
         if (!filter_var($errorMailFrom, \FILTER_VALIDATE_EMAIL)) {
             throw new \InvalidArgumentException("errorMailFrom, '".$errorMailFrom."', is not a valid email address.");
         }
+    }
+
+    /**
+     * Set the Output iterface to write status lines to.
+     *
+     * @param Symfony\Component\Console\Output\OutputInterface $output
+     */
+    public function setOutput(OutputInterface $output): void
+    {
+        $this->output = $output;
+        $this->sync->setOutput($output);
     }
 
     /**

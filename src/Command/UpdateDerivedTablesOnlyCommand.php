@@ -39,6 +39,7 @@ class UpdateDerivedTablesOnlyCommand extends Command
             ini_set('memory_limit', $input->getOption('memory-limit'));
         }
 
+        $this->director->setOutput($output);
         $this->director->updateDerived();
         $io->success('Derived tables in the local catalog database have been updated.');
 
