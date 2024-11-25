@@ -26,10 +26,10 @@ use App\Service\CatalogSync\Syncer;
 class OciWithCacheSyncer extends OciSyncer implements Syncer
 {
     public function __construct(
-        protected OciSourceDatabase $source_db,
-        protected PdoDestinationDatabase $destination_db,
+        OciSourceDatabase $source_db,
+        PdoDestinationDatabase $destination_db,
         protected PdoDestinationDatabase $temp_db,
-        protected array $allowedBlckCodes = [],
+        array $allowedBlckCodes = [],
         private string $mysqlCommand = 'mysql',
         private string $mysqldumpCommand = 'mysqldump',
     ) {

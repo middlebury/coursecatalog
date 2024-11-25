@@ -25,8 +25,8 @@ class OciSyncer extends AbstractSyncer implements Syncer
 {
     public function __construct(
         protected OciSourceDatabase $source_db,
-        protected PdoDestinationDatabase $destination_db,
-        protected array $allowedBlckCodes = [],
+        PdoDestinationDatabase $destination_db,
+        array $allowedBlckCodes = [],
     ) {
         parent::__construct($destination_db, $allowedBlckCodes);
 
