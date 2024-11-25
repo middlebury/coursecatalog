@@ -9,6 +9,8 @@
 namespace App\Service\CatalogSync;
 
 use App\Service\CatalogSync\Syncer\Syncer;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 /**
  * This is an abstract class that should be extended by any controller that needs
@@ -30,6 +32,7 @@ class Director
         private Syncer $sync,
         private string|array $errorMailTo,
         private string $errorMailFrom,
+        private MailerInterface $mailer,
     ) {
         if (is_array($errorMailTo)) {
             foreach ($errorMailTo as $email) {
@@ -135,19 +138,22 @@ class Director
         if (empty($this->errorMailTo)) {
             return;
         }
+        $errorMailTo = [];
         if (is_string($this->errorMailTo)) {
-            $to = $this->errorMailTo;
+            $errorMailTo[] = $this->errorMailTo;
         } else {
-            $errorMailTo = [];
             foreach ($this->errorMailTo as $email) {
                 $errorMailTo[] = $email;
             }
-            $to = implode(', ', $errorMailTo);
         }
         $host = trim(shell_exec('hostname'));
-        $subject = "$host - COURSE CATALOG: $subject";
-
-        $headers = 'From: '.$this->errorMailFrom."\r\n";
-        mail($to, $subject, $message, $headers);
+        $email = (new Email())
+            ->from($this->errorMailFrom)
+            ->subject("$host - COURSE CATALOG: $subject")
+            ->text($message);
+        foreach ($errorMailTo as $address) {
+            $email->addTo($address);
+        }
+        $this->mailer->send($email);
     }
 }
