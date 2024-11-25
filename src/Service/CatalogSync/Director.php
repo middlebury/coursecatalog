@@ -10,6 +10,7 @@ namespace App\Service\CatalogSync;
 
 use App\Service\CatalogSync\Syncer\Syncer;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
@@ -24,6 +25,7 @@ use Symfony\Component\Mime\Email;
  */
 class Director
 {
+    private $sync;
     protected $output;
 
     /**
@@ -32,7 +34,8 @@ class Director
      * @return void
      */
     public function __construct(
-        private Syncer $sync,
+        private ContainerInterface $container,
+        private string $syncStrategy,
         private string|array $errorMailTo,
         private string $errorMailFrom,
         private MailerInterface $mailer,
@@ -62,7 +65,16 @@ class Director
     public function setOutput(OutputInterface $output): void
     {
         $this->output = $output;
-        $this->sync->setOutput($output);
+        $this->getSync()->setOutput($output);
+    }
+
+    private function getSync(): Syncer
+    {
+        if (!$this->sync) {
+            $this->sync = $this->container->get($this->syncStrategy);
+        }
+
+        return $this->sync;
     }
 
     /**
@@ -73,19 +85,19 @@ class Director
     public function sync()
     {
         try {
-            $this->sync->connect();
-            $this->sync->preCopy();
-            $this->sync->copy();
-            $this->sync->postCopy();
-            $this->sync->updateDerived();
-            $this->sync->disconnect();
-            if (!empty($this->sync->getNonFatalErrors())) {
-                $this->sendNonFatalErrorMessage($this->sync->getNonFatalErrors());
+            $this->getSync()->connect();
+            $this->getSync()->preCopy();
+            $this->getSync()->copy();
+            $this->getSync()->postCopy();
+            $this->getSync()->updateDerived();
+            $this->getSync()->disconnect();
+            if (!empty($this->getSync()->getNonFatalErrors())) {
+                $this->sendNonFatalErrorMessage($this->getSync()->getNonFatalErrors());
             }
         } catch (\Exception $e) {
-            $this->sync->rollback();
-            if (!empty($this->sync->getNonFatalErrors())) {
-                $this->sendNonFatalErrorMessage($this->sync->getNonFatalErrors());
+            $this->getSync()->rollback();
+            if (!empty($this->getSync()->getNonFatalErrors())) {
+                $this->sendNonFatalErrorMessage($this->getSync()->getNonFatalErrors());
             }
             $this->sendException($e);
             throw $e;
@@ -99,11 +111,11 @@ class Director
     public function updateDerived()
     {
         try {
-            $this->sync->connect();
-            $this->sync->updateDerived();
-            $this->sync->disconnect();
+            $this->getSync()->connect();
+            $this->getSync()->updateDerived();
+            $this->getSync()->disconnect();
         } catch (\Exception $e) {
-            $this->sync->rollback();
+            $this->getSync()->rollback();
             $this->sendException($e);
             throw $e;
         }

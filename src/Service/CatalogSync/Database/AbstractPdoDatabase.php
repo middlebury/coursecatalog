@@ -96,4 +96,71 @@ class AbstractPdoDatabase
     {
         $this->pdo = null;
     }
+
+    /**
+     * Answer the host we are connecting to.
+     *
+     * @return string
+     *                The hostname
+     */
+    public function getHost(): string
+    {
+        if (!preg_match('/host=([^;]+);/i', $this->dsn, $m)) {
+            throw new \Exception('Could not extract the host name from our DSN.');
+        }
+
+        return $m[1];
+    }
+
+    /**
+     * Answer the port we are connecting to.
+     *
+     * @return int
+     *             The port
+     */
+    public function getPort(): int
+    {
+        if (!preg_match('/port=(\d+);/i', $this->dsn, $m)) {
+            return 3306;
+        }
+
+        return (int) $m[1];
+    }
+
+    /**
+     * Answer the database name we are connecting to.
+     *
+     * @return string
+     *                The database name
+     */
+    public function getDatabase(): string
+    {
+        if (!preg_match('/dbname=([^;]+);/i', $this->dsn, $m)) {
+            throw new \Exception('Could not extract the dbname from our DSN.');
+        }
+
+        return $m[1];
+    }
+
+    /**
+     * Answer the database username we are using.
+     *
+     * @return string
+     *                The username
+     */
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    /**
+     * Answer the database password we are using.
+     *
+     * @return string
+     *                The password
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
 }

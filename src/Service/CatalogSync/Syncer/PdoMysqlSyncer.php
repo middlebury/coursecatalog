@@ -9,9 +9,8 @@
 namespace App\Service\CatalogSync\Syncer;
 
 use App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase;
-use App\Service\CatalogSync\Database\DestinationDatabase;
 use App\Service\CatalogSync\Database\Source\PdoMysqlSourceDatabase;
-use App\Service\CatalogSync\Syncer;
+use App\Service\CatalogSync\Database\SourceDatabase;
 
 /**
  * This class implements the Banner-to-Catalog sync using Pdo connection
@@ -55,9 +54,9 @@ class PdoMysqlSyncer extends AbstractSyncer implements Syncer
     /**
      * Answer the database we should copy from.
      *
-     * @return App\Service\CatalogSync\Database\DestinationDatabase
+     * @return App\Service\CatalogSync\Database\SourceDatabase
      */
-    protected function getCopySourceDatabase(): DestinationDatabase
+    protected function getCopySourceDatabase(): SourceDatabase
     {
         return $this->source_db;
     }

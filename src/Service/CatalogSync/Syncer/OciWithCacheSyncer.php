@@ -11,7 +11,6 @@ namespace App\Service\CatalogSync\Syncer;
 use App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase;
 use App\Service\CatalogSync\Database\DestinationDatabase;
 use App\Service\CatalogSync\Database\Source\OciSourceDatabase;
-use App\Service\CatalogSync\Syncer;
 
 /**
  * This class implements the Banner-to-Catalog sync using the Banner OCI connection
@@ -65,16 +64,16 @@ class OciWithCacheSyncer extends OciSyncer implements Syncer
         // Create the cache tables
         // Copy the primary table definitions into our temporary database
         $command = $this->mysqldumpCommand.' --add-drop-table --single-transaction --no-data '
-        .' -h '.escapeshellarg($this->destination_db_config->host)
-        .' -u '.escapeshellarg($this->destination_db_config->username)
-        .' -p'.escapeshellarg($this->destination_db_config->password)
-        .' '.escapeshellarg($this->destination_db_config->database)
+        .' -h '.escapeshellarg($this->destination_db->getHost())
+        .' -u '.escapeshellarg($this->destination_db->getUsername())
+        .' -p'.escapeshellarg($this->destination_db->getPassword())
+        .' '.escapeshellarg($this->destination_db->getDatabase())
         .' '.implode(' ', $this->getBannerTables())
         .' | '.$this->mysqlCommand
-        .' -h '.escapeshellarg($this->temp_db_config->host)
-        .' -u '.escapeshellarg($this->temp_db_config->username)
-        .' -p'.escapeshellarg($this->temp_db_config->password)
-        .' -D '.escapeshellarg($this->temp_db_config->database);
+        .' -h '.escapeshellarg($this->temp_db->getHost())
+        .' -u '.escapeshellarg($this->temp_db->getUsername())
+        .' -p'.escapeshellarg($this->temp_db->getPassword())
+        .' -D '.escapeshellarg($this->temp_db->getDatabase());
         $this->output->write('Creating cache tables	...');
         exec($command, $output, $return_var);
         $this->output->write("	done\n");

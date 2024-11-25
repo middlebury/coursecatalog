@@ -69,9 +69,26 @@ services:
                 - 'urn:inet:middlebury.edu:genera:offering.WKS'
     App\Service\CatalogSync\Director:
         arguments:
+            $container: '@service_container'
+            $syncStrategy: '%env(SYNC_STRATEGY)%'
             $errorMailTo: '%env(SYNC_ERROR_MAIL_TO)%'
             $errorMailFrom: '%env(SYNC_ERROR_MAIL_FROM)%'
-    App\Service\CatalogSync\Syncer\OciSyncer:
+    sync.strategy.oci:
+        class: 'App\Service\CatalogSync\Syncer\OciSyncer'
+        public: true
+        arguments:
+            $allowedBlckCodes: '%env(json:SYNC_ALLOWED_BLOCK_CODES)%'
+    sync.strategy.oci_with_cache:
+        class: 'App\Service\CatalogSync\Syncer\OciWithCacheSyncer'
+        public: true
+        arguments:
+            $allowedBlckCodes: '%env(json:SYNC_ALLOWED_BLOCK_CODES)%'
+            $temp_db: '@sync.temp_db'
+            $mysqlCommand: '%env(SYNC_MYSQL_COMMAND)%'
+            $mysqldumpCommand: '%env(SYNC_MYSQLDUMP_COMMAND)%'
+    sync.strategy.pdo_mysql:
+        class: 'App\Service\CatalogSync\Syncer\PdoMysqlSyncer'
+        public: true
         arguments:
             $allowedBlckCodes: '%env(json:SYNC_ALLOWED_BLOCK_CODES)%'
     App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase:
@@ -84,3 +101,14 @@ services:
             $tns: '%env(SYNC_SOURCE_OCI_TNS)%'
             $username: '%env(SYNC_SOURCE_OCI_USERNAME)%'
             $password: '%env(SYNC_SOURCE_OCI_PASSWORD)%'
+    sync.temp_db:
+        class: 'App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase'
+        arguments:
+            $dsn: '%env(SYNC_TEMP_DSN)%'
+            $username: '%env(SYNC_TEMP_USERNAME)%'
+            $password: '%env(SYNC_TEMP_PASSWORD)%'
+    App\Service\CatalogSync\Database\Source\PdoMysqlSourceDatabase:
+        arguments:
+            $dsn: '%env(SYNC_SOURCE_PDOMYSQL_DSN)%'
+            $username: '%env(SYNC_SOURCE_PDOMYSQL_USERNAME)%'
+            $password: '%env(SYNC_SOURCE_PDOMYSQL_PASSWORD)%'
