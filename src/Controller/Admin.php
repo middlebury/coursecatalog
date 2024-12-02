@@ -1,54 +1,25 @@
 <?php
 
-include_once 'fsmparserclass.inc.php';
+namespace App\Controller;
 
-/** Zend_Controller_Action */
-class AdminController extends AbstractCatalogController
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
+
+class Admin extends AbstractController
 {
     /**
-     * Constructor.
-     *
-     * @return void
-     *
-     * @since 11/3/09
-     */
-    public function init()
-    {
-        parent::init();
-        $this->view->csrf_key = $this->_helper->csrfKey();
-
-        if (!$this->_helper->auth()->isAuthenticated()) {
-            $this->_helper->auth()->login();
-        }
-
-        $config = Zend_Registry::getInstance()->config;
-        if (!isset($config->admin->administrator_ids)) {
-            throw new PermissionDeniedException('No admins are defined for this application.');
-        }
-        $admins = explode(',', $config->admin->administrator_ids);
-        if (!in_array($this->_helper->auth()->getUserId(), $admins)) {
-            throw new PermissionDeniedException('You are not authorized to administer this application.'.$admins[1]);
-        }
-    }
-
-    /**
      * List Admin Screens.
-     *
-     * @return void
-     *
-     * @since 7/29/10
      */
+    #[Route('/admin', name: 'admin_index')]
     public function indexAction()
     {
+        return $this->render('admin/index.html.twig');
     }
 
     /**
      * Manage term visibility.
-     *
-     * @return void
-     *
-     * @since 7/29/10
      */
+    #[Route('/admin/terms', name: 'admin_terms')]
     public function termsAction()
     {
         $db = Zend_Registry::get('db');
@@ -89,40 +60,40 @@ class AdminController extends AbstractCatalogController
             $catalogs[] = $search['catalog_id'];
             $queries[] =
 "	SELECT
-		'".$search['catalog_id']."' AS catalog,
-		STVTERM_CODE,
-		STVTERM_DESC
-	FROM
-		STVTERM
-	WHERE
-		STVTERM_CODE LIKE ('".$search['term_code_match']."')";
+        '".$search['catalog_id']."' AS catalog,
+        STVTERM_CODE,
+        STVTERM_DESC
+    FROM
+        STVTERM
+    WHERE
+        STVTERM_CODE LIKE ('".$search['term_code_match']."')";
         }
         $union = implode("\n\tUNION\n", $queries);
 
         $query =
 "SELECT
-	t.*,
-	IF(i.term_code, 1, 0) AS manually_disabled,
-	count(SSBSECT_CRN) AS num_sections
+    t.*,
+    IF(i.term_code, 1, 0) AS manually_disabled,
+    count(SSBSECT_CRN) AS num_sections
 FROM
-	(\n".$union."\n\t) AS t
-	LEFT JOIN catalog_term_inactive i ON (STVTERM_CODE = i.term_code AND i.catalog_id = ?)
-	LEFT JOIN course_catalog c ON i.catalog_id = c.catalog_id
-	LEFT JOIN ssbsect_scbcrse s ON (STVTERM_CODE = SSBSECT_TERM_CODE
-		AND SCBCRSE_COLL_CODE IN (
-			SELECT coll_code
-			FROM course_catalog_college
-			WHERE catalog_id = ?
-		)
-		AND SSBSECT_SSTS_CODE = 'A'
-		AND (c.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != c.prnt_ind_to_exclude)
-		)
+    (\n".$union."\n\t) AS t
+    LEFT JOIN catalog_term_inactive i ON (STVTERM_CODE = i.term_code AND i.catalog_id = ?)
+    LEFT JOIN course_catalog c ON i.catalog_id = c.catalog_id
+    LEFT JOIN ssbsect_scbcrse s ON (STVTERM_CODE = SSBSECT_TERM_CODE
+        AND SCBCRSE_COLL_CODE IN (
+            SELECT coll_code
+            FROM course_catalog_college
+            WHERE catalog_id = ?
+        )
+        AND SSBSECT_SSTS_CODE = 'A'
+        AND (c.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != c.prnt_ind_to_exclude)
+        )
 WHERE
-	catalog = ?
+    catalog = ?
 GROUP BY
-	STVTERM_CODE
+    STVTERM_CODE
 ORDER BY
-	catalog ASC, STVTERM_CODE DESC";
+    catalog ASC, STVTERM_CODE DESC";
         $stmt = $db->prepare($query);
 
         $this->view->catalogs = array_unique($catalogs);
@@ -139,6 +110,7 @@ ORDER BY
         $this->view->terms = $stmt->fetchAll();
     }
 
+    #[Route('/admin/markup', name: 'markup')]
     public function markupAction()
     {
         if (isset($_POST['sample_text']) && strlen($_POST['sample_text'])) {
@@ -150,6 +122,7 @@ ORDER BY
         $this->view->output = banner_course_Course::convertDescription($this->view->sampleText);
     }
 
+    #[Route('/admin/masquerade', name: 'masquerade')]
     public function masqueradeAction()
     {
         $masqueradeAuth = $this->_helper->auth->getMasqueradeHelper();
@@ -168,7 +141,10 @@ ORDER BY
         $this->view->userName = $this->_helper->auth()->getUserDisplayName();
     }
 
-    /* Manage archive export configurations */
+    /**
+     * Manage archive export configurations
+     */
+    #[Route('/admin/export', name: 'admin_archive_config')]
     public function exportAction()
     {
         $db = Zend_Registry::get('db');
@@ -193,22 +169,16 @@ ORDER BY
 
     /**
      * Manage catalog archive scheduling.
-     *
-     * @return void
-     *
-     * @since 1/16/2018
      */
+    #[Route('/admin/export', name: 'admin_archive_schedule')]
     public function scheduleAction()
     {
     }
 
     /**
      * Manage antirequisites.
-     *
-     * @return void
-     *
-     * @since 12/6/2017
      */
+    #[Route('/admin/antirequisites', name: 'admin_antirequisites')]
     public function antirequisitesAction()
     {
         $db = Zend_Registry::get('db');
@@ -256,21 +226,21 @@ ORDER BY
         if ($this->_getParam('search_subj_code') && $this->_getParam('search_crse_numb')) {
             $searchStmt = $db->prepare(
                 'SELECT
-					*,
-					subj_code IS NOT NULL AS antirequisite
-				FROM
-					SCREQIV
-					LEFT JOIN antirequisites
-						ON (SCREQIV_SUBJ_CODE = subj_code AND SCREQIV_CRSE_NUMB = crse_numb
-							AND SCREQIV_SUBJ_CODE_EQIV = subj_code_eqiv AND SCREQIV_CRSE_NUMB_EQIV = crse_numb_eqiv)
-				WHERE
-					(SCREQIV_SUBJ_CODE = ? AND SCREQIV_CRSE_NUMB = ?)
-					OR (SCREQIV_SUBJ_CODE_EQIV = ? AND SCREQIV_CRSE_NUMB_EQIV = ?)
-				GROUP BY
-					SCREQIV_SUBJ_CODE, SCREQIV_CRSE_NUMB, SCREQIV_SUBJ_CODE_EQIV, SCREQIV_CRSE_NUMB_EQIV
-				ORDER BY
-					SCREQIV_SUBJ_CODE, SCREQIV_CRSE_NUMB, SCREQIV_SUBJ_CODE_EQIV, SCREQIV_CRSE_NUMB_EQIV
-				');
+                    *,
+                    subj_code IS NOT NULL AS antirequisite
+                FROM
+                    SCREQIV
+                    LEFT JOIN antirequisites
+                        ON (SCREQIV_SUBJ_CODE = subj_code AND SCREQIV_CRSE_NUMB = crse_numb
+                            AND SCREQIV_SUBJ_CODE_EQIV = subj_code_eqiv AND SCREQIV_CRSE_NUMB_EQIV = crse_numb_eqiv)
+                WHERE
+                    (SCREQIV_SUBJ_CODE = ? AND SCREQIV_CRSE_NUMB = ?)
+                    OR (SCREQIV_SUBJ_CODE_EQIV = ? AND SCREQIV_CRSE_NUMB_EQIV = ?)
+                GROUP BY
+                    SCREQIV_SUBJ_CODE, SCREQIV_CRSE_NUMB, SCREQIV_SUBJ_CODE_EQIV, SCREQIV_CRSE_NUMB_EQIV
+                ORDER BY
+                    SCREQIV_SUBJ_CODE, SCREQIV_CRSE_NUMB, SCREQIV_SUBJ_CODE_EQIV, SCREQIV_CRSE_NUMB_EQIV
+                ');
             $searchStmt->execute([
                 $this->_getParam('search_subj_code'),
                 $this->_getParam('search_crse_numb'),

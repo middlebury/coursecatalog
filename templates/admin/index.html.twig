@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Course Catalog Administration</h1>
+<ul>
+    <li><a href="{{ url("admin_terms") }}">Manage Term Visibility</a></li>
+    <li><a href="{{ url("admin_antirequisites") }}">Manage Anti-Requisites</a></li>
+    <li><a href="{{ url("admin_archive_config") }}">Manage Catalog Archive Configurations</a></li>
+    <li><a href="{{ url("admin_archive_schedule") }}">Manage Catalog Archive Scheduling</a></li>
+    <li><a href="{{ url("masquerade") }}">Masquerade</a></li>
+    <li><a href="{{ url("markup") }}">View Catalog Markup Example</a></li>
+</ul>
+{% endblock %}
