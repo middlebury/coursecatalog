@@ -37,7 +37,7 @@ class Admin extends AbstractController
         $data = [];
         $db = $this->entityManager->getConnection();
 
-        $searches = $db->executeQuery('SELECT * FROM catalog_term_match')->fetchAll();
+        $searches = $db->executeQuery('SELECT * FROM catalog_term_match')->fetchAllAssociative();
         $catalogs = [];
         $queries = [];
         foreach ($searches as $search) {
@@ -92,7 +92,7 @@ ORDER BY
         $stmt->bindValue(3, $catalog);
         $result = $stmt->executeQuery();
         $data['selectedCatalog'] = $catalog;
-        $data['terms'] = $result->fetchAll();
+        $data['terms'] = $result->fetchAllAssociative();
         foreach ($data['terms'] as &$term) {
             $term['active'] = intval($term['num_sections']) && !intval($term['manually_disabled']);
         }
@@ -181,7 +181,7 @@ ORDER BY
     {
         $db = Zend_Registry::get('db');
 
-        $this->view->configs = $db->query('SELECT * FROM archive_configurations')->fetchAll();
+        $this->view->configs = $db->query('SELECT * FROM archive_configurations')->fetchAllAssociative();
 
         $this->view->config = null;
         if ($this->_getParam('config') && -1 != $this->_getParam('config')) {
@@ -250,7 +250,7 @@ ORDER BY
         }
 
         // Select our already-created antirequisites
-        $this->view->antirequisites = $db->query('SELECT * FROM antirequisites ORDER BY subj_code, crse_numb, subj_code_eqiv, crse_numb_eqiv')->fetchAll();
+        $data['antirequisites'] = $db->query('SELECT * FROM antirequisites ORDER BY subj_code, crse_numb, subj_code_eqiv, crse_numb_eqiv')->fetchAllAssociative();
 
         // Supply search results.
         $this->view->search_subj_code = $this->_getParam('search_subj_code');
