@@ -70,3 +70,5 @@ services:
 proxy:
     mailpit:
         - mail.coursecatalog.lndo.site:8025
+    phpmyadmin:
+        - phpmyadmin.coursecatalog.lndo.site
