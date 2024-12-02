@@ -18,6 +18,7 @@ class SchedulesTest extends WebTestCase
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress' => ['honeybear@middlebury.edu'],
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname' => ['Winnie'],
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname' => ['The-Pooh'],
+            'AssignedRoles' => ['App.EmailSendAllowed'],
         ]);
 
         // Bookmark some courses so they are available for schedule building.
