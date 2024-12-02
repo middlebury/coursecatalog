@@ -9,6 +9,7 @@ class SamlUser implements SamlUserInterface
     private $email;
     private $givenName;
     private $surname;
+    private $assignedRoles = [];
 
     public function __construct(
         private string $id,
@@ -25,6 +26,15 @@ class SamlUser implements SamlUserInterface
         }
         if (!empty($attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'][0])) {
             $this->surname = $attributes['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'][0];
+        }
+        // Add a custom attribute called 'AssignedRoles' and supply zero or more
+        // of the following values in the SAML response:
+        // "App.EmailSendAllowed" -- If included, the user will be able to send
+        //                           their schedule as an email.
+        // "App.Manager" -- If included, the user will be able to manage term
+        //                  visibility and export configurations.
+        if (!empty($attributes['AssignedRoles'])) {
+            $this->assignedRoles = $attributes['AssignedRoles'];
         }
     }
 
@@ -46,9 +56,11 @@ class SamlUser implements SamlUserInterface
     {
         $roles = ['ROLE_USER'];
 
-        // This is just a placeholder implementation. It should be configurable.
-        if ($this->email && preg_match('/@middlebury\.edu$/', $this->email)) {
+        if (!empty($this->assignedRoles) && in_array('App.EmailSendAllowed', $this->assignedRoles)) {
             $roles[] = 'ROLE_CAN_SEND_EMAIL';
+        }
+        if (!empty($this->assignedRoles) && in_array('App.Manager', $this->assignedRoles)) {
+            $roles[] = 'ROLE_ADMIN';
         }
 
         return $roles;
