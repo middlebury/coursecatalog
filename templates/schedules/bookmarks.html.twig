@@ -1,5 +1,5 @@
 {% if bookmarked_courses is empty %}
-    <p class='notice'>You have no starred courses for this term. Please <a href="{{ url('search_offerings', {catalogId: catalogId, termId: selectedTermId})}}">search for courses</a> and star interesting ones first.</p>
+    <p class='notice'>You have no starred courses for this term. Please <a href="{{ url('search_offerings', {catalogId: selectedCatalogId, termId: selectedTermId})}}">search for courses</a> and star interesting ones first.</p>
 
 {% else %}
     <ul id="bookmarked_courses">
