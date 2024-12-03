@@ -6,7 +6,7 @@ use App\Security\SamlUser;
 use App\Tests\AppDatabaseTestTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class AdminTest extends WebTestCase
+class AdminTermsTest extends WebTestCase
 {
     use AppDatabaseTestTrait;
 
@@ -23,26 +23,20 @@ class AdminTest extends WebTestCase
         return $user;
     }
 
-    public function testIndex(): void
+    public function testTermVisibilityList(): void
     {
         $client = static::createClient();
         $client->loginUser($this->setUpUser());
 
-        $crawler = $client->request('GET', '/admin');
-
+        $crawler = $client->request('GET', '/admin/terms');
         $this->assertResponseIsSuccessful();
+
+        $crawler = $client->request('GET', '/admin/terms?catalog=MCUG');
+        $this->assertResponseIsSuccessful();
+        $this->assertSelectorTextContains('.section_admin', '200990');
     }
 
-    public function testIndexAnonymous(): void
-    {
-        $client = static::createClient();
-
-        $crawler = $client->request('GET', '/admin');
-
-        $this->assertResponseRedirects();
-    }
-
-    public function testIndexNonManager(): void
+    public function testTermVisibilityListNonManager(): void
     {
         $client = static::createClient();
 
@@ -55,7 +49,7 @@ class AdminTest extends WebTestCase
         ]);
         $client->loginUser($user);
 
-        $client->request('GET', '/admin');
+        $client->request('GET', '/admin/terms');
 
         $this->assertEquals(403, $client->getResponse()->getStatusCode());
     }
