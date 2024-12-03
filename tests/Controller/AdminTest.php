@@ -59,4 +59,22 @@ class AdminTest extends WebTestCase
 
         $this->assertEquals(403, $client->getResponse()->getStatusCode());
     }
+
+    public function testMarkup(): void
+    {
+        $client = static::createClient();
+        $client->loginUser($this->setUpUser());
+
+        // Ensure that the test form loads.
+        $crawler = $client->request('GET', '/admin/markup');
+        $this->assertResponseIsSuccessful();
+
+        // Update the markup and submit.
+        $form = $crawler->filter('#markup-test-form')->form();
+        $form['sample_text'] = 'Non bold *My bold text* and not bold.';
+        $crawler = $client->submit($form);
+        $this->assertResponseIsSuccessful();
+        // print $crawler->outerHtml();
+        $this->assertGreaterThan(0, $crawler->filter("#markup-test-output strong:contains('My bold text')")->count());
+    }
 }
