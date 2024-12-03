@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class AdminAntirequisites extends AbstractController
 {
@@ -16,52 +18,21 @@ class AdminAntirequisites extends AbstractController
     /**
      * Manage antirequisites.
      */
-    #[Route('/admin/antirequisites', name: 'admin_antirequisites')]
-    public function antirequisitesAction()
+    #[Route('/admin/antirequisites', name: 'list_antirequisites', methods: ['GET'])]
+    public function antirequisitesAction(Request $request)
     {
-        $db = Zend_Registry::get('db');
-
-        // Delete any requested item.
-        if ($this->_getParam('delete')) {
-            // Verify our CSRF key
-            if (!$this->_getParam('csrf_key') == $this->_helper->csrfKey()) {
-                throw new PermissionDeniedException('Invalid CSRF Key. Please log in again.');
-            }
-
-            // Verify that this is a valid term.
-            $deleteStmt = $db->prepare('DELETE FROM antirequisites WHERE subj_code = ? AND crse_numb = ? AND subj_code_eqiv = ? AND crse_numb_eqiv = ?');
-            $deleteStmt->execute([
-                $this->_getParam('subj_code'),
-                $this->_getParam('crse_numb'),
-                $this->_getParam('subj_code_eqiv'),
-                $this->_getParam('crse_numb_eqiv'),
-            ]);
-        }
-
-        // Add any chosen items.
-        if ($this->_getParam('add')) {
-            // Verify our CSRF key
-            if (!$this->_getParam('csrf_key') == $this->_helper->csrfKey()) {
-                throw new PermissionDeniedException('Invalid CSRF Key. Please log in again.');
-            }
-
-            // Verify that this is a valid term.
-            $insertStmt = $db->prepare('INSERT INTO antirequisites (subj_code, crse_numb, subj_code_eqiv, crse_numb_eqiv, added_by, comments) VALUES (?, ?, ?, ?, ?, ?)');
-            foreach ($this->_getParam('equivalents_to_add') as $toAdd) {
-                $params = explode('/', $toAdd);
-                $params[] = $this->view->getUserDisplayName();
-                $params[] = $this->_getParam($toAdd.'-comments');
-                $insertStmt->execute($params);
-            }
-        }
+        $data = [
+            'searchResults' => [],
+        ];
+        $db = $this->entityManager->getConnection();
 
         // Select our already-created antirequisites
         $data['antirequisites'] = $db->query('SELECT * FROM antirequisites ORDER BY subj_code, crse_numb, subj_code_eqiv, crse_numb_eqiv')->fetchAllAssociative();
 
         // Supply search results.
-        $this->view->search_subj_code = $this->_getParam('search_subj_code');
-        $this->view->search_crse_numb = $this->_getParam('search_crse_numb');
-        if ($this->_getParam('search_subj_code') && $this->_getParam('search_crse_numb')) {
+        $data['search_subj_code'] = $request->get('search_subj_code');
+        $data['search_crse_numb'] = $request->get('search_crse_numb');
+        if ($request->get('search_subj_code') && $request->get('search_crse_numb')) {
             $searchStmt = $db->prepare(
                 'SELECT
                     *,
@@ -79,13 +50,67 @@ class AdminAntirequisites extends AbstractController
                 ORDER BY
                     SCREQIV_SUBJ_CODE, SCREQIV_CRSE_NUMB, SCREQIV_SUBJ_CODE_EQIV, SCREQIV_CRSE_NUMB_EQIV
                 ');
-            $searchStmt->execute([
-                $this->_getParam('search_subj_code'),
-                $this->_getParam('search_crse_numb'),
-                $this->_getParam('search_subj_code'),
-                $this->_getParam('search_crse_numb'),
-            ]);
-            $this->view->searchResults = $searchStmt->fetchAll(PDO::FETCH_OBJ);
+            $searchStmt->bindValue(1, $request->get('search_subj_code'));
+            $searchStmt->bindValue(2, $request->get('search_crse_numb'));
+            $searchStmt->bindValue(3, $request->get('search_subj_code'));
+            $searchStmt->bindValue(4, $request->get('search_crse_numb'));
+            $result = $searchStmt->executeQuery();
+            $data['searchResults'] = $result->fetchAllAssociative();
         }
+
+        return $this->render('admin/antirequisites.html.twig', $data);
+    }
+
+    /**
+     * Manage antirequisites.
+     */
+    #[Route('/admin/antirequisites/delete', name: 'delete_antirequisite', methods: ['POST'])]
+    public function deleteAntirequisiteAction(Request $request)
+    {
+        $db = $this->entityManager->getConnection();
+
+        // Verify our CSRF key
+        if (!$this->isCsrfTokenValid('admin-antirequisites-delete', $request->get('csrf_key'))) {
+            throw new AccessDeniedException('Invalid CSRF key.');
+        }
+
+        // Delete any requested item.
+        $deleteStmt = $db->prepare('DELETE FROM antirequisites WHERE subj_code = ? AND crse_numb = ? AND subj_code_eqiv = ? AND crse_numb_eqiv = ?');
+        $deleteStmt->bindValue(1, $request->get('subj_code'));
+        $deleteStmt->bindValue(2, $request->get('crse_numb'));
+        $deleteStmt->bindValue(3, $request->get('subj_code_eqiv'));
+        $deleteStmt->bindValue(4, $request->get('crse_numb_eqiv'));
+        $deleteStmt->executeQuery();
+
+        return $this->redirect($this->generateUrl('list_antirequisites'));
+    }
+
+    /**
+     * Manage antirequisites.
+     */
+    #[Route('/admin/antirequisites', name: 'add_antirequisites', methods: ['POST'])]
+    public function addAntirequisitesAction(Request $request)
+    {
+        $db = $this->entityManager->getConnection();
+
+        // Verify our CSRF key
+        if (!$this->isCsrfTokenValid('admin-antirequisites-add', $request->get('csrf_key'))) {
+            throw new AccessDeniedException('Invalid CSRF key.');
+        }
+
+        // Add any chosen items.
+        $insertStmt = $db->prepare('INSERT INTO antirequisites (subj_code, crse_numb, subj_code_eqiv, crse_numb_eqiv, added_by, comments) VALUES (?, ?, ?, ?, ?, ?)');
+        foreach ($request->get('equivalents_to_add') as $toAdd) {
+            $params = explode('/', $toAdd);
+            $insertStmt->bindValue(1, $params[0]);
+            $insertStmt->bindValue(2, $params[1]);
+            $insertStmt->bindValue(3, $params[2]);
+            $insertStmt->bindValue(4, $params[3]);
+            $insertStmt->bindValue(5, $this->getUser()->getName());
+            $insertStmt->bindValue(6, $request->get($toAdd.'-comments'));
+            $insertStmt->executeQuery();
+        }
+
+        return $this->redirect($this->generateUrl('list_antirequisites'));
     }
 }
