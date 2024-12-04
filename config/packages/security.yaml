@@ -27,7 +27,7 @@ security:
             # https://symfony.com/doc/current/security.html#the-firewall
 
             # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+            switch_user: true
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
@@ -36,6 +36,10 @@ security:
         - { path: ^/saml/(metadata|login|acs|logout), roles: PUBLIC_ACCESS }
         - { path: ^/schedules, roles: ROLE_USER }
         - { path: ^/, roles: PUBLIC_ACCESS }
+
+    role_hierarchy:
+        ROLE_CAN_SEND_EMAIL:       ROLE_USER
+        ROLE_ADMIN: [ROLE_USER, ROLE_CAN_SEND_EMAIL, ROLE_ALLOWED_TO_SWITCH]
 
 when@test:
     security:

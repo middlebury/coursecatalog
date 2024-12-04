@@ -31,23 +31,4 @@ class Admin extends AbstractController
 
         return $this->render('admin/markup.html.twig', $data);
     }
-
-    #[Route('/admin/masquerade', name: 'masquerade')]
-    public function masqueradeAction()
-    {
-        $masqueradeAuth = $this->_helper->auth->getMasqueradeHelper();
-
-        if ($this->_getParam('masquerade')) {
-            // Verify our CSRF key
-            if (!$this->_getParam('csrf_key') == $this->_helper->csrfKey()) {
-                throw new PermissionDeniedException('Invalid CSRF Key. Please log in again.');
-            }
-
-            $masqueradeAuth->changeUser($this->_getParam('masquerade'));
-            $this->_redirect('/', ['prependBase' => true, 'exit' => true]);
-        }
-
-        $this->view->userId = $this->_helper->auth()->getUserId();
-        $this->view->userName = $this->_helper->auth()->getUserDisplayName();
-    }
 }
