@@ -1,0 +1,13 @@
+<select class='section-dropdown' value='unselected'>
+    <option value='unselected'>Please choose a subject</option>
+    <optgroup label='Subjects'>
+{% for topic in subjects %}
+        <option value='{{ osidIdToString(topic.id) }}'>{{ topic.displayname }}</option>
+{% endfor %}
+    </optgroup>
+    <optgroup label='Departments'>
+{% for topic in departments %}
+        <option value='{{ osidIdToString(topic.id) }}'>{{ topic.displayname }}</option>
+{% endfor %}
+    </optgroup>
+</select>

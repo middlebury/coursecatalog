@@ -8,6 +8,13 @@
         {% endblock %}
 
         {% block javascripts %}
+        <script type="text/javascript">
+            // Allow templates to register asset paths globally.
+            let assets = {
+                {% block assets %}{% endblock %}
+            };
+        </script>
+
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>

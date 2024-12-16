@@ -1,3 +1,6 @@
+import './styles/export.css';
+import $ from 'jquery';
+import 'jquery-ui';
 
 var loading = false;
 
@@ -14,7 +17,7 @@ function generateSection(id, type, input) {
 }
 
 function generateSectionHTML(type, input) {
-  return "<div class='position-helper'><span class='move-arrows'><img src='../../images/arrow_cross.png'></span></div><span class='section-type'>Type: " + type + "</span><span class='section-value'>" + input + "</span><span class='section-controls'><button class='button-delete' onclick='deleteSection(this)'>Delete Section</button><button class='button-section-add' onclick='newSection(this)'>Add Section Below</button></span>";
+  return "<div class='position-helper'><span class='move-arrows'><img src='" + assets.arrow_cross + "'></span></div><span class='section-type'>Type: " + type + "</span><span class='section-value'>" + input + "</span><span class='section-controls'><button class='button-delete button-delete-section'>Delete Section</button><button class='button-section-add'>Add Section Below</button></span>";
 }
 
 // Cache of courselist data for reuse.
@@ -70,16 +73,14 @@ function generateInputTag(type, value, callback) {
 
           // Run the request and work through our queue when we get the result back.
           $.ajax({
-            url: "../export/generateCourseList",
+            url: "../exports/generatecourselist/" + $('#catalogId').val(),
             type: "GET",
-            data: {
-              catalogId: $('#catalogId').val()
-            },
             error: function(error) {
               throw error;
             },
             success: function(data) {
               courselist_data[$('#catalogId').val()] = data;
+              var l;
               while (l = courselists_to_populate.pop()) {
                 setCourseListInputForData(courselist_data[l['catalog']], l['value'], l['callback']);
               }
@@ -115,9 +116,9 @@ function setCourseListInputForData(data, value, callback) {
 
 function generateGroup(id, title, visible) {
   if (visible) {
-    return "<li id='" + id + "' class='group ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../../images/arrow_cross.png'></span></div><span class='group-title'>" + title + "</span><div class='group-toggle-description' onclick='toggleGroup(this)'>show/hide</div><div class='group-controls'><button class='button-delete' onclick='deleteGroup(this)'>Delete group</button><button class='button' onclick='newGroup(this)'>Add group below</button></div><ul class='section-group visible'></ul></li>";
+    return "<li id='" + id + "' class='group ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='" + assets.arrow_cross + "'></span></div><span class='group-title'>" + title + "</span><div class='group-toggle-description'>show/hide</div><div class='group-controls'><button class='button-delete button-delete-group'>Delete group</button><button class='button add-group-below'>Add group below</button></div><ul class='section-group visible'></ul></li>";
   } else {
-    return "<li id='" + id + "' class='group ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='../../images/arrow_cross.png'></span></div><span class='group-title'>" + title + "</span><div class='group-toggle-description' onclick='toggleGroup(this)'>show/hide</div><div class='group-controls hidden'><button class='button-delete' onclick='deleteGroup(this)'>Delete group</button><button class='button' onclick='newGroup(this)'>Add group below</button></div><ul class='section-group'></ul></li>";
+    return "<li id='" + id + "' class='group ui-state-default'><div class='position-helper'><span class='move-arrows'><img src='" + assets.arrow_cross + "'></span></div><span class='group-title'>" + title + "</span><div class='group-toggle-description'>show/hide</div><div class='group-controls hidden'><button class='button-delete button-delete-group'>Delete group</button><button class='button add-group-below'>Add group below</button></div><ul class='section-group'></ul></li>";
   }
 }
 
@@ -168,17 +169,30 @@ function buildList(jsonData, callback) {
 }
 
 function populate() {
+  $('#config-selector').change(function() {
+      window.location = this.value;
+  });
   if(!$('#configId').val()) {
     return;
   }
+  $('#save-export-config-button').on('click', function() {
+      saveJSON();
+  });
+  $('#reset-export-config-button').on('click', function() {
+      reset();
+  });
+  $('#delete-export-config-button').on('click', function() {
+      deleteConfig($('#configId').val());
+  });
+  $('#show-hide-export-config-groups-button').on('click', function() {
+      showHide();
+  });
+
   loading = true;
   $.ajax({
-    url: "../export/latestrevision",
+    url: "../exports/" + $('#configId').val() + "/latest.json",
     type: "GET",
     dataType: "JSON",
-    data: {
-      configId: $('#configId').val()
-    },
     success: function(data) {
       buildList(data, function() {
         renameGroups();
@@ -259,6 +273,33 @@ function resetEventListeners() {
     renameGroups();
     renameSections();
   });
+
+  // Attach handlers to buttons based on class.
+  $('.group-toggle-description').unbind('click').on('click', function () {
+     toggleGroup(this);
+  });
+  $('.add-group-below').unbind('click').on('click', function () {
+     newGroup(this);
+  });
+  $('.button-section-add').unbind('click').on('click', function () {
+     newSection(this);
+  });
+  $('.button-delete-section').unbind('click').on('click', function () {
+     deleteSection(this);
+  });
+  $('.button-delete-group').unbind('click').on('click', function () {
+     deleteGroup(this);
+  });
+  $('.button-confirm-delete').unbind('click').on('click', function () {
+      confirmDelete($(this).data('config-id'));
+  });
+  $('.button-cancel-delete').unbind('click').on('click', function () {
+      cancelDelete();
+  });
+  $('.select-section-type').unbind('click').on('click', function () {
+      defineSection(this);
+  });
+
 }
 
 function showHide() {
@@ -406,11 +447,10 @@ function saveJSON() {
     if(JSONString === "}") JSONString = "{}";
 
     $.ajax({
-      url: "../export/insertrevision",
+      url: "../exports/" + $('#configId').attr('value') + "/insertrevision",
       type: "POST",
       dataType: 'json',
       data: {
-        configId: $('#configId').attr('value'),
         note: $('#note').val(),
         jsonData: JSONString
       },
@@ -434,12 +474,13 @@ function saveJSON() {
 
 function deleteConfig(configId) {
   if($('#warning-box').length) return;
-  $('#config-body').append("<div id='warning-box' class='warning-box'><p class='warning'>Are you sure you want to delete this configuration? This cannot be undone. All related revisions will be gone as well.</p><div class='warning-controls'><button class='button-delete' onclick='confirmDelete(" + configId + ")'>Delete</button><button onclick='cancelDelete()'>Cancel</button></div></div>");
+  $('#config-body').append("<div id='warning-box' class='warning-box'><p class='warning'>Are you sure you want to delete this configuration? This cannot be undone. All related revisions will be gone as well.</p><div class='warning-controls'><button class='button-delete button-confirm-delete' data-config-id='" + configId + "'>Delete</button><button class='button-cancel-delete'>Cancel</button></div></div>");
+  resetEventListeners();
 }
 
 function confirmDelete(confId) {
   $.ajax({
-    url: "../export/deleteconfig",
+    url: "../exports/" + configId + "/deleteconfig",
     type: "POST",
     data: {
       configId: confId
@@ -522,7 +563,7 @@ function newGroupFirstSection() {
 }
 
 function newSection(thisButton) {
-  var newSectionHTML = "<li class='section ui-state-default'><select class='select-section-type' onchange='defineSection(this)'><option value='unselected' selected='selected'>Please choose a section type</option><option value='h1'>h1</option><option value='h2'>h2</option><option value='page_content'>External page content</option><option value='custom_text'>Custom text</option><option value='course_list'>Course list</option></select></li>";
+  var newSectionHTML = "<li class='section ui-state-default'><select class='select-section-type'><option value='unselected' selected='selected'>Please choose a section type</option><option value='h1'>h1</option><option value='h2'>h2</option><option value='page_content'>External page content</option><option value='custom_text'>Custom text</option><option value='course_list'>Course list</option></select></li>";
   if(!thisButton) {
     if($('#begin-message')) {
       $('#begin-message').remove();
@@ -532,6 +573,7 @@ function newSection(thisButton) {
     var li = $(thisButton).parent().parent();
     $(newSectionHTML).insertAfter(li);
   }
+  resetEventListeners();
   renameSections();
 }
 
@@ -557,4 +599,5 @@ function deleteSection(thisButton) {
 
 $(document).ready(function() {
   populate();
+  resetEventListeners();
 });

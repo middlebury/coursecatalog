@@ -19,6 +19,10 @@ return [
     'bookmarks' => [
         'path' => 'bookmarks.js',
     ],
+    'export' => [
+        'path' => 'export.js',
+        'entrypoint' => true,
+    ],
     'offering_search' => [
         'path' => 'offering_search.js',
         'entrypoint' => true,

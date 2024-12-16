@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block assets %}
+    arrow_cross: "{{ asset("images/arrow_cross.png") }}",
+{% endblock %}
+
+{% block importmap %}
+    {# do NOT call parent() #}
+    {{ importmap(['app', 'export']) }}
+{% endblock %}
+
+{% block body %}
+<h1>Manage Catalog Export Configurations</h1>
+<div class='admin-menu'><a href="{{ url('admin_index') }}">&laquo; Back to Administration</a></div>
+
+<div class='config-menu'>
+    <select name='config-selector' id="config-selector">
+        <option value="select">Select a configuration</option>
+{% for config in configs %}
+        <option value="{{ url('admin_exports_config', {exportId: config.id}) }}" {{ selected_config and selected_config.id == config.id ? 'selected="selected"' }}>{{ config.label }}</option>
+{% endfor %}
+    </select>
+    <p class='inline-p'> - or - <a href="{{ url('admin_exports_create') }}">Create a new configuration</a></p>
+</div>
+
+<div id='config-body'>
+{% if selected_config and selected_config.id %}
+        <input id='catalogId' type='hidden' value='{{ selected_config.catalog_id }}'></input>
+        <input id='configId' type='hidden' value='{{ selected_config.id }}'></input>
+
+        <div class='error-message error-div'>Error: </div>
+
+        <!-- Top Nav -->
+        <button class='link-button' id="save-export-config-button">Save</button>
+        <button class='link-button' id="reset-export-config-button">Reset</button>
+        <button class='link-button' id="delete-export-config-button">Delete this config</button>
+        <button class='link-button' id="show-hide-export-config-groups-button">Show/Hide all groups</button>
+        <a class='link-button' href="{{ url('admin_exports_config_revisions', {exportId: selected_config.id}) }}">Revision history</a>
+
+        <!-- Content -->
+        <div><textarea id='note' class='note' style='width:100%' placeholder='(Optional) Write a note about this revision'></textarea></div>
+        <ul id='sections-list' class='sections-list'></ul>
+        <div class='error-message error-div'>Error: </div>
+
+        <!-- Bottom Nav -->
+        <button class='link-button' id="save-export-config-button">Save</button>
+        <button class='link-button' id="reset-export-config-button">Reset</button>
+        <button class='link-button' id="delete-export-config-button">Delete this config</button>
+        <button class='link-button' id="show-hide-export-config-groups-button">Show/Hide all groups</button>
+        <a class='link-button' href="{{ url('admin_exports_config_revisions', {exportId: selected_config.id}) }}">Revision history</a>
+{% endif %}
+</div>
+{% endblock %}
