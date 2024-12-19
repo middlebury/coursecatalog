@@ -1,3 +1,6 @@
+import './styles/export.css';
+import $ from 'jquery';
+import 'jquery-ui';
 
 var selected = [];
 
@@ -21,7 +24,7 @@ function compare(url) {
   var rev1 = $($('#' + selected[0]).parents('tr').find('.revId')[0]).val();
   var rev2 = $($('#' + selected[1]).parents('tr').find('.revId')[0]).val();
   if(!rev1 || !rev2) return;
-  var win = window.open(url + '/' + rev1 + '/' + rev2, '_blank');
+  var win = window.open(url.replace(/-rev1-/, rev1).replace(/-rev2-/, rev2), '_blank');
   win.focus();
 }
 
@@ -51,5 +54,9 @@ $(document).ready(function() {
     selected.push(this.id);
     if (selected.length > 2) selected.shift();
     renderSelected();
+  });
+
+  $('.compare-revisions-button').on('click', function() {
+    compare($(this).data('url'));
   });
 });

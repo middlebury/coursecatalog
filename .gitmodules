@@ -7,7 +7,3 @@
 [submodule "library/lazy_sessions"]
 	path = library/lazy_sessions
 	url = https://github.com/middlebury/lazy_sessions.git
-[submodule "library/jsdifflib"]
-	path = library/jsdifflib
-	url = https://github.com/cemerick/jsdifflib.git
-	branch = master

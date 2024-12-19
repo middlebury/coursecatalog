@@ -1,3 +1,8 @@
+/* Hide the file list and renamed tag since I'm using the labels as virtual
+file names. */
+.d2h-file-list-wrapper, .d2h-moved-tag {
+    display:none;
+}
 
 .added {
   background: #9fff99;

@@ -81,23 +81,22 @@ class AdminExports extends AbstractController
     #[Route('/admin/exports/{exportId}/revisions', name: 'admin_exports_config_revisions')]
     public function revisionhistoryAction(int $exportId)
     {
-        $request = $this->getRequest();
-        if (!$request->getParam('config') || -1 === $request->getParam('config')) {
-            header('HTTP/1.1 400 Bad Request');
-            echo 'A config ID must be specified.';
-            exit;
-        }
-        $this->view->configId = filter_var($request->getParam('config'), \FILTER_SANITIZE_NUMBER_INT);
-        $db = Zend_Registry::get('db');
+        $data['configId'] = $exportId;
+        $db = $this->entityManager->getConnection();
+
         $query = 'SELECT label FROM archive_configurations WHERE id = ?';
         $stmt = $db->prepare($query);
-        $stmt->execute([$this->view->configId]);
-        $this->view->configLabel = $stmt->fetch()['label'];
+        $stmt->bindValue(1, $exportId);
+        $result = $stmt->executeQuery();
+        $data['configLabel'] = $result->fetchAssociative()['label'];
 
         $query = 'SELECT * FROM archive_configuration_revisions WHERE arch_conf_id = ? ORDER BY last_saved DESC';
         $stmt = $db->prepare($query);
-        $stmt->execute([$this->view->configId]);
-        $this->view->revisions = $stmt->fetchAll();
+        $stmt->bindValue(1, $exportId);
+        $result = $stmt->executeQuery();
+        $data['revisions'] = $result->fetchAllAssociative();
+
+        return $this->render('admin/export/revisionhistory.html.twig', $data);
     }
 
     /**
@@ -107,27 +106,21 @@ class AdminExports extends AbstractController
      *
      * @since 1/25/18
      */
-    public function revisiondiffAction()
+    #[Route('/admin/exports/revisiondiff/{rev1}/{rev2}', name: 'admin_exports_config_revision_diff')]
+    public function revisiondiffAction(int $rev1, int $rev2)
     {
-        if (!$this->_getParam('rev1') || !$this->_getParam('rev2')) {
-            header('HTTP/1.1 400 Bad Request');
-            echo 'This route requires two revision IDs';
-            exit;
-        } else {
-            $db = Zend_Registry::get('db');
-            $query = 'SELECT * FROM archive_configuration_revisions WHERE id = ?';
-            $stmt = $db->prepare($query);
-            $stmt->execute([filter_var($this->_getParam('rev1'), \FILTER_SANITIZE_NUMBER_INT)]);
-            $this->rev1 = $stmt->fetch();
-            $stmt = $db->prepare($query);
-            $stmt->execute([filter_var($this->_getParam('rev2'), \FILTER_SANITIZE_NUMBER_INT)]);
-            $this->rev2 = $stmt->fetch();
+        $db = $this->entityManager->getConnection();
+        $query = 'SELECT * FROM archive_configuration_revisions WHERE id = ?';
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(1, $rev1);
+        $result = $stmt->executeQuery();
+        $data['rev1'] = $result->fetchAssociative();
 
-            $this->view->text1 = $this->rev1['json_data'];
-            $this->view->text2 = $this->rev2['json_data'];
-            $this->view->time1 = $this->rev1['last_saved'];
-            $this->view->time2 = $this->rev2['last_saved'];
-        }
+        $stmt->bindValue(1, $rev2);
+        $result = $stmt->executeQuery();
+        $data['rev2'] = $result->fetchAssociative();
+
+        return $this->render('admin/export/revisiondiff.html.twig', $data);
     }
 
     /**
@@ -137,7 +130,8 @@ class AdminExports extends AbstractController
      *
      * @since 1/25/18
      */
-    public function viewjsonAction()
+    #[Route('/admin/exports/revision/{revisionId}.json', name: 'admin_exports_config_revision_json')]
+    public function viewjsonAction(int $revisionId)
     {
         $request = $this->getRequest();
         if (!$request->getParam('revision') || -1 === $request->getParam('revision')) {
@@ -149,8 +143,8 @@ class AdminExports extends AbstractController
         $db = Zend_Registry::get('db');
         $query = 'SELECT * FROM archive_configuration_revisions WHERE id = ?';
         $stmt = $db->prepare($query);
-        $stmt->execute([filter_var($this->_getParam('revision'), \FILTER_SANITIZE_NUMBER_INT)]);
-        $this->view->revision = $stmt->fetch();
+        $stmt->execute([filter_var($request->get('revision'), \FILTER_SANITIZE_NUMBER_INT)]);
+        $data['revision'] = $stmt->fetch();
     }
 
     /**
@@ -164,7 +158,7 @@ class AdminExports extends AbstractController
     public function newconfigAction()
     {
         $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();
-        $this->view->catalogs = $lookupSession->getCourseCatalogs();
+        $data['catalogs'] = $lookupSession->getCourseCatalogs();
     }
 
     /**
@@ -252,13 +246,13 @@ class AdminExports extends AbstractController
         $request = $this->getRequest();
 
         $db = Zend_Registry::get('db');
-        $this->view->configs = $db->query('SELECT * FROM archive_configurations')->fetchAll();
+        $data['configs'] = $db->query('SELECT * FROM archive_configurations')->fetchAll();
 
-        $this->view->config = null;
+        $data['config'] = null;
         if ($request->getParam('config')) {
-            foreach ($this->view->configs as $config) {
+            foreach ($data['configs'] as $config) {
                 if ($config['label'] === $request->getParam('config')) {
-                    $this->view->config = $config;
+                    $data['config'] = $config;
                 }
             }
         }

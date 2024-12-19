@@ -23,6 +23,14 @@ return [
         'path' => 'export.js',
         'entrypoint' => true,
     ],
+    'export_revision_diff' => [
+        'path' => 'export_revision_diff.js',
+        'entrypoint' => true,
+    ],
+    'export_revision_history' => [
+        'path' => 'export_revision_history.js',
+        'entrypoint' => true,
+    ],
     'offering_search' => [
         'path' => 'offering_search.js',
         'entrypoint' => true,
@@ -52,5 +60,21 @@ return [
     '@toast-ui/calendar/dist/toastui-calendar.min.css' => [
         'version' => '2.1.3',
         'type' => 'css',
+    ],
+    'diff' => [
+        'version' => '5.1.0',
+    ],
+    'hogan.js' => [
+        'version' => '3.0.2',
+    ],
+    'diff2html' => [
+        'version' => '3.4.48',
+    ],
+    'diff2html/bundles/css/diff2html.min.css' => [
+        'version' => '3.4.48',
+        'type' => 'css',
+    ],
+    'diff2html/bundles/js/diff2html-ui.min.js' => [
+        'version' => '3.4.48',
     ],
 ];
