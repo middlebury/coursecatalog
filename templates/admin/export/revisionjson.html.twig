@@ -1,0 +1,6 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<h1>Viewing revision #{{ rev.id }} ({{ rev.last_saved }})</h1>
+<pre>{{ rev.json_data }}</pre>
+{% endblock %}

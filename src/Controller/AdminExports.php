@@ -130,21 +130,17 @@ class AdminExports extends AbstractController
      *
      * @since 1/25/18
      */
-    #[Route('/admin/exports/revision/{revisionId}.json', name: 'admin_exports_config_revision_json')]
+    #[Route('/admin/exports/revision/{revisionId}/json', name: 'admin_exports_config_revision_json')]
     public function viewjsonAction(int $revisionId)
     {
-        $request = $this->getRequest();
-        if (!$request->getParam('revision') || -1 === $request->getParam('revision')) {
-            header('HTTP/1.1 400 Bad Request');
-            echo 'This route requires a revision ID';
-            exit;
-        }
-
-        $db = Zend_Registry::get('db');
+        $db = $this->entityManager->getConnection();
         $query = 'SELECT * FROM archive_configuration_revisions WHERE id = ?';
         $stmt = $db->prepare($query);
-        $stmt->execute([filter_var($request->get('revision'), \FILTER_SANITIZE_NUMBER_INT)]);
-        $data['revision'] = $stmt->fetch();
+        $stmt->bindValue(1, $revisionId);
+        $result = $stmt->executeQuery();
+        $data['rev'] = $result->fetchAssociative();
+
+        return $this->render('admin/export/revisionjson.html.twig', $data);
     }
 
     /**
