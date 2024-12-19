@@ -36,7 +36,7 @@
                 <a class='link-button' href='{{ url('admin_exports_config_revision_json', {revisionId: revision.id}) }}' target="_blank">View JSON</a>
             </td>
             <td>
-                <button onclick="revertTo($revision['id'])">Revert to this revision</button>
+                <button class="revert-button" data-rev-id="{{ revision.id }}" data-url="{{ url('admin_exports_config_revert_to_revision') }}">Revert to this revision</button>
             </td>
     </tr>
 {% endfor %}

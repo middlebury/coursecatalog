@@ -21,7 +21,7 @@ class AdminExports extends AbstractController
     /**
      * List archive export configurations.
      */
-    #[Route('/admin/exports/{exportId}', name: 'admin_exports_config')]
+    #[Route('/admin/exports/config/{exportId}', name: 'admin_exports_config')]
     public function listExportConfigs(?int $exportId = null)
     {
         $db = $this->entityManager->getConnection();
@@ -356,19 +356,17 @@ class AdminExports extends AbstractController
      *
      * @since 1/25/18
      */
-    public function reverttorevisionAction()
+    #[Route('/admin/exports/reverttorevision', name: 'admin_exports_config_revert_to_revision', methods: ['POST'])]
+    public function reverttorevisionAction(Request $request)
     {
-        $this->_helper->layout()->disableLayout();
-        $this->_helper->viewRenderer->setNoRender(true);
-
-        $safeRevisionId = filter_input(\INPUT_POST, 'revId', \FILTER_SANITIZE_SPECIAL_CHARS);
-
-        $db = Zend_Registry::get('db');
+        $revId = (int) $request->get('revId');
+        $db = $this->entityManager->getConnection();
         $query = 'SELECT * FROM archive_configuration_revisions WHERE id=:id';
         $stmt = $db->prepare($query);
-        $stmt->execute([':id' => $safeRevisionId]);
-        $oldRevision = $stmt->fetch();
-        $note = 'Revert to revision: '.$safeRevisionId.' from '.$oldRevision['last_saved'];
+        $stmt->bindValue('id', $revId);
+        $result = $stmt->executeQuery();
+        $oldRevision = $result->fetchAssociative();
+        $note = 'Revert to revision #'.$revId.' from '.$oldRevision['last_saved'].' by '.$oldRevision['user_disp_name'];
 
         $query =
         'INSERT INTO archive_configuration_revisions (`arch_conf_id`, `note`, `last_saved`, `user_id`, `user_disp_name`, `json_data`)
@@ -379,8 +377,19 @@ class AdminExports extends AbstractController
       :userId,
       :userDN,
       :jsonData)';
+
         $stmt = $db->prepare($query);
-        $stmt->execute([':configId' => $oldRevision['arch_conf_id'], ':note' => $note, ':userId' => $this->_helper->auth()->getUserId(), ':userDN' => $this->_helper->auth()->getUserDisplayName(), ':jsonData' => $oldRevision['json_data']]);
+        $stmt->bindValue('configId', $oldRevision['arch_conf_id']);
+        $stmt->bindValue('note', $note);
+        $stmt->bindValue('userId', $this->getUser()->getUserIdentifier());
+        $stmt->bindValue('userDN', $this->getUser()->getName());
+        $stmt->bindValue('jsonData', $oldRevision['json_data']);
+        $stmt->executeQuery();
+
+        $response = new Response('Success');
+        $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
+
+        return $response;
     }
 
     /**

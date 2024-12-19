@@ -33,9 +33,9 @@ function renderSelected() {
   selected.forEach(function(element) { $('#' + element).prop('checked', true); });
 }
 
-function revertTo(revId) {
+function revertTo(url, revId) {
   $.ajax({
-    url: "../../../export/reverttorevision",
+    url: url,
     type: "POST",
     data: {
       revId: revId
@@ -58,5 +58,9 @@ $(document).ready(function() {
 
   $('.compare-revisions-button').on('click', function() {
     compare($(this).data('url'));
+  });
+
+  $('.revert-button').on('click', function() {
+    revertTo($(this).data('url'), $(this).data('rev-id'));
   });
 });

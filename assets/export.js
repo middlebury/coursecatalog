@@ -73,7 +73,7 @@ function generateInputTag(type, value, callback) {
 
           // Run the request and work through our queue when we get the result back.
           $.ajax({
-            url: "../exports/generatecourselist/" + $('#catalogId').val(),
+            url: $('#config-body').data('courselist-url'),
             type: "GET",
             error: function(error) {
               throw error;
@@ -190,7 +190,7 @@ function populate() {
 
   loading = true;
   $.ajax({
-    url: "../exports/" + $('#configId').val() + "/latest.json",
+    url: $('#config-body').data('latest-url'),
     type: "GET",
     dataType: "JSON",
     success: function(data) {

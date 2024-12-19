@@ -23,7 +23,7 @@
     <p class='inline-p'> - or - <a href="{{ url('admin_exports_create') }}">Create a new configuration</a></p>
 </div>
 
-<div id='config-body'>
+<div id='config-body' data-latest-url="{{ url('admin_exports_config_latest_revision', {exportId: selected_config.id}) }}" data-courselist-url="{{ url('admin_exports_generate_course_list', {catalogId: selected_config.catalog_id}) }}">
 {% if selected_config and selected_config.id %}
         <input id='catalogId' type='hidden' value='{{ selected_config.catalog_id }}'></input>
         <input id='configId' type='hidden' value='{{ selected_config.id }}'></input>
