@@ -15,7 +15,7 @@
 
 <div class='config-menu'>
     <select name='config-selector' id="config-selector">
-        <option value="select">Select a configuration</option>
+        <option value="">Select a configuration</option>
 {% for config in configs %}
         <option value="{{ url('admin_exports_config', {exportId: config.id}) }}" {{ selected_config and selected_config.id == config.id ? 'selected="selected"' }}>{{ config.label }}</option>
 {% endfor %}
