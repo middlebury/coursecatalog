@@ -27,6 +27,7 @@ trait AppDatabaseTestTrait
         // Initialize our testing database
         $db = self::getDB();
         \harmoni_SQLUtils::runSQLfile(APPLICATION_PATH.'/sql/user_schedules.sql', $db);
+        \harmoni_SQLUtils::runSQLfile(APPLICATION_PATH.'/sql/archive_export.sql', $db);
     }
 
     /**
@@ -36,5 +37,6 @@ trait AppDatabaseTestTrait
     {
         $db = self::getDB();
         \harmoni_SQLUtils::runSQLfile(APPLICATION_PATH.'/sql/drop_user_schedules.sql', $db);
+        \harmoni_SQLUtils::runSQLfile(APPLICATION_PATH.'/sql/drop_archive_export.sql', $db);
     }
 }

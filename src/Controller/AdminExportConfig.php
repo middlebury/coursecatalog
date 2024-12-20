@@ -76,7 +76,7 @@ class AdminExportConfig extends AbstractController
         $stmt = $db->prepare($query);
         $stmt->bindValue('label', $label);
         $stmt->bindValue('catalogId', $catalogId);
-        $stmt->execute();
+        $stmt->executeQuery();
 
         return $this->redirectToRoute('export_config_form', [
             'exportId' => $db->lastInsertId(),
@@ -316,7 +316,7 @@ class AdminExportConfig extends AbstractController
         $this->_helper->viewRenderer->setNoRender(true);
 
         $db = Zend_Registry::get('db');
-        $revisions = $db->query('SELECT * FROM archive_configuration_revisions ORDER BY last_saved DESC')->fetchAll();
+        $revisions = $db->executeQuery('SELECT * FROM archive_configuration_revisions ORDER BY last_saved DESC')->fetchAll();
 
         echo json_encode($revisions);
     }
