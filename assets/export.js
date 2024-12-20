@@ -577,10 +577,7 @@ function saveJSON() {
         if (JSONString === "}") JSONString = "{}";
 
         $.ajax({
-            url:
-                "../exports/" +
-                $("#configId").attr("value") +
-                "/insertrevision",
+            url: $("#config-body").data("insert-revision-url"),
             type: "POST",
             dataType: "json",
             data: {

@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block importmap %}
+    {# do NOT call parent() #}
+    {{ importmap(['app', 'export']) }}
+{% endblock %}
+
+{% block body %}
+<h1>Create New Catalog Export Configuration</h1>
+<div class='admin-menu'><a href="{{ url('admin_exports_config') }}">&laquo; Back to Archive Export Configuration</a></div>
+
+<form class='config-create-form' action="{{ url('admin_exports_insert_config') }}" method="post">
+    <label for='label'>Label:</label><input name='label'></input><br>
+    <label for='catalog_id'>Catalog:</label>
+        <select name='catalog_id'>
+{% for catalog in catalogs %}
+            <option value='{{ osidIdToString(catalog.id) }}'>{{ catalog.displayname }}</option>
+{% endfor %}
+        </select>
+    <input class='submit-button' type='submit'></input>
+</form>
+{% endblock %}

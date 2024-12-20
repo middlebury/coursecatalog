@@ -72,7 +72,19 @@ class AdminExports extends AbstractController
         $result = $stmt->executeQuery();
         $latestRevision = $result->fetchAssociative();
 
-        return JsonResponse::fromJsonString($latestRevision['json_data']);
+        if ($latestRevision) {
+            return JsonResponse::fromJsonString($latestRevision['json_data']);
+        } else {
+            return new JsonResponse([
+                'group1' => [
+                    'title' => 'Please fill out an h1 section to give this group a name',
+                    'section1' => [
+                        'type' => 'h1',
+                        'value' => '',
+                    ],
+                ],
+            ]);
+        }
     }
 
     /**
@@ -153,8 +165,14 @@ class AdminExports extends AbstractController
     #[Route('/admin/exports/create', name: 'admin_exports_create')]
     public function newconfigAction()
     {
+        $data['catalogs'] = [];
         $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();
-        $data['catalogs'] = $lookupSession->getCourseCatalogs();
+        $catalogs = $lookupSession->getCourseCatalogs();
+        while ($catalogs->hasNext()) {
+            $data['catalogs'][] = $catalogs->getNextCourseCatalog();
+        }
+
+        return $this->render('admin/export/create_config.html.twig', $data);
     }
 
     /**
@@ -183,26 +201,23 @@ class AdminExports extends AbstractController
 
     /**
      * Insert a new archive configuration into the database.
-     *
-     * @return void
-     *
-     * @since 1/23/18
      */
-    public function insertconfigAction()
+    #[Route('/admin/exports/insert', name: 'admin_exports_insert_config', methods: ['POST'])]
+    public function insertconfigAction(Request $request)
     {
-        if ($this->getRequest()->isPost()) {
-            $safeLabel = filter_input(\INPUT_POST, 'label', \FILTER_SANITIZE_SPECIAL_CHARS);
-            $safeCatalogId = filter_input(\INPUT_POST, 'catalog_id', \FILTER_SANITIZE_SPECIAL_CHARS);
+        $label = filter_var($request->get('label'), \FILTER_SANITIZE_SPECIAL_CHARS);
+        $catalogId = filter_var($request->get('catalog_id'), \FILTER_SANITIZE_SPECIAL_CHARS);
 
-            $db = Zend_Registry::get('db');
-            $query =
-            'INSERT INTO archive_configurations (id, label, catalog_id)
-      VALUES (NULL,:label,:catalogId)';
-            $stmt = $db->prepare($query);
-            $stmt->execute([':label' => $safeLabel, ':catalogId' => $safeCatalogId]);
-        }
+        $db = $this->entityManager->getConnection();
+        $query = 'INSERT INTO archive_configurations (id, label, catalog_id) VALUES (NULL,:label,:catalogId)';
+        $stmt = $db->prepare($query);
+        $stmt->bindValue('label', $label);
+        $stmt->bindValue('catalogId', $catalogId);
+        $stmt->execute();
 
-        $this->_helper->redirector('export', 'admin');
+        return $this->redirectToRoute('admin_exports_config', [
+            'exportId' => $db->lastInsertId(),
+        ]);
     }
 
     /**
