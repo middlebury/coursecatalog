@@ -37,7 +37,7 @@ class AdminExports extends AbstractController
             }
         }
 
-        return $this->render('admin/export_config.html.twig', $data);
+        return $this->render('admin/export/config_form.html.twig', $data);
     }
 
     /**
