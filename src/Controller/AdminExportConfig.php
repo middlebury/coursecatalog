@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class AdminExportConfig extends AbstractController
 {
@@ -62,6 +63,11 @@ class AdminExportConfig extends AbstractController
     #[Route('/admin/exports/create', name: 'export_config_create', methods: ['POST'])]
     public function createAction(Request $request)
     {
+        // Verify our CSRF key
+        if (!$this->isCsrfTokenValid('admin-export-config-create', $request->get('csrf_key'))) {
+            throw new AccessDeniedException('Invalid CSRF key.');
+        }
+
         $label = filter_var($request->get('label'), \FILTER_SANITIZE_SPECIAL_CHARS);
         $catalogId = filter_var($request->get('catalog_id'), \FILTER_SANITIZE_SPECIAL_CHARS);
 
@@ -81,8 +87,13 @@ class AdminExportConfig extends AbstractController
      * Delete an archive configuration.
      */
     #[Route('/admin/exports/{exportId}/delete', name: 'export_config_delete', methods: ['POST'])]
-    public function deleteconfigAction($exportId)
+    public function deleteconfigAction(Request $request, $exportId)
     {
+        // Verify our CSRF key
+        if (!$this->isCsrfTokenValid('admin-export-config-modify', $request->get('csrf_key'))) {
+            throw new AccessDeniedException('Invalid CSRF key.');
+        }
+
         $db = $this->entityManager->getConnection();
 
         // Delete revisions that depend on this config.
@@ -172,6 +183,11 @@ class AdminExportConfig extends AbstractController
     #[Route('/admin/exports/{exportId}/insertrevision', name: 'export_config_insert_revision', methods: ['POST'])]
     public function insertrevisionAction(Request $request, int $exportId)
     {
+        // Verify our CSRF key
+        if (!$this->isCsrfTokenValid('admin-export-config-modify', $request->get('csrf_key'))) {
+            throw new AccessDeniedException('Invalid CSRF key.');
+        }
+
         $safeNote = filter_var($request->get('note'), \FILTER_SANITIZE_SPECIAL_CHARS);
         $jsonArray = json_decode($request->get('jsonData'));
         foreach ($jsonArray as $key => $value) {
@@ -213,6 +229,11 @@ class AdminExportConfig extends AbstractController
     #[Route('/admin/exports/reverttorevision', name: 'export_config_revert_to_revision', methods: ['POST'])]
     public function reverttorevisionAction(Request $request)
     {
+        // Verify our CSRF key
+        if (!$this->isCsrfTokenValid('admin-export-config-revert', $request->get('csrf_key'))) {
+            throw new AccessDeniedException('Invalid CSRF key.');
+        }
+
         $revId = (int) $request->get('revId');
         $db = $this->entityManager->getConnection();
         $query = 'SELECT * FROM archive_configuration_revisions WHERE id=:id';

@@ -60,6 +60,7 @@ function revertTo(url, revId) {
         type: "POST",
         data: {
             revId: revId,
+            csrf_key: $('#csrf-key-config-revert').val(),
         },
         success: function (data) {
             location.reload();

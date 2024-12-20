@@ -581,6 +581,7 @@ function saveJSON() {
             type: "POST",
             dataType: "json",
             data: {
+                csrf_key: $('#csrf-key-config-modify').val(),
                 note: $("#note").val(),
                 jsonData: JSONString,
             },
@@ -614,6 +615,9 @@ function confirmDelete() {
     $.ajax({
         url: $("#config-body").data("delete-url"),
         type: "POST",
+        data: {
+            csrf_key: $('#csrf-key-config-modify').val(),
+        },
         error: function (error) {
             console.log(error);
         },

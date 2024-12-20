@@ -27,6 +27,7 @@
 {% if selected_config and selected_config.id %}
         <input id='catalogId' type='hidden' value='{{ selected_config.catalog_id }}'></input>
         <input id='configId' type='hidden' value='{{ selected_config.id }}'></input>
+        <input id='csrf-key-config-modify' type='hidden' name='csrf_key' value='{{ csrf_token('admin-export-config-modify') }}' />
 
         <div class='error-message error-div'>Error: </div>
 
