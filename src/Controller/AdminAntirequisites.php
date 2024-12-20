@@ -27,7 +27,7 @@ class AdminAntirequisites extends AbstractController
         $db = $this->entityManager->getConnection();
 
         // Select our already-created antirequisites
-        $data['antirequisites'] = $db->query('SELECT * FROM antirequisites ORDER BY subj_code, crse_numb, subj_code_eqiv, crse_numb_eqiv')->fetchAllAssociative();
+        $data['antirequisites'] = $db->executeQuery('SELECT * FROM antirequisites ORDER BY subj_code, crse_numb, subj_code_eqiv, crse_numb_eqiv')->fetchAllAssociative();
 
         // Supply search results.
         $data['search_subj_code'] = $request->get('search_subj_code');
