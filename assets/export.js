@@ -258,7 +258,7 @@ function populate() {
         reset();
     });
     $("#delete-export-config-button").on("click", function () {
-        deleteConfig($("#configId").val());
+        deleteConfig();
     });
     $("#show-hide-export-config-groups-button").on("click", function () {
         showHide();
@@ -602,23 +602,18 @@ function saveJSON() {
 
 // ------ CONFIGS ------- //
 
-function deleteConfig(configId) {
+function deleteConfig() {
     if ($("#warning-box").length) return;
     $("#config-body").append(
-        "<div id='warning-box' class='warning-box'><p class='warning'>Are you sure you want to delete this configuration? This cannot be undone. All related revisions will be gone as well.</p><div class='warning-controls'><button class='button-delete button-confirm-delete' data-config-id='" +
-            configId +
-            "'>Delete</button><button class='button-cancel-delete'>Cancel</button></div></div>"
+        "<div id='warning-box' class='warning-box'><p class='warning'>Are you sure you want to delete this configuration? This cannot be undone. All related revisions will be gone as well.</p><div class='warning-controls'><button class='button-delete button-confirm-delete'>Delete</button><button class='button-cancel-delete'>Cancel</button></div></div>"
     );
     resetEventListeners();
 }
 
-function confirmDelete(confId) {
+function confirmDelete() {
     $.ajax({
-        url: "../exports/" + configId + "/deleteconfig",
+        url: $("#config-body").data("delete-url"),
         type: "POST",
-        data: {
-            configId: confId,
-        },
         error: function (error) {
             console.log(error);
         },

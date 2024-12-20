@@ -182,21 +182,27 @@ class AdminExports extends AbstractController
      *
      * @since 1/23/18
      */
-    public function deleteconfigAction()
+    #[Route('/admin/exports/{exportId}/delete', name: 'admin_exports_delete_config', methods: ['POST'])]
+    public function deleteconfigAction($exportId)
     {
-        $this->_helper->layout()->disableLayout();
-        $this->_helper->viewRenderer->setNoRender(true);
+        $db = $this->entityManager->getConnection();
 
         // Delete revisions that depend on this config.
-        $db = Zend_Registry::get('db');
         $query = 'DELETE FROM archive_configuration_revisions WHERE arch_conf_id = ?';
         $stmt = $db->prepare($query);
-        $stmt->execute([filter_var($this->getRequest()->getPost('configId'), \FILTER_SANITIZE_NUMBER_INT)]);
+        $stmt->bindValue(1, $exportId);
+        $stmt->executeQuery();
 
         // Delete this config.
         $query = 'DELETE FROM archive_configurations WHERE id = ?';
         $stmt = $db->prepare($query);
-        $stmt->execute([$this->getRequest()->getPost('configId')]);
+        $stmt->bindValue(1, $exportId);
+        $stmt->executeQuery();
+
+        $response = new Response('Success');
+        $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
+
+        return $response;
     }
 
     /**
