@@ -20,10 +20,10 @@
         <option value="{{ url('export_config_form', {exportId: config.id}) }}" {{ selected_config and selected_config.id == config.id ? 'selected="selected"' }}>{{ config.label }}</option>
 {% endfor %}
     </select>
-    <p class='inline-p'> - or - <a href="{{ url('export_config_create') }}">Create a new configuration</a></p>
+    <p class='inline-p'> - or - <a href="{{ url('export_config_create_form') }}">Create a new configuration</a></p>
 </div>
 
-<div id='config-body' data-latest-url="{{ selected_config ? url('export_config_latest_revision', {exportId: selected_config.id}) }}" data-courselist-url="{{ selected_config ? url('export_config_generate_course_list', {catalogId: selected_config.catalog_id}) }}" data-insert-revision-url="{{ selected_config ? url('export_config_insert_revision', {exportId: selected_config.id}) }}" data-delete-url="{{ selected_config ? url('export_config_delete_config', {exportId: selected_config.id}) }}">
+<div id='config-body' data-latest-url="{{ selected_config ? url('export_config_latest_revision', {exportId: selected_config.id}) }}" data-courselist-url="{{ selected_config ? url('export_config_generate_course_list', {catalogId: selected_config.catalog_id}) }}" data-insert-revision-url="{{ selected_config ? url('export_config_insert_revision', {exportId: selected_config.id}) }}" data-delete-url="{{ selected_config ? url('export_config_delete', {exportId: selected_config.id}) }}">
 {% if selected_config and selected_config.id %}
         <input id='catalogId' type='hidden' value='{{ selected_config.catalog_id }}'></input>
         <input id='configId' type='hidden' value='{{ selected_config.id }}'></input>

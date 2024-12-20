@@ -9,7 +9,7 @@
 <h1>Create New Catalog Export Configuration</h1>
 <div class='admin-menu'><a href="{{ url('export_config_form') }}">&laquo; Back to Archive Export Configuration</a></div>
 
-<form class='config-create-form' action="{{ url('export_config_insert_config') }}" method="post">
+<form class='config-create-form' action="{{ url('export_config_create') }}" method="post">
     <label for='label'>Label:</label><input name='label'></input><br>
     <label for='catalog_id'>Catalog:</label>
         <select name='catalog_id'>

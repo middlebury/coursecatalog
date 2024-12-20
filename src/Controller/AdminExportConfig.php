@@ -41,6 +41,69 @@ class AdminExportConfig extends AbstractController
     }
 
     /**
+     * Provide interface for creating a new archive configuration.
+     */
+    #[Route('/admin/exports/create', name: 'export_config_create_form', methods: ['GET'])]
+    public function createFormAction()
+    {
+        $data['catalogs'] = [];
+        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();
+        $catalogs = $lookupSession->getCourseCatalogs();
+        while ($catalogs->hasNext()) {
+            $data['catalogs'][] = $catalogs->getNextCourseCatalog();
+        }
+
+        return $this->render('admin/export/create_config.html.twig', $data);
+    }
+
+    /**
+     * Insert a new archive configuration into the database.
+     */
+    #[Route('/admin/exports/create', name: 'export_config_create', methods: ['POST'])]
+    public function createAction(Request $request)
+    {
+        $label = filter_var($request->get('label'), \FILTER_SANITIZE_SPECIAL_CHARS);
+        $catalogId = filter_var($request->get('catalog_id'), \FILTER_SANITIZE_SPECIAL_CHARS);
+
+        $db = $this->entityManager->getConnection();
+        $query = 'INSERT INTO archive_configurations (id, label, catalog_id) VALUES (NULL,:label,:catalogId)';
+        $stmt = $db->prepare($query);
+        $stmt->bindValue('label', $label);
+        $stmt->bindValue('catalogId', $catalogId);
+        $stmt->execute();
+
+        return $this->redirectToRoute('export_config_form', [
+            'exportId' => $db->lastInsertId(),
+        ]);
+    }
+
+    /**
+     * Delete an archive configuration.
+     */
+    #[Route('/admin/exports/{exportId}/delete', name: 'export_config_delete', methods: ['POST'])]
+    public function deleteconfigAction($exportId)
+    {
+        $db = $this->entityManager->getConnection();
+
+        // Delete revisions that depend on this config.
+        $query = 'DELETE FROM archive_configuration_revisions WHERE arch_conf_id = ?';
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(1, $exportId);
+        $stmt->executeQuery();
+
+        // Delete this config.
+        $query = 'DELETE FROM archive_configurations WHERE id = ?';
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(1, $exportId);
+        $stmt->executeQuery();
+
+        $response = new Response('Success');
+        $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
+
+        return $response;
+    }
+
+    /**
      * Echo JSON data of latest revision for a particular archive configuration.
      */
     #[Route('/admin/exports/{exportId}/latest.json', name: 'export_config_latest_revision')]
@@ -104,136 +167,40 @@ class AdminExportConfig extends AbstractController
     }
 
     /**
-     * Display diff between two revisions.
-     *
-     * @return void
-     *
-     * @since 1/25/18
+     * Insert new archive configuration revision to the DB.
      */
-    #[Route('/admin/exports/revisiondiff/{rev1}/{rev2}', name: 'export_config_revision_diff')]
-    public function revisiondiffAction(int $rev1, int $rev2)
+    #[Route('/admin/exports/{exportId}/insertrevision', name: 'export_config_insert_revision', methods: ['POST'])]
+    public function insertrevisionAction(Request $request, int $exportId)
     {
-        $db = $this->entityManager->getConnection();
-        $query = 'SELECT * FROM archive_configuration_revisions WHERE id = ?';
-        $stmt = $db->prepare($query);
-        $stmt->bindValue(1, $rev1);
-        $result = $stmt->executeQuery();
-        $data['rev1'] = $result->fetchAssociative();
-
-        $stmt->bindValue(1, $rev2);
-        $result = $stmt->executeQuery();
-        $data['rev2'] = $result->fetchAssociative();
-
-        return $this->render('admin/export/revisiondiff.html.twig', $data);
-    }
-
-    /**
-     * Display revision JSON data.
-     *
-     * @return void
-     *
-     * @since 1/25/18
-     */
-    #[Route('/admin/exports/revision/{revisionId}/json', name: 'export_config_revision_json')]
-    public function viewjsonAction(int $revisionId)
-    {
-        $db = $this->entityManager->getConnection();
-        $query = 'SELECT * FROM archive_configuration_revisions WHERE id = ?';
-        $stmt = $db->prepare($query);
-        $stmt->bindValue(1, $revisionId);
-        $result = $stmt->executeQuery();
-        $data['rev'] = $result->fetchAssociative();
-
-        return $this->render('admin/export/revisionjson.html.twig', $data);
-    }
-
-    /**
-     * Provide interface for creating a new archive configuration.
-     *
-     * @return void
-     *
-     * @since 1/23/18
-     */
-    #[Route('/admin/exports/create', name: 'export_config_create')]
-    public function newconfigAction()
-    {
-        $data['catalogs'] = [];
-        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();
-        $catalogs = $lookupSession->getCourseCatalogs();
-        while ($catalogs->hasNext()) {
-            $data['catalogs'][] = $catalogs->getNextCourseCatalog();
+        $safeNote = filter_var($request->get('note'), \FILTER_SANITIZE_SPECIAL_CHARS);
+        $jsonArray = json_decode($request->get('jsonData'));
+        foreach ($jsonArray as $key => $value) {
+            $value = filter_var($value, \FILTER_SANITIZE_SPECIAL_CHARS);
         }
+        $safeJsonData = json_encode($jsonArray, \JSON_PRETTY_PRINT);
 
-        return $this->render('admin/export/create_config.html.twig', $data);
-    }
-
-    /**
-     * Delete an archive configuration.
-     *
-     * @return void
-     *
-     * @since 1/23/18
-     */
-    #[Route('/admin/exports/{exportId}/delete', name: 'export_config_delete_config', methods: ['POST'])]
-    public function deleteconfigAction($exportId)
-    {
         $db = $this->entityManager->getConnection();
-
-        // Delete revisions that depend on this config.
-        $query = 'DELETE FROM archive_configuration_revisions WHERE arch_conf_id = ?';
+        $query =
+        'INSERT INTO archive_configuration_revisions (`arch_conf_id`, `note`, `last_saved`, `user_id`, `user_disp_name`, `json_data`)
+    VALUES (
+      :configId,
+      :note,
+      CURRENT_TIMESTAMP,
+      :userId,
+      :userDN,
+      :jsonData)';
         $stmt = $db->prepare($query);
-        $stmt->bindValue(1, $exportId);
-        $stmt->executeQuery();
-
-        // Delete this config.
-        $query = 'DELETE FROM archive_configurations WHERE id = ?';
-        $stmt = $db->prepare($query);
-        $stmt->bindValue(1, $exportId);
+        $stmt->bindValue('configId', $exportId);
+        $stmt->bindValue('note', $safeNote);
+        $stmt->bindValue('userId', $this->getUser()->getUserIdentifier());
+        $stmt->bindValue('userDN', $this->getUser()->getName());
+        $stmt->bindValue('jsonData', $safeJsonData);
         $stmt->executeQuery();
 
         $response = new Response('Success');
         $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
 
         return $response;
-    }
-
-    /**
-     * Insert a new archive configuration into the database.
-     */
-    #[Route('/admin/exports/insert', name: 'export_config_insert_config', methods: ['POST'])]
-    public function insertconfigAction(Request $request)
-    {
-        $label = filter_var($request->get('label'), \FILTER_SANITIZE_SPECIAL_CHARS);
-        $catalogId = filter_var($request->get('catalog_id'), \FILTER_SANITIZE_SPECIAL_CHARS);
-
-        $db = $this->entityManager->getConnection();
-        $query = 'INSERT INTO archive_configurations (id, label, catalog_id) VALUES (NULL,:label,:catalogId)';
-        $stmt = $db->prepare($query);
-        $stmt->bindValue('label', $label);
-        $stmt->bindValue('catalogId', $catalogId);
-        $stmt->execute();
-
-        return $this->redirectToRoute('export_config_form', [
-            'exportId' => $db->lastInsertId(),
-        ]);
-    }
-
-    /**
-     * Echo JSON data of all archive configuration revisions.
-     *
-     * @return void
-     *
-     * @since 1/23/18
-     */
-    public function listrevisionsAction()
-    {
-        $this->_helper->layout()->disableLayout();
-        $this->_helper->viewRenderer->setNoRender(true);
-
-        $db = Zend_Registry::get('db');
-        $revisions = $db->query('SELECT * FROM archive_configuration_revisions ORDER BY last_saved DESC')->fetchAll();
-
-        echo json_encode($revisions);
     }
 
     /**
@@ -280,40 +247,57 @@ class AdminExportConfig extends AbstractController
     }
 
     /**
-     * Insert new archive configuration revision to the DB.
+     * Display diff between two revisions.
      */
-    #[Route('/admin/exports/{exportId}/insertrevision', name: 'export_config_insert_revision', methods: ['POST'])]
-    public function insertrevisionAction(Request $request, int $exportId)
+    #[Route('/admin/exports/revisiondiff/{rev1}/{rev2}', name: 'export_config_revision_diff')]
+    public function revisiondiffAction(int $rev1, int $rev2)
     {
-        $safeNote = filter_var($request->get('note'), \FILTER_SANITIZE_SPECIAL_CHARS);
-        $jsonArray = json_decode($request->get('jsonData'));
-        foreach ($jsonArray as $key => $value) {
-            $value = filter_var($value, \FILTER_SANITIZE_SPECIAL_CHARS);
-        }
-        $safeJsonData = json_encode($jsonArray, \JSON_PRETTY_PRINT);
-
         $db = $this->entityManager->getConnection();
-        $query =
-        'INSERT INTO archive_configuration_revisions (`arch_conf_id`, `note`, `last_saved`, `user_id`, `user_disp_name`, `json_data`)
-    VALUES (
-      :configId,
-      :note,
-      CURRENT_TIMESTAMP,
-      :userId,
-      :userDN,
-      :jsonData)';
+        $query = 'SELECT * FROM archive_configuration_revisions WHERE id = ?';
         $stmt = $db->prepare($query);
-        $stmt->bindValue('configId', $exportId);
-        $stmt->bindValue('note', $safeNote);
-        $stmt->bindValue('userId', $this->getUser()->getUserIdentifier());
-        $stmt->bindValue('userDN', $this->getUser()->getName());
-        $stmt->bindValue('jsonData', $safeJsonData);
-        $stmt->executeQuery();
+        $stmt->bindValue(1, $rev1);
+        $result = $stmt->executeQuery();
+        $data['rev1'] = $result->fetchAssociative();
 
-        $response = new Response('Success');
-        $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
+        $stmt->bindValue(1, $rev2);
+        $result = $stmt->executeQuery();
+        $data['rev2'] = $result->fetchAssociative();
 
-        return $response;
+        return $this->render('admin/export/revisiondiff.html.twig', $data);
+    }
+
+    /**
+     * Display revision JSON data.
+     */
+    #[Route('/admin/exports/revision/{revisionId}/json', name: 'export_config_revision_json')]
+    public function viewjsonAction(int $revisionId)
+    {
+        $db = $this->entityManager->getConnection();
+        $query = 'SELECT * FROM archive_configuration_revisions WHERE id = ?';
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(1, $revisionId);
+        $result = $stmt->executeQuery();
+        $data['rev'] = $result->fetchAssociative();
+
+        return $this->render('admin/export/revisionjson.html.twig', $data);
+    }
+
+    /**
+     * Echo JSON data of all archive configuration revisions.
+     *
+     * @return void
+     *
+     * @since 1/23/18
+     */
+    public function listrevisionsAction()
+    {
+        $this->_helper->layout()->disableLayout();
+        $this->_helper->viewRenderer->setNoRender(true);
+
+        $db = Zend_Registry::get('db');
+        $revisions = $db->query('SELECT * FROM archive_configuration_revisions ORDER BY last_saved DESC')->fetchAll();
+
+        echo json_encode($revisions);
     }
 
     /**
