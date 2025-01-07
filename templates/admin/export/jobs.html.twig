@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block importmap %}
+    {# do NOT call parent() #}
+    {{ importmap(['app', 'export_jobs']) }}
+{% endblock %}
+
+{% block body %}
+<h1>Manage Catalog Export Scheduling</h1>
+<div class='admin-menu'><a href="{{ url('admin_index') }}">&laquo; Back to Administration</a></div>
+
+<div class='job-menu'>
+    <button class='link-button' value='save' onclick='save()'>Save</button>
+    <button class='link-button' value='reset' onclick='reset()'>Reset to last save</button>
+    <a class='link-button' href="{{ url('export_new_job_form') }}">Create a new job</a>
+</div>
+
+<div class='error-message error-div'>Error: </div>
+
+<div id='jobs' class='job-schedule' data-list-jobs-url="{{ url('export_list_jobs_json') }}">
+    <table id='job-table' class='job-table'>
+        <tr>
+            <th>Active</th>
+            <th>Export Path</th>
+            <th>Config</th>
+            <th>Revision to Export</th>
+            <th>Terms</th>
+            <th>Actions</th>
+        </tr>
+    </table>
+</div>
+
+<div class='job-menu'>
+    <button value='save' onclick='save()'>Save</button>
+    <button value='reset' onclick='reset()'>Reset to last save</button>
+    <a class='link-button' href="{{ url('export_new_job_form') }}">Create a new job</a>
+</div>
+{% endblock %}

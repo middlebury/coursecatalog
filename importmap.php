@@ -31,6 +31,10 @@ return [
         'path' => 'export_revision_history.js',
         'entrypoint' => true,
     ],
+    'export_jobs' => [
+        'path' => 'export_jobs.js',
+        'entrypoint' => true,
+    ],
     'offering_search' => [
         'path' => 'offering_search.js',
         'entrypoint' => true,

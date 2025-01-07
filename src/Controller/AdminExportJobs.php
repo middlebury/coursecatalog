@@ -5,9 +5,10 @@ namespace App\Controller;
 use App\Service\Osid\Runtime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
-class AdminExportScheduling extends AbstractController
+class AdminExportJobs extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
@@ -18,9 +19,10 @@ class AdminExportScheduling extends AbstractController
     /**
      * Manage catalog archive scheduling.
      */
-    #[Route('/admin/exports/schedule', name: 'export_config_list_schedules')]
-    public function scheduleAction()
+    #[Route('/admin/exports/jobs', name: 'export_list_jobs')]
+    public function jobsAction()
     {
+        return $this->render('admin/export/jobs.html.twig');
     }
 
     /**
@@ -30,22 +32,21 @@ class AdminExportScheduling extends AbstractController
      *
      * @since 1/23/18
      */
+    #[Route('/admin/exports/jobs.json', name: 'export_list_jobs_json')]
     public function listjobsAction()
     {
-        $this->_helper->layout()->disableLayout();
-        $this->_helper->viewRenderer->setNoRender(true);
+        $db = $this->entityManager->getConnection();
+        $configs = $db->executeQuery('SELECT * FROM archive_configurations')->fetchAllAssociative();
+        $revisions = $db->executeQuery('SELECT `id`, `note`, `last_saved`, `arch_conf_id` FROM archive_configuration_revisions ORDER BY last_saved DESC')->fetchAllAssociative();
+        $jobs = $db->executeQuery('SELECT * FROM archive_jobs ORDER BY terms DESC')->fetchAllAssociative();
 
-        $db = Zend_Registry::get('db');
-        $configs = $db->query('SELECT * FROM archive_configurations')->fetchAll();
-        $revisions = $db->query('SELECT `id`, `note`, `last_saved`, `arch_conf_id` FROM archive_configuration_revisions ORDER BY last_saved DESC')->fetchAll();
-        $jobs = $db->query('SELECT * FROM archive_jobs ORDER BY terms DESC')->fetchAll();
+        $data = [
+            'configs' => $configs,
+            'revisions' => $revisions,
+            'jobs' => $jobs,
+        ];
 
-        $data = [];
-        $data[] = ['configs' => $configs];
-        $data[] = ['revisions' => $revisions];
-        $data[] = ['jobs' => $jobs];
-
-        echo json_encode($data);
+        return new JsonResponse($data);
     }
 
     /**
@@ -55,6 +56,7 @@ class AdminExportScheduling extends AbstractController
      *
      * @since 1/23/18
      */
+    #[Route('/admin/exports/jobs/new', name: 'export_new_job_form')]
     public function newjobAction()
     {
         $request = $this->getRequest();
@@ -79,6 +81,7 @@ class AdminExportScheduling extends AbstractController
      *
      * @since 1/23/18
      */
+    #[Route('/admin/exports/jobs/{job}/delete', name: 'export_delete_job', methods: ['POST'])]
     public function deletejobAction()
     {
         $this->_helper->layout()->disableLayout();
@@ -98,6 +101,7 @@ class AdminExportScheduling extends AbstractController
      *
      * @since 1/23/18
      */
+    #[Route('/admin/exports/jobs/insert', name: 'export_insert_job')]
     public function insertjobAction()
     {
         if ($this->getRequest()->isPost()) {
@@ -123,6 +127,7 @@ class AdminExportScheduling extends AbstractController
      *
      * @since 1/23/18
      */
+    #[Route('/admin/exports/jobs/{job}/update', name: 'export_update_job', methods: ['POST'])]
     public function updatejobAction()
     {
         $this->_helper->layout()->disableLayout();
@@ -156,6 +161,7 @@ class AdminExportScheduling extends AbstractController
      *
      * @since 1/23/18
      */
+    #[Route('/admin/exports/config-revisions.json', name: 'export_config_revisions_json')]
     public function listrevisionsAction()
     {
         $this->_helper->layout()->disableLayout();
@@ -175,6 +181,7 @@ class AdminExportScheduling extends AbstractController
      * @since 1/23/18
      */
     // TODO - return instead of echo?
+    #[Route('/admin/exports/term-valid/{catalogId}/{termId}', name: 'export_term_valid')]
     public function validtermAction()
     {
         $request = $this->getRequest();
