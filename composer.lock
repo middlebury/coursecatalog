@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a8064ee01e8d0fb10011df89904d3c79",
+    "content-hash": "507ba22f88be17aa2f63903e657b2e8a",
     "packages": [
         {
             "name": "brick/math",
@@ -2577,6 +2577,33 @@
                 "source": "https://github.com/microsoftgraph/msgraph-sdk-php-core/tree/v2.2.0"
             },
             "time": "2024-06-24T15:18:39+00:00"
+        },
+        {
+            "name": "middlebury/midd-frontend",
+            "version": "4.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/middlebury/midd-frontend.git",
+                "reference": "02c2df1a768953939397f2ef16e01a9c41507559"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/middlebury/midd-frontend/zipball/02c2df1a768953939397f2ef16e01a9c41507559",
+                "reference": "02c2df1a768953939397f2ef16e01a9c41507559",
+                "shasum": ""
+            },
+            "type": "drupal-library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Middlebury College's theme assets.",
+            "homepage": "https://github.com/middlebury/midd-frontend",
+            "support": {
+                "issues": "https://github.com/middlebury/midd-frontend/issues",
+                "source": "https://github.com/middlebury/midd-frontend/tree/4.0.1"
+            },
+            "time": "2024-12-17T18:41:32+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -11775,5 +11802,5 @@
         "ext-iconv": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.2.0"
 }

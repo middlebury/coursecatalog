@@ -81,4 +81,12 @@ return [
     'diff2html/bundles/js/diff2html-ui.min.js' => [
         'version' => '3.4.48',
     ],
+    'theme.css' => [
+        'path' => 'midd-frontend/css/main.css',
+        'type' => 'css',
+    ],
+    'theme.js' => [
+        'path' => 'midd-frontend/js/main.bundle.js',
+        'entrypoint' => true,
+    ],
 ];
