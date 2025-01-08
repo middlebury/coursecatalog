@@ -18,6 +18,7 @@ class Masquerade extends AbstractController
         $data = [
             'userId' => $user->getUserIdentifier(),
             'userName' => $user->getName(),
+            'page_title' => 'Masquerade as another user',
         ];
 
         return $this->render('admin/masquerade.html.twig', $data);

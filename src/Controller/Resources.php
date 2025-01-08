@@ -77,6 +77,8 @@ class Resources extends AbstractController
             }
         }
 
+        $data['page_title'] = $data['resource']->getDisplayName();
+
         return $this->render('resources/view.html.twig', $data);
     }
 
@@ -89,10 +91,10 @@ class Resources extends AbstractController
         $data = [];
         if ($catalogId) {
             $lookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalogId);
-            $data['title'] = 'Resources in '.$lookupSession->getBin()->getDisplayName();
+            $data['page_title'] = 'Resources in '.$lookupSession->getBin()->getDisplayName();
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
-            $data['title'] = 'Resources in All Bins';
+            $data['page_title'] = 'Resources in All Bins';
         }
         $lookupSession->useFederatedBinView();
 

@@ -58,6 +58,8 @@ class AdminAntirequisites extends AbstractController
             $data['searchResults'] = $result->fetchAllAssociative();
         }
 
+        $data['page_title'] = 'Manage Anti-Requisites';
+
         return $this->render('admin/antirequisites.html.twig', $data);
     }
 

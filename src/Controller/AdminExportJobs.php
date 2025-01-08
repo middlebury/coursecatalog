@@ -22,7 +22,9 @@ class AdminExportJobs extends AbstractController
     #[Route('/admin/exports/jobs', name: 'export_list_jobs')]
     public function jobsAction()
     {
-        return $this->render('admin/export/jobs.html.twig');
+        $data['page_title'] = 'Manage Catalog Export Job Scheduling';
+
+        return $this->render('admin/export/jobs.html.twig', $data);
     }
 
     /**

@@ -62,7 +62,7 @@ class Offerings extends AbstractController
         $data = [];
         $data['catalogId'] = $catalogId;
         $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
-        $data['title'] = $lookupSession->getCourseCatalog()->getDisplayName();
+        $data['page_title'] = $lookupSession->getCourseCatalog()->getDisplayName();
         $lookupSession->useFederatedCourseCatalogView();
 
         // Add our parameters to the search query
@@ -132,7 +132,7 @@ class Offerings extends AbstractController
             }
         }
 
-        $data['title'] = 'Course Offering Results';
+        $data['page_title'] = 'Course Offering Results';
         $data['feedLink'] = $this->generateUrl(
             'search_courses_xml',
             $data['searchParams'],
@@ -177,6 +177,8 @@ class Offerings extends AbstractController
          * Data for layouts rendering.
          *********************************************************/
         $data['selectedCatalogId'] = $searchSession->getCourseCatalogId();
+        $lookupSession = $this->osidRuntime->getCourseManager()->getCourseOfferingLookupSessionForCatalog($catalogId);
+        $data['page_title'] = 'Searching '.$lookupSession->getCourseCatalog()->getDisplayName();
         $data['menuIsSearch'] = true;
 
         return $this->render('offerings/search.html.twig', $data);
@@ -203,6 +205,8 @@ class Offerings extends AbstractController
             $data['catalogId'] = null;
         }
 
+        $data['page_title'] = $data['offering']->getDisplayName();
+
         return $this->render('offerings/view.html.twig', $data);
     }
 
@@ -225,7 +229,7 @@ class Offerings extends AbstractController
             $data['catalogId'] = null;
         }
 
-        $data['title'] = $offering->getDisplayName();
+        $data['page_title'] = $offering->getDisplayName();
         $data['feedLink'] = $this->generateUrl('view_offering', ['offeringId' => $offeringId], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $data['previousTerm'] = null;
@@ -261,7 +265,7 @@ class Offerings extends AbstractController
             $topicSearchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
             $resourceLookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSessionForBin($catalogId);
-            $data['title'] = 'Search in '.$offeringSearchSession->getCourseCatalog()->getDisplayName();
+            $data['page_title'] = 'Search in '.$offeringSearchSession->getCourseCatalog()->getDisplayName();
             $data['catalogId'] = $catalogId;
         } else {
             $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSession();
@@ -269,7 +273,7 @@ class Offerings extends AbstractController
             $topicSearchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSession();
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
             $resourceLookupSession = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
-            $data['title'] = 'Search in All Catalogs';
+            $data['page_title'] = 'Search in All Catalogs';
             $data['catalogId'] = null;
         }
         $termLookupSession->useFederatedCourseCatalogView();
@@ -443,7 +447,7 @@ class Offerings extends AbstractController
                 $data['term'] = $federatedTermLookupSession->getTerm($termId);
                 $data['selectedTermId'] = $termId;
 
-                $data['title'] .= ' '.$data['term']->getDisplayName();
+                $data['page_title'] .= ' '.$data['term']->getDisplayName();
             }
         }
 

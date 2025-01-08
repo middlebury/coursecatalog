@@ -21,6 +21,7 @@ class Admin extends AbstractController
     public function markupAction(Request $request)
     {
         $data = [];
+        $data['page_title'] = 'Catalog Markup Format';
         if ($request->get('sample_text') && strlen($request->get('sample_text'))) {
             $data['sampleText'] = $request->get('sample_text');
         } else {

@@ -42,7 +42,7 @@ class Courses extends AbstractController
             'courses' => [],
         ];
         $lookupSession = $this->osidRuntime->getCourseManager()->getCourseLookupSessionForCatalog($catalogId);
-        $data['title'] = 'Courses in '.$lookupSession->getCourseCatalog()->getDisplayName();
+        $data['page_title'] = 'Courses in '.$lookupSession->getCourseCatalog()->getDisplayName();
         $data['catalogId'] = $catalogId;
         $lookupSession->useFederatedCourseCatalogView();
 
@@ -71,6 +71,8 @@ class Courses extends AbstractController
             $data['catalogId'] = $catalogIds->getNextId();
         }
 
+        $data['page_title'] = $data['course']->getDisplayName();
+
         return $this->render('courses/view.html.twig', $data);
     }
 
@@ -83,7 +85,7 @@ class Courses extends AbstractController
         $courseData['alternates'] = $this->osidDataLoader->getAllCourseAlternates($courseData['course']);
         $data['courses'] = [$courseData];
 
-        $data['title'] = $data['courses'][0]['course']->getDisplayName();
+        $data['page_title'] = $data['courses'][0]['course']->getDisplayName();
         $data['feedLink'] = $this->generateUrl('view_course', ['courseId' => $courseId], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $response = new Response($this->renderView('courses/list.xml.twig', $data));
@@ -133,7 +135,7 @@ class Courses extends AbstractController
         foreach ($courses as $courseIdString => $course) {
             $data['courses'][] = $this->osidDataLoader->getCourseData($course);
         }
-        $data['title'] = 'Course Search: "'.$keywords.'"';
+        $data['page_title'] = 'Course Search: "'.$keywords.'"';
         $data['feedLink'] = $this->generateUrl(
             'search_courses_xml',
             [
@@ -226,7 +228,7 @@ class Courses extends AbstractController
                 $topicNames[] = $this->osidIdMap->toString($topicId);
             }
         }
-        $data['title'] = 'Courses in '.implode(', ', $topicNames);
+        $data['page_title'] = 'Courses in '.implode(', ', $topicNames);
         $data['feedLink'] = $this->generateUrl(
             'list_courses_by_topic',
             [
@@ -287,7 +289,7 @@ class Courses extends AbstractController
             $courseData['offerings'] = [];
             $data['courses'][] = $courseData;
         }
-        $data['title'] = 'Courses by Id';
+        $data['page_title'] = 'Courses by Id';
         $data['feedLink'] = $this->generateUrl(
             'list_courses_by_ids',
             [
@@ -384,7 +386,7 @@ class Courses extends AbstractController
             $courseData['offerings'] = [];
             $data['courses'][] = $courseData;
         }
-        $data['title'] = 'Courses taught by '.$instructorResource->getDisplayName();
+        $data['page_title'] = 'Courses taught by '.$instructorResource->getDisplayName();
         $data['feedLink'] = $this->generateUrl(
             'list_courses_by_instructor',
             [

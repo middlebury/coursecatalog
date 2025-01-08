@@ -94,6 +94,7 @@ class Schedules extends AbstractController
             <p><strong>Issues or Feedback?</strong> <a href='http://go.middlebury.edu/webbugs/Catalog/Planner' target='_blank'>go/webbugs/Catalog/Planner</a></p>
         </div>
         ";
+        $data['page_title'] = 'Schedule Planner';
 
         return $this->render('schedules/index.html.twig', $data);
     }
@@ -490,6 +491,7 @@ class Schedules extends AbstractController
         $data = [
             'schedule' => $this->schedules->getSchedule($scheduleId),
         ];
+        $data['page_title'] = $data['schedule']->getName();
 
         return $this->render('schedules/print.html.twig', $data);
     }

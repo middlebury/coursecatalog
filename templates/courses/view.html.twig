@@ -3,7 +3,6 @@
 {% block body %}
 {{ include('schedules/bookmark_control.html.twig', {courseId: course.id}, with_context = false) }}
 
-<div>{{ course.displayname }}</div>
 <h2>{{ course.title }}</h2>
 {% if course.description %}
 <div>{{ course.description|raw }}</div>

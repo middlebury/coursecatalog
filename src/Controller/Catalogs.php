@@ -38,7 +38,7 @@ class Catalogs extends AbstractController
     public function listAction()
     {
         $data = [];
-        $data['title'] = 'Available Catalogs';
+        $data['page_title'] = 'Available Catalogs';
 
         $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();
         $catalogs = $lookupSession->getCourseCatalogs();
@@ -57,7 +57,7 @@ class Catalogs extends AbstractController
     public function listxmlAction()
     {
         $data = [];
-        $data['title'] = 'All Catalogs';
+        $data['page_title'] = 'All Catalogs';
         $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();
         $catalogs = $lookupSession->getCourseCatalogs();
         $data['catalogs'] = [];
@@ -105,7 +105,7 @@ class Catalogs extends AbstractController
     {
         $data = [];
         $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();
-        $data['title'] = 'View Catalog';
+        $data['page_title'] = 'View Catalog';
         $data['catalogs'] = [$lookupSession->getCourseCatalog($catalogId)];
         $data['feedLink'] = $this->generateUrl(
             'list_catalogs_xml',

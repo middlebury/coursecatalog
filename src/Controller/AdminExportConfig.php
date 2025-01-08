@@ -38,6 +38,8 @@ class AdminExportConfig extends AbstractController
             }
         }
 
+        $data['page_title'] = 'Manage Catalog Export Configurations';
+
         return $this->render('admin/export/config_form.html.twig', $data);
     }
 
@@ -53,6 +55,8 @@ class AdminExportConfig extends AbstractController
         while ($catalogs->hasNext()) {
             $data['catalogs'][] = $catalogs->getNextCourseCatalog();
         }
+
+        $data['page_title'] = 'Create a new Catalog Export Configuration';
 
         return $this->render('admin/export/create_config.html.twig', $data);
     }
@@ -174,6 +178,8 @@ class AdminExportConfig extends AbstractController
         $result = $stmt->executeQuery();
         $data['revisions'] = $result->fetchAllAssociative();
 
+        $data['page_title'] = 'Revision history for '.$data['configLabel'];
+
         return $this->render('admin/export/revisionhistory.html.twig', $data);
     }
 
@@ -274,7 +280,7 @@ class AdminExportConfig extends AbstractController
     public function revisiondiffAction(int $rev1, int $rev2)
     {
         $db = $this->entityManager->getConnection();
-        $query = 'SELECT * FROM archive_configuration_revisions WHERE id = ?';
+        $query = 'SELECT r.*, c.label FROM archive_configuration_revisions r INNER JOIN archive_configurations c ON r.arch_conf_id = c.id WHERE r.id = ?';
         $stmt = $db->prepare($query);
         $stmt->bindValue(1, $rev1);
         $result = $stmt->executeQuery();
@@ -283,6 +289,8 @@ class AdminExportConfig extends AbstractController
         $stmt->bindValue(1, $rev2);
         $result = $stmt->executeQuery();
         $data['rev2'] = $result->fetchAssociative();
+
+        $data['page_title'] = 'Revision differences for '.$data['rev1']['label'];
 
         return $this->render('admin/export/revisiondiff.html.twig', $data);
     }
@@ -299,6 +307,8 @@ class AdminExportConfig extends AbstractController
         $stmt->bindValue(1, $revisionId);
         $result = $stmt->executeQuery();
         $data['rev'] = $result->fetchAssociative();
+
+        $data['page_title'] = 'Viewing revision #'.$data['rev']['id'].' ('.$data['rev']['last_saved'].')';
 
         return $this->render('admin/export/revisionjson.html.twig', $data);
     }

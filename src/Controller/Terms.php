@@ -38,11 +38,11 @@ class Terms extends AbstractController
         $data = [];
         if ($catalogId) {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
-            $data['title'] = 'Terms in '.$lookupSession->getCourseCatalog()->getDisplayName();
+            $data['page_title'] = 'Terms in '.$lookupSession->getCourseCatalog()->getDisplayName();
             $data['catalogId'] = $catalogId;
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
-            $data['title'] = 'Terms in All Catalogs';
+            $data['page_title'] = 'Terms in All Catalogs';
             $data['catalogId'] = null;
         }
         $lookupSession->useFederatedCourseCatalogView();
@@ -65,11 +65,11 @@ class Terms extends AbstractController
         $data = [];
         if ($catalogId) {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
-            $data['title'] = 'Terms in '.$lookupSession->getCourseCatalog()->getDisplayName();
+            $data['page_title'] = 'Terms in '.$lookupSession->getCourseCatalog()->getDisplayName();
             $data['catalogId'] = $catalogId;
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
-            $data['title'] = 'Terms in All Catalogs';
+            $data['page_title'] = 'Terms in All Catalogs';
             $data['catalogId'] = null;
         }
         $lookupSession->useFederatedCourseCatalogView();
@@ -109,6 +109,8 @@ class Terms extends AbstractController
             $data['offerings'][] = $this->osidDataLoader->getOfferingData($offerings->getNextCourseOffering());
         }
 
+        $data['page_title'] = $data['term']->getDisplayName();
+
         return $this->render('terms/view.html.twig', $data);
     }
 
@@ -129,6 +131,7 @@ class Terms extends AbstractController
             $data['catalogId'] = null;
         }
         $data['term'] = $termLookupSession->getTerm($termId);
+        $data['page_title'] = $data['term']->getDisplayName();
 
         return $this->render('terms/details.html.twig', $data);
     }

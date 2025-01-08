@@ -1,7 +1,5 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ schedule.name }}{% endblock %}
-
 {% block importmap %}
     {# do NOT call parent() #}
     {{ importmap(['app', 'schedules']) }}
@@ -16,7 +14,6 @@
 
 <div class='schedule'>
 
-    <h1>{{ schedule.name }}</h1>
     <div id='calendar' title="{{ schedule.name }}" style="height: 400px">
         <input type='hidden' name='jsonUrl' value="{{ url('schedule_events_json', {scheduleId: schedule.id}) }}"/>
         <input type='hidden' name='start_hour' value="{{ schedule.earliesthour }}"/>

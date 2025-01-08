@@ -150,6 +150,8 @@ class Topics extends AbstractController
             }
         }
 
+        $data['page_title'] = $data['topic']->getDisplayName();
+
         return $this->render('topics/view.html.twig', $data);
     }
 
@@ -163,11 +165,11 @@ class Topics extends AbstractController
 
         if ($catalogId) {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
-            $data['title'] = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
+            $data['page_title'] = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
             $data['catalogId'] = $catalogId;
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
-            $data['title'] = 'Topics in All Catalogs';
+            $data['page_title'] = 'Topics in All Catalogs';
             $data['catalogId'] = null;
         }
         $lookupSession->useFederatedCourseCatalogView();
@@ -277,18 +279,18 @@ class Topics extends AbstractController
         $data = [];
         if ($catalogId) {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSessionForCatalog($catalogId);
-            $data['title'] = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
+            $data['page_title'] = 'Topics in '.$lookupSession->getCourseCatalog()->getDisplayName();
             $data['catalogId'] = $catalogId;
         } else {
             $lookupSession = $this->osidRuntime->getCourseManager()->getTopicLookupSession();
-            $data['title'] = 'Topics in All Catalogs';
+            $data['page_title'] = 'Topics in All Catalogs';
             $data['catalogId'] = null;
         }
         $lookupSession->useFederatedCourseCatalogView();
 
         if ($type) {
             $topics = $lookupSession->getTopicsByGenusType($type);
-            $data['title'] .= ' of type '.$this->osidIdMap->typeToString($type);
+            $data['page_title'] .= ' of type '.$this->osidIdMap->typeToString($type);
         } else {
             $topics = $lookupSession->getTopics();
         }
@@ -314,12 +316,12 @@ class Topics extends AbstractController
         if ($catalogId) {
             $searchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
-            $data['title'] = 'Topics in '.$searchSession->getCourseCatalog()->getDisplayName();
+            $data['page_title'] = 'Topics in '.$searchSession->getCourseCatalog()->getDisplayName();
             $data['catalogId'] = $catalogId;
         } else {
             $searchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSession();
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
-            $data['title'] = 'Topics in All Catalogs';
+            $data['page_title'] = 'Topics in All Catalogs';
             $data['catalogId'] = null;
         }
         $searchSession->useFederatedCourseCatalogView();
@@ -340,7 +342,7 @@ class Topics extends AbstractController
 
         if ($type) {
             $query->matchGenusType($type, true);
-            $data['title'] .= ' of type '.$this->osidIdMap->typeToString($type);
+            $data['page_title'] .= ' of type '.$this->osidIdMap->typeToString($type);
         }
 
         $topics = $searchSession->getTopicsByQuery($query);

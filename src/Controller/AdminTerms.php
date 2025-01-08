@@ -84,6 +84,8 @@ ORDER BY
             $term['active'] = intval($term['num_sections']) && !intval($term['manually_disabled']);
         }
 
+        $data['page_title'] = 'Manage Term Visibility';
+
         return $this->render('admin/terms.html.twig', $data);
     }
 
