@@ -1,9 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block body %}
-{{ include('schedules/bookmark_control.html.twig', {courseId: offering.course.id}, with_context = false) }}
-
+{% block content_heading %}
 <h2>{{ offering.title|nl2br }}</h2>
+{% endblock %}
+
+{% block content_controls %}
+{{ include('schedules/bookmark_control.html.twig', {courseId: offering.course.id}, with_context = false) }}
+{% endblock %}
+
+{% block body %}
 {% if offering.description %}
     <div>{{ offering.description|raw }}</div>
 {% endif %}
