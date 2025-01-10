@@ -213,128 +213,88 @@
           </svg>
         </div>
         <div class="site-container">
-          <header class="midd-header">
-            <div class="midd-header__container">
-              <div class="midd-header__brand">
+          <header class="app-header">
+            <div class="app-header__wrap app-header__wrap--main">
+              <div class="app-header__logo">
                 <a href="https://www.middlebury.edu/">
-                  <img src="{{ asset('midd-frontend/images/midd-shield.svg') }}" class="midd-header__shield" alt="Logo for Middlebury">
-                  <img src="{{ asset('midd-frontend/images/midd-wordmark.svg') }}" width="116px" height="23px" class="midd-header__wordmark" alt="Middlebury">
-                  <span class="sr-only">Middlebury</span>
+                  <img src="{{ asset('midd-frontend/images/midd-shield.svg') }}" srcset="{{ asset('midd-frontend/images/midd-shield.svg') }} 67w" sizes="(min-width: 1024px) 67px, 44px" alt="Middlebury Shield" />
                 </a>
               </div>
-              <nav class="midd-nav" aria-label="Primary navigation">
-                <button class="midd-nav__handle" data-toggle-target=".js-midd-nav" data-toggle-group="midd-header" aria-expanded="false" aria-labelledby="midd-nav__handle-label">
-                  <svg class="icon mr-1 midd-nav__bars " focusable="false" aria-hidden="true">
-                    <use xlink:href="#icon-bars">
-                  </svg>
-                  <svg class="icon mr-1 midd-nav__times " focusable="false" aria-hidden="true">
-                    <use xlink:href="#icon-times">
-                  </svg>
-                  <span class="d-none d-sm-inline" id="midd-nav__handle-label">Menu</span>
-                </button>
-                <ul class="midd-nav__list midd-nav__list--top js-midd-nav">
-                  <li class="midd-nav__item midd-nav__item--top">
-                    <a href="#" class="midd-nav__link midd-nav__link--top"> Our Schools </a>
-                    <button class="midd-nav__handle midd-nav__handle--sub" data-toggle-target=".js-middnav-list-1" aria-labelledby="midd-nav__handle-label">
-                      <svg class="icon midd-nav__chevron " focusable="false" aria-hidden="true">
-                        <use xlink:href="#icon-chevron-down">
-                      </svg>
-                    </button>
-                    <ul class="midd-nav__list midd-nav__list--sub js-middnav-list-1">
-                      <li class="midd-nav__item">
-                        <a href="http://www.middlebury.edu/college/" class="midd-nav__link midd-nav__link--sub">Middlebury College</a>
-                      </li>
-                      <li class="midd-nav__item">
-                        <a href="https://www.middlebury.edu/institute/" class="midd-nav__link midd-nav__link--sub">Middlebury Institute of International Studies</a>
-                      </li>
-                      <li class="midd-nav__item">
-                        <a href="http://www.middlebury.edu/language-schools" class="midd-nav__link midd-nav__link--sub">Middlebury Language Schools</a>
-                      </li>
-                      <li class="midd-nav__item">
-                        <a href="http://www.middlebury.edu/schools-abroad" class="midd-nav__link midd-nav__link--sub">Middlebury C.V. Starr Schools Abroad</a>
-                      </li>
-                      <li class="midd-nav__item">
-                        <a href="http://www.middlebury.edu/school-english" class="midd-nav__link midd-nav__link--sub">Middlebury Bread Loaf School of English</a>
-                      </li>
-                      <li class="midd-nav__item">
-                        <a href="http://www.middlebury.edu/writers-conference" class="midd-nav__link midd-nav__link--sub">Middlebury Bread Loaf Writers' Conference</a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li class="midd-nav__item midd-nav__item--top">
-                    <a href="#" class="midd-nav__link midd-nav__link--top"> Admissions </a>
-                    <button class="midd-nav__handle midd-nav__handle--sub" data-toggle-target=".js-middnav-list-2" aria-labelledby="midd-nav__handle-label">
-                      <svg class="icon midd-nav__chevron " focusable="false" aria-hidden="true">
-                        <use xlink:href="#icon-chevron-down">
-                      </svg>
-                    </button>
-                    <ul class="midd-nav__list midd-nav__list--sub js-middnav-list-2">
-                      <li class="midd-nav__item">
-                        <a href="http://www.middlebury.edu/college/admissions" class="midd-nav__link midd-nav__link--sub">Middlebury College Admissions</a>
-                      </li>
-                      <li class="midd-nav__item">
-                        <a href="https://www.middlebury.edu/institute/admissions" class="midd-nav__link midd-nav__link--sub">Middlebury Institute of International Studies Admissions</a>
-                      </li>
-                      <li class="midd-nav__item">
-                        <a href="http://www.middlebury.edu/language-schools/admissions" class="midd-nav__link midd-nav__link--sub">Middlebury Language Schools Admissions</a>
-                      </li>
-                      <li class="midd-nav__item">
-                        <a href="http://www.middlebury.edu/schools-abroad/admissions" class="midd-nav__link midd-nav__link--sub">Middlebury C.V. Starr Schools Abroad Admissions</a>
-                      </li>
-                      <li class="midd-nav__item">
-                        <a href="http://www.middlebury.edu/school-english/admissions" class="midd-nav__link midd-nav__link--sub">Middlebury Bread Loaf School of English Admissions</a>
-                      </li>
-                      <li class="midd-nav__item">
-                        <a href="http://www.middlebury.edu/writers-conference" class="midd-nav__link midd-nav__link--sub">Middlebury Bread Loaf Writers' Conference Admissions</a>
-                      </li>
-                    </ul>
-                  </li>
-                  <li class="midd-nav__item midd-nav__item--top">
-                    <a href="http://www.middlebury.edu/about" class="midd-nav__link midd-nav__link--top"> About Middlebury </a>
-                  </li>
-                  <li class="midd-nav__item midd-nav__item--top">
-                    <a href="http://www.middlebury.edu/office/" class="midd-nav__link midd-nav__link--top"> Offices and Services </a>
-                  </li>
-                </ul>
-              </nav>
-              <section class="midd-search" aria-label="Search">
-                <a href="/search" class="midd-search__handle" role="button" data-toggle-target=".js-midd-search" data-toggle-group="midd-header" data-toggle-focus=".js-midd-search-input" aria-expanded="false" aria-haspopup="true" aria-labelledby="midd-search__handle-label">
-                  <svg class="icon midd-search__mag " focusable="false" aria-hidden="true">
-                    <use xlink:href="#icon-search">
-                  </svg>
-                  <svg class="icon midd-search__times " focusable="false" aria-hidden="true">
-                    <use xlink:href="#icon-times">
-                  </svg>
-                  <span class="d-none d-sm-inline" id="midd-search__handle-label">Search</span>
-                </a>
-                <div class="midd-search__content js-midd-search">
-                  <form action="https://www.middlebury.edu/search" method="GET" role="search">
-                    <div class="input-group">
-                      <input type="search" class="form-control form-control--sm midd-search__input js-midd-search-input" id="midd-search-input" placeholder="Search" name="q2" required />
-                      <button type="submit" class="button button--sm midd-search__submit">
-                        <span class="sr-only">Search</span>
-                        <svg class="icon  " focusable="false" aria-hidden="true">
-                          <use xlink:href="#icon-search">
-                        </svg>
-                      </button>
-                    </div>
-                  </form>
+              <p class="app-header__title" id="midd-app-header-label">
+                <a href="{{ url('home') }}" class="app-header__link">Course Catalog</a>
+            </div>
+            <div class="app-header__secondary">
+              <div class="app-header__wrap">
+                <div class="app-header__dropdown">
+                  <button class="app-header__button d-lg-none" data-toggle-target=".js-app-nav" data-toggle-group="app-header" aria-label="Open navigation">
+                    <svg class="icon toggled-hide " focusable="false" aria-hidden="true">
+                      <use xlink:href="#icon-bars">
+                    </svg>
+                    <svg class="icon toggled-show " focusable="false" aria-hidden="true">
+                      <use xlink:href="#icon-times">
+                    </svg>
+                    <span class="ml-1">Menu</span>
+                  </button>
+                  <div class="app-header__nav js-app-nav">
+                    <nav class="nav" aria-label="Course Catalog Navigation">
+                      <ul class="nav__list">
+                        <li class="nav__item ">
+                          <a href="{{ url('catalogs') }}" class="nav__link"> All Catalogs </a>
+                        </li>
+                        <li class="nav__item ">
+                          <a href="{{ url('schedules') }}" class="nav__link"> Schedule Planner </a>
+                        </li>
+                        <li class="nav__item ">
+                          <a href="https://courses.middlebury.edu/" class="nav__link link-external"> Course Hub </a>
+                        </li>
+                        <li class="nav__item nav__item--active nav-dropdown">
+                          <a href="https://go.middlebury.edu/academic+calendar" class="nav__link link-external"> Academic Calendar <svg class="icon ml-1 d-none d-lg-inline " focusable="false" aria-hidden="true">
+                              <use xlink:href="#icon-chevron-down">
+                            </svg>
+                          </a>
+                          <button class="nav__button" data-toggle-target=".js-dropdown-1">
+                            <span class="sr-only">Toggle Academic Calendar menu</span>
+                            <svg class="icon toggled-flip " focusable="false" aria-hidden="true">
+                              <use xlink:href="#icon-chevron-down">
+                            </svg>
+                          </button>
+                          <ul class="nav__sublist nav-dropdown__menu js-dropdown-1">
+                            <li class="nav__subitem">
+                              <a href="https://go.middlebury.edu/academic+calendar" class="nav__sublink link-external">College/Schools Calendar</a>
+                            </li>
+                            <li class="nav__subitem">
+                              <a href="https://go.miis.edu/calendar" class="nav__sublink link-external">Institute Calendar</a>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
                 </div>
-              </section>
+              </div>
             </div>
           </header>
           <main class="main" id="midd-main" aria-labelledby="midd-page-header-label">
             <div class="container px-0">
-              <header class="page-header">
+              <header class="page-header page-header--app">
                 <div class="page-header__main">
                   <div class="page-header__content">
                     <nav class="breadcrumb " aria-label="Breadcrumb">
                       <ol class="breadcrumb__list">
                         <li class="breadcrumb__item">
-                          <a href="https://www.middlebury.edu/" class="breadcrumb__link">Middlebury</a>
+                          <a href="{{ url('home') }}" class="breadcrumb__link">Course Catalog</a>
                         </li>
                         <li class="breadcrumb__item">
-                          <a href="{{ url('home') }}" class="breadcrumb__link">Course Catalog</a>
+                          <a href="" class="breadcrumb__link">Schools and Programs</a>
+                        </li>
+                        <li class="breadcrumb__item">
+                          <a href="" class="breadcrumb__link">Middlebury College</a>
+                        </li>
+                        <li class="breadcrumb__item">
+                          <a href="" class="breadcrumb__link">Spring 2019</a>
+                        </li>
+                        <li class="breadcrumb__item">
+                          <a href="" class="breadcrumb__link">American Studies</a>
                         </li>
                       </ol>
                     </nav>
@@ -342,9 +302,106 @@
                   </div>
                 </div>
               </header>
-              {% block body %}{% endblock %}
+            </div>
+            <div class="container">
+              <div class="row">
+                <div class="col-md-10 offset-md-1 col-lg-3 offset-lg-0 mb-4">
+                  {% block left_nav %}
+                  <nav class="page-nav" aria-labelledby="midd-page-nav-label">
+                    <button class="page-nav__button" data-toggle-target=".js-page-nav" aria-haspopup="true" aria-expanded="false">
+                      <span class="page-nav__button-text__label">My Terms</span>
+                      <span class="page-nav__button-text">In this section <svg class="icon page-nav__icon " focusable="false" aria-hidden="true">
+                          <use xlink:href="#icon-caret-down">
+                        </svg>
+                      </span>
+                    </button>
+                    <div class="page-nav__content js-page-nav">
+                      <h2 class="page-nav__title" id="midd-page-nav-label">
+                        <a href="" class="page-nav__link">My Terms</a>
+                      </h2>
+                      <ul class="page-nav__list">
+                        <li class="page-nav__item">
+                          <a href="" class="page-nav__link">Fall 2019</a>
+                        </li>
+                        <li class="page-nav__item">
+                          <a href="" class="page-nav__link">Fall 2019</a>
+                        </li>
+                        <li class="page-nav__item">
+                          <a href="" class="page-nav__link">Fall 2019</a>
+                        </li>
+                        <li class="page-nav__item">
+                          <a href="" class="page-nav__link">Fall 2019</a>
+                        </li>
+                        <li class="page-nav__item">
+                          <a href="" class="page-nav__link">Fall 2019</a>
+                        </li>
+                      </ul>
+                    </div>
+                  </nav>
+                  {% endblock %}
+                  <div class="js-sidebar"></div>
+                </div>
+                <div class="col-md-10 offset-md-1 col-lg-2 offset-lg-0 order-lg-last mb-4 pl-lg-0">
+                    {% block content_controls %}{% endblock %}
+                </div>
+                <div class="col-md-10 offset-md-1 col-lg-7 offset-lg-0">
+                  {% block content_heading %}{% endblock %}
+                  <div class="typography mb-7">
+                    {% block body %}{% endblock %}
+                  </div>
+                  <div data-move-at="(min-width:64em)" data-move-to=".js-sidebar">
+                  </div>
+                </div>
+              </div>
             </div>
           </main>
+          <nav class="midd-footer">
+            <h2 class="sr-only"> Additional Navigation </h2>
+            <div class="container px-0">
+              <div class="col-lg-3">
+                <div class="mb-4 mb-lg-0">
+                  <a href="https://www.middlebury.edu">
+                    <img src="{{ asset('midd-frontend/images/middlebury-logo-white.svg') }}" alt="Middlebury" width="195" height="71" />
+                  </a>
+                </div>
+              </div>
+              <div class="col-lg-9">
+                <ul class="midd-footer__list">
+                  <li class="midd-footer__item">
+                    <a href="https://www.middlebury.edu/about" class="midd-footer__link"> About Middlebury </a>
+                  </li>
+                  <li class="midd-footer__item">
+                    <a href="https://www.middlebury.edu/giving" class="midd-footer__link"> Giving </a>
+                  </li>
+                  <li class="midd-footer__item">
+                    <a href="https://www.middlebury.edu/offices/business/hr/jobseeker" class="midd-footer__link"> Employment </a>
+                  </li>
+                  <li class="midd-footer__item">
+                    <a href="https://www.middlebury.edu/office/" class="midd-footer__link"> Offices and Services </a>
+                  </li>
+                  <li class="midd-footer__item">
+                    <a href="https://www.middlebury.edu/about/copyright" class="midd-footer__link"> Copyright </a>
+                  </li>
+                  <li class="midd-footer__item">
+                    <a href="https://www.middlebury.edu/about/privacy" class="midd-footer__link"> Privacy </a>
+                  </li>
+                  <li class="midd-footer__item">
+                    <a href="https://www.middlebury.edu/emergency-response" class="midd-footer__link"> Emergency </a>
+                  </li>
+                  <li class="midd-footer__item">
+                    <a href="#" class="midd-footer__link"> Site-Editor login </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <a href="#midd-pagetop" class="button button--sm to-top-btn js-to-top-btn">
+              <svg class="icon mb-1 " focusable="false" aria-hidden="true">
+                <use xlink:href="#icon-caret-up">
+              </svg>
+              <span class="text-caps d-block">
+                <span class="sr-only">Back to</span> Top </span>
+            </a>
+          </nav>
         </div>
     </body>
 </html>
