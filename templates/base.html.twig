@@ -236,39 +236,7 @@
                     <span class="ml-1">Menu</span>
                   </button>
                   <div class="app-header__nav js-app-nav">
-                    <nav class="nav" aria-label="Course Catalog Navigation">
-                      <ul class="nav__list">
-                        <li class="nav__item ">
-                          <a href="{{ url('catalogs') }}" class="nav__link"> All Catalogs </a>
-                        </li>
-                        <li class="nav__item ">
-                          <a href="{{ url('schedules') }}" class="nav__link"> Schedule Planner </a>
-                        </li>
-                        <li class="nav__item ">
-                          <a href="https://courses.middlebury.edu/" class="nav__link link-external"> Course Hub </a>
-                        </li>
-                        <li class="nav__item nav__item--active nav-dropdown">
-                          <a href="https://go.middlebury.edu/academic+calendar" class="nav__link link-external"> Academic Calendar <svg class="icon ml-1 d-none d-lg-inline " focusable="false" aria-hidden="true">
-                              <use xlink:href="#icon-chevron-down">
-                            </svg>
-                          </a>
-                          <button class="nav__button" data-toggle-target=".js-dropdown-1">
-                            <span class="sr-only">Toggle Academic Calendar menu</span>
-                            <svg class="icon toggled-flip " focusable="false" aria-hidden="true">
-                              <use xlink:href="#icon-chevron-down">
-                            </svg>
-                          </button>
-                          <ul class="nav__sublist nav-dropdown__menu js-dropdown-1">
-                            <li class="nav__subitem">
-                              <a href="https://go.middlebury.edu/academic+calendar" class="nav__sublink link-external">College/Schools Calendar</a>
-                            </li>
-                            <li class="nav__subitem">
-                              <a href="https://go.miis.edu/calendar" class="nav__sublink link-external">Institute Calendar</a>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </nav>
+                    {{ knp_menu_render('main', {template: 'menu-top.html.twig', 'currentClass': 'nav__item--active', 'branch_class': 'nav-dropdown' }) }}
                   </div>
                 </div>
               </div>

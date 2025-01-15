@@ -1,0 +1,42 @@
+{% extends 'knp_menu.html.twig' %}
+
+{% block root %}
+<nav class="nav" aria-label="Course Catalog Navigation">
+{{ parent() }}
+</nav>
+{% endblock %}
+
+{% block list %}
+    {% set listAttributes = listAttributes is not empty ? listAttributes : {class: ''} %}
+    {% set class = [listAttributes.class is not empty ? listAttributes.class : '', 'nav__list']|join(' ') %}
+    {% set class = item.level == 0 ? class : [class, 'nav__sublist nav-dropdown__menu js-dropdown-1 has-toggler']|join(' ') %}
+    {% set listAttributes = listAttributes|merge({class: class}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block item %}
+    {% set classes = item.attribute('class') is not empty ? [item.attribute('class')] : [] %}
+    {% do item.setAttribute('class', classes|merge([item.level == 1 ? 'nav__item' : 'nav__subitem'])|join(' ')) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block linkElement %}
+{% import 'knp_menu.html.twig' as knp_menu %}
+{% set linkAttributes = item.linkAttributes|merge({class: (item.linkAttributes.class is defined ? item.linkAttributes.class : '')|split(' ')|merge([item.level == 1 ? 'nav__link' : 'nav__sublink'])|join(' ')}) %}
+<a href="{{ item.uri }}"{{ knp_menu.attributes(linkAttributes) }}>
+    {{ block('label') }}
+    {% if item.children | length %}
+        <svg class="icon ml-1 d-none d-lg-inline " focusable="false" aria-hidden="true">
+            <use xlink:href="#icon-chevron-down">
+        </svg>
+    {% endif %}
+</a>
+{% if item.children | length %}
+    <button class="nav__button" data-toggle-target=".js-dropdown-1">
+        <span class="sr-only">Toggle {{ block('label') }} menu</span>
+        <svg class="icon toggled-flip " focusable="false" aria-hidden="true">
+            <use xlink:href="#icon-chevron-down">
+        </svg>
+    </button>
+{% endif %}
+{% endblock %}
