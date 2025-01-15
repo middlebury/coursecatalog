@@ -19,7 +19,7 @@
     {% else %}
         <div>
     {% endif %}
-    <a class='offering_link' href="{{ url('view_offering', {offeringId: item.offering}) }}">{{item.offering.displayname}}</a>
+    <a class='offering_link' href="{{ path('view_offering', {offeringId: item.offering}) }}">{{item.offering.displayname}}</a>
     <span class='type'>{{ item.offering.genustype.displayname }}</span>
     {% if item.instructor_names %}
     <span class='instructor'>({{ item.instructor_names|join(', ') }})</span>

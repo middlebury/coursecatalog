@@ -3,14 +3,14 @@
     <h4>Bookmark this course</h4>
     <div class='save_course'>
         <input type='hidden' name='courseId' value="{{ osidIdToString(courseId) }}"/>
-        <a href="{{ url("remove_bookmark", {courseId: courseId}) }}"
+        <a href="{{ path("remove_bookmark", {courseId: courseId}) }}"
             {{ not isBookmarked(courseId) ? " style='display: none;'" }}
             title='click to forget' class='forget'
         >
             <img src=" {{ asset("images/Crystal_Clear/Crystal_Clear_action_bookmark.png") }}" alt="star icon"/>
             Saved
         </a>
-        <a href="{{ url("add_bookmark", {courseId: courseId}) }}"
+        <a href="{{ path("add_bookmark", {courseId: courseId}) }}"
             {{ isBookmarked(courseId) ? " style='display: none;'" }}
             title='click to save' class='save'
         >
@@ -19,6 +19,6 @@
         </a>
     </div>
 {% else %}
-    <a href="{{ url("login", {returnTo: app.request.uri }) }}">Log-in to save</a>
+    <a href="{{ path("login", {returnTo: app.request.uri }) }}">Log-in to save</a>
 {% endif %}
 </div>

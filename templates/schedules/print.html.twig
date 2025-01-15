@@ -15,7 +15,7 @@
 <div class='schedule'>
 
     <div id='calendar' title="{{ schedule.name }}" style="height: 400px">
-        <input type='hidden' name='jsonUrl' value="{{ url('schedule_events_json', {scheduleId: schedule.id}) }}"/>
+        <input type='hidden' name='jsonUrl' value="{{ path('schedule_events_json', {scheduleId: schedule.id}) }}"/>
         <input type='hidden' name='start_hour' value="{{ schedule.earliesthour }}"/>
         <input type='hidden' name='end_hour' value="{{ schedule.latesthour + 1 }}"/>
         <input type='hidden' name='show_sunday' value="{{ schedule.hasEventsOnSunday ? 'yes':'no' }}"/>
@@ -29,13 +29,13 @@
 {% for offering in schedule.offerings %}
         <li class='offering'>
             <div class='offering_name'>
-                <a href="{{ url('view_offering', {offeringId: offering.id}) }}" target='_blank'>
+                <a href="{{ path('view_offering', {offeringId: offering.id}) }}" target='_blank'>
                     {{ offering.displayname }}
                 </a>
             </div>
             <div class='separator'> - </div>
             <div class='offering_title'>
-                <a href="{{ url('view_offering', {offeringId: offering.id}) }}" target='_blank'>
+                <a href="{{ path('view_offering', {offeringId: offering.id}) }}" target='_blank'>
                     {{ offering.title | nl2br }}
                 </a>
             </div>

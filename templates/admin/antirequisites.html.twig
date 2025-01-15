@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<p><a href="{{ url('admin_index') }}">&laquo; Back to Administration</a></p>
+<p><a href="{{ path('admin_index') }}">&laquo; Back to Administration</a></p>
 
 <p>Anti-requisites are course-equivalency entries that indicate that a course can't be taken if another already has been. This is in contrast to most usage of equivalency which indicates that courses are the same thing. Anti-requisites listed below will be filtered out of cross-list entries for courses.</p>
 <p>Please Note: Any changes made here will affect views for authenticated users immediately, but will not affect catalog archives or anonymous views until the next nightly sync.</p>
@@ -34,7 +34,7 @@
         <td class='comments'>{{ antirequisite.comments }}</td>
 
         <td class='actions'>
-            <form class="delete-antirequisite-form" action='{{ url('delete_antirequisite') }}' method='post'>
+            <form class="delete-antirequisite-form" action='{{ path('delete_antirequisite') }}' method='post'>
                 <input type='hidden' name='delete' value='delete' />
                 <input type='hidden' name='subj_code' value='{{ antirequisite.subj_code }}' />
                 <input type='hidden' name='crse_numb' value='{{ antirequisite.crse_numb }}' />
@@ -56,14 +56,14 @@
 <h4>Add a new anti-requisite</h4>
 
 <p>Search for a subject code and course number to find related equivalencies.</p>
-<form id="search-antirequisites-form" action="{{ url('add_antirequisites') }}#add_new" method='get'>
+<form id="search-antirequisites-form" action="{{ path('add_antirequisites') }}#add_new" method='get'>
     <label for="search_subj_code">Subject Code: <input type='text' name='search_subj_code' value='{{ search_subj_code }}' size="4"></label>
     <label for="search_crse_numb">Course Number: <input type='text' name='search_crse_numb' value='{{ search_crse_numb }}' size="5"></label>
     <input type="submit" name="search" value="Search">
 </form>
 
 {% if searchResults is not empty %}
-<form id="add-antirequisites-form" action="{{ url('add_antirequisites') }}#add_new" method='post'>
+<form id="add-antirequisites-form" action="{{ path('add_antirequisites') }}#add_new" method='post'>
     <table class='section_admin'>
     <thead>
         <tr>

@@ -4,18 +4,18 @@
         <div class='term_name'>{{ schedule.termname }}</div>
         {% endif %}
 
-        <form class='delete_schedule' id='delete_schedule_{{ schedule.id }}' action="{{ url('delete_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}" method='post'>
+        <form class='delete_schedule' id='delete_schedule_{{ schedule.id }}' action="{{ path('delete_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}" method='post'>
             <input type='hidden' name='csrf_key' value='{{ csrf_token('delete-schedule') }}' />
             <input type='submit' id='submit_delete_schedule_{{ schedule.id }}' value='Delete'/>
         </form>
 
-        <form  id='update_schedule_{{ schedule.id }}' action='{{ url('update_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}' method='post'>
+        <form  id='update_schedule_{{ schedule.id }}' action='{{ path('update_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}' method='post'>
             <input type='text' name='name' value="{{ schedule.name }}"/>
             <input type='hidden' name='csrf_key' value='{{ csrf_token('update-schedule') }}' />
             <input type='submit' id='submit_update_schedule_{{ schedule.id }}' value='Save Name'/>
         </form>
 
-        <a class='print_button' href='{{ url('print_schedule', {scheduleId: schedule.id}) }}' title='Click for print view.' target='print_view'>
+        <a class='print_button' href='{{ path('print_schedule', {scheduleId: schedule.id}) }}' title='Click for print view.' target='print_view'>
             <button>Print</button>
         </a>
 
@@ -31,13 +31,13 @@
             <li class='offering'>
                 {{ include('schedules/remove_offering_dialog.html.twig', {schedule: schedule, selectedCatalogId: selectedCatalogId, selectedTermId: selectedTermId, offering: offering}, with_context = false) }}
                 <div class='offering_name'>
-                    <a href='{{ url('view_offering', {offeringId: offering}) }}' target='_blank'>
+                    <a href='{{ path('view_offering', {offeringId: offering}) }}' target='_blank'>
                         {{ offering.displayname}}
                     </a>
                 </div>
                 <div class='separator'> - </div>
                 <div class='offering_title'>
-                    <a href='{{ url('view_offering', {offeringId: offering}) }}' target='_blank'>
+                    <a href='{{ path('view_offering', {offeringId: offering}) }}' target='_blank'>
                         {{ offering.title | nl2br }}
                     </a>
                 </div>
@@ -54,7 +54,7 @@
     </div>
 {% endfor %}
 
-<form id='schedule_create' action="{{ url('create_schedule', {catalogId: selectedCatalogId}) }}" method="post">
+<form id='schedule_create' action="{{ path('create_schedule', {catalogId: selectedCatalogId}) }}" method="post">
     <input type="submit" id="submit_schedule_create" value="Create new schedule"/> for
     {{ include('schedules/terms.html.twig', {terms: terms, selectedTermId: selectedTermId}, with_context = false) }}
     <input type='hidden' name='csrf_key' value='{{ csrf_token('create-schedule') }}' />

@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<div><a href="{{ url('admin_index') }}">&laquo; Back to Administration</a></div>
+<div><a href="{{ path('admin_index') }}">&laquo; Back to Administration</a></div>
 
-<form action="{{ url('admin_terms_list') }}" method="GET">
+<form action="{{ path('admin_terms_list') }}" method="GET">
     <select name='catalog' onchange="this.form.submit();">
 {% for catalog in catalogs %}
     <option value="{{ catalog }}" {{ catalog == selectedCatalog ? 'selected="selected"' }}>{{ catalog }}</option>";
@@ -32,7 +32,7 @@
     <td class='num_sections'>{{ term.num_sections }}</td>
 
     <td class='disable'>
-        <form action='{{ url('admin_terms_update') }}' method='post'>
+        <form action='{{ path('admin_terms_update') }}' method='post'>
             <input type='hidden' name='catalog' value='{{ selectedCatalog }}' />
             <input type='hidden' name='term' value='{{ term.STVTERM_CODE }}' />
             <input type='hidden' name='change_visibility' value='true' />

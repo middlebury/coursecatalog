@@ -3,7 +3,7 @@
 
     <div class='email_dialog' style='display: none;' title="{{ schedule.name }}">
 
-        <form action='{{ url('email_schedule') }}' id="send_email_form_{{ schedule.id }}" method='post'>
+        <form action='{{ path('email_schedule') }}' id="send_email_form_{{ schedule.id }}" method='post'>
             <div class='row controls'>
                 <input type='submit' value='Send'/>
             </div>

@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<div class='admin-menu'><a href="{{ url('admin_index') }}">&laquo; Back to Administration</a></div>
+<div class='admin-menu'><a href="{{ path('admin_index') }}">&laquo; Back to Administration</a></div>
 
 <h2>Format Description</h2>
 <p>Course and section descriptions in the catalog should be primarily plain text. If a second paragraph is needed, use two new lines. Descriptions should not have any other text-formatting other than bold and italics as described below.</p>
@@ -25,11 +25,11 @@
 <h2>Test your text</h2>
 <h3>Input:</h3>
 
-<form id="markup-test-form" action="{{ url('markup') }}" method='post'>
+<form id="markup-test-form" action="{{ path('markup') }}" method='post'>
 	<textarea rows='10' cols='80' name='sample_text'>{{ sampleText | raw }}</textarea>
 	<br/><input type='submit' value='Submit'/>
 </form>
-<a href="{{ url('markup') }}"><button>Reset to example</button></a>
+<a href="{{ path('markup') }}"><button>Reset to example</button></a>
 
 <h3>Output:</h3>
 <p id="markup-test-output">

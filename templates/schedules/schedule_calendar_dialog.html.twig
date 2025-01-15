@@ -1,5 +1,5 @@
-<a class='calendar_button' href='{{ url('schedule_events_json', {scheduleId: schedule.id}) }}' title='Click to zoom'>
-    <img class='calendar_img' src='{{ url('schedule_png', {scheduleId: schedule.id}) }}' alt='Weekly Schedule Image'/>
+<a class='calendar_button' href='{{ path('schedule_events_json', {scheduleId: schedule.id}) }}' title='Click to zoom'>
+    <img class='calendar_img' src='{{ path('schedule_png', {scheduleId: schedule.id}) }}' alt='Weekly Schedule Image'/>
 </a>
 
 <div class='calendar' style='display: none;' title="{{ schedule.name }}">

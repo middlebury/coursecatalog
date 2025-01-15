@@ -1,14 +1,14 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<div><a href="{{ url('admin_index') }}">&laquo; Back to Administration</a></div>
+<div><a href="{{ path('admin_index') }}">&laquo; Back to Administration</a></div>
 
 <p> &nbsp;</p>
 
 <p>Current User: <input type="text" readonly="readonly" size="45" value="{{ userId }}"/> {{ userName }}
 
 <p>Enter the id of another user to act as them.</p>
-<form action="{{ url('masquerade_switch') }}" method="post">
+<form action="{{ path('masquerade_switch') }}" method="post">
 	<label for="masquerade-user-id">User Id:</label>
     <input id="masquerade-user-id" type="text" name="masquerade_user_id" size="45" />
 	<input type="submit" value="Change User"/>
