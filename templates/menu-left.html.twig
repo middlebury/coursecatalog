@@ -1,0 +1,40 @@
+{% extends 'knp_menu.html.twig' %}
+
+{% block root %}
+<nav class="page-nav" aria-labelledby="midd-page-nav-label">
+    <button class="page-nav__button" data-toggle-target=".js-page-nav" aria-haspopup="true" aria-expanded="false">
+      <span class="page-nav__button-text__label">All Catalogs</span>
+      <span class="page-nav__button-text">In this Catalog <svg class="icon page-nav__icon " focusable="false" aria-hidden="true">
+          <use xlink:href="#icon-caret-down">
+        </svg>
+      </span>
+    </button>
+    <div class="page-nav__content js-page-nav">
+      <h2 class="page-nav__title" id="midd-page-nav-label">
+        <a href="{{ path('list_catalogs') }}" class="page-nav__link">All Catalogs</a>
+      </h2>
+{{ parent() }}
+</div>
+</nav>
+{% endblock %}
+
+{% block list %}
+    {% set listAttributes = listAttributes is not empty ? listAttributes : {class: ''} %}
+    {% set class = [listAttributes.class is not empty ? listAttributes.class : '', 'page-nav__list']|join(' ') %}
+    {% set listAttributes = listAttributes|merge({class: class}) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block item %}
+    {% set classes = item.attribute('class') is not empty ? [item.attribute('class')] : [] %}
+    {% do item.setAttribute('class', classes|merge(['page-nav__item'])|join(' ')) %}
+    {{ parent() }}
+{% endblock %}
+
+{% block linkElement %}
+{% import 'knp_menu.html.twig' as knp_menu %}
+{% set linkAttributes = item.linkAttributes|merge({class: (item.linkAttributes.class is defined ? item.linkAttributes.class : '')|split(' ')|merge(['page-nav__link', item.isCurrent ? 'page-nav__link--active'])|join(' ')}) %}
+<a href="{{ item.uri }}"{{ knp_menu.attributes(linkAttributes) }}>
+    {{ block('label') }}
+</a>
+{% endblock %}
