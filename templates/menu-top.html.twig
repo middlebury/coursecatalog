@@ -25,13 +25,13 @@
 {% set linkAttributes = item.linkAttributes|merge({class: (item.linkAttributes.class is defined ? item.linkAttributes.class : '')|split(' ')|merge([item.level == 1 ? 'nav__link' : 'nav__sublink', matcher.isCurrent(item) or matcher.isAncestor(item) ? 'nav__link--active'])|join(' ')}) %}
 <a href="{{ item.uri }}"{{ knp_menu.attributes(linkAttributes) }}>
     {{ block('label') }}
-    {% if item.children | length %}
+    {% if item.hasChildren and options.depth is not same as(0) %}
         <svg class="icon ml-1 d-none d-lg-inline " focusable="false" aria-hidden="true">
             <use xlink:href="#icon-chevron-down">
         </svg>
     {% endif %}
 </a>
-{% if item.children | length %}
+{% if item.hasChildren and options.depth is not same as(0)  %}
     <button class="nav__button" data-toggle-target=".js-dropdown-{{item.extra('menuId')}}">
         <span class="sr-only">Toggle {{ block('label') }} menu</span>
         <svg class="icon toggled-flip " focusable="false" aria-hidden="true">

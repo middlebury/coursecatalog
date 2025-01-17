@@ -237,7 +237,7 @@
                   </button>
                   <div class="app-header__nav js-app-nav">
                     {% set selectedCatalogId = selectedCatalogId is defined ? selectedCatalogId : null %}
-                    {{ knp_menu_render('main', {template: 'menu-top.html.twig', currentClass: 'nav__item--active', branch_class: 'nav-dropdown' }) }}
+                    {{ knp_menu_render('main', {depth: 2, template: 'menu-top.html.twig', currentClass: 'nav__item--active', branch_class: 'nav-dropdown' }) }}
                   </div>
                 </div>
               </div>

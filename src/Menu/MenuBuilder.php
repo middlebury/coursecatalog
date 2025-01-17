@@ -39,6 +39,15 @@ class MenuBuilder
                     ],
                 ],
             );
+            $subMenu[$catalog->getDisplayName()]->addChild(
+                'Search',
+                [
+                    'route' => 'search_offerings',
+                    'routeParameters' => [
+                        'catalogId' => $catalog->getId(),
+                    ],
+                ],
+            );
         }
 
         $menu->addChild('Schedule Builder', ['route' => 'schedules']);
