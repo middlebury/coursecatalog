@@ -89,7 +89,9 @@ class MenuBuilder
             $selectedCatalogId = null;
         }
 
-        $menu = $this->factory->createItem('root');
+        $menu = $this->factory->createItem('root', ['route' => 'list_catalogs']);
+        $menu->setName('All Catalogs');
+        $menu->setLabel('In this Catalog');
 
         if ($selectedCatalogId) {
             $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();

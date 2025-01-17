@@ -3,27 +3,22 @@
 {% block root %}
 <nav class="page-nav" aria-labelledby="midd-page-nav-label">
     <button class="page-nav__button" data-toggle-target=".js-page-nav" aria-haspopup="true" aria-expanded="false">
-      <span class="page-nav__button-text__label">{{ block('menu_label') }}</span>
-      <span class="page-nav__button-text">{{ block('menu_mobile_label') }} <svg class="icon page-nav__icon " focusable="false" aria-hidden="true">
+      <span class="page-nav__button-text__label">{{ item.name }}</span>
+      <span class="page-nav__button-text">{{ item.label }} <svg class="icon page-nav__icon " focusable="false" aria-hidden="true">
           <use xlink:href="#icon-caret-down">
         </svg>
       </span>
     </button>
     <div class="page-nav__content js-page-nav">
       <h2 class="page-nav__title" id="midd-page-nav-label">
-        {{ block('menu_heading_link') }}
+        <a href="{{ item.uri }}" class="page-nav__link">{{ item.name }}</a>
       </h2>
 {{ parent() }}
 </div>
 </nav>
 {% endblock %}
 
-{% block menu_heading_link %}
-<a href="{{ block('menu_heading_uri') }}" class="page-nav__link">{{ block('menu_label') }}</a>
-{% endblock %}
 {% block menu_heading_uri %}{{ path('list_catalogs') }}{% endblock %}
-{% block menu_label %}All Catalogs{% endblock %}
-{% block menu_mobile_label %}In this Catalog{% endblock %}
 
 {% block list %}
     {% set listAttributes = listAttributes is not empty ? listAttributes : {class: ''} %}
