@@ -9,7 +9,7 @@
 {% block list %}
     {% set listAttributes = listAttributes is not empty ? listAttributes : {class: ''} %}
     {% set class = [listAttributes.class is not empty ? listAttributes.class : '', 'nav__list']|join(' ') %}
-    {% set class = item.level == 0 ? class : [class, 'nav__sublist nav-dropdown__menu js-dropdown-1 has-toggler']|join(' ') %}
+    {% set class = item.level == 0 ? class : [class, "nav__sublist nav-dropdown__menu has-toggler js-dropdown-#{item.extra('menuId')}" ]|join(' ') %}
     {% set listAttributes = listAttributes|merge({class: class}) %}
     {{ parent() }}
 {% endblock %}
@@ -32,7 +32,7 @@
     {% endif %}
 </a>
 {% if item.children | length %}
-    <button class="nav__button" data-toggle-target=".js-dropdown-1">
+    <button class="nav__button" data-toggle-target=".js-dropdown-{{item.extra('menuId')}}">
         <span class="sr-only">Toggle {{ block('label') }} menu</span>
         <svg class="icon toggled-flip " focusable="false" aria-hidden="true">
             <use xlink:href="#icon-chevron-down">

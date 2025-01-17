@@ -25,6 +25,7 @@ class MenuBuilder
 
         $menu->addChild('All Catalogs', ['route' => 'catalogs']);
         $subMenu = $menu['All Catalogs'];
+        $subMenu->setExtra('menuId', 1);
         $lookupSession = $this->osidRuntime->getCourseManager()->getCourseCatalogLookupSession();
         $catalogs = $lookupSession->getCourseCatalogs();
         while ($catalogs->hasNext()) {
@@ -46,13 +47,28 @@ class MenuBuilder
         $menu['Course Hub']->setLinkAttribute('class', 'link-external');
 
         $menu->addChild('Academic Calendar', ['uri' => 'https://go.middlebury.edu/academic+calendar']);
-        $menu['Academic Calendar']->setLinkAttribute('class', 'link-external');
+        $subMenu = $menu['Academic Calendar'];
+        $subMenu->setExtra('menuId', 2);
+        $subMenu->setLinkAttribute('class', 'link-external');
 
-        $menu['Academic Calendar']->addChild('College/Schools Calendar', ['uri' => 'https://go.middlebury.edu/academic+calendar']);
-        $menu['Academic Calendar']['College/Schools Calendar']->setLinkAttribute('class', 'link-external');
+        $subMenu->addChild('College/Schools Calendar', ['uri' => 'https://go.middlebury.edu/academic+calendar']);
+        $subMenu['College/Schools Calendar']->setLinkAttribute('class', 'link-external');
 
-        $menu['Academic Calendar']->addChild('Institute Calendar', ['uri' => 'https://go.miis.edu/calendar']);
-        $menu['Academic Calendar']['Institute Calendar']->setLinkAttribute('class', 'link-external');
+        $subMenu->addChild('Institute Calendar', ['uri' => 'https://go.miis.edu/calendar']);
+        $subMenu['Institute Calendar']->setLinkAttribute('class', 'link-external');
+
+        // Admin routes.
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            $menu->addChild('Admin', ['route' => 'admin_index']);
+            $subMenu = $menu['Admin'];
+            $subMenu->setExtra('menuId', 3);
+            $subMenu->addChild('Manage Term Visibility', ['route' => 'admin_terms_list']);
+            $subMenu->addChild('Manage Anti-Requisites', ['route' => 'list_antirequisites']);
+            $subMenu->addChild('Manage Catalog Archive Configurations', ['route' => 'export_config_form']);
+            $subMenu->addChild('Manage Catalog Archive Scheduling', ['route' => 'export_list_jobs']);
+            $subMenu->addChild('Masquerade', ['route' => 'masquerade']);
+            $subMenu->addChild('View Catalog Markup Example', ['route' => 'markup']);
+        }
 
         return $menu;
     }
@@ -88,6 +104,7 @@ class MenuBuilder
                     ],
                 ],
             );
+
         }
 
         // Schedule link.
@@ -100,16 +117,9 @@ class MenuBuilder
     {
         $menu = $this->factory->createItem('root');
 
-        // Admin routes.
-        if ($this->security->isGranted('ROLE_ADMIN')) {
-            $menu->addChild('Manage Term Visibility', ['route' => 'admin_terms_list']);
-            $menu->addChild('Manage Anti-Requisites', ['route' => 'list_antirequisites']);
-            $menu->addChild('Manage Catalog Archive Configurations', ['route' => 'export_config_form']);
-            $menu->addChild('Manage Catalog Archive Scheduling', ['route' => 'export_list_jobs']);
-            $menu->addChild('Masquerade', ['route' => 'masquerade']);
-            $menu->addChild('View Catalog Markup Example', ['route' => 'markup']);
-        }
+
 
         return $menu;
     }
+
 }
