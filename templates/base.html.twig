@@ -274,17 +274,18 @@
             </div>
             <div class="container">
               <div class="row">
+                {% set showLeftNav = not (app.request.requestUri matches '#^/admin#') %}
+                {% if showLeftNav %}
                 <div class="col-md-10 offset-md-1 col-lg-3 offset-lg-0 mb-4">
-                  {% if not (app.request.requestUri matches '#^/admin#') %}
                   {% set secondaryMenu = knp_menu_get('secondary', [], {'selectedCatalogId': selectedCatalogId is defined and selectedCatalogId is not empty ? selectedCatalogId : catalogId is defined ? catalogId }) %}
                   {{ knp_menu_render(secondaryMenu, {template: 'menu-left.html.twig', currentClass: 'page--nav__item--active'}) }}
-                  {% endif %}
                   <div class="js-sidebar"></div>
                 </div>
+                {% endif %}
                 <div class="col-md-10 offset-md-1 col-lg-2 offset-lg-0 order-lg-last mb-4 pl-lg-0">
                     {% block content_controls %}{% endblock %}
                 </div>
-                <div class="col-md-10 offset-md-1 col-lg-7 offset-lg-0">
+                <div class="col-md-10 {{ showLeftNav ? 'offset-md-1 col-lg-7' : 'col-lg-12' }} offset-lg-0">
                   {% block content_heading %}{% endblock %}
                   <div class="typography mb-7">
                     {% block body %}{% endblock %}
