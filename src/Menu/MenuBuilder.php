@@ -70,6 +70,14 @@ class MenuBuilder
             $subMenu->addChild('View Catalog Markup Example', ['route' => 'markup']);
         }
 
+        // Log in / Log out.
+        $user = $this->security->getUser();
+        if ($user) {
+            $menu->addChild('Log out', ['route' => 'saml_logout']);
+        } else {
+            $menu->addChild('Log in', ['route' => 'saml_login']);
+        }
+
         return $menu;
     }
 

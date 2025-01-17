@@ -278,7 +278,6 @@
                   {% set secondaryMenu = knp_menu_get('secondary', [], {'selectedCatalogId': selectedCatalogId is defined and selectedCatalogId is not empty ? selectedCatalogId : catalogId is defined ? catalogId }) %}
                   {{ knp_menu_render(secondaryMenu, {template: 'menu-left.html.twig', currentClass: 'page--nav__item--active'}) }}
                   {{ knp_menu_render('admin', {template: 'menu-left-admin.html.twig', currentClass: 'page--nav__item--active'}) }}
-                  Log in (@todo)
                   <div class="js-sidebar"></div>
                 </div>
                 <div class="col-md-10 offset-md-1 col-lg-2 offset-lg-0 order-lg-last mb-4 pl-lg-0">
