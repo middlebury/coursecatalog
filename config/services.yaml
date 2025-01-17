@@ -43,6 +43,7 @@ services:
         tags:
             - { name: knp_menu.menu_builder, method: createMainMenu, alias: main }
             - { name: knp_menu.menu_builder, method: createSecondaryMenu, alias: secondary }
+            - { name: knp_menu.menu_builder, method: createAdminMenu, alias: admin }
 
     App\Routing\OsidRouter:
         decorates: 'router'

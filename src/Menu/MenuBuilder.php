@@ -5,6 +5,7 @@ namespace App\Menu;
 use App\Service\Osid\Runtime;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class MenuBuilder
 {
@@ -14,6 +15,7 @@ class MenuBuilder
     public function __construct(
         private FactoryInterface $factory,
         private Runtime $osidRuntime,
+        private Security $security,
     ) {
     }
 
@@ -88,7 +90,25 @@ class MenuBuilder
             );
         }
 
+        // Schedule link.
         $menu->addChild('Schedule Builder', ['route' => 'schedules']);
+
+        return $menu;
+    }
+
+    public function createAdminMenu(array $options): ItemInterface
+    {
+        $menu = $this->factory->createItem('root');
+
+        // Admin routes.
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            $menu->addChild('Manage Term Visibility', ['route' => 'admin_terms_list']);
+            $menu->addChild('Manage Anti-Requisites', ['route' => 'list_antirequisites']);
+            $menu->addChild('Manage Catalog Archive Configurations', ['route' => 'export_config_form']);
+            $menu->addChild('Manage Catalog Archive Scheduling', ['route' => 'export_list_jobs']);
+            $menu->addChild('Masquerade', ['route' => 'masquerade']);
+            $menu->addChild('View Catalog Markup Example', ['route' => 'markup']);
+        }
 
         return $menu;
     }
