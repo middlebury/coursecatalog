@@ -236,8 +236,9 @@
                     <span class="ml-1">Menu</span>
                   </button>
                   <div class="app-header__nav js-app-nav">
-                    {% set selectedCatalogId = selectedCatalogId is defined ? selectedCatalogId : null %}
-                    {{ knp_menu_render('main', {depth: 2, template: 'menu-top.html.twig', currentClass: 'nav__item--active', branch_class: 'nav-dropdown' }) }}
+                    {% set selectedCatalogId = selectedCatalogId is defined and selectedCatalogId is not empty ? selectedCatalogId : catalogId is defined ? catalogId %}
+                    {% set mainMenu = knp_menu_get('main', [], {'selectedCatalogId': selectedCatalogId }) %}
+                    {{ knp_menu_render(mainMenu, {depth: 2, template: 'menu-top.html.twig', currentClass: 'nav__item--active', branch_class: 'nav-dropdown' }) }}
                   </div>
                 </div>
               </div>
@@ -248,25 +249,7 @@
               <header class="page-header page-header--app">
                 <div class="page-header__main">
                   <div class="page-header__content">
-                    <nav class="breadcrumb " aria-label="Breadcrumb">
-                      <ol class="breadcrumb__list">
-                        <li class="breadcrumb__item">
-                          <a href="{{ path('home') }}" class="breadcrumb__link">Course Catalog</a>
-                        </li>
-                        <li class="breadcrumb__item">
-                          <a href="" class="breadcrumb__link">Schools and Programs</a>
-                        </li>
-                        <li class="breadcrumb__item">
-                          <a href="" class="breadcrumb__link">Middlebury College</a>
-                        </li>
-                        <li class="breadcrumb__item">
-                          <a href="" class="breadcrumb__link">Spring 2019</a>
-                        </li>
-                        <li class="breadcrumb__item">
-                          <a href="" class="breadcrumb__link">American Studies</a>
-                        </li>
-                      </ol>
-                    </nav>
+                    {{ include('breadcrumbs.html.twig') }}
                     <h1 class="page-header__title" id="midd-page-header-label">{% block page_title %}{{ page_title }}{% endblock %}</h1>
                   </div>
                 </div>
@@ -277,7 +260,7 @@
                 {% set showLeftNav = not (app.request.requestUri matches '#^/admin#') %}
                 {% if showLeftNav %}
                 <div class="col-md-10 offset-md-1 col-lg-3 offset-lg-0 mb-4">
-                  {% set secondaryMenu = knp_menu_get('secondary', [], {'selectedCatalogId': selectedCatalogId is defined and selectedCatalogId is not empty ? selectedCatalogId : catalogId is defined ? catalogId }) %}
+                  {% set secondaryMenu = knp_menu_get('secondary', [], {'selectedCatalogId': selectedCatalogId }) %}
                   {{ knp_menu_render(secondaryMenu, {template: 'menu-left.html.twig', currentClass: 'page--nav__item--active'}) }}
                   <div class="js-sidebar"></div>
                 </div>

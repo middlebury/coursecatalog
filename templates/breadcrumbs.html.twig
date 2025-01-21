@@ -1,0 +1,15 @@
+{% import 'knp_menu.html.twig' as knp_menu %}
+
+{% set breadcrumbs = knp_menu_get_breadcrumbs_array(knp_menu_get_current_item(mainMenu)) %}
+
+<nav class="breadcrumb " aria-label="Breadcrumb">
+  <ol class="breadcrumb__list">
+{% for breadcrumb in breadcrumbs %}
+    {% if not loop.last %}
+    <li class="breadcrumb__item">
+      <a href="{{ breadcrumb.uri }}" class="breadcrumb__link">{{ breadcrumb.label }}</a>
+    </li>
+    {% endif %}
+{% endfor %}
+  </ol>
+</nav>

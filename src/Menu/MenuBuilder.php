@@ -6,6 +6,7 @@ use App\Service\Osid\Runtime;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class MenuBuilder
 {
@@ -16,12 +17,24 @@ class MenuBuilder
         private FactoryInterface $factory,
         private Runtime $osidRuntime,
         private Security $security,
+        private RequestStack $requestStack,
     ) {
     }
 
     public function createMainMenu(array $options): ItemInterface
     {
-        $menu = $this->factory->createItem('root');
+        // Note the current route so that we can mark the Search page for a
+        // catalog as active when looking at catalog-specific pages that aren't
+        // in a menu.
+        $currentRoute = $this->requestStack->getCurrentRequest()->get('_route');
+        $currentRouteIsInMenu = in_array($currentRoute, ['view_catalog', 'search_offerings', 'schedules']);
+        if (!empty($options['selectedCatalogId']) && $options['selectedCatalogId'] instanceof \osid_id_Id) {
+            $selectedCatalogId = $options['selectedCatalogId'];
+        } else {
+            $selectedCatalogId = null;
+        }
+
+        $menu = $this->factory->createItem('Course Catalog', ['route' => 'home']);
 
         $menu->addChild('All Catalogs', ['route' => 'catalogs']);
         $subMenu = $menu['All Catalogs'];
@@ -48,6 +61,12 @@ class MenuBuilder
                     ],
                 ],
             );
+            // If we are on a catalog-specific page that is not in the menu
+            // (like a course page), mark the search page as the currently
+            // active item so that breadcrumbs can point at the catalog.
+            if ($selectedCatalogId && $selectedCatalogId->isEqual($catalog->getId()) && !$currentRouteIsInMenu) {
+                $subMenu[$catalog->getDisplayName()]['Search']->setCurrent(true);
+            }
         }
 
         $menu->addChild('Schedule Builder', ['route' => 'schedules']);
@@ -98,8 +117,7 @@ class MenuBuilder
             $selectedCatalogId = null;
         }
 
-        $menu = $this->factory->createItem('root', ['route' => 'list_catalogs']);
-        $menu->setName('All Catalogs');
+        $menu = $this->factory->createItem('All Catalogs', ['route' => 'list_catalogs']);
         $menu->setLabel('In this Catalog');
 
         if ($selectedCatalogId) {
