@@ -87,8 +87,8 @@ class MenuBuilder
 
         // Admin routes.
         if ($this->security->isGranted('ROLE_ADMIN')) {
-            $menu->addChild('Admin', ['route' => 'admin_index']);
-            $subMenu = $menu['Admin'];
+            $menu->addChild('Administration', ['route' => 'admin_index']);
+            $subMenu = $menu['Administration'];
             $subMenu->setExtra('menuId', 3);
             $subMenu->addChild('Manage Term Visibility', ['route' => 'admin_terms_list']);
             $subMenu->addChild('Manage Anti-Requisites', ['route' => 'list_antirequisites']);
@@ -146,15 +146,6 @@ class MenuBuilder
 
         // Schedule link.
         $menu->addChild('Schedule Builder', ['route' => 'schedules']);
-
-        return $menu;
-    }
-
-    public function createAdminMenu(array $options): ItemInterface
-    {
-        $menu = $this->factory->createItem('root');
-
-
 
         return $menu;
     }
