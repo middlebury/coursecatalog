@@ -93,7 +93,7 @@ class Catalogs extends AbstractController
 
         return $this->redirectToRoute('search_offerings', [
             'catalogId' => $catalogId,
-            'termId' => $termId,
+            'term' => $termId,
         ]);
     }
 
