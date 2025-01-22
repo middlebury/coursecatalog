@@ -89,9 +89,22 @@ class OsidRouteVoter implements VoterInterface
             return true;
         }
 
-        $routeParameters = $request->attributes->get('_route_params', []);
+        // Middlebury customization: Include all query parameters when testing
+        // for matches. We aren't exclusively using positional parameters.
+        $routeParameters = array_merge($request->attributes->get('_route_params', []), $request->query->all());
 
         foreach ($testedRoute['parameters'] as $name => $value) {
+            if (!isset($routeParameters[$name])) {
+                return false;
+            }
+            $routeParameterValue = $routeParameters[$name];
+            // Middlebury customization to not fail on osid_id_Id objects.
+            if ($routeParameterValue instanceof \osid_id_Id) {
+                $routeParameterValue = $this->osidIdMap->toString($routeParameterValue);
+            } elseif ($routeParameterValue instanceof \osid_type_Type) {
+                $routeParameterValue = $this->osidIdMap->typeToString($routeParameterValue);
+            }
+
             // Middlebury customization to not fail on osid_id_Id objects.
             if ($value instanceof \osid_id_Id) {
                 $value = $this->osidIdMap->toString($value);
@@ -99,9 +112,22 @@ class OsidRouteVoter implements VoterInterface
                 $value = $this->osidIdMap->typeToString($value);
             }
 
-            // cast both to string so that we handle integer and other non-string parameters, but don't stumble on 0 == 'abc'.
-            if (!isset($routeParameters[$name]) || (string) $routeParameters[$name] !== (string) $value) {
-                return false;
+            // Middlebury customization to not fail on array parameters for
+            // multi-select form parameters.
+            if (is_array($routeParameterValue) || is_array($value)) {
+                sort($routeParameterValue);
+                sort($value);
+                foreach ($routeParameterValue as $i => $v) {
+                    if ((string) $routeParameterValue[$i] !== (string) $value[$i]) {
+                        return false;
+                    }
+                }
+            // print "<pre style='border: 1px solid red;'>"; var_dump($routeParameterValue); var_dump($value); print "</pre>"; exit;
+            } else {
+                // cast both to string so that we handle integer and other non-string parameters, but don't stumble on 0 == 'abc'.
+                if ((string) $routeParameterValue !== (string) $value) {
+                    return false;
+                }
             }
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Menu;
 
+use App\Service\Osid\IdMap;
 use App\Service\Osid\Runtime;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
@@ -16,6 +17,7 @@ class MenuBuilder
     public function __construct(
         private FactoryInterface $factory,
         private Runtime $osidRuntime,
+        private IdMap $osidIdMap,
         private Security $security,
         private RequestStack $requestStack,
     ) {
@@ -26,7 +28,8 @@ class MenuBuilder
         // Note the current route so that we can mark the Search page for a
         // catalog as active when looking at catalog-specific pages that aren't
         // in a menu.
-        $currentRoute = $this->requestStack->getCurrentRequest()->get('_route');
+        $currentRequest = $this->requestStack->getCurrentRequest();
+        $currentRoute = $currentRequest->get('_route');
         $currentRouteIsInMenu = in_array($currentRoute, ['view_catalog', 'search_offerings', 'schedules']);
         if (!empty($options['selectedCatalogId']) && $options['selectedCatalogId'] instanceof \osid_id_Id) {
             $selectedCatalogId = $options['selectedCatalogId'];
@@ -132,16 +135,23 @@ class MenuBuilder
                     ],
                 ],
             );
+
+            $currentRequest = $this->requestStack->getCurrentRequest();
+            $currentRoute = $currentRequest->get('_route');
+            $routeParameters = ['catalogId' => $selectedCatalogId];
+            if ('search_offerings' == $currentRoute) {
+                $currentRouteParameters = $currentRequest->get('_route_params');
+                if (!empty($currentRouteParameters['catalogId']) && $selectedCatalogId->isEqual($this->osidIdMap->fromString($currentRouteParameters['catalogId']))) {
+                    $routeParameters = array_merge($routeParameters, $currentRequest->query->all());
+                }
+            }
             $menu[$catalog->getDisplayName()]->addChild(
                 'Search',
                 [
                     'route' => 'search_offerings',
-                    'routeParameters' => [
-                        'catalogId' => $catalog->getId(),
-                    ],
+                    'routeParameters' => $routeParameters,
                 ],
             );
-
         }
 
         // Schedule link.
@@ -149,5 +159,4 @@ class MenuBuilder
 
         return $menu;
     }
-
 }
