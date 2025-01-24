@@ -1,0 +1,48 @@
+{% if pageCount > 1 %}
+<nav class="pagination">
+    <ul class="pagination__list">
+        {% if previous is defined %}
+            <li class="pagination__item pagination__item--previous">
+              <a href="{{ path(route, knp_pagination_query(query, previous)) }}" class="pagination__link">Previous</a>
+            </li>
+        {% endif %}
+
+        {% if first is defined and current != first and pagesInRange|first != first %}
+            <li class="pagination__item pagination__item--first">
+                <a href="{{ path(route, knp_pagination_query(query, first)) }}" class="pagination__link">1</a>
+            </li>
+        {% endif %}
+
+        {% if pagesInRange|first > 2 %}
+            <li class="pagination__item pagination__item--others"><span>&hellip;</span></li>
+        {% endif %}
+
+        {% for page in pagesInRange %}
+            {% if page != current %}
+                <li class="pagination__item">
+                    <a href="{{ path(route, knp_pagination_query(query, page)) }}" class="pagination__link">{{ page }}</a>
+                </li>
+            {% else %}
+                <li class="pagination__item pagination__item--active">
+                    <a href="{{ path(route, knp_pagination_query(query, page)) }}" class="pagination__link pagination__link--active">{{ page }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if pagesInRange|last < (last - 1) %}
+            <li class="pagination__item pagination__item--others"><span>&hellip;</span></li>
+        {% endif %}
+
+        {% if last is defined and current != last and pagesInRange|last != last %}
+            <li class="pagination__item pagination__item--last">
+                <a href="{{ path(route, knp_pagination_query(query, last)) }}" class="pagination__link">{{ last }}</a>
+            </li>
+        {% endif %}
+
+        {% if next is defined %}
+            <li class="pagination__item pagination__item--next">
+              <a href="{{ path(route, knp_pagination_query(query, next)) }}" class="pagination__link">Next</a>
+            </li>
+        {% endif %}
+    </ul>
+{% endif %}

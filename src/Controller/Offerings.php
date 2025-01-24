@@ -171,6 +171,8 @@ class Offerings extends AbstractController
                 $request->query->getInt('page', 1), /* page number */
                 10 /* limit per page */
             );
+            $data['paginator']->setTemplate('partials/pagination.html.twig');
+            $data['paginator']->setPageRange(9);
         }
 
         /*********************************************************
