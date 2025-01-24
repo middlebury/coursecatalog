@@ -68,7 +68,7 @@
             {% endfor %}
             </dd>
         {% endif %}
-        {% if item.location or item.locationinfo %}
+        {% if (item.location is defined and item.location) or (item.locationinfo is defined and item.locationinfo) %}
             <dt class="terms__title text-caps f2">Location:</dt>
             <dd class="terms__text">
             {% if item.location %}
