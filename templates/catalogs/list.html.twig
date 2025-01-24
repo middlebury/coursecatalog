@@ -1,8 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <ul>
     {% for catalog in catalogs %}
-        <h2><a href="{{ path('view_catalog', { catalogId: catalog.id }) }}">{{ catalog.displayname }}</a></h2>
+        <li><a href="{{ path('view_catalog', { catalogId: catalog.id }) }}">{{ catalog.displayname }}</a>
         <div>{{ catalog.description | raw }}</div>
+        </li>
     {% endfor %}
+    </ul>
 {% endblock %}

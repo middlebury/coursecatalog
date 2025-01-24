@@ -5,6 +5,7 @@
     {{ importmap(['app', 'export']) }}
 {% endblock %}
 
+{% set bodyTypography = true %}
 {% block body %}
 <div class='admin-menu'><a href="{{ path('export_config_form') }}">&laquo; Back to Archive Export Configuration</a></div>
 

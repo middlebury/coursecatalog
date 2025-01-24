@@ -270,7 +270,7 @@
                 </div>
                 <div class="{{ showLeftNav ? 'col-md-10 offset-md-1 col-lg-7' : 'col-md-12 col-lg-12' }} offset-lg-0">
                   {% block content_heading %}{% endblock %}
-                  <div class="typography mb-7">
+                  <div class="{{ bodyTypography is defined ? 'typography' }} mb-7">
                     {% block body %}{% endblock %}
                   </div>
                 </div>
