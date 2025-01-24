@@ -1,0 +1,21 @@
+<div class="paragraph--two-col-text" data-digest-content>
+{% if paginator is not null %}
+    <h2 class="h2 mb-4 mb-lg-5">
+        Search Results  ({{ paginator.getTotalItemCount }})
+    </h2>
+
+    <ul class="col-count-xl-1">
+{% for item in paginator %}
+        <li class="w-100 d-inline-block mb-8">
+            {{ include('offerings/partials/search-result-card.html.twig', {item: item, catalogId: catalogId}, with_context = false) }}
+        </li>
+{% endfor %}
+    </ul>
+
+{% if not paginator.count %}
+    <div class='search_empty'>No Matches</div>
+{% else %}
+    {{ knp_pagination_render(paginator) }}
+{% endif %}
+{% endif %}
+</div>

@@ -4,7 +4,7 @@ import expander from "jquery-expander";
 expander($);
 
 $("document").ready(function () {
-    $("div.description").expander({
+    $("p.description").expander({
         slicePoint: 140, // default is 100
         expandPrefix: "... ", // text to come before the expand link
         expandText: "read more", // default is 'read more...'

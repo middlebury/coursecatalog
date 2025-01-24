@@ -7,321 +7,208 @@
 
 {% block body %}
 <form action="{{ form_action }}" method="get">
-    <table class='search_options'>
-        <tr>
-            <td colspan='2'><input type='submit' name='search' value='Search'/></td>
-        </tr>
-        <tr>
-            <th>By Term:</th>
-            <td>
-                <select name="term" onchange="this.form['search'].value = ''; this.form.submit();">
-                    <option value='ANY'>Any Term</option>
+    <div class="course-catalog-search row row--sm-gutters">
+        <div class="col-md-6 form-group">
+            <label for="term" class="label">By Term</label>
+            <select class="form-control" id="by-term" name="term" required name="term" onchange="this.form['search'].value = ''; this.form.submit();">
+                <option value='ANY'>Any Term</option>
 {% for term in terms %}
-                    <option value="{{ osidIdToString(term.id) }}" {{ selectedTermId and osidIdsEqual(selectedTermId, term.id)? 'selected="selected"' }}>{{ term.displayname }}</option>
+                <option value="{{ osidIdToString(term.id) }}" {{ selectedTermId and osidIdsEqual(selectedTermId, term.id)? 'selected="selected"' }}>{{ term.displayname }}</option>
 {% endfor %}
-                </select>
-            </td>
-        </tr>
-
-        <tr>
-            <th>By Subject/Department:</th>
-            <td>
-                <select name="department">
-                    <option value=''>Any Subject or Department</option>
-                    <optgroup label='Subjects'>
+            </select>
+        </div>
+        <div class="col-md-6 form-group">
+            <label for="department" class="label">By Subject/Department</label>
+            <select class="form-control" id="department" name="department">
+                <option value=''>Any Subject or Department</option>
+                <optgroup label='Subjects'>
 {% for topic in subjects %}
-                        <option value="{{ osidIdToString(topic.id) }}" {{ selectedDepartmentId and  osidIdsEqual(selectedDepartmentId, topic.id) ? 'selected="selected"' }}>{{ topic.displayname }}</option>
+                    <option value="{{ osidIdToString(topic.id) }}" {{ selectedDepartmentId and  osidIdsEqual(selectedDepartmentId, topic.id) ? 'selected="selected"' }}>{{ topic.displayname }}</option>
 {% endfor %}
-                    </optgroup>
-                    <optgroup label='Departments'>
+                </optgroup>
+                <optgroup label='Departments'>
 {% for topic in departments %}
-                        <option value="{{ osidIdToString(topic.id) }}" {{ selectedDepartmentId and  osidIdsEqual(selectedDepartmentId, topic.id) ? 'selected="selected"' }}>{{ topic.displayname }}</option>
+                    <option value="{{ osidIdToString(topic.id) }}" {{ selectedDepartmentId and  osidIdsEqual(selectedDepartmentId, topic.id) ? 'selected="selected"' }}>{{ topic.displayname }}</option>
 {% endfor %}
-                    </optgroup>
-                </select>
-            </td>
-        </tr>
+                </optgroup>
+            </select>
+        </div>
 
 {% if requirements is not empty %}
-        <tr>
-            <th>Satisfies Requirements:</th>
-            <td>
-                <div class='help_text'>(Leave all blank for no preference)</div>
-                <div class='requirement_group'>
+        <fieldset class="col-md-6 form-group">
+            <legend class="label">
+                <p class="f2">Satisfies requirements</p>
+                <p class="f1">(Leave all blank for no preference)</p>
+            </legend>
+            <div class="checkbox-group d-flex flex-wrap">
 {% for topic in requirements %}
-{% if loop.index is divisible by(5) %}
+                <div class="checkbox checkbox--filter">
+                    <input type='checkbox' class="checkbox__input" name='requirement[]' value="{{ osidIdToString(topic.id) }}" id="input-requirement-{{ osidIdToString(topic.id) }}" {{ osidIdInArray(topic.id, selectedRequirementIds)? 'checked="checked"' }}/>
+                    <label for="input-requirement-{{ osidIdToString(topic.id) }}" class="checkbox__label">{{ topic.displayname }}</label>
                 </div>
-                <div class='requirement_group'>
-{% endif %}
-                    <input type='checkbox' name='requirement[]' value="{{ osidIdToString(topic.id) }}" id="input-requirement-{{ osidIdToString(topic.id) }}" {{ osidIdInArray(topic.id, selectedRequirementIds)? 'checked="checked"' }}/><label for="input-requirement-{{ osidIdToString(topic.id) }}">{{ topic.displayname }}</label><br/>
 {% endfor %}
-                </div>
-            </td>
-        </tr>
+            </div>
+        </fieldset>
 {% endif %}
 
-        <tr>
-            <th>Keywords:</th>
-            <td>
-                <input class='text_input' type='text' name='keywords' value="{{ keywords }}" />
-                <div class='help_text'>By default results only have to match one of the supplied keywords. Use a plus (+) before a word to require it or a minus (-) to exclude it. Use an asterisk (*) as a wildcard.</div>
-            </td>
-        </tr>
+        <div class="col-md-6 form-group">
+            <label for="keywords" class="label">Keywords</label>
+            <input type="text" class="form-control" name="keywords" id="keywords" ria-describedby="instructions"  value="{{ keywords }}">
+            <p class="f1 font-semibold">By default results only have to match one of the supplied keywords. Use a plus (+) before a word to require it or a minus (-) to exclude it. Use an asterisk (*) as a wildcard.</p>
+        </div>
 
-{% if searchParams.days is iterable %}
-        <tr>
-            <th>Days of the week:</th>
-            <td>
+        <fieldset class="col-md-6 form-group">
+            <legend class="label">Day of the week</legend>
+            <div class="checkbox-group d-flex flex-wrap">
+                <div class="checkbox checkbox--filter">
+                    <input type='checkbox' class="checkbox__input" name='days[]' value='sunday' id='input-days-sunday' {{ 'sunday' in searchParams.days ? 'checked="checked"' }} />
+                    <label for='input-days-sunday' class="checkbox__label">Sunday</label>
+                </div>
+                <div class="checkbox checkbox--filter">
+                    <input type='checkbox' class="checkbox__input" name='days[]' value='monday' id='input-days-monday' {{ 'monday' in searchParams.days ? 'checked="checked"' }} />
+                    <label for='input-days-monday' class="checkbox__label">Monday</label>
+                </div>
+                <div class="checkbox checkbox--filter">
+                    <input type='checkbox' class="checkbox__input" name='days[]' value='tuesday' id='input-days-tuesday' {{ 'tuesday' in searchParams.days ? 'checked="checked"' }} />
+                    <label for='input-days-tuesday' class="checkbox__label">Tuesday</label>
+                </div>
+                <div class="checkbox checkbox--filter">
+                    <input type='checkbox' class="checkbox__input" name='days[]' value='wednesday' id='input-days-wednesday' {{ 'wednesday' in searchParams.days ? 'checked="checked"' }} />
+                    <label for='input-days-wednesday' class="checkbox__label">Wednesday</label>
+                </div>
+                <div class="checkbox checkbox--filter">
+                    <input type='checkbox' class="checkbox__input" name='days[]' value='thursday' id='input-days-thursday' {{ 'thursday' in searchParams.days ? 'checked="checked"' }} />
+                    <label for='input-days-thursday' class="checkbox__label">Thursday</label>
+                </div>
+                <div class="checkbox checkbox--filter">
+                    <input type='checkbox' class="checkbox__input" name='days[]' value='friday' id='input-days-friday' {{ 'friday' in searchParams.days ? 'checked="checked"' }} />
+                    <label for='input-days-friday' class="checkbox__label">Friday</label>
+                </div>
+                <div class="checkbox checkbox--filter">
+                    <input type='checkbox' class="checkbox__input" name='days[]' value='saturday' id='input-days-saturday' {{ 'saturday' in searchParams.days ? 'checked="checked"' }} />
+                    <label for='input-days-saturday' class="checkbox__label">Saturday</label>
+                </div>
+            </div>
+            <p class="f1 font-semibold mb-3">Leave all unchecked if no preference.</p>
 
-                <input type='checkbox' name='days[]' value='sunday' id='input-days-sunday' {{ 'sunday' in searchParams.days ? 'checked="checked"' }} /> <label for='input-days-sunday'>Sunday</label>
-                <input type='checkbox' name='days[]' value='monday' id='input-days-monday' {{ 'monday' in searchParams.days ? 'checked="checked"' }} /> <label for='input-days-monday'>Monday</label>
-                <input type='checkbox' name='days[]' value='tuesday' id='input-days-tuesday' {{ 'tuesday' in searchParams.days ? 'checked="checked"' }} /> <label for='input-days-tuesday'>Tuesday</label>
-                <input type='checkbox' name='days[]' value='wednesday' id='input-days-wednesday' {{ 'wednesday' in searchParams.days ? 'checked="checked"' }} /> <label for='input-days-wednesday'>Wednesday</label>
-                <input type='checkbox' name='days[]' value='thursday' id='input-days-thursday' {{ 'thursday' in searchParams.days ? 'checked="checked"' }} /> <label for='input-days-thursday'>Thursday</label>
-                <input type='checkbox' name='days[]' value='friday' id='input-days-friday' {{ 'friday' in searchParams.days ? 'checked="checked"' }} /> <label for='input-days-friday'>Friday</label>
-                <input type='checkbox' name='days[]' value='saturday' id='input-days-saturday' {{ 'saturday' in searchParams.days ? 'checked="checked"' }} /> <label for='input-days-saturday'>Saturday</label>
-                <div class='help_text'>Leave all unchecked if no preference.</div>
-                <br/>
-                <input type='radio' name='days_mode' value='inclusive' id='input-days_mode-inclusive' {{ searchParams.days_mode is empty or searchParams.days_mode == 'inclusive'  ? 'checked="checked"' }} /> <label for='input-days_mode-inclusive'>Inclusive search -- meets on all of the selected days and possibly others</label>
-                <br/>
-                <input type='radio' name='days_mode' value='exclusive' id='input-days_mode-exclusive' {{ searchParams.days_mode == 'exclusive'  ? 'checked="checked"' }} /> <label for='input-days_mode-exclusive'>Exclusive search -- meets only on selected days, not on unselected days</label>
-            </td>
-        </tr>
+            <div class="form-check">
+                <input type="radio" name="days_mode" class="form-check__input" id="course-catalog-days-inclusive" value="inclusive" {{ searchParams.days_mode is empty or searchParams.days_mode == 'inclusive'  ? 'checked="checked"' }}>
+                <label for="course-catalog-days-inclusive" class="form-check__label">Inclusive search - meets on all of the selected days and possibly others</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" name="days_mode" class="form-check__input" id="course-catalog-days-exclusive" value="exclusive" {{ searchParams.days_mode == 'exclusive'  ? 'checked="checked"' }}>
+                <label for="course-catalog-days-exclusive" class="form-check__label">Exclusive search - meets only on selected days, not on unselected days</label>
+            </div>
+        </fieldset>
 
-        <tr>
-            <th>Time:</th>
-            <td>
-                <label for="input-time_start">From</label>
-                <select name='time_start' id="input-time_start" class='time_select'>
+        <div class="col-md-6 form-group">
+            <label for="last_name" class="label">Time</label>
+            <label class="d-inline-flex">From
+                <select class="form-control ml-2" name="time_start" class="time_select">
                     <option value='0' {{ timeStart is empty ? "selected='selected'" }}>Any Time</option>
-{% for s in range(1800, 84600, 1800) %}
+    {% for s in range(1800, 84600, 1800) %}
                     <option value="{{ s }}" {{ timeStart == s ? "selected='selected'" }}>{{ secondsToTime(s) }}</option>
-{% endfor %}
+    {% endfor %}
                 </select>
-
-                <label for="input-time_end">To</label>
-                <select name='time_end' id="input-time_end" class='time_select'>
-{% for s in range(1800, 84600, 1800) %}
+            </label>
+            <label class="d-inline-flex ml-3">To
+                <select class="form-control ml-2" name="time_end" class="time_select">
+    {% for s in range(1800, 84600, 1800) %}
                     <option value="{{ s }}" {{ timeEnd == s ? "selected='selected'" }}>{{ secondsToTime(s) }}</option>
-{% endfor %}
+    {% endfor %}
                     <option value='86400' {{ timeEnd == 86400 ? "selected='selected'" }}>Any Time</option>
                 </select>
-                </label>
-            </td>
-        </tr>
-{% endif %}
+            </label>
+        </div>
 
-        <tr>
-            <th>Type:</th>
-            <td>
-                <div class='help_text'>(Leave all blank for no preference)</div>
-                <div class='requirement_group'>
-{% for type in genusTypes %}
-{% if loop.index is divisible by(5) %}
+        <fieldset class="col-md-6 form-group form-group--course-type">
+            <legend class="label">
+                <p class="f2">Type</p>
+                <p class="f1">(Leave all blank for no preference)</p>
+            </legend>
+            <div class="checkbox-group d-flex flex-wrap">
+              {% for type in genusTypes %}
+                <div class="checkbox checkbox--filter">
+                    <input type='checkbox' class="checkbox__input" name='type[]' value="{{ osidTypeToString(type) }}" id="input-requirement-{{ osidTypeToString(type) }}" {{ osidTypeInArray(type, selectedGenusTypes)? 'checked="checked"' }}>
+                    <label class="checkbox__label" for="input-type-{{ osidTypeToString(type) }}">{{ type.displayname }}</label>
                 </div>
-                <div class='requirement_group'>
-{% endif %}
-                    <input type='checkbox' name='type[]' value="{{ osidTypeToString(type) }}" id="input-requirement-{{ osidTypeToString(type) }}" {{ osidTypeInArray(type, selectedGenusTypes)? 'checked="checked"' }}/> <label for="input-type-{{ osidTypeToString(type) }}">{{ type.displayname }}</label><br/>
-{% endfor %}
-                </div>
-            </td>
-        </tr>
+              {% endfor %}
+            </div>
+        </fieldset>
 
-{% if blocks is not empty %}
-        <tr>
-            <th>Additional Details:</th>
-            <td>
-                <div class='help_text'>(Leave all blank for no preference)</div>
-                <div class='requirement_group'>
-{% for topic in blocks %}
-{% if loop.index is divisible by(5) %}
+    {% if blocks is not empty %}
+        <fieldset class="col-md-6 form-group">
+            <legend class="label">
+            <p class="f2">Additional Details</p>
+            <p class="f1">(Leave all blank for no preference)</p>
+            </legend>
+            <div class="checkbox-group">
+            {% for topic in blocks %}
+                <div class="checkbox checkbox--filter">
+                    <input type="checkbox" class="checkbox__input" name='block[]' value="{{ osidIdToString(topic.id) }}" id="input-block-{{ osidIdToString(topic.id) }}" {{ osidIdInArray(topic.id, selectedBlockIds)? 'checked="checked"' }}>
+                    <label for="input-block-{{ osidIdToString(topic.id) }}" id="checkbox-mod-label-{{loop.index}}" class="checkbox__label">{{ topic.displayname }}</label>
                 </div>
-                <div class='requirement_group'>
-{% endif %}
-                    <input type='checkbox' name='block[]' value="{{ osidIdToString(topic.id) }}" id="input-block-{{ osidIdToString(topic.id) }}" {{ osidIdInArray(topic.id, selectedBlockIds)? 'checked="checked"' }}/><label for="input-block-{{ osidIdToString(topic.id) }}">{{ topic.displayname }}</label><br/>
-{% endfor %}
-                </div>
-            </td>
-        </tr>
-{% endif %}
+            {% endfor %}
+            </div>
+        </fieldset>
+    {% endif %}
 
-{% if instructionMethods is not empty %}
-        <tr>
-            <th>Course Modality:</th>
-            <td>
-                <div class='help_text'>(Leave all blank for no preference)</div>
-                <div class='requirement_group'>
-{% for topic in instructionMethods %}
-{% if loop.index is divisible by(5) %}
+    {% if instructionMethods is not empty %}
+        <fieldset class="col-md-6 form-group">
+            <legend class="label">
+            <p class="f2">Course Modality</p>
+            <p class="f1">(Leave all blank for no preference)</p>
+            </legend>
+            <div class="checkbox-group">
+            {% for topic in instructionMethods %}
+                <div class="checkbox checkbox--filter">
+                    <input type="checkbox" class="checkbox__input" name='instruction_method[]' value="{{ osidIdToString(topic.id) }}" id="input-instruction_method-{{ osidIdToString(topic.id) }}" {{ osidIdInArray(topic.id, selectedInstructionMethodIds)? 'checked="checked"' }}>
+                    <label for="input-instruction_method-{{ osidIdToString(topic.id) }}" id="checkbox-mod-label-{{loop.index}}" class="checkbox__label">{{ topic.displayname }}</label>
                 </div>
-                <div class='requirement_group'>
-{% endif %}
-                    <input type='checkbox' name='instruction_method[]' value="{{ osidIdToString(topic.id) }}" id="input-instruction_method-{{ osidIdToString(topic.id) }}" {{ osidIdInArray(topic.id, selectedInstructionMethodIds)? 'checked="checked"' }}/><label for="input-instruction_method-{{ osidIdToString(topic.id) }}">{{ topic.displayname }}</label><br/>
-{% endfor %}
-                </div>
-            </td>
-        </tr>
-{% endif %}
+            {% endfor %}
+            </div>
+        </fieldset>
+    {% endif %}
 
-        <tr>
-            <th>Level:</th>
-            <td>
-                <div class='help_text'>(Leave all blank for no preference)</div>
-                <div class='requirement_group'>
-{% for topic in levels %}
-{% if loop.index is divisible by(5) %}
+        <fieldset class="col-md-6 form-group">
+            <legend class="label">
+                <p class="f2">Level</p>
+                <p class="f1">(Leave all blank for no preference)</p>
+            </legend>
+            <div class="checkbox-group">
+            {% for topic in levels %}
+                <div class="checkbox checkbox--filter">
+                    <input name='level[]' type="checkbox" class="checkbox__input" id="input-level-{{ osidIdToString(topic.id) }}" value="{{ osidIdToString(topic.id) }}" {{ osidIdInArray(topic.id, selectedLevelIds)? 'checked="checked"' }}>
+                    <label for="input-level-{{ osidIdToString(topic.id) }}" id="checkbox-level-label-{{ osidIdToString(topic.id) }}" class="checkbox__label">{{topic.displayname}}</label>
                 </div>
-                <div class='requirement_group'>
-{% endif %}
-                    <input type='checkbox' name='level[]' value="{{ osidIdToString(topic.id) }}" id="input-level-{{ osidIdToString(topic.id) }}" {{ osidIdInArray(topic.id, selectedLevelIds)? 'checked="checked"' }}/><label for="input-level-{{ osidIdToString(topic.id) }}">{{ topic.displayname }}</label><br/>
-{% endfor %}
-                </div>
-            </td>
-        </tr>
+            {% endfor %}
+            </div>
+        </fieldset>
 
-{% if campuses is not empty %}
-        <tr>
-            <th>Campus:</th>
-            <td>
-                <div class='help_text'>(Leave all blank for no preference)</div>
-                <div class='requirement_group'>
-{% for resource in campuses %}
-{% if loop.index is divisible by(5) %}
+    {% if campuses is not empty %}
+        <fieldset class="col-md-6 form-group">
+            <legend class="label">
+                <p class="f2">Campus</p>
+                <p class="f1">(Leave all blank for no preference)</p>
+            </legend>
+            <div class="checkbox-group">
+              {% for resource in campuses %}
+                <div class="checkbox checkbox--filter">
+                    <input type="checkbox" name='campus[]' class="checkbox__input" id="input-campus-{{ osidIdToString(resource.id) }}" value="{{ osidIdToString(resource.id) }}" {{ osidIdInArray(resource.id, selectedCampusIds)? 'checked="checked"' }}>
+                    <label for="input-campus-{{ osidIdToString(resource.id) }}" id="input-campus-label-{{ osidIdToString(resource.id) }}" class="checkbox__label">{{ resource.displayname }}</label>
                 </div>
-                <div class='requirement_group'>
-{% endif %}
-                    <input type='checkbox' name='campus[]' value="{{ osidIdToString(resource.id) }}" id="input-campus-{{ osidIdToString(resource.id) }}" {{ osidIdInArray(resource.id, selectedCampusIds)? 'checked="checked"' }}/><label for="input-campus-{{ osidIdToString(resource.id) }}">{{ resource.displayname }}</label><br/>
-{% endfor %}
-                </div>
-            </td>
-        </tr>
-{% endif %}
+              {% endfor %}
+            </div>
+        </fieldset>
+    {% endif %}
 
-        <tr>
-            <td colspan='2'><input type='submit' name='search' value='Search'/></td>
-        </tr>
+        <div class="col-12 col-xl-4 form-group">
+            <input type="submit" name='search' value="Search" class="button button--primary d-block d-md-inline-block">
+        </div>
 
-    </table>
+    </div>
 </form>
 
-{% if paginator is not null %}
-<h2>Results ({{ paginator.getTotalItemCount }})</h2>
-{% if not paginator.count %}
-<div class='search_empty'>No Matches</div>
-{% else %}
-{{ knp_pagination_render(paginator) }}
-<table class='search_results'>
-    <tbody>
-{% for item in paginator %}
-        <tr>
-            <td class='column1'>
-                <a class='title' href="{{ path('view_offering', {offeringId: item.offering}) }}">{{ item.offering.displayname }}</a>{{ item.is_primary ? " * " }}
-
-                {% if item.alternates is not empty %}
-                    <br/>Cross-Listed As:
-                    {% for alternate in item.alternates %}
-                        <br/>
-                        <a href='{{ path('view_offering', {offeringId: alternate}) }}'>{{ alternate.displayname }}</a>
-                        {{ alternate.is_primary ? ' * ' }}
-                    {% endfor %}
-                {% endif %}
-
-                <dl>
-                    <dt>Type:</dt>
-                    <dd>{{ item.offering.genustype.displayname }}</dd>
-
-                {% if item.instructionMethodTopics is not empty %}
-                    <dt>Course Modality:</dt>
-                    <dd>
-                    {% for topic in item.instructionMethodTopics %}
-                        <a href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: item.offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
-                    {% endfor %}
-                    </dd>
-                {% endif %}
-
-                    <dt>Term:</dt>
-                    <dd><a href='{{ path('view_term', {termId: item.offering.term}) }}'>{{ item.offering.term.displayname }}</a></dd>
-
-                    <dt>Department:</dt>
-                    <dd>
-                    {% for topic in item.departmentTopics %}
-                        <a href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: item.offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
-                    {% endfor %}
-                    </dd>
-
-                    <dt>Requirements Fulfilled:</dt>
-                    <dd>
-                    {% for topic in item.requirementTopics %}
-                        <a href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: item.offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
-                    {% endfor %}
-                    </dd>
-
-                {% if item.blockTopics is not empty %}
-                    <dt>Additional Details:</dt>
-                    <dd>
-                    {% for topic in item.blockTopics %}
-                        <a href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: item.offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
-                    {% endfor %}
-                    </dd>
-                {% endif %}
-
-                </dl>
-            </td>
-
-            <td class='column2'>
-                {{ include(
-                    'schedules/bookmark_control.html.twig',
-                    {
-                        courseId: item.offering.course.id,
-                    },
-                    with_context = false
-                )}}
-
-                <div class='title'>{{ item.offering.title }}</div>
-                <div class='description'>{{ item.offering.description | raw }}</div>
-
-                <dl>
-
-                {% if item.instructors is not null %}
-                    <dt>Instructors:</dt>
-                    <dd>
-                    {% for instructor in item.instructors %}
-                        <a href='{{ path('view_resource', {resourceId: instructor, termId: item.offering.term}) }}'>{{ instructor.displayname }}</a>{{ not loop.last ? ',' }}
-                    {% endfor %}
-                    </dd>
-                {% endif %}
-
-                {% if item.location %}
-                    <dt>Location:</dt>
-                    <dd>
-                        <a href='{{ path('view_resource', {resourceId: item.location, termId: item.offering.term}) }}'>{{ item.location.displayname }}</a>
-                        {% if item.location.description %}
-                            <span class='location_description'>{{ item.location.description }}</span>
-                        {% endif %}
-                    </dd>
-                {% elseif item.offering.locationinfo %}
-                    <dt>Location:</dt>
-                    <dd>{{ item.offering.locationinfo }}</dd>
-                {% endif %}
-
-                {% if item.offering.scheduleinfo %}
-                    <dt>Schedule:</dt>
-                    <dd>{{ item.offering.scheduleinfo|nl2br|noWrapParentheticals|raw }}</dd>
-                {% endif %}
-
-                {% if item.availabilityLink is not empty %}
-                    <dt>Availability:</dt>
-                    <dd>{{ item.availabilityLink|raw }}</dd>
-                {% endif %}
-
-                </dl>
-            </td>
-        </tr>
-{% endfor %}
-    </tbody>
-</table>
-{{ knp_pagination_render(paginator) }}
-{% endif %}
-{% endif %}
+{{ include('offerings/partials/search-result-list.html.twig', {paginator: paginator, catalogId: catalogId}, with_context = false) }}
 
 {% endblock %}

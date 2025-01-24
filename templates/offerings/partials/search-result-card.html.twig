@@ -1,0 +1,98 @@
+<div class="course-catalog-result-card row pb-8 mt-7">
+    <div class="col-md-6 typography mb-4 mb-lg-0">
+        <a class="course-title" href="{{ path('view_offering', {offeringId: item.offering}) }}">{{ item.offering.displayname }}</a> {{ item.is_primary ? " * " }}
+
+    {% if item.alternates is not empty %}
+        <br/>Cross-Listed As:
+        {% for alternate in item.alternates %}
+            <br/>
+            <a href='{{ path('view_offering', {offeringId: alternate}) }}'>{{ alternate.displayname }}</a>
+            {{ alternate.is_primary ? ' * ' }}
+        {% endfor %}
+    {% endif %}
+
+        <dl class="terms">
+            <dt class="terms__title text-caps f2">Type:</dt>
+            <dd class="terms__text">{{ item.offering.genustype.displayname }}</dd>
+        {% if item.instructionMethodTopics is not empty %}
+            <dt class="terms__title text-caps f2">Course Modality:</dt>
+            <dd class="terms__text">
+            {% for topic in item.instructionMethodTopics %}
+                <a href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: item.offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+            {% endfor %}
+            </dd>
+        {% endif %}
+            <dt class="terms__title text-caps f2">Term:</dt>
+            <dd class="terms__text"><a href='{{ path('view_term', {termId: item.offering.term}) }}'>{{ item.offering.term.displayname }}</a></dd>
+            <dt class="terms__title text-caps f2">Department:</dt>
+            <dd class="terms__text">
+            {% for topic in item.departmentTopics %}
+                <a href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: item.offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+            {% endfor %}
+            </dd>
+            <dt class="terms__title text-caps f2">Requirements Fulfilled:</dt>
+            <dd class="terms__text">
+            {% for topic in item.requirementTopics %}
+                <a href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: item.offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+            {% endfor %}
+            </dd>
+        {% if item.blockTopics is not empty %}
+            <dt class="terms__title text-caps f2">Additional Details:</dt>
+            <dd class="terms__text">
+            {% for topic in item.blockTopics %}
+                <a href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: item.offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+            {% endfor %}
+            </dd>
+        {% endif %}
+        </dl>
+
+        {{ include(
+            'schedules/bookmark_control.html.twig',
+            {
+                courseId: item.offering.course.id,
+            },
+            with_context = false
+        )}}
+
+    </div>
+    <div class="col-md-6 typography">
+
+        <h3>{{ item.offering.title }}</h3>
+        <p class='description'>{{ item.offering.description | raw }}</p>
+        <dl class="terms">
+        {% if item.instructors is not null %}
+            <dt class="terms__title text-caps f2">Instructors:</dt>
+            <dd class="terms__text">
+            {% for instructor in item.instructors %}
+                <a href='{{ path('view_resource', {resourceId: instructor, termId: item.offering.term}) }}'>{{ instructor.displayname }}</a>{{ not loop.last ? ',' }}
+            {% endfor %}
+            </dd>
+        {% endif %}
+        {% if item.location or item.locationinfo %}
+            <dt class="terms__title text-caps f2">Location:</dt>
+            <dd class="terms__text">
+            {% if item.location %}
+                <a href='{{ path('view_resource', {resourceId: item.location, termId: item.offering.term}) }}'>{{ item.location.displayname }}</a>
+                {% if item.location.description %}
+                    <span class='location_description'>{{ item.location.description }}</span>
+                {% endif %}
+            {% elseif item.offering.locationinfo %}
+                {{ item.offering.locationinfo }}
+            {% endif %}
+            </dd>
+        {% endif %}
+        {% if item.offering.scheduleinfo %}
+            <dt class="terms__title text-caps f2">Schedule:</dt>
+            <dd class="terms__text">
+                {{ item.offering.scheduleinfo|nl2br|noWrapParentheticals|raw }}
+            </dd>
+        {% endif %}
+        {% if item.availabilityLink is not empty %}
+            <dt class="terms__title text-caps f2">Availability:</dt>
+            <dd class="terms__text">
+                {{ item.availabilityLink|raw }}
+            </dd>
+        {% endif %}
+        </dl>
+    </div>
+</div>
