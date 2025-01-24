@@ -51,7 +51,7 @@ class CatalogsTest extends WebTestCase
         $client->followRedirects(false);
         $crawler = $client->request('GET', '/catalogs/view/catalog.MCUG');
 
-        $this->assertResponseRedirects('/offerings/search/catalog.MCUG?termId=term.200990');
+        $this->assertResponseRedirects('/offerings/search/catalog.MCUG?term=term.200990');
     }
 
     public function testViewWithTerm(): void
@@ -60,7 +60,7 @@ class CatalogsTest extends WebTestCase
         $client->followRedirects(false);
         $crawler = $client->request('GET', '/catalogs/view/catalog.MCUG/term.200710');
 
-        $this->assertResponseRedirects('/offerings/search/catalog.MCUG?termId=term.200710');
+        $this->assertResponseRedirects('/offerings/search/catalog.MCUG?term=term.200710');
     }
 
     public function testViewXml(): void
