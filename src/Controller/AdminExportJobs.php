@@ -2,18 +2,22 @@
 
 namespace App\Controller;
 
+use App\Service\Osid\IdMap;
 use App\Service\Osid\Runtime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class AdminExportJobs extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
         private Runtime $osidRuntime,
+        private IdMap $osidIdMap,
     ) {
     }
 
@@ -88,16 +92,24 @@ class AdminExportJobs extends AbstractController
      * @since 1/23/18
      */
     #[Route('/admin/exports/jobs/{job}/delete', name: 'export_delete_job', methods: ['POST'])]
-    public function deletejobAction()
+    public function deletejobAction(Request $request, string $job)
     {
-        $this->_helper->layout()->disableLayout();
-        $this->_helper->viewRenderer->setNoRender(true);
+        // Verify our CSRF key
+        if (!$this->isCsrfTokenValid('admin-export-delete-job', $request->get('csrf_key'))) {
+            throw new AccessDeniedException('Invalid CSRF key.');
+        }
 
         // Delete revisions that depend on this config.
-        $db = Zend_Registry::get('db');
+        $db = $this->entityManager->getConnection();
         $query = 'DELETE FROM archive_jobs WHERE id = ?';
         $stmt = $db->prepare($query);
-        $stmt->execute([filter_var($this->getRequest()->getPost('jobId'), \FILTER_SANITIZE_NUMBER_INT)]);
+        $stmt->bindValue(1, $job);
+        $stmt->executeQuery();
+
+        $response = new Response('Success');
+        $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
+
+        return $response;
     }
 
     /**
@@ -140,30 +152,41 @@ class AdminExportJobs extends AbstractController
      * @since 1/23/18
      */
     #[Route('/admin/exports/jobs/{job}/update', name: 'export_update_job', methods: ['POST'])]
-    public function updatejobAction()
+    public function updatejobAction(Request $request, string $job)
     {
-        $this->_helper->layout()->disableLayout();
-        $this->_helper->viewRenderer->setNoRender(true);
-
-        if ($this->getRequest()->isPost()) {
-            $safeId = filter_input(\INPUT_POST, 'jobId', \FILTER_SANITIZE_SPECIAL_CHARS);
-            $safeActive = filter_input(\INPUT_POST, 'active', \FILTER_SANITIZE_SPECIAL_CHARS);
-            $safeExportPath = filter_input(\INPUT_POST, 'export_path', \FILTER_SANITIZE_SPECIAL_CHARS);
-            $safeConfigId = filter_input(\INPUT_POST, 'config_id', \FILTER_SANITIZE_SPECIAL_CHARS);
-            $safeRevisionId = filter_input(\INPUT_POST, 'revision_id', \FILTER_SANITIZE_SPECIAL_CHARS);
-            if ('latest' === $safeRevisionId) {
-                $safeRevisionId = null;
-            }
-            $safeTerms = filter_input(\INPUT_POST, 'terms', \FILTER_SANITIZE_SPECIAL_CHARS);
-
-            $db = Zend_Registry::get('db');
-            $query =
-            'UPDATE archive_jobs
-      SET active = :active, export_path = :export_path, config_id = :config_id, revision_id = :revision_id, terms = :terms
-      WHERE id = :id';
-            $stmt = $db->prepare($query);
-            $stmt->execute([':id' => $safeId, ':active' => $safeActive, ':export_path' => $safeExportPath, ':config_id' => $safeConfigId, ':revision_id' => $safeRevisionId, ':terms' => $safeTerms]);
+        // Verify our CSRF key
+        if (!$this->isCsrfTokenValid('admin-export-update-job', $request->get('csrf_key'))) {
+            throw new AccessDeniedException('Invalid CSRF key.');
         }
+
+        $safeId = filter_var($job, \FILTER_SANITIZE_SPECIAL_CHARS);
+        $safeActive = filter_var($request->get('active'), \FILTER_SANITIZE_SPECIAL_CHARS);
+        $safeExportPath = filter_var($request->get('export_path'), \FILTER_SANITIZE_SPECIAL_CHARS);
+        $safeConfigId = filter_var($request->get('config_id'), \FILTER_SANITIZE_SPECIAL_CHARS);
+        $safeRevisionId = filter_var($request->get('revision_id'), \FILTER_SANITIZE_SPECIAL_CHARS);
+        if ('latest' === $safeRevisionId) {
+            $safeRevisionId = null;
+        }
+        $safeTerms = filter_var($request->get('terms'), \FILTER_SANITIZE_SPECIAL_CHARS);
+
+        $db = $this->entityManager->getConnection();
+        $query =
+        'UPDATE archive_jobs
+  SET active = :active, export_path = :export_path, config_id = :config_id, revision_id = :revision_id, terms = :terms
+  WHERE id = :id';
+        $stmt = $db->prepare($query);
+        $stmt->bindValue('id', $safeId);
+        $stmt->bindValue('active', $safeActive);
+        $stmt->bindValue('export_path', $safeExportPath);
+        $stmt->bindValue('config_id', $safeConfigId);
+        $stmt->bindValue('terms', $safeTerms);
+        $stmt->bindValue('revision_id', $safeRevisionId);
+        $stmt->executeQuery();
+
+        $response = new Response('Success');
+        $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
+
+        return $response;
     }
 
     /**
@@ -193,41 +216,28 @@ class AdminExportJobs extends AbstractController
      * @since 1/23/18
      */
     // TODO - return instead of echo?
-    #[Route('/admin/exports/term-valid/{catalogId}/{termId}', name: 'export_term_valid')]
-    public function validtermAction()
+    #[Route('/admin/exports/term-valid/{catalogId}/{termString}', name: 'export_term_valid')]
+    public function validtermAction(\osid_id_Id $catalogId, string $termString)
     {
-        $request = $this->getRequest();
-
-        if (!$request->getParam('catalogId')) {
-            echo 'No catalog specified!';
-            exit;
-        }
-        if (!$request->getParam('term')) {
-            echo 'No term specified!';
-            exit;
-        }
-
-        $catalogId = $this->_helper->osidId->fromString($request->getParam('catalogId'));
-        $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
-
         try {
-            $termString = 'term.'.$request->getParam('term');
-            $termId = $this->_helper->osidId->fromString($termString);
-        } catch (osid_InvalidArgumentException $e) {
-            header('HTTP/1.1 400 Bad Request');
-            echo 'The term id specified was not of the correct format.';
-            exit;
-        } catch (osid_NotFoundException $e) {
-            echo 'not valid';
+            $termId = $this->osidIdMap->fromString('term.'.$termString);
+            $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
+            if ($termLookupSession->getTerm($termId)) {
+                $response = new Response('valid');
+            } else {
+                $response = new Response('not valid');
+                $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+            }
+        } catch (\osid_InvalidArgumentException $e) {
+            $response = new Response('not valid');
+            $response->setStatusCode(Response::HTTP_BAD_REQUEST);
+        } catch (\osid_NotFoundException $e) {
+            $response = new Response('not valid');
+            $response->setStatusCode(Response::HTTP_BAD_REQUEST);
         }
 
-        if ($this->termLookupSession->getTerm($termId)) {
-            echo 'valid';
-        } else {
-            echo 'not valid';
-        }
+        $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
 
-        $this->_helper->layout()->disableLayout();
-        $this->_helper->viewRenderer->setNoRender(true);
+        return $response;
     }
 }

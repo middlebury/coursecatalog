@@ -195,7 +195,7 @@ file names. */
 .warning-box {
   position: fixed;
   width: 300px;
-  height: 100px;
+  height: 150px;
   left: 40%;
   top: 50%;
   background: white;

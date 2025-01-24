@@ -15,6 +15,18 @@ function resetEventListeners() {
     $(".revision-dropdown").change(function () {
         $(this).attr("value", $(this).val());
     });
+    $(".save-jobs-button").click(function () {
+        save();
+    });
+    $(".reset-jobs-button").click(function () {
+        reset();
+    });
+    $(".delete-job-button").click(function () {
+        deleteJob($(this).data('job-id'));
+    });
+    $(".run-job-button").click(function () {
+        runJob($(this).data('job-id'));
+    });
 }
 
 function repopulateRevisions(jobId) {
@@ -124,11 +136,8 @@ function selectRevision(revisionId, revisionDropDown) {
 
 function actions(jobId) {
     return (
-        "<button value='delete' onclick='deleteJob(" +
-        jobId +
-        ")'>Delete</button><button value='run' onclick='runJob(" +
-        jobId +
-        ")'>Run</button>"
+        "<button value='delete' class='link-button delete-job-button' id='delete-job-button-" + jobId + "' data-job-id='" + jobId + "'>Delete</button> "
+        + "<button value='run'  class='link-button run-job-button' id='run-job-button-" + jobId + "' data-job-id='" + jobId + "'>Run</button>"
     );
 }
 
@@ -210,18 +219,22 @@ function populate() {
 function deleteJob(jobId) {
     if ($("#warning-box").length) return;
     $("#jobs").prepend(
-        "<div id='warning-box' class='warning-box'><p class='warning'>Are you sure you want to delete this job? This cannot be undone.</p><div class='warning-controls'><button class='button-delete' onclick='confirmDelete(" +
-            jobId +
-            ")'>Delete</button><button onclick='cancelDelete()'>Cancel</button></div></div>"
+        "<div id='warning-box' class='warning-box'><p class='warning'>Are you sure you want to delete this job? This cannot be undone.</p><div class='warning-controls'><button class='button-delete' data-job-id='" + jobId + "' >Delete</button> <button class='cancel-delete'>Cancel</button></div></div>"
     );
+    $('#warning-box .button-delete').click(function () {
+        confirmDelete($(this).data('job-id'));
+    });
+    $('#warning-box .cancel-delete').click(function () {
+        cancelDelete();
+    });
 }
 
 function confirmDelete(jobId) {
     $.ajax({
-        url: "../export/deletejob",
+        url: $('#jobs').data('delete-job-url').replace('-jobId-', jobId),
         type: "POST",
         data: {
-            jobId: jobId,
+            csrf_key: $('#jobs').data('delete-job-csrf_key'),
         },
         error: function (error) {
             throw error;
@@ -241,12 +254,8 @@ function cancelDelete() {
 function validateJobTerms(jobTerms, catalogId, callback, jobId) {
     jobTerms.forEach(function (element, index) {
         $.ajax({
-            url: "../export/validterm",
+            url: $('#jobs').data('valid-term-url').replace('-catalogId-', catalogId).replace('-termString-', element),
             type: "GET",
-            data: {
-                catalogId: catalogId,
-                term: element,
-            },
             error: function (error) {
                 if (jobId) {
                     $("#job" + jobId).addClass("job-error");
@@ -376,10 +385,10 @@ function save() {
                 }, 5000);
             }
             $.ajax({
-                url: "../export/updatejob",
+                url: $('#jobs').data('update-job-url').replace('-jobId-', jobData["jobId"]),
                 type: "POST",
                 data: {
-                    jobId: jobData["jobId"],
+                    csrf_key: $('#jobs').data('update-job-csrf_key'),
                     active: jobData["active"],
                     export_path: jobData["export_path"],
                     config_id: jobData["config_id"],
