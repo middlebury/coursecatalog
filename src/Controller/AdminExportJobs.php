@@ -6,6 +6,7 @@ use App\Service\Osid\Runtime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AdminExportJobs extends AbstractController
@@ -59,21 +60,24 @@ class AdminExportJobs extends AbstractController
      * @since 1/23/18
      */
     #[Route('/admin/exports/jobs/new', name: 'export_new_job_form')]
-    public function newjobAction()
+    public function newjobAction(Request $request)
     {
-        $request = $this->getRequest();
+        $data['page_title'] = 'Create new Catalog Export job';
 
-        $db = Zend_Registry::get('db');
-        $data['configs'] = $db->query('SELECT * FROM archive_configurations')->fetchAll();
+        $db = $this->entityManager->getConnection();
+        $data['configs'] = $db->executeQuery('SELECT * FROM archive_configurations')->fetchAllAssociative();
 
         $data['config'] = null;
-        if ($request->getParam('config')) {
+        $configLabel = $request->get('config');
+        if ($configLabel) {
             foreach ($data['configs'] as $config) {
-                if ($config['label'] === $request->getParam('config')) {
+                if ($config['label'] === $configLabel) {
                     $data['config'] = $config;
                 }
             }
         }
+
+        return $this->render('admin/export/new_job.html.twig', $data);
     }
 
     /**
@@ -103,23 +107,29 @@ class AdminExportJobs extends AbstractController
      *
      * @since 1/23/18
      */
-    #[Route('/admin/exports/jobs/insert', name: 'export_insert_job')]
-    public function insertjobAction()
+    #[Route('/admin/exports/jobs/insert', name: 'export_insert_job', methods: ['POST'])]
+    public function insertjobAction(Request $request)
     {
-        if ($this->getRequest()->isPost()) {
-            $safeConfigId = filter_input(\INPUT_POST, 'configId', \FILTER_SANITIZE_SPECIAL_CHARS);
-            $safeExportPath = filter_input(\INPUT_POST, 'export_path', \FILTER_SANITIZE_SPECIAL_CHARS);
-            $safeTerms = filter_input(\INPUT_POST, 'terms', \FILTER_SANITIZE_SPECIAL_CHARS);
-
-            $db = Zend_Registry::get('db');
-            $query =
-            'INSERT INTO archive_jobs (id, active, export_path, config_id, revision_id, terms)
-      VALUES (NULL, 1, :export_path, :config_id, NULL, :terms)';
-            $stmt = $db->prepare($query);
-            $stmt->execute([':export_path' => $safeExportPath, ':config_id' => $safeConfigId, ':terms' => $safeTerms]);
+        // Verify our CSRF key
+        if (!$this->isCsrfTokenValid('admin-export-insert-job', $request->get('csrf_key'))) {
+            throw new AccessDeniedException('Invalid CSRF key.');
         }
 
-        $this->_helper->redirector('schedule', 'admin');
+        $safeConfigId = filter_var($request->get('configId'), \FILTER_SANITIZE_SPECIAL_CHARS);
+        $safeExportPath = filter_var($request->get('export_path'), \FILTER_SANITIZE_SPECIAL_CHARS);
+        $safeTerms = filter_var($request->get('terms'), \FILTER_SANITIZE_SPECIAL_CHARS);
+
+        $db = $this->entityManager->getConnection();
+        $query =
+        'INSERT INTO archive_jobs (id, active, export_path, config_id, revision_id, terms)
+  VALUES (NULL, 1, :export_path, :config_id, NULL, :terms)';
+        $stmt = $db->prepare($query);
+        $stmt->bindValue('export_path', $safeExportPath);
+        $stmt->bindValue('config_id', $safeConfigId);
+        $stmt->bindValue('terms', $safeTerms);
+        $stmt->executeQuery();
+
+        return $this->redirectToRoute('export_list_jobs');
     }
 
     /**

@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block importmap %}
+    {# do NOT call parent() #}
+    {{ importmap(['app', 'export']) }}
+{% endblock %}
+
+{% set bodyTypography = true %}
+{% block body %}
+<div class='admin-menu'><a href="{{ path('export_list_jobs') }}">&laquo; Back to Archive Export Scheduling</a></div>
+
+<form class='config-select-form' action="{{ path('export_new_job_form') }}" method="get">
+    <select name='config' onchange="this.form.submit();">
+        <option value="select">Select a configuration</option>
+    {% for item in configs %}
+        <option value='{{ item.label }}' {{ config and item.label == config.label ? 'selected="selected"' }}>{{ item.label }}</option>
+    {% endfor %}
+    </select>
+</form>
+
+{% if config %}
+    <form class='config-create-form' action="{{ path('export_insert_job') }}" method='post'>
+        <input id='csrf-key-config-create' type='hidden' name='csrf_key' value='{{ csrf_token('admin-export-insert-job') }}' />
+        <input type='hidden' name='configId' value='{{ config.id }}'>
+        <strong>Export path:</strong> <input name='export_path' value='{{ config.catalog_id[8:] }}/'>
+        <strong>Terms:</strong> <input name='terms' placeholder='E.g. 201790,201820'>
+        <input type='submit'></input>
+    </form>
+{% endif %}
+
+{% endblock %}
