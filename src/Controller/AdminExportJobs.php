@@ -34,10 +34,6 @@ class AdminExportJobs extends AbstractController
 
     /**
      * Echo JSON data of all archive export jobs.
-     *
-     * @return void
-     *
-     * @since 1/23/18
      */
     #[Route('/admin/exports/jobs.json', name: 'export_list_jobs_json')]
     public function listjobsAction()
@@ -86,10 +82,6 @@ class AdminExportJobs extends AbstractController
 
     /**
      * Delete an archive export job.
-     *
-     * @return void
-     *
-     * @since 1/23/18
      */
     #[Route('/admin/exports/jobs/{job}/delete', name: 'export_delete_job', methods: ['POST'])]
     public function deletejobAction(Request $request, string $job)
@@ -114,10 +106,6 @@ class AdminExportJobs extends AbstractController
 
     /**
      * Insert a new archive export job into the DB.
-     *
-     * @return void
-     *
-     * @since 1/23/18
      */
     #[Route('/admin/exports/jobs/insert', name: 'export_insert_job', methods: ['POST'])]
     public function insertjobAction(Request $request)
@@ -146,10 +134,6 @@ class AdminExportJobs extends AbstractController
 
     /**
      * Update an existing archive export job.
-     *
-     * @return void
-     *
-     * @since 1/23/18
      */
     #[Route('/admin/exports/jobs/{job}/update', name: 'export_update_job', methods: ['POST'])]
     public function updatejobAction(Request $request, string $job)
@@ -190,32 +174,8 @@ class AdminExportJobs extends AbstractController
     }
 
     /**
-     * Echo JSON data of all archive configuration revisions.
-     *
-     * @return void
-     *
-     * @since 1/23/18
-     */
-    #[Route('/admin/exports/config-revisions.json', name: 'export_config_revisions_json')]
-    public function listrevisionsAction()
-    {
-        $this->_helper->layout()->disableLayout();
-        $this->_helper->viewRenderer->setNoRender(true);
-
-        $db = Zend_Registry::get('db');
-        $revisions = $db->query('SELECT * FROM archive_configuration_revisions ORDER BY last_saved DESC')->fetchAll();
-
-        echo json_encode($revisions);
-    }
-
-    /**
      * Echo whether a user-entered term ID is valid.
-     *
-     * @return void
-     *
-     * @since 1/23/18
      */
-    // TODO - return instead of echo?
     #[Route('/admin/exports/term-valid/{catalogId}/{termString}', name: 'export_term_valid')]
     public function validtermAction(\osid_id_Id $catalogId, string $termString)
     {
