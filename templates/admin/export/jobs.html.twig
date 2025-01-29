@@ -5,6 +5,7 @@
     {{ importmap(['app', 'export_jobs']) }}
 {% endblock %}
 
+{% set showLeftNav = false %}
 {% set bodyTypography = true %}
 {% block body %}
 <div class='admin-menu'><a href="{{ path('admin_index') }}">&laquo; Back to Administration</a></div>

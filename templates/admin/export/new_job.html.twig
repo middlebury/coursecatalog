@@ -5,6 +5,7 @@
     {{ importmap(['app', 'export']) }}
 {% endblock %}
 
+{% set showLeftNav = false %}
 {% set bodyTypography = true %}
 {% block body %}
 <div class='admin-menu'><a href="{{ path('export_list_jobs') }}">&laquo; Back to Archive Export Scheduling</a></div>

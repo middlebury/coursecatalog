@@ -257,7 +257,7 @@
             </div>
             <div class="container">
               <div class="row">
-                {% set showLeftNav = not (app.request.requestUri matches '#^/admin#') %}
+                {% set showLeftNav = showLeftNav is defined ? showLeftNav : true %}
                 {% if showLeftNav %}
                 <div class="col-md-10 offset-md-1 col-lg-3 offset-lg-0 mb-4">
                   {% set secondaryMenu = knp_menu_get('secondary', [], {'selectedCatalogId': selectedCatalogId }) %}
