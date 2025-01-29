@@ -1,0 +1,29 @@
+.catalog_header .generated_date {
+    font-style: italic;
+    float: left;
+}
+.catalog_header .print_button {
+    float: right;
+}
+.catalog_header .toc {
+    clear: both;
+}
+.toc-list {
+    float: left;
+}
+
+@media screen {
+    header.catalog_header h1 {
+        display: none;
+    }
+}
+
+@media print {
+    .skiplink, .navigation, .search, .wordmark, .banner, .left, .breadcrumb, #breadcrumb, .footer, .print_button, .app-header__title, .jump_link, .page-header__title {
+        display: none;
+    }
+
+    a.alternate[href]::after, .toc a[href]::after {
+        display: none;
+    }
+}

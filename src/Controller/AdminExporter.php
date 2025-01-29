@@ -1,12 +1,15 @@
 <?php
-/**
+
+namespace App\Controller;
+
+/*
  * @since 8/23/17
  *
  * @copyright Copyright &copy; 2017, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
-include_once 'fsmparserclass.inc.php';
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * A controller for working with courses.
@@ -16,7 +19,7 @@ include_once 'fsmparserclass.inc.php';
  * @copyright Copyright &copy; 2017, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class ArchiveController extends AbstractCatalogController
+class AdminExporter extends AbstractController
 {
     /**
      * Initialize object.
@@ -25,150 +28,21 @@ class ArchiveController extends AbstractCatalogController
      *
      * @return void
      */
-    public function init()
-    {
-        $this->alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
-        $this->alternateInTermsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates-in-terms');
-        $this->identifiersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
-
-        parent::init();
-        $this->_helper->layout()->setLayout('midd_archive');
-
-        // Store an HTTP client configuration for later use.
-        $this->httpClientConfig = [
-            'maxredirects' => 10,
-            'timeout' => 30,
-        ];
-    }
-
-    /**
-     * Print out a list of all courses.
-     *
-     * @return void
-     *
-     * @since 4/21/09
-     */
-    public function indexAction()
-    {
-        $config = Zend_Registry::getInstance()->config;
-        $request = $this->getRequest();
-        if (empty($config->catalog->archive_root)) {
-            throw new Exception('Invalid configuration: catalog.archive_root must be defined.');
-        }
-        $archive_root = $config->catalog->archive_root;
-        // Relative paths should be relative to our installation directory.
-        if (!preg_match('#^/#', $archive_root)) {
-            $archive_root = BASE_PATH.'/'.$archive_root;
-        }
-        $archive_root = realpath($archive_root);
-        if (!$archive_root) {
-            throw new Exception('Invalid configuration: catalog.archive_root is invalid.');
-        }
-        $target = $archive_root.'/'.$request->getParam('path');
-        // Verify that our target file is really in our root and not trying to
-        // access other parts of our file-system or remote URLs.
-        $target = realpath($target);
-        if (!$target) {
-            throw new InvalidArgumentException('The target path is invalid.');
-        }
-        if (!str_starts_with($target, $archive_root)) {
-            throw new InvalidArgumentException('The target path must be located within catalog.archive_root.');
-        }
-
-        $this->view->children = [];
-        $url = rtrim('archive/'.$request->getParam('path'), '/');
-        foreach (scandir($target) as $file) {
-            if (!preg_match('/^\./', $file)) {
-                if (!empty($config->catalog->archive_folder_aliases->$file)) {
-                    $label = $config->catalog->archive_folder_aliases->$file;
-                } else {
-                    $label = $file;
-                }
-                if (is_dir($target.'/'.$file)) {
-                    $label .= '/';
-                }
-                $this->view->children[$this->view->baseUrl($url.'/'.$file)] = $label;
-            }
-        }
-
-        $this->view->breadcrumb = [];
-        $url = 'archive';
-        $this->view->breadcrumb[$this->view->baseUrl($url)] = 'Catalog Archives';
-        foreach (explode('/', $request->getParam('path')) as $dir) {
-            if (!empty($dir)) {
-                $url .= '/'.$dir;
-                if (!empty($config->catalog->archive_folder_aliases->$dir)) {
-                    $label = $config->catalog->archive_folder_aliases->$dir;
-                } else {
-                    $label = $dir;
-                }
-                $this->view->breadcrumb[$this->view->baseUrl($url)] = $label;
-            }
-        }
-    }
-
-    /**
-     * View a catalog details.
-     *
-     * @return void
-     *
-     * @since 4/21/09
-     */
-    public function viewAction()
-    {
-        $tmp = error_reporting();
-        error_reporting(0);
-        $config = Zend_Registry::getInstance()->config;
-        $request = $this->getRequest();
-        if (empty($config->catalog->archive_root)) {
-            throw new Exception('Invalid configuration: catalog.archive_root must be defined.');
-        }
-        $archive_root = $config->catalog->archive_root;
-        // Relative paths should be relative to our installation directory.
-        if (!preg_match('#^/#', $archive_root)) {
-            $archive_root = BASE_PATH.'/'.$archive_root;
-        }
-        $archive_root = realpath($archive_root);
-        if (!$archive_root) {
-            throw new Exception('Invalid configuration: catalog.archive_root is invalid.');
-        }
-        $target = $archive_root.'/'.$request->getParam('path').'/'.$request->getParam('file');
-        // Verify that our target file is really in our root and not trying to
-        // access other parts of our file-system or remote URLs.
-        $target = realpath($target);
-        if (!$target) {
-            throw new InvalidArgumentException('The target path is invalid.');
-        }
-        if (!str_starts_with($target, $archive_root)) {
-            throw new InvalidArgumentException('The target path must be located within catalog.archive_root.');
-        }
-
-        $doc = new DOMDocument();
-        libxml_use_internal_errors(true); // Don't print errors related to HTML5 enties.
-        $doc->loadHTML(file_get_contents($target));
-        libxml_use_internal_errors(false);
-        $xpath = new DOMXPath($doc);
-        $this->view->headTitle($xpath->query('/html/head/title')->item(0)->nodeValue);
-        foreach ($xpath->query('/html/body')->item(0)->childNodes as $node) {
-            $this->view->body .= $doc->saveHTML($node);
-        }
-
-        $this->view->breadcrumb = [];
-        $url = 'archive';
-        $this->view->breadcrumb[$this->view->baseUrl($url)] = 'Catalog Archives';
-        foreach (explode('/', $request->getParam('path')) as $dir) {
-            $url .= '/'.$dir;
-            if (!empty($config->catalog->archive_folder_aliases->$dir)) {
-                $label = $config->catalog->archive_folder_aliases->$dir;
-            } else {
-                $label = $dir;
-            }
-            $this->view->breadcrumb[$this->view->baseUrl($url)] = $label;
-        }
-        $url .= '/'.$request->getParam('file');
-        $this->view->breadcrumb[$this->view->baseUrl($url)] = pathinfo($request->getParam('file'), \PATHINFO_FILENAME);
-        error_reporting($tmp);
-    }
+    // public function init()
+    // {
+    //     $this->alternateType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
+    //     $this->alternateInTermsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates-in-terms');
+    //     $this->identifiersType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
+    //
+    //     parent::init();
+    //     $this->_helper->layout()->setLayout('midd_archive');
+    //
+    //     // Store an HTTP client configuration for later use.
+    //     $this->httpClientConfig = [
+    //         'maxredirects' => 10,
+    //         'timeout' => 30,
+    //     ];
+    // }
 
     /**
      * Export a single archive export job.
@@ -655,7 +529,7 @@ class ArchiveController extends AbstractCatalogController
         $client->setUri($feedUrl);
         $response = $client->request();
         if (200 != $response->getStatus()) {
-            throw new RequirementRequestFailedException('Received a non-success status for requirements RSS feed ('.$response->getStatus().') at '.$feedUrl, $response->getStatus());
+            throw new \RequirementRequestFailedException('Received a non-success status for requirements RSS feed ('.$response->getStatus().') at '.$feedUrl, $response->getStatus());
         }
         if (!preg_match('#^(text|application)/(xml|rss\+xml)($|;)#', $response->getHeader('Content-Type'))) {
             throw new RequirementNotXmlException('Received a non-xml Content-Type for requirements RSS ('.$response->getHeader('Content-Type').') at  '.$feedUrl);
@@ -705,7 +579,7 @@ class ArchiveController extends AbstractCatalogController
         $client->setUri($url);
         $response = $client->request();
         if (200 != $response->getStatus()) {
-            throw new RequirementRequestFailedException('Received a non-success status for requirements page ('.$response->getStatus().') at  '.$url, $response->getStatus());
+            throw new \RequirementRequestFailedException('Received a non-success status for requirements page ('.$response->getStatus().') at  '.$url, $response->getStatus());
         }
         if (!preg_match('#^text/html($|;)#', $response->getHeader('Content-Type'))) {
             throw new RequirementNotXmlException('Received a non-HTML Content-Type for requirements page ('.$response->getHeader('Content-Type').') at  '.$url);
@@ -1303,12 +1177,4 @@ class ArchiveController extends AbstractCatalogController
 
         return $client;
     }
-}
-
-class RequirementRequestFailedException extends Exception
-{
-}
-
-class RequirementNotXmlException extends Exception
-{
 }

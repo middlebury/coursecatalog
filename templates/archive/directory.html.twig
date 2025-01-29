@@ -1,0 +1,17 @@
+{% extends 'archive/archive_base.html.twig' %}
+
+{% block body %}
+
+{% if children is empty %}
+    <p class='message error'>This directory is empty.</p>
+{% else %}
+    <ul class='directory_children'>
+    {% for item in children %}
+        <li>
+            <a href={{ path('view_archive', {path: item.path}) }}>{{ item.basename }}</a>
+        </li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+{% endblock %}

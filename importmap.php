@@ -16,6 +16,10 @@ return [
         'path' => 'app.js',
         'entrypoint' => true,
     ],
+    'archive' => [
+        'path' => 'archive.js',
+        'entrypoint' => true,
+    ],
     'bookmarks' => [
         'path' => 'bookmarks.js',
     ],

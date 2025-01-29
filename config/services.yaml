@@ -120,3 +120,6 @@ services:
             $dsn: '%env(SYNC_SOURCE_PDOMYSQL_DSN)%'
             $username: '%env(SYNC_SOURCE_PDOMYSQL_USERNAME)%'
             $password: '%env(SYNC_SOURCE_PDOMYSQL_PASSWORD)%'
+    App\Service\Archive\ArchiveStorage:
+        arguments:
+            $basePath: '%env(ARCHIVE_BASE_PATH)%'
