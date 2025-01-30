@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
-use App\Service\Archive\ArchiveDirectoryInterface;
-use App\Service\Archive\ArchiveFileInterface;
-use App\Service\Archive\ArchiveStorage;
+use App\Archive\Storage\ArchiveDirectoryInterface;
+use App\Archive\Storage\ArchiveFileInterface;
+use App\Archive\Storage\ArchiveStorage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Requirement\Requirement;

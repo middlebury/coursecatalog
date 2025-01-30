@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Archive;
+namespace App\Archive\Storage;
 
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;

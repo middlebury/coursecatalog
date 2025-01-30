@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Archive;
+namespace App\Archive\Storage;
 
 interface ArchiveFileInterface extends ArchiveItemIterface
 {
