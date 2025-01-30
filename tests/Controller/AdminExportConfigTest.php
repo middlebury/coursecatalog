@@ -148,11 +148,11 @@ class AdminExportConfigTest extends WebTestCase
         }
 
         // Try loading the compare revisions page.
-        $crawler = $client->request('GET', '/admin/exports/revisiondiff/'.$revisionIds[0].'/'.$revisionIds[1]);
+        $crawler = $client->request('GET', '/admin/exports/'.$exportId.'/revisiondiff/'.$revisionIds[0].'/'.$revisionIds[1]);
         $this->assertResponseIsSuccessful();
 
         // Try loading the JSON view page.
-        $crawler = $client->request('GET', '/admin/exports/revision/'.$revisionIds[0].'/json');
+        $crawler = $client->request('GET', '/admin/exports/'.$exportId.'/revision/'.$revisionIds[0].'/json');
         $this->assertResponseIsSuccessful();
 
         // Try reverting to the first revision.
