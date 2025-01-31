@@ -23,7 +23,7 @@
     <form class='config-create-form' action="{{ path('export_insert_job') }}" method='post'>
         <input id='csrf-key-config-create' type='hidden' name='csrf_key' value='{{ csrf_token('admin-export-insert-job') }}' />
         <input type='hidden' name='configId' value='{{ config.id }}'>
-        <strong>Export path:</strong> <input name='export_path' value='{{ config.catalog_id[8:] }}/'>
+        <strong>Export path:</strong> <input name='export_path' value='{{ osidIdToString(config.catalogid)[8:] }}/'>
         <strong>Terms:</strong> <input name='terms' placeholder='E.g. 201790,201820'>
         <input type='submit'></input>
     </form>

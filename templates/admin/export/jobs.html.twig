@@ -18,7 +18,7 @@
 
 <div class='error-message error-div'>Error: </div>
 
-<div id='jobs' class='job-schedule' data-list-jobs-url="{{ path('export_list_jobs_json') }}" data-delete-job-url="{{ path('export_delete_job', {job: '-jobId-'}) }}" data-delete-job-csrf_key="{{ csrf_token('admin-export-delete-job') }}" data-update-job-url="{{ path('export_update_job', {job: '-jobId-'}) }}" data-update-job-csrf_key="{{ csrf_token('admin-export-update-job') }}" data-valid-term-url="{{ path('export_term_valid', {catalogId: '-catalogId-', termString: '-termString-'}) }}">
+<div id='jobs' class='job-schedule' data-list-jobs-url="{{ path('export_list_jobs_json') }}" data-delete-job-url="{{ path('export_delete_job', {job: '-jobId-'}) }}" data-delete-job-csrf_key="{{ csrf_token('admin-export-delete-job') }}" data-list-config-revisions-url="{{ path('export_update_job', {job: '-jobId-'}) }}" data-update-job-url="{{ path('export_update_job', {job: '-jobId-'}) }}" data-update-job-csrf_key="{{ csrf_token('admin-export-update-job') }}" data-valid-term-url="{{ path('export_term_valid', {catalogId: '-catalogId-', termString: '-termString-'}) }}">
     <table id='job-table' class='job-table'>
         <tr>
             <th>Active</th>

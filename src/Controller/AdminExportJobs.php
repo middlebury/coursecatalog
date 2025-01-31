@@ -2,9 +2,10 @@
 
 namespace App\Controller;
 
+use App\Archive\ExportConfiguration\ExportConfigurationStorage;
+use App\Archive\ExportJob\ExportJobStorage;
 use App\Service\Osid\IdMap;
 use App\Service\Osid\Runtime;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +16,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class AdminExportJobs extends AbstractController
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
+        private ExportConfigurationStorage $exportConfigurationStorage,
+        private ExportJobStorage $exportJobStorage,
         private Runtime $osidRuntime,
         private IdMap $osidIdMap,
     ) {
@@ -38,14 +40,37 @@ class AdminExportJobs extends AbstractController
     #[Route('/admin/exports/jobs.json', name: 'export_list_jobs_json')]
     public function listjobsAction()
     {
-        $db = $this->entityManager->getConnection();
-        $configs = $db->executeQuery('SELECT * FROM archive_configurations')->fetchAllAssociative();
-        $revisions = $db->executeQuery('SELECT `id`, `note`, `last_saved`, `arch_conf_id` FROM archive_configuration_revisions ORDER BY last_saved DESC')->fetchAllAssociative();
-        $jobs = $db->executeQuery('SELECT * FROM archive_jobs ORDER BY terms DESC')->fetchAllAssociative();
+        $configs = [];
+        foreach ($this->exportConfigurationStorage->getAllConfigurations() as $config) {
+            $configData = [
+                'id' => $config->getId(),
+                'label' => $config->getLabel(),
+                'catalog_id' => $this->osidIdMap->toString($config->getCatalogId()),
+                'revisions' => [],
+            ];
+            foreach ($config->getAllRevisions() as $revision) {
+                $configData['revisions'][] = [
+                    'id' => $revision->getId(),
+                    'note' => $revision->getNote(),
+                    'last_saved' => $revision->getTimestamp()->format('Y-m-j H:i:s'),
+                ];
+            }
+            $configs[] = $configData;
+        }
 
+        $jobs = [];
+        foreach ($this->exportJobStorage->getAllJobs() as $job) {
+            $jobs[] = [
+                'id' => $job->getId(),
+                'active' => $job->getActive(),
+                'export_path' => $job->getExportPath(),
+                'config_id' => $job->getConfigurationId(),
+                'revision_id' => $job->getRevisionId(),
+                'terms' => $job->getTerms(),
+            ];
+        }
         $data = [
             'configs' => $configs,
-            'revisions' => $revisions,
             'jobs' => $jobs,
         ];
 
@@ -64,14 +89,13 @@ class AdminExportJobs extends AbstractController
     {
         $data['page_title'] = 'Create new Catalog Export job';
 
-        $db = $this->entityManager->getConnection();
-        $data['configs'] = $db->executeQuery('SELECT * FROM archive_configurations')->fetchAllAssociative();
+        $data['configs'] = $this->exportConfigurationStorage->getAllConfigurations();
 
         $data['config'] = null;
         $configLabel = $request->get('config');
         if ($configLabel) {
             foreach ($data['configs'] as $config) {
-                if ($config['label'] === $configLabel) {
+                if ($config->getLabel() === $configLabel) {
                     $data['config'] = $config;
                 }
             }
@@ -84,19 +108,14 @@ class AdminExportJobs extends AbstractController
      * Delete an archive export job.
      */
     #[Route('/admin/exports/jobs/{job}/delete', name: 'export_delete_job', methods: ['POST'])]
-    public function deletejobAction(Request $request, string $job)
+    public function deletejobAction(Request $request, int $job)
     {
         // Verify our CSRF key
         if (!$this->isCsrfTokenValid('admin-export-delete-job', $request->get('csrf_key'))) {
             throw new AccessDeniedException('Invalid CSRF key.');
         }
 
-        // Delete revisions that depend on this config.
-        $db = $this->entityManager->getConnection();
-        $query = 'DELETE FROM archive_jobs WHERE id = ?';
-        $stmt = $db->prepare($query);
-        $stmt->bindValue(1, $job);
-        $stmt->executeQuery();
+        $this->exportJobStorage->getJob($job)->delete();
 
         $response = new Response('Success');
         $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
@@ -115,19 +134,11 @@ class AdminExportJobs extends AbstractController
             throw new AccessDeniedException('Invalid CSRF key.');
         }
 
-        $safeConfigId = filter_var($request->get('configId'), \FILTER_SANITIZE_SPECIAL_CHARS);
-        $safeExportPath = filter_var($request->get('export_path'), \FILTER_SANITIZE_SPECIAL_CHARS);
-        $safeTerms = filter_var($request->get('terms'), \FILTER_SANITIZE_SPECIAL_CHARS);
+        $configId = (int) $request->get('configId');
+        $exportPath = filter_var($request->get('export_path'), \FILTER_SANITIZE_SPECIAL_CHARS);
+        $terms = filter_var($request->get('terms'), \FILTER_SANITIZE_SPECIAL_CHARS);
 
-        $db = $this->entityManager->getConnection();
-        $query =
-        'INSERT INTO archive_jobs (id, active, export_path, config_id, revision_id, terms)
-  VALUES (NULL, 1, :export_path, :config_id, NULL, :terms)';
-        $stmt = $db->prepare($query);
-        $stmt->bindValue('export_path', $safeExportPath);
-        $stmt->bindValue('config_id', $safeConfigId);
-        $stmt->bindValue('terms', $safeTerms);
-        $stmt->executeQuery();
+        $this->exportJobStorage->createJob($exportPath, $configId, null, $terms);
 
         return $this->redirectToRoute('export_list_jobs');
     }
@@ -136,36 +147,26 @@ class AdminExportJobs extends AbstractController
      * Update an existing archive export job.
      */
     #[Route('/admin/exports/jobs/{job}/update', name: 'export_update_job', methods: ['POST'])]
-    public function updatejobAction(Request $request, string $job)
+    public function updatejobAction(Request $request, int $job)
     {
         // Verify our CSRF key
         if (!$this->isCsrfTokenValid('admin-export-update-job', $request->get('csrf_key'))) {
             throw new AccessDeniedException('Invalid CSRF key.');
         }
 
-        $safeId = filter_var($job, \FILTER_SANITIZE_SPECIAL_CHARS);
-        $safeActive = filter_var($request->get('active'), \FILTER_SANITIZE_SPECIAL_CHARS);
-        $safeExportPath = filter_var($request->get('export_path'), \FILTER_SANITIZE_SPECIAL_CHARS);
-        $safeConfigId = filter_var($request->get('config_id'), \FILTER_SANITIZE_SPECIAL_CHARS);
-        $safeRevisionId = filter_var($request->get('revision_id'), \FILTER_SANITIZE_SPECIAL_CHARS);
-        if ('latest' === $safeRevisionId) {
-            $safeRevisionId = null;
-        }
-        $safeTerms = filter_var($request->get('terms'), \FILTER_SANITIZE_SPECIAL_CHARS);
+        $job = $this->exportJobStorage->getJob($job);
 
-        $db = $this->entityManager->getConnection();
-        $query =
-        'UPDATE archive_jobs
-  SET active = :active, export_path = :export_path, config_id = :config_id, revision_id = :revision_id, terms = :terms
-  WHERE id = :id';
-        $stmt = $db->prepare($query);
-        $stmt->bindValue('id', $safeId);
-        $stmt->bindValue('active', $safeActive);
-        $stmt->bindValue('export_path', $safeExportPath);
-        $stmt->bindValue('config_id', $safeConfigId);
-        $stmt->bindValue('terms', $safeTerms);
-        $stmt->bindValue('revision_id', $safeRevisionId);
-        $stmt->executeQuery();
+        $job->setActive((bool) $request->get('active'));
+        $job->setExportPath(filter_var($request->get('export_path'), \FILTER_SANITIZE_SPECIAL_CHARS));
+        $job->setConfigurationId($request->get('config_id'));
+        if ('latest' == $request->get('revision_id')) {
+            $job->setRevisionId(null);
+        } else {
+            $job->setRevisionId($request->get('revision_id'));
+        }
+        $job->setTerms(filter_var($request->get('terms'), \FILTER_SANITIZE_SPECIAL_CHARS));
+
+        $job->save();
 
         $response = new Response('Success');
         $response->headers->set('Content-Type', 'text/plain; charset=utf-8');

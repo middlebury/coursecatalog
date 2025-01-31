@@ -27,6 +27,9 @@ function resetEventListeners() {
     $(".run-job-button").click(function () {
         runJob($(this).data('job-id'));
     });
+    $(".config-dropdown").change(function () {
+        repopulateRevisions($(this).data('job-id'));
+    });
 }
 
 function repopulateRevisions(jobId) {
@@ -37,20 +40,20 @@ function repopulateRevisions(jobId) {
         .find(".config-dropdown")
         .val();
     $.ajax({
-        url: "../export/listrevisions",
+        url: $("#jobs").data("list-jobs-url"),
         type: "GET",
-        success: function (revisions) {
-            revisions = $.parseJSON(revisions);
-            var validRevisions = revisions.filter(function (revision) {
-                return revision["arch_conf_id"] === newConfig;
-            });
-            var revisionsDropDownHTML = selectRevision(
-                null,
-                defineRevisionsDropDown(validRevisions)
-            );
-            $("#job" + jobId)
-                .find(".job-revision-dropdown")
-                .append(revisionsDropDownHTML);
+        success: function (data) {
+            for (var config of data['configs']) {
+                if (config.id == newConfig) {
+                    var revisionsDropDownHTML = selectRevision(
+                        null,
+                        defineRevisionsDropDown(config['revisions'])
+                    );
+                    $("#job" + jobId)
+                        .find(".job-revision-dropdown")
+                        .append(revisionsDropDownHTML);
+                }
+            }
         },
     });
 }
@@ -58,10 +61,8 @@ function repopulateRevisions(jobId) {
 // ------ INIT ------- //
 
 function defineConfigDropDown(jobId, configs) {
-    var configDropDownHTML =
-        "<select onchange='repopulateRevisions(" +
-        jobId +
-        ")' class='config-dropdown' value='unselected'><option value='unselected' selected>Please select a config</option>";
+    var configDropDownHTML = "<select data-job-id='" + jobId + "' class='config-dropdown' value='unselected'>";
+    configDropDownHTML += "<option value='unselected' selected>Please select a config</option>";
     configs.forEach(function (element) {
         configDropDownHTML +=
             "<option data-catalog='" +
@@ -151,7 +152,7 @@ function buildList(data, callback) {
             "<td class='job-active'><input type='hidden' value='" +
             element["id"] +
             "'></input><input type='checkbox'";
-        if (element["active"] === "1" || element["active"] === 1)
+        if (element["active"])
             jobsHTML += " checked";
         jobsHTML += "></input></td>";
 
@@ -170,13 +171,18 @@ function buildList(data, callback) {
             "<td class='job-config-dropdown'>" + configDropDownHTML + "</td>";
 
         // Revisions
-        var validRevisions = data["revisions"].filter(function (revision) {
-            return revision["arch_conf_id"] === element["config_id"];
-        });
-        var revisionsDropDownHTML = selectRevision(
-            element["revision_id"],
-            defineRevisionsDropDown(validRevisions)
-        );
+        var revisionsDropDownHTML = '';
+        if (element["config_id"]) {
+            for (var config of data['configs']) {
+                if (config["id"] == element["config_id"]) {
+                    var revisionsDropDownHTML = selectRevision(
+                        element["revision_id"],
+                        defineRevisionsDropDown(config["revisions"])
+                    );
+                    break;
+                }
+            }
+        }
         jobsHTML +=
             "<td class='job-revision-dropdown'>" +
             revisionsDropDownHTML +
