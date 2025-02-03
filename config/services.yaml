@@ -4,7 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    app.osid.runtime.config_path: '../configuration.plist'
+    app.osid.runtime.config_path: 'configuration.plist'
     app.osid.runtime.courseimpl: 'banner_course_CourseManager'
     app.osid.id.authority_to_shorten: 'middlebury.edu'
     app.osid.reference_date: 'now'
@@ -16,7 +16,7 @@ parameters:
 
 when@test:
     parameters:
-        app.osid.runtime.config_path: '../application/test/banner/configuration.plist'
+        app.osid.runtime.config_path: 'application/test/banner/configuration.plist'
         app.osid.reference_date: '2009-08-15'
 
 services:

@@ -2,6 +2,9 @@
 
 namespace App\Service\Osid;
 
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Filesystem\Path;
+
 /**
  * A helper to provide access to the CourseManager OSID and OSID configuration.
  *
@@ -15,7 +18,6 @@ class Runtime
     private $runtimeManager;
     private $courseManager;
     private $configPath;
-    private $courseImpl;
 
     /**
      * Create a new OSID service instance.
@@ -27,10 +29,11 @@ class Runtime
      */
     public function __construct(
         string $configPath,
-        string $courseImpl = 'banner_course_CourseManager',
+        private string $courseImpl = 'banner_course_CourseManager',
+        #[Autowire('%kernel.project_dir%')]
+        private string $projectDir,
     ) {
         $this->setConfigPath($configPath);
-        $this->courseImpl = $courseImpl;
     }
 
     /**
@@ -43,7 +46,7 @@ class Runtime
     public function getConfigPath()
     {
         if (!isset($this->configPath)) {
-            $this->configPath = BASE_PATH.'/configuration.plist';
+            $this->configPath = $this->projectDir.'/configuration.plist';
         }
 
         return $this->configPath;
@@ -60,6 +63,9 @@ class Runtime
      */
     public function setConfigPath($path)
     {
+        if (!Path::isAbsolute($path)) {
+            $path = Path::makeAbsolute($path, $this->projectDir);
+        }
         if (isset($this->configPath) && $this->configPath != $path) {
             throw new \osid_IllegalStateException('the config path has already been set');
         }
