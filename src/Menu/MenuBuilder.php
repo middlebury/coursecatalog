@@ -29,8 +29,12 @@ class MenuBuilder
         // catalog as active when looking at catalog-specific pages that aren't
         // in a menu.
         $currentRequest = $this->requestStack->getCurrentRequest();
-        $currentRoute = $currentRequest->get('_route');
-        $currentRouteIsInMenu = in_array($currentRoute, ['view_catalog', 'search_offerings', 'schedules']);
+        if ($currentRequest) {
+            $currentRoute = $currentRequest->get('_route');
+            $currentRouteIsInMenu = in_array($currentRoute, ['view_catalog', 'search_offerings', 'schedules']);
+        } else {
+            $currentRouteIsInMenu = false;
+        }
         if (!empty($options['selectedCatalogId']) && $options['selectedCatalogId'] instanceof \osid_id_Id) {
             $selectedCatalogId = $options['selectedCatalogId'];
         } else {
