@@ -29,9 +29,9 @@ class Runtime
      */
     public function __construct(
         string $configPath,
-        private string $courseImpl = 'banner_course_CourseManager',
         #[Autowire('%kernel.project_dir%')]
         private string $projectDir,
+        private string $courseImpl = 'banner_course_CourseManager',
     ) {
         $this->setConfigPath($configPath);
     }
