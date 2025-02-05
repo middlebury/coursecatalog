@@ -2,8 +2,9 @@
 
 namespace App\Command;
 
+use App\Archive\Export\ArchiveFileManager;
+use App\Archive\Export\ArchiveHtmlGenerator;
 use App\Archive\Export\EventListener\ProgressBarListener;
-use App\Archive\Export\Exporter;
 use App\Archive\ExportJob\ExportJobStorage;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -21,7 +22,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ExportPrintCatalogCommand extends Command
 {
     public function __construct(
-        private Exporter $exporter,
+        private ArchiveHtmlGenerator $archiveHtmlGenerator,
+        private ArchiveFileManager $archiveFileManager,
         private ExportJobStorage $exportJobStorage,
         private ProgressBarListener $consoleEventListener,
     ) {
@@ -52,8 +54,10 @@ class ExportPrintCatalogCommand extends Command
         $progressBar->setFormat('custom');
         $this->consoleEventListener->setProgressBar($progressBar);
 
-        $this->exporter->generateForJob(
-            $this->exportJobStorage->getJob($input->getArgument('job-id'))
+        $job = $this->exportJobStorage->getJob($input->getArgument('job-id'));
+        $this->archiveFileManager->updateArchive(
+            $job,
+            $this->archiveHtmlGenerator->generateHtmlForJob($job),
         );
         $io->success('The catalog archive has been exported.');
 
