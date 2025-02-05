@@ -10,6 +10,13 @@ class AdminAntirequisitesTest extends WebTestCase
 {
     use AppDatabaseTestTrait;
 
+    protected function setUp(): void
+    {
+        // Make sure that when we call static::createClient() that we don't
+        // get a logic exception from other tests doing something.
+        self::ensureKernelShutdown();
+    }
+
     private function setUpUser(): SamlUser
     {
         $user = new SamlUser('WEBID99999990');
