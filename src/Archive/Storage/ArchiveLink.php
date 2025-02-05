@@ -9,6 +9,6 @@ class ArchiveLink extends ArchiveFile implements ArchiveLinkInterface
      */
     public function getTarget(): string
     {
-        return readlink($this->path());
+        return readlink($this->realPath());
     }
 }

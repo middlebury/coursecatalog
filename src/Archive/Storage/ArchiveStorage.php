@@ -40,15 +40,11 @@ class ArchiveStorage
      */
     public function get(string $path = ''): ArchiveItemIterface
     {
+        $this->checkPathInBase($path);
+
         // Trim off any trailing slash.
         $path = rtrim($path, '/');
 
-        if (!Path::isBasePath($this->basePath, $this->basePath.'/'.$path)) {
-            throw new \InvalidArgumentException('Requested path is not relative to our archive directory.');
-        }
-        if (!$this->filesystem->exists($this->basePath.'/'.$path)) {
-            throw new \InvalidArgumentException('Unknown path: '.$path);
-        }
         if (is_dir($this->basePath.'/'.$path)) {
             return new ArchiveDirectory($this->basePath, $path);
         } elseif (is_link($this->basePath.'/'.$path)) {
@@ -71,6 +67,8 @@ class ArchiveStorage
      */
     public function writeFile(string $path, string $content = '')
     {
+        $this->checkPathInBase($path);
+
         $dir = dirname($path);
         if (!$this->filesystem->exists($this->basePath.'/'.$dir)) {
             $this->filesystem->mkdir($this->basePath.'/'.$dir);
@@ -87,10 +85,10 @@ class ArchiveStorage
      */
     public function exists($path)
     {
-        clearstatcache(true);
-        if (!Path::isBasePath($this->basePath, $this->basePath.'/'.$path)) {
-            throw new \InvalidArgumentException('Requested path is not relative to our archive directory.');
-        }
+        $this->checkPathInBase($path);
+
+        // Clear the filesystem cache for this path before checking that it exists.
+        clearstatcache(true, $this->basePath.'/'.$path);
 
         return file_exists($this->basePath.'/'.$path);
     }
@@ -100,6 +98,9 @@ class ArchiveStorage
      */
     public function rename(string $oldPath, string $newPath, bool $overwrite = false)
     {
+        $this->checkPathInBase($oldPath);
+        $this->checkPathInBase($newPath);
+
         if (!$this->exists($oldPath)) {
             throw new \InvalidArgumentException('$oldPath does not exist.');
         }
@@ -119,9 +120,8 @@ class ArchiveStorage
      */
     public function delete($path)
     {
-        if (!Path::isBasePath($this->basePath, $this->basePath.'/'.$path)) {
-            throw new \InvalidArgumentException('Requested path is not relative to our archive directory.');
-        }
+        $this->checkPathInBase($path);
+
         if ($this->exists($path)) {
             $this->filesystem->remove($this->basePath.'/'.$path);
         }
@@ -135,27 +135,53 @@ class ArchiveStorage
      * @param string $targetPath
      *                           The target path relative to the link path
      */
-    public function makeLink(string $path, string $targetPath)
+    public function makeLink(string $path, string $targetPath): ArchiveLinkInterface
     {
+        $this->checkPathInBase($path);
+
         $this->delete($path);
         // Create the new link as a relative symbolic link for filesystem
-        // portability.
+        // portability if the base directory is changed.
         $cwd = getcwd();
+        // Change to the working directory where the link object will live.
         chdir(realpath(dirname($this->basePath.'/'.$path)));
-        clearstatcache(true);
-        $command = 'ln -s '.escapeshellarg($targetPath).' '.escapeshellarg($this->basePath.'/'.$path);
-        echo "$command \n";
-        if (!exec($command)) {
+
+        // Verify that our target exists and isn't outside of our basePath.
+        if ($this->filesystem->isAbsolutePath($targetPath)) {
+            throw new \InvalidArgumentException('Target path cannot be absolute, it must be relative.');
+        }
+        if (!Path::isBasePath($this->basePath, getcwd().'/'.$targetPath)) {
+            chdir($cwd);
+            throw new \InvalidArgumentException('Target path is not relative to our archive directory.');
+        }
+        if (!file_exists($targetPath)) {
+            chdir($cwd);
+            throw new \InvalidArgumentException("target file doesn't exist at $targetPath");
+        }
+        // Make the relative symbolic link.
+        if (symlink($targetPath, basename($path))) {
             chdir($cwd);
 
             return $this->get($path);
-        // }
-        // if (@symlink($targetPath, basename($path))) {
-        // chdir($cwd);
-        //     return $this->get($path);
         } else {
             chdir($cwd);
             throw new \Exception("Failed to create symlink at $path pointing at $targetPath)");
+        }
+    }
+
+    /**
+     * Check that the path passed is relative and a child of our base directory.
+     *
+     * Throws an InvalidArgumentException if the path is not a proper sub-path
+     * of our base directory.
+     */
+    protected function checkPathInBase(string $path): void
+    {
+        if ($this->filesystem->isAbsolutePath($path)) {
+            throw new \InvalidArgumentException('Path cannot be absolute, it must be relative.');
+        }
+        if (!Path::isBasePath($this->basePath, $this->basePath.'/'.$path)) {
+            throw new \InvalidArgumentException('Requested path is not relative to our archive directory.');
         }
     }
 }
