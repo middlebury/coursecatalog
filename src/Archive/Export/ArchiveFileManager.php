@@ -4,16 +4,27 @@ namespace App\Archive\Export;
 
 use App\Archive\Export\Event\ExportProgressEvent;
 use App\Archive\ExportJob\ExportJob;
+use App\Archive\Storage\ArchiveFileInterface;
 use App\Archive\Storage\ArchiveStorage;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Generates an Archive of the catalog.
  */
 class ArchiveFileManager
 {
+    /**
+     * The date used in filenames for writing the latest export.
+     *
+     * @var DateTime
+     */
+    private \DateTime $date;
+
     public function __construct(
         private ArchiveStorage $archiveStorage,
+        private EventDispatcherInterface $eventDispatcher,
     ) {
+        $this->date = new \DateTime();
     }
 
     /**
@@ -21,7 +32,7 @@ class ArchiveFileManager
      */
     public function updateArchive(ExportJob $job, string $html)
     {
-        $filename = str_replace('/', '-', $job->getExportPath()).'_snapshot-'.date('Y-m-d').'.html';
+        $filename = str_replace('/', '-', $job->getExportPath()).'_snapshot-'.$this->date->format('Y-m-d').'.html';
         $tempDir = $job->getExportPath().'/tmp';
         $tempPath = $tempDir.'/'.$filename;
         $finalPath = $job->getExportPath().'/html/'.$filename;
@@ -32,24 +43,20 @@ class ArchiveFileManager
             $tempPath,
             $html,
         );
-        if ($this->archiveStorage->exists($latestLinkPath)) {
-            $latestLink = $this->archiveStorage->get($latestLinkPath);
-            $diff = trim(shell_exec('diff -w -I generated_date '.escapeshellarg($latestLink->realPath()).' '.escapeshellarg($tmpFile->realPath())));
-            if (empty($diff)) {
-                // Delete our temporary file and directory.
-                $this->archiveStorage->delete($tempPath);
-                $this->archiveStorage->delete($tempDir);
-                $this->eventDispatcher->dispatch(new ExportProgressEvent(
-                    $job,
-                    getmypid(),
-                    'Export finished. New version is the same as the last.',
-                    0,
-                    0,
-                    true,
-                ));
+        if ($this->archiveStorage->exists($latestLinkPath) && $this->exportFilesAreSame($tmpFile, $this->archiveStorage->get($latestLinkPath))) {
+            // Delete our temporary file and directory.
+            $this->archiveStorage->delete($tempPath);
+            $this->archiveStorage->delete($tempDir);
+            $this->eventDispatcher->dispatch(new ExportProgressEvent(
+                $job,
+                getmypid(),
+                'Export finished. New version is the same as the last.',
+                0,
+                0,
+                true,
+            ));
 
-                return;
-            }
+            return;
         } else {
             // Move our temporary file to our html directory and update
             $this->archiveStorage->rename($tempPath, $finalPath, true);
@@ -69,5 +76,34 @@ class ArchiveFileManager
 
             return;
         }
+    }
+
+    /**
+     * Answer true if files are the same except for the generated date.
+     *
+     * @param App\Archive\Storage\ArchiveFileInterface $file1
+     * @param App\Archive\Storage\ArchiveFileInterface $file2
+     *
+     * @return bool
+     */
+    public function exportFilesAreSame(ArchiveFileInterface $file1, ArchiveFileInterface $file2)
+    {
+        $diff = shell_exec('diff -w -I generated_date '.escapeshellarg($file1->realPath()).' '.escapeshellarg($file2->realPath()));
+        // Trim off any extra whitespace.
+        if ($diff) {
+            $diff = trim($diff);
+        }
+
+        return empty($diff);
+    }
+
+    /**
+     * Set the date used for export filenames.
+     *
+     * @param DateTime $date
+     */
+    public function setDate(\DateTime $date)
+    {
+        $this->date = $date;
     }
 }

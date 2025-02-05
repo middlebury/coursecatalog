@@ -40,7 +40,7 @@ class ArchiveStorageTest extends KernelTestCase
         $this->recursivelyRemoveDirectory($projectDir.'/var/test');
     }
 
-    public function recursivelyRemoveDirectory($dir)
+    protected function recursivelyRemoveDirectory($dir)
     {
         if (is_dir($dir)) {
             $objects = scandir($dir);
