@@ -2,6 +2,7 @@
 
 namespace App\Archive\ExportJob;
 
+use App\Service\Osid\IdMap;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -11,6 +12,7 @@ class ExportJob
 {
     public function __construct(
         protected Connection $db,
+        protected IdMap $osidIdMap,
         protected int $id,
         protected bool $active,
         protected string $exportPath,
@@ -106,6 +108,25 @@ class ExportJob
     public function setTerms(string $terms)
     {
         $this->terms = $terms;
+    }
+
+    /**
+     * Answer an array of sorted Term Ids.
+     *
+     * @return array<\osid_id_Id>
+     */
+    public function getTermIds()
+    {
+        $ids = [];
+        if (!empty($this->terms)) {
+            $idStrings = explode(',', $this->terms);
+            sort($idStrings);
+            foreach ($idStrings as $idString) {
+                $ids[] = $this->osidIdMap->fromString('term.'.$idString);
+            }
+        }
+
+        return $ids;
     }
 
     /**

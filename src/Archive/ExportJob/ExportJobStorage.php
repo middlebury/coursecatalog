@@ -32,6 +32,7 @@ class ExportJobStorage
         foreach ($db->executeQuery('SELECT * FROM archive_jobs ORDER BY id DESC')->fetchAllAssociative() as $row) {
             $jobs[] = new ExportJob(
                 $db,
+                $this->osidIdMap,
                 $row['id'],
                 $row['active'],
                 $row['export_path'],
@@ -54,6 +55,7 @@ class ExportJobStorage
 
         return new ExportJob(
             $db,
+            $this->osidIdMap,
             $row['id'],
             $row['active'],
             $row['export_path'],
@@ -78,7 +80,7 @@ class ExportJobStorage
      *                       True if this job is active
      *
      * @return exportJob
-     *                        The new job
+     *                   The new job
      */
     public function createJob(string $exportPath, int $configId, ?int $revisionId, string $terms, bool $active = true)
     {

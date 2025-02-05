@@ -1,0 +1,34 @@
+<article class='course'>
+    <a name='{{ course.anchor }}' class='local_anchor'></a>
+    <h3>{{ course.display_name }} {{ course.title }} {{ course.term_strings|join(', ') }}</h3>
+{% if course.terms is not defined or course.terms is empty %}
+    <span class='course_description'>{{ course.description }}</span>
+    {{ include('archive/requirements.html.twig', {requirements: course.requirements}, with_context = false) }}
+    <em class='course_instructors'>{{ course.instructors }}</em>
+{% else %}
+    {% for term in course.terms %}
+    <div class='course_term'>
+        <h4>{{ term.label }}</h4>
+        {% for section in term.sections %}
+        <div class='course_section'>
+            {% if section.section_numbers is not empty %}
+            <div class='course_section_numbers'>{{ section.section_numbers > 1 ? 'Sections':'Section' }} {{ section.section_numbers|join(', ') }}</div>
+            <span class='course_description'>{{ section.description }}</span>
+            {{ include('archive/requirements.html.twig', {requirements: section.requirements}, with_context = false) }}
+            <em class='course_instructors'>{{ section.instructors }}</em>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+{% endif %}
+{% if course.alternates is not empty %}
+    <div class='alternates'>Cross-listed as:
+    {% for alternate in course.alternates %}
+        <a class='alternate' href='#{{ alternate.anchor }}' {{ alternate.is_primary ? " title='Primary course'" }}>
+            {{ alternate.display_name }} {{ alternate.is_primary ? "<span class='primary_ind'>*</span>" }}
+        </a>
+    {% endfor %}
+    </div>
+{% endif %}
+</article>

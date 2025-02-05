@@ -15,6 +15,11 @@ interface ArchiveItemIterface
     public function path(): string;
 
     /**
+     * Answer the filesystem path of the file.
+     */
+    public function realPath(): string;
+
+    /**
      * Answer true if the item is a file (not a directory).
      */
     public function isFile(): bool;

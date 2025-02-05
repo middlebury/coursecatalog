@@ -27,6 +27,14 @@ class ArchiveFile implements ArchiveFileInterface
     }
 
     /**
+     * Answer the filesystem path of the file.
+     */
+    public function realPath(): string
+    {
+        return $this->basePath.'/'.$this->relativePath;
+    }
+
+    /**
      * Answer true if the item is a file (not a directory).
      */
     public function isFile(): bool

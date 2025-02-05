@@ -1,0 +1,33 @@
+<span class='course_requirements'>
+{% for req in requirements %}
+    <strong>{{ req.label }}</strong>
+    {% if req.req_seats is not empty %}
+        {% if (req.term_seats | length) == 1 and req.req_seats != req.total_seats %}
+             ({{ req.req_seats }} seats)
+        {% elseif req.term_seats | length %}
+            {% set partialSeatsStrings = [] %}
+            {% set someTermsStrings = [] %}
+            {% set seatsOnlyPartialInTerm = false %}
+            {% set allTermsHaveSeats = true %}
+            {% for termIdString, termSeats in req.term_seats %}
+                {% if termSeats.req_seats is empty %}
+                    {% set allTermsHaveSeats = false %}
+                {% else %}
+                    {% if termSeats.req_seats != termSeats.total_seats %}
+                        {% set seatsOnlyPartialInTerm = true %}
+                    {% endif %}
+                    {% set someTermsStrings = someTermsStrings|merge([termSeats.term_label]) %}
+                    {% set partialSeatsStrings = partialSeatsStrings|merge(["{{termSeats.term_label}}: {{termSeats.req_seats}} seats"]) %}
+                {% endif %}
+            {% endfor %}
+            {% if seatsOnlyPartialInTerm %}
+                ({{ partialSeatsStrings | join('; ') }})
+                print " (".implode('; ', $partialSeatsStrings).")";
+            {% elseif not allTermsHaveSeats %}
+                ({{ someTermsStrings | join('; ') }})
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    {{ not loop.last ? ", " }}
+{% endfor %}
+</span>
