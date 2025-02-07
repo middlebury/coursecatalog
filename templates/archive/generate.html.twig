@@ -1,59 +1,65 @@
-{% extends 'archive/archive_base.html.twig' %}
-
-{% block importmap %}
-    {# do NOT call parent() #}
-    {{ importmap(['app', 'archive']) }}
-{% endblock %}
-
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}{{title}}{% endblock %}</title>
+        {% block stylesheets %}
+        {% endblock %}
+        <link href="https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=Open+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    </head>
+    <body>
 {% block body %}
 
-<section class='catalog'>
-    <header class='catalog_header'>
-        <a name='top' class='local_anchor'></a>
-        <h1>{{ title }}</h1>
-        <button class='print_button' onclick='javascript:window.print();'>Print...</button>
-        <div class='generated_date'>Generated on <time datetime='{{ "now" | date('c') }}'>{{ "now" | date('r') }}</time>.</div>
-print $this->partial('archive/section_nav.phtml', array('sections' => $this->sections));
-    </header>
+        <section class='catalog'>
+            <header class='catalog_header'>
+                <a name='top' class='local_anchor'></a>
+                <h1>{{ title }}</h1>
+                <button class='print_button' onclick='javascript:window.print();'>Print...</button>
+                <div class='generated_date'>Generated on <time datetime='{{ "now" | date('c') }}'>{{ "now" | date('r') }}</time>.</div>
+        print $this->partial('archive/section_nav.phtml', array('sections' => $this->sections));
+            </header>
 
-{% set inProgram = false %}
-{% for section in sections %}
-    {% if section.type == 'h1' %}
-        {% if inProgram %}
-            </section>
-        {% endif %}
-        {% set inProgram = true %}
-        <section class='program'>
-            <a name='".$this->textToLink($section['text'])."' class='local_anchor'></a>
-            <a href='#top' class='jump_link'>&uarr; Top</a>
-            <h1>{{ section.text }}</h1>
-    {% elseif section.type == 'h2' %}
-        <a name='".$this->textToLink($section['text'])."' class='local_anchor'></a>
-        <a href='#top' class='jump_link'>&uarr; Top</a>
-        <h2>{{ section.text }}</h2>
-    {% elseif section.type == 'text' %}
-        {{ section.text | raw }}
-    {% elseif section.type == 'html' %}
-        <article class='requirements'>
-            {{ section.text | raw }}
-        </article>
-    {% elseif section.type == 'page_content' %}
-        <article class='requirements'>
-            {{ section.content | raw }}
-        </article>
-    {% elseif section.type == 'courses' %}
-        <section class='courses'>
-        {% for course in section.courses %}
-            {{ include('archive/list_item.html.twig', {course: course}, with_context = false) }}
+        {% set inProgram = false %}
+        {% for section in sections %}
+            {% if section.type == 'h1' %}
+                {% if inProgram %}
+                    </section>
+                {% endif %}
+                {% set inProgram = true %}
+                <section class='program'>
+                    <a name='".$this->textToLink($section['text'])."' class='local_anchor'></a>
+                    <a href='#top' class='jump_link'>&uarr; Top</a>
+                    <h1>{{ section.text }}</h1>
+            {% elseif section.type == 'h2' %}
+                <a name='".$this->textToLink($section['text'])."' class='local_anchor'></a>
+                <a href='#top' class='jump_link'>&uarr; Top</a>
+                <h2>{{ section.text }}</h2>
+            {% elseif section.type == 'text' %}
+                {{ section.text | raw }}
+            {% elseif section.type == 'html' %}
+                <article class='requirements'>
+                    {{ section.text | raw }}
+                </article>
+            {% elseif section.type == 'page_content' %}
+                <article class='requirements'>
+                    {{ section.content | raw }}
+                </article>
+            {% elseif section.type == 'courses' %}
+                <section class='courses'>
+                {% for course in section.courses %}
+                    {{ include('archive/list_item.html.twig', {course: course}, with_context = false) }}
+                {% endfor %}
+                </section>
+            {% elseif section.type == 'toc' %}
+
+            {% else %}
+                    Unknown section type {{ section.type }}
+            {% endif %}
         {% endfor %}
+            </section>
         </section>
-    {% elseif section.type == 'toc' %}
-
-    {% else %}
-            Unknown section type {{ section.type }}
-    {% endif %}
-{% endfor %}
-    </section>
-</section>
 
 {% endblock %}
+    </body>
+</html>
