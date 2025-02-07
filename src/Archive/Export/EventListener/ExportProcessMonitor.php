@@ -72,13 +72,13 @@ class ExportProcessMonitor
      */
     public function clearStaleProcesses()
     {
-        foreach ($this->getAllProcesses() as $pid => $message) {
-            if (false === posix_getpgid($pid)) {
+        foreach ($this->getAllProcesses() as $process) {
+            if (!posix_getpgid($process['pid'])) {
                 $this->logger->info('Removing failed archive export process with pid {pid} and message: {message}', [
-                    'pid' => $pid,
-                    'message' => $message,
+                    'pid' => $process['pid'],
+                    'message' => $process['progress'],
                 ]);
-                $this->removeProcess($pid);
+                $this->removeProcess($process['pid']);
             }
         }
     }
