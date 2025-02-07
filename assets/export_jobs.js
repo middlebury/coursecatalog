@@ -430,18 +430,25 @@ function generateParams(jobData) {
 
 function getProgress(exportPath) {
     $.ajax({
-        url: "../archive/jobprogress",
+        url: $('#jobs').data('job-progress-url'),
         type: "GET",
         success: function (response) {
-            if (response != "Export finished") {
+            if (response.length) {
                 $(".error-message").html(response);
                 setTimeout(function () {
                     getProgress(exportPath);
                 }, 1000);
+                var jobHTML = "<div>Export jobs: <ul>";
+                for (var process of response) {
+                    console.log(process);
+                    jobHTML += "<li>"+process.pid+": "+process.progress+"</li>";
+                }
+                jobHTML += "</ul></div>";
+                $(".error-message").html(jobHTML);
             } else {
-                exporting = false;
                 var url =
-                    "../archive/" +
+                    $('#jobs').data('archive-base-url') +
+                    "/" +
                     exportPath +
                     "/" +
                     exportPath.substring(0, exportPath.indexOf("/")) +
@@ -455,6 +462,7 @@ function getProgress(exportPath) {
                     url +
                     "</a></p> ";
                 $(".error-message").html(jobHTML);
+                exporting = false;
             }
         },
     });
@@ -477,15 +485,15 @@ function runJob(jobId) {
             var params = generateParams(jobData);
             console.log(params);
             $.ajax({
-                url: "../archive/exportjob",
-                type: "GET",
-                data: params,
+                url: $('#jobs').data('run-job-url').replace('-jobId-', jobId),
+                type: "POST",
+                data: {csrf_key: $('#jobs').data('run-job-csrf_key')},
             });
             exporting = true;
             $(".error-message").removeClass("hidden error");
             $(".error-message").addClass("success");
             $(".error-message").html("Initializing job export...");
-            setTimeout(getProgress, 3000, jobData.export_path);
+            setTimeout(getProgress, 1000, jobData.export_path);
         }
     });
 }

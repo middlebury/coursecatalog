@@ -52,6 +52,9 @@ class ExportJobStorage
     {
         $db = $this->entityManager->getConnection();
         $row = $db->executeQuery('SELECT * FROM archive_jobs WHERE id=?', [$id])->fetchAssociative();
+        if (!$row) {
+            throw new \InvalidArgumentException('Unknown job.');
+        }
 
         return new ExportJob(
             $db,

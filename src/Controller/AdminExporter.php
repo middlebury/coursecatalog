@@ -3,8 +3,15 @@
 namespace App\Controller;
 
 use App\Archive\Export\EventListener\ExportProcessMonitor;
+use App\Archive\Export\Message\RunArchiveExportJob;
 use App\Archive\ExportJob\ExportJobStorage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * A controller for working with courses.
@@ -19,90 +26,66 @@ class AdminExporter extends AbstractController
     public function __construct(
         private ExportProcessMonitor $exportProcessMonitor,
         private ExportJobStorage $exportJobStorage,
+        private MessageBusInterface $messageBus,
     ) {
     }
 
     /**
-     * Export a single archive export job.
-     *
-     * @return void
-     *
-     * @since 1/23/18
+     * Report progress of export jobs.
      */
-    public function exportjobAction()
+    #[Route('/admin/exports/run/progress.json', name: 'export_progress_json')]
+    public function jobProgressAction()
     {
-        $request = $this->getRequest();
-        if (!$request->getParam('dest_dir')) {
-            header('HTTP/1.1 400 Bad Request');
-            echo 'A dest_dir must be specified.';
-            exit;
-        }
-        if (!$request->getParam('config_id')) {
-            header('HTTP/1.1 400 Bad Request');
-            echo 'A config_id must be specified.';
-            exit;
-        }
-        if (!$request->getParam('term')) {
-            header('HTTP/1.1 400 Bad Request');
-            echo 'Terms must be specified.';
-            exit;
-        }
-        if (!$request->getParam('revision_id')) {
-            header('HTTP/1.1 400 Bad Request');
-            echo 'A revision_id must be specified.';
-            exit;
-        }
+        $this->exportProcessMonitor->clearStaleProcesses();
 
-        $this->_helper->layout()->disableLayout();
-        $this->_helper->viewRenderer->setNoRender(true);
-
-        // Send a first byte to any clients/proxies to avoid timeouts.
-        echo "Beginning export...\n";
-        while (ob_get_level()) {
-            ob_end_flush();
-        }
-        flush();
-        $this->_helper->exportJob($request->getParam('dest_dir'), $request->getParam('config_id'), $request->getParam('term'), $request->getParam('revision_id'));
-        echo "Export complete.\n";
-    }
-
-    /**
-     * Report progress of export job.
-     *
-     * @return void
-     *
-     * @since 2/5/18
-     */
-    public function jobprogressAction()
-    {
         return new JsonResponse($this->exportProcessMonitor->getAllProcesses());
     }
 
     /**
      * Export a single archive export job from the command line.
-     *
-     * @return void
-     *
-     * @since 1/26/18
      */
-    public function exportsinglejobAction(int $jobId)
+    #[Route('/admin/exports/run/single/{jobId}', name: 'export_enqueue_single_job', methods: ['POST'])]
+    public function exportSingleJobAction(Request $request, int $jobId)
     {
-        $job = $this->exportJobStorage->getJob($jobId);
+        // Verify our CSRF key
+        if (!$this->isCsrfTokenValid('admin-run-export', $request->get('csrf_key'))) {
+            throw new AccessDeniedException('Invalid CSRF key.');
+        }
 
-        $this->_helper->exportJob($job['export_path'], $job['config_id'], $job['terms'], $job['revision_id']);
+        // Verify that our job exists.
+        $job = $this->exportJobStorage->getJob($jobId);
+        // Add the job to our queue for processing.
+        $this->messageBus->dispatch(new RunArchiveExportJob($job->getId()));
+
+        $response = new Response('Job queued for export');
+        $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
+
+        return $response;
     }
 
     /**
      * Export all 'active' archive export jobs.
-     *
-     * @return void
-     *
-     * @since 1/23/18
      */
-    public function exportactivejobsAction()
+    #[Route('/admin/exports/run/active', name: 'export_enqueue_active_jobs', methods: ['POST'])]
+    public function exportActiveJobsAction(Request $request)
     {
-        foreach ($this->exportJobStorage->getActiveJobs() as $job) {
-            $this->_helper->exportJob($job['export_path'], $job['config_id'], $terms, $revision, $verbose);
+        // Verify our CSRF key
+        if (!$this->isCsrfTokenValid('admin-run-export', $request->get('csrf_key'))) {
+            throw new AccessDeniedException('Invalid CSRF key.');
         }
+
+        $i = 0;
+        foreach ($this->exportJobStorage->getAllJobs() as $job) {
+            if ($job->getActive()) {
+                // Add the job to our queue for processing.
+                $this->messageBus->dispatch(new RunArchiveExportJob($job->getId()));
+                ++$i;
+            }
+        }
+
+        $response = new Response($i.' active jobs queued for export');
+        $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
+
+        return $response;
     }
 }
