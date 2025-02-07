@@ -5,12 +5,15 @@ namespace App\Tests\Archive\Export;
 use App\Archive\Export\ArchiveFileManager;
 use App\Archive\ExportJob\ExportJob;
 use App\Archive\Storage\ArchiveStorage;
+use App\Tests\AppDatabaseTestTrait;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ArchiveFileManagerTest extends KernelTestCase
 {
+    use AppDatabaseTestTrait;
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
