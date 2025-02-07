@@ -73,6 +73,52 @@ Import the database into the local container:
 lando db-import var/catalog_prod.sql
 ```
 
+### Scheduled jobs and worker processes
+
+#### Database update jobs
+
+
+
+#### Archive export jobs.
+
+Exports for all active jobs can be enqueued for export by a messenger consumer
+worker (see below) with:
+```
+lando ssh -c "bin/console app:export:enqueue:active"
+```
+
+Similarly, a single export jobs can be triggered with:
+```
+lando ssh -c "bin/console app:export:enqueue:single <job-id>"
+```
+
+Alternatively there are two commands that can directly export the print catalogs
+without relying on the messenger worker process:
+
+```
+lando ssh -c "bin/console app:export:active"
+```
+
+```
+lando ssh -c "bin/console app:export:single <job-id>"
+```
+
+#### Messenger consumer worker
+
+The Archive exporter uses the Symfony messenger system to let the admin UI
+queue up builds of the archive exports which are then processed asynchronously
+by the `messenger:consumer` worker process. In production a `messenger:consumer`
+process should always be kept running either via
+[supervisor](https://symfony.com/doc/current/messenger.html#supervisor-configuration),
+[systemd](https://symfony.com/doc/current/messenger.html#systemd-configuration), or via a
+[docker command](https://github.com/dunglas/symfony-docker/issues/539#issuecomment-2345964974)
+depending on the deployment environment.
+
+In development, the worker process can be manually started with:
+```
+lando ssh -c "bin/console messenger:consume -vv"
+```
+
 Unit Tests
 ----------
 
