@@ -1,0 +1,38 @@
+{% set numPerColumn = ((sections | length / 2) | round(0, 'ceil')) %}
+{% set i = 0 %}
+{% set column = 1 %}
+{% set inH1 = false %}
+{% set inH2 = false %}
+
+<nav class="toc">
+    <ul class="toc-list column-1">
+
+{% for section in sections %}
+    {% set i = i + 1 %}
+    {% if section.type == 'h1' %}
+        {% if inH1 %}
+            {% if inH2 %}
+                </ul>
+                {% set inH2 = false %}
+            {% endif %}
+                </li>
+        {% endif %}
+        {% if i > numPerColumn and column == 1 %}
+            {% set column = 2 %}
+            </ul>
+            <ul class="toc-list column-2">
+        {% endif %}
+        {% set inH1 = true %}
+                <li><a href='#{{ section.text|replace({'/[^a-z0-9.: ]+/i': '-'}) }}'>{{ section.toc_text is defined and section.toc_text is not empty ? section.toc_text : section.text }}</a>
+    {% elseif section.type == 'h2' %}
+        {% if not inH2 %}
+            <ul>
+            {% set inH2 = true %}
+        {% endif %}
+                <li><a href='#{{ section.text|replace({'/[^a-z0-9.: ]+/i': '-'}) }}'>{{ ssection.toc_text is defined and section.toc_text is not empty ? section.toc_text : section.text }}</a></li>
+    {% endif %}
+{% endfor %}
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </nav>

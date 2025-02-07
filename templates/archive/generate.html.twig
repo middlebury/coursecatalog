@@ -17,7 +17,7 @@
                 <h1>{{ title }}</h1>
                 <button class='print_button' onclick='javascript:window.print();'>Print...</button>
                 <div class='generated_date'>Generated on <time datetime='{{ "now" | date('c') }}'>{{ "now" | date('r') }}</time>.</div>
-        print $this->partial('archive/section_nav.phtml', array('sections' => $this->sections));
+                {{ include('archive/section_nav.html.twig', {sections: sections}, with_context = false) }}
             </header>
 
         {% set inProgram = false %}
@@ -28,11 +28,11 @@
                 {% endif %}
                 {% set inProgram = true %}
                 <section class='program'>
-                    <a name='".$this->textToLink($section['text'])."' class='local_anchor'></a>
+                    <a name='{{ section.text|replace({'/[^a-z0-9.: ]+/i': '-'}) }}' class='local_anchor'></a>
                     <a href='#top' class='jump_link'>&uarr; Top</a>
                     <h1>{{ section.text }}</h1>
             {% elseif section.type == 'h2' %}
-                <a name='".$this->textToLink($section['text'])."' class='local_anchor'></a>
+                <a name='{{ section.text|replace({'/[^a-z0-9.: ]+/i': '-'}) }}' class='local_anchor'></a>
                 <a href='#top' class='jump_link'>&uarr; Top</a>
                 <h2>{{ section.text }}</h2>
             {% elseif section.type == 'text' %}
