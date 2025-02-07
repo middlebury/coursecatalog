@@ -34,7 +34,7 @@ These instructions assume that you have a POSIX machine running Apache with PHP 
 1. In a non-web-accessable directory, clone the course-catalog repository:
    ```git-clone https://github.com/middlebury/coursecatalog.git```
 
-2. cd into the new `coursecatalog/`directory and fetch the submodules (osid-phpkit, ZendFramework, etc):
+2. cd into the new `coursecatalog/`directory and fetch the submodules (osid-phpkit, etc):
    ```
    cd coursecatalog
    git-submodule update --init --recursive
