@@ -1,9 +1,3 @@
 [submodule "library/osid-phpkit"]
 	path = library/osid-phpkit
 	url = git://git.assembla.com/osid-phpkit.git
-[submodule "library/ZendFramework"]
-	path = library/ZendFramework
-	url = https://github.com/middlebury/ZendFramework.git
-[submodule "library/lazy_sessions"]
-	path = library/lazy_sessions
-	url = https://github.com/middlebury/lazy_sessions.git
