@@ -17,6 +17,7 @@
         "microsoft/microsoft-graph": "^2.12",
         "middlebury/midd-frontend": "^4.0",
         "nbgrp/onelogin-saml-bundle": "^1.4",
+        "oki/osid-phpkit": "dev-master",
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "6.4.*",
         "symfony/asset-mapper": "6.4.*",
@@ -46,8 +47,8 @@
             "App\\": "src/"
         },
         "psr-0": {
-            "osid_": "library/osid-phpkit/",
-            "phpkit_": "library/osid-phpkit/",
+            "osid_": "vendor/oki/osid-phpkit/",
+            "phpkit_": "vendor/oki/osid-phpkit/",
             "": ["application/library/", "application/test/"]
         },
         "classmap": [
@@ -89,6 +90,21 @@
         "symfony": {
             "allow-contrib": true,
             "require": "6.4.*"
+        }
+    },
+    "repositories": {
+        "oki/osid-phpkit": {
+            "type": "package",
+            "package": {
+                "name": "oki/osid-phpkit",
+                "version": "dev-master",
+                "type": "library",
+                "source": {
+                    "url": "https://git.assembla.com/osid-phpkit.git",
+                    "type": "git",
+                    "reference": "c67deec39af834c636fe7f156c086892f48fd368"
+                }
+            }
         }
     },
     "require-dev": {

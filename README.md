@@ -34,12 +34,11 @@ These instructions assume that you have a POSIX machine running Apache with PHP 
 1. In a non-web-accessable directory, clone the course-catalog repository:
    ```git-clone https://github.com/middlebury/coursecatalog.git```
 
-2. cd into the new `coursecatalog/`directory and fetch the submodules (osid-phpkit, etc):
+2. cd into the new `coursecatalog/` directory:
    ```
    cd coursecatalog
-   git-submodule update --init --recursive
    ```
-3. Install additional dependencies with Composer:
+3. Install dependencies with Composer:
    ```
    composer install
    ```
