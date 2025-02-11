@@ -406,10 +406,8 @@ class ArchiveHtmlGenerator
         $search->orderCourseResults($order);
         $courses = $context['courseSearchSession']->getCoursesBySearch($query, $search)->getCourses();
 
-        $i = 0;
         while ($courses->hasNext()) {
             $course = $courses->getNextCourse();
-            ++$i;
 
             // Filter out courses by number if needed.
             if (!empty($number_filter) && preg_match($number_filter, $course->getNumber())) {
@@ -420,9 +418,6 @@ class ArchiveHtmlGenerator
             $this->printedCourseIds[] = $courseIdString;
 
             $topic_courses[] = $this->getCourseData($course, $context);
-
-            // 			if ($i > 10)
-            // 				break;
         }
 
         return $topic_courses;

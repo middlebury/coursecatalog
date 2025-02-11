@@ -50,9 +50,6 @@ class Courses extends AbstractController
         while ($courses->hasNext()) {
             $data['courses'][] = $courses->getNextCourse();
         }
-        // $this->setSelectedCatalogId($lookupSession->getCourseCatalogId());
-        // $this->view->headTitle($this->view->title);
-        // $this->view->menuIsCourses = true;
 
         return $this->render('courses/list.html.twig', $data);
     }

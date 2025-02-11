@@ -122,7 +122,6 @@ class OsidRouteVoter implements VoterInterface
                         return false;
                     }
                 }
-            // print "<pre style='border: 1px solid red;'>"; var_dump($routeParameterValue); var_dump($value); print "</pre>"; exit;
             } else {
                 // cast both to string so that we handle integer and other non-string parameters, but don't stumble on 0 == 'abc'.
                 if ((string) $routeParameterValue !== (string) $value) {
