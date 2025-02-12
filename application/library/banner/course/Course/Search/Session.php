@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 10/14/09
  *
@@ -102,8 +103,8 @@ class banner_course_Course_Search_Session extends banner_course_Course_AbstractS
      *  hint to an application that may opt not to offer search operations to
      *  unauthorized users.
      *
-     * @return boolean <code> false </code> if search methods are not
-     *                        authorized, <code> true </code> otherwise
+     * @return bool <code> false </code> if search methods are not
+     *                     authorized, <code> true </code> otherwise
      *
      * @throws osid_IllegalStateException this session has been closed
      *

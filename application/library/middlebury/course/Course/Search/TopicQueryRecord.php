@@ -54,8 +54,8 @@ interface middlebury_course_Course_Search_TopicQueryRecord extends osid_course_C
     /**
      *  Tests if an <code> TopicQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a topic query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a topic query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */

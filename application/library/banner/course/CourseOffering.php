@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 4/14/09
  *
@@ -467,8 +468,8 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
     /**
      *  Tests if this course offering has an associated location resource.
      *
-     * @return boolean <code> true </code> if this course offering has a
-     *                        location resource, <code> false </code> otherwise
+     * @return bool <code> true </code> if this course offering has a
+     *                     location resource, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -612,8 +613,8 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
     /**
      *  Tests if this course offering has an associated calendar.
      *
-     * @return boolean <code> true </code> if this course offering has a
-     *                        calendar, <code> false </code> otherwise
+     * @return bool <code> true </code> if this course offering has a
+     *                     calendar, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -667,8 +668,8 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
     /**
      *  Tests if this course offering has an associated learning objective.
      *
-     * @return boolean <code> true </code> if this course offering has a
-     *                        learning objective, <code> false </code> otherwise
+     * @return bool <code> true </code> if this course offering has a
+     *                     learning objective, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -795,9 +796,9 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
      *
      *  @param object osid_type_Type $recordType a type
      *
-     * @return boolean <code> true </code> if the given record <code> Type
-     *                        </code> is implemented by this record, <code> false </code>
-     *                        otherwise
+     * @return bool <code> true </code> if the given record <code> Type
+     *                     </code> is implemented by this record, <code> false </code>
+     *                     otherwise
      *
      * @throws osid_NullArgumentException <code> recordType </code> is <code>
      *                                           null </code>
@@ -923,8 +924,8 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
     /**
      * Tests if this course offering has any alternate course offerings.
      *
-     * @return boolean <code> true </code> if this course offering has any
-     *                        alternates, <code> false </code> otherwise
+     * @return bool <code> true </code> if this course offering has any
+     *                     alternates, <code> false </code> otherwise
      *
      * @compliance mandatory This method must be implemented.
      */

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 6/11/09
  *
@@ -75,9 +76,9 @@ class banner_course_Topic_Search_Order extends banner_course_AbstractSearchOrder
      *
      *  @param object osid_type_Type $recordType a type
      *
-     * @return boolean <code> true </code> if an order record of the given
-     *                        record <code> Type </code> is available, <code> false </code>
-     *                        otherwise
+     * @return bool <code> true </code> if an order record of the given
+     *                     record <code> Type </code> is available, <code> false </code>
+     *                     otherwise
      *
      * @throws osid_NullArgumentException <code> recordType </code> is <code>
      *                                           null </code>

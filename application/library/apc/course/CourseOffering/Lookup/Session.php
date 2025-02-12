@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
@@ -91,8 +92,8 @@ class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSessio
      *  hint to an application that may not offer lookup operations to
      *  unauthorized users.
      *
-     * @return boolean <code> false </code> if lookup methods are not
-     *                        authorized, <code> true </code> otherwise
+     * @return bool <code> false </code> if lookup methods are not
+     *                     authorized, <code> true </code> otherwise
      *
      * @throws osid_IllegalStateException this session has been closed
      *

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 4/13/09
  *
@@ -97,8 +98,8 @@ class apc_course_Course_Lookup_Session extends apc_course_CachableSession implem
      *  application that may not offer lookup operations to unauthorized
      *  users.
      *
-     * @return boolean <code> false </code> if lookup methods are not
-     *                        authorized, <code> true </code> otherwise
+     * @return bool <code> false </code> if lookup methods are not
+     *                     authorized, <code> true </code> otherwise
      *
      * @throws osid_IllegalStateException this session has been closed
      *

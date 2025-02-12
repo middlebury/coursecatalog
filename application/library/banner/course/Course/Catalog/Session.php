@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 4/21/09
  *
@@ -71,8 +72,8 @@ class banner_course_Course_Catalog_Session extends banner_course_Course_Abstract
      *  </code> This is intended as a hint to an application that may opt not
      *  to offer lookup operations to unauthorized users.
      *
-     * @return boolean <code> false </code> if looking up mappings is not
-     *                        authorized, <code> true </code> otherwise
+     * @return bool <code> false </code> if looking up mappings is not
+     *                     authorized, <code> true </code> otherwise
      *
      * @throws osid_IllegalStateException this session has been closed
      *

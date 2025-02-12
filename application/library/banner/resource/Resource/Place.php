@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 5/04/09
  *
@@ -44,8 +45,8 @@ class banner_resource_Resource_Place extends phpkit_AbstractOsidObject implement
      *  Tests if this resource is a group. A resource that is a group can be
      *  used in the group sessions.
      *
-     * @return boolean <code> true </code> if this resource is a group,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if this resource is a group,
+     *                     <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */

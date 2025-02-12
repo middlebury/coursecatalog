@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
@@ -203,9 +204,9 @@ class banner_course_Topic_Search_Query_InstructionMethod extends banner_course_A
      *
      *  @param object osid_type_Type $recordType a type
      *
-     * @return boolean <code> true </code> if a record query of the given
-     *                        record <code> Type </code> is available, <code> false </code>
-     *                        otherwise
+     * @return bool <code> true </code> if a record query of the given
+     *                     record <code> Type </code> is available, <code> false </code>
+     *                     otherwise
      *
      * @throws osid_NullArgumentException <code> recordType </code> is <code>
      *                                           null </code>
@@ -243,8 +244,8 @@ class banner_course_Topic_Search_Query_InstructionMethod extends banner_course_A
     /**
      *  Tests if a <code> CourseOfferingQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a course offering query
-     *                        interface is available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a course offering query
+     *                     interface is available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -310,8 +311,8 @@ class banner_course_Topic_Search_Query_InstructionMethod extends banner_course_A
     /**
      *  Tests if a <code> CourseCatalogQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a course catalog query
-     *                        interface is available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a course catalog query
+     *                     interface is available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */

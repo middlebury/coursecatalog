@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)

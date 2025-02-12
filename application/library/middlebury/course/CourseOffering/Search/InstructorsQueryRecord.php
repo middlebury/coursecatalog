@@ -54,8 +54,8 @@ interface middlebury_course_CourseOffering_Search_InstructorsQueryRecord extends
     /**
      *  Tests if an <code> InstructorQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a instructor query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a instructor query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */

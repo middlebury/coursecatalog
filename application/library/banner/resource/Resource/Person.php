@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 4/14/09
  *
@@ -92,8 +93,8 @@ class banner_resource_Resource_Person extends phpkit_AbstractOsidObject implemen
      *  Tests if this resource is a group. A resource that is a group can be
      *  used in the group sessions.
      *
-     * @return boolean <code> true </code> if this resource is a group,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if this resource is a group,
+     *                     <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -147,9 +148,9 @@ class banner_resource_Resource_Person extends phpkit_AbstractOsidObject implemen
      *
      *  @param object osid_type_Type $recordType a type
      *
-     * @return boolean <code> true </code> if the given record <code> Type
-     *                        </code> is implemented by this record, <code> false </code>
-     *                        otherwise
+     * @return bool <code> true </code> if the given record <code> Type
+     *                     </code> is implemented by this record, <code> false </code>
+     *                     otherwise
      *
      * @throws osid_NullArgumentException <code> recordType </code> is <code>
      *                                           null </code>

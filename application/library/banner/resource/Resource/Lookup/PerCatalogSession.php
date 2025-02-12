@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 5/04/09
  *
@@ -132,8 +133,8 @@ class banner_resource_Resource_Lookup_PerCatalogSession extends banner_AbstractS
      *  result in a <code> PERMISSION_DENIED. </code> This is intended as a
      *  hint to an application that may opt not to offer lookup operations.
      *
-     * @return boolean <code> false </code> if lookup methods are not
-     *                        authorized, <code> true </code> otherwise
+     * @return bool <code> false </code> if lookup methods are not
+     *                     authorized, <code> true </code> otherwise
      *
      * @throws osid_IllegalStateException this session has been closed
      *

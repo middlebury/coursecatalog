@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 4/9/09
  *
@@ -97,8 +98,8 @@ class banner_course_Topic_Lookup_Session extends banner_course_AbstractSession i
      *  application that may opt not to offer lookup operations to
      *  unauthorized users.
      *
-     * @return boolean <code> false </code> if lookup methods are not
-     *                        authorized, <code> true </code> otherwise
+     * @return bool <code> false </code> if lookup methods are not
+     *                     authorized, <code> true </code> otherwise
      *
      * @throws osid_IllegalStateException this session has been closed
      *

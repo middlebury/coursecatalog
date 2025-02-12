@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 5/04/09
  *
@@ -667,8 +668,8 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
     /**
      *  Tests if a <code> CourseQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a course query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a course query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -730,8 +731,8 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
     /**
      *  Tests if a <code> TermQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a term query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a term query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -814,8 +815,8 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
     /**
      *  Tests if a <code> TopicQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a topic query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a topic query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -932,8 +933,8 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
     /**
      *  Tests if a <code> ResourceQuery </code> is available for the location.
      *
-     * @return boolean <code> true </code> if a resource query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a resource query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1036,8 +1037,8 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
     /**
      *  Tests if a <code> CalendarQuery </code> is available for the location.
      *
-     * @return boolean <code> true </code> if a calendar query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a calendar query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1103,8 +1104,8 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
      *  Tests if a <code> LearningObjective </code> is available for the
      *  location.
      *
-     * @return boolean <code> true </code> if a learning objective query
-     *                        interface is available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a learning objective query
+     *                     interface is available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1191,8 +1192,8 @@ AND SCBCRSE_COLL_CODE IN (
     /**
      *  Tests if a <code> CourseCatalogQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a course catalog query
-     *                        interface is available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a course catalog query
+     *                     interface is available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1284,8 +1285,8 @@ AND SCBCRSE_COLL_CODE IN (
     /**
      *  Tests if an <code> InstructorQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a instructor query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a instructor query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */

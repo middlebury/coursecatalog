@@ -40,8 +40,8 @@ interface middlebury_course_CourseOffering_AlternatesRecord extends osid_course_
     /**
      * Tests if this course offering has any alternate course offerings.
      *
-     * @return boolean <code> true </code> if this course offering has any
-     *                        alternates, <code> false </code> otherwise
+     * @return bool <code> true </code> if this course offering has any
+     *                     alternates, <code> false </code> otherwise
      *
      * @compliance mandatory This method must be implemented.
      */

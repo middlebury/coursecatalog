@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 10/14/09
  *
@@ -504,8 +505,8 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
     /**
      *  Tests if a <code> CourseOfferingQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a course offering query
-     *                        interface is available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a course offering query
+     *                     interface is available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -586,8 +587,8 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
     /**
      *  Tests if a <code> CourseCatalogQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a course catalog query
-     *                        interface is available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a course catalog query
+     *                     interface is available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -710,8 +711,8 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
     /**
      *  Tests if an <code> TopicQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a topic query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a topic query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -768,8 +769,8 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
     /**
      *  Tests if an <code> InstructorQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a instructor query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a instructor query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -825,8 +826,8 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
     /**
      *  Tests if an <code> TermQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a term query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a term query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -882,8 +883,8 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
     /**
      *  Tests if a <code> LocationQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a location query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a location query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */

@@ -40,8 +40,8 @@ interface middlebury_course_Course_AlternatesInTermsRecord extends osid_course_C
     /**
      * Tests if this course has any alternate courses, effective between the terms specified (inclusive).
      *
-     * @return boolean <code> true </code> if this course has any
-     *                        alternates, <code> false </code> otherwise
+     * @return bool <code> true </code> if this course has any
+     *                     alternates, <code> false </code> otherwise
      *
      * @compliance mandatory This method must be implemented.
      */

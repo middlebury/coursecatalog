@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 6/11/09
  *
@@ -207,9 +208,9 @@ class banner_course_Topic_Search_Query_Level extends banner_course_AbstractQuery
      *
      *  @param object osid_type_Type $recordType a type
      *
-     * @return boolean <code> true </code> if a record query of the given
-     *                        record <code> Type </code> is available, <code> false </code>
-     *                        otherwise
+     * @return bool <code> true </code> if a record query of the given
+     *                     record <code> Type </code> is available, <code> false </code>
+     *                     otherwise
      *
      * @throws osid_NullArgumentException <code> recordType </code> is <code>
      *                                           null </code>
@@ -247,8 +248,8 @@ class banner_course_Topic_Search_Query_Level extends banner_course_AbstractQuery
     /**
      *  Tests if a <code> CourseOfferingQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a course offering query
-     *                        interface is available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a course offering query
+     *                     interface is available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -314,8 +315,8 @@ class banner_course_Topic_Search_Query_Level extends banner_course_AbstractQuery
     /**
      *  Tests if a <code> CourseCatalogQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a course catalog query
-     *                        interface is available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a course catalog query
+     *                     interface is available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
