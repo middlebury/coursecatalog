@@ -38,6 +38,8 @@
  */
 class banner_course_CourseOffering_Lookup_Session extends banner_course_CourseOffering_AbstractSession implements osid_course_CourseOfferingLookupSession, middlebury_course_CourseOffering_Lookup_SessionInterface
 {
+    private osid_id_Id $catalogId;
+
     /**
      * Constructor.
      *

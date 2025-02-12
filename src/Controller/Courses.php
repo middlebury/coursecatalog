@@ -27,6 +27,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class Courses extends AbstractController
 {
+    protected \osid_course_TermLookupSession $termLookupSession;
+
     public function __construct(
         private Runtime $osidRuntime,
         private IdMap $osidIdMap,

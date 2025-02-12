@@ -21,6 +21,14 @@
  */
 class banner_resource_Resource_Person extends phpkit_AbstractOsidObject implements osid_resource_Resource, middlebury_resource_Resource_PersonNamesRecord
 {
+    private phpkit_type_URNInetType $namesType;
+    private string $surname;
+    private string $givenName;
+    private string $middleNames;
+    private string $nameSuffix;
+    private string $prefixTitle;
+    private string $suffixTitle;
+
     /**
      * Constructor.
      *

@@ -17,6 +17,13 @@
  */
 abstract class banner_course_AbstractSession extends banner_AbstractSession implements banner_course_SessionInterface
 {
+    private osid_course_TopicLookupSession $topicLookupSession;
+    private osid_course_CourseLookupSession $courseLookupSession;
+    private osid_course_CourseOfferingLookupSession $courseOfferingLookupSession;
+    private osid_course_CourseOfferingSearchSession $courseOfferingSearchSession;
+    private osid_course_TermLookupSession $termLookupSession;
+    private osid_resource_ResourceLookupSession $resourceLookupSession;
+
     /**
      * Answer a catalog database id string.
      *

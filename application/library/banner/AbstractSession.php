@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 4/10/09
  *
@@ -118,18 +119,18 @@ abstract class banner_AbstractSession extends phpkit_AbstractOsidSession
     }
 
     /**
-     * @var banner_course_CourseManagerInterface;
+     * @var osid_OsidManager;
      *
      * @since 4/10/09
      */
-    protected $manager;
+    protected osid_OsidManager $manager;
 
     /**
      * @var string;
      *
      * @since 4/10/09
      */
-    private $idPrefix;
+    private string $idPrefix;
 
     /**
      * Answer a database-id for an Id object passed or throw an osid_NotFoundException

@@ -157,6 +157,10 @@ class TimeZone extends SObject
      * 	Instance Methods - private
      *********************************************************/
 
+    private $offset;
+    private $name;
+    private $abbreviation;
+
     /**
      * Create a new Timezone.
      *

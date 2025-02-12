@@ -12,6 +12,9 @@
  */
 class banner_course_Term extends phpkit_AbstractOsidObject implements osid_course_Term
 {
+    private $startDate;
+    private $endDate;
+
     /**
      * Constructor.
      *

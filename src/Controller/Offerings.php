@@ -27,6 +27,21 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class Offerings extends AbstractController
 {
+    protected \osid_type_Type $wildcardStringMatchType;
+    protected \osid_type_Type $booleanStringMatchType;
+    protected \osid_type_Type $instructorType;
+    protected \osid_type_Type $enrollmentType;
+    protected \osid_type_Type $weeklyScheduleType;
+    protected \osid_type_Type $subjectType;
+    protected \osid_type_Type $departmentType;
+    protected \osid_type_Type $divisionType;
+    protected \osid_type_Type $requirementType;
+    protected \osid_type_Type $levelType;
+    protected \osid_type_Type $blockType;
+    protected \osid_type_Type $instructionMethodType;
+    protected \osid_type_Type $termType;
+    protected \osid_type_Type $campusType;
+
     public function __construct(
         private Runtime $osidRuntime,
         private IdMap $osidIdMap,

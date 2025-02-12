@@ -13,6 +13,10 @@
  */
 class banner_course_Course_Search_Query extends banner_course_AbstractQuery implements osid_course_CourseQuery, middlebury_course_Course_Search_TopicQueryRecord, middlebury_course_Course_Search_InstructorsQueryRecord, middlebury_course_Course_Search_LocationQueryRecord, middlebury_course_Course_Search_TermQueryRecord
 {
+    private osid_type_Type $wildcardStringMatchType;
+    private osid_type_Type $booleanStringMatchType;
+    private string $keywordString;
+
     /**
      * Constructor.
      *

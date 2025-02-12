@@ -38,6 +38,16 @@
  */
 class banner_course_CourseOffering_Search_Session extends banner_course_CourseOffering_AbstractSession implements osid_course_CourseOfferingSearchSession
 {
+    private osid_id_Id $catalogId;
+    private osid_course_CourseCatalog $catalog;
+    private osid_type_Type $subjectType;
+    private osid_type_Type $departmentType;
+    private osid_type_Type $divisionType;
+    private osid_type_Type $requirementType;
+    private osid_type_Type $blockType;
+    private osid_type_Type $instructionMethodType;
+    private osid_type_Type $instructorsType;
+
     /**
      * Constructor.
      *

@@ -16,6 +16,16 @@
  */
 class banner_course_CourseOffering_Search_List extends banner_course_CourseOffering_AbstractList implements osid_course_CourseOfferingList, osid_course_CourseOfferingSearchResults
 {
+    private PDO $db;
+    private osid_course_CourseOfferingQuery $courseQuery;
+    private string $having;
+    private string $where;
+    private string $orderBy;
+    private string $limit;
+    private array $additionalColumns;
+    private array $additionalTableJoins;
+    private array $parameters;
+
     /**
      * Constructor.
      *

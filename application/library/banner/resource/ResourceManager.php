@@ -42,6 +42,9 @@
  */
 class banner_resource_ResourceManager extends phpkit_AbstractOsidManager implements osid_resource_ResourceManager, banner_resource_ResourceManagerInterface
 {
+    private PDO $db;
+    private string $idAuthority;
+
     /*********************************************************
      * From banner_ManagerInterface
      *********************************************************/

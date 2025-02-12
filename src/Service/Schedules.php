@@ -20,6 +20,8 @@ use Symfony\Bundle\SecurityBundle\Security;
  */
 class Schedules
 {
+    protected ?\osid_id_Id $savedCatalogId;
+
     /**
      * Constructor.
      *

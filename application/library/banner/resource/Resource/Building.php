@@ -20,8 +20,8 @@
  */
 class banner_resource_Resource_Building extends phpkit_AbstractOsidObject implements osid_resource_Resource, middlebury_resource_Resource_Location
 {
-    private $buildingDisplayName;
-    private $buildingCode;
+    private string $buildingDisplayName;
+    private string $buildingCode;
 
     /**
      * Constructor.

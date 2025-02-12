@@ -290,6 +290,11 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
     private static $fsmParser;
 
     private $raw_description;
+    private string $title;
+    private float $credits;
+    private array $topicIds;
+    private bool $hasAlternates;
+    private banner_course_AbstractSession $session;
 
     /**
      * Constructor.

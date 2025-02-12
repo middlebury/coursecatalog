@@ -36,6 +36,9 @@
  */
 class banner_course_Course_Search_Session extends banner_course_Course_AbstractSession implements osid_course_CourseSearchSession
 {
+    private osid_id_Id $catalogId;
+    private osid_course_CourseCatalog $catalog;
+
     /**
      * Constructor.
      *

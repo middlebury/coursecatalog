@@ -234,6 +234,7 @@ class Duration extends Magnitude
     /*********************************************************
      * 	Instance methods - Private
      *********************************************************/
+    private int $seconds;
 
     /**
      * Initialize this Duration.

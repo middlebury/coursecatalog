@@ -16,6 +16,8 @@
  */
 class banner_course_Term_Lookup_AllList extends banner_course_CachingPdoQueryList implements osid_course_TermList
 {
+    private banner_course_AbstractSession $session;
+
     /**
      * Constructor.
      *

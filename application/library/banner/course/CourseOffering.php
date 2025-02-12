@@ -77,6 +77,13 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
     private $row;
     private $session;
     private $raw_description;
+    private phpkit_type_URNInetType $instructorsType;
+    private phpkit_type_URNInetType $weeklyScheduleType;
+    private phpkit_type_URNInetType $alternatesType;
+    private phpkit_type_URNInetType $linkType;
+    private phpkit_type_URNInetType $identifiersType;
+    private phpkit_type_URNInetType $enrollmentNumbersType;
+    private array $meetingRows;
 
     /**
      * Constructor.

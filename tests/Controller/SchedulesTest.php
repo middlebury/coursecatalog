@@ -11,6 +11,8 @@ class SchedulesTest extends WebTestCase
 {
     use AppDatabaseTestTrait;
 
+    private SamlUser $user;
+
     private function setUpClient(): KernelBrowser
     {
         $this->user = new SamlUser('WEBID99999990');

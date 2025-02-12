@@ -22,7 +22,12 @@ class banner_course_CourseManager extends phpkit_AbstractOsidManager implements 
      *
      * @since 4/9/09
      */
-    private $db;
+    private ?PDO $db;
+
+    private string $idAuthority;
+    private osid_resource_ResourceManager $resourceManager;
+    private osid_calendaring_CalendarManager $calendarManager;
+    private osid_learning_ObjectiveManager $learningManager;
 
     /**
      * Set the configuration and class paths.

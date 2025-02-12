@@ -27,6 +27,10 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class Schedules extends AbstractController
 {
+    protected \osid_id_Id $catalogId;
+    protected \osid_id_Id $termId;
+    protected \osid_course_TermLookupSession $termLookupSession;
+
     public function __construct(
         private SchedulesService $schedules,
         private Runtime $osidRuntime,

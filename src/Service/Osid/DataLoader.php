@@ -12,6 +12,11 @@ use App\Helper\RecentCourses\RecentCoursesInterface;
  */
 class DataLoader
 {
+    protected \osid_type_Type $alternateType;
+    protected \osid_type_Type $instructorsType;
+    protected \osid_type_Type $locationType;
+    protected \osid_type_Type $namesType;
+
     public function __construct(
         private Runtime $osidRuntime,
         private IdMap $osidIdMap,
