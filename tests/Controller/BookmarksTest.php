@@ -10,6 +10,8 @@ class BookmarksTest extends WebTestCase
 {
     use AppDatabaseTestTrait;
 
+    private $user;
+
     protected function setUp(): void
     {
         $this->user = new SamlUser('WEBID99999990');

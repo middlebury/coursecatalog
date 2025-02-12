@@ -19,6 +19,8 @@
  */
 class banner_course_Topic_Search_Query_Requirement extends banner_course_AbstractQuery implements osid_course_TopicQuery
 {
+    private osid_type_Type $wildcardStringMatchType;
+
     /**
      * Constructor.
      *

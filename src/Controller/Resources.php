@@ -22,6 +22,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class Resources extends AbstractController
 {
+    private \osid_type_Type $instructorType;
+
     public function __construct(
         private Runtime $osidRuntime,
         private IdMap $osidIdMap,

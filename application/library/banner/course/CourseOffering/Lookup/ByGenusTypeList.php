@@ -17,6 +17,8 @@
  */
 class banner_course_CourseOffering_Lookup_ByGenusTypeList extends banner_course_CourseOffering_AbstractList implements osid_course_CourseOfferingList
 {
+    private osid_type_Type $genusType;
+
     /**
      * Constructor.
      *

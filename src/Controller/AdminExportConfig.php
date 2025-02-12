@@ -14,6 +14,9 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class AdminExportConfig extends AbstractController
 {
+    private \osid_type_Type $subjectType;
+    private \osid_type_Type $departmentType;
+
     public function __construct(
         private Runtime $osidRuntime,
         private IdMap $osidIdMap,

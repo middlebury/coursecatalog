@@ -37,6 +37,9 @@
  */
 class banner_resource_Resource_Lookup_PerCatalogSession extends banner_AbstractSession implements osid_resource_ResourceLookupSession
 {
+    private osid_id_Id $binId;
+    private osid_resource_Bin $bin;
+
     /**
      * Constructor.
      *
@@ -50,9 +53,6 @@ class banner_resource_Resource_Lookup_PerCatalogSession extends banner_AbstractS
 
         $this->binId = $binId;
     }
-
-    private $binId;
-    private $bin;
 
     /**
      * Answer the catalog where terms.

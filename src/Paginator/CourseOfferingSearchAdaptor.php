@@ -19,6 +19,8 @@ namespace App\Paginator;
 class CourseOfferingSearchAdaptor
 {
     private $itemsCallback;
+    private ?\osid_course_CourseOfferingSearch $search;
+    private ?\osid_course_CourseOfferingSearchResults $results;
 
     /**
      * Constructor.

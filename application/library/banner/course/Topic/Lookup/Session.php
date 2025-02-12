@@ -38,6 +38,9 @@
  */
 class banner_course_Topic_Lookup_Session extends banner_course_AbstractSession implements osid_course_TopicLookupSession
 {
+    private osid_id_Id $catalogId;
+    private osid_course_CourseCatalog $catalog;
+
     /**
      * Constructor.
      *

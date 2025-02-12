@@ -22,10 +22,11 @@ class banner_course_CourseOffering_Search_List extends banner_course_CourseOffer
     private string $having;
     private string $where;
     private string $orderBy;
-    private string $limit;
+    private ?string $limit;
     private array $additionalColumns;
     private array $additionalTableJoins;
     private array $parameters;
+    private int $resultSize;
 
     /**
      * Constructor.

@@ -45,6 +45,7 @@
 class banner_course_Course_Lookup_Session extends banner_course_Course_AbstractSession implements osid_course_CourseLookupSession
 {
     private osid_id_Id $catalogId;
+    private osid_course_CourseCatalog $catalog;
 
     /**
      * Constructor.
@@ -59,8 +60,6 @@ class banner_course_Course_Lookup_Session extends banner_course_Course_AbstractS
 
         $this->catalogId = $catalogId;
     }
-
-    private $catalog;
 
     /**
      *  Gets the <code> CourseCatalog </code> <code> Id </code> associated

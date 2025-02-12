@@ -12,6 +12,12 @@ class AdminExporterTest extends WebTestCase
 {
     use AppDatabaseTestTrait;
 
+    private $client;
+    private $mockJob1;
+    private $mockJob2;
+    private $mockJob3;
+    private $mockJobStorage;
+
     protected function setUp(): void
     {
         $this->client = static::createClient();

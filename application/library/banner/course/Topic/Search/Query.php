@@ -19,6 +19,24 @@
  */
 class banner_course_Topic_Search_Query implements osid_course_TopicQuery, middlebury_course_Topic_Search_TermQueryRecord
 {
+    private osid_course_TopicQuery $requirementQuery;
+    private osid_course_TopicQuery $levelQuery;
+    private osid_course_TopicQuery $blockQuery;
+    private osid_course_TopicQuery $instructionMethodQuery;
+    private osid_course_TopicQuery $divisionQuery;
+    private osid_course_TopicQuery $departmentQuery;
+    private osid_course_TopicQuery $subjectQuery;
+    private osid_type_Type $wildcardStringMatchType;
+    private osid_type_Type $termType;
+    private osid_type_Type $subjectType;
+    private osid_type_Type $departmentType;
+    private osid_type_Type $divisionType;
+    private osid_type_Type $requirementType;
+    private osid_type_Type $levelType;
+    private osid_type_Type $blockType;
+    private osid_type_Type $instructionMethodType;
+    private array $toInclude;
+
     /**
      * Constructor.
      *

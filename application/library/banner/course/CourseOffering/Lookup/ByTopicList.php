@@ -17,6 +17,8 @@
  */
 class banner_course_CourseOffering_Lookup_ByTopicList extends banner_course_CourseOffering_AbstractList implements osid_course_CourseOfferingList
 {
+    private osid_id_Id $topicId;
+
     /**
      * Constructor.
      *

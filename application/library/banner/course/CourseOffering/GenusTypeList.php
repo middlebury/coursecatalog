@@ -17,6 +17,8 @@
  */
 class banner_course_CourseOffering_GenusTypeList extends banner_course_CachingPdoQueryList implements osid_type_TypeList
 {
+    private banner_course_AbstractSession $session;
+
     /**
      * Constructor.
      *

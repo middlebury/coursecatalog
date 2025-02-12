@@ -21,7 +21,7 @@ class banner_course_Course_Search_List extends banner_course_Course_AbstractList
     private osid_course_CourseQuery $courseQuery;
     private string $orderBy;
     private string $where;
-    private string $limit;
+    private ?string $limit;
     private array $additionalColumns;
     private array $additionalTableJoins;
     private array $parameters;
