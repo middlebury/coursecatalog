@@ -11,10 +11,15 @@ class banner_resource_Bin_Lookup_SessionTest extends phpkit_test_phpunit_Abstrac
     /**
      * @var banner_resource_Bin_Lookup_Session
      */
-    protected $session;
-
-    protected $mcugId;
-    protected $miisId;
+    protected osid_resource_BinLookupSession $session;
+    protected osid_resource_ResourceManager $manager;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $miisId;
+    private osid_id_Id $unknownId;
+    private osid_type_Type $unknownType;
+    private osid_type_Type $generaNoneType;
+    private osid_type_Type $secondaryType;
+    private osid_type_Type $undergraduateType;
 
     /**
      * Answer the session object to test.

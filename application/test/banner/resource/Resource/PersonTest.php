@@ -6,15 +6,13 @@
  */
 class banner_resource_Resource_PersonTest extends phpkit_test_phpunit_AbstractOsidObjectTest
 {
-    /**
-     * @var banner_resource_Resource_Person
-     */
-    protected $object;
-
-    /**
-     * @var banner_resource_Resource_Person
-     */
-    protected $object2;
+    private osid_resource_Resource $object;
+    private osid_resource_Resource $object2;
+    private osid_resource_ResourceRecord $names;
+    private osid_resource_ResourceRecord $names2;
+    private osid_type_Type $unknownType;
+    private osid_type_Type $namesType;
+    private osid_type_Type $personType;
 
     /**
      * Answer the Object to test.

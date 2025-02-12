@@ -13,7 +13,39 @@ class banner_course_CourseOffering_Search_QueryTest extends TestCase
     /**
      * @var banner_course_CourseOffering_Search_Query
      */
-    protected $object;
+    protected osid_course_CourseOfferingQuery $object;
+
+    private osid_type_Type $wildcardStringMatchType;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $miisId;
+    private osid_course_CourseOfferingSearchSession $session;
+    private osid_id_Id $physId;
+    private osid_id_Id $chemId;
+    private osid_id_Id $termId;
+    private osid_id_Id $termId2;
+    private osid_id_Id $physDeptTopicId;
+    private osid_id_Id $chemDeptTopicId;
+    private osid_id_Id $physSubjTopicId;
+    private osid_id_Id $geolSubjTopicId;
+    private osid_id_Id $chemSubjTopicId;
+    private osid_id_Id $dedReqTopicId;
+    private osid_id_Id $sciReqTopicId;
+    private osid_id_Id $natsciDivTopicId;
+    private osid_id_Id $ugLevelTopicId;
+    private osid_id_Id $ccBlockTopicId;
+    private osid_type_Type $instructorsType;
+    private osid_type_Type $weeklyScheduleType;
+    private osid_type_Type $enrollmentType;
+    private osid_type_Type $otherType;
+    private osid_type_Type $lectureType;
+    private osid_type_Type $labType;
+    private osid_type_Type $discussionType;
+    private osid_id_Id $barryId;
+    private osid_id_Id $calvinId;
+    private osid_id_Id $mbh216Id;
+    private osid_id_Id $mbh560Id;
+    private osid_id_Id $mainCampusId;
+    private osid_id_Id $breadloafCampusId;
 
     /**
      * Sets up the fixture, for example, opens a network connection.

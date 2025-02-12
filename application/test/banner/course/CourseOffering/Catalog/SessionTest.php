@@ -11,10 +11,12 @@ class banner_course_CourseOffering_Catalog_SessionTest extends phpkit_test_phpun
     /**
      * @var banner_course_CourseOfferingCatalogLookupSession
      */
-    protected $session;
+    protected osid_course_CourseOfferingCatalogSession $session;
 
-    protected $mcugId;
-    protected $miisId;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $miisId;
+    private osid_id_Id $unknownId;
+    private osid_id_Id $sectionId;
 
     /**
      * Answer the session object to test.

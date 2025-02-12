@@ -11,10 +11,21 @@ class banner_course_Course_Lookup_CombinedSessionTest extends phpkit_test_phpuni
     /**
      * @var banner_course_Course_Lookup_Session
      */
-    protected $session;
+    protected osid_course_CourseLookupSession $session;
 
-    protected $mcugId;
-    protected $miisId;
+    private osid_id_Id $allId;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $miisId;
+    private osid_id_Id $unknownId;
+    private osid_id_Id $physId;
+    private osid_id_Id $geolId;
+    private osid_id_Id $deptTopicId;
+    private osid_id_Id $subjTopicId;
+    private osid_id_Id $divTopicId;
+    private osid_type_Type $unknownType;
+    private osid_type_Type $generaNoneType;
+    private osid_type_Type $secondaryType;
+    private osid_type_Type $undergraduateType;
 
     /**
      * Answer the session object to test.

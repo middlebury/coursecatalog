@@ -10,10 +10,16 @@ class banner_course_Topic_Search_SessionTest extends TestCase
 {
     use banner_DatabaseTestTrait;
 
-    /**
-     * @var banner_course_Topic_Search_Session
-     */
-    protected $object;
+    private osid_course_TopicSearchSession $session;
+    private osid_type_Type $wildcardStringMatchType;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $miisId;
+    private osid_id_Id $termId;
+    private osid_type_Type $termType;
+    private osid_type_Type $subjectType;
+    private osid_type_Type $departmentType;
+    private osid_type_Type $divisionType;
+    private osid_type_Type $requirementType;
 
     /**
      * Sets up the fixture, for example, opens a network connection.

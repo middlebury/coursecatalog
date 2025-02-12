@@ -11,7 +11,12 @@ class banner_course_TermTest extends phpkit_test_phpunit_AbstractOsidObjectTest
     /**
      * @var banner_course_Term
      */
-    protected $object;
+    protected osid_course_Term $object;
+
+    private osid_course_TermLookupSession $session;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $unknownId;
+    private osid_id_Id $termId;
 
     /**
      * Answer the Object to test.

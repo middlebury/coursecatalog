@@ -8,10 +8,8 @@ class banner_resource_ResourceManagerTest extends phpkit_test_phpunit_AbstractOs
 {
     use banner_DatabaseTestTrait;
 
-    /**
-     * @var banner_course_CourseManager
-     */
-    protected $manager;
+    protected osid_resource_ResourceManager $manager;
+    private osid_id_Id $allBinId;
 
     /**
      * Answer the manager object to test.

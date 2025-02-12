@@ -13,7 +13,40 @@ class banner_course_Topic_Lookup_SessionTest extends TestCase
     /**
      * @var banner_course_CourseCatalog_Lookup_Session
      */
-    protected $session;
+    protected osid_course_TopicLookupSession $session;
+
+    private osid_id_Id $mcugId;
+    private osid_id_Id $miisId;
+    private osid_id_Id $unknownId;
+    private osid_id_Id $termId;
+    private osid_id_Id $physId;
+    private osid_id_Id $geolId;
+    private osid_id_Id $chemId;
+    private osid_id_Id $physSubjId;
+    private osid_id_Id $geolSubjId;
+    private osid_id_Id $chemSubjId;
+    private osid_id_Id $physDeptId;
+    private osid_id_Id $geolDeptId;
+    private osid_id_Id $chemDeptId;
+    private osid_id_Id $dedReqId;
+    private osid_id_Id $sciReqId;
+    private osid_id_Id $ugLevelId;
+    private osid_id_Id $ccBlockId;
+    private osid_id_Id $nsciDivId;
+    private osid_id_Id $artsDivId;
+    private osid_type_Type $subjectType;
+    private osid_type_Type $departmentType;
+    private osid_type_Type $divisionType;
+    private osid_type_Type $requirementType;
+    private osid_type_Type $levelType;
+    private osid_type_Type $blockType;
+    private osid_id_Id $physOfferingId;
+    private osid_id_Id $geolOfferingId;
+    private osid_id_Id $unknownOfferingId;
+    private osid_type_Type $unknownType;
+    private osid_type_Type $generaNoneType;
+    private osid_type_Type $secondaryType;
+    private osid_type_Type $undergraduateType;
 
     /**
      * Answer the session object to test.

@@ -11,10 +11,16 @@ class banner_course_CourseCatalog_Lookup_SessionTest extends phpkit_test_phpunit
     /**
      * @var banner_course_CourseCatalog_Lookup_Session
      */
-    protected $session;
+    protected osid_course_CourseCatalogLookupSession $session;
 
-    protected $mcugId;
-    protected $miisId;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $miisId;
+    private osid_id_Id $unknownId;
+    private osid_id_Id $termId;
+    private osid_type_Type $unknownType;
+    private osid_type_Type $generaNoneType;
+    private osid_type_Type $secondaryType;
+    private osid_type_Type $undergraduateType;
 
     /**
      * Answer the session object to test.

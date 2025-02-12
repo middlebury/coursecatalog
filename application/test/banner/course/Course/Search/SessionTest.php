@@ -8,13 +8,22 @@ class banner_course_Course_Search_SessionTest extends phpkit_test_phpunit_Abstra
 {
     use banner_DatabaseTestTrait;
 
-    /**
-     * @var banner_course_Course_Lookup_Session
-     */
-    protected $session;
-
-    protected $mcugId;
-    protected $miisId;
+    private osid_type_Type $wildcardStringMatchType;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $miisId;
+    private osid_id_Id $unknownId;
+    private osid_id_Id $termId;
+    private osid_course_CourseSearchSession $session;
+    private osid_course_CourseQuery $query;
+    private osid_id_Id $physId;
+    private osid_id_Id $geolId;
+    private osid_id_Id $deptTopicId;
+    private osid_id_Id $subjTopicId;
+    private osid_id_Id $divTopicId;
+    private osid_type_Type $unknownType;
+    private osid_type_Type $generaNoneType;
+    private osid_type_Type $secondaryType;
+    private osid_type_Type $undergraduateType;
 
     /**
      * Answer the session object to test.

@@ -13,7 +13,18 @@ class banner_course_Topic_Search_OrderTest extends TestCase
     /**
      * @var banner_course_Topic_Search_Order
      */
-    protected $object;
+    protected osid_course_TopicSearchOrder $object;
+
+    private osid_course_TopicSearchSession $session;
+    private osid_type_Type $wildcardStringMatchType;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $miisId;
+    private osid_id_Id $termId;
+    private osid_type_Type $termType;
+    private osid_type_Type $subjectType;
+    private osid_type_Type $departmentType;
+    private osid_type_Type $divisionType;
+    private osid_type_Type $requirementType;
 
     /**
      * Sets up the fixture, for example, opens a network connection.

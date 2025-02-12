@@ -9,9 +9,31 @@ class banner_course_CourseOffering_Search_SessionTest extends phpkit_test_phpuni
     use banner_DatabaseTestTrait;
 
     /**
-     * @var banner_course_CourseCatalog_Lookup_Session
+     * @var banner_course_CourseCatalog_Search_Session
      */
-    protected $session;
+    protected osid_course_CourseOfferingSearchSession $session;
+
+    private osid_type_Type $wildcardStringMatchType;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $miisId;
+    private osid_id_Id $unknownId;
+    private osid_id_Id $termId;
+    private osid_id_Id $physId;
+    private osid_id_Id $mathId;
+    private osid_id_Id $chemId;
+    private osid_id_Id $physOfferingId;
+    private osid_id_Id $geolOfferingId;
+    private osid_id_Id $unknownOfferingId;
+    private osid_id_Id $physDeptTopicId;
+    private osid_id_Id $chemDeptTopicId;
+    private osid_id_Id $physSubjTopicId;
+    private osid_id_Id $chemSubjTopicId;
+    private osid_id_Id $dedReqTopicId;
+    private osid_id_Id $sciReqTopicId;
+    private osid_type_Type $unknownType;
+    private osid_type_Type $generaNoneType;
+    private osid_type_Type $secondaryType;
+    private osid_type_Type $undergraduateType;
 
     /**
      * Answer the session object to test.

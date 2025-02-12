@@ -13,7 +13,37 @@ class banner_course_Course_Search_QueryTest extends TestCase
     /**
      * @var banner_course_Course_Search_Query
      */
-    protected $object;
+    protected osid_course_CourseQuery $object;
+
+    private osid_type_Type $wildcardStringMatchType;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $miisId;
+    private osid_id_Id $unknownId;
+    private osid_course_CourseSearchSession $session;
+    private osid_course_CourseSearch $search;
+    private osid_id_Id $physId;
+    private osid_id_Id $geolId;
+    private osid_id_Id $chemId;
+    private osid_id_Id $physOfferingId;
+    private osid_id_Id $geolOfferingId;
+    private osid_id_Id $chemOfferingId;
+    private osid_id_Id $deptTopicId;
+    private osid_id_Id $subjTopicId;
+    private osid_id_Id $divTopicId;
+    private osid_id_Id $levelTopicId;
+    private osid_type_Type $unknownType;
+    private osid_type_Type $generaNoneType;
+    private osid_type_Type $secondaryType;
+    private osid_type_Type $undergraduateType;
+    private osid_type_Type $instructorsType;
+    private osid_type_Type $locationType;
+    private osid_type_Type $topicQueryRecordType;
+    private osid_type_Type $otherType;
+    private osid_id_Id $barryId;
+    private osid_id_Id $dudleyId;
+    private osid_id_Id $calvinId;
+    private osid_id_Id $mainCampusId;
+    private osid_id_Id $breadloafCampusId;
 
     /**
      * Sets up the fixture, for example, opens a network connection.

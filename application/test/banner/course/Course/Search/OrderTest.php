@@ -13,7 +13,26 @@ class banner_course_Course_Search_OrderTest extends TestCase
     /**
      * @var banner_course_Course_Search_Order
      */
-    protected $object;
+    protected osid_course_CourseSearchOrder $object;
+
+    private osid_type_Type $wildcardStringMatchType;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $miisId;
+    private osid_id_Id $unknownId;
+    private osid_course_CourseSearchSession $session;
+    private osid_course_CourseQuery $query;
+    private osid_course_CourseSearch $search;
+    private osid_id_Id $physId;
+    private osid_id_Id $geolId;
+    private osid_id_Id $deptTopicId;
+    private osid_id_Id $subjTopicId;
+    private osid_id_Id $divTopicId;
+    private osid_type_Type $unknownType;
+    private osid_type_Type $generaNoneType;
+    private osid_type_Type $secondaryType;
+    private osid_type_Type $undergraduateType;
+    private osid_type_Type $instructorsType;
+    private osid_type_Type $otherType;
 
     /**
      * Sets up the fixture, for example, opens a network connection.

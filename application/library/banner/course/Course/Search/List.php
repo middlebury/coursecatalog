@@ -25,6 +25,7 @@ class banner_course_Course_Search_List extends banner_course_Course_AbstractList
     private array $additionalColumns;
     private array $additionalTableJoins;
     private array $parameters;
+    private int $resultSize;
 
     /**
      * Constructor.

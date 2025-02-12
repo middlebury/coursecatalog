@@ -11,7 +11,9 @@ class banner_course_CourseManagerTest extends phpkit_test_phpunit_AbstractOsidMa
     /**
      * @var banner_course_CourseManager
      */
-    protected $manager;
+    protected osid_OsidManager $manager;
+
+    private osid_id_Id $mcugId;
 
     /**
      * Answer the manager object to test.

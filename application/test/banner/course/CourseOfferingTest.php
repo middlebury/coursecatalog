@@ -11,7 +11,19 @@ class banner_course_CourseOfferingTest extends phpkit_test_phpunit_AbstractOsidO
     /**
      * @var banner_course_CourseOffering
      */
-    protected $object;
+    protected osid_course_CourseOffering $object;
+
+    private osid_id_Id $mcugCatalogId;
+    private osid_id_Id $physCourseId;
+    private osid_id_Id $physOfferingId;
+    private osid_id_Id $geolOfferingId;
+    private osid_id_Id $geogOfferingId;
+    private osid_id_Id $chemOfferingId;
+    private osid_course_CourseOfferingLookupSession $session;
+    private osid_type_Type $instructorsType;
+    private osid_type_Type $weeklyScheduleType;
+    private osid_type_Type $alternatesType;
+    private osid_type_Type $namesType;
 
     /**
      * Answer the Object to test.

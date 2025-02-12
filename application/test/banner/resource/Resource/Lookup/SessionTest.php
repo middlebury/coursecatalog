@@ -11,7 +11,23 @@ class banner_resource_Resource_Lookup_SessionTest extends phpkit_test_phpunit_Ab
     /**
      * @var banner_course_Course_Lookup_Session
      */
-    protected $session;
+    protected osid_resource_ResourceLookupSession $session;
+    private osid_resource_ResourceManager $manager;
+    private osid_id_Id $allBinId;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $miisId;
+    private osid_type_Type $personType;
+    private osid_type_Type $roomType;
+    private osid_type_Type $buildingType;
+    private osid_type_Type $campusType;
+    private osid_type_Type $placeType;
+    private osid_type_Type $unknownType;
+    private osid_id_Id $unknownId;
+    private osid_id_Id $person1Id;
+    private osid_id_Id $person2Id;
+    private osid_id_Id $campusId;
+    private osid_id_Id $buildingId;
+    private osid_id_Id $roomId;
 
     /**
      * Answer the session object to test.

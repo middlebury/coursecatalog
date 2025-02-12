@@ -11,7 +11,21 @@ class banner_course_PartOfTermCourseOfferingTest extends phpkit_test_phpunit_Abs
     /**
      * @var banner_course_CourseOffering
      */
-    protected $object;
+    protected osid_course_CourseOffering $object;
+
+    private osid_id_Id $mclsCatalogId;
+    private osid_id_Id $hebmCourseId;
+    private osid_id_Id $hebmOfferingId;
+    private osid_id_Id $mcugCatalogId;
+    private osid_id_Id $physCourseId;
+    private osid_id_Id $physOfferingId;
+    private osid_id_Id $physId;
+    private osid_course_CourseOfferingLookupSession $session;
+    private osid_course_CourseOfferingSearchSession $searchSession;
+    private osid_type_Type $instructorsType;
+    private osid_type_Type $weeklyScheduleType;
+    private osid_type_Type $alternatesType;
+    private osid_type_Type $namesType;
 
     /**
      * Answer the Object to test.
