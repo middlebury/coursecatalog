@@ -6,7 +6,7 @@
         <br/>Cross-Listed As:
         {% for alternate in item.alternates %}
             <br/>
-            <a href='{{ path('view_offering', {offeringId: alternate}) }}'>{{ alternate.displayname }}</a>
+            <a href='{{ path('view_offering', {offeringId: alternate.offering}) }}'>{{ alternate.offering.displayname }}</a>
             {{ alternate.is_primary ? ' * ' }}
         {% endfor %}
     {% endif %}

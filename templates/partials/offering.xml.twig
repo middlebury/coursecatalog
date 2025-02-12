@@ -9,7 +9,7 @@
 {% endif ~%}
 {%- if alternates is not empty %}
 {%- for alternate in alternates %}
-            <catalog:alternate id="{{ osidIdToString(alternate.id) }}" href="{{ url('view_offering', {offeringId: alternate}) }}" is_primary="{{ alternate.is_primary ? 'true':'false' }}">{{ alternate.displayname }}</catalog:alternate>
+            <catalog:alternate id="{{ osidIdToString(alternate.offering.id) }}" href="{{ url('view_offering', {offeringId: alternate.offering}) }}" is_primary="{{ alternate.is_primary ? 'true':'false' }}">{{ alternate.offering.displayname }}</catalog:alternate>
 {% endfor ~%}
 {% endif %}
             <catalog:genustype type="{{ osidTypeToString(offering.genustype) }}" id="{{ osidTypeToString(offering.genustype) }}">{{ offering.genustype.displayname }}</catalog:genustype>

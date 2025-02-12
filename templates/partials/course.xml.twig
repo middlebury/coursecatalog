@@ -1,5 +1,5 @@
         <item>
-            <title>{{ course.displayname }}{% if include_alternates_in_title and alternates is not empty %}{% for alternate in alternates %} / {{ alternate.displayname }}{% endfor %}{% endif %} - {{ course.title }}</title>
+            <title>{{ course.displayname }}{% if include_alternates_in_title and alternates is not empty %}{% for alternate in alternates %} / {{ alternate.course.displayname }}{% endfor %}{% endif %} - {{ course.title }}</title>
             <link>{{ url('view_course', {courseId: course}) }}</link>
             <guid isPermaLink="true">{{ url('view_course', {courseId: course}) }}</guid>
             <description><![CDATA[{{ course.description|raw }}]]></description>
@@ -11,10 +11,10 @@
 {% endif ~%}
 {%- if alternates is not empty %}
 {%- for alternate in alternates %}
-            <catalog:alternate id="{{ osidIdToString(alternate.id) }}" href="{{ url('view_course', {courseId: alternate}) }}" is_primary="{{ alternate.is_primary ? 'true':'false' }}">
-                <catalog:id>{{ osidIdToString(alternate.id) }}</catalog:id>
-                <catalog:display_name>{{ alternate.displayname }}</catalog:display_name>
-                <catalog:title>{{ alternate.title }}</catalog:title>
+            <catalog:alternate id="{{ osidIdToString(alternate.course.id) }}" href="{{ url('view_course', {courseId: alternate.course}) }}" is_primary="{{ alternate.is_primary ? 'true':'false' }}">
+                <catalog:id>{{ osidIdToString(alternate.course.id) }}</catalog:id>
+                <catalog:display_name>{{ alternate.course.displayname }}</catalog:display_name>
+                <catalog:title>{{ alternate.course.title }}</catalog:title>
             </catalog:alternate>
 {% endfor ~%}
 {% endif %}

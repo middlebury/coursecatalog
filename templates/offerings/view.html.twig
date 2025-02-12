@@ -107,7 +107,7 @@
     <dt>Cross-Listed As:</dt>
     <dd>
     {% for alternate in alternates %}
-        <a href='{{ path('view_offering', {offeringId: alternate, catalogId: catalogId, termId: offering.term}) }}'>{{ alternate.displayname }}</a>
+        <a href='{{ path('view_offering', {offeringId: alternate.offering, catalogId: catalogId, termId: offering.term}) }}'>{{ alternate.offering.displayname }}</a>
         {{ alternate.is_primary ? ' * ' }}
         <br/>
     {% endfor %}

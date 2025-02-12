@@ -111,14 +111,17 @@ class DataLoader
                 $alternates = $record->getAlternates();
                 while ($alternates->hasNext()) {
                     $alternate = $alternates->getNextCourse();
-                    $alternate->is_primary = false;
+                    $alternateData = [
+                        'course' => $alternate,
+                        'is_primary' => false,
+                    ];
                     if ($alternate->hasRecordType($this->alternateType)) {
                         $alternateRecord = $alternate->getCourseRecord($this->alternateType);
                         if ($alternateRecord->isPrimary()) {
-                            $alternate->is_primary = true;
+                            $alternateData['is_primary'] = true;
                         }
                     }
-                    $data[] = $alternate;
+                    $data[] = $alternateData;
                 }
             }
         }
@@ -141,14 +144,17 @@ class DataLoader
     {
         $data = null;
         foreach ($recentCourses->getAlternatesForCourse($course) as $alternate) {
-            $alternate->is_primary = false;
+            $alternateData = [
+                'course' => $alternate,
+                'is_primary' => false,
+            ];
             if ($alternate->hasRecordType($this->alternateType)) {
                 $alternateRecord = $alternate->getCourseRecord($this->alternateType);
                 if ($alternateRecord->isPrimary()) {
-                    $alternate->is_primary = true;
+                    $alternateData['is_primary'] = true;
                 }
             }
-            $data[] = $alternate;
+            $data[] = $alternateData;
         }
 
         return $data;
@@ -408,14 +414,17 @@ class DataLoader
                 $alternates = $record->getAlternates();
                 while ($alternates->hasNext()) {
                     $alternate = $alternates->getNextCourseOffering();
-                    $alternate->is_primary = false;
+                    $alternateData = [
+                        'offering' => $alternate,
+                        'is_primary' => false,
+                    ];
                     if ($alternate->hasRecordType($this->alternateType)) {
                         $alternateRecord = $alternate->getCourseOfferingRecord($this->alternateType);
                         if ($alternateRecord->isPrimary()) {
-                            $alternate->is_primary = true;
+                            $alternateData['is_primary'] = true;
                         }
                     }
-                    $data[] = $alternate;
+                    $data[] = $alternateData;
                 }
             }
         }

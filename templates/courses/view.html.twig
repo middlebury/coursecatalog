@@ -65,7 +65,7 @@
     <dt>Equivalent Courses:</dt>
     <dd>
     {% for alternate in alternates %}
-        <a href='{{ path('view_course', {courseId: alternate, termId: term}) }}'>{{ alternate.displayname }}</a>
+        <a href='{{ path('view_course', {courseId: alternate.course, termId: term}) }}'>{{ alternate.course.displayname }}</a>
         {{ alternate.is_primary ? ' * ' }}
         <br/>
     {% endfor %}
