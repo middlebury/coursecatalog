@@ -15,6 +15,9 @@ class ExportConfigurationStorageTest extends KernelTestCase
 {
     use AppDatabaseTestTrait;
 
+    private ExportConfigurationStorage $configStorage;
+    private IdMap $osidIdMap;
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.

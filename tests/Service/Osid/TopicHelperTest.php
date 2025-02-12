@@ -10,6 +10,10 @@ class TopicHelperTest extends KernelTestCase
 {
     use \banner_DatabaseTestTrait;
 
+    private \osid_id_Id $mcugId;
+    private TopicHelper $osidTopicHelper;
+    private \osid_course_TopicLookupSession $topicLookup;
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.

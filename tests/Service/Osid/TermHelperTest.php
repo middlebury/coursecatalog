@@ -10,6 +10,13 @@ class TermHelperTest extends KernelTestCase
 {
     use \banner_DatabaseTestTrait;
 
+    private \osid_id_Id $mcugId;
+    private \osid_id_Id $spring2009TermId;
+    private \osid_id_Id $fall2009TermId;
+    private \osid_id_Id $fall2008TermId;
+    private TermHelper $osidTermHelper;
+    private \osid_course_TermLookupSession $termLookup;
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.

@@ -14,6 +14,10 @@ class ArchiveFileManagerTest extends KernelTestCase
 {
     use AppDatabaseTestTrait;
 
+    private string $archiveBase;
+    private ArchiveStorage $archiveStorage;
+    private ArchiveFileManager $archiveFileManager;
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
