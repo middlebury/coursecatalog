@@ -18,6 +18,12 @@
  */
 class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osid_course_CourseManager
 {
+    // The underlying course manager.
+    private osid_course_CourseManager $manager;
+    private osid_resource_ResourceManager $resourceManager;
+    private osid_calendaring_CalendarManager $calendarManager;
+    private osid_learning_ObjectiveManager $learningManager;
+
     /**
      * Set the configuration and class paths.
      *
@@ -33,8 +39,6 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
         $this->setDisplayName('APC Caching Course Manager');
         $this->setDescription('This is a CourseManager implementation that provides read-only, unauthenticated, access to course information stored in an underlying course manager.');
     }
-    // The underlying course manager.
-    private $manager;
 
     /**
      * Allow access to the underlying database for test setup/tear down.

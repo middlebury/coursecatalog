@@ -17,6 +17,12 @@
  */
 abstract class apc_course_AbstractSession extends phpkit_AbstractOsidSession
 {
+    protected osid_course_CourseManager $manager;
+    private osid_course_CourseLookupSession $courseLookupSession;
+    private osid_course_CourseOfferingLookupSession $courseOfferingLookupSession;
+    private osid_course_TermLookupSession $termLookupSession;
+    private osid_resource_ResourceLookupSession $resourceLookupSession;
+
     /**
      * Constructor.
      *
@@ -28,7 +34,6 @@ abstract class apc_course_AbstractSession extends phpkit_AbstractOsidSession
     {
         $this->manager = $manager;
     }
-    protected $manager;
 
     /**
      * Answer the course lookup session.

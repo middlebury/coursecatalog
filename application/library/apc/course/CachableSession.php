@@ -34,8 +34,8 @@ abstract class apc_course_CachableSession extends apc_course_AbstractSession
 
         $this->idString = $catalogId->getIdentifierNamespace().':'.$catalogId->getAuthority().':'.$catalogId->getIdentifier();
     }
-    private $collectionId;
-    private $idString;
+    private string $collectionId;
+    private string $idString;
 
     /**
      * Answer data from the cache or NULL if not available.

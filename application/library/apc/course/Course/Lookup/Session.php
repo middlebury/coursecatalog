@@ -44,6 +44,8 @@
  */
 class apc_course_Course_Lookup_Session extends apc_course_CachableSession implements osid_course_CourseLookupSession
 {
+    private osid_course_CourseLookupSession $session;
+
     /**
      * Constructor.
      *
@@ -56,7 +58,6 @@ class apc_course_Course_Lookup_Session extends apc_course_CachableSession implem
         $this->session = $session;
         parent::__construct($manager);
     }
-    protected $session;
 
     /**
      *  Gets the <code> CourseCatalog </code> <code> Id </code> associated
