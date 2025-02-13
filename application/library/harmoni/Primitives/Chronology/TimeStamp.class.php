@@ -78,13 +78,13 @@ class TimeStamp extends DateAndTime
      * @param int $aUnixTimeStamp The number of seconds since the Unix Epoch
      *                            (January 1 1970 00:00:00 GMT/UTC)
      *
-     * @return object Timestamp
+     * @return Timestamp
      *
      * @since 5/27/05
      *
      * @static
      */
-    public static function fromUnixTimeStamp($aUnixTimeStamp)
+    public static function fromUnixTimeStamp(int $aUnixTimeStamp)
     {
         $sinceUnixEpoch = Duration::withSeconds($aUnixTimeStamp);
 
@@ -96,7 +96,7 @@ class TimeStamp extends DateAndTime
     /**
      * Answer a TimeStamp representing now.
      *
-     * @return object TimeStamp
+     * @return TimeStamp
      *
      * @since 5/13/05
      */
@@ -116,7 +116,7 @@ class TimeStamp extends DateAndTime
      *
      * @since 5/13/05
      */
-    public function printableString($printLeadingSpaceToo = false)
+    public function printableString(bool $printLeadingSpaceToo = false)
     {
         $date = $this->date();
         $time = $this->time();
@@ -131,7 +131,7 @@ class TimeStamp extends DateAndTime
     /**
      * Answer a DateAndTime that represents this TimeStamp.
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/5/05
      */
@@ -143,7 +143,7 @@ class TimeStamp extends DateAndTime
     /**
      * Answer a Timestamp that represents this DateAndTime.
      *
-     * @return object TimeStamp
+     * @return TimeStamp
      *
      * @since 5/5/05
      */
@@ -171,7 +171,7 @@ class TimeStamp extends DateAndTime
     /**
      * Answer the date of the receiver.
      *
-     * @return object Date
+     * @return Date
      *
      * @since 5/13/05
      */
@@ -200,13 +200,11 @@ class TimeStamp extends DateAndTime
     /**
      * Answer a TimeStamp which is anInteger days before the receiver.
      *
-     * @param int $anInteger
-     *
-     * @return object TimeStamp
+     * @return TimeStamp
      *
      * @since 5/13/05
      */
-    public function minusDays($anInteger)
+    public function minusDays(int $anInteger)
     {
         $obj = $this->minus(Duration::withDays($anInteger));
 
@@ -216,13 +214,11 @@ class TimeStamp extends DateAndTime
     /**
      * Answer a TimeStamp which is anInteger seconds before the receiver.
      *
-     * @param int $anInteger
-     *
-     * @return object TimeStamp
+     * @return TimeStamp
      *
      * @since 5/13/05
      */
-    public function minusSeconds($anInteger)
+    public function minusSeconds(int $anInteger)
     {
         $obj = $this->minus(Duration::withSeconds($anInteger));
 
@@ -232,13 +228,11 @@ class TimeStamp extends DateAndTime
     /**
      * Answer a TimeStamp which is anInteger days after the receiver.
      *
-     * @param int $anInteger
-     *
-     * @return object TimeStamp
+     * @return TimeStamp
      *
      * @since 5/13/05
      */
-    public function plusDays($anInteger)
+    public function plusDays(int $anInteger)
     {
         $obj = $this->plus(Duration::withDays($anInteger));
 
@@ -248,13 +242,11 @@ class TimeStamp extends DateAndTime
     /**
      * Answer a TimeStamp which is anInteger seconds after the receiver.
      *
-     * @param int $anInteger
-     *
-     * @return object TimeStamp
+     * @return TimeStamp
      *
      * @since 5/13/05
      */
-    public function plusSeconds($anInteger)
+    public function plusSeconds(int $anInteger)
     {
         $obj = $this->plus(Duration::withSeconds($anInteger));
 
@@ -264,7 +256,7 @@ class TimeStamp extends DateAndTime
     /**
      * Answer the time of the receiver.
      *
-     * @return object Time
+     * @return Time
      *
      * @since 5/13/05
      */

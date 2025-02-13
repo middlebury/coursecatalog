@@ -47,13 +47,11 @@ class Week extends Timespan
     /**
      * Return the index of a string Day.
      *
-     * @param string $aNameString
-     *
      * @return int
      *
      * @since 5/4/05
      */
-    public static function indexOfDay($aNameString)
+    public static function indexOfDay(string $aNameString)
     {
         foreach (ChronologyConstants::DayNames() as $i => $name) {
             if (preg_match("/$aNameString.*/i", $name)) {
@@ -67,13 +65,11 @@ class Week extends Timespan
     /**
      * Return the name of the day at index.
      *
-     * @param int $anInteger
-     *
      * @return string
      *
      * @since 5/4/05
      */
-    public static function nameOfDay($anInteger)
+    public static function nameOfDay(int $anInteger)
     {
         $names = ChronologyConstants::DayNames();
         if ($names[$anInteger]) {
@@ -105,16 +101,15 @@ class Week extends Timespan
      * Create a new object starting now, with a given duration.
      * Override - as each Week has a defined duration.
      *
-     * @param object DateAndTime $aDateAndTime
-     * @param object Duration $aDuration
+     * @param DateAndTime $aDateAndTime
      *
-     * @return object Week
+     * @return Week
      *
      * @since 5/5/05
      *
      * @static
      */
-    public static function startingDuration($aDateAndTime, $aDuration)
+    public static function startingDuration(AsDateAndTime $aDateAndTime, ?Duration $aDuration)
     {
         $asDateAndTime = $aDateAndTime->asDateAndTime();
         $midnight = $asDateAndTime->atMidnight();
@@ -138,7 +133,7 @@ class Week extends Timespan
     /**
      * Answer the receiver as a Week.
      *
-     * @return object Week
+     * @return Week
      *
      * @since 5/23/05
      */

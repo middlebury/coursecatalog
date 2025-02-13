@@ -12,7 +12,7 @@ require_once __DIR__.'/../Objects/SObject.class.php';
  */
 class Boolean extends SObject
 {
-    public $_bool;
+    private bool $_bool;
 
     /*********************************************************
      * Class Methods - Virtual Constructors
@@ -21,13 +21,11 @@ class Boolean extends SObject
     /**
      * Instantiates a new Boolean object with the passed value.
      *
-     * @param string $value
-     *
      * @return ref object
      *
      * @static
      */
-    public static function withValue($value)
+    public static function withValue(bool $value)
     {
         return new static($value);
     }
@@ -43,7 +41,7 @@ class Boolean extends SObject
      *
      * @static
      */
-    public static function fromString($aString)
+    public static function fromString(string $aString)
     {
         return new static(('true' == strtolower($aString)) ? true : false);
     }
@@ -51,7 +49,7 @@ class Boolean extends SObject
     /**
      * Instantiates a new Boolean object with the value, false.
      *
-     * @return object Boolean
+     * @return Boolean
      *
      * @since 8/11/05
      *
@@ -65,7 +63,7 @@ class Boolean extends SObject
     /**
      * Instantiates a new Boolean object with the value, true.
      *
-     * @return object Boolean
+     * @return Boolean
      *
      * @since 8/11/05
      *
@@ -80,7 +78,7 @@ class Boolean extends SObject
      * Instance Methods
      *********************************************************/
 
-    public function __construct($value = true)
+    public function __construct(bool $value = true)
     {
         $this->_bool = (bool) $value;
     }
@@ -113,7 +111,7 @@ class Boolean extends SObject
      * If = is redefined in any subclass, consider also redefining the
      * message hash.
      *
-     * @param object $anObject
+     * @param $anObject
      *
      * @return bool
      *

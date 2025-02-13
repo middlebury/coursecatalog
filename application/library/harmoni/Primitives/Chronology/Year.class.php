@@ -52,16 +52,15 @@ class Year extends Timespan
     /**
      * Create a new object starting from midnight.
      *
-     * @param object DateAndTime $aDateAndTime
-     * @param object Duration $aDuration
+     * @param DateAndTime $aDateAndTime
      *
-     * @return object Year
+     * @return Year
      *
      * @since 5/5/05
      *
      * @static
      */
-    public static function startingDuration($aDateAndTime, $aDuration)
+    public static function startingDuration(AsDateAndTime $aDateAndTime, ?Duration $aDuration)
     {
         $asDateAndTime = $aDateAndTime->asDateAndTime();
         $midnight = $asDateAndTime->atMidnight();
@@ -75,15 +74,13 @@ class Year extends Timespan
     /**
      * Create a new Year.
      *
-     * @param int $anInteger
-     *
-     * @return object Year
+     * @return Year
      *
      * @since 5/4/05
      *
      * @static
      */
-    public static function withYear($anInteger)
+    public static function withYear(int $anInteger)
     {
         $start = DateAndTime::withYearMonthDay($anInteger, 1, 1);
 
@@ -96,15 +93,13 @@ class Year extends Timespan
     /**
      *  Return the number of days in a year.
      *
-     * @param int $anInteger
-     *
      * @return int
      *
      * @since 10/15/08
      *
      * @static
      */
-    public static function getDaysInYear($anInteger)
+    public static function getDaysInYear(int $anInteger)
     {
         if (null === $anInteger) {
             throw new InvalidArgumentException('Cannot execute daysInYear for NULL.');
@@ -120,15 +115,13 @@ class Year extends Timespan
     /**
      * Return TRUE if the year passed is a leap year.
      *
-     * @param int $anInteger
-     *
      * @return bool
      *
      * @since 10/15/08
      *
      * @static
      */
-    public static function isYearLeapYear($anInteger)
+    public static function isYearLeapYear(int $anInteger)
     {
         if ($anInteger > 0) {
             $adjustedYear = $anInteger;
@@ -173,7 +166,7 @@ class Year extends Timespan
      *
      * @since 5/23/05
      */
-    public function printableString($printLeadingSpaceToo = false)
+    public function printableString(bool $printLeadingSpaceToo = false)
     {
         return $this->startYear();
     }
@@ -197,7 +190,7 @@ class Year extends Timespan
     /**
      * Answer the receiver as a Year.
      *
-     * @return object Year
+     * @return Year
      *
      * @since 5/23/05
      */

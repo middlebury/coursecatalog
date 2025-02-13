@@ -47,7 +47,7 @@ abstract class SObject
      *                               to inherit class methods such that they can know the class of
      *                               the reciever (child class) instead of the class name of the implementer
      *                               (parent class). As such, we need to pass our target classname.
-     * @param object $aSimilarObject
+     * @param $aSimilarObject
      *
      * @return object
      *
@@ -55,7 +55,7 @@ abstract class SObject
      *
      * @since 5/5/05
      */
-    public static function newFrom($targetClass, $aSimilarObject)
+    public static function newFrom(string $targetClass, SObject $aSimilarObject)
     {
         $newObject = new $targetClass();
         $newObject->copySameFrom($aSimilarObject);
@@ -72,7 +72,7 @@ abstract class SObject
      * If = is redefined in any subclass, consider also redefining the
      * message hash.
      *
-     * @param object $anObject
+     * @param $anObject
      *
      * @return bool
      *
@@ -89,7 +89,7 @@ abstract class SObject
      * WARNING: This method is here for convience. DO NOT OVERRIDE.
      * OVERRIDE isEqualTo() instead.
      *
-     * @param object $anObject
+     * @param $anObject
      *
      * @return bool
      *
@@ -104,7 +104,7 @@ abstract class SObject
      * Answer whether the receiver and the argument are not the
      * same.
      *
-     * @param object $anObject
+     * @param $anObject
      *
      * @return bool
      *
@@ -118,7 +118,7 @@ abstract class SObject
     /**
      * Answer whether the receiver and the argument Reference the same object.
      *
-     * @param object $anObject
+     * @param $anObject
      *
      * @return bool
      *
@@ -132,7 +132,7 @@ abstract class SObject
     /**
      * Answer whether the receiver and the argument do not reference the same object.
      *
-     * @param object $anObject
+     * @param $anObject
      *
      * @return bool
      *
@@ -153,17 +153,13 @@ abstract class SObject
      *
      * 'as' seems to be a reserved word, so 'asA' is used instead.
      *
-     * @param string $aSimilarClass
-     *
      * @return object
      *
      * @since 5/5/05
      */
-    public function asA($aSimilarClass)
+    public function asA(string $aSimilarClass)
     {
-        $obj = self::newFrom($aSimilarClass, $this);
-
-        return $obj;
+        return static::newFrom($aSimilarClass, $this);
     }
 
     /**
@@ -224,7 +220,7 @@ abstract class SObject
      * Copy to myself all instance variables named the same in otherObject.
      * This ignores otherObject's control over its own inst vars.
      *
-     * @param object $otherObject
+     * @param $otherObject
      *
      * @return void
      *

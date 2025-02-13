@@ -47,14 +47,14 @@ class Schedule extends Timespan
     /**
      * Return an array of the DateAndTimes scheduled between aStart and anEnd.
      *
-     * @param object $aStart
-     * @param object $anEnd
+     * @param $aStart
+     * @param $anEnd
      *
      * @return array Of DateAndTime objects
      *
      * @since 5/25/05
      */
-    public function between($aStart, $anEnd)
+    public function between(AsDateAndTime $aStart, AsDateAndTime $anEnd)
     {
         $results = [];
         $end = $anEnd->min($this->end());
@@ -105,13 +105,11 @@ class Schedule extends Timespan
     /**
      * Set the schedule.
      *
-     * @param array $anArrayOfDurations
-     *
      * @return void
      *
      * @since 5/25/05
      */
-    public function setSchedule($anArrayOfDurations)
+    public function setSchedule(array $anArrayOfDurations)
     {
         $this->schedule = $anArrayOfDurations;
     }

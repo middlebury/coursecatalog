@@ -14,6 +14,7 @@
  */
 
 require_once __DIR__.'/../Magnitudes/Magnitude.class.php';
+require_once __DIR__.'/AsDateAndTime.php';
 
 /**
  * I represent a point in UTC time as defined by ISO 8601. I have zero duration.
@@ -69,7 +70,7 @@ require_once __DIR__.'/../Magnitudes/Magnitude.class.php';
  *
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
-class DateAndTime extends Magnitude
+class DateAndTime extends Magnitude implements AsDateAndTime
 {
     /*********************************************************
      * Instance Variables
@@ -103,7 +104,7 @@ class DateAndTime extends Magnitude
     /**
      * One second precision.
      *
-     * @return object Duration
+     * @return Duration
      *
      * @since 5/12/05
      *
@@ -117,7 +118,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer the duration we are offset from UTC.
      *
-     * @return object Duration
+     * @return Duration
      *
      * @static
      *
@@ -131,7 +132,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer the local TimeZone.
      *
-     * @return object Duration
+     * @return Duration
      *
      * @static
      *
@@ -159,7 +160,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer a new instance representing the Squeak epoch: 1 January 1901.
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/2/05
      *
@@ -185,13 +186,13 @@ class DateAndTime extends Magnitude
      *
      * @param string $aString the input string
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/12/05
      *
      * @static
      */
-    public static function fromString($aString)
+    public static function fromString(string $aString)
     {
         $parser = StringParser::getParserFor($aString);
 
@@ -199,39 +200,45 @@ class DateAndTime extends Magnitude
             return null;
         }
 
-        if (null !== $parser->offsetHour()) {
+        if (!is_null($parser->offsetHour())) {
             return static::withYearMonthDayHourMinuteSecondOffset(
                 $parser->year(),
                 $parser->month(),
                 $parser->day(),
-                $parser->hour(),
-                $parser->minute(),
-                $parser->second(),
+                (int) $parser->hour(),
+                (int) $parser->minute(),
+                (int) $parser->second(),
                 Duration::withDaysHoursMinutesSeconds(
                     0,
-                    $parser->offsetHour(),
-                    $parser->offsetMinute(),
-                    $parser->offsetSecond()
+                    (int) $parser->offsetHour(),
+                    (int) $parser->offsetMinute(),
+                    (int) $parser->offsetSecond()
                 )
             );
-        } elseif (null !== $parser->hour()) {
+        } elseif (!is_null($parser->hour())) {
             return static::withYearMonthDayHourMinuteSecond(
                 $parser->year(),
                 $parser->month(),
                 $parser->day(),
                 $parser->hour(),
-                $parser->minute(),
-                $parser->second()
+                (int) $parser->minute(),
+                (int) $parser->second()
             );
         } else {
-            return static::withYearMonthDay($parser->year(), $parser->month(), $parser->day());
+            if (is_null($parser->month())) {
+                return static::withYearMonthDay($parser->year(), 1, 1);
+            } elseif (is_null($parser->day())) {
+                return static::withYearMonthDay($parser->year(), $parser->month(), 1);
+            } else {
+                return static::withYearMonthDay($parser->year(), $parser->month(), $parser->day());
+            }
         }
     }
 
     /**
      * Answer a new instance starting at midnight local time.
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/3/05
      *
@@ -247,7 +254,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer a new instance starting at noon local time.
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/3/05
      *
@@ -263,7 +270,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer the current date and time.
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/12/05
      *
@@ -285,7 +292,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer a new instance representing today.
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/12/05
      *
@@ -299,7 +306,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer a new instance representing tomorow.
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/12/05
      *
@@ -317,13 +324,13 @@ class DateAndTime extends Magnitude
     /**
      * Create a new instance from Date and Time objects.
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/12/05
      *
      * @static
      */
-    public static function withDateAndTime($aDate, $aTime)
+    public static function withDateAndTime(Date $aDate, Time $aTime)
     {
         return static::withYearDayHourMinuteSecond(
             $aDate->startYear(),
@@ -337,15 +344,13 @@ class DateAndTime extends Magnitude
     /**
      * Create a new new instance for a given Julian Day Number.
      *
-     * @param int $aJulianDayNumber
-     *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/2/05
      *
      * @static
      */
-    public static function withJulianDayNumber($aJulianDayNumber)
+    public static function withJulianDayNumber(int $aJulianDayNumber)
     {
         $days = Duration::withDays($aJulianDayNumber);
 
@@ -358,14 +363,11 @@ class DateAndTime extends Magnitude
     /**
      * Create a new instance.
      *
-     * @param int $anIntYear
-     * @param int $anIntDayOfYear
-     *
      * @static
      *
      * @since 5/4/05
      */
-    public static function withYearDay($anIntYear, $anIntDayOfYear)
+    public static function withYearDay(int $anIntYear, int $anIntDayOfYear)
     {
         return static::withYearDayHourMinuteSecond(
             $anIntYear,
@@ -379,19 +381,13 @@ class DateAndTime extends Magnitude
     /**
      * Create a new instance.
      *
-     * @param int $anIntYear
-     * @param int $anIntDayOfYear
-     * @param int $anIntHour
-     * @param int $anIntMinute
-     * @param int $anIntSecond
-     *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @static
      *
      * @since 5/4/05
      */
-    public static function withYearDayHourMinuteSecond($anIntYear, $anIntDayOfYear, $anIntHour, $anIntMinute, $anIntSecond)
+    public static function withYearDayHourMinuteSecond(int $anIntYear, int $anIntDayOfYear, int $anIntHour, int $anIntMinute, int $anIntSecond)
     {
         return static::withYearDayHourMinuteSecondOffset(
             $anIntYear,
@@ -406,21 +402,15 @@ class DateAndTime extends Magnitude
     /**
      * Create a new instance.
      *
-     * @param int $anIntYear
-     * @param int $anIntDayOfYear
-     * @param int $anIntHour
-     * @param int $anIntMinute
-     * @param int $anIntSecond
-     * @param object Duration $aDurationOffset
+     * @param Duration $aDurationOffset
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @static
      *
      * @since 5/4/05
      */
-    public static function withYearDayHourMinuteSecondOffset($anIntYear, $anIntDayOfYear,
-        $anIntHour, $anIntMinute, $anIntSecond, $aDurationOffset)
+    public static function withYearDayHourMinuteSecondOffset(int $anIntYear, int $anIntDayOfYear, int $anIntHour, int $anIntMinute, int $anIntSecond, ?Duration $aDurationOffset)
     {
         $result = static::withYearMonthDayHourMinuteSecondOffset(
             $anIntYear,
@@ -443,15 +433,11 @@ class DateAndTime extends Magnitude
     /**
      * Create a new instance.
      *
-     * @param int $anIntYear
-     * @param int $anIntOrStringMonth
-     * @param int $anIntDay
-     *
      * @static
      *
      * @since 5/4/05
      */
-    public static function withYearMonthDay($anIntYear, $anIntOrStringMonth, $anIntDay)
+    public static function withYearMonthDay(int $anIntYear, int|string $anIntOrStringMonth, int $anIntDay)
     {
         return static::withYearMonthDayHourMinuteSecondOffset(
             $anIntYear,
@@ -467,19 +453,13 @@ class DateAndTime extends Magnitude
     /**
      * Create a new instance.
      *
-     * @param int $anIntYear
-     * @param int $anIntOrStringMonth
-     * @param int $anIntDay
-     * @param int $anIntHour
-     * @param int $anIntMinute
-     *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @static
      *
      * @since 5/4/05
      */
-    public static function withYearMonthDayHourMinute($anIntYear, $anIntOrStringMonth, $anIntDay, $anIntHour, $anIntMinute)
+    public static function withYearMonthDayHourMinute(int $anIntYear, int|string $anIntOrStringMonth, int $anIntDay, int $anIntHour, int $anIntMinute)
     {
         return static::withYearMonthDayHourMinuteSecondOffset(
             $anIntYear,
@@ -495,20 +475,13 @@ class DateAndTime extends Magnitude
     /**
      * Create a new instance.
      *
-     * @param int $anIntYear
-     * @param int $anIntOrStringMonth
-     * @param int $anIntDay
-     * @param int $anIntHour
-     * @param int $anIntMinute
-     * @param int $anIntSecond
-     *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @static
      *
      * @since 5/4/05
      */
-    public static function withYearMonthDayHourMinuteSecond($anIntYear, $anIntOrStringMonth, $anIntDay, $anIntHour, $anIntMinute, $anIntSecond)
+    public static function withYearMonthDayHourMinuteSecond(int $anIntYear, int|string $anIntOrStringMonth, int $anIntDay, int $anIntHour, int $anIntMinute, int $anIntSecond)
     {
         return static::withYearMonthDayHourMinuteSecondOffset(
             $anIntYear,
@@ -524,23 +497,17 @@ class DateAndTime extends Magnitude
     /**
      * Create a new instance.
      *
-     * @param int $anIntYear
-     * @param int $anIntOrStringMonth
-     * @param int $anIntDay
-     * @param int $anIntHour
-     * @param int $anIntMinute
-     * @param int $anIntSecond
-     * @param object Duration $aDurationOffset
+     * @param Duration $aDurationOffset
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @static
      *
      * @since 5/4/05
      */
-    public static function withYearMonthDayHourMinuteSecondOffset($anIntYear,
-        $anIntOrStringMonth, $anIntDay, $anIntHour, $anIntMinute,
-        $anIntSecond, $aDurationOffset)
+    public static function withYearMonthDayHourMinuteSecondOffset(int $anIntYear,
+        int|string $anIntOrStringMonth, int $anIntDay, int $anIntHour, int $anIntMinute,
+        int $anIntSecond, ?Duration $aDurationOffset)
     {
         // Ensure that we have no days less than 1.
         if ($anIntDay < 1) {
@@ -581,7 +548,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer a new instance representing yesterday.
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/12/05
      *
@@ -604,14 +571,13 @@ class DateAndTime extends Magnitude
      * Initialize this DateAndTime.
      * ticks is {julianDayNumber. secondCount. nanoSeconds}.
      *
-     * @param array $ticks
-     * @param object Duration $utcOffset
+     * @param Duration $utcOffset
      *
      * @return void
      *
      * @since 5/2/05
      */
-    public function ticksOffset($ticks, $utcOffset)
+    public function ticksOffset(array $ticks, Duration $utcOffset)
     {
         //		$this->_normalize($ticks, 2, ChronologyConstants::NanosInSecond());
         $this->_normalize($ticks, 1, ChronologyConstants::SecondsInDay());
@@ -634,7 +600,7 @@ class DateAndTime extends Magnitude
      *
      * @since 5/3/05
      */
-    public function _normalize(&$ticks, $i, $base)
+    private function _normalize(array &$ticks, int $i, int $base)
     {
         $tick = $ticks[$i];
         $quo = floor(abs($tick) / $base);
@@ -666,7 +632,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer the date and time at midnight on the day of the receiver.
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/25/05
      */
@@ -678,7 +644,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer noon on the day of the reciever.
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/25/05
      */
@@ -837,7 +803,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer the duration of this object (always zero).
      *
-     * @return object Duration
+     * @return Duration
      *
      * @since 5/5/05
      */
@@ -1031,7 +997,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer the offset.
      *
-     * @return object Duration
+     * @return Duration
      *
      * @since 5/3/05
      */
@@ -1072,7 +1038,7 @@ class DateAndTime extends Magnitude
      *
      * @since 5/10/05
      */
-    public function printableString($printLeadingSpaceToo = false)
+    public function printableString(bool $printLeadingSpaceToo = false)
     {
         $result = $this->ymdString($printLeadingSpaceToo);
         $result .= 'T';
@@ -1099,7 +1065,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer the Time Zone that corresponds to our offset.
      *
-     * @return object TimeZone
+     * @return TimeZone
      *
      * @since 5/10/05
      */
@@ -1178,7 +1144,7 @@ class DateAndTime extends Magnitude
      *
      * @since 5/10/05
      */
-    public function ymdString($printLeadingSpaceToo = false)
+    public function ymdString(bool $printLeadingSpaceToo = false)
     {
         $year = $this->year();
         $month = $this->month();
@@ -1229,13 +1195,11 @@ class DateAndTime extends Magnitude
      * Answer a string formated using the php date() format sting.
      * See: http://us2.php.net/manual/en/function.date.php for details.
      *
-     * @param string $format
-     *
      * @return string
      *
      * @since 11/21/08
      */
-    public function format($format)
+    public function format(string $format)
     {
         // For PHP < 5.2.0
         if (!class_exists('DateTime')) {
@@ -1252,7 +1216,7 @@ class DateAndTime extends Magnitude
      * comparand conforms to protocol DateAndTime,
      * or can be converted into something that conforms.
      *
-     * @param object $comparand
+     * @param $comparand
      *
      * @return bool
      *
@@ -1291,7 +1255,7 @@ class DateAndTime extends Magnitude
      * comparand conforms to protocol DateAndTime,
      * or can be converted into something that conforms.
      *
-     * @param object $comparand
+     * @param $comparand
      *
      * @return bool
      *
@@ -1326,7 +1290,7 @@ class DateAndTime extends Magnitude
     /**
      * Subtract a Duration or DateAndTime.
      *
-     * @param object $operand
+     * @param $operand
      *
      * @return object
      *
@@ -1363,9 +1327,9 @@ class DateAndTime extends Magnitude
      * Answer a new Duration whose our date + operand. The operand must implement
      * asDuration().
      *
-     * @param object $operand
+     * @param $operand
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/4/05
      */
@@ -1392,7 +1356,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer a Date that represents this object.
      *
-     * @return object Date
+     * @return Date
      *
      * @since 5/5/05
      */
@@ -1406,7 +1370,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer a DateAndTime that represents this object.
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/4/05
      */
@@ -1419,7 +1383,7 @@ class DateAndTime extends Magnitude
      * Answer a Duration that represents this object, the duration since
      * midnight.
      *
-     * @return object Duration
+     * @return Duration
      *
      * @since 5/4/05
      */
@@ -1433,7 +1397,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer a DateAndTime that represents the object, but at local time.
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/5/05
      */
@@ -1452,7 +1416,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer the month that represents this date's month.
      *
-     * @return object Month
+     * @return Month
      *
      * @since 5/5/05
      */
@@ -1481,7 +1445,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer a Time that represents our time component.
      *
-     * @return object Time
+     * @return Time
      *
      * @since 5/5/05
      */
@@ -1495,7 +1459,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer a Timestamp that represents this DateAndTime.
      *
-     * @return object TimeStamp
+     * @return TimeStamp
      *
      * @since 5/5/05
      */
@@ -1509,7 +1473,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer a PHP build-in DateTime object (PHP > 5.2) with our values.
      *
-     * @return object DateTime
+     * @return DateTime
      *
      * @since 11/21/08
      */
@@ -1550,7 +1514,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer a DateAndTime equivalent to the reciever, but at UTC (offset = 0).
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/4/05
      */
@@ -1564,7 +1528,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer the week that represents this date's week.
      *
-     * @return object Week
+     * @return Week
      *
      * @since 5/5/05
      */
@@ -1578,7 +1542,7 @@ class DateAndTime extends Magnitude
     /**
      * Answer the year that represents this date's year.
      *
-     * @return object Year
+     * @return Year
      *
      * @since 5/5/05
      */
@@ -1592,13 +1556,13 @@ class DateAndTime extends Magnitude
     /**
      * Return a Timespan where the receiver is the middle of the Duration.
      *
-     * @param object Duration $aDuration
+     * @param Duration $aDuration
      *
-     * @return object Timespan
+     * @return Timespan
      *
      * @since 5/12/05
      */
-    public function middleOf($aDuration)
+    public function middleOf(Duration $aDuration)
     {
         $duration = $aDuration->asDuration();
 
@@ -1615,13 +1579,13 @@ class DateAndTime extends Magnitude
      * offset to anOffset; i.e. 11am at UTC-05:00 would become 11am at UTC-7:00
      * when -7 hours is passed as the offset.
      *
-     * @param object Duration $aDuration
+     * @param Duration $aDuration
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/4/05
      */
-    public function withOffset($anOffset)
+    public function withOffset(Duration $anOffset)
     {
         $equiv = new static();
         $equiv->ticksOffset($this->ticks(), $anOffset->asDuration());
@@ -1630,15 +1594,13 @@ class DateAndTime extends Magnitude
     }
 
     /**
-     * Answer a Timespan. anEnd conforms to protocol DateAndTime or protocol Timespan.
+     * Answer a Timespan. anEnd conforms to protocol AsDateAndTime.
      *
-     * @param object DateAndTime $anEnd
-     *
-     * @return object Timespan
+     * @return Timespan
      *
      * @since 5/12/05
      */
-    public function to($anEnd)
+    public function to(AsDateAndTime $anEnd)
     {
         $obj = Timespan::startingEnding($this, $anEnd->asDateAndTime());
 
@@ -1648,14 +1610,14 @@ class DateAndTime extends Magnitude
     /**
      * Answer a Timespan. anEnd conforms to protocol DateAndTime or protocol Timespan.
      *
-     * @param object DateAndTime $anEnd
-     * @param object Duration
+     * @param DateAndTime $anEnd
+     * @param Duration
      *
-     * @return object Schedule
+     * @return Schedule
      *
      * @since 5/12/05
      */
-    public function toBy($anEnd, $aDuration)
+    public function toBy(AsDateAndTime $anEnd, Duration $aDuration)
     {
         $schedule = Schedule::startingEnding($this, $anEnd->asDateAndTime());
         $schedule->addToSchedule([$aDuration->asDuration()]);
@@ -1669,13 +1631,13 @@ class DateAndTime extends Magnitude
      * i.e. 11am at UTC-05:00 would become 9am at UTC-7:00 when -7 hours is passed
      * as the offset.
      *
-     * @param object Duration $aDuration
+     * @param Duration $aDuration
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/4/05
      */
-    public function utcOffset($anOffset)
+    public function utcOffset(Duration $anOffset)
     {
         $duration = $anOffset->asDuration();
         $equiv = $this->plus($duration->minus($this->offset()));

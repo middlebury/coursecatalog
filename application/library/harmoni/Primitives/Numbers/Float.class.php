@@ -28,13 +28,11 @@ class Float extends Number
     /**
      * Answer the sum of the receiver and aNumber.
      *
-     * @param object Number $aNumber
-     *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
-    public function plus($aNumber)
+    public function plus(Number $aNumber)
     {
         return static::withValue($this->value() + $aNumber->value());
     }
@@ -42,13 +40,11 @@ class Float extends Number
     /**
      * Answer the result of multiplying the receiver and aNumber.
      *
-     * @param object Number $aNumber
-     *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
-    public function multipliedBy($aNumber)
+    public function multipliedBy(Number $aNumber)
     {
         return static::withValue($this->value() * $aNumber->value());
     }
@@ -56,13 +52,11 @@ class Float extends Number
     /**
      * Answer the result of dividing the receiver and aNumber.
      *
-     * @param object Number $aNumber
-     *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
-    public function dividedBy($aNumber)
+    public function dividedBy(Number $aNumber)
     {
         return static::withValue($this->value() / $aNumber->value());
     }

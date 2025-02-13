@@ -18,7 +18,7 @@ class HtmlString extends HarmoniString
     protected $_string;
     private $safeProtocols;
 
-    public function __construct($string = '')
+    public function __construct(string $string = '')
     {
         $this->_string = (string) $string;
         $this->safeProtocols = [];
@@ -27,15 +27,13 @@ class HtmlString extends HarmoniString
     /**
      * Return a new string with cleaned of XSS-unsafe markup.
      *
-     * @param string $html
-     *
      * @return string
      *
      * @since 12/6/07
      *
      * @static
      */
-    public static function getSafeHtml($html)
+    public static function getSafeHtml(string $html)
     {
         $s = static::withValue($html);
         $s->cleanXSS();
@@ -47,14 +45,11 @@ class HtmlString extends HarmoniString
      * Shorten the string to a number of words, preserving HTML tags
      * while enforcing the closing of html tags.
      *
-     * @param int  $numWords
-     * @param bool $addElipses
-     *
      * @return void
      *
      * @since 12/12/05
      */
-    public function trim($numWords, $addElipses = true)
+    public function trim(int $numWords, bool $addElipses = true)
     {
         $tags = [];
         $wordCount = 0;
@@ -226,14 +221,11 @@ class HtmlString extends HarmoniString
     /**
      * Ensure that td tags are inside of tr's, etc.
      *
-     * @param string $tag
-     * @param ref array $tags
-     *
      * @return string
      *
      * @since 1/27/06
      */
-    public function ensureNesting($tag, $tags)
+    public function ensureNesting(string $tag, array $tags)
     {
         if (count($tags)) {
             $lastTag = $tags[count($tags) - 1];
@@ -306,7 +298,7 @@ class HtmlString extends HarmoniString
      *
      * @since 11/21/05
      */
-    public function stripTagsAndTrim($word_count)
+    public function stripTagsAndTrim(int $word_count)
     {
         $string = strip_tags($this->_string);
 

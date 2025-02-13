@@ -19,6 +19,7 @@ require_once __DIR__.'/Month.class.php';
 require_once __DIR__.'/TimeZone.class.php';
 require_once __DIR__.'/Week.class.php';
 require_once __DIR__.'/Year.class.php';
+require_once __DIR__.'/AsDateAndTime.php';
 
 /**
  * This represents a period of time.
@@ -47,7 +48,7 @@ require_once __DIR__.'/Year.class.php';
  *
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
-class Time extends Magnitude
+class Time extends Magnitude implements AsDateAndTime
 {
     /**
      * @var int; The seconds from midnight of this time
@@ -68,7 +69,7 @@ class Time extends Magnitude
      *
      * @param string $aString
      *
-     * @return object Time
+     * @return Time
      *
      * @static
      *
@@ -88,7 +89,7 @@ class Time extends Magnitude
     /**
      * Answer the Time at midnight.
      *
-     * @return object Time
+     * @return Time
      *
      * @static
      *
@@ -102,7 +103,7 @@ class Time extends Magnitude
     /**
      * Answer the Time at noon.
      *
-     * @return object Time
+     * @return Time
      *
      * @since 5/25/05
      *
@@ -120,7 +121,7 @@ class Time extends Magnitude
      * @param int $anIntMinute
      * @param int $anIntSecond
      *
-     * @return object Time
+     * @return Time
      *
      * @static
      *
@@ -140,7 +141,7 @@ class Time extends Magnitude
      *
      * @param int $anIntSeconds
      *
-     * @return object Time
+     * @return Time
      *
      * @static
      *
@@ -201,7 +202,7 @@ class Time extends Magnitude
     /**
      * Answer the duration of this object (always zero).
      *
-     * @return object Duration
+     * @return Duration
      *
      * @since 5/5/05
      */
@@ -380,7 +381,7 @@ class Time extends Magnitude
      * comparand conforms to protocol DateAndTime,
      * or can be converted into something that conforms.
      *
-     * @param object $comparand
+     * @param $comparand
      *
      * @return bool
      *
@@ -411,7 +412,7 @@ class Time extends Magnitude
      * comparand conforms to protocol DateAndTime,
      * or can be converted into something that conforms.
      *
-     * @param object $comparand
+     * @param $comparand
      *
      * @return bool
      *
@@ -433,7 +434,7 @@ class Time extends Magnitude
      *
      * @param int $anInteger
      *
-     * @return object Time
+     * @return Time
      *
      * @since 5/25/05
      */
@@ -446,9 +447,9 @@ class Time extends Magnitude
      * Answer a Time that is timeInterval after the receiver. timeInterval is an
      * instance of Date or Time.
      *
-     * @param object $timeAmount an instance of Date or Time
+     * @param $timeAmount an instance of Date or Time
      *
-     * @return object Time
+     * @return Time
      *
      * @since 5/25/05
      */
@@ -461,9 +462,9 @@ class Time extends Magnitude
      * Answer a Time that is timeInterval before the receiver. timeInterval is
      * an instance of Date or Time.
      *
-     * @param object $timeAmount an instance of Date or Time
+     * @param $timeAmount an instance of Date or Time
      *
-     * @return object Time
+     * @return Time
      *
      * @since 5/25/05
      */
@@ -479,7 +480,7 @@ class Time extends Magnitude
     /**
      * Answer a Date that represents this object.
      *
-     * @return object Date
+     * @return Date
      *
      * @since 5/5/05
      */
@@ -493,7 +494,7 @@ class Time extends Magnitude
     /**
      * Answer a DateAndTime that represents this object.
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/4/05
      */
@@ -509,7 +510,7 @@ class Time extends Magnitude
      * Answer a Duration that represents this object, the duration since
      * midnight.
      *
-     * @return object Duration
+     * @return Duration
      *
      * @since 5/4/05
      */
@@ -523,7 +524,7 @@ class Time extends Magnitude
     /**
      * Answer the month that represents this date's month.
      *
-     * @return object Month
+     * @return Month
      *
      * @since 5/5/05
      */
@@ -550,7 +551,7 @@ class Time extends Magnitude
     /**
      * Answer a Time that represents our time component.
      *
-     * @return object Time
+     * @return Time
      *
      * @since 5/5/05
      */
@@ -562,7 +563,7 @@ class Time extends Magnitude
     /**
      * Answer a Timestamp that represents this DateAndTime.
      *
-     * @return object TimeStamp
+     * @return TimeStamp
      *
      * @since 5/5/05
      */
@@ -577,7 +578,7 @@ class Time extends Magnitude
     /**
      * Answer this time as a Week.
      *
-     * @return object Year
+     * @return Year
      *
      * @since 5/5/05
      */
@@ -592,7 +593,7 @@ class Time extends Magnitude
     /**
      * Answer this time as a Year.
      *
-     * @return object Year
+     * @return Year
      *
      * @since 5/5/05
      */
@@ -607,9 +608,9 @@ class Time extends Magnitude
     /**
      * Answer a Timespan. anEnd must respond to asDateAndTime().
      *
-     * @param object $anEnd anEnd must understand asDateAndTime()
+     * @param $anEnd anEnd must understand asDateAndTime()
      *
-     * @return object Timespan
+     * @return Timespan
      *
      * @since 5/25/05
      */

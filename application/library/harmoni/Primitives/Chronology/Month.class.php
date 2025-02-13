@@ -49,15 +49,13 @@ class Month extends Timespan
     /**
      * Return the index of a string Month.
      *
-     * @param string $aNameString
-     *
      * @return int
      *
      * @since 5/4/05
      *
      * @static
      */
-    public static function indexOfMonth($aNameString)
+    public static function indexOfMonth(string $aNameString)
     {
         foreach (ChronologyConstants::MonthNames() as $i => $name) {
             if (preg_match("/$aNameString.*/i", $name)) {
@@ -71,15 +69,13 @@ class Month extends Timespan
     /**
      * Return the name of the month at index.
      *
-     * @param int $anInteger
-     *
      * @return string
      *
      * @since 5/4/05
      *
      * @static
      */
-    public static function nameOfMonth($anInteger)
+    public static function nameOfMonth(int $anInteger)
     {
         $names = ChronologyConstants::MonthNames();
         if ($names[$anInteger]) {
@@ -101,7 +97,7 @@ class Month extends Timespan
      *
      * @static
      */
-    public static function daysInMonthForYear($indexOrNameString, $yearInteger)
+    public static function daysInMonthForYear(int|string $indexOrNameString, int $yearInteger)
     {
         if (is_numeric($indexOrNameString)) {
             $index = $indexOrNameString;
@@ -132,15 +128,13 @@ class Month extends Timespan
      *
      *		- July 1998
      *
-     * @param string $aString
-     *
-     * @return object Month
+     * @return Month
      *
      * @since 5/10/05
      *
      * @static
      */
-    public static function fromString($aString)
+    public static function fromString(string $aString)
     {
         $parser = StringParser::getParserFor($aString);
 
@@ -155,16 +149,13 @@ class Month extends Timespan
      * Create a new object starting now, with a given duration.
      * Override - as each month has a defined duration.
      *
-     * @param object DateAndTime $aDateAndTime
-     * @param object Duration $aDuration
-     *
-     * @return object Month
+     * @return Month
      *
      * @since 5/5/05
      *
      * @static
      */
-    public static function startingDuration($aDateAndTime, $aDuration)
+    public static function startingDuration(AsDateAndTime $aDateAndTime, Duration $aDuration)
     {
         $start = $aDateAndTime->asDateAndTime();
         $adjusted = DateAndTime::withYearMonthDay($start->year(), $start->month(), 1);
@@ -185,13 +176,13 @@ class Month extends Timespan
      * @param string $anIntegerOrStringMonth
      * @param int    $anIntegerYear          four-digit year
      *
-     * @return object Month
+     * @return Month
      *
      * @since 5/11/05
      *
      * @static
      */
-    public static function withMonthYear($anIntegerOrStringMonth, $anIntegerYear)
+    public static function withMonthYear(int|string $anIntegerOrStringMonth, int $anIntegerYear)
     {
         return static::starting(DateAndTime::withYearMonthDay($anIntegerYear, $anIntegerOrStringMonth, 1));
     }
@@ -243,7 +234,7 @@ class Month extends Timespan
      *
      * @since 5/23/05
      */
-    public function printableString($printLeadingSpaceToo = false)
+    public function printableString(bool $printLeadingSpaceToo = false)
     {
         return $this->name().' '.$this->startYear();
     }
@@ -255,7 +246,7 @@ class Month extends Timespan
     /**
      * Answer the previous object of our duration.
      *
-     * @return object Timespan
+     * @return Timespan
      *
      * @since 5/10/05
      */
@@ -274,7 +265,7 @@ class Month extends Timespan
     /**
      * Answer the receiver as a Month.
      *
-     * @return object Month
+     * @return Month
      *
      * @since 5/23/05
      */

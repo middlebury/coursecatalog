@@ -100,6 +100,6 @@ $
 
         $this->setYear($matches[3]);
         $this->setMonth($matches[2]);
-        $this->setDay($matches[1]);
+        $this->setDay((int) $matches[1]);
     }
 }

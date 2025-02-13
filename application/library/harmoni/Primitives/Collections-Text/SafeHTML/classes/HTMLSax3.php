@@ -534,7 +534,7 @@ class XML_HTMLSax3
      * Sets the user defined handler object. Returns a PEAR Error
      * if supplied argument is not an object.
      *
-     * @param object handler object containing SAX callback methods
+     * @param handler object containing SAX callback methods
      */
     public function set_object($object)
     {

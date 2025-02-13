@@ -68,15 +68,13 @@ class Date extends Timespan
      *		- <four-digit year><two-digit monthNumber><two-digit day>
      *											(19820405; 1982-04-05)
      *
-     * @param string $aString
-     *
-     * @return object Date
+     * @return Date
      *
      * @since 5/10/05
      *
      * @static
      */
-    public static function fromString($aString)
+    public static function fromString(string $aString)
     {
         $parser = StringParser::getParserFor($aString);
 
@@ -90,15 +88,13 @@ class Date extends Timespan
     /**
      * Create a new object starting now, with our default one day duration.
      *
-     * @param object DateAndTime $aDateAndTime
-     *
-     * @return object Date
+     * @return Date
      *
      * @since 5/5/05
      *
      * @static
      */
-    public static function starting($aDateAndTime)
+    public static function starting(AsDateAndTime $aDateAndTime)
     {
         return static::startingDuration($aDateAndTime->atMidnight(), Duration::withDays(1));
     }
@@ -106,7 +102,7 @@ class Date extends Timespan
     /**
      * Answer today's date.
      *
-     * @return object Date
+     * @return Date
      *
      * @since 5/10/05
      *
@@ -120,7 +116,7 @@ class Date extends Timespan
     /**
      * Answer tommorow's date.
      *
-     * @return object Date
+     * @return Date
      *
      * @since 5/10/05
      *
@@ -136,15 +132,13 @@ class Date extends Timespan
     /**
      * Create a new object starting on the julian day number specified.
      *
-     * @param int $anInteger
-     *
-     * @return object Date
+     * @return Date
      *
      * @since 5/10/05
      *
      * @static
      */
-    public static function withJulianDayNumber($anInteger)
+    public static function withJulianDayNumber(int $anInteger)
     {
         return static::starting(DateAndTime::withJulianDayNumber($anInteger));
     }
@@ -152,17 +146,13 @@ class Date extends Timespan
     /**
      * Create a new object starting on the year, month, and day of month specified.
      *
-     * @param int $anIntYear
-     * @param int $anIntOrStringMonth
-     * @param int $anIntDay
-     *
-     * @return object Date
+     * @return Date
      *
      * @since 5/10/05
      *
      * @static
      */
-    public static function withYearMonthDay($anIntYear, $anIntOrStringMonth, $anIntDay)
+    public static function withYearMonthDay(int $anIntYear, int $anIntOrStringMonth, int $anIntDay)
     {
         return static::starting(DateAndTime::withYearMonthDay($anIntYear, $anIntOrStringMonth, $anIntDay));
     }
@@ -170,16 +160,13 @@ class Date extends Timespan
     /**
      * Create a new object starting on the year and day of year specified.
      *
-     * @param int $anIntYear
-     * @param int $anIntDay
-     *
-     * @return object Date
+     * @return Date
      *
      * @since 5/10/05
      *
      * @static
      */
-    public static function withYearDay($anIntYear, $anIntDay)
+    public static function withYearDay(int $anIntYear, int $anIntDay)
     {
         return static::starting(DateAndTime::withYearDay($anIntYear, $anIntDay));
     }
@@ -187,7 +174,7 @@ class Date extends Timespan
     /**
      * Answer yesterday's date.
      *
-     * @return object Date
+     * @return Date
      *
      * @since 5/10/05
      *
@@ -223,7 +210,7 @@ class Date extends Timespan
      *
      * @since 5/20/05
      */
-    public function printableString($printLeadingSpaceToo = false)
+    public function printableString(bool $printLeadingSpaceToo = false)
     {
         return $this->printableStringWithFormat([1, 2, 3, ' ', 3, 1]);
     }
@@ -246,13 +233,11 @@ class Date extends Timespan
      *
      *	See the examples in printOn: and mmddyy
      *
-     * @param array $formatArray
-     *
      * @return string
      *
      * @since 5/20/05
      */
-    public function printableStringWithFormat($formatArray)
+    public function printableStringWithFormat(array $formatArray)
     {
         $result = '';
         $twoDigits = (count($formatArray) > 6 && $formatArray[6] > 1);
@@ -321,13 +306,11 @@ class Date extends Timespan
     /**
      * Answer the date that occurs $anInteger days from this date.
      *
-     * @param int $anInteger
-     *
-     * @return object Date
+     * @return Date
      *
      * @since 5/20/05
      */
-    public function addDays($anInteger)
+    public function addDays(int $anInteger)
     {
         $asDateAndTime = $this->asDateAndTime();
         $newDateAndTime = $asDateAndTime->plus(Duration::withDays($anInteger));
@@ -339,13 +322,11 @@ class Date extends Timespan
     /**
      *  Answer the date that occurs $anInteger days before this date.
      *
-     * @param int $anInteger
-     *
-     * @return object Date
+     * @return Date
      *
      * @since 5/23/05
      */
-    public function subtractDays($anInteger)
+    public function subtractDays(int $anInteger)
     {
         $obj = $this->addDays(0 - $anInteger);
 
@@ -355,13 +336,11 @@ class Date extends Timespan
     /**
      * Answer the previous date whose weekday name is dayName.
      *
-     * @param string $dayNameString
-     *
-     * @return object Date
+     * @return Date
      *
      * @since 5/23/05
      */
-    public function previousDayNamed($dayNameString)
+    public function previousDayNamed(string $dayNameString)
     {
         $days = abs($this->dayOfWeek() - (Week::indexOfDay($dayNameString) % 7));
         if (0 == $days) {
@@ -379,7 +358,7 @@ class Date extends Timespan
     /**
      * Answer the reciever as a Date.
      *
-     * @return object Date
+     * @return Date
      *
      * @since 5/23/05
      */

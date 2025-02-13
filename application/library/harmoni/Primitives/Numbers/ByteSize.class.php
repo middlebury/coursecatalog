@@ -38,7 +38,7 @@ class ByteSize extends Integer
      *
      * @static
      */
-    public static function suffixForPower($power)
+    public static function suffixForPower(int $power)
     {
         $multiple = (int) ($power / 10);
         if ($multiple < 0 || $multiple > 8) {
@@ -58,13 +58,13 @@ class ByteSize extends Integer
      *
      * @param string $stringValue String representation of the size
      *
-     * @return object ByteSize
+     * @return ByteSize
      *
      * @static
      *
      * @since 7/14/05
      */
-    public static function fromString($stringValue)
+    public static function fromString(string $stringValue)
     {
         if (preg_match("/([0-9\.]+)\s*(B|k|kB|M|MB|G|GB|T|TB|P|PB|E|EB|Z|ZB|Y|YB)\s*$/i",
             $stringValue, $matches)) {
@@ -168,7 +168,7 @@ class ByteSize extends Integer
      *
      * @since 10/11/05
      */
-    public function multipleOfPowerOf2($power)
+    public function multipleOfPowerOf2(int $power)
     {
         return $this->value() / 2 ** $power;
     }
