@@ -5,7 +5,7 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     app.osid.runtime.config_path: 'configuration.plist'
-    app.osid.runtime.courseimpl: 'banner_course_CourseManager'
+    app.osid.runtime.courseimpl: '%env(COURSE_MANAGER_IMPL)%'
     app.osid.id.authority_to_shorten: 'middlebury.edu'
     app.osid.reference_date: 'now'
     app.catalog.banner_web_url: '%env(CATALOG_BANNER_WEB_URL)%'

@@ -1,8 +1,7 @@
 The Course-Catalog is a web front-end for searching and browsing course information stored in Ellucian Banner.
 
 
-Overview of operation
-=====================
+# Overview of operation
 
 1. (Nightly) Data from the Banner Oracle database is copied into tables in a MySQL database (via [`coursecatalog/bin/update-from-banner.php`](https://github.com/middlebury/coursecatalog/blob/master/bin/update-from-banner.php))
 2. (Nightly) Derived tables and views to improve the ease of fetching are built from the data now in MySQL (via [`coursecatalog/bin/update-from-banner.php`](https://github.com/middlebury/coursecatalog/blob/master/bin/update-from-banner.php))
@@ -10,8 +9,7 @@ Overview of operation
 4. The PHP data model based on the OSID Course Catalog API provides an object-oriented API for accessing the course catalog data. This API ensures consistency in data fetching so that different user-interface screens always have the same information available.<
 5. The front-end application (using the Zend Framework's MVC system) provides search, browse and display interfaces to access the course information. It also provides XML web services for using the course information in remote systems. Additionally, the front-end application includes a schedule-planning tool to help students plan their semesters. All user-interfaces and web services get their data through the OSID Course Catalog API.
 
-Examples
-========
+# Examples
 
 Examples of the the Course-Catalog in action at <a href="http://www.middlebury.edu">Middlebury College</a>:
 
@@ -26,8 +24,7 @@ Examples of the the Course-Catalog in action at <a href="http://www.middlebury.e
 
 [Schedule Planner](https://github.com/middlebury/coursecatalog/wiki/Schedule-planner) - Screen-shots and more information about the schedule-planner.
 
-Installation
-============
+# Installation
 
 These instructions assume that you have a POSIX machine running Apache with PHP 7.0 or later.
 
@@ -118,8 +115,7 @@ In development, the worker process can be manually started with:
 lando ssh -c "bin/console messenger:consume -vv"
 ```
 
-Unit Tests
-----------
+## Unit Tests
 
 Most of the Course Catalog OSID API is covered by PHPUnit tests. To run these tests:
 
@@ -129,8 +125,42 @@ Most of the Course Catalog OSID API is covered by PHPUnit tests. To run these te
 4. On the command-line, change directory to your course-catalog source directory.
 5. Run the command `phpunit application/test/TestSuite.php`
 
+# Configuration
 
-Implementation Notes
-====================
+To configure the OSID Course data model, copy `configuration.plist-example` to
+`configuration.plist` and edit the values in that file to point at your
+application's database server.
+
+To configure the rest of the application, create a `.env.local` file and copy
+the sections you need to modify from `.env`.
+
+## `.env`/`.env.local` changes
+
+### Database
+At a minimum, you will likely need to configure the `DATABASE_URL` to point at
+your application database.
+
+### Saml Authentication
+If you choose to use authentication, you will need to update these values to fit
+your identity provider.
+
+```
+SAML_IDP_ENTITYID="https://idp.example.edu/abc123"
+SAML_IDP_SINGLESIGNONSERVICE="https://idp.example.edu/abc123/saml2"
+SAML_IDP_SINGLELOGOUTSERVICE="https://idp.example.edu/abc123/saml2"
+SAML_IDP_X509CERT="MIIC...."
+```
+
+### Course Manager implementation
+ - `banner_course_CourseManager`: The default implementation that queries a local
+    copy of a Banner database to fetch data.
+ - `apc_course_CourseManager`: An implementation that wraps APCU caching of
+   commonly fetched results around the underlying implemenation. By default the
+   `apc_course_CourseManager` uses the `banner_course_CourseManager` as its
+   underlying implementation, but this can be configured to a custom one in
+   `configuration.plist`
+
+
+# Implementation Notes
 
 The implementation of this system is layered such that the Web UI code is separated from the data model. The data model is an implementation of the [Open Knowledge Initiative](http://www.okiproject.org/) (O.K.I.) Open Service Interface Definition (OSID) for Course information, the [Course OSID](http://en.wikipedia.org/wiki/CourseManagement_Open_Service_Interface_Definition) ([detailed doc](http://sourceforge.net/project/downloading.php?group_id=69345&amp;filename=OSID_CourseMgmt_rel_2_0.pdf&amp;40157442)). Because of this structure, it is possible for other institutions to modify the data model (the OSID implementation) so as to use the same UI code against different data sources, be they different Banner implementations or alternative systems. See also [OSID Usage](https://github.com/middlebury/coursecatalog/wiki/OSID-Usage).
