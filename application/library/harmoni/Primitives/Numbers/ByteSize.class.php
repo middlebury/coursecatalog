@@ -196,7 +196,7 @@ class ByteSize extends Integer
      */
     public function value()
     {
-        return round($this->_value, 0);
+        return round(parent::value(), 0);
     }
 
     /**
@@ -243,14 +243,10 @@ class ByteSize extends Integer
      *********************************************************/
 
     /**
-     * Set the internal value to a PHP primitive.
-     *
-     * @return void
-     *
-     * @since 7/14/05
+     * Cast an input value so that it is of the appropriate storage type.
      */
-    public function _setValue($value)
+    protected function cast($value)
     {
-        $this->_value = $value;
+        return $value;
     }
 }

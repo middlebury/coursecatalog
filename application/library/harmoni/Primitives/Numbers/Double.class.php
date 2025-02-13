@@ -74,20 +74,4 @@ class Double extends Float
     {
         return parent::zero($class);
     }
-
-    /*********************************************************
-     * Instance Methods - Private
-     *********************************************************/
-
-    /**
-     * Set the internal value to a PHP primitive.
-     *
-     * @return void
-     *
-     * @since 7/14/05
-     */
-    public function _setValue($value)
-    {
-        $this->_value = (float) $value;
-    }
 }

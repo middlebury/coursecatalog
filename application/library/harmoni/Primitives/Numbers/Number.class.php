@@ -44,6 +44,8 @@ require_once __DIR__.'/../Magnitudes/Magnitude.class.php';
  */
 abstract class Number extends Magnitude
 {
+    private $value;
+
     /*********************************************************
      * Class Methods - Instance Creation
      *********************************************************/
@@ -478,7 +480,7 @@ abstract class Number extends Magnitude
      */
     public function value()
     {
-        return $this->_value;
+        return $this->value;
     }
 
     /*********************************************************
@@ -492,5 +494,16 @@ abstract class Number extends Magnitude
      *
      * @since 7/14/05
      */
-    abstract public function _setValue($value);
+    protected function _setValue($value)
+    {
+        $this->value = $this->cast($value);
+    }
+
+    /**
+     * Cast an input value so that it is of the appropriate storage type.
+     */
+    protected function cast($value)
+    {
+        return $value;
+    }
 }

@@ -146,14 +146,10 @@ class Integer extends Number
      *********************************************************/
 
     /**
-     * Set the internal value to a PHP primitive.
-     *
-     * @return void
-     *
-     * @since 7/14/05
+     * Cast an input value so that it is of the appropriate storage type.
      */
-    public function _setValue($value)
+    protected function cast($value)
     {
-        $this->_value = (int) $value;
+        return (int) $value;
     }
 }
