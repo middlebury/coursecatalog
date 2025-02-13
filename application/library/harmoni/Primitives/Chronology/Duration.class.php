@@ -69,16 +69,10 @@ class Duration extends Magnitude
         $parser = new ANSI58216StringParser($aString);
 
         if (!is_string($aString) || !preg_match('/[^\W]/', $aString) || !$parser) {
-            $null = null;
-
-            return $null;
-            // die("'".$aString."' is not in a valid format.");
+            return null;
         }
 
-        $obj = self::withDaysHoursMinutesSeconds(
-            $parser->day(), $parser->hour(), $parser->minute(), $parser->second());
-
-        return $obj;
+        return static::withDaysHoursMinutesSeconds($parser->day(), $parser->hour(), $parser->minute(), $parser->second());
     }
 
     /**
@@ -94,9 +88,7 @@ class Duration extends Magnitude
      */
     public static function withDays($days)
     {
-        $obj = self::withDaysHoursMinutesSeconds($days, 0, 0, 0);
-
-        return $obj;
+        return static::withDaysHoursMinutesSeconds($days, 0, 0, 0);
     }
 
     /**
@@ -115,13 +107,11 @@ class Duration extends Magnitude
      */
     public static function withDaysHoursMinutesSeconds($days, $hours, $minutes, $seconds)
     {
-        $obj = new self(
+        return new static(
             ($days * ChronologyConstants::SecondsInDay())
             + ($hours * ChronologyConstants::SecondsInHour())
             + ($minutes * ChronologyConstants::SecondsInMinute())
             + $seconds);
-
-        return $obj;
     }
 
     /**
@@ -137,9 +127,7 @@ class Duration extends Magnitude
      */
     public static function withHours($hours)
     {
-        $obj = self::withDaysHoursMinutesSeconds(0, $hours, 0, 0);
-
-        return $obj;
+        return static::withDaysHoursMinutesSeconds(0, $hours, 0, 0);
     }
 
     /**
@@ -155,9 +143,7 @@ class Duration extends Magnitude
      */
     public static function withMinutes($minutes)
     {
-        $obj = self::withDaysHoursMinutesSeconds(0, 0, $minutes, 0);
-
-        return $obj;
+        return static::withDaysHoursMinutesSeconds(0, 0, $minutes, 0);
     }
 
     /**
@@ -175,9 +161,8 @@ class Duration extends Magnitude
     {
         $currentYear = Year::current();
         $month = Month::withMonthYear($anIntOrStrMonth, $currentYear->startYear());
-        $obj = $month->duration();
 
-        return $obj;
+        return $month->duration();
     }
 
     /**
@@ -193,9 +178,7 @@ class Duration extends Magnitude
      */
     public static function withSeconds($seconds)
     {
-        $obj = self::withDaysHoursMinutesSeconds(0, 0, 0, $seconds);
-
-        return $obj;
+        return static::withDaysHoursMinutesSeconds(0, 0, 0, $seconds);
     }
 
     /**
@@ -211,9 +194,7 @@ class Duration extends Magnitude
      */
     public static function withWeeks($aNumber)
     {
-        $obj = self::withDaysHoursMinutesSeconds($aNumber * 7, 0, 0, 0);
-
-        return $obj;
+        return static::withDaysHoursMinutesSeconds($aNumber * 7, 0, 0, 0);
     }
 
     /**
@@ -227,9 +208,7 @@ class Duration extends Magnitude
      */
     public static function zero()
     {
-        $obj = self::withDays(0);
-
-        return $obj;
+        return static::withDays(0);
     }
 
     /*********************************************************

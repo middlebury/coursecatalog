@@ -61,12 +61,10 @@ class TimeZone extends SObject
      */
     public static function defaultTimeZone()
     {
-        $obj = self::offsetNameAbbreviation(
+        return static::offsetNameAbbreviation(
             Duration::withHours(0),
             'Greenwich Mean Time',
             'GMT');
-
-        return $obj;
     }
 
     /**
@@ -84,9 +82,7 @@ class TimeZone extends SObject
     public static function offsetNameAbbreviation($aDuration, $aStringName = null,
         $aStringAbbreviation = null)
     {
-        $obj = new self($aDuration, $aStringName, $aStringAbbreviation);
-
-        return $obj;
+        return new static($aDuration, $aStringName, $aStringAbbreviation);
     }
 
     /*********************************************************

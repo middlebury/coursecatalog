@@ -53,23 +53,15 @@ abstract class Number extends Magnitude
     /**
      * Answer a new object with the value specified.
      *
-     * @param optional string $class The class to instantiate. Do NOT use outside
-     *		of this package.
-     *
      * @return object Number
      *
      * @static
      *
      * @since 7/14/05
      */
-    public static function withValue($value, $class = 'Number')
+    public static function withValue($value)
     {
-        // Validate our passed class name.
-        if (!is_subclass_of(new $class(), 'Number')) {
-            exit("Class, '$class', is not a subclass of 'Number'.");
-        }
-
-        $number = new $class();
+        $number = new static();
         $number->_setValue($value);
 
         return $number;
@@ -79,8 +71,6 @@ abstract class Number extends Magnitude
      * Answer a new object with the value specified.
      *
      * @param string $string
-     * @param optional string $class The class to instantiate. Do NOT use outside
-     *		of this package.
      *
      * @return object Number
      *
@@ -88,14 +78,9 @@ abstract class Number extends Magnitude
      *
      * @static
      */
-    public static function fromString($string, $class = 'Number')
+    public static function fromString($string)
     {
-        // Validate our passed class name.
-        if (!is_subclass_of(new $class(), 'Number')) {
-            exit("Class, '$class', is not a subclass of 'Number'.");
-        }
-
-        $number = new $class();
+        $number = new static();
         $number->_setValue($value);
 
         return $number;
@@ -104,20 +89,15 @@ abstract class Number extends Magnitude
     /**
      * Answer a new object with the value zero.
      *
-     * @param optional string $class The class to instantiate. Do NOT use outside
-     *		of this package.
-     *
      * @return object Number
      *
      * @since 7/14/05
      *
      * @static
      */
-    public static function zero($class = 'Number')
+    public static function zero()
     {
-        eval('$result = '.$class.'::withValue(0);');
-
-        return $result;
+        return static::withValue(0);
     }
 
     /*********************************************************

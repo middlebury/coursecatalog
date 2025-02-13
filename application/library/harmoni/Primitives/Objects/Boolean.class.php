@@ -29,9 +29,7 @@ class Boolean extends SObject
      */
     public static function withValue($value)
     {
-        $temp = new self($value);
-
-        return $temp;
+        return new static($value);
     }
 
     /**
@@ -47,9 +45,7 @@ class Boolean extends SObject
      */
     public static function fromString($aString)
     {
-        $temp = new self(('true' == strtolower($aString)) ? true : false);
-
-        return $temp;
+        return new static(('true' == strtolower($aString)) ? true : false);
     }
 
     /**
@@ -63,9 +59,7 @@ class Boolean extends SObject
      */
     public static function false()
     {
-        $temp = new self(false);
-
-        return $temp;
+        return new static(false);
     }
 
     /**
@@ -79,9 +73,7 @@ class Boolean extends SObject
      */
     public static function true()
     {
-        $temp = new self(true);
-
-        return $temp;
+        return new static(true);
     }
 
     /*********************************************************

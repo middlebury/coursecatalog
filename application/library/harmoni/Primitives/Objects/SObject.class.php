@@ -251,8 +251,7 @@ abstract class SObject
      */
     public function copyTwoLevel()
     {
-        $class = static::class;
-        $newObject = new $class();
+        $newObject = new static();
 
         $varList = array_keys(get_object_vars($this));
         foreach ($varList as $varName) {
@@ -281,8 +280,7 @@ abstract class SObject
      */
     public function deepCopy()
     {
-        $class = static::class;
-        $newObject = new $class();
+        $newObject = new static();
 
         $varList = array_keys(get_object_vars($this));
         foreach ($varList as $varName) {
@@ -365,8 +363,7 @@ abstract class SObject
      */
     public function shallowCopy()
     {
-        $class = static::class;
-        $newObject = new $class();
+        $newObject = new static();
 
         $varList = array_keys(get_object_vars($this));
         foreach ($varList as $varName) {

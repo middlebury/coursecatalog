@@ -47,112 +47,13 @@ class Year extends Timespan
 
     /*********************************************************
      * Class Methods - Instance Creation
-     *
-     * All static instance creation methods have an optional
-     * $class parameter which is used to get around the limitations
-     * of not being	able to find the class of the object that
-     * recieved the initial method call rather than the one in
-     * which it is implemented. These parameters SHOULD NOT BE
-     * USED OUTSIDE OF THIS PACKAGE.
      *********************************************************/
-
-    /**
-     * Answer a new object that represents now.
-     *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Year
-     *
-     * @since 5/5/05
-     *
-     * @static
-     */
-    public static function current($class = 'Year')
-    {
-        $obj = parent::current($class);
-
-        return $obj;
-    }
-
-    /**
-     * Answer a Year starting on the Squeak epoch: 1 January 1901.
-     *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Year
-     *
-     * @since 5/5/05
-     *
-     * @static
-     */
-    public static function epoch($class = 'Year')
-    {
-        $obj = parent::epoch($class);
-
-        return $obj;
-    }
-
-    /**
-     * Create a new object starting now.
-     *
-     * @param object DateAndTime $aDateAndTime
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Year
-     *
-     * @since 5/5/05
-     *
-     * @static
-     */
-    public static function starting($aDateAndTime, $class = 'Year')
-    {
-        $obj = parent::starting($aDateAndTime, $class);
-
-        return $obj;
-    }
-
-    /**
-     * Create a new object with given start and end DateAndTimes.
-     *
-     * @param object DateAndTime $startDateAndTime
-     * @param object DateAndTime $endDateAndTime
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Year
-     *
-     * @since 5/11/05
-     *
-     * @static
-     */
-    public static function startingEnding($startDateAndTime, $endDateAndTime,
-        $class = 'Year')
-    {
-        $obj = parent::startingEnding($startDateAndTime, $endDateAndTime, $class);
-
-        return $obj;
-    }
 
     /**
      * Create a new object starting from midnight.
      *
      * @param object DateAndTime $aDateAndTime
      * @param object Duration $aDuration
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object Year
      *
@@ -160,19 +61,13 @@ class Year extends Timespan
      *
      * @static
      */
-    public static function startingDuration($aDateAndTime, $aDuration, $class = 'Year')
+    public static function startingDuration($aDateAndTime, $aDuration)
     {
-        // Validate our passed class name.
-        if (!(strtolower($class) == strtolower('Year')
-            || is_subclass_of(new $class(), 'Year'))) {
-            exit("Class, '$class', is not a subclass of 'Year'.");
-        }
-
         $asDateAndTime = $aDateAndTime->asDateAndTime();
         $midnight = $asDateAndTime->atMidnight();
-        $year = new $class();
+        $year = new static();
         $year->setStart($midnight);
-        $year->setDuration(Duration::withDays(self::getDaysInYear($midnight->year())));
+        $year->setDuration(Duration::withDays(static::getDaysInYear($midnight->year())));
 
         return $year;
     }
@@ -181,10 +76,6 @@ class Year extends Timespan
      * Create a new Year.
      *
      * @param int $anInteger
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object Year
      *
@@ -192,16 +83,14 @@ class Year extends Timespan
      *
      * @static
      */
-    public static function withYear($anInteger, $class = 'Year')
+    public static function withYear($anInteger)
     {
         $start = DateAndTime::withYearMonthDay($anInteger, 1, 1);
-        eval('$result = '.$class.'::startingDuration(
-				$start,
-				$null = NULL,
-				$class
-			);');
 
-        return $result;
+        return static::startingDuration(
+            $start,
+            null
+        );
     }
 
     /**

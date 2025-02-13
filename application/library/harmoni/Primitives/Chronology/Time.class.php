@@ -67,10 +67,6 @@ class Time extends Magnitude
      *		- <minute>, <second> or <am/pm> may be omitted.  e.g. 1:59:30 pm; 8AM; 15:30
      *
      * @param string $aString
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object Time
      *
@@ -78,63 +74,43 @@ class Time extends Magnitude
      *
      * @since 5/24/05
      */
-    public static function fromString($aString, $class = 'Time')
+    public static function fromString($aString)
     {
         $parser = StringParser::getParserFor($aString);
 
         if (!is_string($aString) || !preg_match('/[^\W]/', $aString) || !$parser) {
-            $null = null;
-
-            return $null;
-            // die("'".$aString."' is not in a valid format.");
+            return null;
         }
 
-        eval('$result = '.$class.'::withHourMinuteSecond($parser->hour(),
-						$parser->minute(), $parser->second(), $class);');
-
-        return $result;
+        return static::withHourMinuteSecond($parser->hour(), $parser->minute(), $parser->second());
     }
 
     /**
      * Answer the Time at midnight.
      *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
      * @return object Time
      *
      * @static
      *
      * @since 5/25/05
      */
-    public static function midnight($class = 'Time')
+    public static function midnight()
     {
-        eval('$result = '.$class.'::withSeconds(0, $class);');
-
-        return $result;
+        return static::withSeconds(0);
     }
 
     /**
      * Answer the Time at noon.
      *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
      * @return object Time
      *
      * @since 5/25/05
      *
      * @static
      */
-    public static function noon($class = 'Time')
+    public static function noon()
     {
-        eval('$result = '.$class.'::withHourMinuteSecond(12, 0, 0, $class);');
-
-        return $result;
+        return static::withHourMinuteSecond(12, 0, 0);
     }
 
     /**
@@ -143,10 +119,6 @@ class Time extends Magnitude
      * @param int $anIntHour
      * @param int $anIntMinute
      * @param int $anIntSecond
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object Time
      *
@@ -154,24 +126,19 @@ class Time extends Magnitude
      *
      * @since 5/4/05
      */
-    public static function withHourMinuteSecond($anIntHour, $anIntMinute, $anIntSecond, $class = 'Time')
+    public static function withHourMinuteSecond($anIntHour, $anIntMinute, $anIntSecond)
     {
-        eval('$result = '.$class.'::withSeconds(
-							  ($anIntHour * ChronologyConstants::SecondsInHour())
-							+ ($anIntMinute * ChronologyConstants::SecondsInMinute())
-							+ $anIntSecond, $class);');
-
-        return $result;
+        return static::withSeconds(
+            ($anIntHour * ChronologyConstants::SecondsInHour())
+            + ($anIntMinute * ChronologyConstants::SecondsInMinute())
+            + $anIntSecond
+        );
     }
 
     /**
      * Answer a Time from midnight.
      *
      * @param int $anIntSeconds
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object Time
      *
@@ -179,7 +146,7 @@ class Time extends Magnitude
      *
      * @since 5/5/05
      */
-    public static function withSeconds($anIntSeconds, $class = 'Time')
+    public static function withSeconds($anIntSeconds)
     {
         // Lop off any seconds beyond those in a day
         $duration = Duration::withSeconds($anIntSeconds);
@@ -191,13 +158,7 @@ class Time extends Magnitude
             $seconds = ChronologyConstants::SecondsInDay() + $seconds;
         }
 
-        // Validate our passed class name.
-        if (!(strtolower($class) == strtolower('Time')
-            || is_subclass_of(new $class(), 'Time'))) {
-            exit("Class, '$class', is not a subclass of 'Time'.");
-        }
-
-        $time = new $class();
+        $time = new static();
         $time->setSeconds($seconds);
 
         return $time;
@@ -478,10 +439,7 @@ class Time extends Magnitude
      */
     public function addSeconds($anInteger)
     {
-        eval('$result = '.static::class.'::withSeconds(
- 				$this->asSeconds() + $anInteger);');
-
-        return $result;
+        return static::withSeconds($this->asSeconds() + $anInteger);
     }
 
     /**
@@ -496,10 +454,7 @@ class Time extends Magnitude
      */
     public function addTime($timeAmount)
     {
-        eval('$result = '.static::class.'::withSeconds(
- 				$this->asSeconds() + $timeAmount->asSeconds());');
-
-        return $result;
+        return static::withSeconds($this->asSeconds() + $timeAmount->asSeconds());
     }
 
     /**
@@ -514,10 +469,7 @@ class Time extends Magnitude
      */
     public function subtractTime($timeAmount)
     {
-        eval('$result = '.static::class.'::withSeconds(
- 				$this->asSeconds() - $timeAmount->asSeconds());');
-
-        return $result;
+        return static::withSeconds($this->asSeconds() - $timeAmount->asSeconds());
     }
 
     /*********************************************************

@@ -111,9 +111,7 @@ class DateAndTime extends Magnitude
      */
     public static function clockPrecision()
     {
-        $obj = Duration::withSeconds(1);
-
-        return $obj;
+        return Duration::withSeconds(1);
     }
 
     /**
@@ -127,9 +125,7 @@ class DateAndTime extends Magnitude
      */
     public static function localOffset()
     {
-        $timeZone = self::localTimeZone();
-
-        return $timeZone->offset();
+        return static::localTimeZone()->offset();
     }
 
     /**
@@ -146,35 +142,22 @@ class DateAndTime extends Magnitude
         $tzAbbreviation = date('T');
         $tzOffset = date('Z');
         if ($tzAbbreviation && $tzOffset) {
-            $obj = TimeZone::offsetNameAbbreviation(
+            return TimeZone::offsetNameAbbreviation(
                 Duration::withSeconds($tzOffset),
                 $tzAbbreviation,
-                $tzAbbreviation);
+                $tzAbbreviation
+            );
         } else {
-            $obj = TimeZone::defaultTimeZone();
+            return TimeZone::defaultTimeZone();
         }
-
-        return $obj;
     }
 
     /*********************************************************
      * Class Methods - Instance Creation
-     *
-     * All static instance creation methods have an optional
-     * $class parameter which is used to get around the limitations
-     * of not being	able to find the class of the object that
-     * recieved the initial method call rather than the one in
-     * which it is implemented. These parameters SHOULD NOT BE
-     * USED OUTSIDE OF THIS PACKAGE.
      *********************************************************/
 
     /**
      * Answer a new instance representing the Squeak epoch: 1 January 1901.
-     *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object DateAndTime
      *
@@ -182,14 +165,9 @@ class DateAndTime extends Magnitude
      *
      * @static
      */
-    public static function epoch($class = 'DateAndTime')
+    public static function epoch()
     {
-        eval('$result = '.$class.'::withJulianDayNumber(
-					ChronologyConstants::SqueakEpoch(),
-					$class
-				);');
-
-        return $result;
+        return static::withJulianDayNumber(ChronologyConstants::SqueakEpoch());
     }
 
     /**
@@ -206,10 +184,6 @@ class DateAndTime extends Magnitude
      *	- ' 1997-04-26T01:02:03+01:02:3'
      *
      * @param string $aString the input string
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object DateAndTime
      *
@@ -217,190 +191,153 @@ class DateAndTime extends Magnitude
      *
      * @static
      */
-    public static function fromString($aString, $class = 'DateAndTime')
+    public static function fromString($aString)
     {
         $parser = StringParser::getParserFor($aString);
 
         if (!is_string($aString) || !preg_match('/[^\W]/', $aString) || !$parser) {
-            $null = null;
-
-            return $null;
-            // die("'".$aString."' is not in a valid format.");
+            return null;
         }
 
         if (null !== $parser->offsetHour()) {
-            eval('$result = '.$class.'::withYearMonthDayHourMinuteSecondOffset(
-				$parser->year(), $parser->month(), $parser->day(), $parser->hour(),
-				$parser->minute(), $parser->second(),
-				Duration::withDaysHoursMinutesSeconds(0, $parser->offsetHour(),
-				$parser->offsetMinute(), $parser->offsetSecond()), $class);');
+            return static::withYearMonthDayHourMinuteSecondOffset(
+                $parser->year(),
+                $parser->month(),
+                $parser->day(),
+                $parser->hour(),
+                $parser->minute(),
+                $parser->second(),
+                Duration::withDaysHoursMinutesSeconds(
+                    0,
+                    $parser->offsetHour(),
+                    $parser->offsetMinute(),
+                    $parser->offsetSecond()
+                )
+            );
         } elseif (null !== $parser->hour()) {
-            eval('$result = '.$class.'::withYearMonthDayHourMinuteSecond(
-				$parser->year(), $parser->month(), $parser->day(), $parser->hour(),
-				$parser->minute(), $parser->second(), $class);');
+            return static::withYearMonthDayHourMinuteSecond(
+                $parser->year(),
+                $parser->month(),
+                $parser->day(),
+                $parser->hour(),
+                $parser->minute(),
+                $parser->second()
+            );
         } else {
-            eval('$result = '.$class.'::withYearMonthDay(
-				$parser->year(), $parser->month(), $parser->day(), $class);');
+            return static::withYearMonthDay($parser->year(), $parser->month(), $parser->day());
         }
-
-        return $result;
     }
 
     /**
      * Answer a new instance starting at midnight local time.
      *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
      * @return object DateAndTime
      *
      * @since 5/3/05
      *
      * @static
      */
-    public static function midnight($class = 'DateAndTime')
+    public static function midnight()
     {
-        eval('$result = '.$class.'::now("'.$class.'");');
-        $obj = $result->atMidnight();
+        $now = static::now();
 
-        return $obj;
+        return $now->atMidnight();
     }
 
     /**
      * Answer a new instance starting at noon local time.
      *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
      * @return object DateAndTime
      *
      * @since 5/3/05
      *
      * @static
      */
-    public static function noon($class = 'DateAndTime')
+    public static function noon()
     {
-        eval('$result = '.$class.'::now('.$class.');');
-        $obj = $result->atNoon();
+        $now = static::now();
 
-        return $obj;
+        return $now->atNoon();
     }
 
     /**
      * Answer the current date and time.
      *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
      * @return object DateAndTime
      *
      * @since 5/12/05
      *
      * @static
      */
-    public static function now($class = 'DateAndTime')
+    public static function now()
     {
-        eval('$result = '.$class.'::withYearMonthDayHourMinuteSecondOffset(
-				'.(int) date('Y').',
-				'.(int) date('n').',
-				'.(int) date('j').',
-				'.(int) date('G').',
-				'.(int) date('i').',
-				'.(int) date('s').',
-				$null = NULL,
-				$class
-			);');
-
-        return $result;
+        return static::withYearMonthDayHourMinuteSecondOffset(
+            (int) date('Y'),
+            (int) date('n'),
+            (int) date('j'),
+            (int) date('G'),
+            (int) date('i'),
+            (int) date('s'),
+            null
+        );
     }
 
     /**
      * Answer a new instance representing today.
      *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
      * @return object DateAndTime
      *
      * @since 5/12/05
      *
      * @static
      */
-    public static function today($class = 'DateAndTime')
+    public static function today()
     {
-        eval('$result = '.$class.'::midnight($class);');
-
-        return $result;
+        return static::midnight();
     }
 
     /**
      * Answer a new instance representing tomorow.
      *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
      * @return object DateAndTime
      *
      * @since 5/12/05
      *
      * @static
      */
-    public static function tomorrow($class = 'DateAndTime')
+    public static function tomorrow()
     {
-        eval('$today = '.$class.'::today($class);');
+        $today = static::today();
         $todaysDate = $today->asDate();
         $tomorowsDate = $todaysDate->next();
-        $obj = $tomorowsDate->asDateAndTime();
 
-        return $obj;
+        return $tomorowsDate->asDateAndTime();
     }
 
     /**
      * Create a new instance from Date and Time objects.
      *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
      * @return object DateAndTime
      *
      * @since 5/12/05
      *
      * @static
      */
-    public static function withDateAndTime($aDate, $aTime, $class = 'DateAndTime')
+    public static function withDateAndTime($aDate, $aTime)
     {
-        eval('$result = '.$class.'::withYearDayHourMinuteSecond(
-				$aDate->startYear(),
-				$aDate->dayOfYear(),
-				$aTime->hour(),
-				$aTime->minute(),
-				$aTime->second(),
-				$class
-			);');
-
-        return $result;
+        return static::withYearDayHourMinuteSecond(
+            $aDate->startYear(),
+            $aDate->dayOfYear(),
+            $aTime->hour(),
+            $aTime->minute(),
+            $aTime->second()
+        );
     }
 
     /**
      * Create a new new instance for a given Julian Day Number.
      *
      * @param int $aJulianDayNumber
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object DateAndTime
      *
@@ -408,17 +345,11 @@ class DateAndTime extends Magnitude
      *
      * @static
      */
-    public static function withJulianDayNumber($aJulianDayNumber, $class = 'DateAndTime')
+    public static function withJulianDayNumber($aJulianDayNumber)
     {
-        // Validate our passed class name.
-        if (!(strtolower($class) == strtolower('DateAndTime')
-            || is_subclass_of(new $class(), 'DateAndTime'))) {
-            exit("Class, '$class', is not a subclass of 'DateAndTime'.");
-        }
-
         $days = Duration::withDays($aJulianDayNumber);
 
-        $dateAndTime = new $class();
+        $dateAndTime = new static();
         $dateAndTime->ticksOffset($days->ticks(), self::localOffset());
 
         return $dateAndTime;
@@ -429,27 +360,20 @@ class DateAndTime extends Magnitude
      *
      * @param int $anIntYear
      * @param int $anIntDayOfYear
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @static
      *
      * @since 5/4/05
      */
-    public static function withYearDay($anIntYear, $anIntDayOfYear, $class = 'DateAndTime')
+    public static function withYearDay($anIntYear, $anIntDayOfYear)
     {
-        eval('$result = '.$class.'::withYearDayHourMinuteSecond(
-				$anIntYear,
-				$anIntDayOfYear,
-				0,
-				0,
-				0,
-				$class
-			);');
-
-        return $result;
+        return static::withYearDayHourMinuteSecond(
+            $anIntYear,
+            $anIntDayOfYear,
+            0,
+            0,
+            0
+        );
     }
 
     /**
@@ -460,10 +384,6 @@ class DateAndTime extends Magnitude
      * @param int $anIntHour
      * @param int $anIntMinute
      * @param int $anIntSecond
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object DateAndTime
      *
@@ -471,20 +391,16 @@ class DateAndTime extends Magnitude
      *
      * @since 5/4/05
      */
-    public static function withYearDayHourMinuteSecond($anIntYear, $anIntDayOfYear,
-        $anIntHour, $anIntMinute, $anIntSecond, $class = 'DateAndTime')
+    public static function withYearDayHourMinuteSecond($anIntYear, $anIntDayOfYear, $anIntHour, $anIntMinute, $anIntSecond)
     {
-        eval('$return = '.$class.'::withYearDayHourMinuteSecondOffset(
-				$anIntYear,
-				$anIntDayOfYear,
-				$anIntHour,
-				$anIntMinute,
-				$anIntSecond,
-				'.$class.'::localOffset(),
-				$class
-			);');
-
-        return $return;
+        return static::withYearDayHourMinuteSecondOffset(
+            $anIntYear,
+            $anIntDayOfYear,
+            $anIntHour,
+            $anIntMinute,
+            $anIntSecond,
+            static::localOffset()
+        );
     }
 
     /**
@@ -496,10 +412,6 @@ class DateAndTime extends Magnitude
      * @param int $anIntMinute
      * @param int $anIntSecond
      * @param object Duration $aDurationOffset
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object DateAndTime
      *
@@ -508,26 +420,24 @@ class DateAndTime extends Magnitude
      * @since 5/4/05
      */
     public static function withYearDayHourMinuteSecondOffset($anIntYear, $anIntDayOfYear,
-        $anIntHour, $anIntMinute, $anIntSecond, $aDurationOffset, $class = 'DateAndTime')
+        $anIntHour, $anIntMinute, $anIntSecond, $aDurationOffset)
     {
-        eval('$result = '.$class.'::withYearMonthDayHourMinuteSecondOffset(
-				$anIntYear,
-				1,
-				1,
-				$anIntHour,
-				$anIntMinute,
-				$anIntSecond,
-				$aDurationOffset,
-				$class
-			);');
+        $result = static::withYearMonthDayHourMinuteSecondOffset(
+            $anIntYear,
+            1,
+            1,
+            $anIntHour,
+            $anIntMinute,
+            $anIntSecond,
+            $aDurationOffset
+        );
         if ($anIntDayOfYear <= 1) {
             $day = Duration::withDays(0);
         } else {
             $day = Duration::withDays($anIntDayOfYear - 1);
         }
-        $obj = $result->plus($day);
 
-        return $obj;
+        return $result->plus($day);
     }
 
     /**
@@ -536,30 +446,22 @@ class DateAndTime extends Magnitude
      * @param int $anIntYear
      * @param int $anIntOrStringMonth
      * @param int $anIntDay
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @static
      *
      * @since 5/4/05
      */
-    public static function withYearMonthDay($anIntYear, $anIntOrStringMonth, $anIntDay,
-        $class = 'DateAndTime')
+    public static function withYearMonthDay($anIntYear, $anIntOrStringMonth, $anIntDay)
     {
-        eval('$result = '.$class.'::withYearMonthDayHourMinuteSecondOffset(
-				$anIntYear,
-				$anIntOrStringMonth,
-				$anIntDay,
-				0,
-				0,
-				0,
-				$null = NULL,
-				$class
-			);');
-
-        return $result;
+        return static::withYearMonthDayHourMinuteSecondOffset(
+            $anIntYear,
+            $anIntOrStringMonth,
+            $anIntDay,
+            0,
+            0,
+            0,
+            null
+        );
     }
 
     /**
@@ -570,10 +472,6 @@ class DateAndTime extends Magnitude
      * @param int $anIntDay
      * @param int $anIntHour
      * @param int $anIntMinute
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object DateAndTime
      *
@@ -581,21 +479,17 @@ class DateAndTime extends Magnitude
      *
      * @since 5/4/05
      */
-    public static function withYearMonthDayHourMinute($anIntYear, $anIntOrStringMonth,
-        $anIntDay, $anIntHour, $anIntMinute, $class = 'DateAndTime')
+    public static function withYearMonthDayHourMinute($anIntYear, $anIntOrStringMonth, $anIntDay, $anIntHour, $anIntMinute)
     {
-        eval('$result = '.$class.'::withYearMonthDayHourMinuteSecondOffset(
-				$anIntYear,
-				$anIntOrStringMonth,
-				$anIntDay,
-				$anIntHour,
-				$anIntMinute,
-				0,
-				$null = NULL,
-				$class
-			);');
-
-        return $result;
+        return static::withYearMonthDayHourMinuteSecondOffset(
+            $anIntYear,
+            $anIntOrStringMonth,
+            $anIntDay,
+            $anIntHour,
+            $anIntMinute,
+            0,
+            null,
+        );
     }
 
     /**
@@ -607,10 +501,6 @@ class DateAndTime extends Magnitude
      * @param int $anIntHour
      * @param int $anIntMinute
      * @param int $anIntSecond
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object DateAndTime
      *
@@ -618,21 +508,17 @@ class DateAndTime extends Magnitude
      *
      * @since 5/4/05
      */
-    public static function withYearMonthDayHourMinuteSecond($anIntYear, $anIntOrStringMonth,
-        $anIntDay, $anIntHour, $anIntMinute, $anIntSecond, $class = 'DateAndTime')
+    public static function withYearMonthDayHourMinuteSecond($anIntYear, $anIntOrStringMonth, $anIntDay, $anIntHour, $anIntMinute, $anIntSecond)
     {
-        eval('$result = '.$class.'::withYearMonthDayHourMinuteSecondOffset(
-				$anIntYear,
-				$anIntOrStringMonth,
-				$anIntDay,
-				$anIntHour,
-				$anIntMinute,
-				$anIntSecond,
-				$null = NULL,
-				$class
-			);');
-
-        return $result;
+        return static::withYearMonthDayHourMinuteSecondOffset(
+            $anIntYear,
+            $anIntOrStringMonth,
+            $anIntDay,
+            $anIntHour,
+            $anIntMinute,
+            $anIntSecond,
+            null
+        );
     }
 
     /**
@@ -645,10 +531,6 @@ class DateAndTime extends Magnitude
      * @param int $anIntMinute
      * @param int $anIntSecond
      * @param object Duration $aDurationOffset
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object DateAndTime
      *
@@ -658,14 +540,8 @@ class DateAndTime extends Magnitude
      */
     public static function withYearMonthDayHourMinuteSecondOffset($anIntYear,
         $anIntOrStringMonth, $anIntDay, $anIntHour, $anIntMinute,
-        $anIntSecond, $aDurationOffset, $class = 'DateAndTime')
+        $anIntSecond, $aDurationOffset)
     {
-        // Validate our passed class name.
-        if (!(strtolower($class) == strtolower('DateAndTime')
-            || is_subclass_of(new $class(), 'DateAndTime'))) {
-            exit("Class, '$class', is not a subclass of 'DateAndTime'.");
-        }
-
         // Ensure that we have no days less than 1.
         if ($anIntDay < 1) {
             $anIntDay = 1;
@@ -696,7 +572,7 @@ class DateAndTime extends Magnitude
             $offset = $aDurationOffset;
         }
 
-        $dateAndTime = new $class();
+        $dateAndTime = new static();
         $dateAndTime->ticksOffset($since->ticks(), $offset);
 
         return $dateAndTime;
@@ -705,25 +581,19 @@ class DateAndTime extends Magnitude
     /**
      * Answer a new instance representing yesterday.
      *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
      * @return object DateAndTime
      *
      * @since 5/12/05
      *
      * @static
      */
-    public static function yesterday($class = 'DateAndTime')
+    public static function yesterday()
     {
-        eval('$today = '.$class.'::today($class);');
+        $today = static::today();
         $todaysDate = $today->asDate();
         $yesterdaysDate = $todaysDate->previous();
-        $obj = $yesterdaysDate->asDateAndTime();
 
-        return $obj;
+        return $yesterdaysDate->asDateAndTime();
     }
 
     /*********************************************************
@@ -802,10 +672,7 @@ class DateAndTime extends Magnitude
      */
     public function atMidnight()
     {
-        eval('$result = '.static::class.'::withYearMonthDay($this->year(),
-				$this->month(), $this->dayOfMonth(), "'.static::class.'");');
-
-        return $result;
+        return static::withYearMonthDay($this->year(), $this->month(), $this->dayOfMonth());
     }
 
     /**
@@ -817,11 +684,7 @@ class DateAndTime extends Magnitude
      */
     public function atNoon()
     {
-        eval('$result = '.static::class.'::withYearMonthDayHourMinuteSecond(
-			$this->year(), $this->month(), $this->dayOfMonth(), 12, 0, 0,
-			'.static::class.');');
-
-        return $result;
+        return static::withYearMonthDayHourMinuteSecond($this->year(), $this->month(), $this->dayOfMonth(), 12, 0, 0);
     }
 
     /**
@@ -1516,8 +1379,7 @@ class DateAndTime extends Magnitude
             $ticks[$key] = $value + $durationTicks[$key];
         }
 
-        $class = static::class;
-        $result = new $class();
+        $result = new static();
         $result->ticksOffset($ticks, $this->offset());
 
         return $result;
@@ -1610,7 +1472,7 @@ class DateAndTime extends Magnitude
      */
     public function asSeconds()
     {
-        eval('$epoch = '.static::class.'::epoch();');
+        $epoch = static::epoch();
         $sinceEpoch = $this->minus($epoch);
 
         return $sinceEpoch->asSeconds();
@@ -1761,8 +1623,7 @@ class DateAndTime extends Magnitude
      */
     public function withOffset($anOffset)
     {
-        $class = static::class;
-        $equiv = new $class();
+        $equiv = new static();
         $equiv->ticksOffset($this->ticks(), $anOffset->asDuration());
 
         return $equiv;

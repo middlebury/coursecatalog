@@ -61,12 +61,7 @@ class Week extends Timespan
             }
         }
 
-        $errorString = $aNameString.' is not a recognized day name.';
-        if (function_exists('throwError')) {
-            throwError(new Error($errorString));
-        } else {
-            exit($errorString);
-        }
+        throw new InvalidArgumentException($aNameString.' is not a recognized day name.');
     }
 
     /**
@@ -85,12 +80,7 @@ class Week extends Timespan
             return $names[$anInteger];
         }
 
-        $errorString = $anInteger.' is not a valid day index.';
-        if (function_exists('throwError')) {
-            throwError(new Error($errorString));
-        } else {
-            exit($errorString);
-        }
+        throw new InvalidArgumentException($anInteger.' is not a valid day index.');
     }
 
     /**
@@ -109,102 +99,7 @@ class Week extends Timespan
 
     /*********************************************************
      * Class Methods - Instance Creation
-     *
-     * All static instance creation methods have an optional
-     * $class parameter which is used to get around the limitations
-     * of not being	able to find the class of the object that
-     * recieved the initial method call rather than the one in
-     * which it is implemented. These parameters SHOULD NOT BE
-     * USED OUTSIDE OF THIS PACKAGE.
      *********************************************************/
-
-    /**
-     * Answer a new object that represents now.
-     *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Week
-     *
-     * @since 5/5/05
-     *
-     * @static
-     */
-    public static function current($class = 'Week')
-    {
-        $obj = parent::current($class);
-
-        return $obj;
-    }
-
-    /**
-     * Answer a Month starting on the Squeak epoch: 1 January 1901.
-     *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Week
-     *
-     * @since 5/5/05
-     *
-     * @static
-     */
-    public static function epoch($class = 'Week')
-    {
-        $obj = parent::epoch($class);
-
-        return $obj;
-    }
-
-    /**
-     * Create a new object starting now, with zero duration.
-     *
-     * @param object DateAndTime $aDateAndTime
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Week
-     *
-     * @since 5/5/05
-     *
-     * @static
-     */
-    public static function starting($aDateAndTime, $class = 'Week')
-    {
-        $obj = parent::starting($aDateAndTime, $class);
-
-        return $obj;
-    }
-
-    /**
-     * Create a new object with given start and end DateAndTimes.
-     *
-     * @param object DateAndTime $startDateAndTime
-     * @param object DateAndTime $endDateAndTime
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Week
-     *
-     * @since 5/11/05
-     *
-     * @static
-     */
-    public static function startingEnding($startDateAndTime, $endDateAndTime,
-        $class = 'Week')
-    {
-        $obj = parent::startingEnding($startDateAndTime, $endDateAndTime, $class);
-
-        return $obj;
-    }
 
     /**
      * Create a new object starting now, with a given duration.
@@ -212,10 +107,6 @@ class Week extends Timespan
      *
      * @param object DateAndTime $aDateAndTime
      * @param object Duration $aDuration
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object Week
      *
@@ -223,25 +114,21 @@ class Week extends Timespan
      *
      * @static
      */
-    public static function startingDuration($aDateAndTime, $aDuration, $class = 'Week')
+    public static function startingDuration($aDateAndTime, $aDuration)
     {
-        // Validate our passed class name.
-        if (!(strtolower($class) == strtolower('Week')
-            || is_subclass_of(new $class(), 'Week'))) {
-            exit("Class, '$class', is not a subclass of 'Week'.");
-        }
-
         $asDateAndTime = $aDateAndTime->asDateAndTime();
         $midnight = $asDateAndTime->atMidnight();
         $dayNames = ChronologyConstants::DayNames();
-        $temp = $midnight->dayOfWeek() + 7 - array_search(self::startDay(), $dayNames);
+        $temp = $midnight->dayOfWeek() + 7 - array_search(static::startDay(), $dayNames);
         $delta = abs($temp - ((int) ($temp / 7) * 7));
 
         $adjusted = $midnight->minus(Duration::withDays($delta));
 
-        $obj = parent::startingDuration($adjusted, Duration::withWeeks(1), $class);
+        $week = new static();
+        $week->setStart($adjusted);
+        $week->setDuration(Duration::withWeeks(1));
 
-        return $obj;
+        return $week;
     }
 
     /*********************************************************

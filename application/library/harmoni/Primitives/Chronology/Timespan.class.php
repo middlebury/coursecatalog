@@ -56,21 +56,9 @@ class Timespan extends Magnitude
 
     /*********************************************************
      * Class Methods - Instance Creation
-     *
-     * All static instance creation methods have an optional
-     * $class parameter which is used to get around the limitations
-     * of not being	able to find the class of the object that
-     * recieved the initial method call rather than the one in
-     * which it is implemented. These parameters SHOULD NOT BE
-     * USED OUTSIDE OF THIS PACKAGE.
      *********************************************************/
     /**
      * Answer a new object that represents now.
-     *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object Timespan
      *
@@ -78,42 +66,29 @@ class Timespan extends Magnitude
      *
      * @static
      */
-    public static function current($class = 'Timespan')
+    public static function current()
     {
-        eval('$result = '.$class.'::starting(DateAndTime::now(), $class);');
-
-        return $result;
+        return static::starting(DateAndTime::now());
     }
 
     /**
      * Answer a Timespan starting on the Squeak epoch: 1 January 1901.
      *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
      * @return object Timespan
      *
      * @since 5/5/05
      *
      * @static
      */
-    public static function epoch($class = 'Timespan')
+    public static function epoch()
     {
-        eval('$result = '.$class.'::starting(DateAndTime::epoch(), $class);');
-
-        return $result;
+        return static::starting(DateAndTime::epoch());
     }
 
     /**
      * Create a new object starting now, with zero duration.
      *
      * @param object DateAndTime $aDateAndTime
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object Timespan
      *
@@ -121,12 +96,9 @@ class Timespan extends Magnitude
      *
      * @static
      */
-    public static function starting($aDateAndTime, $class = 'Timespan')
+    public static function starting($aDateAndTime)
     {
-        eval('$result = '.$class.'::startingDuration(
-				$aDateAndTime, Duration::zero(), $class);');
-
-        return $result;
+        return static::startingDuration($aDateAndTime, Duration::zero());
     }
 
     /**
@@ -134,10 +106,6 @@ class Timespan extends Magnitude
      *
      * @param object DateAndTime $aDateAndTime
      * @param object Duration $aDuration
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object Timespan
      *
@@ -145,15 +113,9 @@ class Timespan extends Magnitude
      *
      * @static
      */
-    public static function startingDuration($aDateAndTime, $aDuration, $class = 'Timespan')
+    public static function startingDuration($aDateAndTime, $aDuration)
     {
-        // Validate our passed class name.
-        if (!(strtolower($class) == strtolower('Timespan')
-            || is_subclass_of(new $class(), 'Timespan'))) {
-            exit("Class, '$class', is not a subclass of 'Timespan'.");
-        }
-
-        $timeSpan = new $class();
+        $timeSpan = new static();
         $timeSpan->setStart($aDateAndTime);
         $timeSpan->setDuration($aDuration);
 
@@ -165,10 +127,6 @@ class Timespan extends Magnitude
      *
      * @param object DateAndTime $startDateAndTime
      * @param object DateAndTime $endDateAndTime
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object Timespan
      *
@@ -176,15 +134,12 @@ class Timespan extends Magnitude
      *
      * @static
      */
-    public static function startingEnding($startDateAndTime, $endDateAndTime, $class = 'Timespan')
+    public static function startingEnding($startDateAndTime, $endDateAndTime)
     {
-        $end = $endDateAndTime->asDateAndTime();
-        eval('$result = '.$class.'::startingDuration(
-			$startDateAndTime,
-			$end->minus($startDateAndTime),
-			$class);');
-
-        return $result;
+        return static::startingDuration(
+            $startDateAndTime,
+            $endDateAndTime->asDateAndTime()->minus($startDateAndTime)
+        );
     }
 
     /*********************************************************
@@ -355,9 +310,7 @@ class Timespan extends Magnitude
 
             return $null;
         } else {
-            eval('$result = '.static::class.'::startingEnding($aBeginning, $anEnd);');
-
-            return $result;
+            return static::startingEnding($aBeginning, $anEnd);
         }
     }
 
@@ -398,12 +351,10 @@ class Timespan extends Magnitude
      */
     public function next()
     {
-        eval('$result = '.static::class.'::startingDuration(
- 			$this->start->plus($this->duration),
- 			$this->duration,
- 			"'.static::class.'");');
-
-        return $result;
+        return static::startingDuration(
+            $this->start->plus($this->duration),
+            $this->duration
+        );
     }
 
     /**
@@ -417,12 +368,7 @@ class Timespan extends Magnitude
      */
     public function plus($aDuration)
     {
-        $classname = static::class;
-
-        eval('$result = '.$classname.'::startingDuration($this->start->plus($aDuration),
-			$this->duration());');
-
-        return $result;
+        return static::startingDuration($this->start->plus($aDuration), $this->duration());
     }
 
     /**
@@ -434,12 +380,10 @@ class Timespan extends Magnitude
      */
     public function previous()
     {
-        eval('$result = '.static::class.'::startingDuration(
- 			$this->start->minus($this->duration),
- 			$this->duration,
- 			"'.static::class.'");');
-
-        return $result;
+        return static::startingDuration(
+            $this->start->minus($this->duration),
+            $this->duration
+        );
     }
 
     /**

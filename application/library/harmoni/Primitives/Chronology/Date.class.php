@@ -54,56 +54,7 @@ class Date extends Timespan
 
     /*********************************************************
      * Class Methods - Instance Creation
-     *
-     * All static instance creation methods have an optional
-     * $class parameter which is used to get around the limitations
-     * of not being	able to find the class of the object that
-     * recieved the initial method call rather than the one in
-     * which it is implemented. These parameters SHOULD NOT BE
-     * USED OUTSIDE OF THIS PACKAGE.
      *********************************************************/
-
-    /**
-     * Answer a new object that represents now.
-     *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Date
-     *
-     * @since 5/5/05
-     *
-     * @static
-     */
-    public static function current($class = 'Date')
-    {
-        $obj = parent::current($class);
-
-        return $obj;
-    }
-
-    /**
-     * Answer a Date starting on the Squeak epoch: 1 January 1901.
-     *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Date
-     *
-     * @since 5/5/05
-     *
-     * @static
-     */
-    public static function epoch($class = 'Date')
-    {
-        $obj = parent::epoch($class);
-
-        return $obj;
-    }
 
     /**
      * Read a Date from the stream in any of the forms:
@@ -118,10 +69,6 @@ class Date extends Timespan
      *											(19820405; 1982-04-05)
      *
      * @param string $aString
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object Date
      *
@@ -129,21 +76,15 @@ class Date extends Timespan
      *
      * @static
      */
-    public static function fromString($aString, $class = 'Date')
+    public static function fromString($aString)
     {
         $parser = StringParser::getParserFor($aString);
 
         if (!is_string($aString) || !preg_match('/[^\W]/', $aString) || !$parser) {
-            $null = null;
-
-            return $null;
-            // die("'".$aString."' is not in a valid format.");
+            return null;
         }
 
-        eval('$result = '.$class.'::withYearMonthDay($parser->year(),
-						$parser->month(), $parser->day(), $class);');
-
-        return $result;
+        return static::withYearMonthDay($parser->year(), $parser->month(), $parser->day());
     }
 
     /**
@@ -157,44 +98,13 @@ class Date extends Timespan
      *
      * @static
      */
-    public static function starting($aDateAndTime, $class = 'Date')
+    public static function starting($aDateAndTime)
     {
-        $obj = parent::startingDuration($aDateAndTime->atMidnight(),
-            Duration::withDays(1), $class);
-
-        return $obj;
-    }
-
-    /**
-     * Create a new object starting from midnight.
-     *
-     * @param object DateAndTime $aDateAndTime
-     * @param object Duration $aDuration
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Year
-     *
-     * @since 5/5/05
-     *
-     * @static
-     */
-    public static function startingDuration($aDateAndTime, $aDuration, $class = 'Date')
-    {
-        $obj = parent::startingDuration($aDateAndTime, $aDuration, $class);
-
-        return $obj;
+        return static::startingDuration($aDateAndTime->atMidnight(), Duration::withDays(1));
     }
 
     /**
      * Answer today's date.
-     *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object Date
      *
@@ -202,11 +112,9 @@ class Date extends Timespan
      *
      * @static
      */
-    public static function today($class = 'Date')
+    public static function today()
     {
-        eval('$today = '.$class.'::current($class);');
-
-        return $today;
+        return static::current();
     }
 
     /**
@@ -218,12 +126,11 @@ class Date extends Timespan
      *
      * @static
      */
-    public static function tomorrow($class = 'Date')
+    public static function tomorrow()
     {
-        eval('$today = '.$class.'::today($class);');
-        $obj = $today->next();
+        $today = static::today();
 
-        return $obj;
+        return $today->next();
     }
 
     /**
@@ -237,11 +144,9 @@ class Date extends Timespan
      *
      * @static
      */
-    public static function withJulianDayNumber($anInteger, $class = 'Date')
+    public static function withJulianDayNumber($anInteger)
     {
-        eval('$result = '.$class.'::starting(DateAndTime::withJulianDayNumber($anInteger));');
-
-        return $result;
+        return static::starting(DateAndTime::withJulianDayNumber($anInteger));
     }
 
     /**
@@ -257,12 +162,9 @@ class Date extends Timespan
      *
      * @static
      */
-    public static function withYearMonthDay($anIntYear, $anIntOrStringMonth, $anIntDay, $class = 'Date')
+    public static function withYearMonthDay($anIntYear, $anIntOrStringMonth, $anIntDay)
     {
-        eval('$result = '.$class.'::starting(DateAndTime::withYearMonthDay($anIntYear,
-			$anIntOrStringMonth, $anIntDay));');
-
-        return $result;
+        return static::starting(DateAndTime::withYearMonthDay($anIntYear, $anIntOrStringMonth, $anIntDay));
     }
 
     /**
@@ -277,20 +179,13 @@ class Date extends Timespan
      *
      * @static
      */
-    public static function withYearDay($anIntYear, $anIntDay, $class = 'Date')
+    public static function withYearDay($anIntYear, $anIntDay)
     {
-        eval('$result = '.$class.'::starting(DateAndTime::withYearDay($anIntYear,  $anIntDay));');
-
-        return $result;
+        return static::starting(DateAndTime::withYearDay($anIntYear, $anIntDay));
     }
 
     /**
      * Answer yesterday's date.
-     *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
      * @return object Date
      *
@@ -298,12 +193,11 @@ class Date extends Timespan
      *
      * @static
      */
-    public static function yesterday($class = 'Date')
+    public static function yesterday()
     {
-        eval('$today = '.$class.'::today($class);');
-        $obj = $today->previous();
+        $today = static::today();
 
-        return $obj;
+        return $today->previous();
     }
 
     /*********************************************************

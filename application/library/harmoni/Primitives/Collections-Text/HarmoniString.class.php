@@ -43,9 +43,7 @@ class HarmoniString extends SObject
      */
     public static function withValue($value)
     {
-        $string = new String($value);
-
-        return $string;
+        return new static($value);
     }
 
     /**
@@ -61,9 +59,7 @@ class HarmoniString extends SObject
      */
     public static function fromString($aString)
     {
-        $string = new String($aString);
-
-        return $string;
+        return new static($aString);
     }
 
     /**

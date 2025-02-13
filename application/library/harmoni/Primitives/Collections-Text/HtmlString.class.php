@@ -25,36 +25,6 @@ class HtmlString extends HarmoniString
     }
 
     /**
-     * Instantiates a new String object with the passed value.
-     *
-     * @param string $value
-     *
-     * @return ref object
-     *
-     * @static
-     */
-    public static function withValue($value)
-    {
-        return new self($value);
-    }
-
-    /**
-     * Instantiates a new String object with the passed value.
-     *
-     * allowing 'fromString' for string values
-     *
-     * @param string $aString
-     *
-     * @return ref object
-     *
-     * @static
-     */
-    public static function fromString($aString)
-    {
-        return new self($aString);
-    }
-
-    /**
      * Return a new string with cleaned of XSS-unsafe markup.
      *
      * @param string $html
@@ -67,7 +37,7 @@ class HtmlString extends HarmoniString
      */
     public static function getSafeHtml($html)
     {
-        $s = self::withValue($html);
+        $s = static::withValue($html);
         $s->cleanXSS();
 
         return $s->asString();
