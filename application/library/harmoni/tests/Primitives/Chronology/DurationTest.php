@@ -13,7 +13,7 @@
  * @since 5/3/05
  */
 
-require_once __DIR__.'/../Duration.class.php';
+use PHPUnit\Framework\TestCase;
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -31,13 +31,13 @@ require_once __DIR__.'/../Duration.class.php';
  *
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
-class DurationTestCase extends UnitTestCase
+class DurationTest extends TestCase
 {
     /**
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         // perhaps, initialize $obj here
     }
@@ -45,7 +45,7 @@ class DurationTestCase extends UnitTestCase
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         // perhaps, unset $obj here
     }
@@ -58,19 +58,19 @@ class DurationTestCase extends UnitTestCase
     {
         // One day
         $duration = Duration::withDays(1);
-        $this->assertEqual($duration->days(), 1);
-        $this->assertEqual($duration->hours(), 0);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
-        $this->assertEqual($duration->asSeconds(), 86400);
+        $this->assertEquals(1, $duration->days());
+        $this->assertEquals(0, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
+        $this->assertEquals(86400, $duration->asSeconds());
 
         // 7 days
         $duration = Duration::withDays(7);
-        $this->assertEqual($duration->days(), 7);
-        $this->assertEqual($duration->hours(), 0);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
-        $this->assertEqual($duration->asSeconds(), 86400 * 7);
+        $this->assertEquals(7, $duration->days());
+        $this->assertEquals(0, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
+        $this->assertEquals(86400 * 7, $duration->asSeconds());
     }
 
     /**
@@ -80,109 +80,109 @@ class DurationTestCase extends UnitTestCase
     {
         // 5 hours
         $duration = Duration::withDaysHoursMinutesSeconds(0, 5, 0, 0);
-        $this->assertEqual($duration->days(), 0);
-        $this->assertEqual($duration->hours(), 5);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
-        $this->assertEqual($duration->asSeconds(), 3600 * 5);
+        $this->assertEquals(0, $duration->days());
+        $this->assertEquals(5, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
+        $this->assertEquals(3600 * 5, $duration->asSeconds());
         $this->assertTrue($duration->isEqualTo(Duration::withHours(5)));
 
         // 15 minutes
         $duration = Duration::withDaysHoursMinutesSeconds(0, 0, 15, 0);
-        $this->assertEqual($duration->days(), 0);
-        $this->assertEqual($duration->hours(), 0);
-        $this->assertEqual($duration->minutes(), 15);
-        $this->assertEqual($duration->seconds(), 0);
-        $this->assertEqual($duration->asSeconds(), 15 * 60);
+        $this->assertEquals(0, $duration->days());
+        $this->assertEquals(0, $duration->hours());
+        $this->assertEquals(15, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
+        $this->assertEquals(15 * 60, $duration->asSeconds());
         $this->assertTrue($duration->isEqualTo(Duration::withMinutes(15)));
 
         // 35 seconds
         $duration = Duration::withDaysHoursMinutesSeconds(0, 0, 0, 35);
-        $this->assertEqual($duration->days(), 0);
-        $this->assertEqual($duration->hours(), 0);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 35);
-        $this->assertEqual($duration->asSeconds(), 35);
+        $this->assertEquals(0, $duration->days());
+        $this->assertEquals(0, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(35, $duration->seconds());
+        $this->assertEquals(35, $duration->asSeconds());
         $this->assertTrue($duration->isEqualTo(Duration::withSeconds(35)));
 
         // 3 days, 2 hours, 23 minutes, and 12 seconds
         $duration = Duration::withDaysHoursMinutesSeconds(3, 2, 23, 12);
-        $this->assertEqual($duration->days(), 3);
-        $this->assertEqual($duration->hours(), 2);
-        $this->assertEqual($duration->minutes(), 23);
-        $this->assertEqual($duration->seconds(), 12);
-        $this->assertEqual($duration->asSeconds(), ((3 * 24 + 2) * 60 + 23) * 60 + 12);
+        $this->assertEquals(3, $duration->days());
+        $this->assertEquals(2, $duration->hours());
+        $this->assertEquals(23, $duration->minutes());
+        $this->assertEquals(12, $duration->seconds());
+        $this->assertEquals(((3 * 24 + 2) * 60 + 23) * 60 + 12, $duration->asSeconds());
 
         // 48 hours
         $duration = Duration::withDaysHoursMinutesSeconds(0, 48, 0, 0);
-        $this->assertEqual($duration->days(), 2);
-        $this->assertEqual($duration->hours(), 0);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
-        $this->assertEqual($duration->asSeconds(), 86400 * 2);
+        $this->assertEquals(2, $duration->days());
+        $this->assertEquals(0, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
+        $this->assertEquals(86400 * 2, $duration->asSeconds());
 
         // Month
         $duration = Duration::withMonth('June');
-        $this->assertEqual($duration->days(), 30);
-        $this->assertEqual($duration->hours(), 0);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
+        $this->assertEquals(30, $duration->days());
+        $this->assertEquals(0, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
 
         $duration = Duration::withMonth('July');
-        $this->assertEqual($duration->days(), 31);
-        $this->assertEqual($duration->hours(), 0);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
+        $this->assertEquals(31, $duration->days());
+        $this->assertEquals(0, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
 
         $duration = Duration::withMonth(9);
-        $this->assertEqual($duration->days(), 30);
-        $this->assertEqual($duration->hours(), 0);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
+        $this->assertEquals(30, $duration->days());
+        $this->assertEquals(0, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
 
         // Weeks
         $duration = Duration::withWeeks(1);
-        $this->assertEqual($duration->days(), 7);
-        $this->assertEqual($duration->hours(), 0);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
+        $this->assertEquals(7, $duration->days());
+        $this->assertEquals(0, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
 
         $duration = Duration::withWeeks(5);
-        $this->assertEqual($duration->days(), 35);
-        $this->assertEqual($duration->hours(), 0);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
+        $this->assertEquals(35, $duration->days());
+        $this->assertEquals(0, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
 
         $duration = Duration::withWeeks(1.5);
-        $this->assertEqual($duration->days(), 10);
-        $this->assertEqual($duration->hours(), 12);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
+        $this->assertEquals(10, $duration->days());
+        $this->assertEquals(12, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
 
         $duration = Duration::withWeeks(1.5);
-        $this->assertEqual($duration->days(), 10);
-        $this->assertEqual($duration->hours(), 12);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
+        $this->assertEquals(10, $duration->days());
+        $this->assertEquals(12, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
 
         $duration = Duration::withWeeks(1.374);
-        $this->assertEqual($duration->days(), 9);
-        $this->assertEqual($duration->hours(), 14);
-        $this->assertEqual($duration->minutes(), 49);
-        $this->assertEqual($duration->seconds(), 55);
+        $this->assertEquals(9, $duration->days());
+        $this->assertEquals(14, $duration->hours());
+        $this->assertEquals(49, $duration->minutes());
+        $this->assertEquals(55, $duration->seconds());
 
         $duration = Duration::withWeeks(-1.374);
-        $this->assertEqual($duration->days(), -9);
-        $this->assertEqual($duration->hours(), -14);
-        $this->assertEqual($duration->minutes(), -49);
-        $this->assertEqual($duration->seconds(), -55);
+        $this->assertEquals(-9, $duration->days());
+        $this->assertEquals(-14, $duration->hours());
+        $this->assertEquals(-49, $duration->minutes());
+        $this->assertEquals(-55, $duration->seconds());
 
         // Zero
         $duration = Duration::zero();
-        $this->assertEqual($duration->days(), 0);
-        $this->assertEqual($duration->hours(), 0);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
+        $this->assertEquals(0, $duration->days());
+        $this->assertEquals(0, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
     }
 
     /**
@@ -191,60 +191,60 @@ class DurationTestCase extends UnitTestCase
     public function testFromString()
     {
         $duration = Duration::fromString('-7:09:12:06.10');
-        $this->assertEqual($duration->days(), -7);
-        $this->assertEqual($duration->hours(), -9);
-        $this->assertEqual($duration->minutes(), -12);
-        $this->assertEqual($duration->seconds(), -6);
+        $this->assertEquals(-7, $duration->days());
+        $this->assertEquals(-9, $duration->hours());
+        $this->assertEquals(-12, $duration->minutes());
+        $this->assertEquals(-6, $duration->seconds());
 
         $duration = Duration::fromString('+0:01:02');
-        $this->assertEqual($duration->days(), 0);
-        $this->assertEqual($duration->hours(), 1);
-        $this->assertEqual($duration->minutes(), 2);
-        $this->assertEqual($duration->seconds(), 0);
+        $this->assertEquals(0, $duration->days());
+        $this->assertEquals(1, $duration->hours());
+        $this->assertEquals(2, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
 
         $duration = Duration::fromString('0:00:00:00');
-        $this->assertEqual($duration->days(), 0);
-        $this->assertEqual($duration->hours(), 0);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
+        $this->assertEquals(0, $duration->days());
+        $this->assertEquals(0, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
 
         // 50 years (18250 days)
         $duration = Duration::fromString('18250:12:00:00');
-        $this->assertEqual($duration->days(), 18250);
-        $this->assertEqual($duration->hours(), 12);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
+        $this->assertEquals(18250, $duration->days());
+        $this->assertEquals(12, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
 
         // 500 years (182500 days)
         $duration = Duration::fromString('182500:12:00:00');
-        $this->assertEqual($duration->days(), 182500);
-        $this->assertEqual($duration->hours(), 12);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
+        $this->assertEquals(182500, $duration->days());
+        $this->assertEquals(12, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
 
         // -500 years (-182500 days)
         $duration = Duration::fromString('-182500:12:00:00');
-        $this->assertEqual($duration->days(), -182500);
-        $this->assertEqual($duration->hours(), -12);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
+        $this->assertEquals(-182500, $duration->days());
+        $this->assertEquals(-12, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
 
         // 500,000,000 years (182500000000 days)
         $duration = Duration::fromString('182500000000:12:00:00');
-        $this->assertEqual($duration->days(), 182500000000);
-        $this->assertEqual($duration->hours(), 12);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
+        $this->assertEquals(182500000000, $duration->days());
+        $this->assertEquals(12, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
 
         // Beyond 4 billion years, the precision drops from
         // second precision to hour precision.
 
         // 50,000,000,000 years (18250000000000 days)
         $duration = Duration::fromString('18250000000000:12:00:00');
-        $this->assertEqual($duration->days(), 18250000000000);
-        $this->assertEqual($duration->hours(), 12);
-        // 		$this->assertEqual($duration->minutes(), 0);
-        // 		$this->assertEqual($duration->seconds(), 0);
+        $this->assertEquals(18250000000000, $duration->days());
+        $this->assertEquals(12, $duration->hours());
+        // 		$this->assertEquals(0, $duration->minutes());
+        // 		$this->assertEquals(0, $duration->seconds());
     }
 
     /**
@@ -253,24 +253,24 @@ class DurationTestCase extends UnitTestCase
     public function testPrintableString()
     {
         $duration = Duration::withWeeks(1.374);
-        $this->assertEqual($duration->printableString(), '9:14:49:55');
+        $this->assertEquals('9:14:49:55', $duration->printableString());
 
         $duration = Duration::withWeeks(-1.374);
-        $this->assertEqual($duration->printableString(), '-9:14:49:55');
+        $this->assertEquals('-9:14:49:55', $duration->printableString());
 
         $duration = Duration::withWeeks(1.5);
-        $this->assertEqual($duration->printableString(), '10:12:00:00');
+        $this->assertEquals('10:12:00:00', $duration->printableString());
 
         $duration = Duration::withDaysHoursMinutesSeconds(3, 2, 23, 7);
-        $this->assertEqual($duration->printableString(), '3:02:23:07');
+        $this->assertEquals('3:02:23:07', $duration->printableString());
 
         // 3 days, 2 hours, 23 minutes, and 12 seconds
         $duration = Duration::withDaysHoursMinutesSeconds(3, 2, 23, 12);
-        $this->assertEqual($duration->printableString(), '3:02:23:12');
+        $this->assertEquals('3:02:23:12', $duration->printableString());
 
         // -3 days, -2 hours, -23 minutes, and -12 seconds
         $duration = Duration::withDaysHoursMinutesSeconds(-3, -2, -23, -12);
-        $this->assertEqual($duration->printableString(), '-3:02:23:12');
+        $this->assertEquals('-3:02:23:12', $duration->printableString());
     }
 
     /**
@@ -279,67 +279,67 @@ class DurationTestCase extends UnitTestCase
     public function testNegativeDurations()
     {
         $duration = Duration::withDays(-4);
-        $this->assertEqual($duration->days(), -4);
-        $this->assertEqual($duration->hours(), 0);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
-        $this->assertEqual($duration->asSeconds(), -345600);
+        $this->assertEquals(-4, $duration->days());
+        $this->assertEquals(0, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
+        $this->assertEquals(-345600, $duration->asSeconds());
 
         $duration = Duration::withDaysHoursMinutesSeconds(-3, -2, -23, -12);
-        $this->assertEqual($duration->days(), -3);
-        $this->assertEqual($duration->hours(), -2);
-        $this->assertEqual($duration->minutes(), -23);
-        $this->assertEqual($duration->seconds(), -12);
-        $this->assertEqual($duration->asSeconds(), -267792);
+        $this->assertEquals(-3, $duration->days());
+        $this->assertEquals(-2, $duration->hours());
+        $this->assertEquals(-23, $duration->minutes());
+        $this->assertEquals(-12, $duration->seconds());
+        $this->assertEquals(-267792, $duration->asSeconds());
 
         $duration = Duration::withDaysHoursMinutesSeconds(0, -2, -23, -12);
-        $this->assertEqual($duration->days(), 0);
-        $this->assertEqual($duration->hours(), -2);
-        $this->assertEqual($duration->minutes(), -23);
-        $this->assertEqual($duration->seconds(), -12);
-        $this->assertEqual($duration->asSeconds(), -8592);
+        $this->assertEquals(0, $duration->days());
+        $this->assertEquals(-2, $duration->hours());
+        $this->assertEquals(-23, $duration->minutes());
+        $this->assertEquals(-12, $duration->seconds());
+        $this->assertEquals(-8592, $duration->asSeconds());
 
         // Big negatives
 
         // -500 years (-182500 days)
         $duration = Duration::withDaysHoursMinutesSeconds(-182500, -2, -23, -12);
-        $this->assertEqual($duration->days(), -182500);
-        $this->assertEqual($duration->hours(), -2);
-        $this->assertEqual($duration->minutes(), -23);
-        $this->assertEqual($duration->seconds(), -12);
-        $this->assertEqual($duration->asSeconds(), -15768008592);
+        $this->assertEquals(-182500, $duration->days());
+        $this->assertEquals(-2, $duration->hours());
+        $this->assertEquals(-23, $duration->minutes());
+        $this->assertEquals(-12, $duration->seconds());
+        $this->assertEquals(-15768008592, $duration->asSeconds());
 
         // -500,000,000 years (182500000000 days)
         $duration = Duration::withDaysHoursMinutesSeconds(-182500000000, -2, -23, -12);
-        $this->assertEqual($duration->days(), -182500000000);
-        $this->assertEqual($duration->hours(), -2);
-        $this->assertEqual($duration->minutes(), -23);
-        $this->assertEqual($duration->seconds(), -12);
+        $this->assertEquals(-182500000000, $duration->days());
+        $this->assertEquals(-2, $duration->hours());
+        $this->assertEquals(-23, $duration->minutes());
+        $this->assertEquals(-12, $duration->seconds());
 
         // -4,000,000,000 years (-1460000000000 days)
         $duration = Duration::withDaysHoursMinutesSeconds(-1460000000000, -2, -23, -12);
-        $this->assertEqual($duration->days(), -1460000000000);
-        $this->assertEqual($duration->hours(), -2);
-        $this->assertEqual($duration->minutes(), -23);
-        $this->assertEqual($duration->seconds(), -12);
+        $this->assertEquals(-1460000000000, $duration->days());
+        $this->assertEquals(-2, $duration->hours());
+        $this->assertEquals(-23, $duration->minutes());
+        $this->assertEquals(-12, $duration->seconds());
 
         // Beyond negative 4 billion years, the precision drops from
         // second precision to hour precision.
 
         // -50,000,000,000 years (18250000000000 days)
         $duration = Duration::withDays(-18250000000000);
-        $this->assertEqual($duration->days(), -18250000000000);
-        $this->assertEqual($duration->hours(), 0);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
-        $this->assertEqual($duration->asSeconds(), 0 - hexdec('0x15e1eb3ee9d60000'));
+        $this->assertEquals(-18250000000000, $duration->days());
+        $this->assertEquals(0, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
+        $this->assertEquals(0 - hexdec('0x15e1eb3ee9d60000'), $duration->asSeconds());
 
         // -50,000,000,000 years (-18250000000000 days)
         $duration = Duration::withDaysHoursMinutesSeconds(-18250000000000, -2, -23, -12);
-        $this->assertEqual($duration->days(), -18250000000000);
-        $this->assertEqual($duration->hours(), -2);
-        // 		$this->assertEqual($duration->minutes(), -23);
-        // 		$this->assertEqual($duration->seconds(), -12);
+        $this->assertEquals(-18250000000000, $duration->days());
+        $this->assertEquals(-2, $duration->hours());
+        // 		$this->assertEquals(-23, $duration->minutes());
+        // 		$this->assertEquals(-12, $duration->seconds());
     }
 
     /**
@@ -378,34 +378,34 @@ class DurationTestCase extends UnitTestCase
         $duration = Duration::withDays(5);
 
         $duration = $duration->plus(Duration::withDays(15));
-        $this->assertEqual($duration->days(), 20);
+        $this->assertEquals(20, $duration->days());
 
         $duration = $duration->plus(Duration::withDays(15));
-        $this->assertEqual($duration->days(), 35);
+        $this->assertEquals(35, $duration->days());
 
         $duration = $duration->minus(Duration::withDays(33));
-        $this->assertEqual($duration->days(), 2);
+        $this->assertEquals(2, $duration->days());
 
         $duration = $duration->minus(Duration::withDays(1));
-        $this->assertEqual($duration->days(), 1);
+        $this->assertEquals(1, $duration->days());
 
         $duration = $duration->minus(Duration::withDays(1));
-        $this->assertEqual($duration->days(), 0);
-        $this->assertEqual($duration->seconds(), 0);
+        $this->assertEquals(0, $duration->days());
+        $this->assertEquals(0, $duration->seconds());
 
         $duration = $duration->minus(Duration::withDays(1));
-        $this->assertEqual($duration->days(), -1);
-        $this->assertEqual($duration->asSeconds(), -86400);
+        $this->assertEquals(-1, $duration->days());
+        $this->assertEquals(-86400, $duration->asSeconds());
 
         $duration = $duration->minus(Duration::withDays(10));
-        $this->assertEqual($duration->days(), -11);
+        $this->assertEquals(-11, $duration->days());
 
         $duration = $duration->plus(Duration::withDays(5));
-        $this->assertEqual($duration->days(), -6);
+        $this->assertEquals(-6, $duration->days());
 
         $duration = $duration->plus(Duration::withDays(20));
-        $this->assertEqual($duration->days(), 14);
-        $this->assertEqual($duration->asSeconds(), 86400 * 14);
+        $this->assertEquals(14, $duration->days());
+        $this->assertEquals(86400 * 14, $duration->asSeconds());
     }
 
     /**
@@ -415,19 +415,19 @@ class DurationTestCase extends UnitTestCase
     {
         $duration = Duration::withDays(5);
         $neg = $duration->negated();
-        $this->assertEqual($neg->seconds(), 0);
-        $this->assertEqual($neg->days(), -5);
+        $this->assertEquals(0, $neg->seconds());
+        $this->assertEquals(-5, $neg->days());
         $ticks = $neg->ticks();
-        $this->assertEqual($ticks[0], -5);
-        $this->assertEqual($ticks[1], 0);
+        $this->assertEquals(-5, $ticks[0]);
+        $this->assertEquals(0, $ticks[1]);
 
         $duration = Duration::withSeconds(1);
         $neg = $duration->negated();
-        $this->assertEqual($neg->seconds(), -1);
-        $this->assertEqual($neg->days(), 0);
+        $this->assertEquals(-1, $neg->seconds());
+        $this->assertEquals(0, $neg->days());
         $ticks = $neg->ticks();
-        $this->assertEqual($ticks[0], 0);
-        $this->assertEqual($ticks[1], -1);
+        $this->assertEquals(0, $ticks[0]);
+        $this->assertEquals(-1, $ticks[1]);
     }
 
     /**
@@ -670,39 +670,39 @@ class DurationTestCase extends UnitTestCase
     {
         // 50 years (18250 days)
         $duration = Duration::withDays(18250);
-        $this->assertEqual($duration->days(), 18250);
-        $this->assertEqual($duration->hours(), 0);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
-        $this->assertEqual($duration->asSeconds(), 86400 * 18250);
-        $this->assertEqual($duration->asSeconds(), 1576800000);
+        $this->assertEquals(18250, $duration->days());
+        $this->assertEquals(0, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
+        $this->assertEquals(86400 * 18250, $duration->asSeconds());
+        $this->assertEquals(1576800000, $duration->asSeconds());
 
         // 100 years (36500 days)
         $duration = Duration::withDays(36500);
-        $this->assertEqual($duration->days(), 36500);
-        $this->assertEqual($duration->hours(), 0);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
-        $this->assertEqual($duration->asSeconds(), 86400 * 36500);
-        $this->assertEqual($duration->asSeconds(), 3153600000);
+        $this->assertEquals(36500, $duration->days());
+        $this->assertEquals(0, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
+        $this->assertEquals(86400 * 36500, $duration->asSeconds());
+        $this->assertEquals(3153600000, $duration->asSeconds());
 
         // 500 years (182500 days)
         $duration = Duration::withDays(182500);
-        $this->assertEqual($duration->days(), 182500);
-        $this->assertEqual($duration->hours(), 0);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
-        $this->assertEqual($duration->asSeconds(), 86400 * 182500);
-        $this->assertEqual($duration->asSeconds(), 15768000000);
+        $this->assertEquals(182500, $duration->days());
+        $this->assertEquals(0, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
+        $this->assertEquals(86400 * 182500, $duration->asSeconds());
+        $this->assertEquals(15768000000, $duration->asSeconds());
 
         // 5000 years (1825000 days)
         $duration = Duration::withDays(1825000);
-        $this->assertEqual($duration->days(), 1825000);
-        $this->assertEqual($duration->hours(), 0);
-        $this->assertEqual($duration->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
-        $this->assertEqual($duration->asSeconds(), 86400 * 1825000);
-        $this->assertEqual($duration->asSeconds(), 157680000000);
+        $this->assertEquals(1825000, $duration->days());
+        $this->assertEquals(0, $duration->hours());
+        $this->assertEquals(0, $duration->minutes());
+        $this->assertEquals(0, $duration->seconds());
+        $this->assertEquals(86400 * 1825000, $duration->asSeconds());
+        $this->assertEquals(157680000000, $duration->asSeconds());
 
         // 5000 years (1825000 days)
         // minus 500 years (182500 days)
@@ -710,12 +710,12 @@ class DurationTestCase extends UnitTestCase
         $duration = Duration::withDays(1825000);
         $result = $duration->minus(Duration::withDays(182500));
 
-        $this->assertEqual($result->days(), 1642500);
-        $this->assertEqual($result->hours(), 0);
-        $this->assertEqual($result->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
-        $this->assertEqual($result->asSeconds(), 86400 * 1642500);
-        $this->assertEqual($result->asSeconds(), 141912000000);
+        $this->assertEquals(1642500, $result->days());
+        $this->assertEquals(0, $result->hours());
+        $this->assertEquals(0, $result->minutes());
+        $this->assertEquals(0, $duration->seconds());
+        $this->assertEquals(86400 * 1642500, $result->asSeconds());
+        $this->assertEquals(141912000000, $result->asSeconds());
 
         // 500,000,000 years (182500000000 days)
         // minus 500 years (182500 days)
@@ -723,12 +723,12 @@ class DurationTestCase extends UnitTestCase
         $duration = Duration::withDays(182500000000);
         $result = $duration->minus(Duration::withDays(182500));
 
-        $this->assertEqual($result->days(), 182499817500);
-        $this->assertEqual($result->hours(), 0);
-        $this->assertEqual($result->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
-        $this->assertEqual($result->asSeconds(), 86400 * 182499817500);
-        $this->assertEqual($result->asSeconds(), hexdec('3804e5eaf8ea00'));
+        $this->assertEquals(182499817500, $result->days());
+        $this->assertEquals(0, $result->hours());
+        $this->assertEquals(0, $result->minutes());
+        $this->assertEquals(0, $duration->seconds());
+        $this->assertEquals(86400 * 182499817500, $result->asSeconds());
+        $this->assertEquals(hexdec('3804e5eaf8ea00'), $result->asSeconds());
 
         // 50,000,000,000 years (18250000000000 days)
         // minus 500 years (182500 days)
@@ -736,29 +736,29 @@ class DurationTestCase extends UnitTestCase
         $duration = Duration::withDays(18250000000000);
         $result = $duration->minus(Duration::withDays(182500));
 
-        $this->assertEqual($result->days(), 18249999817500);
-        $this->assertEqual($result->hours(), 0);
-        $this->assertEqual($result->minutes(), 0);
-        $this->assertEqual($duration->seconds(), 0);
-        $this->assertEqual($result->asSeconds(), 86400 * 18249999817500);
-        $this->assertEqual($result->asSeconds(), hexdec('15e1eb3b3dfd6a00'));
+        $this->assertEquals(18249999817500, $result->days());
+        $this->assertEquals(0, $result->hours());
+        $this->assertEquals(0, $result->minutes());
+        $this->assertEquals(0, $duration->seconds());
+        $this->assertEquals(86400 * 18249999817500, $result->asSeconds());
+        $this->assertEquals(hexdec('15e1eb3b3dfd6a00'), $result->asSeconds());
 
         // Beyond negative 4 billion years, the precision drops from
         // second precision to hour precision.
 
         // 4,000,000,000 years (1460000000000 days)
         $duration = Duration::withDaysHoursMinutesSeconds(1460000000000, 2, 23, 12);
-        $this->assertEqual($duration->days(), 1460000000000);
-        $this->assertEqual($duration->hours(), 2);
-        $this->assertEqual($duration->minutes(), 23);
-        $this->assertEqual($duration->seconds(), 12);
+        $this->assertEquals(1460000000000, $duration->days());
+        $this->assertEquals(2, $duration->hours());
+        $this->assertEquals(23, $duration->minutes());
+        $this->assertEquals(12, $duration->seconds());
 
         // 50,000,000,000 years (18250000000000 days)
         $duration = Duration::withDaysHoursMinutesSeconds(18250000000000, 2, 23, 12);
-        $this->assertEqual($duration->days(), 18250000000000);
-        $this->assertEqual($duration->hours(), 2);
-        // 		$this->assertEqual($duration->minutes(), 23);
-        // 		$this->assertEqual($duration->seconds(), 12);
+        $this->assertEquals(18250000000000, $duration->days());
+        $this->assertEquals(2, $duration->hours());
+        // 		$this->assertEquals(23, $duration->minutes());
+        // 		$this->assertEquals(12, $duration->seconds());
     }
 }
 

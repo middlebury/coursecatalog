@@ -28,10 +28,14 @@
         <testsuite name="cached_model">
             <directory>application/test/apc</directory>
         </testsuite>
+        <testsuite name="primitives">
+            <directory>application/library/harmoni/tests</directory>
+        </testsuite>
         <testsuite name="service">
             <directory>tests/Service</directory>
         </testsuite>
         <testsuite name="all">
+            <directory>application/library/harmoni/tests</directory>
             <directory>application/test/banner</directory>
             <directory>application/test/apc</directory>
             <directory>tests</directory>

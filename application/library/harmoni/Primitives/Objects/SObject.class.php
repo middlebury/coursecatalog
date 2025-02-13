@@ -80,7 +80,7 @@ abstract class SObject
      */
     public function isEqualTo($anObject)
     {
-        return $this === $anObject;
+        return $this == $anObject;
     }
 
     /**
@@ -126,18 +126,7 @@ abstract class SObject
      */
     public function isReferenceTo($anObject)
     {
-        // Store the value of $anObject
-        $temp = $anObject;
-
-        // Set the value of $anObject to something unique and see if $this
-        // has changed as well.
-        $anObject = uniqid('test_ref');
-        $is_ref = ($anObject === $this);
-
-        // Put back the original value.
-        $anObject = $temp;
-
-        return $is_ref;
+        return $this === $anObject;
     }
 
     /**
@@ -207,7 +196,6 @@ abstract class SObject
             $string .= 'n';
         }
 
-        $classname[0] = strtoupper($classname[0]);
         $string .= ' '.$classname;
 
         return $string;

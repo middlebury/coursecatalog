@@ -13,7 +13,7 @@
  * @since 5/3/05
  */
 
-require_once __DIR__.'/../Time.class.php';
+use PHPUnit\Framework\TestCase;
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -31,13 +31,13 @@ require_once __DIR__.'/../Time.class.php';
  *
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
-class TimeTestCase extends UnitTestCase
+class TimeTest extends TestCase
 {
     /**
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         // perhaps, initialize $obj here
     }
@@ -45,7 +45,7 @@ class TimeTestCase extends UnitTestCase
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         // perhaps, unset $obj here
     }
@@ -61,50 +61,50 @@ class TimeTestCase extends UnitTestCase
         $sTime = Time::withSeconds(55510);
         $hmsTime = Time::withHourMinuteSecond(15, 25, 10);
 
-        $this->assertEqual($sTime->asSeconds(), 55510);
-        $this->assertEqual($hmsTime->asSeconds(), 55510);
+        $this->assertEquals(55510, $sTime->asSeconds());
+        $this->assertEquals(55510, $hmsTime->asSeconds());
 
-        $this->assertEqual($sTime->hour(), 15);
-        $this->assertEqual($hmsTime->hour(), 15);
+        $this->assertEquals(15, $sTime->hour());
+        $this->assertEquals(15, $hmsTime->hour());
 
-        $this->assertEqual($sTime->minute(), 25);
-        $this->assertEqual($hmsTime->minute(), 25);
+        $this->assertEquals(25, $sTime->minute());
+        $this->assertEquals(25, $hmsTime->minute());
 
-        $this->assertEqual($sTime->second(), 10);
-        $this->assertEqual($hmsTime->second(), 10);
+        $this->assertEquals(10, $sTime->second());
+        $this->assertEquals(10, $hmsTime->second());
 
         // with times greater than a day
         $sTime = Time::withSeconds(55510 + 86400);
         $hmsTime = Time::withHourMinuteSecond(15 + 24, 25, 10);
 
-        $this->assertEqual($sTime->asSeconds(), 55510);
-        $this->assertEqual($hmsTime->asSeconds(), 55510);
+        $this->assertEquals(55510, $sTime->asSeconds());
+        $this->assertEquals(55510, $hmsTime->asSeconds());
 
-        $this->assertEqual($sTime->hour(), 15);
-        $this->assertEqual($hmsTime->hour(), 15);
+        $this->assertEquals(15, $sTime->hour());
+        $this->assertEquals(15, $hmsTime->hour());
 
-        $this->assertEqual($sTime->minute(), 25);
-        $this->assertEqual($hmsTime->minute(), 25);
+        $this->assertEquals(25, $sTime->minute());
+        $this->assertEquals(25, $hmsTime->minute());
 
-        $this->assertEqual($sTime->second(), 10);
-        $this->assertEqual($hmsTime->second(), 10);
+        $this->assertEquals(10, $sTime->second());
+        $this->assertEquals(10, $hmsTime->second());
 
         // atMidnight()
         $midnight = Time::midnight();
         // atNoon()
         $noon = Time::noon();
 
-        $this->assertEqual($midnight->asSeconds(), 0);
-        $this->assertEqual($noon->asSeconds(), 43200);
+        $this->assertEquals(0, $midnight->asSeconds());
+        $this->assertEquals(43200, $noon->asSeconds());
 
-        $this->assertEqual($midnight->hour(), 0);
-        $this->assertEqual($noon->hour(), 12);
+        $this->assertEquals(0, $midnight->hour());
+        $this->assertEquals(12, $noon->hour());
 
-        $this->assertEqual($midnight->minute(), 0);
-        $this->assertEqual($noon->minute(), 0);
+        $this->assertEquals(0, $midnight->minute());
+        $this->assertEquals(0, $noon->minute());
 
-        $this->assertEqual($midnight->second(), 0);
-        $this->assertEqual($noon->second(), 0);
+        $this->assertEquals(0, $midnight->second());
+        $this->assertEquals(0, $noon->second());
     }
 
     /**
@@ -149,31 +149,31 @@ class TimeTestCase extends UnitTestCase
         $this->assertTrue($temp->isEqualTo(Duration::zero()));
 
         // hour ()
-        $this->assertEqual($time->hour(), 15);
+        $this->assertEquals(15, $time->hour());
 
         // hour12 ()
-        $this->assertEqual($time->hour12(), 3);
+        $this->assertEquals(3, $time->hour12());
 
         // hour24 ()
-        $this->assertEqual($time->hour24(), 15);
+        $this->assertEquals(15, $time->hour24());
 
         // meridianAbbreviation ()
-        $this->assertEqual($time->meridianAbbreviation(), 'PM');
+        $this->assertEquals('PM', $time->meridianAbbreviation());
 
         // minute ()
-        $this->assertEqual($time->minute(), 25);
+        $this->assertEquals(25, $time->minute());
 
         // string12 ()
-        $this->assertEqual($time->string12(), '3:25:10 pm');
+        $this->assertEquals('3:25:10 pm', $time->string12());
 
         // string24 ()
-        $this->assertEqual($time->string24(), '15:25:10');
+        $this->assertEquals('15:25:10', $time->string24());
 
         // printableString ()
-        $this->assertEqual($time->printableString(), '3:25:10 pm');
+        $this->assertEquals('3:25:10 pm', $time->printableString());
 
         // second ()
-        $this->assertEqual($time->second(), 10);
+        $this->assertEquals(10, $time->second());
     }
 
     /**
@@ -241,62 +241,62 @@ class TimeTestCase extends UnitTestCase
         // asDate ()
         $temp = $time->asDate();
         $this->assertTrue($temp->isEqualTo(Date::today()));
-        $this->assertEqual(strtolower($temp::class), 'date');
+        $this->assertEquals('date', strtolower($temp::class));
 
         // asDateAndTime ()
         $temp = $time->asDateAndTime();
         $comparison = DateAndTime::midnight();
         $comparison = $comparison->plus(Duration::withSeconds(55510));
         $this->assertTrue($temp->isEqualTo($comparison));
-        $this->assertEqual(strtolower($temp::class), 'dateandtime');
+        $this->assertEquals('dateandtime', strtolower($temp::class));
 
         // asDuration ()
         $temp = $time->asDuration();
         $this->assertTrue($temp->isEqualTo(Duration::withSeconds(55510)));
-        $this->assertEqual(strtolower($temp::class), 'duration');
+        $this->assertEquals('duration', strtolower($temp::class));
 
         // asMonth ()
         $temp = $time->asMonth();
         $this->assertTrue($temp->isEqualTo(Month::starting(Date::today())));
-        $this->assertEqual(strtolower($temp::class), 'month');
+        $this->assertEquals('month', strtolower($temp::class));
 
         // asSeconds ()
-        $this->assertEqual($time->asSeconds(), 55510);
+        $this->assertEquals(55510, $time->asSeconds());
 
         // asTime ()
         $temp = $time->asTime();
         $this->assertTrue($temp->isEqualTo($time));
-        $this->assertEqual(strtolower($temp::class), 'time');
+        $this->assertEquals('time', strtolower($temp::class));
 
         // asTimeStamp ()
         $temp = $time->asTimeStamp();
         $comparison = TimeStamp::midnight();
         $comparison = $comparison->plus(Duration::withSeconds(55510));
         $this->assertTrue($temp->isEqualTo($comparison));
-        $this->assertEqual(strtolower($temp::class), 'timestamp');
+        $this->assertEquals('timestamp', strtolower($temp::class));
 
         // asWeek ()
         $temp = $time->asWeek();
         $this->assertTrue($temp->isEqualTo(Week::starting(Date::today())));
-        $this->assertEqual(strtolower($temp::class), 'week');
+        $this->assertEquals('week', strtolower($temp::class));
 
         // asYear ()
         $temp = $time->asYear();
         $this->assertTrue($temp->isEqualTo(Year::starting(Date::today())));
-        $this->assertEqual(strtolower($temp::class), 'year');
+        $this->assertEquals('year', strtolower($temp::class));
 
         // to ()
         $today = DateAndTime::today();
         $tomorrow = DateAndTime::tomorrow();
 
         $result = $time->to($tomorrow);
-        $this->assertEqual(strtolower($result::class), 'timespan');
+        $this->assertEquals('timespan', strtolower($result::class));
         $this->assertTrue($result->isEqualTo(Timespan::startingDuration(
             $today->plus(Duration::withSeconds(55510)),
             Duration::withDaysHoursMinutesSeconds(0, 8, 34, 50))));
 
         $result = $time->to(Time::withHourMinuteSecond(23, 25, 10));
-        $this->assertEqual(strtolower($result::class), 'timespan');
+        $this->assertEquals('timespan', strtolower($result::class));
         $this->assertTrue($result->isEqualTo(Timespan::startingDuration(
             $today->plus(Duration::withSeconds(55510)),
             Duration::withDaysHoursMinutesSeconds(0, 8, 0, 0))));
