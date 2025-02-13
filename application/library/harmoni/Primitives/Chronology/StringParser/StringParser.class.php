@@ -195,15 +195,12 @@ abstract class StringParser extends SObject
     /**
      * Create a new parser with the given input string.
      *
-     * @param string $aString
-     *
      * @return null
      *
      * @since 5/23/05
      */
-    public function __construct($aString)
+    public function __construct(string $aString)
     {
-        ArgumentValidator::validate($aString, StringValidatorRule::getRule());
         $this->input = $aString;
 
         if ($this->canHandle()) {

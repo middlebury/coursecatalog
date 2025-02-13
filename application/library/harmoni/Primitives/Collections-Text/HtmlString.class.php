@@ -411,7 +411,9 @@ class HtmlString extends HarmoniString
      */
     public function addSafeProtocol(string $protocol)
     {
-        ArgumentValidator::validate($protocal, NonzeroLengthStringValidatorRule::getRule());
+        if (empty(trim($protocol))) {
+            throw new InvalidArgumentException('Empty $protocol passed.');
+        }
 
         $this->safeProtocols[] = $protocol;
     }
