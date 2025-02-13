@@ -199,7 +199,9 @@ class HtmlString extends HarmoniString
                 if ($addElipses && 0 === $tagsToSkip) {
                     $output .= dgettext('harmoni', '...');
                 }
-                --$tagsToSkip;
+                if (!is_null($tagsToSkip)) {
+                    --$tagsToSkip;
+                }
 
                 $output .= '</'.$tag.'>';
             }
