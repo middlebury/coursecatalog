@@ -91,7 +91,7 @@ class TimeStamp extends DateAndTime
      *
      * @since 5/13/05
      */
-    public function current($class = 'TimeStamp')
+    public static function current($class = 'TimeStamp')
     {
         eval('$result = '.$class.'::now();');
 
