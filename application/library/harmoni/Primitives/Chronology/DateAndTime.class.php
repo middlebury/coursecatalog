@@ -1473,7 +1473,7 @@ class DateAndTime extends Magnitude
     {
         $methods = get_class_methods($operand);
 
-        // If this conforms to the DateAndTimeProtocal
+        // If this conforms to the DateAndTimeProtocol
         if (in_array('asdateandtime', $methods)
             | in_array('asDateAndTime', $methods)) {
             $meLocal = $this->asLocal();
@@ -1488,7 +1488,7 @@ class DateAndTime extends Magnitude
 
             return $obj;
         }
-        // If this conforms to the Duration protocal
+        // If this conforms to the Duration protocol
         else {
             $obj = $this->plus($operand->negated());
 

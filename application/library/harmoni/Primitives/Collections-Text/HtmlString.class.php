@@ -16,12 +16,12 @@ class HtmlString extends HarmoniString
 {
     private $_children;
     protected $_string;
-    private $safeProtocals;
+    private $safeProtocols;
 
     public function __construct($string = '')
     {
         $this->_string = (string) $string;
-        $this->safeProtocals = [];
+        $this->safeProtocols = [];
     }
 
     /**
@@ -387,33 +387,33 @@ class HtmlString extends HarmoniString
         $this->clean();
         $safeHtml = new SafeHTML();
 
-        // Add on any special protocals
-        foreach ($this->safeProtocals as $protocal) {
-            $safeHtml->whiteProtocols[] = $protocal;
+        // Add on any special protocols
+        foreach ($this->safeProtocols as $protocol) {
+            $safeHtml->whiteProtocols[] = $protocol;
         }
 
         $this->_string = $safeHtml->parse($this->_string);
     }
 
     /**
-     * Add a new protocal (i.e. 'feed' for urls like 'feed://www.example.com/')
-     * to those allowed to exist in urls. The following protocals are allowed by
+     * Add a new protocol (i.e. 'feed' for urls like 'feed://www.example.com/')
+     * to those allowed to exist in urls. The following protocols are allowed by
      * default:
      *		'ed2k',   'file', 'ftp',  'gopher', 'http',  'https',
      *		'irc',    'mailto', 'news', 'nntp', 'telnet', 'webcal',
      * 		'xmpp',   'callto', 'feed'.
      *
-     * @param string $protocal name
+     * @param string $protocol name
      *
      * @return void
      *
      * @since 2/14/08
      */
-    public function addSafeProtocal($protocal)
+    public function addSafeProtocol(string $protocol)
     {
         ArgumentValidator::validate($protocal, NonzeroLengthStringValidatorRule::getRule());
 
-        $this->safeProtocals[] = $protocal;
+        $this->safeProtocols[] = $protocol;
     }
 
     /**
