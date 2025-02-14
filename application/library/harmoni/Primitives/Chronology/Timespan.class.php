@@ -14,8 +14,6 @@
  */
 
 require_once __DIR__.'/../Magnitudes/Magnitude.class.php';
-require_once __DIR__.'/DateAndTime.class.php';
-require_once __DIR__.'/AsDateAndTime.php';
 
 /**
  * Timespan represents a duration starting at a specific DateAndTime.
@@ -889,3 +887,6 @@ class Timespan extends Magnitude implements AsDateAndTime
         return Timespan::startingEnding($this->start(), $anEnd->asDateAndTime());
     }
 }
+
+require_once __DIR__.'/DateAndTime.class.php';
+require_once __DIR__.'/AsDateAndTime.php';
