@@ -215,8 +215,6 @@ class HtmlString extends HarmoniString
             }
         }
 
-        // 		print "<pre>'".htmlspecialchars($output)."'</pre>";
-
         $this->_string = $output;
     }
 
@@ -227,7 +225,7 @@ class HtmlString extends HarmoniString
      *
      * @since 1/27/06
      */
-    public function ensureNesting(string $tag, array $tags)
+    public function ensureNesting(string $tag, array &$tags)
     {
         if (count($tags)) {
             $lastTag = $tags[count($tags) - 1];
