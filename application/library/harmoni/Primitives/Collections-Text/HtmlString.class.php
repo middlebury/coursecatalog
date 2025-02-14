@@ -16,48 +16,16 @@ class HtmlString extends HarmoniString
 {
     private $_children;
     protected $_string;
-    private $safeProtocals;
+    private $safeProtocols;
 
-    public function __construct($string = '')
+    public function __construct(string $string = '')
     {
         $this->_string = (string) $string;
-        $this->safeProtocals = [];
-    }
-
-    /**
-     * Instantiates a new String object with the passed value.
-     *
-     * @param string $value
-     *
-     * @return ref object
-     *
-     * @static
-     */
-    public static function withValue($value)
-    {
-        return new self($value);
-    }
-
-    /**
-     * Instantiates a new String object with the passed value.
-     *
-     * allowing 'fromString' for string values
-     *
-     * @param string $aString
-     *
-     * @return ref object
-     *
-     * @static
-     */
-    public static function fromString($aString)
-    {
-        return new self($aString);
+        $this->safeProtocols = [];
     }
 
     /**
      * Return a new string with cleaned of XSS-unsafe markup.
-     *
-     * @param string $html
      *
      * @return string
      *
@@ -65,9 +33,9 @@ class HtmlString extends HarmoniString
      *
      * @static
      */
-    public static function getSafeHtml($html)
+    public static function getSafeHtml(string $html)
     {
-        $s = self::withValue($html);
+        $s = static::withValue($html);
         $s->cleanXSS();
 
         return $s->asString();
@@ -77,14 +45,11 @@ class HtmlString extends HarmoniString
      * Shorten the string to a number of words, preserving HTML tags
      * while enforcing the closing of html tags.
      *
-     * @param int  $numWords
-     * @param bool $addElipses
-     *
      * @return void
      *
      * @since 12/12/05
      */
-    public function trim($numWords, $addElipses = true)
+    public function trim(int $numWords, bool $addElipses = true)
     {
         $tags = [];
         $wordCount = 0;
@@ -234,7 +199,9 @@ class HtmlString extends HarmoniString
                 if ($addElipses && 0 === $tagsToSkip) {
                     $output .= dgettext('harmoni', '...');
                 }
-                --$tagsToSkip;
+                if (!is_null($tagsToSkip)) {
+                    --$tagsToSkip;
+                }
 
                 $output .= '</'.$tag.'>';
             }
@@ -248,22 +215,17 @@ class HtmlString extends HarmoniString
             }
         }
 
-        // 		print "<pre>'".htmlspecialchars($output)."'</pre>";
-
         $this->_string = $output;
     }
 
     /**
      * Ensure that td tags are inside of tr's, etc.
      *
-     * @param string $tag
-     * @param ref array $tags
-     *
      * @return string
      *
      * @since 1/27/06
      */
-    public function ensureNesting($tag, $tags)
+    public function ensureNesting(string $tag, array &$tags)
     {
         if (count($tags)) {
             $lastTag = $tags[count($tags) - 1];
@@ -336,7 +298,7 @@ class HtmlString extends HarmoniString
      *
      * @since 11/21/05
      */
-    public function stripTagsAndTrim($word_count)
+    public function stripTagsAndTrim(int $word_count)
     {
         $string = strip_tags($this->_string);
 
@@ -387,33 +349,35 @@ class HtmlString extends HarmoniString
         $this->clean();
         $safeHtml = new SafeHTML();
 
-        // Add on any special protocals
-        foreach ($this->safeProtocals as $protocal) {
-            $safeHtml->whiteProtocols[] = $protocal;
+        // Add on any special protocols
+        foreach ($this->safeProtocols as $protocol) {
+            $safeHtml->whiteProtocols[] = $protocol;
         }
 
         $this->_string = $safeHtml->parse($this->_string);
     }
 
     /**
-     * Add a new protocal (i.e. 'feed' for urls like 'feed://www.example.com/')
-     * to those allowed to exist in urls. The following protocals are allowed by
+     * Add a new protocol (i.e. 'feed' for urls like 'feed://www.example.com/')
+     * to those allowed to exist in urls. The following protocols are allowed by
      * default:
      *		'ed2k',   'file', 'ftp',  'gopher', 'http',  'https',
      *		'irc',    'mailto', 'news', 'nntp', 'telnet', 'webcal',
      * 		'xmpp',   'callto', 'feed'.
      *
-     * @param string $protocal name
+     * @param string $protocol name
      *
      * @return void
      *
      * @since 2/14/08
      */
-    public function addSafeProtocal($protocal)
+    public function addSafeProtocol(string $protocol)
     {
-        ArgumentValidator::validate($protocal, NonzeroLengthStringValidatorRule::getRule());
+        if (empty(trim($protocol))) {
+            throw new InvalidArgumentException('Empty $protocol passed.');
+        }
 
-        $this->safeProtocals[] = $protocal;
+        $this->safeProtocols[] = $protocol;
     }
 
     /**

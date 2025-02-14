@@ -13,7 +13,7 @@
  * @since 5/3/05
  */
 
-require_once __DIR__.'/../Timespan.class.php';
+use PHPUnit\Framework\TestCase;
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -31,13 +31,15 @@ require_once __DIR__.'/../Timespan.class.php';
  *
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
-class TimespanTestCase extends UnitTestCase
+class TimespanTest extends TestCase
 {
+    private $currentYear;
+
     /**
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->currentYear = date('Y');
     }
@@ -45,7 +47,7 @@ class TimespanTestCase extends UnitTestCase
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         // perhaps, unset $obj here
     }
@@ -63,20 +65,20 @@ class TimespanTestCase extends UnitTestCase
         // startingEnding()
 
         $timespan = Timespan::current();
-        $this->assertEqual($timespan->startYear(), (int) date('Y'));
-        $this->assertEqual($timespan->startMonth(), (int) date('n'));
-        $this->assertEqual($timespan->dayOfMonth(), (int) date('j'));
+        $this->assertEquals((int) date('Y'), $timespan->startYear());
+        $this->assertEquals((int) date('n'), $timespan->startMonth());
+        $this->assertEquals((int) date('j'), $timespan->dayOfMonth());
         $duration = $timespan->duration();
         $this->assertTrue($duration->isEqualTo(Duration::zero()));
-        $this->assertEqual(strtolower($timespan::class), 'timespan');
+        $this->assertEquals('timespan', strtolower($timespan::class));
 
         $timespan = Timespan::epoch();
-        $this->assertEqual($timespan->startYear(), 1901);
-        $this->assertEqual($timespan->startMonth(), 1);
-        $this->assertEqual($timespan->dayOfMonth(), 1);
+        $this->assertEquals(1901, $timespan->startYear());
+        $this->assertEquals(1, $timespan->startMonth());
+        $this->assertEquals(1, $timespan->dayOfMonth());
         $duration = $timespan->duration();
         $this->assertTrue($duration->isEqualTo(Duration::zero()));
-        $this->assertEqual(strtolower($timespan::class), 'timespan');
+        $this->assertEquals('timespan', strtolower($timespan::class));
     }
 
     /**
@@ -92,15 +94,15 @@ class TimespanTestCase extends UnitTestCase
             Duration::withDays(365)
         );
 
-        $this->assertEqual($timespan->startYear(), 2005);
-        $this->assertEqual($timespan->dayOfYear(), 125);
+        $this->assertEquals(2005, $timespan->startYear());
+        $this->assertEquals(125, $timespan->dayOfYear());
         $duration = $timespan->duration();
         $this->assertTrue($duration->isEqualTo(Duration::withDays(365)));
         $end = $timespan->end();
-        $this->assertEqual($end->julianDayNumber(), 2453860);
-        $this->assertEqual($end->julianDayNumber() - $datA->julianDayNumber(), 364);
-        $this->assertEqual($end->year(), 2006);
-        $this->assertEqual($end->dayOfYear(), 124);
+        $this->assertEquals(2453860, $end->julianDayNumber());
+        $this->assertEquals(364, $end->julianDayNumber() - $datA->julianDayNumber());
+        $this->assertEquals(2006, $end->year());
+        $this->assertEquals(124, $end->dayOfYear());
         $this->assertTrue($end->isEqualTo(DateAndTime::withYearDayHourMinuteSecond(
             2006, 124, 23, 59, 59)));
     }
@@ -408,7 +410,7 @@ class TimespanTestCase extends UnitTestCase
             ));
         $this->assertTrue($temp->isEqualTo($timespanA->intersection($timespanC)));
 
-        $this->assertEqual($timespanA->intersection($timespanD), null);
+        $this->assertEquals(null, $timespanA->intersection($timespanD));
 
         // union()
         $this->assertTrue($timespanA->isEqualTo($timespanA->union($timespanB)));
@@ -438,28 +440,28 @@ class TimespanTestCase extends UnitTestCase
                 2005, 5, 4, 15, 25, 10, Duration::withHours(-4)),
             Duration::withDays(10));
         // day()
-        $this->assertEqual($timespan->day(), 124);
+        $this->assertEquals(124, $timespan->day());
 
         // dayOfMonth()
-        $this->assertEqual($timespan->dayOfMonth(), 4);
+        $this->assertEquals(4, $timespan->dayOfMonth());
 
         // dayOfWeek()
-        $this->assertEqual($timespan->dayOfWeek(), 4);
+        $this->assertEquals(4, $timespan->dayOfWeek());
 
         // dayOfWeekName()
-        $this->assertEqual($timespan->dayOfWeekName(), 'Wednesday');
+        $this->assertEquals('Wednesday', $timespan->dayOfWeekName());
 
         // dayOfYear()
-        $this->assertEqual($timespan->dayOfYear(), 124);
+        $this->assertEquals(124, $timespan->dayOfYear());
 
         // daysInMonth()
-        $this->assertEqual($timespan->daysInMonth(), 31);
+        $this->assertEquals(31, $timespan->daysInMonth());
 
         // daysInYear()
-        $this->assertEqual($timespan->daysInYear(), 365);
+        $this->assertEquals(365, $timespan->daysInYear());
 
         // daysLeftInYear()
-        $this->assertEqual($timespan->daysLeftInYear(), 241);
+        $this->assertEquals(241, $timespan->daysLeftInYear());
 
         // duration()
         $temp = Duration::withDays(10);
@@ -472,28 +474,28 @@ class TimespanTestCase extends UnitTestCase
         $this->assertTrue($temp->isEqualTo($timespan->end()));
 
         // firstDayOfMonth()
-        $this->assertEqual($timespan->firstDayOfMonth(), 121);
+        $this->assertEquals(121, $timespan->firstDayOfMonth());
 
         // isLeapYear()
-        $this->assertEqual($timespan->isLeapYear(), false);
+        $this->assertEquals(false, $timespan->isLeapYear());
 
         // julianDayNumber()
-        $this->assertEqual($timespan->julianDayNumber(), 2453495);
+        $this->assertEquals(2453495, $timespan->julianDayNumber());
 
         // printableString()
-        $this->assertEqual($timespan->printableString(), '2005-05-04T15:25:10-04:00D10:00:00:00');
+        $this->assertEquals('2005-05-04T15:25:10-04:00D10:00:00:00', $timespan->printableString());
 
         // startMonth()
-        $this->assertEqual($timespan->startMonth(), 5);
+        $this->assertEquals(5, $timespan->startMonth());
 
         // startMonthAbbreviation()
-        $this->assertEqual($timespan->startMonthAbbreviation(), 'May');
+        $this->assertEquals('May', $timespan->startMonthAbbreviation());
 
         // startMonthIndex()
-        $this->assertEqual($timespan->startMonthIndex(), 5);
+        $this->assertEquals(5, $timespan->startMonthIndex());
 
         // startMonthName()
-        $this->assertEqual($timespan->startMonthName(), 'May');
+        $this->assertEquals('May', $timespan->startMonthName());
 
         // start()
         $temp = DateAndTime::withYearMonthDayHourMinuteSecondOffset(
@@ -501,7 +503,7 @@ class TimespanTestCase extends UnitTestCase
         $this->assertTrue($temp->isEqualTo($timespan->start()));
 
         // startYear()
-        $this->assertEqual($timespan->startYear(), 2005);
+        $this->assertEquals(2005, $timespan->startYear());
     }
 
     /**
@@ -521,9 +523,9 @@ class TimespanTestCase extends UnitTestCase
 
         // every()
         $everyTwo = $timespan->every(Duration::withDays(2));
-        $this->assertEqual(count($everyTwo), 5);
+        $this->assertCount(5, $everyTwo);
         for ($i = 0; $i < 5; ++$i) {
-            $this->assertEqual(strtolower(get_class($everyTwo[$i])), 'dateandtime');
+            $this->assertEquals('dateandtime', strtolower(get_class($everyTwo[$i])));
         }
 
         $temp = DateAndTime::withYearMonthDayHourMinuteSecondOffset(
@@ -532,9 +534,9 @@ class TimespanTestCase extends UnitTestCase
 
         // dates()
         $dates = $timespan->dates();
-        $this->assertEqual(count($dates), 11);
+        $this->assertCount(11, $dates);
         for ($i = 0; $i < 11; ++$i) {
-            $this->assertEqual(strtolower(get_class($dates[$i])), 'date');
+            $this->assertEquals('date', strtolower(get_class($dates[$i])));
         }
 
         $temp = Date::withYearMonthDay(2005, 5, 4);
@@ -548,19 +550,19 @@ class TimespanTestCase extends UnitTestCase
 
         // months()
         $months = $timespan->months();
-        $this->assertEqual(count($months), 1);
+        $this->assertCount(1, $months);
         for ($i = 0; $i < 1; ++$i) {
-            $this->assertEqual(strtolower(get_class($months[$i])), 'month');
+            $this->assertEquals('month', strtolower(get_class($months[$i])));
         }
 
         $temp = Month::withMonthYear(5, 2005);
         $this->assertTrue($temp->isEqualTo($months[0]));
 
         $months = $timespanB->months();
-        $this->assertEqual(count($months), 33);
+        $this->assertCount(33, $months);
 
         for ($i = 0; $i < 3; ++$i) {
-            $this->assertEqual(strtolower(get_class($months[$i])), 'month');
+            $this->assertEquals('month', strtolower(get_class($months[$i])));
         }
 
         $temp = Month::withMonthYear(5, 2005);
@@ -574,9 +576,9 @@ class TimespanTestCase extends UnitTestCase
 
         // weeks()
         $weeks = $timespan->weeks();
-        $this->assertEqual(count($weeks), 2);
+        $this->assertCount(2, $weeks);
         for ($i = 0; $i < 2; ++$i) {
-            $this->assertEqual(strtolower(get_class($weeks[$i])), 'week');
+            $this->assertEquals('week', strtolower(get_class($weeks[$i])));
         }
 
         $temp = Week::starting(Date::withYearMonthDay(2005, 5, 4));
@@ -587,25 +589,25 @@ class TimespanTestCase extends UnitTestCase
 
         // years()
         $years = $timespan->years();
-        $this->assertEqual(count($years), 1);
+        $this->assertCount(1, $years);
         for ($i = 0; $i < 1; ++$i) {
-            $this->assertEqual(strtolower(get_class($years[$i])), 'year');
+            $this->assertEquals('year', strtolower(get_class($years[$i])));
         }
 
-        $this->assertEqual($years[0]->startYear(), 2005);
+        $this->assertEquals(2005, $years[0]->startYear());
 
         $years = $timespanB->years();
-        $this->assertEqual(count($years), 3);
+        $this->assertCount(3, $years);
 
         for ($i = 0; $i < 3; ++$i) {
-            $this->assertEqual(strtolower(get_class($years[$i])), 'year');
+            $this->assertEquals('year', strtolower(get_class($years[$i])));
         }
 
-        $this->assertEqual($years[0]->startYear(), 2005);
+        $this->assertEquals(2005, $years[0]->startYear());
 
-        $this->assertEqual($years[1]->startYear(), 2006);
+        $this->assertEquals(2006, $years[1]->startYear());
 
-        $this->assertEqual($years[2]->startYear(), 2007);
+        $this->assertEquals(2007, $years[2]->startYear());
     }
 
     /**

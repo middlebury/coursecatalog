@@ -13,7 +13,7 @@
  * @since 5/3/05
  */
 
-require_once __DIR__.'/../TimeStamp.class.php';
+use PHPUnit\Framework\TestCase;
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -31,13 +31,13 @@ require_once __DIR__.'/../TimeStamp.class.php';
  *
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
-class TimeStampTestCase extends UnitTestCase
+class TimeStampTest extends TestCase
 {
     /**
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         // perhaps, initialize $obj here
     }
@@ -45,7 +45,7 @@ class TimeStampTestCase extends UnitTestCase
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         // perhaps, unset $obj here
     }
@@ -56,10 +56,10 @@ class TimeStampTestCase extends UnitTestCase
     public function testCreation()
     {
         $epoch = TimeStamp::epoch();
-        $this->assertEqual(strtolower($epoch::class), 'timestamp');
+        $this->assertEquals('timestamp', strtolower($epoch::class));
 
         $timestamp = TimeStamp::current();
-        $this->assertEqual(strtolower($timestamp::class), 'timestamp');
+        $this->assertEquals('timestamp', strtolower($timestamp::class));
     }
 
     /**
@@ -68,49 +68,49 @@ class TimeStampTestCase extends UnitTestCase
     public function testPlusMinusDays()
     {
         $timestamp = TimeStamp::withYearMonthDayHourMinuteSecond(2005, 5, 4, 15, 25, 32);
-        $this->assertEqual(strtolower($timestamp::class), 'timestamp');
+        $this->assertEquals('timestamp', strtolower($timestamp::class));
 
         $temp = $timestamp->minusDays(3);
-        $this->assertEqual(strtolower($temp::class), 'timestamp');
-        $this->assertEqual($temp->year(), 2005);
-        $this->assertEqual($temp->month(), 5);
-        $this->assertEqual($temp->dayOfMonth(), 1);
-        $this->assertEqual($temp->hour(), 15);
-        $this->assertEqual($temp->minute(), 25);
-        $this->assertEqual($temp->second(), 32);
+        $this->assertEquals('timestamp', strtolower($temp::class));
+        $this->assertEquals(2005, $temp->year());
+        $this->assertEquals(5, $temp->month());
+        $this->assertEquals(1, $temp->dayOfMonth());
+        $this->assertEquals(15, $temp->hour());
+        $this->assertEquals(25, $temp->minute());
+        $this->assertEquals(32, $temp->second());
         $this->assertTrue($temp->isEqualTo(
             TimeStamp::withYearMonthDayHourMinuteSecond(2005, 5, 1, 15, 25, 32)));
 
         $temp = $timestamp->plusDays(3);
-        $this->assertEqual(strtolower($temp::class), 'timestamp');
-        $this->assertEqual($temp->year(), 2005);
-        $this->assertEqual($temp->month(), 5);
-        $this->assertEqual($temp->dayOfMonth(), 7);
-        $this->assertEqual($temp->hour(), 15);
-        $this->assertEqual($temp->minute(), 25);
-        $this->assertEqual($temp->second(), 32);
+        $this->assertEquals('timestamp', strtolower($temp::class));
+        $this->assertEquals(2005, $temp->year());
+        $this->assertEquals(5, $temp->month());
+        $this->assertEquals(7, $temp->dayOfMonth());
+        $this->assertEquals(15, $temp->hour());
+        $this->assertEquals(25, $temp->minute());
+        $this->assertEquals(32, $temp->second());
         $this->assertTrue($temp->isEqualTo(
             TimeStamp::withYearMonthDayHourMinuteSecond(2005, 5, 7, 15, 25, 32)));
 
         $temp = $timestamp->minusSeconds(7);
-        $this->assertEqual(strtolower($temp::class), 'timestamp');
-        $this->assertEqual($temp->year(), 2005);
-        $this->assertEqual($temp->month(), 5);
-        $this->assertEqual($temp->dayOfMonth(), 4);
-        $this->assertEqual($temp->hour(), 15);
-        $this->assertEqual($temp->minute(), 25);
-        $this->assertEqual($temp->second(), 25);
+        $this->assertEquals('timestamp', strtolower($temp::class));
+        $this->assertEquals(2005, $temp->year());
+        $this->assertEquals(5, $temp->month());
+        $this->assertEquals(4, $temp->dayOfMonth());
+        $this->assertEquals(15, $temp->hour());
+        $this->assertEquals(25, $temp->minute());
+        $this->assertEquals(25, $temp->second());
         $this->assertTrue($temp->isEqualTo(
             TimeStamp::withYearMonthDayHourMinuteSecond(2005, 5, 4, 15, 25, 25)));
 
         $temp = $timestamp->plusSeconds(7);
-        $this->assertEqual(strtolower($temp::class), 'timestamp');
-        $this->assertEqual($temp->year(), 2005);
-        $this->assertEqual($temp->month(), 5);
-        $this->assertEqual($temp->dayOfMonth(), 4);
-        $this->assertEqual($temp->hour(), 15);
-        $this->assertEqual($temp->minute(), 25);
-        $this->assertEqual($temp->second(), 39);
+        $this->assertEquals('timestamp', strtolower($temp::class));
+        $this->assertEquals(2005, $temp->year());
+        $this->assertEquals(5, $temp->month());
+        $this->assertEquals(4, $temp->dayOfMonth());
+        $this->assertEquals(15, $temp->hour());
+        $this->assertEquals(25, $temp->minute());
+        $this->assertEquals(39, $temp->second());
         $this->assertTrue($temp->isEqualTo(
             TimeStamp::withYearMonthDayHourMinuteSecond(2005, 5, 4, 15, 25, 39)));
     }
@@ -121,22 +121,22 @@ class TimeStampTestCase extends UnitTestCase
     public function testTimestampConverion()
     {
         $timestamp = TimeStamp::withYearMonthDayHourMinute(2005, 5, 4, 15, 25);
-        $this->assertEqual(strtolower($timestamp::class), 'timestamp');
+        $this->assertEquals('timestamp', strtolower($timestamp::class));
 
         $temp = $timestamp->date();
-        $this->assertEqual(strtolower($temp::class), 'date');
+        $this->assertEquals('date', strtolower($temp::class));
         $this->assertTrue($temp->isEqualTo(Date::withYearMonthDay(2005, 5, 4)));
 
         $temp = $timestamp->time();
-        $this->assertEqual(strtolower($temp::class), 'time');
+        $this->assertEquals('time', strtolower($temp::class));
         $this->assertTrue($temp->isEqualTo(Time::withHourMinuteSecond(15, 25, 0)));
 
         $temp = $timestamp->dateAndTimeArray();
-        $this->assertEqual(strtolower(get_class($temp[0])), 'date');
-        $this->assertEqual(strtolower(get_class($temp[1])), 'time');
+        $this->assertEquals('date', strtolower(get_class($temp[0])));
+        $this->assertEquals('time', strtolower(get_class($temp[1])));
         $this->assertTrue($temp[0]->isEqualTo(Date::withYearMonthDay(2005, 5, 4)));
         $this->assertTrue($temp[1]->isEqualTo(Time::withHourMinuteSecond(15, 25, 0)));
-        $this->assertEqual(count($temp), 2);
+        $this->assertCount(2, $temp);
     }
 
     /**
@@ -149,28 +149,30 @@ class TimeStampTestCase extends UnitTestCase
             1970, 1, 1, 0, 0, 0, Duration::zero());
 
         $this->assertTrue($timestamp->isEqualTo($unixEpoch));
-        $this->assertEqual($timestamp, $unixEpoch);
+        $this->assertEquals($unixEpoch, $timestamp);
 
-        $this->assertEqual($timestamp->year(), 1970);
-        $this->assertEqual($timestamp->month(), 1);
-        $this->assertEqual($timestamp->dayOfMonth(), 1);
-        $this->assertEqual($timestamp->hour(), 0);
-        $this->assertEqual($timestamp->minute(), 0);
-        $this->assertEqual($timestamp->second(), 0);
+        $this->assertEquals(1970, $timestamp->year());
+        $this->assertEquals(1, $timestamp->month());
+        $this->assertEquals(1, $timestamp->dayOfMonth());
+        $this->assertEquals(0, $timestamp->hour());
+        $this->assertEquals(0, $timestamp->minute());
+        $this->assertEquals(0, $timestamp->second());
 
-        $this->assertEqual($timestamp->asUnixTimeStamp(), 0);
+        $this->assertEquals(0, $timestamp->asUnixTimeStamp());
 
         $unixTimeStamp = time();
         $timestamp = TimeStamp::fromUnixTimeStamp($unixTimeStamp);
 
-        $this->assertEqual($timestamp->year(), date('Y', $unixTimeStamp));
-        $this->assertEqual($timestamp->month(), date('m', $unixTimeStamp));
-        $this->assertEqual($timestamp->dayOfMonth(), date('j', $unixTimeStamp));
-        $this->assertEqual($timestamp->hour(),
-            date('H', $unixTimeStamp) - (date('Z', $unixTimeStamp) / 3600));
-        $this->assertEqual($timestamp->minute(), date('i', $unixTimeStamp));
-        $this->assertEqual($timestamp->second(), date('s', $unixTimeStamp));
-        $this->assertEqual($timestamp->asUnixTimeStamp(), $unixTimeStamp);
+        $this->assertEquals(date('Y', $unixTimeStamp), $timestamp->year());
+        $this->assertEquals(date('m', $unixTimeStamp), $timestamp->month());
+        $this->assertEquals(date('j', $unixTimeStamp), $timestamp->dayOfMonth());
+        $this->assertEquals(
+            $timestamp->hour(),
+            date('H', $unixTimeStamp) - (date('Z', $unixTimeStamp) / 3600)
+        );
+        $this->assertEquals(date('i', $unixTimeStamp), $timestamp->minute());
+        $this->assertEquals(date('s', $unixTimeStamp), $timestamp->second());
+        $this->assertEquals($unixTimeStamp, $timestamp->asUnixTimeStamp());
     }
 
     /*********************************************************
@@ -183,30 +185,28 @@ class TimeStampTestCase extends UnitTestCase
      */
     public function testEpoch()
     {
-        echo 'test_epoch';
-
         $dateAndTime = TimeStamp::epoch();
-        $this->assertEqual($dateAndTime->year(), 1901);
-        $this->assertEqual($dateAndTime->month(), 1);
-        $this->assertEqual($dateAndTime->day(), 1);
+        $this->assertEquals(1901, $dateAndTime->year());
+        $this->assertEquals(1, $dateAndTime->month());
+        $this->assertEquals(1, $dateAndTime->day());
 
         $dateAndTime = TimeStamp::withYearMonthDayHourMinuteSecondOffset(
             1901, 1, 1, 0, 0, 0, $null = null);
-        $this->assertEqual($dateAndTime->year(), 1901);
-        $this->assertEqual($dateAndTime->month(), 1);
-        $this->assertEqual($dateAndTime->day(), 1);
+        $this->assertEquals(1901, $dateAndTime->year());
+        $this->assertEquals(1, $dateAndTime->month());
+        $this->assertEquals(1, $dateAndTime->day());
 
         $dateAndTime = TimeStamp::withYearMonthDayHourMinuteSecondOffset(
             1901, 'jan', 1, 0, 0, 0, $null = null);
-        $this->assertEqual($dateAndTime->year(), 1901);
-        $this->assertEqual($dateAndTime->month(), 1);
-        $this->assertEqual($dateAndTime->day(), 1);
+        $this->assertEquals(1901, $dateAndTime->year());
+        $this->assertEquals(1, $dateAndTime->month());
+        $this->assertEquals(1, $dateAndTime->day());
 
         $dateAndTime = TimeStamp::withYearMonthDayHourMinuteSecondOffset(
             1901, 'January', 1, 0, 0, 0, $null = null);
-        $this->assertEqual($dateAndTime->year(), 1901);
-        $this->assertEqual($dateAndTime->month(), 1);
-        $this->assertEqual($dateAndTime->day(), 1);
+        $this->assertEquals(1901, $dateAndTime->year());
+        $this->assertEquals(1, $dateAndTime->month());
+        $this->assertEquals(1, $dateAndTime->day());
     }
 
     /**
@@ -216,56 +216,56 @@ class TimeStampTestCase extends UnitTestCase
     {
         $dateAndTime = TimeStamp::withYearMonthDayHourMinuteSecondOffset(
             2005, 5, 4, 15, 25, 10, $null = null);
-        $this->assertEqual($dateAndTime->year(), 2005);
-        $this->assertEqual($dateAndTime->month(), 5);
-        $this->assertEqual($dateAndTime->dayOfMonth(), 4);
-        $this->assertEqual($dateAndTime->hour(), 15);
-        $this->assertEqual($dateAndTime->hour12(), 3);
-        $this->assertEqual($dateAndTime->minute(), 25);
-        $this->assertEqual($dateAndTime->second(), 10);
-        $this->assertEqual(strtolower($dateAndTime::class), 'timestamp');
+        $this->assertEquals(2005, $dateAndTime->year());
+        $this->assertEquals(5, $dateAndTime->month());
+        $this->assertEquals(4, $dateAndTime->dayOfMonth());
+        $this->assertEquals(15, $dateAndTime->hour());
+        $this->assertEquals(3, $dateAndTime->hour12());
+        $this->assertEquals(25, $dateAndTime->minute());
+        $this->assertEquals(10, $dateAndTime->second());
+        $this->assertEquals('timestamp', strtolower($dateAndTime::class));
 
         $dateAndTime = TimeStamp::withYearMonthDayHourMinute(2005, 5, 4, 15, 25);
-        $this->assertEqual($dateAndTime->year(), 2005);
-        $this->assertEqual($dateAndTime->month(), 5);
-        $this->assertEqual($dateAndTime->dayOfMonth(), 4);
-        $this->assertEqual($dateAndTime->hour(), 15);
-        $this->assertEqual($dateAndTime->hour12(), 3);
-        $this->assertEqual($dateAndTime->minute(), 25);
-        $this->assertEqual($dateAndTime->second(), 0);
-        $this->assertEqual(strtolower($dateAndTime::class), 'timestamp');
+        $this->assertEquals(2005, $dateAndTime->year());
+        $this->assertEquals(5, $dateAndTime->month());
+        $this->assertEquals(4, $dateAndTime->dayOfMonth());
+        $this->assertEquals(15, $dateAndTime->hour());
+        $this->assertEquals(3, $dateAndTime->hour12());
+        $this->assertEquals(25, $dateAndTime->minute());
+        $this->assertEquals(0, $dateAndTime->second());
+        $this->assertEquals('timestamp', strtolower($dateAndTime::class));
 
         $dateAndTime = TimeStamp::withYearDay(1950, 1);
-        $this->assertEqual($dateAndTime->year(), 1950);
-        $this->assertEqual($dateAndTime->month(), 1);
-        $this->assertEqual($dateAndTime->dayOfMonth(), 1);
-        $this->assertEqual($dateAndTime->hour(), 0);
-        $this->assertEqual($dateAndTime->hour12(), 12);
-        $this->assertEqual($dateAndTime->minute(), 0);
-        $this->assertEqual($dateAndTime->second(), 0);
-        $this->assertEqual(strtolower($dateAndTime::class), 'timestamp');
+        $this->assertEquals(1950, $dateAndTime->year());
+        $this->assertEquals(1, $dateAndTime->month());
+        $this->assertEquals(1, $dateAndTime->dayOfMonth());
+        $this->assertEquals(0, $dateAndTime->hour());
+        $this->assertEquals(12, $dateAndTime->hour12());
+        $this->assertEquals(0, $dateAndTime->minute());
+        $this->assertEquals(0, $dateAndTime->second());
+        $this->assertEquals('timestamp', strtolower($dateAndTime::class));
 
         $dateAndTime = TimeStamp::withYearMonthDay(2005, 1, 1);
-        $this->assertEqual($dateAndTime->year(), 2005);
-        $this->assertEqual($dateAndTime->month(), 1);
-        $this->assertEqual($dateAndTime->dayOfMonth(), 1);
-        $this->assertEqual($dateAndTime->hour(), 0);
-        $this->assertEqual($dateAndTime->hour12(), 12);
-        $this->assertEqual($dateAndTime->minute(), 0);
-        $this->assertEqual($dateAndTime->second(), 0);
-        $this->assertEqual(strtolower($dateAndTime::class), 'timestamp');
+        $this->assertEquals(2005, $dateAndTime->year());
+        $this->assertEquals(1, $dateAndTime->month());
+        $this->assertEquals(1, $dateAndTime->dayOfMonth());
+        $this->assertEquals(0, $dateAndTime->hour());
+        $this->assertEquals(12, $dateAndTime->hour12());
+        $this->assertEquals(0, $dateAndTime->minute());
+        $this->assertEquals(0, $dateAndTime->second());
+        $this->assertEquals('timestamp', strtolower($dateAndTime::class));
 
         $date = Date::withYearMonthDay(2005, 5, 4);
         $time = Time::withHourMinuteSecond(15, 25, 10);
         $dateAndTime = TimeStamp::withDateAndTime($date, $time);
-        $this->assertEqual($dateAndTime->year(), 2005);
-        $this->assertEqual($dateAndTime->month(), 5);
-        $this->assertEqual($dateAndTime->dayOfMonth(), 4);
-        $this->assertEqual($dateAndTime->hour(), 15);
-        $this->assertEqual($dateAndTime->hour12(), 3);
-        $this->assertEqual($dateAndTime->minute(), 25);
-        $this->assertEqual($dateAndTime->second(), 10);
-        $this->assertEqual(strtolower($dateAndTime::class), 'timestamp');
+        $this->assertEquals(2005, $dateAndTime->year());
+        $this->assertEquals(5, $dateAndTime->month());
+        $this->assertEquals(4, $dateAndTime->dayOfMonth());
+        $this->assertEquals(15, $dateAndTime->hour());
+        $this->assertEquals(3, $dateAndTime->hour12());
+        $this->assertEquals(25, $dateAndTime->minute());
+        $this->assertEquals(10, $dateAndTime->second());
+        $this->assertEquals('timestamp', strtolower($dateAndTime::class));
     }
 
     /**
@@ -393,53 +393,53 @@ class TimeStampTestCase extends UnitTestCase
         // asUTC() +
         // asWeek() +
         // asYear()	+
-        $this->assertEqual($dateAndTime->day(), 155);
-        $this->assertEqual($dateAndTime->dayOfMonth(), 4);
-        $this->assertEqual($dateAndTime->dayOfWeek(), 7);
-        $this->assertEqual($dateAndTime->dayOfWeekAbbreviation(), 'Sat');
-        $this->assertEqual($dateAndTime->dayOfWeekName(), 'Saturday');
-        $this->assertEqual($dateAndTime->dayOfYear(), 155);
-        $this->assertEqual($dateAndTime->daysInMonth(), 30);
-        $this->assertEqual($dateAndTime->daysInYear(), 365);
-        $this->assertEqual($dateAndTime->daysLeftInYear(), 210);
+        $this->assertEquals(155, $dateAndTime->day());
+        $this->assertEquals(4, $dateAndTime->dayOfMonth());
+        $this->assertEquals(7, $dateAndTime->dayOfWeek());
+        $this->assertEquals('Sat', $dateAndTime->dayOfWeekAbbreviation());
+        $this->assertEquals('Saturday', $dateAndTime->dayOfWeekName());
+        $this->assertEquals(155, $dateAndTime->dayOfYear());
+        $this->assertEquals(30, $dateAndTime->daysInMonth());
+        $this->assertEquals(365, $dateAndTime->daysInYear());
+        $this->assertEquals(210, $dateAndTime->daysLeftInYear());
         $duration = $dateAndTime->duration();
-        $this->assertEqual($duration->asSeconds(), 0);
-        $this->assertEqual($dateAndTime->firstDayOfMonth(), 152);
-        $this->assertEqual($dateAndTime->hour(), 15);
-        $this->assertEqual($dateAndTime->hour24(), 15);
-        $this->assertEqual($dateAndTime->hour12(), 3);
-        $this->assertEqual($dateAndTime->hour(), 15);
+        $this->assertEquals(0, $duration->asSeconds());
+        $this->assertEquals(152, $dateAndTime->firstDayOfMonth());
+        $this->assertEquals(15, $dateAndTime->hour());
+        $this->assertEquals(15, $dateAndTime->hour24());
+        $this->assertEquals(3, $dateAndTime->hour12());
+        $this->assertEquals(15, $dateAndTime->hour());
         // isEqualTo() +
         $this->assertFalse($dateAndTime->isLeapYear());
         // isLessThan() +
-        $this->assertEqual($dateAndTime->julianDayNumber(), 2453526);
-        $this->assertEqual($dateAndTime->meridianAbbreviation(), 'PM');
+        $this->assertEquals(2453526, $dateAndTime->julianDayNumber());
+        $this->assertEquals('PM', $dateAndTime->meridianAbbreviation());
         // middleOf($aDuration) +
         // midnight() +
         // minus() +
-        $this->assertEqual($dateAndTime->minute(), 25);
-        $this->assertEqual($dateAndTime->month(), 6);
-        $this->assertEqual($dateAndTime->monthIndex(), 6);
-        $this->assertEqual($dateAndTime->monthName(), 'June');
-        $this->assertEqual($dateAndTime->monthAbbreviation(), 'Jun');
+        $this->assertEquals(25, $dateAndTime->minute());
+        $this->assertEquals(6, $dateAndTime->month());
+        $this->assertEquals(6, $dateAndTime->monthIndex());
+        $this->assertEquals('June', $dateAndTime->monthName());
+        $this->assertEquals('Jun', $dateAndTime->monthAbbreviation());
         // noon()
         $offset = $dateAndTime->offset();
         $this->assertTrue($offset->isEqualTo(Duration::withHours(-5)));
         // plus() +
-        $this->assertEqual($dateAndTime->hmsString(), '15:25:10');
-        $this->assertEqual($dateAndTime->ymdString(), '2005-06-04');
-        $this->assertEqual($dateAndTime->printableString(), '4 June 2005 3:25:10 pm');
-        $this->assertEqual($dateAndTime->second(), 10);
+        $this->assertEquals('15:25:10', $dateAndTime->hmsString());
+        $this->assertEquals('2005-06-04', $dateAndTime->ymdString());
+        $this->assertEquals('4 June 2005 3:25:10 pm', $dateAndTime->printableString());
+        $this->assertEquals(10, $dateAndTime->second());
         // ticks()
         // ticksOffset()
-        $this->assertEqual($dateAndTime->timeZoneAbbreviation(), 'EST');
-        $this->assertEqual($dateAndTime->timeZoneName(), 'Eastern Standard Time');
+        $this->assertEquals('EST', $dateAndTime->timeZoneAbbreviation());
+        $this->assertEquals('Eastern Standard Time', $dateAndTime->timeZoneName());
         // to() +
         // toBy()
         // toByDo()
         // utcOffset() +
         // withOffset() +
-        $this->assertEqual($dateAndTime->year(), 2005);
+        $this->assertEquals(2005, $dateAndTime->year());
     }
 
     /**
@@ -480,7 +480,7 @@ class TimeStampTestCase extends UnitTestCase
 
         // asSeconds()
         $localOffset = DateAndTime::localOffset();
-        $this->assertEqual($dateAndTime->asSeconds(), 3295369510 + $localOffset->asSeconds());
+        $this->assertEquals(3295369510 + $localOffset->asSeconds(), $dateAndTime->asSeconds());
 
         // asTime()
         $temp = $dateAndTime->asTime();
@@ -510,7 +510,7 @@ class TimeStampTestCase extends UnitTestCase
         // midnight();
         $temp = $dateAndTime->atMidnight();
         $this->assertTrue($temp->isEqualTo(
-            DateAndTime::withYearMonthDayHourMinuteSecond(2005, 6, 4, 0, 0, 0)));
+            DateAndTime::withYearMonthDayHourMinuteSecondOffset(2005, 6, 4, 0, 0, 0, Duration::withHours(-5))));
 
         // middleOf()
         $dat = TimeStamp::withYearDay(2005, 100);
@@ -518,25 +518,25 @@ class TimeStampTestCase extends UnitTestCase
         $start = $timespan->start();
         $duration = $timespan->duration();
         $end = $timespan->end();
-        $this->assertEqual($start->dayOfYear(), 50);
+        $this->assertEquals(50, $start->dayOfYear());
         $this->assertTrue($start->isEqualTo(DateAndTime::withYearDay(2005, 50)));
-        $this->assertEqual($duration->days(), 100);
-        $this->assertEqual($end->dayOfYear(), 149);
+        $this->assertEquals(100, $duration->days());
+        $this->assertEquals(149, $end->dayOfYear());
 
         // to()
         $datA = TimeStamp::withYearDay(2005, 125);
         $datB = TimeStamp::withYearDay(2006, 125);
 
         $timespan = $datA->to($datB);
-        $this->assertEqual($timespan->startYear(), 2005);
-        $this->assertEqual($timespan->dayOfYear(), 125);
+        $this->assertEquals(2005, $timespan->startYear());
+        $this->assertEquals(125, $timespan->dayOfYear());
         $duration = $timespan->duration();
         $this->assertTrue($duration->isEqualTo(Duration::withDays(365)));
         $end = $timespan->end();
-        $this->assertEqual($end->julianDayNumber(), 2453860);
-        $this->assertEqual($end->julianDayNumber() - $datA->julianDayNumber(), 364);
-        $this->assertEqual($end->year(), 2006);
-        $this->assertEqual($end->dayOfYear(), 124);
+        $this->assertEquals(2453860, $end->julianDayNumber());
+        $this->assertEquals(364, $end->julianDayNumber() - $datA->julianDayNumber());
+        $this->assertEquals(2006, $end->year());
+        $this->assertEquals(124, $end->dayOfYear());
         $this->assertTrue($end->isEqualTo(DateAndTime::withYearDayHourMinuteSecond(
             2006, 124, 23, 59, 59)));
 
@@ -557,15 +557,15 @@ class TimeStampTestCase extends UnitTestCase
 
         $atUTC = $dateAndTime->utcOffset(Duration::withHours(0));
 
-        $this->assertEqual($dateAndTime->julianDayNumber(), 2453526);
-        $this->assertEqual($atUTC->julianDayNumber(), 2453526);
-        $this->assertEqual($dateAndTime->seconds, 55510);
-        $this->assertEqual($atUTC->seconds, 73510);
-        $this->assertEqual($dateAndTime->offset->seconds, -18000);
-        $this->assertEqual($atUTC->offset->seconds, 0);
+        $this->assertEquals(2453526, $dateAndTime->julianDayNumber());
+        $this->assertEquals(2453526, $atUTC->julianDayNumber());
+        $this->assertEquals(55510, $dateAndTime->seconds);
+        $this->assertEquals(73510, $atUTC->seconds);
+        $this->assertEquals(-18000, $dateAndTime->offset->asSeconds());
+        $this->assertEquals(0, $atUTC->offset->asSeconds());
 
-        $this->assertEqual($dateAndTime->printableString(), '4 June 2005 3:25:10 pm');
-        $this->assertEqual($atUTC->printableString(), '4 June 2005 8:25:10 pm');
+        $this->assertEquals('4 June 2005 3:25:10 pm', $dateAndTime->printableString());
+        $this->assertEquals('4 June 2005 8:25:10 pm', $atUTC->printableString());
     }
 
     /**
@@ -575,10 +575,10 @@ class TimeStampTestCase extends UnitTestCase
     {
         // Plus a Duration
         $dateAndTime = TimeStamp::withYearDayHourMinuteSecond(2005, 100, 0, 0, 0);
-        $this->assertEqual(strtolower($dateAndTime::class), 'timestamp');
+        $this->assertEquals('timestamp', strtolower($dateAndTime::class));
         $result = $dateAndTime->plus(Duration::withSeconds(1));
 
-        $this->assertEqual(strtolower($result::class), 'timestamp');
+        $this->assertEquals('timestamp', strtolower($result::class));
         $this->assertTrue($result->isEqualTo(TimeStamp::withYearDayHourMinuteSecond(
             2005, 100, 0, 0, 1)));
 
@@ -586,12 +586,12 @@ class TimeStampTestCase extends UnitTestCase
         $dateAndTime = TimeStamp::withYearDayHourMinuteSecond(2005, 100, 0, 0, 0);
         $result = $dateAndTime->minus(Duration::withSeconds(1));
 
-        $this->assertEqual(strtolower($result::class), 'timestamp');
-        $this->assertEqual($result->year(), 2005);
-        $this->assertEqual($result->dayOfYear(), 99);
-        $this->assertEqual($result->hour(), 23);
-        $this->assertEqual($result->minute(), 59);
-        $this->assertEqual($result->second(), 59);
+        $this->assertEquals('timestamp', strtolower($result::class));
+        $this->assertEquals(2005, $result->year());
+        $this->assertEquals(99, $result->dayOfYear());
+        $this->assertEquals(23, $result->hour());
+        $this->assertEquals(59, $result->minute());
+        $this->assertEquals(59, $result->second());
         $this->assertTrue($result->isEqualTo(TimeStamp::withYearDayHourMinuteSecond(
             2005, 99, 23, 59, 59)));
 
@@ -599,14 +599,14 @@ class TimeStampTestCase extends UnitTestCase
         $dateAndTime = TimeStamp::withYearDayHourMinuteSecond(2006, 100, 0, 0, 0);
         $result = $dateAndTime->minus(TimeStamp::withYearDayHourMinuteSecond(2005, 100, 0, 0, 0));
 
-        $this->assertEqual(strtolower($result::class), 'duration');
+        $this->assertEquals('duration', strtolower($result::class));
         $this->assertTrue($result->isEqualTo(Duration::withDays(365)));
 
         // Minus a DateAndTime over a leap year
         $dateAndTime = TimeStamp::withYearDayHourMinuteSecond(2005, 10, 0, 0, 0);
         $result = $dateAndTime->minus(TimeStamp::withYearDayHourMinuteSecond(2004, 10, 0, 0, 0));
 
-        $this->assertEqual(strtolower($result::class), 'duration');
+        $this->assertEquals('duration', strtolower($result::class));
         $this->assertTrue($result->isEqualTo(Duration::withDays(366)));
 
         // Plus a DateAndTime
@@ -614,12 +614,12 @@ class TimeStampTestCase extends UnitTestCase
         $result = $dateAndTime->plus(TimeStamp::withYearDayHourMinuteSecond(
             2000, 100, 5, 30, 15));
 
-        $this->assertEqual(strtolower($result::class), 'timestamp');
-        $this->assertEqual($result->year(), 2000);
-        $this->assertEqual($result->dayOfYear(), 100);
-        $this->assertEqual($result->hour(), 10);
-        $this->assertEqual($result->minute(), 45);
-        $this->assertEqual($result->second(), 45);
+        $this->assertEquals('timestamp', strtolower($result::class));
+        $this->assertEquals(2000, $result->year());
+        $this->assertEquals(100, $result->dayOfYear());
+        $this->assertEquals(10, $result->hour());
+        $this->assertEquals(45, $result->minute());
+        $this->assertEquals(45, $result->second());
     }
 }
 

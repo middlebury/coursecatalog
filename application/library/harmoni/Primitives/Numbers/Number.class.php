@@ -44,6 +44,8 @@ require_once __DIR__.'/../Magnitudes/Magnitude.class.php';
  */
 abstract class Number extends Magnitude
 {
+    private $value;
+
     /*********************************************************
      * Class Methods - Instance Creation
      *********************************************************/
@@ -51,23 +53,18 @@ abstract class Number extends Magnitude
     /**
      * Answer a new object with the value specified.
      *
-     * @param optional string $class The class to instantiate. Do NOT use outside
-     *		of this package.
-     *
-     * @return object Number
+     * @return Number
      *
      * @static
      *
      * @since 7/14/05
      */
-    public static function withValue($value, $class = 'Number')
+    public static function withValue($value)
     {
-        // Validate our passed class name.
-        if (!is_subclass_of(new $class(), 'Number')) {
-            exit("Class, '$class', is not a subclass of 'Number'.");
+        if (!is_numeric($value)) {
+            throw new InvalidArgumentException('non-numeric value given.');
         }
-
-        $number = new $class();
+        $number = new static();
         $number->_setValue($value);
 
         return $number;
@@ -76,24 +73,18 @@ abstract class Number extends Magnitude
     /**
      * Answer a new object with the value specified.
      *
-     * @param string $string
-     * @param optional string $class The class to instantiate. Do NOT use outside
-     *		of this package.
-     *
-     * @return object Number
+     * @return Number
      *
      * @since 3/14/06
      *
      * @static
      */
-    public static function fromString($string, $class = 'Number')
+    public static function fromString(string $string)
     {
-        // Validate our passed class name.
-        if (!is_subclass_of(new $class(), 'Number')) {
-            exit("Class, '$class', is not a subclass of 'Number'.");
+        if (!is_numeric($string)) {
+            throw new InvalidArgumentException('non-numeric value given.');
         }
-
-        $number = new $class();
+        $number = new static();
         $number->_setValue($value);
 
         return $number;
@@ -102,20 +93,15 @@ abstract class Number extends Magnitude
     /**
      * Answer a new object with the value zero.
      *
-     * @param optional string $class The class to instantiate. Do NOT use outside
-     *		of this package.
-     *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      *
      * @static
      */
-    public static function zero($class = 'Number')
+    public static function zero()
     {
-        eval('$result = '.$class.'::withValue(0);');
-
-        return $result;
+        return static::withValue(0);
     }
 
     /*********************************************************
@@ -125,24 +111,20 @@ abstract class Number extends Magnitude
     /**
      * Answer the sum of the receiver and aNumber.
      *
-     * @param object Number $aNumber
-     *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
-    abstract public function plus($aNumber);
+    abstract public function plus(Number $aNumber);
 
     /**
      * Answer the difference of the receiver and aNumber.
      *
-     * @param object Number $aNumber
-     *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
-    public function minus($aNumber)
+    public function minus(Number $aNumber)
     {
         return $this->plus($aNumber->negated());
     }
@@ -150,37 +132,31 @@ abstract class Number extends Magnitude
     /**
      * Answer the result of multiplying the receiver and aNumber.
      *
-     * @param object Number $aNumber
-     *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
-    abstract public function multipliedBy($aNumber);
+    abstract public function multipliedBy(Number $aNumber);
 
     /**
      * Answer the result of dividing the receiver and aNumber.
      *
-     * @param object Number $aNumber
-     *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
-    abstract public function dividedBy($aNumber);
+    abstract public function dividedBy(Number $aNumber);
 
     /**
      * Integer quotient defined by division with truncation toward negative
      * infinity. 9//4 = 2, -9//4 = -3. -0.9//0.4 = -3. Modulo (\\) answers the remainder
      * from this division.
      *
-     * @param object Number $aNumber
-     *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
-    public function modIntegerQuotient($aNumber)
+    public function modIntegerQuotient(Number $aNumber)
     {
         $temp = $this->dividedBy($aNumber);
 
@@ -192,13 +168,11 @@ abstract class Number extends Magnitude
      * Number with the same sign as aNumber.
      * e.g. 9\\4 = 1, -9\\4 = 3, 9\\-4 = -3, 0.9\\0.4 = 0.1.
      *
-     * @param object Number $aNumber
-     *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
-    public function modulo($aNumber)
+    public function modulo(Number $aNumber)
     {
         $temp = $this->integerQuotient($aNumber);
         $temp = $temp->multipliedBy($aNumber);
@@ -210,7 +184,7 @@ abstract class Number extends Magnitude
      * Answer a Number that is the absolute value (positive magnitude) of the
      * receiver.
      *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
@@ -226,7 +200,7 @@ abstract class Number extends Magnitude
     /**
      * Answer a Number that is the negation of the receiver.
      *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
@@ -243,13 +217,11 @@ abstract class Number extends Magnitude
      *	-0.9 quo: 0.4 = -2.
      * rem: answers the remainder from this division.
      *
-     * @param object Number $aNumber
-     *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
-    public function remIntegerQuotient($aNumber)
+    public function remIntegerQuotient(Number $aNumber)
     {
         $temp = $this->dividedBy($aNumber);
 
@@ -260,13 +232,11 @@ abstract class Number extends Magnitude
      * Remainder defined in terms of quo:. Answer a Number with the same
      * sign as self. e.g. 9 rem: 4 = 1, -9 rem: 4 = -1. 0.9 rem: 0.4 = 0.1.
      *
-     * @param object Number $aNumber
-     *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
-    public function remainder($aNumber)
+    public function remainder(Number $aNumber)
     {
         $temp = $this->remIntegerQuotient($aNumber);
 
@@ -277,9 +247,7 @@ abstract class Number extends Magnitude
      * Answer 1 divided by the receiver. Create an error notification if the
      * receiver is 0.
      *
-     * @param object Number $aNumber
-     *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
@@ -301,7 +269,7 @@ abstract class Number extends Magnitude
     /**
      * Answer the integer nearest the receiver toward positive infinity.
      *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
@@ -320,7 +288,7 @@ abstract class Number extends Magnitude
     /**
      * Answer the integer nearest the receiver toward negative infinity.
      *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
@@ -341,7 +309,7 @@ abstract class Number extends Magnitude
     /**
      * Answer an integer nearest the receiver toward zero.
      *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
@@ -371,7 +339,7 @@ abstract class Number extends Magnitude
     /**
      * Answer a floating-point number approximating the receiver.
      *
-     * @return object Float
+     * @return float
      *
      * @since 7/14/05
      */
@@ -385,7 +353,7 @@ abstract class Number extends Magnitude
     /**
      * Answer an Integer nearest the receiver toward zero.
      *
-     * @return object Integer
+     * @return int
      *
      * @since 7/14/05
      */
@@ -397,7 +365,7 @@ abstract class Number extends Magnitude
     /**
      * Answer a number.
      *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
@@ -413,13 +381,11 @@ abstract class Number extends Magnitude
     /**
      * Test if this is less than aMagnitude.
      *
-     * @param object Magnitude $aMagnitude
-     *
      * @return bool
      *
      * @since 5/4/05
      */
-    public function isLessThan($aMagnitude)
+    public function isLessThan(Magnitude $aMagnitude)
     {
         if (!method_exists($aMagnitude, 'asFloat')) {
             return false;
@@ -434,8 +400,6 @@ abstract class Number extends Magnitude
      * Answer whether the receiver and the argument are the same.
      * If = is redefined in any subclass, consider also redefining the
      * message hash.
-     *
-     * @param object $anObject
      *
      * @return bool
      *
@@ -478,7 +442,7 @@ abstract class Number extends Magnitude
      */
     public function value()
     {
-        return $this->_value;
+        return $this->value;
     }
 
     /*********************************************************
@@ -492,5 +456,16 @@ abstract class Number extends Magnitude
      *
      * @since 7/14/05
      */
-    abstract public function _setValue($value);
+    protected function _setValue($value)
+    {
+        $this->value = $this->cast($value);
+    }
+
+    /**
+     * Cast an input value so that it is of the appropriate storage type.
+     */
+    protected function cast($value)
+    {
+        return $value;
+    }
 }

@@ -56,108 +56,86 @@ class Duration extends Magnitude
     /**
      * Formatted as per ANSI 5.8.2.16: [-]D:HH:MM:SS[.S].
      *
-     * @param string $aString
-     *
-     * @return object Duration
+     * @return Duration
      *
      * @since 5/13/05
      *
      * @static
      */
-    public static function fromString($aString)
+    public static function fromString(string $aString)
     {
         $parser = new ANSI58216StringParser($aString);
 
         if (!is_string($aString) || !preg_match('/[^\W]/', $aString) || !$parser) {
-            $null = null;
-
-            return $null;
-            // die("'".$aString."' is not in a valid format.");
+            return null;
         }
 
-        $obj = self::withDaysHoursMinutesSeconds(
-            $parser->day(), $parser->hour(), $parser->minute(), $parser->second());
-
-        return $obj;
+        return static::withDaysHoursMinutesSeconds(
+            (int) $parser->day(),
+            (int) $parser->hour(),
+            (int) $parser->minute(),
+            (float) $parser->second()
+        );
     }
 
     /**
      * Create a new instance of days...
      *
-     * @param int $days
-     *
-     * @return object Duration
+     * @return Duration
      *
      * @static
      *
      * @since 5/3/05
      */
-    public static function withDays($days)
+    public static function withDays(float $days)
     {
-        $obj = self::withDaysHoursMinutesSeconds($days, 0, 0, 0);
-
-        return $obj;
+        return static::withDaysHoursMinutesSeconds($days, 0, 0, 0);
     }
 
     /**
      * Create a new instance with.
      *
-     * @param int $days
-     * @param int $hours
-     * @param int $minutes
-     * @param int $seconds
-     *
-     * @return object Duration
+     * @return Duration
      *
      * @static
      *
      * @since 5/3/05
      */
-    public static function withDaysHoursMinutesSeconds($days, $hours, $minutes, $seconds)
+    public static function withDaysHoursMinutesSeconds(float $days, float $hours, float $minutes, float $seconds)
     {
-        $obj = new self(
+        return new static(
             ($days * ChronologyConstants::SecondsInDay())
             + ($hours * ChronologyConstants::SecondsInHour())
             + ($minutes * ChronologyConstants::SecondsInMinute())
             + $seconds);
-
-        return $obj;
     }
 
     /**
      * Create a new Duration of hours...
      *
-     * @param int $hours
-     *
-     * @return object Duration
+     * @return Duration
      *
      * @static
      *
      * @since 5/3/05
      */
-    public static function withHours($hours)
+    public static function withHours(float $hours)
     {
-        $obj = self::withDaysHoursMinutesSeconds(0, $hours, 0, 0);
-
-        return $obj;
+        return static::withDaysHoursMinutesSeconds(0, $hours, 0, 0);
     }
 
     /**
      * Create a new instance of minutes...
      *
-     * @param int $minutes
-     *
-     * @return object Duration
+     * @return Duration
      *
      * @static
      *
      * @since 5/3/05
      */
-    public static function withMinutes($minutes)
+    public static function withMinutes(float $minutes)
     {
-        $obj = self::withDaysHoursMinutesSeconds(0, 0, $minutes, 0);
-
-        return $obj;
+        return static::withDaysHoursMinutesSeconds(0, 0, $minutes, 0);
     }
 
     /**
@@ -165,61 +143,52 @@ class Duration extends Magnitude
      *
      * @param string $anIntOrStrMonth
      *
-     * @return object Duration
+     * @return Duration
      *
      * @since 5/13/05
      *
      * @static
      */
-    public static function withMonth($anIntOrStrMonth)
+    public static function withMonth(int|string $anIntOrStrMonth)
     {
         $currentYear = Year::current();
         $month = Month::withMonthYear($anIntOrStrMonth, $currentYear->startYear());
-        $obj = $month->duration();
 
-        return $obj;
+        return $month->duration();
     }
 
     /**
      * Create a new instance of seconds...
      *
-     * @param int $seconds
-     *
-     * @return object Duration
+     * @return Duration
      *
      * @static
      *
      * @since 5/3/05
      */
-    public static function withSeconds($seconds)
+    public static function withSeconds(float $seconds)
     {
-        $obj = self::withDaysHoursMinutesSeconds(0, 0, 0, $seconds);
-
-        return $obj;
+        return static::withDaysHoursMinutesSeconds(0, 0, 0, $seconds);
     }
 
     /**
      * Create a new instance of a number of weeks.
      *
-     * @param float $aNumber
-     *
-     * @return object Duration
+     * @return Duration
      *
      * @since 5/13/05
      *
      * @static
      */
-    public static function withWeeks($aNumber)
+    public static function withWeeks(float $aNumber)
     {
-        $obj = self::withDaysHoursMinutesSeconds($aNumber * 7, 0, 0, 0);
-
-        return $obj;
+        return static::withDaysHoursMinutesSeconds($aNumber * 7, 0, 0, 0);
     }
 
     /**
      * Create a new Duration of zero length.
      *
-     * @return object Duration
+     * @return Duration
      *
      * @since 5/5/05
      *
@@ -227,26 +196,24 @@ class Duration extends Magnitude
      */
     public static function zero()
     {
-        $obj = self::withDays(0);
-
-        return $obj;
+        return static::withDays(0);
     }
 
     /*********************************************************
      * 	Instance methods - Private
      *********************************************************/
-    private int $seconds;
+    private float $seconds;
 
     /**
      * Initialize this Duration.
      *
-     * @param int seconds
+     * @param float seconds
      *
-     * @return object Duration
+     * @return Duration
      *
      * @since 5/3/05
      */
-    public function __construct($seconds = 0)
+    public function __construct(float $seconds = 0.0)
     {
         $this->seconds = $seconds;
     }
@@ -308,11 +275,11 @@ class Duration extends Magnitude
         } else {
             if (!$this->isNegative()) {
                 return floor(
-                    ($this->seconds % ChronologyConstants::SecondsInDay())
+                    (round($this->seconds) % ChronologyConstants::SecondsInDay())
                     / ChronologyConstants::SecondsInHour());
             } else {
                 return 0 - floor(
-                    (abs($this->seconds) % ChronologyConstants::SecondsInDay())
+                    (abs(round($this->seconds)) % ChronologyConstants::SecondsInDay())
                     / ChronologyConstants::SecondsInHour());
             }
         }
@@ -340,11 +307,11 @@ class Duration extends Magnitude
         } else {
             if (!$this->isNegative()) {
                 return floor(
-                    ($this->seconds % ChronologyConstants::SecondsInHour())
+                    (round($this->seconds) % ChronologyConstants::SecondsInHour())
                     / ChronologyConstants::SecondsInMinute());
             } else {
                 return 0 - floor(
-                    (abs($this->seconds) % ChronologyConstants::SecondsInHour())
+                    (abs(round($this->seconds)) % ChronologyConstants::SecondsInHour())
                     / ChronologyConstants::SecondsInMinute());
             }
         }
@@ -368,7 +335,7 @@ class Duration extends Magnitude
         $result .= abs($this->days()).':';
         $result .= str_pad(abs($this->hours()), 2, '0', \STR_PAD_LEFT).':';
         $result .= str_pad(abs($this->minutes()), 2, '0', \STR_PAD_LEFT).':';
-        $result .= str_pad(abs($this->seconds()), 2, '0', \STR_PAD_LEFT);
+        $result .= str_pad(abs(round($this->seconds(), 4)), 2, '0', \STR_PAD_LEFT);
 
         return $result;
     }
@@ -376,7 +343,7 @@ class Duration extends Magnitude
     /**
      * Answer the number of seconds the receiver represents.
      *
-     * @return int
+     * @return float
      *
      * @since 5/3/05
      */
@@ -394,10 +361,10 @@ class Duration extends Magnitude
             return $remainderDuration->seconds();
         } else {
             if ($this->isPositive()) {
-                return floor($this->seconds % ChronologyConstants::SecondsInMinute());
+                return fmod($this->seconds, ChronologyConstants::SecondsInMinute());
             } else {
-                return 0 - floor(
-                    abs($this->seconds) % ChronologyConstants::SecondsInMinute());
+                return 0 -
+                    fmod(abs($this->seconds), ChronologyConstants::SecondsInMinute());
             }
         }
     }
@@ -433,8 +400,6 @@ class Duration extends Magnitude
     /**
      * Test if this Duration is equal to aDuration.
      *
-     * @param object Duration $aDuration
-     *
      * @return bool
      *
      * @since 5/3/05
@@ -447,13 +412,13 @@ class Duration extends Magnitude
     /**
      * Test if this Duration is less than aDuration.
      *
-     * @param object Duration $aDuration
+     * @param Duration $aDuration
      *
      * @return bool
      *
      * @since 5/3/05
      */
-    public function isLessThan($aDuration)
+    public function isLessThan(Magnitude $aDuration)
     {
         return $this->asSeconds() < $aDuration->asSeconds();
     }
@@ -465,7 +430,7 @@ class Duration extends Magnitude
     /**
      * Return the absolute value of this duration.
      *
-     * @return object Duration
+     * @return Duration
      *
      * @since 5/3/05
      */
@@ -479,32 +444,27 @@ class Duration extends Magnitude
     /**
      * Divide a Duration. Operand is a Duration or a Number.
      *
-     * @param object Duration $aDuration
-     *
-     * @return object Duration The result
+     * @return Duration The result
      *
      * @since 5/12/05
      */
     public function dividedBy($operand)
     {
         if (is_numeric($operand)) {
-            $obj = new self((int) ($this->asSeconds() / $operand));
-
-            return $obj;
+            return new static($this->asSeconds() / $operand);
         } else {
             $denominator = $operand->asDuration();
-            $obj = new self((int) ($this->asSeconds() / $denominator->asSeconds()));
 
-            return $obj;
+            return new static($this->asSeconds() / $denominator->asSeconds());
         }
     }
 
     /**
      * Subtract a Duration.
      *
-     * @param object Duration $aDuration
+     * @param Duration $aDuration
      *
-     * @return object Duration The result
+     * @return Duration The result
      *
      * @since 5/3/05
      */
@@ -518,74 +478,57 @@ class Duration extends Magnitude
     /**
      * Multiply a Duration. Operand is a Duration or a Number.
      *
-     * @param object Duration $aDuration
-     *
-     * @return object Duration The result
+     * @return Duration The result
      *
      * @since 5/12/05
      */
     public function multipliedBy($operand)
     {
         if (is_numeric($operand)) {
-            $obj = new self((int) ($this->asSeconds() * $operand));
-
-            return $obj;
+            return new static($this->asSeconds() * $operand);
         } else {
             $duration = $operand->asDuration();
-            $obj = new self((int) ($this->asSeconds() * $duration->asSeconds()));
 
-            return $obj;
+            return new static($this->asSeconds() * $duration->asSeconds());
         }
     }
 
     /**
      * Return the negative of this duration.
      *
-     * @return object Duration
+     * @return Duration
      *
      * @since 5/10/05
      */
     public function negated()
     {
-        $obj = new self(0 - $this->seconds);
-
-        return $obj;
+        return new static(0 - $this->seconds);
     }
 
     /**
      * Add a Duration.
      *
-     * @param object Duration $aDuration
+     * @param Duration $aDuration
      *
-     * @return object duration The result
+     * @return duration The result
      *
      * @since 5/3/05
      */
     public function plus($aDuration)
     {
-        $obj = new self($this->asSeconds() + $aDuration->asSeconds());
-
-        return $obj;
+        return new static($this->asSeconds() + $aDuration->asSeconds());
     }
 
     /**
      * Round to a Duration.
      *
-     * @param object Duration $aDuration
-     *
-     * @return object duration The result
+     * @return duration The result
      *
      * @since 5/3/05
      */
-    public function roundTo($aDuration)
+    public function roundTo(Duration $aDuration)
     {
-        $obj = new self(
-            (int)
-                round(
-                    $this->asSeconds() / $aDuration->asSeconds())
-            * $aDuration->asSeconds());
-
-        return $obj;
+        return new static(round($this->asSeconds() / $aDuration->asSeconds()) * $aDuration->asSeconds());
     }
 
     /**
@@ -593,19 +536,13 @@ class Duration extends Magnitude
      * e.g. if the receiver is 5 minutes, 37 seconds, and aDuration is 2 minutes,
      * answer 4 minutes.
      *
-     * @param object Duration $aDuration
-     *
-     * @return object Duration
+     * @return Duration
      *
      * @since 5/13/05
      */
-    public function truncateTo($aDuration)
+    public function truncateTo(Duration $aDuration)
     {
-        $obj = new self(
-            (int) ($this->asSeconds() / $aDuration->asSeconds())
-            * $aDuration->asSeconds());
-
-        return $obj;
+        return new static((int) ($this->asSeconds() / $aDuration->asSeconds()) * $aDuration->asSeconds());
     }
 
     /*********************************************************
@@ -627,7 +564,7 @@ class Duration extends Magnitude
     /**
      * Answer a Duration that represents this object.
      *
-     * @return object Duration
+     * @return Duration
      *
      * @since 5/4/05
      */

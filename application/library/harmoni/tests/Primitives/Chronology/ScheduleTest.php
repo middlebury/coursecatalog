@@ -13,7 +13,7 @@
  * @since 5/25/05
  */
 
-require_once __DIR__.'/../Schedule.class.php';
+use PHPUnit\Framework\TestCase;
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -31,13 +31,15 @@ require_once __DIR__.'/../Schedule.class.php';
  *
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
-class ScheduleTestCase extends UnitTestCase
+class ScheduleTest extends TestCase
 {
+    private $currentYear;
+
     /**
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->currentYear = date('Y');
     }
@@ -45,7 +47,7 @@ class ScheduleTestCase extends UnitTestCase
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         // perhaps, unset $obj here
     }
@@ -62,7 +64,7 @@ class ScheduleTestCase extends UnitTestCase
         $durations[] = Duration::withDays(1);
         $schedule->setSchedule($durations);
 
-        $this->assertEqual($schedule->getSchedule(), $durations);
+        $this->assertEquals($durations, $schedule->getSchedule());
 
         $datesAndTimes = [];
         $datesAndTimes[] = DateAndTime::withYearMonthDay(2005, 5, 15);
@@ -73,20 +75,23 @@ class ScheduleTestCase extends UnitTestCase
         $datesAndTimes[] = DateAndTime::withYearMonthDay(2005, 5, 20);
         $datesAndTimes[] = DateAndTime::withYearMonthDay(2005, 5, 21);
 
-        $this->assertEqual($schedule->dateAndTimes(), $datesAndTimes);
+        $this->assertEquals($datesAndTimes, $schedule->dateAndTimes());
 
         $datesAndTimes[] = DateAndTime::withYearMonthDay(2005, 5, 22);
-        $this->assertNotEqual($schedule->dateAndTimes(), $datesAndTimes);
+        $this->assertNotEquals($datesAndTimes, $schedule->dateAndTimes());
 
         $datesAndTimes = [];
         $datesAndTimes[] = DateAndTime::withYearMonthDay(2005, 5, 17);
         $datesAndTimes[] = DateAndTime::withYearMonthDay(2005, 5, 18);
         $datesAndTimes[] = DateAndTime::withYearMonthDay(2005, 5, 19);
 
-        $this->assertEqual($schedule->between(
-            DateAndTime::withYearMonthDay(2005, 5, 17),
-            DateAndTime::withYearMonthDay(2005, 5, 19)),
-            $datesAndTimes);
+        $this->assertEquals(
+            $datesAndTimes,
+            $schedule->between(
+                DateAndTime::withYearMonthDay(2005, 5, 17),
+                DateAndTime::withYearMonthDay(2005, 5, 19)
+            )
+        );
     }
 
     /**
@@ -102,7 +107,7 @@ class ScheduleTestCase extends UnitTestCase
         $durations[] = Duration::withHours(1);
         $schedule->setSchedule($durations);
 
-        $this->assertEqual($schedule->getSchedule(), $durations);
+        $this->assertEquals($durations, $schedule->getSchedule());
 
         $datesAndTimes = [];
         $datesAndTimes[] = DateAndTime::withYearMonthDayHourMinuteSecond(2005, 5, 15, 0, 0, 0);
@@ -119,20 +124,23 @@ class ScheduleTestCase extends UnitTestCase
         $datesAndTimes[] = DateAndTime::withYearMonthDayHourMinuteSecond(2005, 5, 21, 5, 0, 0);
         $datesAndTimes[] = DateAndTime::withYearMonthDayHourMinuteSecond(2005, 5, 21, 6, 0, 0);
 
-        $this->assertEqual($schedule->dateAndTimes(), $datesAndTimes);
+        $this->assertEquals($datesAndTimes, $schedule->dateAndTimes());
 
         $datesAndTimes[] = DateAndTime::withYearMonthDayHourMinuteSecond(2005, 5, 21, 5, 0, 0);
-        $this->assertNotEqual($schedule->dateAndTimes(), $datesAndTimes);
+        $this->assertNotEquals($datesAndTimes, $schedule->dateAndTimes());
 
         $datesAndTimes = [];
         $datesAndTimes[] = DateAndTime::withYearMonthDayHourMinuteSecond(2005, 5, 17, 1, 0, 0);
         $datesAndTimes[] = DateAndTime::withYearMonthDayHourMinuteSecond(2005, 5, 18, 1, 0, 0);
         $datesAndTimes[] = DateAndTime::withYearMonthDayHourMinuteSecond(2005, 5, 18, 2, 0, 0);
 
-        $this->assertEqual($schedule->between(
-            DateAndTime::withYearMonthDay(2005, 5, 17),
-            DateAndTime::withYearMonthDay(2005, 5, 19)),
-            $datesAndTimes);
+        $this->assertEquals(
+            $datesAndTimes,
+            $schedule->between(
+                DateAndTime::withYearMonthDay(2005, 5, 17),
+                DateAndTime::withYearMonthDay(2005, 5, 19)
+            )
+        );
     }
 
     /**
@@ -148,20 +156,20 @@ class ScheduleTestCase extends UnitTestCase
         // startingEnding()
 
         $timespan = Schedule::current();
-        $this->assertEqual($timespan->startYear(), (int) date('Y'));
-        $this->assertEqual($timespan->startMonth(), (int) date('n'));
-        $this->assertEqual($timespan->dayOfMonth(), (int) date('j'));
+        $this->assertEquals((int) date('Y'), $timespan->startYear());
+        $this->assertEquals((int) date('n'), $timespan->startMonth());
+        $this->assertEquals((int) date('j'), $timespan->dayOfMonth());
         $duration = $timespan->duration();
         $this->assertTrue($duration->isEqualTo(Duration::zero()));
-        $this->assertEqual(strtolower($timespan::class), 'schedule');
+        $this->assertEquals('schedule', strtolower($timespan::class));
 
         $timespan = Schedule::epoch();
-        $this->assertEqual($timespan->startYear(), 1901);
-        $this->assertEqual($timespan->startMonth(), 1);
-        $this->assertEqual($timespan->dayOfMonth(), 1);
+        $this->assertEquals(1901, $timespan->startYear());
+        $this->assertEquals(1, $timespan->startMonth());
+        $this->assertEquals(1, $timespan->dayOfMonth());
         $duration = $timespan->duration();
         $this->assertTrue($duration->isEqualTo(Duration::zero()));
-        $this->assertEqual(strtolower($timespan::class), 'schedule');
+        $this->assertEquals('schedule', strtolower($timespan::class));
     }
 
     /**
@@ -177,15 +185,15 @@ class ScheduleTestCase extends UnitTestCase
             Duration::withDays(365)
         );
 
-        $this->assertEqual($timespan->startYear(), 2005);
-        $this->assertEqual($timespan->dayOfYear(), 125);
+        $this->assertEquals(2005, $timespan->startYear());
+        $this->assertEquals(125, $timespan->dayOfYear());
         $duration = $timespan->duration();
         $this->assertTrue($duration->isEqualTo(Duration::withDays(365)));
         $end = $timespan->end();
-        $this->assertEqual($end->julianDayNumber(), 2453860);
-        $this->assertEqual($end->julianDayNumber() - $datA->julianDayNumber(), 364);
-        $this->assertEqual($end->year(), 2006);
-        $this->assertEqual($end->dayOfYear(), 124);
+        $this->assertEquals(2453860, $end->julianDayNumber());
+        $this->assertEquals(364, $end->julianDayNumber() - $datA->julianDayNumber());
+        $this->assertEquals(2006, $end->year());
+        $this->assertEquals(124, $end->dayOfYear());
         $this->assertTrue($end->isEqualTo(DateAndTime::withYearDayHourMinuteSecond(
             2006, 124, 23, 59, 59)));
     }

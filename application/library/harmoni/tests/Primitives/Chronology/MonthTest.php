@@ -4,7 +4,7 @@
  * @copyright Copyright &copy; 2005, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  *
- * @version $Id: YearTestCase.class.php,v 1.3 2007/09/04 20:25:26 adamfranco Exp $
+ * @version $Id: MonthTestCase.class.php,v 1.3 2007/09/04 20:25:26 adamfranco Exp $
  *
  * @see http://harmoni.sourceforge.net/
  *
@@ -13,7 +13,7 @@
  * @since 5/3/05
  */
 
-require_once __DIR__.'/../Year.class.php';
+use PHPUnit\Framework\TestCase;
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -25,27 +25,27 @@ require_once __DIR__.'/../Year.class.php';
  * @copyright Copyright &copy; 2005, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  *
- * @version $Id: YearTestCase.class.php,v 1.3 2007/09/04 20:25:26 adamfranco Exp $
+ * @version $Id: MonthTestCase.class.php,v 1.3 2007/09/04 20:25:26 adamfranco Exp $
  *
  * @see http://harmoni.sourceforge.net/
  *
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
-class YearTestCase extends UnitTestCase
+class MonthTest extends TestCase
 {
     /**
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->currentYear = date('Y');
+        // perhaps, initialize $obj here
     }
 
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         // perhaps, unset $obj here
     }
@@ -55,81 +55,80 @@ class YearTestCase extends UnitTestCase
      */
     public function testCreation()
     {
-        $epochYear = Year::epoch();
+        $epochMonth = Month::epoch();
 
-        $this->assertEqual(strtolower($epochYear::class), 'year');
-        $this->assertEqual($epochYear->dayOfYear(), 1);
-        $this->assertEqual($epochYear->daysInYear(), 365);
+        $this->assertEquals('month', strtolower($epochMonth::class));
+        $this->assertEquals(1, $epochMonth->dayOfMonth());
+        $this->assertEquals(1, $epochMonth->dayOfYear());
+        $this->assertEquals(31, $epochMonth->daysInMonth());
+        $this->assertEquals(1, $epochMonth->startMonthIndex());
+        $this->assertEquals('January', $epochMonth->startMonthName());
+        $this->assertEquals('Jan', $epochMonth->startMonthAbbreviation());
 
-        $duration = $epochYear->duration();
-        $this->assertTrue($duration->isEqualTo(Duration::withDays(365)));
-        $this->assertEqual($epochYear->startYear(), 1901);
-
-        $current = Year::current();
-        $this->assertEqual($current->startYear(), $this->currentYear);
-
-        $aYear = Year::withYear(1999);
-        $this->assertEqual($aYear->startYear(), 1999);
-        $aYear = Year::withYear(2005);
-        $this->assertEqual($aYear->startYear(), 2005);
-
-        $aYear = Year::starting(DateAndTime::withYearDay(1982, 25));
-        $this->assertEqual($aYear->startYear(), 1982);
-        $this->assertEqual($aYear->dayOfYear(), 25);
-        $this->assertEqual($aYear->daysInYear(), 365);
+        $duration = $epochMonth->duration();
+        $this->assertTrue($duration->isEqualTo(Duration::withDays(31)));
     }
 
     /**
-     * Test some leap years.
+     * Test instance creation from a string.
      */
-    public function testLeapYears()
+    public function testFromString()
     {
-        // recent leap years
-        $this->assertTrue(Year::isYearLeapYear(1980));
-        $this->assertTrue(Year::isYearLeapYear(1984));
-        $this->assertTrue(Year::isYearLeapYear(1988));
-        $this->assertTrue(Year::isYearLeapYear(1992));
-        $this->assertTrue(Year::isYearLeapYear(1996));
-        $this->assertTrue(Year::isYearLeapYear(2000));
-        $this->assertTrue(Year::isYearLeapYear(2004));
-        $this->assertTrue(Year::isYearLeapYear(2008));
+        $date = Month::withMonthYear(8, 2005);
 
-        // divisible-by 100 years
-        $this->assertTrue(Year::isYearLeapYear(1600));
-        $this->assertFalse(Year::isYearLeapYear(1700));
-        $this->assertFalse(Year::isYearLeapYear(1800));
-        $this->assertFalse(Year::isYearLeapYear(1900));
-        $this->assertTrue(Year::isYearLeapYear(2000));
-        $this->assertFalse(Year::isYearLeapYear(2100));
-        $this->assertFalse(Year::isYearLeapYear(2200));
-        $this->assertFalse(Year::isYearLeapYear(2300));
-        $this->assertTrue(Year::isYearLeapYear(2400));
+        $this->assertTrue($date->isEqualTo(Month::fromString('2005-08-20')));
+        $this->assertTrue($date->isEqualTo(Month::fromString('2005-08-20T15:25:10')));
+        $this->assertTrue($date->isEqualTo(Month::fromString('20050820152510')));
+        $this->assertTrue($date->isEqualTo(Month::fromString('08/20/2005')));
+        $this->assertTrue($date->isEqualTo(Month::fromString('August 20, 2005')));
+        $this->assertTrue($date->isEqualTo(Month::fromString('20aug05')));
+        $this->assertTrue($date->isEqualTo(Month::fromString('August 2005')));
+        $this->assertTrue($date->isEqualTo(Month::fromString('aug05')));
+        $this->assertTrue($date->isEqualTo(Month::fromString('2005-08')));
+        $this->assertTrue($date->isEqualTo(Month::fromString('200508')));
+    }
 
-        // Non-leap years
-        $this->assertFalse(Year::isYearLeapYear(1981));
-        $this->assertFalse(Year::isYearLeapYear(1979));
-        $this->assertFalse(Year::isYearLeapYear(1999));
-        $this->assertFalse(Year::isYearLeapYear(2003));
-        $this->assertFalse(Year::isYearLeapYear(2001));
-        $this->assertFalse(Year::isYearLeapYear(1789));
-        $this->assertFalse(Year::isYearLeapYear(2002));
-        $this->assertFalse(Year::isYearLeapYear(1998));
-        $this->assertFalse(Year::isYearLeapYear(2005));
+    /**
+     * Test days in month.
+     */
+    public function testDaysInMonth()
+    {
+        $this->assertEquals(31, Month::daysInMonthForYear(1, 1999));
+        $this->assertEquals(28, Month::daysInMonthForYear(2, 1999));
+        $this->assertEquals(31, Month::daysInMonthForYear(3, 1999));
+        $this->assertEquals(30, Month::daysInMonthForYear(4, 1999));
+        $this->assertEquals(31, Month::daysInMonthForYear(5, 1999));
+        $this->assertEquals(30, Month::daysInMonthForYear(6, 1999));
+        $this->assertEquals(31, Month::daysInMonthForYear(7, 1999));
+        $this->assertEquals(31, Month::daysInMonthForYear(8, 1999));
+        $this->assertEquals(30, Month::daysInMonthForYear(9, 1999));
+        $this->assertEquals(31, Month::daysInMonthForYear(10, 1999));
+        $this->assertEquals(30, Month::daysInMonthForYear(11, 1999));
+        $this->assertEquals(31, Month::daysInMonthForYear(12, 1999));
 
-        $aYear = Year::starting(DateAndTime::withYearDay(1980, 55));
-        $this->assertEqual($aYear->startYear(), 1980);
-        $this->assertEqual($aYear->dayOfYear(), 55);
-        $this->assertEqual($aYear->daysInYear(), 366);
+        $this->assertEquals(31, Month::daysInMonthForYear(1, 2000));
+        $this->assertEquals(29, Month::daysInMonthForYear(2, 2000));
+        $this->assertEquals(31, Month::daysInMonthForYear(3, 2000));
+        $this->assertEquals(30, Month::daysInMonthForYear(4, 2000));
+        $this->assertEquals(31, Month::daysInMonthForYear(5, 2000));
+        $this->assertEquals(30, Month::daysInMonthForYear(6, 2000));
+        $this->assertEquals(31, Month::daysInMonthForYear(7, 2000));
+        $this->assertEquals(31, Month::daysInMonthForYear(8, 2000));
+        $this->assertEquals(30, Month::daysInMonthForYear(9, 2000));
+        $this->assertEquals(31, Month::daysInMonthForYear(10, 2000));
+        $this->assertEquals(30, Month::daysInMonthForYear(11, 2000));
+        $this->assertEquals(31, Month::daysInMonthForYear(12, 2000));
+    }
 
-        $aYear = Year::withYear(1980);
-        $this->assertEqual($aYear->startYear(), 1980);
-        $this->assertEqual($aYear->dayOfYear(), 1);
-        $this->assertEqual($aYear->daysInYear(), 366);
+    /**
+     * Test name and index.
+     */
+    public function testNameIndex()
+    {
+        $month = Month::withMonthYear(5, 2005);
 
-        $aYear = Year::withYear(2000);
-        $this->assertEqual($aYear->startYear(), 2000);
-        $this->assertEqual($aYear->dayOfYear(), 1);
-        $this->assertEqual($aYear->daysInYear(), 366);
+        $this->assertEquals(5, $month->index());
+        $this->assertEquals('May', $month->name());
     }
 
     /**
@@ -137,10 +136,11 @@ class YearTestCase extends UnitTestCase
      */
     public function testPrinting()
     {
-        $year = Year::withYear(2005);
+        $month = Month::withMonthYear(8, 2005);
 
-        $this->assertEqual($year->printableString(), '2005');
+        $this->assertEquals('August 2005', $month->printableString());
     }
+
     /*********************************************************
      * Tests from parent class, Timespan.
      *********************************************************/
@@ -154,12 +154,42 @@ class YearTestCase extends UnitTestCase
         // isEqualTo()
         // isLessThan()
 
-        $timespanA = Year::startingDuration(
+        $timespanA = Month::startingDuration(
             DateAndTime::withYearDay(1950, 1),
             Duration::withDays(10));
-        $timespanB = Year::startingDuration(
+        $timespanB = Month::startingDuration(
             DateAndTime::withYearDay(1950, 2),
             Duration::withDays(1));
+
+        $this->assertTrue($timespanA->isEqualTo($timespanB));
+        $this->assertFalse($timespanA->isLessThan($timespanB));
+        $this->assertTrue($timespanA->isLessThanOrEqualTo($timespanB));
+        $this->assertFalse($timespanA->isGreaterThan($timespanB));
+        $this->assertTrue($timespanA->isGreaterThanOrEqualTo($timespanB));
+
+        $timespanA = Month::startingDuration(
+            DateAndTime::withYearMonthDayHourMinuteSecondOffset(
+                2005, 5, 4, 15, 25, 10, Duration::withHours(-4)),
+            Duration::withDays(10));
+        $timespanB = Month::startingDuration(
+            DateAndTime::withYearMonthDayHourMinuteSecondOffset(
+                2005, 5, 4, 15, 25, 10, Duration::withHours(-5)),
+            Duration::withDays(1));
+
+        $this->assertTrue($timespanA->isEqualTo($timespanB));
+        $this->assertFalse($timespanA->isLessThan($timespanB));
+        $this->assertTrue($timespanA->isLessThanOrEqualTo($timespanB));
+        $this->assertFalse($timespanA->isGreaterThan($timespanB));
+        $this->assertTrue($timespanA->isGreaterThanOrEqualTo($timespanB));
+
+        $timespanA = Month::startingDuration(
+            DateAndTime::withYearMonthDayHourMinuteSecondOffset(
+                2005, 3, 4, 16, 25, 10, Duration::withHours(-4)),
+            Duration::withDays(10));
+        $timespanB = Month::startingDuration(
+            DateAndTime::withYearMonthDayHourMinuteSecondOffset(
+                2005, 5, 4, 15, 25, 10, Duration::withHours(-5)),
+            Duration::withDays(10));
 
         $this->assertFalse($timespanA->isEqualTo($timespanB));
         $this->assertTrue($timespanA->isLessThan($timespanB));
@@ -167,49 +197,20 @@ class YearTestCase extends UnitTestCase
         $this->assertFalse($timespanA->isGreaterThan($timespanB));
         $this->assertFalse($timespanA->isGreaterThanOrEqualTo($timespanB));
 
-        $timespanA = Year::startingDuration(
-            DateAndTime::withYearMonthDayHourMinuteSecondOffset(
-                2005, 5, 4, 15, 25, 10, Duration::withHours(-4)),
-            Duration::withDays(10));
-        $timespanB = Year::startingDuration(
-            DateAndTime::withYearMonthDayHourMinuteSecondOffset(
-                2005, 5, 4, 15, 25, 10, Duration::withHours(-5)),
-            Duration::withDays(1));
-
-        $this->assertTrue($timespanA->isEqualTo($timespanB));
-        $this->assertFalse($timespanA->isLessThan($timespanB));
+        $timespanA = Month::starting(DateAndTime::withYearMonthDay(2005, 5, 4));
+        $timespanB = Month::starting(DateAndTime::withYearMonthDay(2005, 7, 4));
+        $this->assertFalse($timespanA->isEqualTo($timespanB));
+        $this->assertTrue($timespanA->isLessThan($timespanB));
         $this->assertTrue($timespanA->isLessThanOrEqualTo($timespanB));
         $this->assertFalse($timespanA->isGreaterThan($timespanB));
-        $this->assertTrue($timespanA->isGreaterThanOrEqualTo($timespanB));
+        $this->assertFalse($timespanA->isGreaterThanOrEqualTo($timespanB));
 
-        $timespanA = Year::startingDuration(
-            DateAndTime::withYearMonthDayHourMinuteSecondOffset(
-                2005, 5, 4, 16, 25, 10, Duration::withHours(-4)),
-            Duration::withDays(10));
-        $timespanB = Year::startingDuration(
-            DateAndTime::withYearMonthDayHourMinuteSecondOffset(
-                2005, 5, 4, 15, 25, 10, Duration::withHours(-5)),
-            Duration::withDays(10));
-
-        $this->assertTrue($timespanA->isEqualTo($timespanB));
+        $timespanA = Month::starting(DateAndTime::withYearMonthDay(2005, 5, 4));
+        $timespanB = Month::starting(DateAndTime::withYearMonthDay(2005, 2, 4));
+        $this->assertFalse($timespanA->isEqualTo($timespanB));
         $this->assertFalse($timespanA->isLessThan($timespanB));
-        $this->assertTrue($timespanA->isLessThanOrEqualTo($timespanB));
-        $this->assertFalse($timespanA->isGreaterThan($timespanB));
-        $this->assertTrue($timespanA->isGreaterThanOrEqualTo($timespanB));
-
-        $timespanA = Year::startingDuration(
-            DateAndTime::withYearMonthDayHourMinuteSecondOffset(
-                2005, 5, 4, 20, 25, 10, Duration::withHours(5)),
-            Duration::withDays(10));
-        $timespanB = Year::startingDuration(
-            DateAndTime::withYearMonthDayHourMinuteSecondOffset(
-                2005, 5, 4, 10, 25, 10, Duration::withHours(-5)),
-            Duration::withDays(1));
-
-        $this->assertTrue($timespanA->isEqualTo($timespanB));
-        $this->assertFalse($timespanA->isLessThan($timespanB));
-        $this->assertTrue($timespanA->isLessThanOrEqualTo($timespanB));
-        $this->assertFalse($timespanA->isGreaterThan($timespanB));
+        $this->assertFalse($timespanA->isLessThanOrEqualTo($timespanB));
+        $this->assertTrue($timespanA->isGreaterThan($timespanB));
         $this->assertTrue($timespanA->isGreaterThanOrEqualTo($timespanB));
     }
 
@@ -222,32 +223,32 @@ class YearTestCase extends UnitTestCase
         // includesAllOf()
         // includesAnyOf()
 
-        // 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 ... 0 0 0 0
-        // 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 ... 1 2 3 4
+        // 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3 0 0 0
+        // 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
         //
         // A  |- - - - - - - - - -|
         // B              |-|
         // C                                  |- - - - - - - - -|
-        // D                                                         ...|- - - -|
-        $timespanA = Year::startingDuration(
+        // D                                                          |- - - -|
+        $timespanA = Month::startingDuration(
             DateAndTime::withYearMonthDayHourMinuteSecondOffset(
                 2005, 5, 4, 15, 25, 10, Duration::withHours(-4)),
             Duration::withDays(10));
 
-        $timespanB = Year::startingDuration(
+        $timespanB = Month::startingDuration(
             DateAndTime::withYearMonthDayHourMinuteSecondOffset(
                 2005, 5, 10, 12, 0, 0, Duration::withHours(-4)),
             Duration::withDays(1));
 
-        $timespanC = Year::startingEnding(
+        $timespanC = Month::startingEnding(
             DateAndTime::withYearMonthDay(
                 2005, 5, 20),
             DateAndTime::withYearMonthDay(
                 2005, 5, 29));
 
-        $timespanD = Year::startingEnding(
+        $timespanD = Month::startingEnding(
             DateAndTime::withYearMonthDay(
-                2006, 6, 1),
+                2005, 6, 1),
             DateAndTime::withYearMonthDay(
                 2005, 6, 6));
         $this->assertTrue($timespanA->includes($timespanB->asDateAndTime()));
@@ -292,42 +293,46 @@ class YearTestCase extends UnitTestCase
         // B              |-|
         // C                                  |- - - - - - - - -|
         // D                                                          |- - - -|
-        $timespanA = Year::startingDuration(
+        $timespanA = Month::startingDuration(
             DateAndTime::withYearMonthDayHourMinuteSecondOffset(
                 2005, 5, 4, 15, 25, 10, Duration::withHours(-4)),
             Duration::withDays(10));
 
-        $timespanB = Year::startingDuration(
+        $timespanB = Month::startingDuration(
             DateAndTime::withYearMonthDayHourMinuteSecondOffset(
                 2005, 5, 10, 12, 0, 0, Duration::withHours(-4)),
             Duration::withDays(1));
 
-        $timespanC = Year::starting(
+        $timespanC = Month::startingEnding(
             DateAndTime::withYearMonthDay(
-                2005, 5, 20));
+                2005, 5, 20),
+            DateAndTime::withYearMonthDay(
+                2005, 5, 29));
 
-        $timespanD = Year::starting(
+        $timespanD = Month::startingEnding(
             DateAndTime::withYearMonthDay(
-                2005, 6, 1));
+                2005, 6, 1),
+            DateAndTime::withYearMonthDay(
+                2005, 6, 6));
 
         // plus()
-        $temp = Year::starting(
+        $temp = Month::startingEnding(
             DateAndTime::withYearMonthDay(
-                2005, 5, 24));
-        $result = $timespanC->plus(Duration::withDays(4));
-        $this->assertEqual(strtolower($result::class), 'year');
-        $this->assertTrue($temp->isEqualTo($result));
+                2005, 5, 8),
+            DateAndTime::withYearMonthDay(
+                2005, 5, 21));
+        $this->assertTrue($temp->isEqualTo($timespanC->plus(Duration::withDays(4))));
+        $this->assertTrue($temp->isEqualTo($timespanC->plus($timespanD->asDuration())));
 
         // minus()
         // Subtracting an object that implemnts asDateAndTime
-        $temp = Year::starting(
+        $temp = Month::starting(
             DateAndTime::withYearMonthDay(
-                2005, 5, 15));
+                2005, 4, 1));
         $result = $timespanC->minus(Duration::withDays(5));
-        $this->assertEqual(strtolower($result::class), 'year');
         $this->assertTrue($temp->isEqualTo($result));
 
-        $tempDuration = Duration::withDays(-12);
+        $tempDuration = Duration::withDays(-31);
         $this->assertTrue($tempDuration->isEqualTo($timespanC->minus($timespanD)));
 
         $tempDuration = Duration::zero();
@@ -350,31 +355,31 @@ class YearTestCase extends UnitTestCase
         // B              |-|
         // C                                  |- - - - - - - - -|
         // D                                                          |- - - -|
-        $timespanA = Year::startingDuration(
+        $timespanA = Month::startingDuration(
             DateAndTime::withYearMonthDayHourMinuteSecondOffset(
                 2005, 5, 4, 15, 25, 10, Duration::withHours(-4)),
             Duration::withDays(10));
 
-        $timespanB = Year::startingDuration(
+        $timespanB = Month::startingDuration(
             DateAndTime::withYearMonthDayHourMinuteSecondOffset(
                 2005, 5, 10, 12, 0, 0, Duration::withHours(-4)),
             Duration::withDays(1));
 
-        $timespanC = Year::startingEnding(
+        $timespanC = Month::startingEnding(
             DateAndTime::withYearMonthDay(
                 2005, 5, 20),
             DateAndTime::withYearMonthDay(
                 2005, 5, 29));
 
-        $timespanD = Year::startingEnding(
+        $timespanD = Month::startingEnding(
             DateAndTime::withYearMonthDay(
                 2005, 6, 1),
             DateAndTime::withYearMonthDay(
                 2005, 6, 6));
 
-        $temp = Year::starting(DateAndTime::withYearMonthDay(2006, 5, 4));
+        $temp = Month::starting(DateAndTime::withYearMonthDay(2005, 6, 1));
         $this->assertTrue($temp->isEqualTo($timespanA->next()));
-        $temp = Year::starting(DateAndTime::withYearMonthDay(2004, 5, 4));
+        $temp = Month::starting(DateAndTime::withYearMonthDay(2005, 4, 1));
         $this->assertTrue($temp->isEqualTo($timespanA->previous()));
     }
 
@@ -386,62 +391,63 @@ class YearTestCase extends UnitTestCase
         // intersection()
         // union()
 
-        // 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 ... 0 0 0 0
-        // 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 ... 1 2 3 4
+        // 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3 3 0 0 0
+        // 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4
         //
         // A  |- - - - - - - - - -|
         // B              |-|
         // C                                  |- - - - - - - - -|
-        // D                                                         ...|- - - -|
-        $timespanA = Year::startingDuration(
+        // D                                                          |- - - -|
+        $timespanA = Month::startingDuration(
             DateAndTime::withYearMonthDayHourMinuteSecondOffset(
                 2005, 5, 4, 15, 25, 10, Duration::withHours(-4)),
             Duration::withDays(10));
 
-        $timespanB = Year::startingDuration(
+        $timespanB = Month::startingDuration(
             DateAndTime::withYearMonthDayHourMinuteSecondOffset(
                 2005, 5, 10, 12, 0, 0, Duration::withHours(-4)),
             Duration::withDays(1));
 
-        $timespanC = Year::startingEnding(
+        $timespanC = Month::startingEnding(
             DateAndTime::withYearMonthDay(
                 2005, 5, 20),
             DateAndTime::withYearMonthDay(
                 2005, 5, 29));
 
-        $timespanD = Year::startingEnding(
+        $timespanD = Month::startingEnding(
             DateAndTime::withYearMonthDay(
-                2006, 6, 1),
+                2005, 6, 1),
             DateAndTime::withYearMonthDay(
                 2005, 6, 6));
 
         // intersection()
-        $this->assertTrue($timespanB->isEqualTo($timespanA->intersection($timespanB)));
+        $this->assertTrue($timespanA->isEqualTo($timespanA->intersection($timespanB)));
 
-        $this->assertTrue($timespanC->isEqualTo($timespanA->intersection($timespanC)));
+        $this->assertTrue($timespanA->isEqualTo($timespanA->intersection($timespanC)));
 
-        $this->assertEqual($timespanA->intersection($timespanD), null);
+        $this->assertEquals(null, $timespanA->intersection($timespanD));
 
         // union()
-        $temp = Timespan::startingDuration(
+        $temp = Timespan::startingEnding(
             DateAndTime::withYearMonthDay(
-                2005, 5, 4),
-            Duration::withDays(371));
-        $union = $timespanA->union($timespanB);
-        $this->assertTrue($temp->isEqualTo($union));
-        $unionDuration = $union->duration();
-        $this->assertEqual($unionDuration->days(), 371);
+                2005, 5, 1),
+            DateAndTime::withYearMonthDay(
+                2005, 6, 1));
 
-        $temp = Timespan::startingDuration(
+        $this->assertTrue($temp->isEqualTo($timespanA->union($timespanB)));
+
+        $temp = Timespan::startingEnding(
             DateAndTime::withYearMonthDay(
-                2005, 5, 4),
-            Duration::withDays(381));
+                2005, 5, 1),
+            DateAndTime::withYearMonthDay(
+                2005, 6, 1));
         $this->assertTrue($temp->isEqualTo($timespanA->union($timespanC)));
 
-        $temp = Timespan::startingDuration(
+        $temp = Timespan::startingEnding(
             DateAndTime::withYearMonthDay(
-                2005, 5, 4),
-            Duration::withDays(758));
+                2005, 5, 1),
+            DateAndTime::withYearMonthDay(
+                2005, 7, 1));
         $this->assertTrue($temp->isEqualTo($timespanA->union($timespanD)));
     }
 
@@ -450,73 +456,73 @@ class YearTestCase extends UnitTestCase
      */
     public function testAccessing()
     {
-        $timespan = Year::startingDuration(
+        $timespan = Month::startingDuration(
             DateAndTime::withYearMonthDayHourMinuteSecondOffset(
                 2005, 5, 4, 15, 25, 10, Duration::withHours(-4)),
             Duration::withDays(10));
         // day()
-        $this->assertEqual($timespan->day(), 124);
+        $this->assertEquals(121, $timespan->day());
 
         // dayOfMonth()
-        $this->assertEqual($timespan->dayOfMonth(), 4);
+        $this->assertEquals(1, $timespan->dayOfMonth());
 
         // dayOfWeek()
-        $this->assertEqual($timespan->dayOfWeek(), 4);
+        $this->assertEquals(1, $timespan->dayOfWeek());
 
         // dayOfWeekName()
-        $this->assertEqual($timespan->dayOfWeekName(), 'Wednesday');
+        $this->assertEquals('Sunday', $timespan->dayOfWeekName());
 
         // dayOfYear()
-        $this->assertEqual($timespan->dayOfYear(), 124);
+        $this->assertEquals(121, $timespan->dayOfYear());
 
         // daysInMonth()
-        $this->assertEqual($timespan->daysInMonth(), 31);
+        $this->assertEquals(31, $timespan->daysInMonth());
 
         // daysInYear()
-        $this->assertEqual($timespan->daysInYear(), 365);
+        $this->assertEquals(365, $timespan->daysInYear());
 
         // daysLeftInYear()
-        $this->assertEqual($timespan->daysLeftInYear(), 241);
+        $this->assertEquals(244, $timespan->daysLeftInYear());
 
         // duration()
-        $temp = Duration::withDays(365);
+        $temp = Duration::withDays(31);
         $this->assertTrue($temp->isEqualTo($timespan->duration()));
 
         // end()
-        $temp = DateAndTime::withYearMonthDay(2006, 5, 4);
+        $temp = DateAndTime::withYearMonthDay(2005, 6, 1);
         $temp = $temp->minus(DateAndTime::clockPrecision());
         $this->assertTrue($temp->isEqualTo($timespan->end()));
 
         // firstDayOfMonth()
-        $this->assertEqual($timespan->firstDayOfMonth(), 121);
+        $this->assertEquals(121, $timespan->firstDayOfMonth());
 
         // isLeapYear()
-        $this->assertEqual($timespan->isLeapYear(), false);
+        $this->assertEquals(false, $timespan->isLeapYear());
 
         // julianDayNumber()
-        $this->assertEqual($timespan->julianDayNumber(), 2453495);
+        $this->assertEquals(2453492, $timespan->julianDayNumber());
 
         // printableString()
-        $this->assertEqual($timespan->printableString(), '2005-05-04T00:00:00-04:00D365:00:00:00');
+        $this->assertEquals('May 2005', $timespan->printableString());
 
         // startMonth()
-        $this->assertEqual($timespan->startMonth(), 5);
+        $this->assertEquals(5, $timespan->startMonth());
 
         // startMonthAbbreviation()
-        $this->assertEqual($timespan->startMonthAbbreviation(), 'May');
+        $this->assertEquals('May', $timespan->startMonthAbbreviation());
 
         // startMonthIndex()
-        $this->assertEqual($timespan->startMonthIndex(), 5);
+        $this->assertEquals(5, $timespan->startMonthIndex());
 
         // startMonthName()
-        $this->assertEqual($timespan->startMonthName(), 'May');
+        $this->assertEquals('May', $timespan->startMonthName());
 
         // start()
-        $temp = DateAndTime::withYearMonthDay(2005, 5, 4);
+        $temp = DateAndTime::withYearMonthDay(2005, 5, 1);
         $this->assertTrue($temp->isEqualTo($timespan->start()));
 
         // startYear()
-        $this->assertEqual($timespan->startYear(), 2005);
+        $this->assertEquals(2005, $timespan->startYear());
     }
 
     /**
@@ -524,69 +530,68 @@ class YearTestCase extends UnitTestCase
      */
     public function testEnumeration()
     {
-        $timespan = Year::startingDuration(
+        $timespan = Month::startingDuration(
             DateAndTime::withYearMonthDayHourMinuteSecondOffset(
                 2005, 5, 4, 15, 25, 10, Duration::withHours(-4)),
             Duration::withDays(10));
 
-        $timespanB = Year::startingDuration(
+        $timespanB = Month::startingDuration(
             DateAndTime::withYearMonthDayHourMinuteSecondOffset(
                 2005, 5, 4, 15, 25, 10, Duration::withHours(-4)),
             Duration::withDays(1000));
 
         // every()
         $everyTwo = $timespan->every(Duration::withDays(2));
-        $this->assertEqual(count($everyTwo), 183);
+        $this->assertCount(16, $everyTwo);
         for ($i = 0; $i < 16; ++$i) {
-            $this->assertEqual(strtolower(get_class($everyTwo[$i])), 'dateandtime');
+            $this->assertEquals('dateandtime', strtolower(get_class($everyTwo[$i])));
         }
 
         $temp = DateAndTime::withYearMonthDayHourMinuteSecond(
-            2005, 5, 6, 0, 0, 0);
+            2005, 5, 3, 0, 0, 0);
         $this->assertTrue($temp->isEqualTo($everyTwo[1]));
 
         // dates()
         $dates = $timespan->dates();
-        $this->assertEqual(count($dates), 365);
+        $this->assertCount(31, $dates);
         for ($i = 0; $i < 7; ++$i) {
-            $this->assertEqual(strtolower(get_class($dates[$i])), 'date');
+            $this->assertEquals('date', strtolower(get_class($dates[$i])));
         }
 
-        $temp = Date::withYearMonthDay(2005, 5, 4);
+        $temp = Date::withYearMonthDay(2005, 5, 1);
         $this->assertTrue($temp->isEqualTo($dates[0]));
-        $temp = Date::withYearMonthDay(2005, 5, 5);
+        $temp = Date::withYearMonthDay(2005, 5, 2);
         $this->assertTrue($temp->isEqualTo($dates[1]));
-        $temp = Date::withYearMonthDay(2005, 5, 6);
+        $temp = Date::withYearMonthDay(2005, 5, 3);
         $this->assertTrue($temp->isEqualTo($dates[2]));
+        $temp = Date::withYearMonthDay(2005, 5, 7);
+        $this->assertTrue($temp->isEqualTo($dates[6]));
 
         // months()
         $months = $timespan->months();
-        $this->assertEqual(count($months), 13);
-        for ($i = 0; $i < 13; ++$i) {
-            $this->assertEqual(strtolower(get_class($months[$i])), 'month');
+        $this->assertCount(1, $months);
+        for ($i = 0; $i < 1; ++$i) {
+            $this->assertEquals('month', strtolower(get_class($months[$i])));
         }
 
         $temp = Month::withMonthYear(5, 2005);
         $this->assertTrue($temp->isEqualTo($months[0]));
 
         $months = $timespanB->months();
-        $this->assertEqual(count($months), 13);
+        $this->assertCount(1, $months);
 
-        for ($i = 0; $i < 13; ++$i) {
-            $this->assertEqual(strtolower(get_class($months[$i])), 'month');
+        for ($i = 0; $i < 1; ++$i) {
+            $this->assertEquals('month', strtolower(get_class($months[$i])));
         }
 
         $temp = Month::withMonthYear(5, 2005);
         $this->assertTrue($temp->isEqualTo($months[0]));
 
-        $temp = Month::withMonthYear(5, 2006);
-        $this->assertTrue($temp->isEqualTo($months[12]));
-
         // weeks()
         $weeks = $timespan->weeks();
-        $this->assertEqual(count($weeks), 53);
+        $this->assertCount(5, $weeks);
         for ($i = 0; $i < 5; ++$i) {
-            $this->assertEqual(strtolower(get_class($weeks[$i])), 'week');
+            $this->assertEquals('week', strtolower(get_class($weeks[$i])));
         }
 
         $temp = Week::starting(Date::withYearMonthDay(2005, 5, 1));
@@ -594,12 +599,12 @@ class YearTestCase extends UnitTestCase
 
         // years()
         $years = $timespan->years();
-        $this->assertEqual(count($years), 1);
+        $this->assertCount(1, $years);
         for ($i = 0; $i < 1; ++$i) {
-            $this->assertEqual(strtolower(get_class($years[$i])), 'year');
+            $this->assertEquals('year', strtolower(get_class($years[$i])));
         }
 
-        $this->assertEqual($years[0]->startYear(), 2005);
+        $this->assertEquals(2005, $years[0]->startYear());
     }
 
     /**
@@ -608,24 +613,24 @@ class YearTestCase extends UnitTestCase
     public function testConverting()
     {
         // Converting
-        $timespan = Year::startingDuration(
+        $timespan = Month::startingDuration(
             DateAndTime::withYearMonthDayHourMinuteSecondOffset(
                 2005, 5, 4, 15, 25, 10, Duration::withHours(-4)),
             Duration::withDays(10));
 
         // asDate()
         $temp = $timespan->asDate();
-        $this->assertTrue($temp->isEqualTo(Date::withYearMonthDay(2005, 5, 4)));
+        $this->assertTrue($temp->isEqualTo(Date::withYearMonthDay(2005, 5, 1)));
 
         // asDateAndTime()
         $temp = $timespan->asDateAndTime();
         $this->assertTrue($temp->isEqualTo(
             DateAndTime::withYearMonthDayHourMinuteSecond(
-                2005, 5, 4, 00, 00, 00)));
+                2005, 5, 1, 00, 00, 00)));
 
         // asDuration()
         $temp = $timespan->asDuration();
-        $this->assertTrue($temp->isEqualTo(Duration::withDays(365)));
+        $this->assertTrue($temp->isEqualTo(Duration::withDays(31)));
 
         // asMonth()
         $temp = $timespan->asMonth();
@@ -634,14 +639,14 @@ class YearTestCase extends UnitTestCase
         // asTime()
         $temp = $timespan->asTime();
         $dateAndTime = DateAndTime::withYearMonthDayHourMinuteSecond(
-            2005, 5, 4, 0, 0, 0);
+            2005, 5, 1, 0, 0, 0);
         $this->assertTrue($temp->isEqualTo($dateAndTime->asTime()));
 
         // asTimeStamp()
         $temp = $timespan->asTimeStamp();
         $this->assertTrue($temp->isEqualTo(
             TimeStamp::withYearMonthDayHourMinuteSecond(
-                2005, 5, 4, 0, 0, 0)));
+                2005, 5, 1, 0, 0, 0)));
 
         // asWeek()
         $temp = $timespan->asWeek();
@@ -649,13 +654,13 @@ class YearTestCase extends UnitTestCase
 
         // asYear()
         $temp = $timespan->asYear();
-        $this->assertTrue($temp->isEqualTo(Year::starting(Date::withYearMonthDay(2005, 5, 4))));
+        $this->assertTrue($temp->isEqualTo(Year::starting(Date::withYearMonthDay(2005, 5, 1))));
 
         // to()
         $temp = $timespan->to(Date::withYearMonthDay(2005, 10, 1));
         $comparison = Timespan::startingEnding(
             DateAndTime::withYearMonthDayHourMinuteSecond(
-                2005, 5, 4, 0, 0, 0),
+                2005, 5, 1, 0, 0, 0),
             Date::withYearMonthDay(2005, 10, 1));
         $this->assertTrue($temp->isEqualTo($comparison));
     }

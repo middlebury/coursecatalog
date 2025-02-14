@@ -13,7 +13,7 @@
  * @since 5/3/05
  */
 
-require_once __DIR__.'/../DateAndTimeStringParser.class.php';
+use PHPUnit\Framework\TestCase;
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -31,20 +31,20 @@ require_once __DIR__.'/../DateAndTimeStringParser.class.php';
  *
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
-class DateAndTimeStringParserTestCase extends UnitTestCase
+class DateAndTimeStringParserTest extends TestCase
 {
     /**
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
     }
 
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         // perhaps, unset $obj here
     }
@@ -57,54 +57,54 @@ class DateAndTimeStringParserTestCase extends UnitTestCase
         $parser = new DateAndTimeStringParser(
             '2005-08-20 15:25:10');
         $this->assertTrue($parser->canHandle());
-        $this->assertEqual($parser->year(), 2005);
-        $this->assertEqual($parser->month(), 8);
-        $this->assertEqual($parser->day(), 20);
-        $this->assertEqual($parser->hour(), 15);
-        $this->assertEqual($parser->minute(), 25);
-        $this->assertEqual($parser->second(), 10);
-        $this->assertEqual($parser->offsetHour(), null);
-        $this->assertEqual($parser->offsetMinute(), null);
-        $this->assertEqual($parser->offsetSecond(), null);
+        $this->assertEquals(2005, $parser->year());
+        $this->assertEquals(8, $parser->month());
+        $this->assertEquals(20, $parser->day());
+        $this->assertEquals(15, $parser->hour());
+        $this->assertEquals(25, $parser->minute());
+        $this->assertEquals(10, $parser->second());
+        $this->assertEquals(null, $parser->offsetHour());
+        $this->assertEquals(null, $parser->offsetMinute());
+        $this->assertEquals(null, $parser->offsetSecond());
 
         $parser = new DateAndTimeStringParser(
             '2005-08-20 3:25:10 pm');
         $this->assertTrue($parser->canHandle());
-        $this->assertEqual($parser->year(), 2005);
-        $this->assertEqual($parser->month(), 8);
-        $this->assertEqual($parser->day(), 20);
-        $this->assertEqual($parser->hour(), 15);
-        $this->assertEqual($parser->minute(), 25);
-        $this->assertEqual($parser->second(), 10);
-        $this->assertEqual($parser->offsetHour(), null);
-        $this->assertEqual($parser->offsetMinute(), null);
-        $this->assertEqual($parser->offsetSecond(), null);
+        $this->assertEquals(2005, $parser->year());
+        $this->assertEquals(8, $parser->month());
+        $this->assertEquals(20, $parser->day());
+        $this->assertEquals(15, $parser->hour());
+        $this->assertEquals(25, $parser->minute());
+        $this->assertEquals(10, $parser->second());
+        $this->assertEquals(null, $parser->offsetHour());
+        $this->assertEquals(null, $parser->offsetMinute());
+        $this->assertEquals(null, $parser->offsetSecond());
 
         $parser = new DateAndTimeStringParser(
             '08/20/2005 3:25:10 pm');
         $this->assertTrue($parser->canHandle());
-        $this->assertEqual($parser->year(), 2005);
-        $this->assertEqual($parser->month(), 8);
-        $this->assertEqual($parser->day(), 20);
-        $this->assertEqual($parser->hour(), 15);
-        $this->assertEqual($parser->minute(), 25);
-        $this->assertEqual($parser->second(), 10);
-        $this->assertEqual($parser->offsetHour(), null);
-        $this->assertEqual($parser->offsetMinute(), null);
-        $this->assertEqual($parser->offsetSecond(), null);
+        $this->assertEquals(2005, $parser->year());
+        $this->assertEquals(8, $parser->month());
+        $this->assertEquals(20, $parser->day());
+        $this->assertEquals(15, $parser->hour());
+        $this->assertEquals(25, $parser->minute());
+        $this->assertEquals(10, $parser->second());
+        $this->assertEquals(null, $parser->offsetHour());
+        $this->assertEquals(null, $parser->offsetMinute());
+        $this->assertEquals(null, $parser->offsetSecond());
 
         $parser = new DateAndTimeStringParser(
             'August 20, 2005 3:25:10 pm');
         $this->assertTrue($parser->canHandle());
-        $this->assertEqual($parser->year(), 2005);
-        $this->assertEqual($parser->month(), 8);
-        $this->assertEqual($parser->day(), 20);
-        $this->assertEqual($parser->hour(), 15);
-        $this->assertEqual($parser->minute(), 25);
-        $this->assertEqual($parser->second(), 10);
-        $this->assertEqual($parser->offsetHour(), null);
-        $this->assertEqual($parser->offsetMinute(), null);
-        $this->assertEqual($parser->offsetSecond(), null);
+        $this->assertEquals(2005, $parser->year());
+        $this->assertEquals(8, $parser->month());
+        $this->assertEquals(20, $parser->day());
+        $this->assertEquals(15, $parser->hour());
+        $this->assertEquals(25, $parser->minute());
+        $this->assertEquals(10, $parser->second());
+        $this->assertEquals(null, $parser->offsetHour());
+        $this->assertEquals(null, $parser->offsetMinute());
+        $this->assertEquals(null, $parser->offsetSecond());
     }
 
     public function testBadForms()

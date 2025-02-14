@@ -22,123 +22,51 @@ require_once __DIR__.'/Number.class.php';
 class Integer extends Number
 {
     /*********************************************************
-     * Class Methods - Instance Creation
-     *********************************************************/
-
-    /**
-     * Answer a new object with the value specified.
-     *
-     * @param optional string $class The class to instantiate. Do NOT use outside
-     *		of this package.
-     *
-     * @return object Integer
-     *
-     * @static
-     *
-     * @since 7/14/05
-     */
-    public static function withValue($value, $class = 'Integer')
-    {
-        return parent::withValue($value, $class);
-    }
-
-    /**
-     * Answer a new object with the value specified.
-     *
-     * @param string $string a string representation of the object
-     *
-     * @return object Double
-     *
-     * @static
-     *
-     * @since 3/14/06
-     */
-    public static function fromString($string, $class = 'Integer')
-    {
-        return parent::fromString($string, $class);
-    }
-
-    /**
-     * Answer a new object with the value zero.
-     *
-     * @param optional string $class The class to instantiate. Do NOT use outside
-     *		of this package.
-     *
-     * @return object Integer
-     *
-     * @static
-     *
-     * @since 7/14/05
-     */
-    public static function zero($class = 'Integer')
-    {
-        return parent::zero($class);
-    }
-
-    /*********************************************************
      * Instance Methods - Arithmatic
      *********************************************************/
 
     /**
      * Answer the sum of the receiver and aNumber.
      *
-     * @param object Number $aNumber
-     *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
-    public function plus($aNumber)
+    public function plus(Number $aNumber)
     {
-        if (!(strtolower($class) == strtolower('Integer')
-            || is_subclass_of(new $class(), 'Integer'))) {
-            $obj = self::withValue($this->value() + $aNumber->value());
-
-            return $obj;
+        if ($aNumber instanceof Integer) {
+            return static::withValue($this->value() + $aNumber->value());
         } else {
-            $obj = Float::withValue($this->value() + $aNumber->value());
-
-            return $obj;
+            return Float::withValue($this->value() + $aNumber->value());
         }
     }
 
     /**
      * Answer the result of multiplying the receiver and aNumber.
      *
-     * @param object Number $aNumber
-     *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
-    public function multipliedBy($aNumber)
+    public function multipliedBy(Number $aNumber)
     {
-        if (!(strtolower($class) == strtolower('Integer')
-            || is_subclass_of(new $class(), 'Integer'))) {
-            $obj = self::withValue($this->value() * $aNumber->value());
-
-            return $obj;
+        if ($aNumber instanceof Integer) {
+            return static::withValue($this->value() * $aNumber->value());
         } else {
-            $obj = Float::withValue($this->value() * $aNumber->value());
-
-            return $obj;
+            return Float::withValue($this->value() * $aNumber->value());
         }
     }
 
     /**
      * Answer the result of dividing the receiver and aNumber.
      *
-     * @param object Number $aNumber
-     *
-     * @return object Number
+     * @return Number
      *
      * @since 7/14/05
      */
-    public function dividedBy($aNumber)
+    public function dividedBy(Number $aNumber)
     {
-        $obj = Float::withValue($this->value() / $aNumber->value());
-
-        return $obj;
+        return Float::withValue($this->value() / $aNumber->value());
     }
 
     /*********************************************************
@@ -146,14 +74,10 @@ class Integer extends Number
      *********************************************************/
 
     /**
-     * Set the internal value to a PHP primitive.
-     *
-     * @return void
-     *
-     * @since 7/14/05
+     * Cast an input value so that it is of the appropriate storage type.
      */
-    public function _setValue($value)
+    protected function cast($value)
     {
-        $this->_value = (int) $value;
+        return (int) $value;
     }
 }

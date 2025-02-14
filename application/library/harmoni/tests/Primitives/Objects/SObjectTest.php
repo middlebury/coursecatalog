@@ -13,7 +13,7 @@
  * @since 5/3/05
  */
 
-require_once HARMONI.'/Primitives/Objects/SObject.class.php';
+use PHPUnit\Framework\TestCase;
 
 /**
  * A single unit test case. This class is intended to test one particular
@@ -31,13 +31,22 @@ require_once HARMONI.'/Primitives/Objects/SObject.class.php';
  *
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
-class SObjectTestCase extends UnitTestCase
+class SObjectTest extends TestCase
 {
+    private SObject $personA;
+    private SObject $personB;
+    private SObject $personC;
+    private SObject $personD;
+    private SObject $personM;
+    private SObject $personN;
+    private SObject $personO;
+    private SObject $personP;
+
     /**
      *  Sets up unit test wide variables at the start
      *	 of each test method.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         // TestPeople
         $this->personA = new TestPerson();
@@ -82,7 +91,7 @@ class SObjectTestCase extends UnitTestCase
     /**
      *	  Clears the data set in the setUp() method call.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         // perhaps, unset $obj here
     }
@@ -98,10 +107,10 @@ class SObjectTestCase extends UnitTestCase
         $personE->child->child->name = 'Gertrude';
         $personE->child->child->child->name = 'Horace';
 
-        $this->assertEqual($this->personA->name, 'Albert');
-        $this->assertEqual($this->personB->name, 'Frank');
-        $this->assertEqual($this->personC->name, 'Gertrude');
-        $this->assertEqual($this->personD->name, 'Horace');
+        $this->assertEquals('Albert', $this->personA->name);
+        $this->assertEquals('Frank', $this->personB->name);
+        $this->assertEquals('Gertrude', $this->personC->name);
+        $this->assertEquals('Horace', $this->personD->name);
     }
 
     public function testDeepCopy()
@@ -112,15 +121,15 @@ class SObjectTestCase extends UnitTestCase
         $personE->child->child->name = 'Gertrude';
         $personE->child->child->child->name = 'Horace';
 
-        $this->assertEqual($this->personA->name, 'Albert');
-        $this->assertEqual($this->personB->name, 'Bob');
-        $this->assertEqual($this->personC->name, 'Charlie');
-        $this->assertEqual($this->personD->name, 'Danny');
+        $this->assertEquals('Albert', $this->personA->name);
+        $this->assertEquals('Bob', $this->personB->name);
+        $this->assertEquals('Charlie', $this->personC->name);
+        $this->assertEquals('Danny', $this->personD->name);
 
-        $this->assertNotReference($this->personA, $personE);
-        $this->assertNotReference($this->personB, $personE->child);
-        $this->assertNotReference($this->personC, $personE->child->child);
-        $this->assertNotReference($this->personD, $personE->child->child->child);
+        $this->assertNotSame($this->personA, $personE);
+        $this->assertNotSame($this->personB, $personE->child);
+        $this->assertNotSame($this->personC, $personE->child->child);
+        $this->assertNotSame($this->personD, $personE->child->child->child);
     }
 
     public function testCopyTwoLevel()
@@ -131,15 +140,15 @@ class SObjectTestCase extends UnitTestCase
         $personE->child->child->name = 'Gertrude';
         $personE->child->child->child->name = 'Horace';
 
-        $this->assertEqual($this->personA->name, 'Albert');
-        $this->assertEqual($this->personB->name, 'Bob');
-        $this->assertEqual($this->personC->name, 'Gertrude');
-        $this->assertEqual($this->personD->name, 'Horace');
+        $this->assertEquals('Albert', $this->personA->name);
+        $this->assertEquals('Bob', $this->personB->name);
+        $this->assertEquals('Gertrude', $this->personC->name);
+        $this->assertEquals('Horace', $this->personD->name);
 
-        $this->assertNotReference($this->personA, $personE);
-        $this->assertNotReference($this->personB, $personE->child);
-        $this->assertReference($this->personC, $personE->child->child);
-        $this->assertReference($this->personD, $personE->child->child->child);
+        $this->assertNotSame($this->personA, $personE);
+        $this->assertNotSame($this->personB, $personE->child);
+        $this->assertSame($this->personC, $personE->child->child);
+        $this->assertSame($this->personD, $personE->child->child->child);
     }
 
     /*********************************************************
@@ -154,11 +163,11 @@ class SObjectTestCase extends UnitTestCase
         $personQ->child[0]->child[0]->name = 'Sidney';
         $personQ->child[0]->child[0]->child[0]->name = 'Tim';
 
-        $this->assertEqual($this->personM->name, 'Monty');
-        $this->assertEqual($this->personM->child[1], 'Linda');
-        $this->assertEqual($this->personN->name, 'Roberto');
-        $this->assertEqual($this->personO->name, 'Sidney');
-        $this->assertEqual($this->personP->name, 'Tim');
+        $this->assertEquals('Monty', $this->personM->name);
+        $this->assertEquals('Linda', $this->personM->child[1]);
+        $this->assertEquals('Roberto', $this->personN->name);
+        $this->assertEquals('Sidney', $this->personO->name);
+        $this->assertEquals('Tim', $this->personP->name);
     }
 
     public function testArrayDeepCopy()
@@ -170,11 +179,11 @@ class SObjectTestCase extends UnitTestCase
         $personQ->child[0]->child[0]->name = 'Sidney';
         $personQ->child[0]->child[0]->child[0]->name = 'Tim';
 
-        $this->assertEqual($this->personM->name, 'Monty');
-        $this->assertEqual($this->personM->child[1], 'Linda');
-        $this->assertEqual($this->personN->name, 'Nick');
-        $this->assertEqual($this->personO->name, 'Olivia');
-        $this->assertEqual($this->personP->name, 'Patsy');
+        $this->assertEquals('Monty', $this->personM->name);
+        $this->assertEquals('Linda', $this->personM->child[1]);
+        $this->assertEquals('Nick', $this->personN->name);
+        $this->assertEquals('Olivia', $this->personO->name);
+        $this->assertEquals('Patsy', $this->personP->name);
     }
 
     public function testArrayCopyTwoLevel()
@@ -186,11 +195,11 @@ class SObjectTestCase extends UnitTestCase
         $personQ->child[0]->child[0]->name = 'Sidney';
         $personQ->child[0]->child[0]->child[0]->name = 'Tim';
 
-        $this->assertEqual($this->personM->name, 'Monty');
-        $this->assertEqual($this->personM->child[1], 'Linda');
-        $this->assertEqual($this->personN->name, 'Roberto');
-        $this->assertEqual($this->personO->name, 'Sidney');
-        $this->assertEqual($this->personP->name, 'Tim');
+        $this->assertEquals('Monty', $this->personM->name);
+        $this->assertEquals('Linda', $this->personM->child[1]);
+        $this->assertEquals('Roberto', $this->personN->name);
+        $this->assertEquals('Sidney', $this->personO->name);
+        $this->assertEquals('Tim', $this->personP->name);
     }
 
     /*********************************************************
@@ -204,15 +213,15 @@ class SObjectTestCase extends UnitTestCase
         $personE->child->child->name = 'Gertrude';
         $personE->child->child->child->name = 'Horace';
 
-        $this->assertEqual($this->personA->name, 'Albert');
-        $this->assertEqual($this->personB->name, 'Frank');
-        $this->assertEqual($this->personC->name, 'Gertrude');
-        $this->assertEqual($this->personD->name, 'Horace');
+        $this->assertEquals('Albert', $this->personA->name);
+        $this->assertEquals('Frank', $this->personB->name);
+        $this->assertEquals('Gertrude', $this->personC->name);
+        $this->assertEquals('Horace', $this->personD->name);
 
-        $this->assertNotReference($this->personA, $personE);
-        $this->assertReference($this->personB, $personE->child);
-        $this->assertReference($this->personC, $personE->child->child);
-        $this->assertReference($this->personD, $personE->child->child->child);
+        $this->assertNotSame($this->personA, $personE);
+        $this->assertSame($this->personB, $personE->child);
+        $this->assertSame($this->personC, $personE->child->child);
+        $this->assertSame($this->personD, $personE->child->child->child);
     }
 
     public function testArrayCopy()
@@ -224,18 +233,18 @@ class SObjectTestCase extends UnitTestCase
         $personQ->child[0]->child[0]->name = 'Sidney';
         $personQ->child[0]->child[0]->child[0]->name = 'Tim';
 
-        $this->assertEqual($this->personM->name, 'Monty');
-        $this->assertEqual($this->personM->child[1], 'Linda');
-        $this->assertEqual($this->personN->name, 'Roberto');
-        $this->assertEqual($this->personO->name, 'Sidney');
-        $this->assertEqual($this->personP->name, 'Tim');
+        $this->assertEquals('Monty', $this->personM->name);
+        $this->assertEquals('Linda', $this->personM->child[1]);
+        $this->assertEquals('Roberto', $this->personN->name);
+        $this->assertEquals('Sidney', $this->personO->name);
+        $this->assertEquals('Tim', $this->personP->name);
 
-        $this->assertNotReference($this->personM, $personQ);
-        $this->assertNotReference($this->personM->child, $personQ->child);
-        $this->assertNotReference($this->personM->child[1], $personQ->child[1]);
-        $this->assertReference($this->personN, $personQ->child[0]);
-        $this->assertReference($this->personO, $personQ->child[0]->child[0]);
-        $this->assertReference($this->personP, $personQ->child[0]->child[0]->child[0]);
+        $this->assertNotSame($this->personM, $personQ);
+        $this->assertNotSame($this->personM->child, $personQ->child);
+        $this->assertNotSame($this->personM->child[1], $personQ->child[1]);
+        $this->assertSame($this->personN, $personQ->child[0]);
+        $this->assertSame($this->personO, $personQ->child[0]->child[0]);
+        $this->assertSame($this->personP, $personQ->child[0]->child[0]->child[0]);
     }
 
     /*********************************************************
@@ -244,13 +253,13 @@ class SObjectTestCase extends UnitTestCase
 
     public function testPrintableString()
     {
-        $this->assertEqual($this->personM->printableString(), 'a Testperson');
+        $this->assertEquals('a TestPerson', $this->personM->printableString());
         $octopus = new OctopusObject();
-        $this->assertEqual($octopus->printableString(), 'an Octopusobject(8 legs)');
+        $this->assertEquals('an OctopusObject(8 legs)', $octopus->printableString());
 
-        $this->assertEqual($this->personM->asString(), 'a Testperson');
+        $this->assertEquals('a TestPerson', $this->personM->asString());
         $octopus = new OctopusObject();
-        $this->assertEqual($octopus->asString(), 'an Octopusobject(8 legs)');
+        $this->assertEquals('an OctopusObject(8 legs)', $octopus->asString());
     }
 
     public function testAsA()
@@ -258,8 +267,8 @@ class SObjectTestCase extends UnitTestCase
         $octopus = new OctopusObject();
         $dog = $octopus->asA('DogObject');
 
-        $this->assertEqual($dog->numberOfLegs, 8);
-        $this->assertEqual($dog->numberOfTails, 1);
+        $this->assertEquals(8, $dog->numberOfLegs);
+        $this->assertEquals(1, $dog->numberOfTails);
 
         $props = get_object_vars($dog);
         $this->assertFalse(in_array('numberOfSuckers', $props));
@@ -270,12 +279,12 @@ class SObjectTestCase extends UnitTestCase
 
         $octopus2 = $octopus->asA('OctopusObject');
 
-        $this->assertNotReference($octopus, $octopus2);
-        $this->assertEqual($octopus2->numberOfLegs, 20);
-        $this->assertEqual($octopus2->numberOfSuckers, 100);
+        $this->assertNotSame($octopus, $octopus2);
+        $this->assertEquals(20, $octopus2->numberOfLegs);
+        $this->assertEquals(100, $octopus2->numberOfSuckers);
 
         $props = get_object_vars($octopus2);
-        $this->assertEqual(count($props), 2);
+        $this->assertCount(2, $props);
     }
 
     public function testNewFrom()
@@ -283,8 +292,8 @@ class SObjectTestCase extends UnitTestCase
         $octopus = new OctopusObject();
         $dog = SObject::newFrom('DogObject', $octopus);
 
-        $this->assertEqual($dog->numberOfLegs, 8);
-        $this->assertEqual($dog->numberOfTails, 1);
+        $this->assertEquals(8, $dog->numberOfLegs);
+        $this->assertEquals(1, $dog->numberOfTails);
 
         $props = get_object_vars($dog);
         $this->assertFalse(in_array('numberOfSuckers', $props));
@@ -295,11 +304,11 @@ class SObjectTestCase extends UnitTestCase
 
         $octopus2 = SObject::newFrom('OctopusObject', $octopus);
 
-        $this->assertEqual($octopus2->numberOfLegs, 20);
-        $this->assertEqual($octopus2->numberOfSuckers, 100);
+        $this->assertEquals(20, $octopus2->numberOfLegs);
+        $this->assertEquals(100, $octopus2->numberOfSuckers);
 
         $props = get_object_vars($octopus2);
-        $this->assertEqual(count($props), 2);
+        $this->assertCount(2, $props);
     }
 
     /*********************************************************
@@ -339,15 +348,15 @@ class SObjectTestCase extends UnitTestCase
         $this->assertTrue($octopus->isNotReferenceTo($dog));
 
         $octopus3 = $octopus->deepCopy();
-        $this->assertEqual($octopus->numberOfLegs, 8);
-        $this->assertEqual($octopus3->numberOfLegs, 8);
-        $this->assertNotReference($octopus, $octopus3);
+        $this->assertEquals(8, $octopus->numberOfLegs);
+        $this->assertEquals(8, $octopus3->numberOfLegs);
+        $this->assertNotSame($octopus, $octopus3);
         $this->assertFalse($octopus->isReferenceTo($octopus3));
         $this->assertTrue($octopus->isNotReferenceTo($octopus3));
 
         $octopus3->numberOfLegs = 5;
-        $this->assertEqual($octopus->numberOfLegs, 8);
-        $this->assertEqual($octopus3->numberOfLegs, 5);
+        $this->assertEquals(8, $octopus->numberOfLegs);
+        $this->assertEquals(5, $octopus3->numberOfLegs);
         $this->assertFalse($octopus->isReferenceTo($octopus3));
         $this->assertTrue($octopus->isNotReferenceTo($octopus3));
     }

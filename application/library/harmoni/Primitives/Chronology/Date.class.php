@@ -54,56 +54,7 @@ class Date extends Timespan
 
     /*********************************************************
      * Class Methods - Instance Creation
-     *
-     * All static instance creation methods have an optional
-     * $class parameter which is used to get around the limitations
-     * of not being	able to find the class of the object that
-     * recieved the initial method call rather than the one in
-     * which it is implemented. These parameters SHOULD NOT BE
-     * USED OUTSIDE OF THIS PACKAGE.
      *********************************************************/
-
-    /**
-     * Answer a new object that represents now.
-     *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Date
-     *
-     * @since 5/5/05
-     *
-     * @static
-     */
-    public static function current($class = 'Date')
-    {
-        $obj = parent::current($class);
-
-        return $obj;
-    }
-
-    /**
-     * Answer a Date starting on the Squeak epoch: 1 January 1901.
-     *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Date
-     *
-     * @since 5/5/05
-     *
-     * @static
-     */
-    public static function epoch($class = 'Date')
-    {
-        $obj = parent::epoch($class);
-
-        return $obj;
-    }
 
     /**
      * Read a Date from the stream in any of the forms:
@@ -117,193 +68,123 @@ class Date extends Timespan
      *		- <four-digit year><two-digit monthNumber><two-digit day>
      *											(19820405; 1982-04-05)
      *
-     * @param string $aString
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Date
+     * @return Date
      *
      * @since 5/10/05
      *
      * @static
      */
-    public static function fromString($aString, $class = 'Date')
+    public static function fromString(string $aString)
     {
         $parser = StringParser::getParserFor($aString);
 
         if (!is_string($aString) || !preg_match('/[^\W]/', $aString) || !$parser) {
-            $null = null;
-
-            return $null;
-            // die("'".$aString."' is not in a valid format.");
+            return null;
         }
 
-        eval('$result = '.$class.'::withYearMonthDay($parser->year(),
-						$parser->month(), $parser->day(), $class);');
-
-        return $result;
+        return static::withYearMonthDay($parser->year(), $parser->month(), $parser->day());
     }
 
     /**
      * Create a new object starting now, with our default one day duration.
      *
-     * @param object DateAndTime $aDateAndTime
-     *
-     * @return object Date
+     * @return Date
      *
      * @since 5/5/05
      *
      * @static
      */
-    public static function starting($aDateAndTime, $class = 'Date')
+    public static function starting(AsDateAndTime $aDateAndTime)
     {
-        $obj = parent::startingDuration($aDateAndTime->atMidnight(),
-            Duration::withDays(1), $class);
-
-        return $obj;
-    }
-
-    /**
-     * Create a new object starting from midnight.
-     *
-     * @param object DateAndTime $aDateAndTime
-     * @param object Duration $aDuration
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Year
-     *
-     * @since 5/5/05
-     *
-     * @static
-     */
-    public static function startingDuration($aDateAndTime, $aDuration, $class = 'Date')
-    {
-        $obj = parent::startingDuration($aDateAndTime, $aDuration, $class);
-
-        return $obj;
+        return static::startingDuration($aDateAndTime->asUTC()->atMidnight(), Duration::withDays(1));
     }
 
     /**
      * Answer today's date.
      *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Date
+     * @return Date
      *
      * @since 5/10/05
      *
      * @static
      */
-    public static function today($class = 'Date')
+    public static function today()
     {
-        eval('$today = '.$class.'::current($class);');
-
-        return $today;
+        return static::current();
     }
 
     /**
      * Answer tommorow's date.
      *
-     * @return object Date
+     * @return Date
      *
      * @since 5/10/05
      *
      * @static
      */
-    public static function tomorrow($class = 'Date')
+    public static function tomorrow()
     {
-        eval('$today = '.$class.'::today($class);');
-        $obj = $today->next();
+        $today = static::today();
 
-        return $obj;
+        return $today->next();
     }
 
     /**
      * Create a new object starting on the julian day number specified.
      *
-     * @param int $anInteger
-     *
-     * @return object Date
+     * @return Date
      *
      * @since 5/10/05
      *
      * @static
      */
-    public static function withJulianDayNumber($anInteger, $class = 'Date')
+    public static function withJulianDayNumber(int $anInteger)
     {
-        eval('$result = '.$class.'::starting(DateAndTime::withJulianDayNumber($anInteger));');
-
-        return $result;
+        return static::starting(DateAndTime::withJulianDayNumber($anInteger));
     }
 
     /**
      * Create a new object starting on the year, month, and day of month specified.
      *
-     * @param int $anIntYear
-     * @param int $anIntOrStringMonth
-     * @param int $anIntDay
-     *
-     * @return object Date
+     * @return Date
      *
      * @since 5/10/05
      *
      * @static
      */
-    public static function withYearMonthDay($anIntYear, $anIntOrStringMonth, $anIntDay, $class = 'Date')
+    public static function withYearMonthDay(int $anIntYear, int $anIntOrStringMonth, int $anIntDay)
     {
-        eval('$result = '.$class.'::starting(DateAndTime::withYearMonthDay($anIntYear,
-			$anIntOrStringMonth, $anIntDay));');
-
-        return $result;
+        return static::starting(DateAndTime::withYearMonthDay($anIntYear, $anIntOrStringMonth, $anIntDay));
     }
 
     /**
      * Create a new object starting on the year and day of year specified.
      *
-     * @param int $anIntYear
-     * @param int $anIntDay
-     *
-     * @return object Date
+     * @return Date
      *
      * @since 5/10/05
      *
      * @static
      */
-    public static function withYearDay($anIntYear, $anIntDay, $class = 'Date')
+    public static function withYearDay(int $anIntYear, int $anIntDay)
     {
-        eval('$result = '.$class.'::starting(DateAndTime::withYearDay($anIntYear,  $anIntDay));');
-
-        return $result;
+        return static::starting(DateAndTime::withYearDay($anIntYear, $anIntDay));
     }
 
     /**
      * Answer yesterday's date.
      *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Date
+     * @return Date
      *
      * @since 5/10/05
      *
      * @static
      */
-    public static function yesterday($class = 'Date')
+    public static function yesterday()
     {
-        eval('$today = '.$class.'::today($class);');
-        $obj = $today->previous();
+        $today = static::today();
 
-        return $obj;
+        return $today->previous();
     }
 
     /*********************************************************
@@ -329,7 +210,7 @@ class Date extends Timespan
      *
      * @since 5/20/05
      */
-    public function printableString($printLeadingSpaceToo = false)
+    public function printableString(bool $printLeadingSpaceToo = false)
     {
         return $this->printableStringWithFormat([1, 2, 3, ' ', 3, 1]);
     }
@@ -352,13 +233,11 @@ class Date extends Timespan
      *
      *	See the examples in printOn: and mmddyy
      *
-     * @param array $formatArray
-     *
      * @return string
      *
      * @since 5/20/05
      */
-    public function printableStringWithFormat($formatArray)
+    public function printableStringWithFormat(array $formatArray)
     {
         $result = '';
         $twoDigits = (count($formatArray) > 6 && $formatArray[6] > 1);
@@ -427,13 +306,11 @@ class Date extends Timespan
     /**
      * Answer the date that occurs $anInteger days from this date.
      *
-     * @param int $anInteger
-     *
-     * @return object Date
+     * @return Date
      *
      * @since 5/20/05
      */
-    public function addDays($anInteger)
+    public function addDays(int $anInteger)
     {
         $asDateAndTime = $this->asDateAndTime();
         $newDateAndTime = $asDateAndTime->plus(Duration::withDays($anInteger));
@@ -445,13 +322,11 @@ class Date extends Timespan
     /**
      *  Answer the date that occurs $anInteger days before this date.
      *
-     * @param int $anInteger
-     *
-     * @return object Date
+     * @return Date
      *
      * @since 5/23/05
      */
-    public function subtractDays($anInteger)
+    public function subtractDays(int $anInteger)
     {
         $obj = $this->addDays(0 - $anInteger);
 
@@ -461,13 +336,11 @@ class Date extends Timespan
     /**
      * Answer the previous date whose weekday name is dayName.
      *
-     * @param string $dayNameString
-     *
-     * @return object Date
+     * @return Date
      *
      * @since 5/23/05
      */
-    public function previousDayNamed($dayNameString)
+    public function previousDayNamed(string $dayNameString)
     {
         $days = abs($this->dayOfWeek() - (Week::indexOfDay($dayNameString) % 7));
         if (0 == $days) {
@@ -485,7 +358,7 @@ class Date extends Timespan
     /**
      * Answer the reciever as a Date.
      *
-     * @return object Date
+     * @return Date
      *
      * @since 5/23/05
      */

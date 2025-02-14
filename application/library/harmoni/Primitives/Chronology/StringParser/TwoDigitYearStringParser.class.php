@@ -45,13 +45,11 @@ abstract class TwoDigitYearStringParser extends RegexStringParser
     /**
      * Set the year.
      *
-     * @param int $anInteger
-     *
      * @return void
      *
      * @since 5/24/05
      */
-    public function setYear($anInteger)
+    public function setYear(int $anInteger)
     {
         if ($anInteger > 70 && $anInteger < 100) {
             $this->year = (int) (1900 + $anInteger);

@@ -69,15 +69,13 @@ abstract class StringParser extends SObject
      * Answer the parser that was able to successfully parse the input string
      * or FALSE if none could handle the input string.
      *
-     * @param string $aString
-     *
      * @return mixed object StringParser OR FALSE
      *
      * @since 5/24/05
      *
      * @static
      */
-    public static function getParserFor($aString)
+    public static function getParserFor(string $aString)
     {
         // Go through our parsers and try to find one that understands the format.
         $parserClasses = [
@@ -195,15 +193,12 @@ abstract class StringParser extends SObject
     /**
      * Create a new parser with the given input string.
      *
-     * @param string $aString
-     *
      * @return null
      *
      * @since 5/23/05
      */
-    public function __construct($aString)
+    public function __construct(string $aString)
     {
-        ArgumentValidator::validate($aString, StringValidatorRule::getRule());
         $this->input = $aString;
 
         if ($this->canHandle()) {
@@ -349,13 +344,11 @@ abstract class StringParser extends SObject
     /**
      * Set the year.
      *
-     * @param int $anInteger
-     *
      * @return void
      *
      * @since 5/23/05
      */
-    public function setYear($anInteger)
+    public function setYear(int $anInteger)
     {
         $this->year = (int) $anInteger;
     }
@@ -367,7 +360,7 @@ abstract class StringParser extends SObject
      *
      * @since 5/23/05
      */
-    public function setMonth($anIntOrString)
+    public function setMonth(int|string $anIntOrString)
     {
         if (!$anIntOrString) {
             $this->month = null;
@@ -381,13 +374,11 @@ abstract class StringParser extends SObject
     /**
      * Set the day.
      *
-     * @param int $anInteger
-     *
      * @return void
      *
      * @since 5/23/05
      */
-    public function setDay($anInteger)
+    public function setDay(int $anInteger)
     {
         $this->day = (int) $anInteger;
     }
@@ -395,13 +386,11 @@ abstract class StringParser extends SObject
     /**
      * Set the hour.
      *
-     * @param int $anInteger
-     *
      * @return void
      *
      * @since 5/23/05
      */
-    public function setHour($anInteger)
+    public function setHour(int $anInteger)
     {
         $this->hour = (int) $anInteger;
     }
@@ -409,13 +398,11 @@ abstract class StringParser extends SObject
     /**
      * Set the minute.
      *
-     * @param int $anInteger
-     *
      * @return void
      *
      * @since 5/23/05
      */
-    public function setMinute($anInteger)
+    public function setMinute(int $anInteger)
     {
         $this->minute = (int) $anInteger;
     }
@@ -427,7 +414,7 @@ abstract class StringParser extends SObject
      *
      * @since 5/23/05
      */
-    public function setSecond($anInteger)
+    public function setSecond(float $anInteger)
     {
         $this->second = $anInteger;
     }
@@ -435,13 +422,11 @@ abstract class StringParser extends SObject
     /**
      * Set the hour offset from UTC.
      *
-     * @param int $anInteger
-     *
      * @return void
      *
      * @since 5/23/05
      */
-    public function setOffsetHour($anInteger)
+    public function setOffsetHour(int $anInteger)
     {
         $this->offsetHour = (int) $anInteger;
     }
@@ -449,13 +434,11 @@ abstract class StringParser extends SObject
     /**
      * Set the minute offset from UTC.
      *
-     * @param int $anInteger
-     *
      * @return void
      *
      * @since 5/23/05
      */
-    public function setOffsetMinute($anInteger)
+    public function setOffsetMinute(int $anInteger)
     {
         $this->offsetMinute = (int) $anInteger;
     }
@@ -463,13 +446,11 @@ abstract class StringParser extends SObject
     /**
      * Set the second offset from UTC.
      *
-     * @param int $anInteger
-     *
      * @return void
      *
      * @since 5/23/05
      */
-    public function setOffsetSecond($anInteger)
+    public function setOffsetSecond(int $anInteger)
     {
         $this->offsetSecond = $anInteger;
     }
