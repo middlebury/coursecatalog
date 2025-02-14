@@ -638,7 +638,7 @@ class DateAndTime extends Magnitude implements AsDateAndTime
      */
     public function atMidnight()
     {
-        return static::withYearMonthDay($this->year(), $this->month(), $this->dayOfMonth());
+        return static::withYearMonthDayHourMinuteSecondOffset($this->year(), $this->month(), $this->dayOfMonth(), 0, 0, 0, $this->offset());
     }
 
     /**
@@ -650,7 +650,7 @@ class DateAndTime extends Magnitude implements AsDateAndTime
      */
     public function atNoon()
     {
-        return static::withYearMonthDayHourMinuteSecond($this->year(), $this->month(), $this->dayOfMonth(), 12, 0, 0);
+        return static::withYearMonthDayHourMinuteSecondOffset($this->year(), $this->month(), $this->dayOfMonth(), 12, 0, 0, $this->offset());
     }
 
     /**

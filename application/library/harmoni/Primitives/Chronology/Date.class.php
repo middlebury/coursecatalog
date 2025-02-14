@@ -96,7 +96,7 @@ class Date extends Timespan
      */
     public static function starting(AsDateAndTime $aDateAndTime)
     {
-        return static::startingDuration($aDateAndTime->atMidnight(), Duration::withDays(1));
+        return static::startingDuration($aDateAndTime->asUTC()->atMidnight(), Duration::withDays(1));
     }
 
     /**

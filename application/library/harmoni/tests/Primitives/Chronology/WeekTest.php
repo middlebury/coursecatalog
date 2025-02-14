@@ -464,7 +464,7 @@ class WeekTest extends TestCase
         $this->assertEquals(2453492, $timespan->julianDayNumber());
 
         // printableString()
-        $this->assertEquals('2005-05-01T00:00:00-04:00D7:00:00:00', $timespan->printableString());
+        $this->assertEquals('2005-05-01T00:00:00+00:00D7:00:00:00', $timespan->printableString());
 
         // startMonth()
         $this->assertEquals(5, $timespan->startMonth());

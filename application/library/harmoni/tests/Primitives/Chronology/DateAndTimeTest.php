@@ -404,7 +404,7 @@ class DateAndTimeTest extends TestCase
         // midnight();
         $temp = $dateAndTime->atMidnight();
         $this->assertTrue($temp->isEqualTo(
-            DateAndTime::withYearMonthDayHourMinuteSecond(2005, 6, 4, 0, 0, 0)));
+            DateAndTime::withYearMonthDayHourMinuteSecondOffset(2005, 6, 4, 0, 0, 0, Duration::withHours(-5))));
 
         // middleOf()
         $dat = DateAndTime::withYearDay(2005, 100);

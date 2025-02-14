@@ -111,8 +111,7 @@ class Week extends Timespan
      */
     public static function startingDuration(AsDateAndTime $aDateAndTime, ?Duration $aDuration)
     {
-        $asDateAndTime = $aDateAndTime->asDateAndTime();
-        $midnight = $asDateAndTime->atMidnight();
+        $midnight = $aDateAndTime->asDateAndTime()->asUTC()->atMidnight();
         $dayNames = ChronologyConstants::DayNames();
         $temp = $midnight->dayOfWeek() + 7 - array_search(static::startDay(), $dayNames);
         $delta = abs($temp - ((int) ($temp / 7) * 7));

@@ -62,8 +62,7 @@ class Year extends Timespan
      */
     public static function startingDuration(AsDateAndTime $aDateAndTime, ?Duration $aDuration)
     {
-        $asDateAndTime = $aDateAndTime->asDateAndTime();
-        $midnight = $asDateAndTime->atMidnight();
+        $midnight = $aDateAndTime->asDateAndTime()->asUTC()->atMidnight();
         $year = new static();
         $year->setStart($midnight);
         $year->setDuration(Duration::withDays(static::getDaysInYear($midnight->year())));
@@ -168,7 +167,7 @@ class Year extends Timespan
      */
     public function printableString(bool $printLeadingSpaceToo = false)
     {
-        return $this->startYear();
+        return (int) $this->startYear();
     }
 
     /**

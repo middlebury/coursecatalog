@@ -499,7 +499,7 @@ class YearTest extends TestCase
         $this->assertEquals(2453495, $timespan->julianDayNumber());
 
         // printableString()
-        $this->assertEquals('2005-05-04T00:00:00-04:00D365:00:00:00', $timespan->printableString());
+        $this->assertEquals('2005', $timespan->printableString());
 
         // startMonth()
         $this->assertEquals(5, $timespan->startMonth());

@@ -642,7 +642,7 @@ class DateTest extends TestCase
         $temp = $timespan->asDateAndTime();
         $this->assertTrue($temp->isEqualTo(
             DateAndTime::withYearMonthDayHourMinuteSecondOffset(
-                2005, 5, 4, 0, 0, 0, Duration::withHours(-4))));
+                2005, 5, 4, 0, 0, 0, Duration::withHours(0))));
 
         // asDuration()
         $temp = $timespan->asDuration();
