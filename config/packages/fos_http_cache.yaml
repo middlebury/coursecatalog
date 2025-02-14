@@ -1,0 +1,20 @@
+fos_http_cache:
+    cache_control:
+        defaults:
+            overwrite: true
+        rules:
+            # only match login
+            -
+                match:
+                    path: ^/saml/
+                headers:
+                    cache_control: { public: false, max_age: 0, s_maxage: 0 }
+                    vary: [Accept-Encoding]
+
+            # match everything to set defaults
+            -
+                match:
+                    path: ^/
+                headers:
+                    cache_control: { public: true, max_age: 300, s_maxage: 604800 }
+                    vary: [Accept-Encoding]
