@@ -42,12 +42,11 @@ abstract class SObject
      * If the classes have any instance varaibles with the same names, copy them across.
      * If this is bad for a class, override this method.
      *
-     * @param string $targetClass    As mentiond here,
-     *                               {@link http://www.php.net/manual/en/ref.classobj.php} there is no good way
-     *                               to inherit class methods such that they can know the class of
-     *                               the reciever (child class) instead of the class name of the implementer
-     *                               (parent class). As such, we need to pass our target classname.
-     * @param $aSimilarObject
+     * @param string $targetClass As mentiond here,
+     *                            {@link http://www.php.net/manual/en/ref.classobj.php} there is no good way
+     *                            to inherit class methods such that they can know the class of
+     *                            the reciever (child class) instead of the class name of the implementer
+     *                            (parent class). As such, we need to pass our target classname.
      *
      * @return object
      *
@@ -72,8 +71,6 @@ abstract class SObject
      * If = is redefined in any subclass, consider also redefining the
      * message hash.
      *
-     * @param $anObject
-     *
      * @return bool
      *
      * @since 7/11/05
@@ -89,8 +86,6 @@ abstract class SObject
      * WARNING: This method is here for convience. DO NOT OVERRIDE.
      * OVERRIDE isEqualTo() instead.
      *
-     * @param $anObject
-     *
      * @return bool
      *
      * @since 7/11/05
@@ -104,8 +99,6 @@ abstract class SObject
      * Answer whether the receiver and the argument are not the
      * same.
      *
-     * @param $anObject
-     *
      * @return bool
      *
      * @since 7/11/05
@@ -118,8 +111,6 @@ abstract class SObject
     /**
      * Answer whether the receiver and the argument Reference the same object.
      *
-     * @param $anObject
-     *
      * @return bool
      *
      * @since 7/11/05
@@ -131,8 +122,6 @@ abstract class SObject
 
     /**
      * Answer whether the receiver and the argument do not reference the same object.
-     *
-     * @param $anObject
      *
      * @return bool
      *
@@ -219,8 +208,6 @@ abstract class SObject
     /**
      * Copy to myself all instance variables named the same in otherObject.
      * This ignores otherObject's control over its own inst vars.
-     *
-     * @param $otherObject
      *
      * @return void
      *

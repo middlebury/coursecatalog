@@ -374,7 +374,7 @@ class safehtml
     /**
      * Opening tag handler - called from HTMLSax.
      *
-     * @param $parser HTML Parser
+     * @param        $parser HTML Parser
      * @param string $name   tag name
      * @param array  $attrs  tag attributes
      *
@@ -510,7 +510,7 @@ class safehtml
     /**
      * Character data handler - called from HTMLSax.
      *
-     * @param $parser HTML parser
+     * @param        $parser HTML parser
      * @param string $data   textual data
      *
      * @return bool
@@ -527,7 +527,7 @@ class safehtml
     /**
      * Escape handler - called from HTMLSax.
      *
-     * @param $parser HTML parser
+     * @param        $parser HTML parser
      * @param string $data   comments or other type of data
      *
      * @return bool

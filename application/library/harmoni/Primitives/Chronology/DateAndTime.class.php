@@ -402,8 +402,6 @@ class DateAndTime extends Magnitude implements AsDateAndTime
     /**
      * Create a new instance.
      *
-     * @param Duration $aDurationOffset
-     *
      * @return DateAndTime
      *
      * @static
@@ -497,8 +495,6 @@ class DateAndTime extends Magnitude implements AsDateAndTime
     /**
      * Create a new instance.
      *
-     * @param Duration $aDurationOffset
-     *
      * @return DateAndTime
      *
      * @static
@@ -570,8 +566,6 @@ class DateAndTime extends Magnitude implements AsDateAndTime
     /**
      * Initialize this DateAndTime.
      * ticks is {julianDayNumber. secondCount. nanoSeconds}.
-     *
-     * @param Duration $utcOffset
      *
      * @return void
      *
@@ -1216,8 +1210,6 @@ class DateAndTime extends Magnitude implements AsDateAndTime
      * comparand conforms to protocol DateAndTime,
      * or can be converted into something that conforms.
      *
-     * @param $comparand
-     *
      * @return bool
      *
      * @since 5/3/05
@@ -1255,8 +1247,6 @@ class DateAndTime extends Magnitude implements AsDateAndTime
      * comparand conforms to protocol DateAndTime,
      * or can be converted into something that conforms.
      *
-     * @param $comparand
-     *
      * @return bool
      *
      * @since 5/3/05
@@ -1289,8 +1279,6 @@ class DateAndTime extends Magnitude implements AsDateAndTime
 
     /**
      * Subtract a Duration or DateAndTime.
-     *
-     * @param $operand
      *
      * @return object
      *
@@ -1326,8 +1314,6 @@ class DateAndTime extends Magnitude implements AsDateAndTime
     /**
      * Answer a new Duration whose our date + operand. The operand must implement
      * asDuration().
-     *
-     * @param $operand
      *
      * @return DateAndTime
      *
@@ -1556,8 +1542,6 @@ class DateAndTime extends Magnitude implements AsDateAndTime
     /**
      * Return a Timespan where the receiver is the middle of the Duration.
      *
-     * @param Duration $aDuration
-     *
      * @return Timespan
      *
      * @since 5/12/05
@@ -1578,8 +1562,6 @@ class DateAndTime extends Magnitude implements AsDateAndTime
      * aDuration. This will not convert the recievers time, merely change the
      * offset to anOffset; i.e. 11am at UTC-05:00 would become 11am at UTC-7:00
      * when -7 hours is passed as the offset.
-     *
-     * @param Duration $aDuration
      *
      * @return DateAndTime
      *
@@ -1630,8 +1612,6 @@ class DateAndTime extends Magnitude implements AsDateAndTime
      * aDuration. This will convert the recievers time, to the time at anOffset;
      * i.e. 11am at UTC-05:00 would become 9am at UTC-7:00 when -7 hours is passed
      * as the offset.
-     *
-     * @param Duration $aDuration
      *
      * @return DateAndTime
      *

@@ -381,8 +381,6 @@ class Time extends Magnitude implements AsDateAndTime
      * comparand conforms to protocol DateAndTime,
      * or can be converted into something that conforms.
      *
-     * @param $comparand
-     *
      * @return bool
      *
      * @since 5/3/05
@@ -411,8 +409,6 @@ class Time extends Magnitude implements AsDateAndTime
     /**
      * comparand conforms to protocol DateAndTime,
      * or can be converted into something that conforms.
-     *
-     * @param $comparand
      *
      * @return bool
      *

@@ -49,7 +49,7 @@ class Boolean extends SObject
     /**
      * Instantiates a new Boolean object with the value, false.
      *
-     * @return Boolean
+     * @return bool
      *
      * @since 8/11/05
      *
@@ -63,7 +63,7 @@ class Boolean extends SObject
     /**
      * Instantiates a new Boolean object with the value, true.
      *
-     * @return Boolean
+     * @return bool
      *
      * @since 8/11/05
      *
@@ -110,8 +110,6 @@ class Boolean extends SObject
      * Answer whether the receiver and the argument are the same.
      * If = is redefined in any subclass, consider also redefining the
      * message hash.
-     *
-     * @param $anObject
      *
      * @return bool
      *

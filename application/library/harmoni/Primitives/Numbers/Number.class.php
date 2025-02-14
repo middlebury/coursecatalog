@@ -401,8 +401,6 @@ abstract class Number extends Magnitude
      * If = is redefined in any subclass, consider also redefining the
      * message hash.
      *
-     * @param $anObject
-     *
      * @return bool
      *
      * @since 7/11/05

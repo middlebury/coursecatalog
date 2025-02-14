@@ -310,8 +310,6 @@ class Timespan extends Magnitude implements AsDateAndTime
     /**
      * Subtract a Duration or DateAndTime.
      *
-     * @param $operand
-     *
      * @return timespan (if operand is a Duration) OR Duration (if operand is a DateAndTime)
      *
      * @since 5/3/05

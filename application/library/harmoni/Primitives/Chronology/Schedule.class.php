@@ -47,9 +47,6 @@ class Schedule extends Timespan
     /**
      * Return an array of the DateAndTimes scheduled between aStart and anEnd.
      *
-     * @param $aStart
-     * @param $anEnd
-     *
      * @return array Of DateAndTime objects
      *
      * @since 5/25/05

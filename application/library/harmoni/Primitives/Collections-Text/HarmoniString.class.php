@@ -63,8 +63,6 @@ class HarmoniString extends SObject
      * If = is redefined in any subclass, consider also redefining the
      * message hash.
      *
-     * @param $anObject
-     *
      * @return bool
      *
      * @since 7/11/05

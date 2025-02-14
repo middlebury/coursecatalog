@@ -434,7 +434,6 @@ class harmoni_ErrorHandler
     /**
      * Log an Exception.
      *
-     * @param Exception $exception
      * @param optional string $logName Defaults to the Harmoni log
      *
      * @return void

@@ -581,8 +581,6 @@ class DateAndTimeTest extends TestCase
     /**
      * Check the equality of a DateAndTime against a PHP DateTime object.
      *
-     * @param DateAndTime $dateAndTime
-     * @param DateTime $dateTime
      *
      * @return void
      *
