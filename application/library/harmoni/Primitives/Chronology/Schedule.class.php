@@ -40,6 +40,8 @@ require_once __DIR__.'/Timespan.class.php';
  */
 class Schedule extends Timespan
 {
+    private array $schedule;
+
     /*********************************************************
      * Instance methods - Enumerating
      *********************************************************/
