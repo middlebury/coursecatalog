@@ -2,7 +2,7 @@ name: coursecatalog
 recipe: symfony
 config:
   webroot: public
-  php: 8.4
+  php: 8.3
   database: mariadb:10.11
 services:
   appserver:
