@@ -414,7 +414,7 @@ abstract class StringParser extends SObject
      *
      * @since 5/23/05
      */
-    public function setSecond(int $anInteger)
+    public function setSecond(float $anInteger)
     {
         $this->second = $anInteger;
     }
