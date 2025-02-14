@@ -465,9 +465,9 @@ class ArchiveHtmlGenerator
         // Look for different Section Descriptions
         $offeringQuery = $context['offeringSearchSession']->getCourseOfferingQuery();
         $offeringQuery->matchCourseId($course->getId(), true);
-        $offeringQuery->matchGenusType(new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering.LCT'), true);
-        $offeringQuery->matchGenusType(new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering.SEM'), true);
-        $offeringQuery->matchGenusType(new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering.IND'), true);
+        $offeringQuery->matchGenusType(new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering-LCT'), true);
+        $offeringQuery->matchGenusType(new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering-SEM'), true);
+        $offeringQuery->matchGenusType(new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering-IND'), true);
         foreach ($context['termIds'] as $termId) {
             $offeringQuery->matchTermId($termId, true);
         }
@@ -490,7 +490,7 @@ class ArchiveHtmlGenerator
         $instructorsType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
         $identifiersType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
         $namesType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:person_names');
-        $requirementType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement');
+        $requirementType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-requirement');
         $enrollmentNumbersType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:enrollment_numbers');
         while ($offerings->hasNext()) {
             $offering = $offerings->getNextCourseOffering();
@@ -662,7 +662,7 @@ class ArchiveHtmlGenerator
         // Apply all course-level topics.
         $allTopics = $this->osidTopicHelper->topicListAsArray($course->getTopics());
         $reqs = [];
-        $topicType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement');
+        $topicType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-requirement');
         $topicTypeString = $this->osidIdMap->typeToString($topicType);
         $topics = $this->osidTopicHelper->filterTopicsByType($allTopics, $topicType);
         foreach ($topics as $topic) {

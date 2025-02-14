@@ -22,7 +22,7 @@ class ResourcesTest extends WebTestCase
     public function testListCampusesByCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/resources/listcampusestxt/catalog.MCUG');
+        $client->request('GET', '/resources/listcampusestxt/catalog-MCUG');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -33,7 +33,7 @@ class ResourcesTest extends WebTestCase
     public function testViewPerson(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/resources/view/resource.person.WEBID1000004');
+        $crawler = $client->request('GET', '/resources/view/resource-person-WEBID1000004');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -47,7 +47,7 @@ class ResourcesTest extends WebTestCase
     public function testViewPersonTerm(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/resources/view/resource.person.WEBID1000004/term.200890');
+        $crawler = $client->request('GET', '/resources/view/resource-person-WEBID1000004/term-200890');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -61,7 +61,7 @@ class ResourcesTest extends WebTestCase
     public function testViewRoom(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/resources/view/resource.place.room.MBH.560');
+        $crawler = $client->request('GET', '/resources/view/resource-place-room-MBH-560');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -76,7 +76,7 @@ class ResourcesTest extends WebTestCase
     public function testViewRoomTerm(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/resources/view/resource.place.room.MBH.560/term.200990');
+        $crawler = $client->request('GET', '/resources/view/resource-place-room-MBH-560/term-200990');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();

@@ -52,7 +52,7 @@ class banner_course_Term_Lookup_Session extends banner_course_AbstractSession im
      */
     public function __construct(banner_course_CourseManagerInterface $manager, ?osid_id_Id $catalogId = null)
     {
-        parent::__construct($manager, 'term.');
+        parent::__construct($manager, 'term-');
 
         if (null === $catalogId) {
             $this->catalogId = $manager->getCombinedCatalogId();
@@ -191,8 +191,8 @@ class banner_course_Term_Lookup_Session extends banner_course_AbstractSession im
      */
     public function getTerm(osid_id_Id $termId)
     {
-        $idString = $this->getDatabaseIdString($termId, 'term.');
-        if (!preg_match('/^([0-9]{6})(?:\.([a-z0-9]{1,3}))?$/i', $idString, $matches)) {
+        $idString = $this->getDatabaseIdString($termId, 'term-');
+        if (!preg_match('/^([0-9]{6})(?:-([a-z0-9]{1,3}))?$/i', $idString, $matches)) {
             throw new osid_NotFoundException('Term id component \''.$idString.'\' could not be converted to a term code.');
         }
 
@@ -259,7 +259,7 @@ ORDER BY STVTERM_CODE DESC
         }
 
         return new banner_course_Term(
-            $this->getOsidIdFromString($row['STVTERM_CODE'], 'term.'),
+            $this->getOsidIdFromString($row['STVTERM_CODE'], 'term-'),
             $row['STVTERM_DESC'],
             $row['STVTERM_START_DATE'],
             $row['STVTERM_END_DATE']);
@@ -345,7 +345,7 @@ ORDER BY STVTERM_CODE DESC, SOBPTRM_PTRM_CODE ASC
         }
 
         return new banner_course_Term(
-            $this->getOsidIdFromString($row['STVTERM_CODE'].'.'.$row['SOBPTRM_PTRM_CODE'], 'term.'),
+            $this->getOsidIdFromString($row['STVTERM_CODE'].'-'.$row['SOBPTRM_PTRM_CODE'], 'term-'),
             $desc,
             $startDate,
             $endDate);
@@ -378,7 +378,7 @@ ORDER BY STVTERM_CODE DESC, SOBPTRM_PTRM_CODE ASC
     {
         $params = [];
         if (null !== $this->catalogId && !$this->catalogId->isEqual($this->getCombinedCatalogId())) {
-            $params[':catalog_id'] = $this->getDatabaseIdString($this->catalogId, 'catalog.');
+            $params[':catalog_id'] = $this->getDatabaseIdString($this->catalogId, 'catalog-');
         }
 
         return $params;

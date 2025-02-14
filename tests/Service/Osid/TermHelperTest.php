@@ -23,10 +23,10 @@ class TermHelperTest extends KernelTestCase
      */
     protected function setUp(): void
     {
-        $this->mcugId = new \phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog.MCUG');
-        $this->spring2009TermId = new \phpkit_id_URNInetId('urn:inet:middlebury.edu:term.200920');
-        $this->fall2009TermId = new \phpkit_id_URNInetId('urn:inet:middlebury.edu:term.200990');
-        $this->fall2008TermId = new \phpkit_id_URNInetId('urn:inet:middlebury.edu:term.200890');
+        $this->mcugId = new \phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MCUG');
+        $this->spring2009TermId = new \phpkit_id_URNInetId('urn:inet:middlebury.edu:term-200920');
+        $this->fall2009TermId = new \phpkit_id_URNInetId('urn:inet:middlebury.edu:term-200990');
+        $this->fall2008TermId = new \phpkit_id_URNInetId('urn:inet:middlebury.edu:term-200890');
 
         $this->osidTermHelper = static::getContainer()
             ->get(TermHelper::class);

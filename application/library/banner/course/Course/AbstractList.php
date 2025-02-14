@@ -258,15 +258,15 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
     final protected function getObjectFromRow(array $row)
     {
         return new banner_course_Course(
-            $this->session->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'], 'course.'),
+            $this->session->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'].$row['SCBCRSE_CRSE_NUMB'], 'course-'),
             $row['SCBCRSE_SUBJ_CODE'].' '.$row['SCBCRSE_CRSE_NUMB'],
             (null === $row['SCBDESC_TEXT_NARRATIVE']) ? '' : $row['SCBDESC_TEXT_NARRATIVE'],	// Description
             $row['SCBCRSE_TITLE'],
             $row['SCBCRSE_CREDIT_HR_HIGH'],
             [
-                $this->session->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'], 'topic.subject.'),
-                $this->session->getOsidIdFromString($row['SCBCRSE_DEPT_CODE'], 'topic.department.'),
-                $this->session->getOsidIdFromString($row['SCBCRSE_DIVS_CODE'], 'topic.division.'),
+                $this->session->getOsidIdFromString($row['SCBCRSE_SUBJ_CODE'], 'topic-subject-'),
+                $this->session->getOsidIdFromString($row['SCBCRSE_DEPT_CODE'], 'topic-department-'),
+                $this->session->getOsidIdFromString($row['SCBCRSE_DIVS_CODE'], 'topic-division-'),
             ],
             $row['has_alternates'],
             $this->session);

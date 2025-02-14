@@ -347,8 +347,8 @@ class Courses extends AbstractController
         }
 
         // Expand plain instructor Ids to fully qualified ones.
-        if (!preg_match('/^resource\.person\./', $this->osidIdMap->toString($instructorId))) {
-            $instructorId = $this->osidIdMap->fromString('resource.person.'.$this->osidIdMap->toString($instructorId));
+        if (!preg_match('/^resource-person-/', $this->osidIdMap->toString($instructorId))) {
+            $instructorId = $this->osidIdMap->fromString('resource-person-'.$this->osidIdMap->toString($instructorId));
         }
         $resourceLookup = $this->osidRuntime->getCourseManager()->getResourceManager()->getResourceLookupSession();
         $instructorResource = $resourceLookup->getResource($instructorId);

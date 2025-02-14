@@ -11,7 +11,7 @@ class OfferingsTest extends WebTestCase
     public function testList(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/offerings/list/catalog.MCUG/term.200690');
+        $crawler = $client->request('GET', '/offerings/list/catalog-MCUG/term-200690');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -22,7 +22,7 @@ class OfferingsTest extends WebTestCase
     public function testListCurrent(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/offerings/list/catalog.MCUG/CURRENT');
+        $crawler = $client->request('GET', '/offerings/list/catalog-MCUG/CURRENT');
 
         $this->assertResponseIsSuccessful();
 
@@ -33,7 +33,7 @@ class OfferingsTest extends WebTestCase
     {
         $client = static::createClient();
         $client->followRedirects(false);
-        $crawler = $client->request('GET', '/offerings/view/section.200990.90036');
+        $crawler = $client->request('GET', '/offerings/view/section-200990-90036');
 
         $this->assertResponseIsSuccessful();
         $this->assertGreaterThan(0, $crawler->filter('h2:contains("General Chemistry II")')->count());
@@ -42,7 +42,7 @@ class OfferingsTest extends WebTestCase
     public function testViewXml(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/offerings/viewxml/section.200990.90036');
+        $crawler = $client->request('GET', '/offerings/viewxml/section-200990-90036');
 
         $this->assertResponseIsSuccessful();
 
@@ -52,7 +52,7 @@ class OfferingsTest extends WebTestCase
     public function testSearchForm(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/offerings/search/catalog.MCUG');
+        $crawler = $client->request('GET', '/offerings/search/catalog-MCUG');
 
         $this->assertResponseIsSuccessful();
 
@@ -62,7 +62,7 @@ class OfferingsTest extends WebTestCase
     public function testSearchFormSubmitAnyTerm(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/offerings/search/catalog.MCUG?search=Search&term=ANY');
+        $crawler = $client->request('GET', '/offerings/search/catalog-MCUG?search=Search&term=ANY');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -74,7 +74,7 @@ class OfferingsTest extends WebTestCase
     public function testSearchFormSubmitWithTerm(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/offerings/search/catalog.MCUG?search=Search&term=term.200990');
+        $crawler = $client->request('GET', '/offerings/search/catalog-MCUG?search=Search&term=term-200990');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -86,7 +86,7 @@ class OfferingsTest extends WebTestCase
     public function testSearchFormSubmitWithTermAndDepartment(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/offerings/search/catalog.MCUG?search=Search&term=term.200990&department=topic.department.CHEM');
+        $crawler = $client->request('GET', '/offerings/search/catalog-MCUG?search=Search&term=term-200990&department=topic-department-CHEM');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -98,7 +98,7 @@ class OfferingsTest extends WebTestCase
     public function testSearchFormSubmitWithKeyword(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/offerings/search/catalog.MCUG?search=Search&term=term.200990&keyword=General');
+        $crawler = $client->request('GET', '/offerings/search/catalog-MCUG?search=Search&term=term-200990&keyword=General');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -111,7 +111,7 @@ class OfferingsTest extends WebTestCase
     public function testSearchFormSubmitType(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/offerings/search/catalog.MCUG?search=Search&term=term.200990&keyword=General&type%5B%5D=genera%3Aoffering.LCT&type%5B%5D=genera%3Aoffering.SEM');
+        $crawler = $client->request('GET', '/offerings/search/catalog-MCUG?search=Search&term=term-200990&keyword=General&type%5B%5D=genera%3Aoffering-LCT&type%5B%5D=genera%3Aoffering-SEM');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -124,7 +124,7 @@ class OfferingsTest extends WebTestCase
     public function testSearchXmlWithTermAndDepartment(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/offerings/searchxml/catalog.MCUG?search=Search&term=term.200990&department=topic.department.CHEM');
+        $crawler = $client->request('GET', '/offerings/searchxml/catalog-MCUG?search=Search&term=term-200990&department=topic-department-CHEM');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();

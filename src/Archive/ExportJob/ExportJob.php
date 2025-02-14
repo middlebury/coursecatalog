@@ -122,7 +122,7 @@ class ExportJob
             $idStrings = explode(',', $this->terms);
             sort($idStrings);
             foreach ($idStrings as $idString) {
-                $ids[] = $this->osidIdMap->fromString('term.'.$idString);
+                $ids[] = $this->osidIdMap->fromString('term-'.$idString);
             }
         }
 

@@ -34,7 +34,7 @@ abstract class banner_course_AbstractSession extends banner_AbstractSession impl
      */
     public function getCatalogDatabaseId(osid_id_Id $id)
     {
-        return $this->getDatabaseIdString($id, 'catalog.');
+        return $this->getDatabaseIdString($id, 'catalog-');
     }
 
     /**
@@ -167,7 +167,7 @@ abstract class banner_course_AbstractSession extends banner_AbstractSession impl
             throw new osid_OperationFailedException('Both termCode and CRN must be specified.');
         }
 
-        return $this->getOsidIdFromString($termCode.'.'.$crn, 'section.');
+        return $this->getOsidIdFromString($termCode.'-'.$crn, 'section-');
     }
 
     /**
@@ -185,7 +185,7 @@ abstract class banner_course_AbstractSession extends banner_AbstractSession impl
             throw new osid_OperationFailedException('Both subjectCode and number must be specified.');
         }
 
-        return $this->getOsidIdFromString($subjectCode.$number, 'course.');
+        return $this->getOsidIdFromString($subjectCode.$number, 'course-');
     }
 
     /**
@@ -197,8 +197,8 @@ abstract class banner_course_AbstractSession extends banner_AbstractSession impl
      */
     public function getTermCodeFromTermId(osid_id_Id $id)
     {
-        $string = $this->getDatabaseIdString($id, 'term.');
-        if (!preg_match('#^([0-9]{6})(?:\.(.{1,3}))?$#', $string, $matches)) {
+        $string = $this->getDatabaseIdString($id, 'term-');
+        if (!preg_match('#^([0-9]{6})(?:-(.{1,3}))?$#', $string, $matches)) {
             throw new osid_NotFoundException("String '$string' cannot be converted into a valid term code.");
         }
 
@@ -214,8 +214,8 @@ abstract class banner_course_AbstractSession extends banner_AbstractSession impl
      */
     public function getPartOfTermCodeFromTermId(osid_id_Id $id)
     {
-        $string = $this->getDatabaseIdString($id, 'term.');
-        if (!preg_match('#^([0-9]{6})(?:\.(.{1,3}))$#', $string, $matches)) {
+        $string = $this->getDatabaseIdString($id, 'term-');
+        if (!preg_match('#^([0-9]{6})(?:-(.{1,3}))$#', $string, $matches)) {
             throw new osid_NotFoundException("String '$string' cannot be converted into a valid part-of-term code.");
         }
 
@@ -237,8 +237,8 @@ abstract class banner_course_AbstractSession extends banner_AbstractSession impl
             throw new osid_NotFoundException("I only know about the '".$this->getIdAuthority()."' authority");
         }
 
-        if (!preg_match('/^genera:offering\.([a-z]+)$/i', $genusType->getIdentifier(), $matches)) {
-            throw new osid_NotFoundException("I only know about identifiers beginning with 'genera:offering.'");
+        if (!preg_match('/^genera:offering-([a-z]+)$/i', $genusType->getIdentifier(), $matches)) {
+            throw new osid_NotFoundException("I only know about identifiers beginning with 'genera:offering-'");
         }
 
         return $matches[1];

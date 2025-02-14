@@ -41,7 +41,7 @@ class AdminExportConfigTest extends WebTestCase
         // Submit the form.
         $form = $crawler->filter('#config-create-form')->form();
         $form['label'] = 'Fall/Spring Catalog';
-        $form['catalog_id'] = 'catalog.MCUG';
+        $form['catalog_id'] = 'catalog-MCUG';
         $crawler = $client->submit($form);
         $this->assertResponseIsSuccessful();
 
@@ -88,7 +88,7 @@ class AdminExportConfigTest extends WebTestCase
         // Submit the form.
         $form = $crawler->filter('#config-create-form')->form();
         $form['label'] = 'Fall/Spring Catalog';
-        $form['catalog_id'] = 'catalog.MCUG';
+        $form['catalog_id'] = 'catalog-MCUG';
         $crawler = $client->submit($form);
         $this->assertResponseIsSuccessful();
 
@@ -119,7 +119,7 @@ class AdminExportConfigTest extends WebTestCase
         $crawler = $client->request('POST', $saveUrl, [
             $csrfKey->attr('name') => $csrfKey->attr('value'),
             'note' => 'This is the first revision.',
-            'jsonData' => '{"group1":{"title":"Geology","section1":{"type":"h1","value":"Geology+and+Earth+Science;Geology"},"section2":{"type":"course_list","value":"topic.subject.GEOL"}}}',
+            'jsonData' => '{"group1":{"title":"Geology","section1":{"type":"h1","value":"Geology+and+Earth+Science;Geology"},"section2":{"type":"course_list","value":"topic-subject-GEOL"}}}',
         ]);
         $this->assertResponseIsSuccessful();
 
@@ -127,7 +127,7 @@ class AdminExportConfigTest extends WebTestCase
         $crawler = $client->request('POST', $saveUrl, [
             $csrfKey->attr('name') => $csrfKey->attr('value'),
             'note' => 'This is the second revision.',
-            'jsonData' => '{"group1":{"title":"Geology","section1":{"type":"h1","value":"Geology+and+Earth+Science;Geology"},"section2":{"type":"course_list","value":"topic.subject.GEOL"}},"group2":{"title":"Physics","section1":{"type":"h1","value":"Physics"},"section2":{"type":"custom_text","value":"About+Physics..."},"section3":{"type":"course_list","value":"topic.subject.PHYS"}}}',
+            'jsonData' => '{"group1":{"title":"Geology","section1":{"type":"h1","value":"Geology+and+Earth+Science;Geology"},"section2":{"type":"course_list","value":"topic-subject-GEOL"}},"group2":{"title":"Physics","section1":{"type":"h1","value":"Physics"},"section2":{"type":"custom_text","value":"About+Physics..."},"section3":{"type":"course_list","value":"topic-subject-PHYS"}}}',
         ]);
         $this->assertResponseIsSuccessful();
 
@@ -177,7 +177,7 @@ class AdminExportConfigTest extends WebTestCase
         $client->loginUser($this->setUpUser());
 
         // Try loading the latest JSON file.
-        $crawler = $client->request('GET', '/admin/exports/generatecourselist/catalog.MCUG');
+        $crawler = $client->request('GET', '/admin/exports/generatecourselist/catalog-MCUG');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('.section-dropdown', 'Chemistry');
     }

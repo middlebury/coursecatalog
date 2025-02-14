@@ -101,7 +101,7 @@ ORDER BY STVTERM_CODE DESC
     protected function getObjectFromRow(array $row)
     {
         return new banner_course_Term(
-            $this->session->getOsidIdFromString($row['STVTERM_CODE'], 'term.'),
+            $this->session->getOsidIdFromString($row['STVTERM_CODE'], 'term-'),
             $row['STVTERM_DESC'],
             $row['STVTERM_START_DATE'],
             $row['STVTERM_END_DATE']);

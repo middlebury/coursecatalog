@@ -56,7 +56,7 @@ class ExportJobStorageTest extends KernelTestCase
     {
         $config = $this->configStorage->createConfiguration(
             'My great config',
-            $this->osidIdMap->fromString('catalog.MCUG')
+            $this->osidIdMap->fromString('catalog-MCUG')
         );
         $job = $this->jobStorage->createJob(
             'MCUG/2009-2010/',
@@ -78,7 +78,7 @@ class ExportJobStorageTest extends KernelTestCase
     {
         $config = $this->configStorage->createConfiguration(
             'My great config',
-            $this->osidIdMap->fromString('catalog.MCUG')
+            $this->osidIdMap->fromString('catalog-MCUG')
         );
         // Add a first revision.
         $content = [

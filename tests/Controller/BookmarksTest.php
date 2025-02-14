@@ -26,12 +26,12 @@ class BookmarksTest extends WebTestCase
     {
         $client = static::createClient();
         $client->loginUser($this->user);
-        $crawler = $client->request('GET', '/bookmarks/add/course.PHYS0201');
+        $crawler = $client->request('GET', '/bookmarks/add/course-PHYS0201');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorCount(1, 'response success');
 
-        $crawler = $client->request('GET', '/bookmarks/add/course.PHYS0201');
+        $crawler = $client->request('GET', '/bookmarks/add/course-PHYS0201');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorCount(1, 'response error');
         $this->assertSelectorTextSame('response error', 'Bookmark already added.');
@@ -41,17 +41,17 @@ class BookmarksTest extends WebTestCase
     {
         $client = static::createClient();
         $client->loginUser($this->user);
-        $crawler = $client->request('GET', '/bookmarks/add/course.CHEM0104');
+        $crawler = $client->request('GET', '/bookmarks/add/course-CHEM0104');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorCount(1, 'response success');
 
-        $crawler = $client->request('GET', '/bookmarks/remove/course.CHEM0104');
+        $crawler = $client->request('GET', '/bookmarks/remove/course-CHEM0104');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorCount(1, 'response success');
 
         // Success is returned even if the bookmark is already gone.
-        $crawler = $client->request('GET', '/bookmarks/remove/course.CHEM0104');
+        $crawler = $client->request('GET', '/bookmarks/remove/course-CHEM0104');
         $this->assertResponseIsSuccessful();
         $this->assertSelectorCount(1, 'response success');
     }

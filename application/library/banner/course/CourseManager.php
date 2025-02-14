@@ -82,7 +82,7 @@ class banner_course_CourseManager extends phpkit_AbstractOsidManager implements 
      */
     public function getCombinedCatalogId()
     {
-        return new phpkit_id_Id($this->getIdAuthority(), 'urn', 'catalog.all');
+        return new phpkit_id_Id($this->getIdAuthority(), 'urn', 'catalog-all');
     }
 
     /*********************************************************
@@ -219,7 +219,7 @@ class banner_course_CourseManager extends phpkit_AbstractOsidManager implements 
     public function getCourseLookupSession()
     {
         return new banner_course_Course_Lookup_CombinedSession($this,
-            new phpkit_id_URNInetId('urn:inet:'.$this->idAuthority.':catalog.all'));
+            new phpkit_id_URNInetId('urn:inet:'.$this->idAuthority.':catalog-all'));
     }
 
     /**
@@ -274,7 +274,7 @@ class banner_course_CourseManager extends phpkit_AbstractOsidManager implements 
     public function getCourseSearchSession()
     {
         return new banner_course_Course_Search_Session($this,
-            new phpkit_id_URNInetId('urn:inet:'.$this->idAuthority.':catalog.all'));
+            new phpkit_id_URNInetId('urn:inet:'.$this->idAuthority.':catalog-all'));
     }
 
     /**

@@ -235,8 +235,8 @@ class AdminExportConfig extends AbstractController
     #[Route('/admin/exports/generatecourselist/{catalogId}', name: 'export_config_generate_course_list')]
     public function generatecourselistAction(\osid_id_Id $catalogId)
     {
-        $this->departmentType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department');
-        $this->subjectType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject');
+        $this->departmentType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-department');
+        $this->subjectType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-subject');
 
         $topicSearchSession = $this->osidRuntime->getCourseManager()->getTopicSearchSessionForCatalog($catalogId);
         $topicQuery = $topicSearchSession->getTopicQuery();

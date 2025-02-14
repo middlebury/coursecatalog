@@ -49,7 +49,7 @@ class ExportConfigurationStorageTest extends KernelTestCase
 
     public function testCreateConfiguration(): void
     {
-        $newConfig = $this->configStorage->createConfiguration('My great config', $this->osidIdMap->fromString('catalog.MCUG'));
+        $newConfig = $this->configStorage->createConfiguration('My great config', $this->osidIdMap->fromString('catalog-MCUG'));
         $this->assertEquals('My great config', $newConfig->getLabel());
         $this->assertGreaterThan(0, $newConfig->getId());
         $this->assertEmpty($newConfig->getAllRevisions());
@@ -58,7 +58,7 @@ class ExportConfigurationStorageTest extends KernelTestCase
 
     public function testCreateRevisions(): void
     {
-        $config = $this->configStorage->createConfiguration('My great config', $this->osidIdMap->fromString('catalog.MCUG'));
+        $config = $this->configStorage->createConfiguration('My great config', $this->osidIdMap->fromString('catalog-MCUG'));
         $this->assertEquals('My great config', $config->getLabel());
         $this->assertEmpty($config->getAllRevisions());
 

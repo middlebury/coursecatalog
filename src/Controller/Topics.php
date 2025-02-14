@@ -199,7 +199,7 @@ class Topics extends AbstractController
     public function listsubjectstxtAction(?\osid_id_Id $catalogId = null)
     {
         return $this->renderTextList(
-            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject'),
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-subject'),
             $catalogId,
         );
     }
@@ -211,7 +211,7 @@ class Topics extends AbstractController
     public function listrequirementstxtAction(?\osid_id_Id $catalogId = null)
     {
         return $this->renderTextList(
-            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement'),
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-requirement'),
             $catalogId,
         );
     }
@@ -223,7 +223,7 @@ class Topics extends AbstractController
     public function listlevelstxtAction(?\osid_id_Id $catalogId = null)
     {
         return $this->renderTextList(
-            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.level'),
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-level'),
             $catalogId,
         );
     }
@@ -235,7 +235,7 @@ class Topics extends AbstractController
     public function listblockstxtAction(?\osid_id_Id $catalogId = null)
     {
         return $this->renderTextList(
-            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.block'),
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-block'),
             $catalogId,
         );
     }
@@ -247,7 +247,7 @@ class Topics extends AbstractController
     public function listinstructionmethodstxtAction(?\osid_id_Id $catalogId = null)
     {
         return $this->renderTextList(
-            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.instruction_method'),
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-instruction_method'),
             $catalogId,
         );
     }
@@ -259,7 +259,7 @@ class Topics extends AbstractController
     public function listdepartmentstxtAction(?\osid_id_Id $catalogId = null)
     {
         return $this->renderTextList(
-            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department'),
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-department'),
             $catalogId,
         );
     }

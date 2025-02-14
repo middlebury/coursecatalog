@@ -59,7 +59,7 @@ class Resources extends AbstractController
         $data['offering_display_limit'] = 100;
 
         // Match the instructor Id
-        if (preg_match('/^resource\.person\./', $this->osidIdMap->toString($resourceId))) {
+        if (preg_match('/^resource\-person\-/', $this->osidIdMap->toString($resourceId))) {
             if ($query->hasRecordType($this->instructorType)) {
                 $queryRecord = $query->getCourseOfferingQueryRecord($this->instructorType);
                 $queryRecord->matchInstructorId($resourceId, true);
@@ -67,7 +67,7 @@ class Resources extends AbstractController
             }
         }
         // Match a location id
-        elseif (preg_match('/^resource\.place\./', $this->osidIdMap->toString($resourceId))) {
+        elseif (preg_match('/^resource-place-/', $this->osidIdMap->toString($resourceId))) {
             $query->matchLocationId($resourceId, true);
             $offerings = $offeringSearchSession->getCourseOfferingsByQuery($query);
         }
@@ -102,7 +102,7 @@ class Resources extends AbstractController
         $lookupSession->useFederatedBinView();
 
         $data['resources'] = [];
-        $resources = $lookupSession->getResourcesByGenusType(new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource.place.campus'));
+        $resources = $lookupSession->getResourcesByGenusType(new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource-place-campus'));
         while ($resources->hasNext()) {
             $data['resources'][] = $resources->getNextResource();
         }

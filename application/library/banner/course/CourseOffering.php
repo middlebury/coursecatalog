@@ -125,7 +125,7 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
         $this->setGenusType(new phpkit_type_Type(
             'urn', 										// namespace
             $this->session->getIdAuthority(), 			// id authority
-            'genera:offering.'.$row['STVSCHD_CODE'], 	// identifier
+            'genera:offering-'.$row['STVSCHD_CODE'], 	// identifier
             'Course Offerings', 						// domain
             trim($row['STVSCHD_DESC']), 						// display name
             trim($row['STVSCHD_CODE'])						// display label
@@ -139,7 +139,7 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
         $this->addRecordType($this->enrollmentNumbersType);
 
         $properties = [];
-        $properties[] = new phpkit_Property('Course Reference Number', 'CRN', 'An number that uniquely identifies a section within a term.', $row['SSBSECT_CRN']);
+        $properties[] = new phpkit_Property('Course Reference Number', 'CRN', 'An number that uniquely identifies a section within a term-', $row['SSBSECT_CRN']);
         $properties[] = new phpkit_Property('Subject Code', 'Subject Code', 'The subject code of the course this section is an offering of.', $row['SSBSECT_SUBJ_CODE']);
         $properties[] = new phpkit_Property('Course Number', 'Course Number', 'The number of the course this section is an offering of.', $row['SSBSECT_CRSE_NUMB']);
         $properties[] = new phpkit_Property('Section Identifier', 'Section Identifier', 'The section identifier for this section.', $row['SSBSECT_SEQ_NUMB']);
@@ -358,10 +358,10 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
     {
         $termCode = $this->row['SSBSECT_TERM_CODE'];
         if (!empty($this->row['SSBSECT_PTRM_CODE']) && 1 != $this->row['SSBSECT_PTRM_CODE']) {
-            $termCode .= '.'.$this->row['SSBSECT_PTRM_CODE'];
+            $termCode .= '-'.$this->row['SSBSECT_PTRM_CODE'];
         }
 
-        return $this->getOsidIdFromString($termCode, 'term.');
+        return $this->getOsidIdFromString($termCode, 'term-');
     }
 
     /**
@@ -395,16 +395,16 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
         if (!isset($this->topicIds)) {
             $this->topicIds = [];
             if ($this->row['SCBCRSE_DEPT_CODE']) {
-                $this->topicIds[] = $this->getOsidIdFromString($this->row['SCBCRSE_DEPT_CODE'], 'topic.department.');
+                $this->topicIds[] = $this->getOsidIdFromString($this->row['SCBCRSE_DEPT_CODE'], 'topic-department-');
             }
             if ($this->row['SSBSECT_SUBJ_CODE']) {
-                $this->topicIds[] = $this->getOsidIdFromString($this->row['SSBSECT_SUBJ_CODE'], 'topic.subject.');
+                $this->topicIds[] = $this->getOsidIdFromString($this->row['SSBSECT_SUBJ_CODE'], 'topic-subject-');
             }
             if ($this->row['SCBCRSE_DIVS_CODE']) {
-                $this->topicIds[] = $this->getOsidIdFromString($this->row['SCBCRSE_DIVS_CODE'], 'topic.division.');
+                $this->topicIds[] = $this->getOsidIdFromString($this->row['SCBCRSE_DIVS_CODE'], 'topic-division-');
             }
             if ($this->row['GTVINSM_CODE']) {
-                $this->topicIds[] = $this->getOsidIdFromString($this->row['GTVINSM_CODE'], 'topic.instruction_method.');
+                $this->topicIds[] = $this->getOsidIdFromString($this->row['GTVINSM_CODE'], 'topic-instruction_method.');
             }
 
             $this->topicIds = array_merge(
@@ -492,8 +492,8 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
     public function getLocationId()
     {
         return $this->getOsidIdFromString(
-            $this->row['SSRMEET_BLDG_CODE'].'.'.$this->row['SSRMEET_ROOM_CODE'],
-            'resource.place.room.');
+            $this->row['SSRMEET_BLDG_CODE'].'-'.$this->row['SSRMEET_ROOM_CODE'],
+            'resource-place-room-');
     }
 
     /**
@@ -641,7 +641,7 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
         throw new osid_IllegalStateException('This version of the OSID does not support Learning Objectives');
 
         return $this->getOsidIdFromString(
-            $this->row['SSBSECT_TERM_CODE'].'.'.$this->row['SSBSECT_CRN'],
+            $this->row['SSBSECT_TERM_CODE'].'-'.$this->row['SSBSECT_CRN'],
             'CourseSchedule.');
     }
 

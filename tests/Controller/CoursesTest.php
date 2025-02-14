@@ -11,7 +11,7 @@ class CoursesTest extends WebTestCase
     public function testList(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/courses/list/catalog.MCUG');
+        $crawler = $client->request('GET', '/courses/list/catalog-MCUG');
 
         $this->assertResponseIsSuccessful();
 
@@ -22,7 +22,7 @@ class CoursesTest extends WebTestCase
     {
         $client = static::createClient();
         $client->followRedirects(false);
-        $crawler = $client->request('GET', '/courses/view/course.PHYS0201');
+        $crawler = $client->request('GET', '/courses/view/course-PHYS0201');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('div.offering_list a.offering_link', 'PHYS0201A-F09');
@@ -32,7 +32,7 @@ class CoursesTest extends WebTestCase
     {
         $client = static::createClient();
         $client->followRedirects(false);
-        $crawler = $client->request('GET', '/courses/view/course.PHYS0201/term.200690');
+        $crawler = $client->request('GET', '/courses/view/course-PHYS0201/term-200690');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('div.offering_list a.offering_link', 'PHYS0201A-F06');
@@ -41,7 +41,7 @@ class CoursesTest extends WebTestCase
     public function testViewXml(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/courses/viewxml/course.PHYS0201');
+        $crawler = $client->request('GET', '/courses/viewxml/course-PHYS0201');
 
         $this->assertResponseIsSuccessful();
 
@@ -51,7 +51,7 @@ class CoursesTest extends WebTestCase
     public function testViewXmlWithTerm(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/courses/viewxml/course.PHYS0201/term.200690');
+        $crawler = $client->request('GET', '/courses/viewxml/course-PHYS0201/term-200690');
 
         $this->assertResponseIsSuccessful();
 
@@ -61,11 +61,11 @@ class CoursesTest extends WebTestCase
     public function testSearchXml(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/courses/searchxml/catalog.MCUG?keywords=Arctic%20and%20Alpine');
+        $crawler = $client->request('GET', '/courses/searchxml/catalog-MCUG?keywords=Arctic%20and%20Alpine');
 
         $this->assertResponseIsSuccessful();
 
-        $item = $crawler->filterXpath('//item[catalog:id[contains(text(), "course.GEOL0250")]]');
+        $item = $crawler->filterXpath('//item[catalog:id[contains(text(), "course-GEOL0250")]]');
         $this->assertEquals(1, $item->count());
         $this->assertGreaterThan(0, $item->filter('title:contains("Arctic and Alpine Environments")')->count());
     }
@@ -73,7 +73,7 @@ class CoursesTest extends WebTestCase
     public function testSearchXmlWithNoKeywords(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/courses/searchxml/catalog.MCUG');
+        $crawler = $client->request('GET', '/courses/searchxml/catalog-MCUG');
 
         $this->assertResponseIsSuccessful();
 
@@ -84,7 +84,7 @@ class CoursesTest extends WebTestCase
     public function testTopicXml(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/courses/topicxml/catalog.MCUG?topic[]=topic.department.GEOL&topic[]=topic.department.GEOG');
+        $crawler = $client->request('GET', '/courses/topicxml/catalog-MCUG?topic[]=topic-department-GEOL&topic[]=topic-department-GEOG');
 
         $this->assertResponseIsSuccessful();
 
@@ -95,7 +95,7 @@ class CoursesTest extends WebTestCase
     public function testTopicXmlWithUnknownTopic(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/courses/topicxml/catalog.MCUG?topic[]=topic.subject.GEOL&topic[]=topic.subject.XXXX');
+        $crawler = $client->request('GET', '/courses/topicxml/catalog-MCUG?topic[]=topic-subject-GEOL&topic[]=topic-subject-XXXX');
 
         $this->assertResponseIsSuccessful();
 
@@ -106,7 +106,7 @@ class CoursesTest extends WebTestCase
     public function testTopicXmlWithLocation(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/courses/topicxml/catalog.MCUG?topic[]=topic.department.GEOL&location[]=resource.place.campus.M');
+        $crawler = $client->request('GET', '/courses/topicxml/catalog-MCUG?topic[]=topic-department-GEOL&location[]=resource-place-campus-M');
 
         $this->assertResponseIsSuccessful();
 
@@ -117,7 +117,7 @@ class CoursesTest extends WebTestCase
     public function testTopicXmlWithCustomCutoff(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/courses/topicxml/catalog.MCUG?topic[]=topic.department.GEOL&cutoff=P1M');
+        $crawler = $client->request('GET', '/courses/topicxml/catalog-MCUG?topic[]=topic-department-GEOL&cutoff=P1M');
 
         $this->assertResponseIsSuccessful();
 
@@ -128,7 +128,7 @@ class CoursesTest extends WebTestCase
     public function testByIdXml(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/courses/byidxml/catalog.MCUG?id[]=course.PHYS0201&id[]=course.GEOL0250');
+        $crawler = $client->request('GET', '/courses/byidxml/catalog-MCUG?id[]=course-PHYS0201&id[]=course-GEOL0250');
 
         $this->assertResponseIsSuccessful();
 
@@ -139,7 +139,7 @@ class CoursesTest extends WebTestCase
     public function testByIdXmlWithCustomCutoff(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/courses/byidxml/catalog.MCUG?id[]=course.PHYS0201&id[]=course.GEOL0250&cutoff=P1M');
+        $crawler = $client->request('GET', '/courses/byidxml/catalog-MCUG?id[]=course-PHYS0201&id[]=course-GEOL0250&cutoff=P1M');
 
         $this->assertResponseIsSuccessful();
 
@@ -150,7 +150,7 @@ class CoursesTest extends WebTestCase
     public function testInstructorXml(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/courses/instructorxml/resource.person.WEBID1000004');
+        $crawler = $client->request('GET', '/courses/instructorxml/resource-person-WEBID1000004');
 
         $this->assertResponseIsSuccessful();
 
@@ -161,7 +161,7 @@ class CoursesTest extends WebTestCase
     public function testInstructorXmlWithCutoff(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/courses/instructorxml/resource.person.WEBID1000004?cutoff=P10Y');
+        $crawler = $client->request('GET', '/courses/instructorxml/resource-person-WEBID1000004?cutoff=P10Y');
 
         $this->assertResponseIsSuccessful();
 
@@ -183,7 +183,7 @@ class CoursesTest extends WebTestCase
     public function testInstructorXmlWithCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/courses/instructorxml/resource.person.WEBID1000004/catalog.MCUG');
+        $crawler = $client->request('GET', '/courses/instructorxml/resource-person-WEBID1000004/catalog-MCUG');
 
         $this->assertResponseIsSuccessful();
 
@@ -194,7 +194,7 @@ class CoursesTest extends WebTestCase
     public function testInstructorXmlWithOtherCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/courses/instructorxml/resource.person.WEBID1000004/catalog.BLSE');
+        $crawler = $client->request('GET', '/courses/instructorxml/resource-person-WEBID1000004/catalog-BLSE');
 
         $this->assertResponseIsSuccessful();
 

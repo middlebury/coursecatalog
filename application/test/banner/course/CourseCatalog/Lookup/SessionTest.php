@@ -42,11 +42,11 @@ class banner_course_CourseCatalog_Lookup_SessionTest extends phpkit_test_phpunit
     {
         $this->session = self::$courseManager->getCourseCatalogLookupSession();
 
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog.MCUG');
-        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog.MIIS');
+        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MCUG');
+        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MIIS');
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
 
-        $this->unknownType = new phpkit_type_URNInetType('urn:inet:osid.org:unknown_type');
+        $this->unknownType = new phpkit_type_URNInetType('urn:inet:osid-org:unknown_type');
 
         $this->generaNoneType = new phpkit_type_URNInetType('urn:inet:osid.org:genera:none');
         $this->secondaryType = new phpkit_type_URNInetType('urn:inet:osid.org:genera:secondary');

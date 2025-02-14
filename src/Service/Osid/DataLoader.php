@@ -273,19 +273,19 @@ class DataLoader
         $data = [];
         $topics = $this->osidTopicHelper->topicListAsArray($topicList);
 
-        $data['subjectTopics'] = $this->osidTopicHelper->filterTopicsByType($topics, new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject'));
+        $data['subjectTopics'] = $this->osidTopicHelper->filterTopicsByType($topics, new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-subject'));
 
-        $data['departmentTopics'] = $this->osidTopicHelper->filterTopicsByType($topics, new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department'));
+        $data['departmentTopics'] = $this->osidTopicHelper->filterTopicsByType($topics, new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-department'));
 
-        $data['divisionTopics'] = $this->osidTopicHelper->filterTopicsByType($topics, new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.division'));
+        $data['divisionTopics'] = $this->osidTopicHelper->filterTopicsByType($topics, new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-division'));
 
-        $data['requirementTopics'] = $this->osidTopicHelper->filterTopicsByType($topics, new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement'));
+        $data['requirementTopics'] = $this->osidTopicHelper->filterTopicsByType($topics, new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-requirement'));
 
-        $data['levelTopics'] = $this->osidTopicHelper->filterTopicsByType($topics, new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.level'));
+        $data['levelTopics'] = $this->osidTopicHelper->filterTopicsByType($topics, new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-level'));
 
-        $data['blockTopics'] = $this->osidTopicHelper->filterTopicsByType($topics, new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.block'));
+        $data['blockTopics'] = $this->osidTopicHelper->filterTopicsByType($topics, new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-block'));
 
-        $data['instructionMethodTopics'] = $this->osidTopicHelper->filterTopicsByType($topics, new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.instruction_method'));
+        $data['instructionMethodTopics'] = $this->osidTopicHelper->filterTopicsByType($topics, new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-instruction_method'));
 
         return $data;
     }

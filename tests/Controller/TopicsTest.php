@@ -26,7 +26,7 @@ class TopicsTest extends WebTestCase
     public function testListByCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/list/catalog.MCUG');
+        $crawler = $client->request('GET', '/topics/list/catalog-MCUG');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -41,7 +41,7 @@ class TopicsTest extends WebTestCase
     public function testListByInvalidCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/list/catalog.XXXX');
+        $crawler = $client->request('GET', '/topics/list/catalog-XXXX');
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -49,7 +49,7 @@ class TopicsTest extends WebTestCase
     public function testListByCatalogTypeLong(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/list/catalog.MCUG/urn:inet:middlebury.edu:genera:topic.requirement');
+        $crawler = $client->request('GET', '/topics/list/catalog-MCUG/urn:inet:middlebury.edu:genera:topic-requirement');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -64,7 +64,7 @@ class TopicsTest extends WebTestCase
     public function testListByCatalogTypeShort(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/list/catalog.MCUG/genera:topic.requirement');
+        $crawler = $client->request('GET', '/topics/list/catalog-MCUG/genera:topic-requirement');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -94,7 +94,7 @@ class TopicsTest extends WebTestCase
     public function testListXmlByCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/listxml/catalog.MCUG');
+        $crawler = $client->request('GET', '/topics/listxml/catalog-MCUG');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -109,7 +109,7 @@ class TopicsTest extends WebTestCase
     public function testListXmlByInvalidCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/terms/listxml/catalog.XXXX');
+        $crawler = $client->request('GET', '/terms/listxml/catalog-XXXX');
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -117,7 +117,7 @@ class TopicsTest extends WebTestCase
     public function testListXmlByCatalogTypeLong(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/listxml/catalog.MCUG/urn:inet:middlebury.edu:genera:topic.requirement');
+        $crawler = $client->request('GET', '/topics/listxml/catalog-MCUG/urn:inet:middlebury.edu:genera:topic-requirement');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -132,7 +132,7 @@ class TopicsTest extends WebTestCase
     public function testListXmlByCatalogTypeShort(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/listxml/catalog.MCUG/genera:topic.requirement');
+        $crawler = $client->request('GET', '/topics/listxml/catalog-MCUG/genera:topic-requirement');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -162,7 +162,7 @@ class TopicsTest extends WebTestCase
     public function testRecentByCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/recent/catalog.MCUG');
+        $crawler = $client->request('GET', '/topics/recent/catalog-MCUG');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -177,7 +177,7 @@ class TopicsTest extends WebTestCase
     public function testRecentByInvalidCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/recent/catalog.XXXX');
+        $crawler = $client->request('GET', '/topics/recent/catalog-XXXX');
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -185,7 +185,7 @@ class TopicsTest extends WebTestCase
     public function testRecentByCatalogTypeLong(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/recent/catalog.MCUG/urn:inet:middlebury.edu:genera:topic.requirement');
+        $crawler = $client->request('GET', '/topics/recent/catalog-MCUG/urn:inet:middlebury.edu:genera:topic-requirement');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -200,7 +200,7 @@ class TopicsTest extends WebTestCase
     public function testRecentByCatalogTypeShort(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/recent/catalog.MCUG/genera:topic.requirement');
+        $crawler = $client->request('GET', '/topics/recent/catalog-MCUG/genera:topic-requirement');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -230,7 +230,7 @@ class TopicsTest extends WebTestCase
     public function testRecentXmlByCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/recentxml/catalog.MCUG');
+        $crawler = $client->request('GET', '/topics/recentxml/catalog-MCUG');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -245,7 +245,7 @@ class TopicsTest extends WebTestCase
     public function testRecentXmlByInvalidCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/terms/recentxml/catalog.XXXX');
+        $crawler = $client->request('GET', '/terms/recentxml/catalog-XXXX');
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -253,7 +253,7 @@ class TopicsTest extends WebTestCase
     public function testRecentXmlByCatalogTypeLong(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/recentxml/catalog.MCUG/urn:inet:middlebury.edu:genera:topic.requirement');
+        $crawler = $client->request('GET', '/topics/recentxml/catalog-MCUG/urn:inet:middlebury.edu:genera:topic-requirement');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -268,7 +268,7 @@ class TopicsTest extends WebTestCase
     public function testRecentXmlByCatalogTypeShort(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/recentxml/catalog.MCUG/genera:topic.requirement');
+        $crawler = $client->request('GET', '/topics/recentxml/catalog-MCUG/genera:topic-requirement');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -283,7 +283,7 @@ class TopicsTest extends WebTestCase
     public function testView(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/view/topic.subject.PHYS');
+        $crawler = $client->request('GET', '/topics/view/topic-subject-PHYS');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -295,7 +295,7 @@ class TopicsTest extends WebTestCase
     public function testViewInvalidId(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/view/topic.subject.XXXX');
+        $crawler = $client->request('GET', '/topics/view/topic-subject-XXXX');
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -303,7 +303,7 @@ class TopicsTest extends WebTestCase
     public function testViewByCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/view/topic.subject.PHYS/catalog.MCUG');
+        $crawler = $client->request('GET', '/topics/view/topic-subject-PHYS/catalog-MCUG');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -315,7 +315,7 @@ class TopicsTest extends WebTestCase
     public function testViewByNonMatchingCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/view/topic.subject.PHYS/catalog.BLSE');
+        $crawler = $client->request('GET', '/topics/view/topic-subject-PHYS/catalog-BLSE');
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -323,7 +323,7 @@ class TopicsTest extends WebTestCase
     public function testViewByTerm(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/view/topic.subject.PHYS/catalog.MCUG/term.200990');
+        $crawler = $client->request('GET', '/topics/view/topic-subject-PHYS/catalog-MCUG/term-200990');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -335,7 +335,7 @@ class TopicsTest extends WebTestCase
     public function testViewByNonMatchingTerm(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/view/topic.subject.PHYS/catalog.MCUG/term.200900');
+        $crawler = $client->request('GET', '/topics/view/topic-subject-PHYS/catalog-MCUG/term-200900');
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -343,7 +343,7 @@ class TopicsTest extends WebTestCase
     public function testViewXml(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/viewxml/topic.subject.PHYS');
+        $crawler = $client->request('GET', '/topics/viewxml/topic-subject-PHYS');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -354,7 +354,7 @@ class TopicsTest extends WebTestCase
     public function testViewXmlInvalidId(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/viewxml/topic.subject.XXXX');
+        $crawler = $client->request('GET', '/topics/viewxml/topic-subject-XXXX');
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -362,7 +362,7 @@ class TopicsTest extends WebTestCase
     public function testViewXmlByCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/viewxml/topic.subject.PHYS/catalog.MCUG');
+        $crawler = $client->request('GET', '/topics/viewxml/topic-subject-PHYS/catalog-MCUG');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -373,7 +373,7 @@ class TopicsTest extends WebTestCase
     public function testViewXmlByNonMatchingCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/topics/viewxml/topic.subject.PHYS/catalog.BLSE');
+        $crawler = $client->request('GET', '/topics/viewxml/topic-subject-PHYS/catalog-BLSE');
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -392,7 +392,7 @@ class TopicsTest extends WebTestCase
     public function testListSubjectsTxtByCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listsubjectstxt/catalog.MCUG');
+        $client->request('GET', '/topics/listsubjectstxt/catalog-MCUG');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -416,7 +416,7 @@ class TopicsTest extends WebTestCase
     public function testListDepartmentsTxtByCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listdepartmentstxt/catalog.MCUG');
+        $client->request('GET', '/topics/listdepartmentstxt/catalog-MCUG');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -427,7 +427,7 @@ class TopicsTest extends WebTestCase
     public function testListDepartmentsTxtByOtherCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listdepartmentstxt/catalog.BLSE');
+        $client->request('GET', '/topics/listdepartmentstxt/catalog-BLSE');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -450,7 +450,7 @@ class TopicsTest extends WebTestCase
     public function testListRequirementsTxtByCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listrequirementstxt/catalog.MCUG');
+        $client->request('GET', '/topics/listrequirementstxt/catalog-MCUG');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -460,7 +460,7 @@ class TopicsTest extends WebTestCase
     public function testListRequirementsTxtByOtherCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listrequirementstxt/catalog.BLSE');
+        $client->request('GET', '/topics/listrequirementstxt/catalog-BLSE');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -483,7 +483,7 @@ class TopicsTest extends WebTestCase
     public function testListLevelsTxtByCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listlevelstxt/catalog.MCUG');
+        $client->request('GET', '/topics/listlevelstxt/catalog-MCUG');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -494,7 +494,7 @@ class TopicsTest extends WebTestCase
     public function testListLevelsTxtByOtherCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listlevelstxt/catalog.BLSE');
+        $client->request('GET', '/topics/listlevelstxt/catalog-BLSE');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -517,7 +517,7 @@ class TopicsTest extends WebTestCase
     public function testListBlocksTxtByCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listblockstxt/catalog.MCUG');
+        $client->request('GET', '/topics/listblockstxt/catalog-MCUG');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -527,7 +527,7 @@ class TopicsTest extends WebTestCase
     public function testListBlocksTxtByOtherCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listblockstxt/catalog.BLSE');
+        $client->request('GET', '/topics/listblockstxt/catalog-BLSE');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -549,7 +549,7 @@ class TopicsTest extends WebTestCase
     public function testListInstructionMethodsTxtByCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listinstructionmethodstxt/catalog.MCLS');
+        $client->request('GET', '/topics/listinstructionmethodstxt/catalog-MCLS');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -559,7 +559,7 @@ class TopicsTest extends WebTestCase
     public function testListInstructionMethodsTxtByOtherCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listinstructionmethodstxt/catalog.MCUG');
+        $client->request('GET', '/topics/listinstructionmethodstxt/catalog-MCUG');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();

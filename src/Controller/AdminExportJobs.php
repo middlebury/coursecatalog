@@ -181,7 +181,7 @@ class AdminExportJobs extends AbstractController
     public function validtermAction(\osid_id_Id $catalogId, string $termString)
     {
         try {
-            $termId = $this->osidIdMap->fromString('term.'.$termString);
+            $termId = $this->osidIdMap->fromString('term-'.$termString);
             $termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($catalogId);
             if ($termLookupSession->getTerm($termId)) {
                 $response = new Response('valid');

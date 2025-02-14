@@ -20,7 +20,7 @@ class TopicHelperTest extends KernelTestCase
      */
     protected function setUp(): void
     {
-        $this->mcugId = new \phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog.MCUG');
+        $this->mcugId = new \phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MCUG');
 
         $this->osidTopicHelper = static::getContainer()
             ->get(TopicHelper::class);
@@ -46,7 +46,7 @@ class TopicHelperTest extends KernelTestCase
         $numTopics = $topics->available();
         $topicArray = $this->osidTopicHelper->topicListAsArray($topics);
 
-        $subjectType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject');
+        $subjectType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-subject');
 
         $filteredTopics = $this->osidTopicHelper->filterTopicsByType($topicArray, $subjectType);
         $this->assertIsArray($filteredTopics);

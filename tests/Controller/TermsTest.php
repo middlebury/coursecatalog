@@ -23,7 +23,7 @@ class TermsTest extends WebTestCase
     public function testListByCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/terms/list/catalog.MCUG');
+        $crawler = $client->request('GET', '/terms/list/catalog-MCUG');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -35,7 +35,7 @@ class TermsTest extends WebTestCase
     public function testListByInvalidCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/terms/list/catalog.XXXX');
+        $crawler = $client->request('GET', '/terms/list/catalog-XXXX');
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -55,7 +55,7 @@ class TermsTest extends WebTestCase
     public function testListXmlByCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/terms/listxml/catalog.MCUG');
+        $crawler = $client->request('GET', '/terms/listxml/catalog-MCUG');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -67,7 +67,7 @@ class TermsTest extends WebTestCase
     public function testListXmlByInvalidCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/terms/listxml/catalog.XXXX');
+        $crawler = $client->request('GET', '/terms/listxml/catalog-XXXX');
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -75,7 +75,7 @@ class TermsTest extends WebTestCase
     public function testView(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/terms/view/term.200990');
+        $crawler = $client->request('GET', '/terms/view/term-200990');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -86,7 +86,7 @@ class TermsTest extends WebTestCase
     public function testViewInvalidId(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/terms/view/term.200900');
+        $crawler = $client->request('GET', '/terms/view/term-200900');
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -94,7 +94,7 @@ class TermsTest extends WebTestCase
     public function testViewByCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/terms/view/term.200990/catalog.MCUG');
+        $crawler = $client->request('GET', '/terms/view/term-200990/catalog-MCUG');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -105,7 +105,7 @@ class TermsTest extends WebTestCase
     public function testViewByNonMatchingCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/terms/view/term.200990/catalog.MIIS');
+        $crawler = $client->request('GET', '/terms/view/term-200990/catalog-MIIS');
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -113,7 +113,7 @@ class TermsTest extends WebTestCase
     public function testDetails(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/terms/details/term.200990');
+        $crawler = $client->request('GET', '/terms/details/term-200990');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -124,7 +124,7 @@ class TermsTest extends WebTestCase
     public function testDetailsInvalidId(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/terms/details/term.200900');
+        $crawler = $client->request('GET', '/terms/details/term-200900');
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -132,7 +132,7 @@ class TermsTest extends WebTestCase
     public function testDetailsByCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/terms/details/term.200990/catalog.MCUG');
+        $crawler = $client->request('GET', '/terms/details/term-200990/catalog-MCUG');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -143,7 +143,7 @@ class TermsTest extends WebTestCase
     public function testDetailsByNonMatchingCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/terms/details/term.200990/catalog.MIIS');
+        $crawler = $client->request('GET', '/terms/details/term-200990/catalog-MIIS');
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -151,7 +151,7 @@ class TermsTest extends WebTestCase
     public function testDetailsXml(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/terms/detailsxml/term.200990');
+        $crawler = $client->request('GET', '/terms/detailsxml/term-200990');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -162,7 +162,7 @@ class TermsTest extends WebTestCase
     public function testDetailsXmlInvalidId(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/terms/detailsxml/term.200900');
+        $crawler = $client->request('GET', '/terms/detailsxml/term-200900');
 
         $this->assertResponseStatusCodeSame(404);
     }
@@ -170,7 +170,7 @@ class TermsTest extends WebTestCase
     public function testDetailsXmlByCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/terms/detailsxml/term.200990/catalog.MCUG');
+        $crawler = $client->request('GET', '/terms/detailsxml/term-200990/catalog-MCUG');
 
         $this->assertResponseIsSuccessful();
         // print $crawler->outerHtml();
@@ -181,7 +181,7 @@ class TermsTest extends WebTestCase
     public function testDetailsXmlByNonMatchingCatalog(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/terms/detailsxml/term.200990/catalog.MIIS');
+        $crawler = $client->request('GET', '/terms/detailsxml/term-200990/catalog-MIIS');
 
         $this->assertResponseStatusCodeSame(404);
     }

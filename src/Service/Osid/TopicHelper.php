@@ -66,31 +66,31 @@ class TopicHelper
 
         $typedArray['subjectTopics'] = $this->filterTopicsByType(
             $topics,
-            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.subject')
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-subject')
         );
         $typedArray['departmentTopics'] = $this->filterTopicsByType(
             $topics,
-            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.department')
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-department')
         );
         $typedArray['divisionTopics'] = $this->filterTopicsByType(
             $topics,
-            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.division')
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-division')
         );
         $typedArray['requirementTopics'] = $this->filterTopicsByType(
             $topics,
-            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.requirement')
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-requirement')
         );
         $typedArray['levelTopics'] = $this->filterTopicsByType(
             $topics,
-            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.level')
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-level')
         );
         $typedArray['blockTopics'] = $this->filterTopicsByType(
             $topics,
-            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.block')
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-block')
         );
         $typedArray['instructionMethodTopics'] = $this->filterTopicsByType(
             $topics,
-            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic.instruction_method')
+            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-instruction_method')
         );
 
         return $typedArray;

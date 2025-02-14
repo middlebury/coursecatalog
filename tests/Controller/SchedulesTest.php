@@ -26,8 +26,8 @@ class SchedulesTest extends WebTestCase
         // Bookmark some courses so they are available for schedule building.
         $client = static::createClient();
         $client->loginUser($this->user);
-        $client->request('GET', '/bookmarks/add/course.CHEM0104');
-        $client->request('GET', '/bookmarks/add/course.PHYS0201');
+        $client->request('GET', '/bookmarks/add/course-CHEM0104');
+        $client->request('GET', '/bookmarks/add/course-PHYS0201');
         $client->followRedirects();
 
         return $client;
@@ -35,7 +35,7 @@ class SchedulesTest extends WebTestCase
 
     private function createSchedule(KernelBrowser $client, $name): int
     {
-        $crawler = $client->request('GET', '/schedules/list/catalog.MCUG/term.200990');
+        $crawler = $client->request('GET', '/schedules/list/catalog-MCUG/term-200990');
         $crawler = $client->submitForm('Create new schedule');
         $this->assertResponseIsSuccessful();
         // Find the greatest Schedule Id after creating the new one.
@@ -63,7 +63,7 @@ class SchedulesTest extends WebTestCase
 
     private function addSectionsToSchedule(KernelBrowser $client, int $scheduleId, array $sectionIds)
     {
-        $crawler = $client->request('GET', '/schedules/list/catalog.MCUG/term.200990');
+        $crawler = $client->request('GET', '/schedules/list/catalog-MCUG/term-200990');
 
         // Add a section to the schedule.
         $csrfKey = $crawler->filter('.add_section_form input[name="csrf_key"]')->attr('value');
@@ -80,7 +80,7 @@ class SchedulesTest extends WebTestCase
             $args['section_group_'.$i] = $sectionId;
         }
         $crawler = $client->request('POST',
-            '/schedules/add/catalog.MCUG/term.200990',
+            '/schedules/add/catalog-MCUG/term-200990',
             $args,
         );
         $this->assertResponseIsSuccessful();
@@ -94,19 +94,19 @@ class SchedulesTest extends WebTestCase
         $scheduleId = $this->createSchedule($client, 'Science Forward');
 
         // Fetch a list of sections to add to the schedule.
-        $client->request('GET', "/schedules/sectionsforcourse/course.CHEM0104/term.200990?scheduleId=$scheduleId");
+        $client->request('GET', "/schedules/sectionsforcourse/course-CHEM0104/term-200990?scheduleId=$scheduleId");
         $this->assertResponseIsSuccessful();
         $jsonString = $client->getResponse()->getContent();
-        $this->assertStringContainsString('section.200990.90036', $jsonString);
-        $this->assertStringContainsString('section.200990.90041', $jsonString);
-        $this->assertStringContainsString('section.200990.90045', $jsonString);
+        $this->assertStringContainsString('section-200990-90036', $jsonString);
+        $this->assertStringContainsString('section-200990-90041', $jsonString);
+        $this->assertStringContainsString('section-200990-90045', $jsonString);
 
         // Add a section to the schedule.
         $crawler = $this->addSectionsToSchedule($client, $scheduleId,
             [
-                'section.200990.90036', // CHEM0104 A - Lecture.
-                'section.200990.90041', // CHEM0104 T - Discussion.
-                'section.200990.90045', // CHEM0104 W - Lab.
+                'section-200990-90036', // CHEM0104 A - Lecture.
+                'section-200990-90041', // CHEM0104 T - Discussion.
+                'section-200990-90045', // CHEM0104 W - Lab.
             ]
         );
         // Make sure we have our sections listed in the schedule.
@@ -127,9 +127,9 @@ class SchedulesTest extends WebTestCase
         // Add a section to the schedule.
         $crawler = $this->addSectionsToSchedule($client, $scheduleId,
             [
-                'section.200990.90036', // CHEM0104 A - Lecture.
-                'section.200990.90041', // CHEM0104 T - Discussion.
-                'section.200990.90045', // CHEM0104 W - Lab.
+                'section-200990-90036', // CHEM0104 A - Lecture.
+                'section-200990-90041', // CHEM0104 T - Discussion.
+                'section-200990-90045', // CHEM0104 W - Lab.
             ]
         );
 
@@ -144,9 +144,9 @@ class SchedulesTest extends WebTestCase
         $client->request('GET', "/schedules/eventsjson/$scheduleId.json");
         $this->assertResponseIsSuccessful();
         $jsonString = $client->getResponse()->getContent();
-        $this->assertStringContainsString('section.200990.90036', $jsonString);
-        $this->assertStringContainsString('section.200990.90041', $jsonString);
-        $this->assertStringContainsString('section.200990.90045', $jsonString);
+        $this->assertStringContainsString('section-200990-90036', $jsonString);
+        $this->assertStringContainsString('section-200990-90041', $jsonString);
+        $this->assertStringContainsString('section-200990-90045', $jsonString);
     }
 
     public function testRemoveSection()
@@ -156,14 +156,14 @@ class SchedulesTest extends WebTestCase
         // Add a section to the schedule.
         $crawler = $this->addSectionsToSchedule($client, $scheduleId,
             [
-                'section.200990.90036', // CHEM0104 A - Lecture.
-                'section.200990.90041', // CHEM0104 T - Discussion.
-                'section.200990.90045', // CHEM0104 W - Lab.
+                'section-200990-90036', // CHEM0104 A - Lecture.
+                'section-200990-90041', // CHEM0104 T - Discussion.
+                'section-200990-90045', // CHEM0104 W - Lab.
             ]
         );
         $crawler = $this->addSectionsToSchedule($client, $scheduleId,
             [
-                'section.200990.90125', // PHYS0201 A - Lecture.
+                'section-200990-90125', // PHYS0201 A - Lecture.
             ]
         );
 
@@ -175,7 +175,7 @@ class SchedulesTest extends WebTestCase
         // print $crawler->outerHtml();
 
         // Remove the Chemistry sections.
-        $form = $crawler->filter("#remove_section_form_{$scheduleId}_section_200990_90036")->form();
+        $form = $crawler->filter("#remove_section_form_{$scheduleId}_section-200990-90036")->form();
         $crawler = $client->submit($form);
         $this->assertResponseIsSuccessful();
 
@@ -193,9 +193,9 @@ class SchedulesTest extends WebTestCase
         // Add a section to the schedule.
         $crawler = $this->addSectionsToSchedule($client, $scheduleId,
             [
-                'section.200990.90036', // CHEM0104 A - Lecture.
-                'section.200990.90041', // CHEM0104 T - Discussion.
-                'section.200990.90045', // CHEM0104 W - Lab.
+                'section-200990-90036', // CHEM0104 A - Lecture.
+                'section-200990-90041', // CHEM0104 T - Discussion.
+                'section-200990-90045', // CHEM0104 W - Lab.
             ]
         );
 

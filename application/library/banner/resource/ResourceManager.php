@@ -82,7 +82,7 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
      */
     public function getCombinedBinId()
     {
-        return new phpkit_id_Id($this->getIdAuthority(), 'urn', 'resource.all');
+        return new phpkit_id_Id($this->getIdAuthority(), 'urn', 'resource-all');
     }
 
     /*********************************************************

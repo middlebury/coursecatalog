@@ -196,7 +196,7 @@ abstract class banner_AbstractSession extends phpkit_AbstractOsidSession
      */
     public function getTermCodeFromTermId(osid_id_Id $id)
     {
-        $string = $this->getDatabaseIdString($id, 'term.');
+        $string = $this->getDatabaseIdString($id, 'term-');
         if (!preg_match('#^([0-9]{6})$#', $string)) {
             throw new osid_NotFoundException("String '$string' cannot be broken into a term-code");
         }
@@ -215,8 +215,8 @@ abstract class banner_AbstractSession extends phpkit_AbstractOsidSession
      */
     public function getTermCodeFromOfferingId(osid_id_Id $id)
     {
-        $string = $this->getDatabaseIdString($id, 'section.');
-        if (!preg_match('#^([0-9]{6})\.([0-9]{1,5})$#', $string, $matches)) {
+        $string = $this->getDatabaseIdString($id, 'section-');
+        if (!preg_match('#^([0-9]{6})-([0-9]{1,5})$#', $string, $matches)) {
             throw new osid_NotFoundException("String '$string' cannot be broken into a term-code and CRN.");
         }
 
@@ -234,8 +234,8 @@ abstract class banner_AbstractSession extends phpkit_AbstractOsidSession
      */
     public function getCrnFromOfferingId(osid_id_Id $id)
     {
-        $string = $this->getDatabaseIdString($id, 'section.');
-        if (!preg_match('#^([0-9]{6})\.([0-9]{1,5})$#', $string, $matches)) {
+        $string = $this->getDatabaseIdString($id, 'section-');
+        if (!preg_match('#^([0-9]{6})-([0-9]{1,5})$#', $string, $matches)) {
             throw new osid_NotFoundException("String '$string' cannot be broken into a term-code and CRN.");
         }
 
@@ -251,7 +251,7 @@ abstract class banner_AbstractSession extends phpkit_AbstractOsidSession
      */
     public function getSubjectFromCourseId(osid_id_Id $id)
     {
-        $string = $this->getDatabaseIdString($id, 'course.');
+        $string = $this->getDatabaseIdString($id, 'course-');
         if (!preg_match('#^([A-Z]{2,4})([A-Z0-9]{3,5})$#i', $string, $matches)) {
             throw new osid_NotFoundException("String '$string' cannot be broken into a subject-code and Number.");
         }
@@ -268,7 +268,7 @@ abstract class banner_AbstractSession extends phpkit_AbstractOsidSession
      */
     public function getNumberFromCourseId(osid_id_Id $id)
     {
-        $string = $this->getDatabaseIdString($id, 'course.');
+        $string = $this->getDatabaseIdString($id, 'course-');
         if (!preg_match('#^([A-Z]{2,4})([A-Z0-9]{3,5})$#i', $string, $matches)) {
             throw new osid_NotFoundException("String '$string' cannot be broken into a subject-code and Number.");
         }
