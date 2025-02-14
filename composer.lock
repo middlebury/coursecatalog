@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0824e86550a7921b4713c09e863490c4",
+    "content-hash": "a83c98f8f451ae8b03a4e80869d91d0c",
     "packages": [
         {
             "name": "brick/math",
@@ -2964,7 +2964,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.assembla.com/osid-phpkit.git",
-                "reference": "c67deec39af834c636fe7f156c086892f48fd368"
+                "reference": "f862f1de1359697dff671cc507311f5427f8a663"
             },
             "type": "library"
         },
