@@ -44,6 +44,11 @@ services:
     overrides:
       environment:
         MAILER_DSN: smtp://mailpit:1025
+  cacheserver:
+      type: varnish:6.0
+      backend: appserver
+      config:
+          vcl: config/external/varnish.vcl
   phpmyadmin:
     type: phpmyadmin
     hosts:
@@ -72,3 +77,5 @@ proxy:
         - mail.coursecatalog.lndo.site:8025
     phpmyadmin:
         - phpmyadmin.coursecatalog.lndo.site
+    cacheserver:
+        - cached.coursecatalog.lndo.site
