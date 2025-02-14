@@ -185,8 +185,6 @@ class TimeStampTest extends TestCase
      */
     public function testEpoch()
     {
-        echo 'test_epoch';
-
         $dateAndTime = TimeStamp::epoch();
         $this->assertEquals(1901, $dateAndTime->year());
         $this->assertEquals(1, $dateAndTime->month());

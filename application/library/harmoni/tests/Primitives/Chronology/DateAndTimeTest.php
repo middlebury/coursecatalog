@@ -538,8 +538,6 @@ class DateAndTimeTest extends TestCase
      */
     public function testPhpDatetime()
     {
-        echo '<h3>conversion to PHP DateTime</h3>';
-
         $ref = new ReflectionClass('DateTimeZone');
 
         $dateAndTime = DateAndTime::withYearMonthDayHourMinuteSecondOffset(
@@ -581,28 +579,19 @@ class DateAndTimeTest extends TestCase
     /**
      * Check the equality of a DateAndTime against a PHP DateTime object.
      *
-     *
      * @return void
      *
      * @since 11/21/08
      */
     protected function checkEquality(DateAndTime $dateAndTime, DateTime $dateTime)
     {
-        echo '<h4>'.$dateAndTime->asString().'</h4>';
-        echo 'Year: ';
         $this->assertEquals((int) $dateTime->format('Y'), $dateAndTime->year());
-        echo 'Month: ';
         $this->assertEquals((int) $dateTime->format('n'), $dateAndTime->month());
-        echo 'Day of Month: ';
         $this->assertEquals((int) $dateTime->format('j'), $dateAndTime->dayOfMonth());
-        echo 'Day of Year: ';
         $this->assertEquals((int) $dateTime->format('z'), $dateAndTime->dayOfYear() - 1);
 
-        echo 'Hour: ';
         $this->assertEquals((int) $dateTime->format('G'), $dateAndTime->hour());
-        echo 'Minute: ';
         $this->assertEquals((int) $dateTime->format('i'), $dateAndTime->minute());
-        echo 'Second: ';
         $this->assertEquals((int) $dateTime->format('s'), $dateAndTime->second());
 
         // 		print "TZ abbriviation: ";
@@ -611,7 +600,6 @@ class DateAndTimeTest extends TestCase
         $datTZone = $dateAndTime->timeZone();
         $dtTZone = $dateTime->getTimezone();
 
-        echo 'TZ seconds: ';
         $this->assertEquals((int) $dateTime->format('Z'), $datTZone->offset()->asSeconds());
     }
 }
