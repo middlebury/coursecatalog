@@ -390,11 +390,11 @@ class Timespan extends Magnitude implements AsDateAndTime
         $aBeginning = $start->min($aTimespan->start());
         $anEnd = $end->max($aTimespan->end());
 
-        $obj = self::startingEnding(
+        // Note that we return the base Timespan rather than a Mondy/Week/Year
+        // since those have fixed durations.
+        return Timespan::startingEnding(
             $aBeginning,
             $anEnd->plus(DateAndTime::clockPrecision()));
-
-        return $obj;
     }
 
     /*********************************************************
@@ -884,8 +884,8 @@ class Timespan extends Magnitude implements AsDateAndTime
      */
     public function to($anEnd)
     {
-        $obj = self::startingEnding($this->start(), $anEnd->asDateAndTime());
-
-        return $obj;
+        // Note that we return the base Timespan rather than a Mondy/Week/Year
+        // since those have fixed durations.
+        return Timespan::startingEnding($this->start(), $anEnd->asDateAndTime());
     }
 }
