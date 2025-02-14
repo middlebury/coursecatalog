@@ -169,13 +169,13 @@ class DurationTest extends TestCase
         $this->assertEquals(9, $duration->days());
         $this->assertEquals(14, $duration->hours());
         $this->assertEquals(49, $duration->minutes());
-        $this->assertEquals(55, $duration->seconds());
+        $this->assertEquals(55, round($duration->seconds()));
 
         $duration = Duration::withWeeks(-1.374);
         $this->assertEquals(-9, $duration->days());
         $this->assertEquals(-14, $duration->hours());
         $this->assertEquals(-49, $duration->minutes());
-        $this->assertEquals(-55, $duration->seconds());
+        $this->assertEquals(-55, round($duration->seconds()));
 
         // Zero
         $duration = Duration::zero();
@@ -194,7 +194,7 @@ class DurationTest extends TestCase
         $this->assertEquals(-7, $duration->days());
         $this->assertEquals(-9, $duration->hours());
         $this->assertEquals(-12, $duration->minutes());
-        $this->assertEquals(-6, $duration->seconds());
+        $this->assertEquals(-6, round($duration->seconds()));
 
         $duration = Duration::fromString('+0:01:02');
         $this->assertEquals(0, $duration->days());
@@ -253,10 +253,10 @@ class DurationTest extends TestCase
     public function testPrintableString()
     {
         $duration = Duration::withWeeks(1.374);
-        $this->assertEquals('9:14:49:55', $duration->printableString());
+        $this->assertEquals('9:14:49:55.2', $duration->printableString());
 
         $duration = Duration::withWeeks(-1.374);
-        $this->assertEquals('-9:14:49:55', $duration->printableString());
+        $this->assertEquals('-9:14:49:55.2', $duration->printableString());
 
         $duration = Duration::withWeeks(1.5);
         $this->assertEquals('10:12:00:00', $duration->printableString());
