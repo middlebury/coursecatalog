@@ -13,4 +13,5 @@ return [
     Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle::class => ['all' => true],
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     Knp\Bundle\MenuBundle\KnpMenuBundle::class => ['all' => true],
+    FOS\HttpCacheBundle\FOSHttpCacheBundle::class => ['all' => true],
 ];
