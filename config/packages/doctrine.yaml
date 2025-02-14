@@ -8,6 +8,10 @@ doctrine:
 
         profiling_collect_backtrace: '%kernel.debug%'
         use_savepoints: true
+
+        # Filter out the application's custom tables from being included in
+        # Doctrine Migrations diffs.
+        schema_filter: ~^(?!antirequisites|archive_|catalog_|course_catalog|user_|GOR|GTV|SCB|SCR|SIR|SOB|SSB|SSR|STV|SYV|screqiv_current)~
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
