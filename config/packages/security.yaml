@@ -19,7 +19,7 @@ security:
             pattern: ^/
             saml:
                 check_path: saml_acs
-                login_path: saml_login
+                login_path: login
             logout:
                 path: saml_logout
 
@@ -34,6 +34,7 @@ security:
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/saml/(metadata|login|acs|logout), roles: PUBLIC_ACCESS }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/schedules, roles: ROLE_USER }
         - { path: ^/, roles: PUBLIC_ACCESS }
 
