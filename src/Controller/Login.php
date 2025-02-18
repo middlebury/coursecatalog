@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use Nbgrp\OneloginSamlBundle\Controller\Login as NbgrpLogin;
 use OneLogin\Saml2\Auth;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -26,20 +25,24 @@ class Login extends AbstractController
             // This could be more thorough checking to ensure that the URL
             // is below the application's base URL or take into account
             // other routing details, but this seems like a basic sanity check.
-            if ($request->getHttpHost() != parse_url($returnTo, PHP_URL_HOST)) {
+            if (!preg_match('#^/.*$#', $returnTo) && $request->getHttpHost() != parse_url($returnTo, PHP_URL_HOST)) {
                 throw new \InvalidArgumentException('returnTo must match the current host');
             }
-            // Set the session variable that the Nbgrp/OneloginSamlBundle is
-            // looking for.
-            $firewallName = $this->firewallMap->getFirewallConfig($request)?->getName();
-            if (!$firewallName) {
-                throw new ServiceUnavailableHttpException(message: 'Unknown firewall.');
-            }
-            $request->getSession()->set('_security.'.$firewallName.'.target_path', $returnTo);
+            $targetPath = $returnTo;
+        } else {
+            $targetPath = '/';
         }
-        // Execute the Nbgrp/OneloginSamlBundle's login action.
-        $nbgrpLogin = new NbgrpLogin($this->firewallMap);
 
-        return $nbgrpLogin($request, $auth);
+        return new RedirectResponse($this->processLoginAndGetRedirectUrl($auth, $targetPath));
+    }
+
+    private function processLoginAndGetRedirectUrl(Auth $auth, ?string $targetPath): string
+    {
+        $redirectUrl = $auth->login(returnTo: $targetPath, stay: true);
+        if (null === $redirectUrl) {
+            throw new \RuntimeException('Login cannot be performed: Auth did not returned redirect url.');
+        }
+
+        return $redirectUrl;
     }
 }

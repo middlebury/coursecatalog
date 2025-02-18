@@ -8,6 +8,7 @@ use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class MenuBuilder
 {
@@ -20,11 +21,14 @@ class MenuBuilder
         private IdMap $osidIdMap,
         private Security $security,
         private RequestStack $requestStack,
+        private UrlGeneratorInterface $urlGenerator,
     ) {
     }
 
     public function createMainMenu(array $options): ItemInterface
     {
+        $user = $this->security->getUser();
+
         // Note the current route so that we can mark the Search page for a
         // catalog as active when looking at catalog-specific pages that aren't
         // in a menu.
@@ -76,7 +80,16 @@ class MenuBuilder
             }
         }
 
-        $menu->addChild('Schedule Builder', ['route' => 'schedules']);
+        if ($user) {
+            $menu->addChild('Schedule Builder', ['route' => 'schedules']);
+        } else {
+            $menu->addChild('Schedule Builder', [
+                'route' => 'login',
+                'routeParameters' => [
+                    'returnTo' => $this->urlGenerator->generate('schedules', ['catalogId' => $selectedCatalogId]),
+                ],
+            ]);
+        }
 
         $menu->addChild('Course Hub', ['uri' => 'https://courses.middlebury.edu']);
         $menu['Course Hub']->setLinkAttribute('class', 'link-external');
@@ -106,11 +119,15 @@ class MenuBuilder
         }
 
         // Log in / Log out.
-        $user = $this->security->getUser();
         if ($user) {
             $menu->addChild('Log out', ['route' => 'saml_logout']);
         } else {
-            $menu->addChild('Log in', ['route' => 'saml_login']);
+            $menu->addChild('Log in', [
+                'route' => 'login',
+                'routeParameters' => [
+                    'returnTo' => $currentRequest->getRequestUri(),
+                ],
+            ]);
         }
 
         return $menu;
@@ -159,7 +176,18 @@ class MenuBuilder
         }
 
         // Schedule link.
+        $user = $this->security->getUser();
         $menu->addChild('Schedule Builder', ['route' => 'schedules']);
+        if ($user) {
+            $menu->addChild('Schedule Builder', ['route' => 'schedules']);
+        } else {
+            $menu->addChild('Schedule Builder', [
+                'route' => 'login',
+                'routeParameters' => [
+                    'returnTo' => $this->urlGenerator->generate('schedules', ['catalogId' => $selectedCatalogId]),
+                ],
+            ]);
+        }
 
         return $menu;
     }
