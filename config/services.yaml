@@ -123,6 +123,10 @@ services:
     App\Archive\Storage\ArchiveStorage:
         arguments:
             $basePath: '%env(ARCHIVE_BASE_PATH)%'
+    App\EventListener\CacheControlListener:
+        arguments:
+            $maxAge: '%env(int:PUBLIC_CACHE_MAX_AGE)%'
+            $sharedMaxAge: '%env(int:PUBLIC_CACHE_SHARED_MAX_AGE)%'
     session.factory:
         class: App\Session\LazySessionFactory
         arguments:
