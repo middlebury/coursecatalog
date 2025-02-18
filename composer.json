@@ -12,7 +12,6 @@
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.3",
-        "friendsofsymfony/http-cache-bundle": "^3.1",
         "knplabs/knp-menu-bundle": "^3.5",
         "knplabs/knp-paginator-bundle": "^6.6",
         "microsoft/microsoft-graph": "^2.12",

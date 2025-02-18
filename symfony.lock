@@ -47,9 +47,6 @@
             ".php-cs-fixer.dist.php"
         ]
     },
-    "friendsofsymfony/http-cache-bundle": {
-        "version": "3.1.1"
-    },
     "knplabs/knp-menu-bundle": {
         "version": "v3.5.0"
     },
