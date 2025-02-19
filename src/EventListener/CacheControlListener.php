@@ -9,9 +9,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Set Cache-Control headers to public for anonymous requests.
- *
- * Note that this relies on App\Session\LazySession to report
- * isStarted() => false when the session is empty.
  */
 final class CacheControlListener
 {
