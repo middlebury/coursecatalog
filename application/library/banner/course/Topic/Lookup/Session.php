@@ -942,7 +942,7 @@ GROUP BY GTVINSM_CODE
 
         $parameters = array_merge(
             [
-                ':insm_code' => $this->getDatabaseIdString($topicId, 'topic-instruction_method.'),
+                ':insm_code' => $this->getDatabaseIdString($topicId, 'topic-instruction_method-'),
             ],
             $this->getCatalogParameters());
         self::$getInstructionMethodTopic_stmts[$catalogWhere]->execute($parameters);
@@ -950,11 +950,11 @@ GROUP BY GTVINSM_CODE
         self::$getInstructionMethodTopic_stmts[$catalogWhere]->closeCursor();
 
         if (!$row || !$row['GTVINSM_CODE']) {
-            throw new osid_NotFoundException('Could not find a topic matching the instruction_method code '.$this->getDatabaseIdString($topicId, 'topic-instruction_method.').'.');
+            throw new osid_NotFoundException('Could not find a topic matching the instruction_method code '.$this->getDatabaseIdString($topicId, 'topic-instruction_method-').'.');
         }
 
         return new banner_course_Topic(
-            $this->getOsidIdFromString($row['GTVINSM_CODE'], 'topic-instruction_method.'),
+            $this->getOsidIdFromString($row['GTVINSM_CODE'], 'topic-instruction_method-'),
             trim($row['GTVINSM_DESC']),
             '',
             new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-instruction_method')
@@ -996,7 +996,7 @@ GROUP BY GTVINSM_CODE
         $topics = [];
         while ($row = self::$getInstructionMethodTopics_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC)) {
             $topics[] = new banner_course_Topic(
-                $this->getOsidIdFromString($row['GTVINSM_CODE'], 'topic-instruction_method.'),
+                $this->getOsidIdFromString($row['GTVINSM_CODE'], 'topic-instruction_method-'),
                 trim($row['GTVINSM_DESC']),
                 '',
                 new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-instruction_method')

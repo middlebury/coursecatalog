@@ -404,7 +404,7 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
                 $this->topicIds[] = $this->getOsidIdFromString($this->row['SCBCRSE_DIVS_CODE'], 'topic-division-');
             }
             if ($this->row['GTVINSM_CODE']) {
-                $this->topicIds[] = $this->getOsidIdFromString($this->row['GTVINSM_CODE'], 'topic-instruction_method.');
+                $this->topicIds[] = $this->getOsidIdFromString($this->row['GTVINSM_CODE'], 'topic-instruction_method-');
             }
 
             $this->topicIds = array_merge(
