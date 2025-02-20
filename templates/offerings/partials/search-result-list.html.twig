@@ -1,12 +1,12 @@
-<div class="paragraph--two-col-text search_results" data-digest-content>
+<div class="course-catalog-search-results" data-digest-content>
 {% if paginator is not null %}
-    <h2 class="h2 mb-4 mb-lg-5">
+    <h2 class="h2 mt-5" id="course-catalog-search-results">
         Search Results  ({{ paginator.getTotalItemCount }})
     </h2>
 
     <ul class="col-count-xl-1">
 {% for item in paginator %}
-        <li class="w-100 d-inline-block mb-8">
+        <li class="w-100 d-inline-block">
             {{ include('offerings/partials/search-result-card.html.twig', {item: item, catalogId: catalogId}, with_context = false) }}
         </li>
 {% endfor %}

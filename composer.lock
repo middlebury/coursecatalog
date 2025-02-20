@@ -2258,16 +2258,16 @@
         },
         {
             "name": "microsoft/kiota-abstractions",
-            "version": "1.4.0",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/microsoft/kiota-abstractions-php.git",
-                "reference": "b911a9cd389a15f7f1c61002d752dc05edac2a47"
+                "reference": "53beaf41d810cd757a89f55152aa686aa74565bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/microsoft/kiota-abstractions-php/zipball/b911a9cd389a15f7f1c61002d752dc05edac2a47",
-                "reference": "b911a9cd389a15f7f1c61002d752dc05edac2a47",
+                "url": "https://api.github.com/repos/microsoft/kiota-abstractions-php/zipball/53beaf41d810cd757a89f55152aa686aa74565bb",
+                "reference": "53beaf41d810cd757a89f55152aa686aa74565bb",
                 "shasum": ""
             },
             "require": {
@@ -2276,12 +2276,12 @@
                 "php": "^7.4 || ^8.0",
                 "php-http/promise": "~1.2.0",
                 "psr/http-message": "^1.1 || ^2.0",
-                "ramsey/uuid": "^3 || ^4",
-                "stduritemplate/stduritemplate": "^0.0.53 || ^0.0.54 || ^0.0.55 || ^0.0.56 || ^0.0.57"
+                "ramsey/uuid": "^4.2.3",
+                "stduritemplate/stduritemplate": "^0.0.53 || ^0.0.54 || ^0.0.55 || ^0.0.56 || ^0.0.57 || ^0.0.59 || ^1.0.0 || ^2.0.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "^1.2.0",
-                "phpunit/phpunit": "^8.5.5 || ^9.3.5"
+                "phpstan/phpstan": "^1.12.16",
+                "phpunit/phpunit": "^9.6.22"
             },
             "type": "library",
             "autoload": {
@@ -2302,23 +2302,22 @@
             ],
             "description": "Abstractions for Kiota",
             "support": {
-                "issues": "https://github.com/microsoft/kiota-abstractions-php/issues",
-                "source": "https://github.com/microsoft/kiota-abstractions-php/tree/1.4.0"
+                "source": "https://github.com/microsoft/kiota-abstractions-php/tree/1.5.0"
             },
-            "time": "2024-05-30T11:52:07+00:00"
+            "time": "2025-02-17T16:44:43+00:00"
         },
         {
             "name": "microsoft/kiota-authentication-phpleague",
-            "version": "1.3.1",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/microsoft/kiota-authentication-phpleague-php.git",
-                "reference": "7fddd497c1ff92ecf3016513f6dd4e4f418a5705"
+                "reference": "2d8e1e200ead2d883f494d767d6a0a57eff62a8b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/microsoft/kiota-authentication-phpleague-php/zipball/7fddd497c1ff92ecf3016513f6dd4e4f418a5705",
-                "reference": "7fddd497c1ff92ecf3016513f6dd4e4f418a5705",
+                "url": "https://api.github.com/repos/microsoft/kiota-authentication-phpleague-php/zipball/2d8e1e200ead2d883f494d767d6a0a57eff62a8b",
+                "reference": "2d8e1e200ead2d883f494d767d6a0a57eff62a8b",
                 "shasum": ""
             },
             "require": {
@@ -2326,13 +2325,13 @@
                 "ext-openssl": "*",
                 "firebase/php-jwt": "^v6.0.0",
                 "league/oauth2-client": "^2.6.1",
-                "microsoft/kiota-abstractions": "^1.0.2",
-                "php": "^7.4 | ^8.0",
+                "microsoft/kiota-abstractions": "^1.5.0",
+                "php": "^7.4 || ^8.0",
                 "ramsey/uuid": "^4.2.3"
             },
             "require-dev": {
-                "phpstan/phpstan": "^1.4.6",
-                "phpunit/phpunit": "^9.5.13"
+                "phpstan/phpstan": "^1.12.16",
+                "phpunit/phpunit": "^9.6.22"
             },
             "type": "library",
             "autoload": {
@@ -2352,35 +2351,34 @@
             ],
             "description": "Authentication provider for Kiota using the PHP League OAuth 2.0 client to authenticate against the Microsoft Identity platform",
             "support": {
-                "issues": "https://github.com/microsoft/kiota-authentication-phpleague-php/issues",
-                "source": "https://github.com/microsoft/kiota-authentication-phpleague-php/tree/1.3.1"
+                "source": "https://github.com/microsoft/kiota-authentication-phpleague-php/tree/1.5.0"
             },
-            "time": "2024-11-27T12:46:06+00:00"
+            "time": "2025-02-19T06:24:55+00:00"
         },
         {
             "name": "microsoft/kiota-http-guzzle",
-            "version": "1.3.1",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/microsoft/kiota-http-guzzle-php.git",
-                "reference": "7ff51aa658c3cf9d421501631e2bf45ced425b65"
+                "reference": "4a9c4b69819712af5c62c2b978a0123ecf8f1208"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/microsoft/kiota-http-guzzle-php/zipball/7ff51aa658c3cf9d421501631e2bf45ced425b65",
-                "reference": "7ff51aa658c3cf9d421501631e2bf45ced425b65",
+                "url": "https://api.github.com/repos/microsoft/kiota-http-guzzle-php/zipball/4a9c4b69819712af5c62c2b978a0123ecf8f1208",
+                "reference": "4a9c4b69819712af5c62c2b978a0123ecf8f1208",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-zlib": "*",
                 "guzzlehttp/guzzle": "^7.4.5",
-                "microsoft/kiota-abstractions": "^1.1.0",
-                "php": "^7.4 | ^8.0"
+                "microsoft/kiota-abstractions": "^1.5.0",
+                "php": "^7.4 || ^8.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "^1.2",
-                "phpunit/phpunit": "^9.5"
+                "phpstan/phpstan": "^1.12.16",
+                "phpunit/phpunit": "^9.6.22"
             },
             "type": "library",
             "autoload": {
@@ -2400,34 +2398,33 @@
             ],
             "description": "Kiota HTTP Request Adapter implementation",
             "support": {
-                "issues": "https://github.com/microsoft/kiota-http-guzzle-php/issues",
-                "source": "https://github.com/microsoft/kiota-http-guzzle-php/tree/1.3.1"
+                "source": "https://github.com/microsoft/kiota-http-guzzle-php/tree/1.5.0"
             },
-            "time": "2024-09-04T11:54:51+00:00"
+            "time": "2025-02-19T06:27:54+00:00"
         },
         {
             "name": "microsoft/kiota-serialization-form",
-            "version": "1.1.1",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/microsoft/kiota-serialization-form-php.git",
-                "reference": "e6de40f5558d11d070b67e5d8a7b7978b3e99b35"
+                "reference": "d26a199a2a5ca5cae3654a6106ff4f9560809277"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/microsoft/kiota-serialization-form-php/zipball/e6de40f5558d11d070b67e5d8a7b7978b3e99b35",
-                "reference": "e6de40f5558d11d070b67e5d8a7b7978b3e99b35",
+                "url": "https://api.github.com/repos/microsoft/kiota-serialization-form-php/zipball/d26a199a2a5ca5cae3654a6106ff4f9560809277",
+                "reference": "d26a199a2a5ca5cae3654a6106ff4f9560809277",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "guzzlehttp/psr7": "^1.6 || ^2",
-                "microsoft/kiota-abstractions": "^1.3.1",
-                "php": "^7.4 || ^8"
+                "microsoft/kiota-abstractions": "^1.5.0",
+                "php": "^7.4 || ^8.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "^1.4",
-                "phpunit/phpunit": "^8 || ^9",
+                "phpstan/phpstan": "^1.12.16",
+                "phpunit/phpunit": "^9.6.22",
                 "roave/security-advisories": "dev-latest"
             },
             "type": "library",
@@ -2449,34 +2446,33 @@
             ],
             "description": "Form implementation of Kiota abstractions serialization.",
             "support": {
-                "issues": "https://github.com/microsoft/kiota-serialization-form-php/issues",
-                "source": "https://github.com/microsoft/kiota-serialization-form-php/tree/1.1.1"
+                "source": "https://github.com/microsoft/kiota-serialization-form-php/tree/1.5.0"
             },
-            "time": "2024-05-30T13:38:01+00:00"
+            "time": "2025-02-19T06:29:35+00:00"
         },
         {
             "name": "microsoft/kiota-serialization-json",
-            "version": "v1.3.1",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/microsoft/kiota-serialization-json-php.git",
-                "reference": "85f7fdba1ad5b3adcb5bccdabfbada44e82af7f6"
+                "reference": "ec99e2c22c5229b1b39f5957abcb430f28cc448c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/microsoft/kiota-serialization-json-php/zipball/85f7fdba1ad5b3adcb5bccdabfbada44e82af7f6",
-                "reference": "85f7fdba1ad5b3adcb5bccdabfbada44e82af7f6",
+                "url": "https://api.github.com/repos/microsoft/kiota-serialization-json-php/zipball/ec99e2c22c5229b1b39f5957abcb430f28cc448c",
+                "reference": "ec99e2c22c5229b1b39f5957abcb430f28cc448c",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "guzzlehttp/psr7": "^1.6 || ^2",
-                "microsoft/kiota-abstractions": "^1.4.0",
-                "php": "^7.4 || ^8"
+                "microsoft/kiota-abstractions": "^1.5.0",
+                "php": "^7.4 || ^8.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "^1.4",
-                "phpunit/phpunit": "^8 || ^9",
+                "phpstan/phpstan": "^1.12.16",
+                "phpunit/phpunit": "^9.6.22",
                 "roave/security-advisories": "dev-latest"
             },
             "type": "library",
@@ -2498,34 +2494,33 @@
             ],
             "description": "Implementation of Kiota serialization abstractions using Json.",
             "support": {
-                "issues": "https://github.com/microsoft/kiota-serialization-json-php/issues",
-                "source": "https://github.com/microsoft/kiota-serialization-json-php/tree/v1.3.1"
+                "source": "https://github.com/microsoft/kiota-serialization-json-php/tree/1.5.0"
             },
-            "time": "2024-09-16T17:45:09+00:00"
+            "time": "2025-02-19T06:28:58+00:00"
         },
         {
             "name": "microsoft/kiota-serialization-multipart",
-            "version": "1.0.0",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/microsoft/kiota-serialization-multipart-php.git",
-                "reference": "a6b635c3d9c033d69bdd8ea80444ffd22d1a2b85"
+                "reference": "6668768223cf0760a5cfab76232883eae85e7c15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/microsoft/kiota-serialization-multipart-php/zipball/a6b635c3d9c033d69bdd8ea80444ffd22d1a2b85",
-                "reference": "a6b635c3d9c033d69bdd8ea80444ffd22d1a2b85",
+                "url": "https://api.github.com/repos/microsoft/kiota-serialization-multipart-php/zipball/6668768223cf0760a5cfab76232883eae85e7c15",
+                "reference": "6668768223cf0760a5cfab76232883eae85e7c15",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "guzzlehttp/psr7": "^1.6 || ^2",
-                "microsoft/kiota-abstractions": "^1.2.0",
-                "php": "^7.4 || ^8"
+                "microsoft/kiota-abstractions": "^1.5.0",
+                "php": "^7.4 || ^8.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "^1.4",
-                "phpunit/phpunit": "^8 || ^9",
+                "phpstan/phpstan": "^1.12.16",
+                "phpunit/phpunit": "^9.6.22",
                 "roave/security-advisories": "dev-latest"
             },
             "type": "library",
@@ -2547,33 +2542,32 @@
             ],
             "description": "Multipart implementation of Kiota abstractions serialization.",
             "support": {
-                "issues": "https://github.com/microsoft/kiota-serialization-multipart-php/issues",
-                "source": "https://github.com/microsoft/kiota-serialization-multipart-php/tree/1.0.0"
+                "source": "https://github.com/microsoft/kiota-serialization-multipart-php/tree/1.5.0"
             },
-            "time": "2024-03-27T12:05:13+00:00"
+            "time": "2025-02-19T06:29:47+00:00"
         },
         {
             "name": "microsoft/kiota-serialization-text",
-            "version": "1.1.0",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/microsoft/kiota-serialization-text-php.git",
-                "reference": "e9ed18ae89704c6de97de473c147559e4575ed0d"
+                "reference": "341ae866e50341f63f1b0320cb6c08582ae6709a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/microsoft/kiota-serialization-text-php/zipball/e9ed18ae89704c6de97de473c147559e4575ed0d",
-                "reference": "e9ed18ae89704c6de97de473c147559e4575ed0d",
+                "url": "https://api.github.com/repos/microsoft/kiota-serialization-text-php/zipball/341ae866e50341f63f1b0320cb6c08582ae6709a",
+                "reference": "341ae866e50341f63f1b0320cb6c08582ae6709a",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/psr7": "^1.6 || ^2",
-                "microsoft/kiota-abstractions": "^1.3.1",
-                "php": "^7.4 | ^8.0"
+                "microsoft/kiota-abstractions": "^1.5.0",
+                "php": "^7.4 || ^8.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "^1.2",
-                "phpunit/phpunit": "^9.5"
+                "phpstan/phpstan": "^1.12.16",
+                "phpunit/phpunit": "^9.6.22"
             },
             "type": "library",
             "autoload": {
@@ -2593,10 +2587,9 @@
             ],
             "description": "Implementation of Serialization Abstractions for text/plain content",
             "support": {
-                "issues": "https://github.com/microsoft/kiota-serialization-text-php/issues",
-                "source": "https://github.com/microsoft/kiota-serialization-text-php/tree/1.1.0"
+                "source": "https://github.com/microsoft/kiota-serialization-text-php/tree/1.5.0"
             },
-            "time": "2024-05-08T12:30:40+00:00"
+            "time": "2025-02-19T06:29:21+00:00"
         },
         {
             "name": "microsoft/microsoft-graph",
@@ -2647,26 +2640,26 @@
         },
         {
             "name": "microsoft/microsoft-graph-core",
-            "version": "v2.2.1",
+            "version": "v2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/microsoftgraph/msgraph-sdk-php-core.git",
-                "reference": "7662774bf351a6e6c55c9c7577d58c45f975b195"
+                "reference": "2c2978c21c930751ae63915ce0678933bf826981"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/microsoftgraph/msgraph-sdk-php-core/zipball/7662774bf351a6e6c55c9c7577d58c45f975b195",
-                "reference": "7662774bf351a6e6c55c9c7577d58c45f975b195",
+                "url": "https://api.github.com/repos/microsoftgraph/msgraph-sdk-php-core/zipball/2c2978c21c930751ae63915ce0678933bf826981",
+                "reference": "2c2978c21c930751ae63915ce0678933bf826981",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "microsoft/kiota-authentication-phpleague": "^1.1.0",
-                "microsoft/kiota-http-guzzle": "^1.3.0",
-                "microsoft/kiota-serialization-form": "^1.1.0",
-                "microsoft/kiota-serialization-json": "^1.2.0",
-                "microsoft/kiota-serialization-multipart": "^1.0.0",
-                "microsoft/kiota-serialization-text": "^1.1.0",
+                "microsoft/kiota-authentication-phpleague": "^1.5.0",
+                "microsoft/kiota-http-guzzle": "^1.5.0",
+                "microsoft/kiota-serialization-form": "^1.5.0",
+                "microsoft/kiota-serialization-json": "^1.5.0",
+                "microsoft/kiota-serialization-multipart": "^1.5.0",
+                "microsoft/kiota-serialization-text": "^1.5.0",
                 "php": "^8.0 || ^7.4"
             },
             "require-dev": {
@@ -2695,22 +2688,22 @@
             "homepage": "https://developer.microsoft.com/en-us/graph",
             "support": {
                 "issues": "https://github.com/microsoftgraph/msgraph-sdk-php-core/issues",
-                "source": "https://github.com/microsoftgraph/msgraph-sdk-php-core/tree/v2.2.1"
+                "source": "https://github.com/microsoftgraph/msgraph-sdk-php-core/tree/v2.3.0"
             },
-            "time": "2025-01-08T14:11:32+00:00"
+            "time": "2025-02-19T07:10:23+00:00"
         },
         {
             "name": "middlebury/midd-frontend",
-            "version": "4.0.2",
+            "version": "4.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/middlebury/midd-frontend.git",
-                "reference": "ccb9b4ce9ba8298acd5bcd9f2d75f5932c6981e7"
+                "reference": "df315430fc97027e3a4bce8891a586c148d52fbb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/middlebury/midd-frontend/zipball/ccb9b4ce9ba8298acd5bcd9f2d75f5932c6981e7",
-                "reference": "ccb9b4ce9ba8298acd5bcd9f2d75f5932c6981e7",
+                "url": "https://api.github.com/repos/middlebury/midd-frontend/zipball/df315430fc97027e3a4bce8891a586c148d52fbb",
+                "reference": "df315430fc97027e3a4bce8891a586c148d52fbb",
                 "shasum": ""
             },
             "type": "drupal-library",
@@ -2722,9 +2715,9 @@
             "homepage": "https://github.com/middlebury/midd-frontend",
             "support": {
                 "issues": "https://github.com/middlebury/midd-frontend/issues",
-                "source": "https://github.com/middlebury/midd-frontend/tree/4.0.2"
+                "source": "https://github.com/middlebury/midd-frontend/tree/4.0.3"
             },
-            "time": "2025-01-09T13:24:01+00:00"
+            "time": "2025-02-20T16:47:04+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -4118,16 +4111,16 @@
         },
         {
             "name": "stduritemplate/stduritemplate",
-            "version": "0.0.57",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/std-uritemplate/std-uritemplate-php.git",
-                "reference": "99b08e6fef7224bfa1e17963ab66f63097dc80a1"
+                "reference": "d67cc4ac2aa84a90665063e8d6b47b9a1e126117"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/std-uritemplate/std-uritemplate-php/zipball/99b08e6fef7224bfa1e17963ab66f63097dc80a1",
-                "reference": "99b08e6fef7224bfa1e17963ab66f63097dc80a1",
+                "url": "https://api.github.com/repos/std-uritemplate/std-uritemplate-php/zipball/d67cc4ac2aa84a90665063e8d6b47b9a1e126117",
+                "reference": "d67cc4ac2aa84a90665063e8d6b47b9a1e126117",
                 "shasum": ""
             },
             "require": {
@@ -4151,9 +4144,9 @@
             ],
             "description": "Std UriTemplate, RFC 6570 implementation",
             "support": {
-                "source": "https://github.com/std-uritemplate/std-uritemplate-php/tree/0.0.57"
+                "source": "https://github.com/std-uritemplate/std-uritemplate-php/tree/2.0.3"
             },
-            "time": "2024-04-18T10:51:20+00:00"
+            "time": "2025-02-07T12:23:19+00:00"
         },
         {
             "name": "symfony/apache-pack",
@@ -9006,16 +8999,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.68.5",
+            "version": "v3.69.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "7bedb718b633355272428c60736dc97fb96daf27"
+                "reference": "13b0c0eede38c11cd674b080f2b485d0f14ffa9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/7bedb718b633355272428c60736dc97fb96daf27",
-                "reference": "7bedb718b633355272428c60736dc97fb96daf27",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/13b0c0eede38c11cd674b080f2b485d0f14ffa9f",
+                "reference": "13b0c0eede38c11cd674b080f2b485d0f14ffa9f",
                 "shasum": ""
             },
             "require": {
@@ -9032,7 +9025,7 @@
                 "react/promise": "^2.0 || ^3.0",
                 "react/socket": "^1.0",
                 "react/stream": "^1.0",
-                "sebastian/diff": "^4.0 || ^5.1 || ^6.0",
+                "sebastian/diff": "^4.0 || ^5.1 || ^6.0 || ^7.0",
                 "symfony/console": "^5.4 || ^6.4 || ^7.0",
                 "symfony/event-dispatcher": "^5.4 || ^6.4 || ^7.0",
                 "symfony/filesystem": "^5.4 || ^6.4 || ^7.0",
@@ -9045,18 +9038,18 @@
                 "symfony/stopwatch": "^5.4 || ^6.4 || ^7.0"
             },
             "require-dev": {
-                "facile-it/paraunit": "^1.3.1 || ^2.4",
-                "infection/infection": "^0.29.8",
+                "facile-it/paraunit": "^1.3.1 || ^2.5",
+                "infection/infection": "^0.29.10",
                 "justinrainbow/json-schema": "^5.3 || ^6.0",
                 "keradus/cli-executor": "^2.1",
                 "mikey179/vfsstream": "^1.6.12",
                 "php-coveralls/php-coveralls": "^2.7",
                 "php-cs-fixer/accessible-object": "^1.1",
-                "php-cs-fixer/phpunit-constraint-isidenticalstring": "^1.5",
-                "php-cs-fixer/phpunit-constraint-xmlmatchesxsd": "^1.5",
-                "phpunit/phpunit": "^9.6.22 || ^10.5.40 || ^11.5.2",
-                "symfony/var-dumper": "^5.4.48 || ^6.4.15 || ^7.2.0",
-                "symfony/yaml": "^5.4.45 || ^6.4.13 || ^7.2.0"
+                "php-cs-fixer/phpunit-constraint-isidenticalstring": "^1.6",
+                "php-cs-fixer/phpunit-constraint-xmlmatchesxsd": "^1.6",
+                "phpunit/phpunit": "^9.6.22 || ^10.5.45 || ^11.5.7",
+                "symfony/var-dumper": "^5.4.48 || ^6.4.18 || ^7.2.0",
+                "symfony/yaml": "^5.4.45 || ^6.4.18 || ^7.2.0"
             },
             "suggest": {
                 "ext-dom": "For handling output formats in XML",
@@ -9097,7 +9090,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.68.5"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.69.1"
             },
             "funding": [
                 {
@@ -9105,7 +9098,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-01-30T17:00:50+00:00"
+            "time": "2025-02-18T23:57:43+00:00"
         },
         {
             "name": "masterminds/html5",
