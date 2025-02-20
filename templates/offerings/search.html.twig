@@ -48,7 +48,7 @@
             <div class="checkbox-group d-flex flex-wrap">
               {% for type in genusTypes %}
                 <div class="checkbox checkbox--filter">
-                    <input type='checkbox' class="checkbox__input" name='type[]' value="{{ osidTypeToString(type) }}" id="input-requirement-{{ osidTypeToString(type) }}" {{ osidTypeInArray(type, selectedGenusTypes)? 'checked="checked"' }}>
+                    <input type='checkbox' class="checkbox__input" name='type[]' value="{{ osidTypeToString(type) }}" id="input-type-{{ osidTypeToString(type) }}" {{ osidTypeInArray(type, selectedGenusTypes)? 'checked="checked"' }}>
                     <label class="checkbox__label" for="input-type-{{ osidTypeToString(type) }}">{{ type.displayname }}</label>
                 </div>
               {% endfor %}
