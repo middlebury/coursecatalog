@@ -5,7 +5,7 @@
     {% if item.alternates is not empty %}
         <p class="f2 font-semibold">Cross-Listed As:
         {% for alternate in item.alternates %}
-            <a href='{{ path('view_offering', {offeringId: alternate.offering}) }}'>{{ alternate.offering.displayname }}</a>
+            <a class="link-underline" href='{{ path('view_offering', {offeringId: alternate.offering}) }}'>{{ alternate.offering.displayname }}</a>
             {{ alternate.is_primary ? ' * ' }}
             {{ not loop.last ? ',' }}
         {% endfor %}
@@ -92,7 +92,7 @@
                     {% if item.location %}
                         <a class="link-underline" href='{{ path('view_resource', {resourceId: item.location, termId: item.offering.term}) }}'>{{ item.location.displayname }}</a>
                         {% if item.location.description %}
-                            <span class='location_description'>{{ item.location.description }}</span>
+                            <span class='location_description'>({{ item.location.description }})</span>
                         {% endif %}
                     {% elseif item.offering.locationinfo %}
                         {{ item.offering.locationinfo }}
