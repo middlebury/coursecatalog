@@ -47,9 +47,6 @@ return [
         'path' => 'schedules.js',
         'entrypoint' => true,
     ],
-    'jquery-expander' => [
-        'version' => '2.0.2',
-    ],
     'jquery' => [
         'version' => '3.7.1',
     ],
