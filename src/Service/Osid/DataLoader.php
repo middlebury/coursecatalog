@@ -372,9 +372,8 @@ class DataLoader
             // Alternates can be fetched if needed with getOfferingAlternates().
         }
 
-        // Availability link. @todo
-        $data['availabilityLink'] = null;
-        $this->getAvailabilityLink($offering);
+        // Availability link.
+        $data['availabilityLink'] = $this->getAvailabilityLink($offering);
 
         $data['properties'] = [];
         $properties = $offering->getProperties();
@@ -433,9 +432,9 @@ class DataLoader
     }
 
     /**
-     * Answer a safe HTML string for the schedule info passed.
+     * Answer a URL and default label for an availability link.
      *
-     * @return string
+     * @return array|null
      */
     public function getAvailabilityLink(\osid_course_CourseOffering $courseOffering)
     {
@@ -443,7 +442,10 @@ class DataLoader
         if (!empty($this->bannerWebUrl) && $courseOffering->hasRecordType($bannerIdRecordType)) {
             $bannerIdRecord = $courseOffering->getCourseOfferingRecord($bannerIdRecordType);
 
-            return '<a href="'.$this->bannerWebUrl.'?term_in='.$bannerIdRecord->getTermCode().'&crn_in='.$bannerIdRecord->getCourseReferenceNumber()."\" target='_blank' class='availability_link'>View availability, prerequisites, and other requirements.</a>";
+            return [
+                'uri' => $this->bannerWebUrl.'?term_in='.$bannerIdRecord->getTermCode().'&crn_in='.$bannerIdRecord->getCourseReferenceNumber(),
+                'label' => 'View availability, prerequisites, and other requirements.',
+            ];
         }
 
         return null;

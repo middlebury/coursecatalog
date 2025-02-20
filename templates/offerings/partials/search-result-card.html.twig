@@ -109,7 +109,7 @@
             {% if item.availabilityLink is not empty %}
                 <div class="pt-2 pb-2 border-top">
                     <dt class="d-block font-semibold">Availability:</dt>
-                    <dd>{{ item.availabilityLink|raw }}</dd>
+                    <dd><a class="link-underline" href='{{ item.availabilityLink.uri }}'>{{ item.availabilityLink.label }}</a></dd>
                 </div>
             {% endif %}
             </dl>
