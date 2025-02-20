@@ -418,7 +418,11 @@ class Offerings extends AbstractController
             $data['instructionMethods'][] = $topics->getNextTopic();
         }
 
-        $genusTypes = $offeringLookupSession->getCourseOfferingGenusTypes();
+        if (empty($termId)) {
+            $genusTypes = $offeringLookupSession->getCourseOfferingGenusTypes();
+        } else {
+            $genusTypes = $offeringLookupSession->getCourseOfferingGenusTypesByTermId($termId);
+        }
         $data['genusTypes'] = [];
         while ($genusTypes->hasNext()) {
             $data['genusTypes'][] = $genusTypes->getNextType();

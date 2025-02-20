@@ -656,4 +656,21 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
     {
         return new banner_course_CourseOffering_GenusTypeList($this->manager->getDB(), $this);
     }
+
+    /**
+     *  Gets a list of the genus types for course offerings in a given term.
+     *
+     * @param osid_id_Id $termId the term id to scope to
+     *
+     * @return object osid_id_TypeList the list of course offering genus types
+     *
+     *  @compliance mandatory This method must be implemented.
+     *
+     * @throws osid_OperationFailedException  unable to complete request
+     * @throws osid_PermissionDeniedException authorization failure
+     */
+    public function getCourseOfferingGenusTypesByTermId(osid_id_Id $termId)
+    {
+        return new banner_course_CourseOffering_GenusTypeList($this->manager->getDB(), $this, $termId);
+    }
 }

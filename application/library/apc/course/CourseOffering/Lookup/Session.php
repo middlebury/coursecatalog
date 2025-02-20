@@ -481,4 +481,32 @@ class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSessio
 
         return new phpkit_type_ArrayTypeList($val);
     }
+
+    /**
+     *  Gets a list of the genus types for course offerings in a given term.
+     *
+     * @param osid_id_Id $termId the term id to scope to
+     *
+     * @return object osid_id_TypeList the list of course offering genus types
+     *
+     *  @compliance mandatory This method must be implemented.
+     *
+     * @throws osid_OperationFailedException  unable to complete request
+     * @throws osid_PermissionDeniedException authorization failure
+     */
+    public function getCourseOfferingGenusTypesByTermId(osid_id_Id $termId)
+    {
+        $key = 'genus_types_in_'.$this->session->getTermCodeFromTermId($termId);
+        $val = $this->cacheGetObj($key);
+        if (null === $val) {
+            $val = [];
+            $types = $this->session->getCourseOfferingGenusTypesByTermId($termId);
+            while ($types->hasNext()) {
+                $val[] = $types->getNextType();
+            }
+            $this->cacheSetObj($key, $val);
+        }
+
+        return new phpkit_type_ArrayTypeList($val);
+    }
 }

@@ -40,4 +40,18 @@ interface middlebury_course_CourseOffering_Lookup_SessionInterface extends osid_
      * @throws osid_PermissionDeniedException authorization failure
      */
     public function getCourseOfferingGenusTypes();
+
+    /**
+     *  Gets a list of the genus types for course offerings in a given term.
+     *
+     * @param osid_id_Id $termId the term id to scope to
+     *
+     * @return object osid_id_TypeList the list of course offering genus types
+     *
+     *  @compliance mandatory This method must be implemented.
+     *
+     * @throws osid_OperationFailedException  unable to complete request
+     * @throws osid_PermissionDeniedException authorization failure
+     */
+    public function getCourseOfferingGenusTypesByTermId(osid_id_Id $termId);
 }

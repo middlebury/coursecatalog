@@ -28,7 +28,7 @@ class banner_course_CourseOffering_GenusTypeList extends banner_course_CachingPd
      *
      * @since 4/13/09
      */
-    public function __construct(PDO $db, banner_course_AbstractSession $session)
+    public function __construct(PDO $db, banner_course_AbstractSession $session, ?osid_id_Id $termId = null)
     {
         $this->session = $session;
 
@@ -56,10 +56,11 @@ WHERE
 		WHERE
 			'.$this->getCatalogWhereTerms2().'
 	)
+    AND '.$this->getTermWhere($termId).'
 GROUP BY STVSCHD_CODE
 ORDER BY STVSCHD_DESC ASC
 ';
-        parent::__construct($db, $query, $this->getAllInputParameters());
+        parent::__construct($db, $query, $this->getAllInputParameters($termId));
     }
 
     /**
@@ -94,6 +95,15 @@ ORDER BY STVSCHD_DESC ASC
         }
     }
 
+    private function getTermWhere(?osid_id_Id $termId = null)
+    {
+        if (empty($termId)) {
+            return 'TRUE';
+        } else {
+            return 'SSBSECT_TERM_CODE = :term_code';
+        }
+    }
+
     /**
      * Answer the input parameters.
      *
@@ -101,7 +111,7 @@ ORDER BY STVSCHD_DESC ASC
      *
      * @since 4/17/09
      */
-    private function getAllInputParameters()
+    private function getAllInputParameters(?osid_id_Id $termId = null)
     {
         // 		$params = $this->getInputParameters();
         $params = [];
@@ -109,6 +119,9 @@ ORDER BY STVSCHD_DESC ASC
         if (!$catalogId->isEqual($this->session->getCombinedCatalogId())) {
             $params[':catalog_id'] = $this->session->getCatalogDatabaseId($catalogId);
             $params[':catalog_id2'] = $this->session->getCatalogDatabaseId($catalogId);
+        }
+        if (!empty($termId)) {
+            $params[':term_code'] = $this->session->getTermCodeFromTermId($termId);
         }
 
         return $params;
