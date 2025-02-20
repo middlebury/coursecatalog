@@ -6,14 +6,14 @@
             {{ not isBookmarked(courseId) ? " style='display: none;'" }}
             title='click to forget' class='forget'
         >
-            <img class="icon mr-1" src=" {{ asset("images/Crystal_Clear/Crystal_Clear_action_bookmark.png") }}" alt="star icon"/>
+            <img class="icon mr-1" src="{{ asset("images/Crystal_Clear/Crystal_Clear_action_bookmark.png") }}" alt="star icon"/>
             Saved
         </a>
         <a href="{{ path("add_bookmark", {courseId: courseId}) }}"
             {{ isBookmarked(courseId) ? " style='display: none;'" }}
             title='click to save' class='save'
         >
-            <img class="icon mr-1" src=" {{ asset("images/Crystal_Clear/Crystal_Clear_action_bookmark_Silver.png") }}" alt="star icon"/>
+            <img class="icon mr-1" src="{{ asset("images/Crystal_Clear/Crystal_Clear_action_bookmark_Silver.png") }}" alt="star icon"/>
             Save
         </a>
     </div>
