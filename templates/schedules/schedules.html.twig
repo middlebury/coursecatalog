@@ -1,5 +1,5 @@
 {% for schedule in schedules %}
-    <div class='schedule' id='schedule_{{ schedule.id }}'>
+    <div class='schedule form-group' id='schedule_{{ schedule.id }}'>
         {% if selectedTermId is empty %}
         <div class='term_name'>{{ schedule.termname }}</div>
         {% endif %}
@@ -35,7 +35,6 @@
                         {{ offering.displayname}}
                     </a>
                 </div>
-                <div class='separator'> - </div>
                 <div class='offering_title'>
                     <a href='{{ path('view_offering', {offeringId: offering}) }}' target='_blank'>
                         {{ offering.title | nl2br }}
@@ -51,10 +50,11 @@
 
         </ul>
 
+        <button id='add-to-schedule_{{ schedule.id }}' data-schedule-id="{{ schedule.id }}" class="add-to-schedule form-control">+ Add Course</button>
     </div>
 {% endfor %}
 
-<form id='schedule_create' action="{{ path('create_schedule', {catalogId: selectedCatalogId}) }}" method="post">
+<form id='schedule_create' class="form-group" action="{{ path('create_schedule', {catalogId: selectedCatalogId}) }}" method="post">
     <input type="submit" id="submit_schedule_create" value="Create new schedule"/> for
     {{ include('schedules/terms.html.twig', {terms: terms, selectedTermId: selectedTermId}, with_context = false) }}
     <input type='hidden' name='csrf_key' value='{{ csrf_token('create-schedule') }}' />

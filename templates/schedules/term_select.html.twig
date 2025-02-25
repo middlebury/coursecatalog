@@ -1,4 +1,6 @@
-                <select name="term">
+            <div class="col-md-6 form-group">
+                <label for="term">Term: </label>
+                <select name="term" id="term" class="form-control">
 {% if selectedCatalogId %}
                     <option value='{{ path('schedules', {catalogId: selectedCatalogId, termId: null}) }}'>All Terms</option>
 {% for term in terms %}
@@ -9,3 +11,4 @@
 {% endif %}
 
                 </select>
+            </div>

@@ -28,20 +28,21 @@
 {% endif %}
 {% for offering in schedule.offerings %}
         <li class='offering'>
+            <div class='crn'>
+                CRN: {{ offering.coursereferencenumber }}
+            </div>
+
             <div class='offering_name'>
                 <a href="{{ path('view_offering', {offeringId: offering.id}) }}" target='_blank'>
                     {{ offering.displayname }}
                 </a>
             </div>
-            <div class='separator'> - </div>
             <div class='offering_title'>
                 <a href="{{ path('view_offering', {offeringId: offering.id}) }}" target='_blank'>
                     {{ offering.title | nl2br }}
                 </a>
             </div>
-            <div class='crn'>
-                CRN: {{ offering.coursereferencenumber }}
-            </div>
+
             <div class='time {{ scheduleHasCollisions(schedule, offering.id) ? "conflicting" }}'>
                 {{ formatScheduleInfo(offering.scheduleinfo) | raw }}
             </div>
