@@ -27,8 +27,28 @@ $("document").ready(function () {
     /*********************************************************
      * Set up the add-sections dialog controls
      *********************************************************/
+    /* The "+ Add" button on the schedule itself */
+    $(".add-to-schedule").click(function () {
+        var scheduleId = $(this).data('schedule-id');
+        var scheduleName = $(this).data('schedule-name');
+        var addToScheduleDialog = $('#bookmarked_courses').dialog({
+            autoOpen: false,
+            width: 600,
+            modal: true,
+            close: function (event, ui) {
+                $('#bookmarked_courses .add_to_schedule_form_id').val('');
+                $('#bookmarked_courses .add_to_schedule_form_button').html("Add to...");
+            },
+        });
+
+        $('#bookmarked_courses .add_to_schedule_button').val(scheduleId);
+        $('#bookmarked_courses .add_to_schedule_button').html("Add to <strong>" + scheduleName + "</strong>");
+        addToScheduleDialog.dialog("open");
+    });
+
+    /*  */
     $(".add_section_dialog").each(function () {
-        var form = $(this).siblings("form.add_to_schedule_form");
+        var trigger = $(this).siblings(".add_to_schedule_button");
         var addDialog = $(this).dialog({
             autoOpen: false,
             width: 600,
@@ -38,18 +58,19 @@ $("document").ready(function () {
             },
         });
 
-        form.data("addDialog", addDialog);
+        trigger.data("addDialog", addDialog);
     });
 
-    $("form.add_to_schedule_form select").change(function () {
-        var form = $(this).parent("form");
-        var addDialog = form.data("addDialog");
+    /*  */
+    $(".add_to_schedule_button").click(function () {
+        var addDialog = $(this).data("addDialog");
         var scheduleId = $(this).val();
-        $(this).val("");
 
         addDialog.find("select.section_set").empty();
         getSectionSets(addDialog, scheduleId);
         addDialog.dialog("open");
+
+        return false;
     });
 
     $("form.delete_schedule").submit(function () {

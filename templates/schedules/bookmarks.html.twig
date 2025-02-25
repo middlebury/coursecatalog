@@ -13,14 +13,7 @@
                     <button>X</button>
                 </a>
             </div>
-            <form class='add_to_schedule_form' action="{{ path('add_to_schedule', {catalogId: selectedCatalogId, termId: selectedTermId}) }}" method='post'>
-                <select name='scheduleId'>";
-                    <option value=''>Add to schedule...</option>
-{% for schedule in schedules %}
-                    <option value="{{ schedule.id }}">{{ schedule.name }}</option>
-{% endfor %}
-                </select>
-            </form>
+            <button class="add_to_schedule_button" value="" >Add to schedule...</button>
             <div class="add_section_dialog section_dialog" title="Add which sections?" style='display: none'>
                 <form action="{{ path('add_to_schedule', {catalogId: selectedCatalogId, termId: selectedTermId}) }}" class="add_section_form" method="post">
                     <div class='section_set' style='display: none'>Choose a group:

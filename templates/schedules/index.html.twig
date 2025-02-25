@@ -19,7 +19,7 @@
 
         {{ include('schedules/schedules.html.twig', {schedules: schedules, selectedCatalogId: selectedCatalogId, selectedTermId: selectedTermId, emailEnabled: emailEnabled, terms: terms}, with_context = false) }}
     </div>
-    <div id="bookmarks">
+    <div id="bookmarks" style="display: none">
         <h2>Saved Courses in {{ include('schedules/selected_term_name.html.twig', {selectedTermId: selectedTermId, terms: terms}, with_context = false) }}</h2>
 
         {{ include('schedules/bookmarks.html.twig', {bookmarked_courses: bookmarked_courses, schedules: schedules, selectedCatalogId: selectedCatalogId, selectedTermId: selectedTermId}, with_context = false) }}
