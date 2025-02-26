@@ -41,6 +41,10 @@ form.delete_schedule {
     float: right;
 }
 
+form.edit_schedule_name_form {
+    display: none;
+}
+
 /* Constrain the dialog so that it can be responsive in width. */
 .add-to-schedule-dialog {
     width: 100%;

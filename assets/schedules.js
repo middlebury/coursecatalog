@@ -24,6 +24,21 @@ $("document").ready(function () {
         return false;
     });
 
+    $(".edit_schedule_name_button").click(function () {
+        var formId = $(this).data('form-id');
+        var addToScheduleDialog = $('#'+formId).dialog({
+            autoOpen: false,
+            width: '100%',
+            modal: true,
+            title: "Edit name"
+        });
+        // Add a class to the dialog wrapper for theming. 'dialogClass' and
+        // 'classes' options didn't seem to work.
+        addToScheduleDialog.parent().addClass('add-to-schedule-dialog');
+
+        addToScheduleDialog.dialog("open");
+    });
+
     /*********************************************************
      * Set up the add-sections dialog controls
      *********************************************************/

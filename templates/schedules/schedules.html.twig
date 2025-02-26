@@ -9,10 +9,11 @@
             <input type='submit' id='submit_delete_schedule_{{ schedule.id }}' value='Delete'/>
         </form>
 
-        <form  id='update_schedule_{{ schedule.id }}' action='{{ path('update_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}' method='post'>
-            <input type='text' name='name' value="{{ schedule.name }}"/>
+        <h3 class="form-group">{{ schedule.name }} <button class="button button--sm edit_schedule_name_button" data-form-id="update_schedule_{{ schedule.id }}">Edit</button></h3>
+        <form class="form-group edit_schedule_name_form" id='update_schedule_{{ schedule.id }}' action='{{ path('update_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}' method='post'>
+            <input type='text' class='form-control' name='name' value="{{ schedule.name }}"/>
             <input type='hidden' name='csrf_key' value='{{ csrf_token('update-schedule') }}' />
-            <input type='submit' id='submit_update_schedule_{{ schedule.id }}' value='Save Name'/>
+            <input type='submit' class='button button--primary' id='submit_update_schedule_{{ schedule.id }}' value='Save'/>
         </form>
 
         <a class='print_button' href='{{ path('print_schedule', {scheduleId: schedule.id}) }}' title='Click for print view.' target='print_view'>
