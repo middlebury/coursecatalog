@@ -5,15 +5,13 @@
     <ul id="bookmarked_courses">
 {% for course in bookmarked_courses %}
         <li class='bookmarked_course'>
+            <div class='remove_course'>
+                <a class='remove_course button button--sm' title='Remove Course Bookmark' href='{{ path('remove_bookmark', {courseId: course}) }}'>X</a>
+            </div>
             <div class='course_info'>
                 <a href="{{ path('view_course', {courseId: course, termId: selectedTermId}) }}"  target="_blank">{{ course.displayname }} - {{ course.title }}</a>
             </div>
-            <div class='remove_course'>
-                <a class='remove_course' title='Remove Course Bookmark' href='{{ path('remove_bookmark', {courseId: course}) }}'>
-                    <button>X</button>
-                </a>
-            </div>
-            <button class="add_to_schedule_button" value="" >Add to schedule...</button>
+            <button class="add_to_schedule_button button button--primary button--sm" value="" >Add to schedule...</button>
             <div class="add_section_dialog section_dialog" title="Add which sections?" style='display: none'>
                 <form action="{{ path('add_to_schedule', {catalogId: selectedCatalogId, termId: selectedTermId}) }}" class="add_section_form" method="post">
                     <div class='section_set' style='display: none'>Choose a group:
@@ -30,7 +28,7 @@
 
                     <input type='hidden' name='csrf_key' value='{{ csrf_token('add-to-schedule') }}' />
                     <input type='hidden' name='scheduleId' value='' />
-                    <input type="submit" value="Add Sections"/>
+                    <input type="submit" class="button button--primary button--sm" value="Add Sections"/>
                 </form>
                 <input type='hidden' name='courseId' value="{{ osidIdToString(course.id) }}" />
                 <input type='hidden' name='section_lookup_url' value='{{ path('schedule_sections_for_course', {courseId: course, termId: selectedTermId}) }}' />

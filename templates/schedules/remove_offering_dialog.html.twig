@@ -1,7 +1,7 @@
 <div title='Remove or Change Sections' class='remove_dialog'>
     <p>What do you want to do?</p>
 
-	<button class='change_sections_button'>Change sections</button>
+	<button class='change_sections_button button button--primary button--sm'>Change sections</button>
 	<div class="change_section_dialog section_dialog" title="Include which sections?" style='display: none'>
     	<form id='change_section_form_{{ schedule.id }}_{{ osidIdToString(offering.id) | replace({'.': '_'}) }}' action="{{ path('add_to_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}" class="add_section_form" method="post">
             <div class='section_set' style='display: none'>Choose a group:
@@ -16,7 +16,7 @@
             </div>
 
             <input type='hidden' name='csrf_key' value='{{ csrf_token('add-to-schedule') }}' />
-            <input type="submit" value="Save Changes"/>
+            <input type="submit" class="button button--primary button--sm" value="Save Changes"/>
         </form>
         <input type='hidden' name='courseId' value="{{ osidIdToString(offering.id) }}" />
         <input type='hidden' name='section_lookup_url' value='{{ path('schedule_sections_for_course', {scheduleId: schedule.id, courseId: offering.course.id, termId: schedule.termid }) }}' />
@@ -26,10 +26,10 @@
     <form class='remove_offering_form' id='remove_section_form_{{ schedule.id }}_{{ osidIdToString(offering.id) | replace({'.': '_'}) }}' action="{{ path('remove_from_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId})}}" method='post'>
         <input type='hidden' name='csrf_key' value='{{ csrf_token('remove-from-schedule') }}' />
         <input type='hidden' name='offering' value='{{ osidIdToString(offering.id) }}'/>
-        <input type='submit' id='submit_remove_section_form_{{ schedule.id }}_{{ osidIdToString(offering.id) | replace({'.': '_'})  }}' value='Remove all sections of {{ offering.course.displayname }}'/>
+        <input type='submit' class="button button--primary button--sm" id='submit_remove_section_form_{{ schedule.id }}_{{ osidIdToString(offering.id) | replace({'.': '_'})  }}' value='Remove all sections of {{ offering.course.displayname }}'/>
     </form>
 
-    <button class='cancel'>Cancel</button>
+    <button class='cancel button button--primary button--sm'>Cancel</button>
 
 </div>
 <button class='remove_button button button--sm' title='Remove or Change Sections'>X</button>

@@ -108,14 +108,10 @@ form.add_to_schedule_form {
     float: left;
 }
 li.bookmarked_course, li.bookmarked_course div.course_info {
-    clear: both;
     white-space: nowrap;
 }
 li.bookmarked_course div.remove_course {
     float: right;
-}
-.remove_course a, .remove_course a:hover {
-    border-bottom: none;
 }
 .remove_dialog form.remove_offering_form {
     display: inline;
