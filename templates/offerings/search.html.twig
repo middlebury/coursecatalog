@@ -7,7 +7,7 @@
 
 {% block body %}
 <form action="{{ form_action }}" method="get">
-    <div class="course-catalog-search row row--sm-gutters">
+    <div class="catalog-search row row--sm-gutters">
         <div class="col-md-6 form-group">
             <label for="term" class="label">By Term</label>
             <select class="form-control" id="by-term" name="term" required name="term" onchange="this.form['search'].value = ''; this.form.submit();">
