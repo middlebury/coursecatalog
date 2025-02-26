@@ -74,6 +74,10 @@ div.section_dialog li.section div.section_time, div.section_dialog li.section di
     clear: both;
 }
 
+div.section_dialog li.section .section_name {
+    font-weight: bold;
+}
+
 div.section_dialog li.section div.section_info {
     float: none;
     margin-left: 2em;

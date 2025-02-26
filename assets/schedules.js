@@ -388,7 +388,7 @@ function populateSectionTypes(dialog, scheduleId, linkSetId, data) {
                 radio.attr("checked", "checked");
             }
             item.append(" ");
-            item.append(section.name);
+            item.append('<span class="section_name">' + section.name + '</span>');
             item.append(
                 ' <div class="section_instructor section_info"><span class="section_type">' +
                     section.type +
