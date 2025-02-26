@@ -421,8 +421,9 @@ function populateSectionTypes(dialog, scheduleId, linkSetId, data) {
             if (section.availability) {
                 item.append(
                     '<div class="section_availability section_info">' +
-                        section.availability +
-                        "</div>"
+                        '<a class="link-underline" href="' + section.availability.uri + '">' +
+                        section.availability.label +
+                        "</a></div>"
                 );
             }
         }
