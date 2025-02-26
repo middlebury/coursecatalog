@@ -33,13 +33,18 @@ $("document").ready(function () {
         var scheduleName = $(this).data('schedule-name');
         var addToScheduleDialog = $('#bookmarked_courses').dialog({
             autoOpen: false,
-            width: 600,
+            width: '100%',
             modal: true,
+            position: { my: "center top", at: "center top", of: window },
             close: function (event, ui) {
                 $('#bookmarked_courses .add_to_schedule_form_id').val('');
                 $('#bookmarked_courses .add_to_schedule_form_button').html("Add to...");
             },
+            title: "Choose a bookmarked course"
         });
+        // Add a class to the dialog wrapper for theming. 'dialogClass' and
+        // 'classes' options didn't seem to work.
+        addToScheduleDialog.parent().addClass('add-to-schedule-dialog');
 
         $('#bookmarked_courses .add_to_schedule_button').val(scheduleId);
         $('#bookmarked_courses .add_to_schedule_button').html("Add to <strong>" + scheduleName + "</strong>");
@@ -51,12 +56,14 @@ $("document").ready(function () {
         var trigger = $(this).siblings(".add_to_schedule_button");
         var addDialog = $(this).dialog({
             autoOpen: false,
-            width: 600,
+            width: '100%',
+            position: { my: "center top", at: "center top", of: window },
             modal: true,
             close: function (event, ui) {
                 $(this).find("select.section_set").empty();
             },
         });
+        addDialog.parent().addClass('add-to-schedule-dialog');
 
         trigger.data("addDialog", addDialog);
     });
