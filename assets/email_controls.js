@@ -8,9 +8,12 @@ $("document").ready(function () {
         var button = $(this).siblings(".email_button");
         var emailDialog = $(this).dialog({
             autoOpen: false,
-            width: 700,
+            width: '100%',
+            position: { my: "center top", at: "center top", of: window },
             modal: true,
         });
+
+        emailDialog.parent().addClass('email-schedule-dialog');
 
         button.data("emailDialog", emailDialog);
     });
