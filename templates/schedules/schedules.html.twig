@@ -54,8 +54,8 @@
     </div>
 {% endfor %}
 
-<form id='schedule_create' class="form-group" action="{{ path('create_schedule', {catalogId: selectedCatalogId}) }}" method="post">
-    <input type="submit" id="submit_schedule_create" value="Create new schedule"/> for
+<form id='schedule_create' class="row row--sm-gutters" action="{{ path('create_schedule', {catalogId: selectedCatalogId}) }}" method="post">
+    <input type="submit" class="button button--primary form-control col-md-6" id="submit_schedule_create" value="Create new schedule for "/>
     {{ include('schedules/terms.html.twig', {terms: terms, selectedTermId: selectedTermId}, with_context = false) }}
     <input type='hidden' name='csrf_key' value='{{ csrf_token('create-schedule') }}' />
 </form>
