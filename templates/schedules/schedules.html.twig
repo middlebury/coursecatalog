@@ -16,11 +16,10 @@
             <input type='submit' class='button button--primary' id='submit_update_schedule_{{ schedule.id }}' value='Save'/>
         </form>
 
-        <a class='print_button' href='{{ path('print_schedule', {scheduleId: schedule.id}) }}' title='Click for print view.' target='print_view'>
-            <button>Print</button>
-        </a>
-
-        {{ include('schedules/email-dialog.html.twig', {schedule: schedule, emailEnabled: emailEnabled}, with_context = false) }}
+        <div class="print-and-email-buttons">
+            <a class='print_button button button--sm' href='{{ path('print_schedule', {scheduleId: schedule.id}) }}' title='Click for print view.' target='print_view'>Print</a>
+            {{ include('schedules/email-dialog.html.twig', {schedule: schedule, emailEnabled: emailEnabled}, with_context = false) }}
+        </div>
 
         {{ include('schedules/schedule_calendar_dialog.html.twig', {schedule: schedule}, with_context = false) }}
 
