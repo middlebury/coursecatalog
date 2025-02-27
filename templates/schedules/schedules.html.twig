@@ -42,6 +42,9 @@
                 </div>
                 <div class="time {{ scheduleHasCollisions(schedule, offering.id) ? "conflicting" }}">
                     {{ formatScheduleInfo(offering.scheduleinfo) | raw }}
+                    {% if scheduleHasCollisions(schedule, offering.id) %}
+                    <div class="conflicting float-right ml-4 mr-3 text-caps">Conflict</div>
+                    {% endif %}
                 </div>
                 <div class='location'>{{ offering.locationinfo | nl2br }}</div>
             </li>
