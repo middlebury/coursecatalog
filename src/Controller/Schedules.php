@@ -117,11 +117,12 @@ class Schedules extends AbstractController
             throw new AccessDeniedException('Invalid CSRF key.');
         }
 
-        $this->schedules->createSchedule($this->osidIdMap->fromString($request->get('term')));
+        $schedule = $this->schedules->createSchedule($this->osidIdMap->fromString($request->get('term')));
 
         return $this->redirectToRoute('schedules', [
             'catalogId' => $catalogId,
             'termId' => $request->get('term'),
+            '_fragment' => 'schedule-'.$schedule->getId(),
         ]);
     }
 
@@ -145,6 +146,7 @@ class Schedules extends AbstractController
         return $this->redirectToRoute('schedules', [
             'catalogId' => $catalogId,
             'termId' => $termId,
+            '_fragment' => 'schedule-'.$schedule->getId(),
         ]);
     }
 
@@ -284,6 +286,7 @@ class Schedules extends AbstractController
         return $this->redirectToRoute('schedules', [
             'catalogId' => $catalogId,
             'termId' => $termId,
+            '_fragment' => 'schedule-'.$schedule->getId(),
         ]);
     }
 
@@ -322,6 +325,7 @@ class Schedules extends AbstractController
         return $this->redirectToRoute('schedules', [
             'catalogId' => $catalogId,
             'termId' => $termId,
+            '_fragment' => 'schedule-'.$schedule->getId(),
         ]);
     }
 

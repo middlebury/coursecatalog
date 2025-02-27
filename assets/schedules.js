@@ -24,32 +24,75 @@ $("document").ready(function () {
         return false;
     });
 
+    $(".edit_schedule_name_button").click(function () {
+        var formId = $(this).data('form-id');
+        var addToScheduleDialog = $('#'+formId).dialog({
+            autoOpen: false,
+            width: '100%',
+            modal: true,
+            title: "Edit name"
+        });
+        // Add a class to the dialog wrapper for theming. 'dialogClass' and
+        // 'classes' options didn't seem to work.
+        addToScheduleDialog.parent().addClass('add-to-schedule-dialog');
+
+        addToScheduleDialog.dialog("open");
+    });
+
     /*********************************************************
      * Set up the add-sections dialog controls
      *********************************************************/
+    /* The "+ Add" button on the schedule itself */
+    $(".add-to-schedule").click(function () {
+        var scheduleId = $(this).data('schedule-id');
+        var scheduleName = $(this).data('schedule-name');
+        var addToScheduleDialog = $('#bookmarked_courses').dialog({
+            autoOpen: false,
+            width: '100%',
+            modal: true,
+            position: { my: "center top", at: "center top", of: window },
+            close: function (event, ui) {
+                $('#bookmarked_courses .add_to_schedule_form_id').val('');
+                $('#bookmarked_courses .add_to_schedule_form_button').html("Add to...");
+            },
+            title: "Choose a bookmarked course"
+        });
+        // Add a class to the dialog wrapper for theming. 'dialogClass' and
+        // 'classes' options didn't seem to work.
+        addToScheduleDialog.parent().addClass('add-to-schedule-dialog');
+
+        $('#bookmarked_courses .add_to_schedule_button').val(scheduleId);
+        $('#bookmarked_courses .add_to_schedule_button').html("Add to <strong>" + scheduleName + "</strong>");
+        addToScheduleDialog.dialog("open");
+    });
+
+    /*  */
     $(".add_section_dialog").each(function () {
-        var form = $(this).siblings("form.add_to_schedule_form");
+        var trigger = $(this).siblings(".add_to_schedule_button");
         var addDialog = $(this).dialog({
             autoOpen: false,
-            width: 600,
+            width: '100%',
+            position: { my: "center top", at: "center top", of: window },
             modal: true,
             close: function (event, ui) {
                 $(this).find("select.section_set").empty();
             },
         });
+        addDialog.parent().addClass('add-to-schedule-dialog');
 
-        form.data("addDialog", addDialog);
+        trigger.data("addDialog", addDialog);
     });
 
-    $("form.add_to_schedule_form select").change(function () {
-        var form = $(this).parent("form");
-        var addDialog = form.data("addDialog");
+    /*  */
+    $(".add_to_schedule_button").click(function () {
+        var addDialog = $(this).data("addDialog");
         var scheduleId = $(this).val();
-        $(this).val("");
 
         addDialog.find("select.section_set").empty();
         getSectionSets(addDialog, scheduleId);
         addDialog.dialog("open");
+
+        return false;
     });
 
     $("form.delete_schedule").submit(function () {
@@ -360,7 +403,7 @@ function populateSectionTypes(dialog, scheduleId, linkSetId, data) {
                 radio.attr("checked", "checked");
             }
             item.append(" ");
-            item.append(section.name);
+            item.append('<span class="section_name">' + section.name + '</span>');
             item.append(
                 ' <div class="section_instructor section_info"><span class="section_type">' +
                     section.type +
@@ -393,8 +436,9 @@ function populateSectionTypes(dialog, scheduleId, linkSetId, data) {
             if (section.availability) {
                 item.append(
                     '<div class="section_availability section_info">' +
-                        section.availability +
-                        "</div>"
+                        '<a class="link-underline" href="' + section.availability.uri + '">' +
+                        section.availability.label +
+                        "</a></div>"
                 );
             }
         }

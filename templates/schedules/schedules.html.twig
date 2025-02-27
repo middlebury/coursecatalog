@@ -1,25 +1,25 @@
 {% for schedule in schedules %}
-    <div class='schedule' id='schedule_{{ schedule.id }}'>
+    <div class='schedule form-group' id='schedule-{{ schedule.id }}'>
         {% if selectedTermId is empty %}
         <div class='term_name'>{{ schedule.termname }}</div>
         {% endif %}
 
         <form class='delete_schedule' id='delete_schedule_{{ schedule.id }}' action="{{ path('delete_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}" method='post'>
             <input type='hidden' name='csrf_key' value='{{ csrf_token('delete-schedule') }}' />
-            <input type='submit' id='submit_delete_schedule_{{ schedule.id }}' value='Delete'/>
+            <input type='submit' class="button button--sm" id='submit_delete_schedule_{{ schedule.id }}' title="Delete this schedule" value='Delete'/>
         </form>
 
-        <form  id='update_schedule_{{ schedule.id }}' action='{{ path('update_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}' method='post'>
-            <input type='text' name='name' value="{{ schedule.name }}"/>
+        <h3 class="form-group">{{ schedule.name }} <button class="button button--sm edit_schedule_name_button" data-form-id="update_schedule_{{ schedule.id }}">Edit</button></h3>
+        <form class="form-group edit_schedule_name_form" id='update_schedule_{{ schedule.id }}' action='{{ path('update_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}' method='post'>
+            <input type='text' class='form-control' name='name' value="{{ schedule.name }}"/>
             <input type='hidden' name='csrf_key' value='{{ csrf_token('update-schedule') }}' />
-            <input type='submit' id='submit_update_schedule_{{ schedule.id }}' value='Save Name'/>
+            <input type='submit' class='button button--primary' id='submit_update_schedule_{{ schedule.id }}' value='Save'/>
         </form>
 
-        <a class='print_button' href='{{ path('print_schedule', {scheduleId: schedule.id}) }}' title='Click for print view.' target='print_view'>
-            <button>Print</button>
-        </a>
-
-        {{ include('schedules/email-dialog.html.twig', {schedule: schedule, emailEnabled: emailEnabled}, with_context = false) }}
+        <div class="print-and-email-buttons">
+            <a class='print_button button button--sm' href='{{ path('print_schedule', {scheduleId: schedule.id}) }}' title='Click for print view.' target='print_view'>Print</a>
+            {{ include('schedules/email-dialog.html.twig', {schedule: schedule, emailEnabled: emailEnabled}, with_context = false) }}
+        </div>
 
         {{ include('schedules/schedule_calendar_dialog.html.twig', {schedule: schedule}, with_context = false) }}
 
@@ -35,7 +35,6 @@
                         {{ offering.displayname}}
                     </a>
                 </div>
-                <div class='separator'> - </div>
                 <div class='offering_title'>
                     <a href='{{ path('view_offering', {offeringId: offering}) }}' target='_blank'>
                         {{ offering.title | nl2br }}
@@ -51,11 +50,12 @@
 
         </ul>
 
+        <button id='add-to-schedule_{{ schedule.id }}' data-schedule-id="{{ schedule.id }}" data-schedule-name="{{ schedule.name }}" class="add-to-schedule button button--sm button--block">+ Add Course</button>
     </div>
 {% endfor %}
 
-<form id='schedule_create' action="{{ path('create_schedule', {catalogId: selectedCatalogId}) }}" method="post">
-    <input type="submit" id="submit_schedule_create" value="Create new schedule"/> for
-    {{ include('schedules/terms.html.twig', {terms: terms, selectedTermId: selectedTermId}, with_context = false) }}
+<form id='schedule_create' class="row row--sm-gutters" action="{{ path('create_schedule', {catalogId: selectedCatalogId}) }}" method="post">
+    <input type="hidden" name="term" value="{{ osidIdToString(selectedTermId) }}"/>
+    <input type="submit" class="button button--block button--sm" id="submit_schedule_create" value="+ Create new schedule"/>
     <input type='hidden' name='csrf_key' value='{{ csrf_token('create-schedule') }}' />
 </form>
