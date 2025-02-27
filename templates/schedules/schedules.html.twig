@@ -1,5 +1,5 @@
 {% for schedule in schedules %}
-    <div class='schedule form-group' id='schedule_{{ schedule.id }}'>
+    <div class='schedule form-group' id='schedule-{{ schedule.id }}'>
         {% if selectedTermId is empty %}
         <div class='term_name'>{{ schedule.termname }}</div>
         {% endif %}
