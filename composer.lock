@@ -2694,16 +2694,16 @@
         },
         {
             "name": "middlebury/midd-frontend",
-            "version": "4.0.5",
+            "version": "4.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/middlebury/midd-frontend.git",
-                "reference": "d3a705a564aeb1e951c64bb2ae9ccf4f4b1bc662"
+                "reference": "496587d750c494a413122ec83413e7a7f60a634a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/middlebury/midd-frontend/zipball/d3a705a564aeb1e951c64bb2ae9ccf4f4b1bc662",
-                "reference": "d3a705a564aeb1e951c64bb2ae9ccf4f4b1bc662",
+                "url": "https://api.github.com/repos/middlebury/midd-frontend/zipball/496587d750c494a413122ec83413e7a7f60a634a",
+                "reference": "496587d750c494a413122ec83413e7a7f60a634a",
                 "shasum": ""
             },
             "type": "drupal-library",
@@ -2715,9 +2715,9 @@
             "homepage": "https://github.com/middlebury/midd-frontend",
             "support": {
                 "issues": "https://github.com/middlebury/midd-frontend/issues",
-                "source": "https://github.com/middlebury/midd-frontend/tree/4.0.5"
+                "source": "https://github.com/middlebury/midd-frontend/tree/4.0.6"
             },
-            "time": "2025-02-26T20:03:07+00:00"
+            "time": "2025-02-27T00:05:47+00:00"
         },
         {
             "name": "monolog/monolog",
