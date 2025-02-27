@@ -22,6 +22,7 @@ class MenuBuilder
         private Security $security,
         private RequestStack $requestStack,
         private UrlGeneratorInterface $urlGenerator,
+        private array $catalogMenuLinks = [],
     ) {
     }
 
@@ -72,6 +73,14 @@ class MenuBuilder
                     ],
                 ],
             );
+            // Add any manually configured links for this catalog.
+            $catalogIdString = $this->osidIdMap->toString($catalog->getId());
+            if (!empty($this->catalogMenuLinks[$catalogIdString])) {
+                foreach ($this->catalogMenuLinks[$catalogIdString] as $link) {
+                    $subMenu[$catalog->getDisplayName()]->addChild($link['label'], ['uri' => $link['uri']]);
+                    $subMenu[$catalog->getDisplayName()][$link['label']]->setLinkAttribute('class', 'link-external');
+                }
+            }
             // If we are on a catalog-specific page that is not in the menu
             // (like a course page), mark the search page as the currently
             // active item so that breadcrumbs can point at the catalog.
@@ -173,6 +182,15 @@ class MenuBuilder
                     'routeParameters' => $routeParameters,
                 ],
             );
+
+            // Add any manually configured links for this catalog.
+            $catalogIdString = $this->osidIdMap->toString($selectedCatalogId);
+            if (!empty($this->catalogMenuLinks[$catalogIdString])) {
+                foreach ($this->catalogMenuLinks[$catalogIdString] as $link) {
+                    $menu[$catalog->getDisplayName()]->addChild($link['label'], ['uri' => $link['uri']]);
+                    $menu[$catalog->getDisplayName()][$link['label']]->setLinkAttribute('class', 'link-external');
+                }
+            }
         }
 
         // Schedule link.

@@ -39,7 +39,9 @@ services:
 
     app.menu_builder:
         class: App\Menu\MenuBuilder
-        arguments: ["@knp_menu.factory"]
+        arguments:
+            $factory: "@knp_menu.factory"
+            $catalogMenuLinks: '%env(json:CATALOG_MENU_LINKS)%'
         tags:
             - { name: knp_menu.menu_builder, method: createMainMenu, alias: main }
             - { name: knp_menu.menu_builder, method: createSecondaryMenu, alias: secondary }
