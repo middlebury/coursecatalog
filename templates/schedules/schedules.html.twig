@@ -57,7 +57,7 @@
     </div>
 {% endfor %}
 
-<form id='schedule_create' class="row row--sm-gutters mb-6" action="{{ path('create_schedule', {catalogId: selectedCatalogId}) }}" method="post">
+<form id='schedule_create' class="row row--sm-gutters mt-6 mb-6" action="{{ path('create_schedule', {catalogId: selectedCatalogId}) }}" method="post">
     <input type="hidden" name="term" value="{{ osidIdToString(selectedTermId) }}"/>
     <input type="submit" class="button button--block button--sm" id="submit_schedule_create" value="+ Create new schedule"/>
     <input type='hidden' name='csrf_key' value='{{ csrf_token('create-schedule') }}' />
