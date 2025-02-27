@@ -1,16 +1,20 @@
 {% if schedule.offerings is not empty %}
 <table style='border: 0px; width: 100%; font-size: 12px;'>
 {% for offering in schedule.offerings %}
-    <tr>
+    {% set hasCollisions = scheduleHasCollisions(schedule, offering.id) %}
+    <tr style="{{ hasCollisions ? "color: red;" }}">
         <td style='border-top: 1px dotted; vertical-align: top; white-space: nowrap;'>
-            <a href='{{ path('view_offering', {offeringId: offering}) }}' target='_blank'>{{ offering.displayname }}</a>
+            <a href='{{ path('view_offering', {offeringId: offering}) }}' target='_blank' style="font-weight: bold; {{ hasCollisions ? "color: red;" }}">{{ offering.displayname }}</a>
             </br>CRN: {{ offering.coursereferencenumber }}
         </td>
         <td style='border-top: 1px dotted; vertical-align: top; white-space: nowrap;'>
-            <a href='{{ path('view_offering', {offeringId: offering}) }}' target='_blank'>{{ offering.title | nl2br }}</a>
+            <a href='{{ path('view_offering', {offeringId: offering}) }}' target='_blank' style="{{ hasCollisions ? "color: red;" }}">{{ offering.title | nl2br }}</a>
         </td>
         <td style='border-top: 1px dotted; vertical-align: top; {{ scheduleHasCollisions(schedule, offering.id) }}'>
             {{ formatScheduleInfo(offering.scheduleinfo) | raw }}
+            {% if hasCollisions %}
+            <div style="text-transform: uppercase; margin-left: 1rem;">Conflict</div>
+            {% endif %}
         </td>
         <td style='border-top: 1px dotted; vertical-align: top;'>
             {{ offering.locationinfo | nl2br }}
