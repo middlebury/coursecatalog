@@ -24,6 +24,24 @@
     padding-right: 2px;
 }
 
+@media print {
+    .print-schedule .content-controls-container, .print-schedule .app-header {
+        display: none;
+    }
+}
+.print-schedule .page-nav-container {
+    display: none;
+}
+.print-schedule .calendar-container {
+    text-align: center;
+}
+.print-schedule img.calendar_img {
+    margin-bottom: 0.5rem;
+}
+.print-schedule .offering-list {
+    page-break-before: auto;
+}
+
 /*********************************************************
  * Schedule styles
  *********************************************************/

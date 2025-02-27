@@ -20,7 +20,7 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body class=" " id="midd-pagetop">
+    <body class="{% block bodyClasses %}{% endblock %}" id="midd-pagetop">
         <aside class="cookie-banner js-cookie-banner is-toggled">
           <p>We use cookies and other technologies to better understand a visitor's experience and to help improve our websites. By continuing to use the website, you consent to Middlebury's use of cookies and other technologies as outlined in our <a href="#">Privacy Policy</a>.</p>
           <button class="cookie-banner__button cookie-banner__button--close" aria-label="Close cookie consent banner" data-toggle-target=".js-cookie-banner"> Close <svg class="icon ml-1 cookie-banner__button-icon " focusable="false" aria-hidden="true">
@@ -267,13 +267,13 @@
               <div class="row">
                 {% set showLeftNav = showLeftNav is defined ? showLeftNav : true %}
                 {% if showLeftNav %}
-                <div class="col-md-10 offset-md-1 col-lg-3 offset-lg-0 mb-4">
+                <div class="col-md-10 offset-md-1 col-lg-3 offset-lg-0 mb-4 page-nav-container">
                   {% set secondaryMenu = knp_menu_get('secondary', [], {'selectedCatalogId': selectedCatalogId }) %}
                   {{ knp_menu_render(secondaryMenu, {template: 'menu-left.html.twig', currentClass: 'page--nav__item--active'}) }}
                   <div class="js-sidebar"></div>
                 </div>
                 {% endif %}
-                <div class="col-md-10 offset-md-1 col-lg-2 offset-lg-0 order-lg-last mb-4 pl-lg-0">
+                <div class="col-md-10 offset-md-1 col-lg-2 offset-lg-0 order-lg-last mb-4 pl-lg-0 content-controls-container">
                     {% block content_controls %}{% endblock %}
                 </div>
                 <div class="{{ showLeftNav ? 'col-md-10 offset-md-1 col-lg-7' : 'col-md-12 col-lg-12' }} offset-lg-0">

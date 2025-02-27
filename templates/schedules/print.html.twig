@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}{{ schedule.name }}{% endblock %}
+{% block bodyClasses %}print-schedule{% endblock %}
 {% block importmap %}
     {# do NOT call parent() #}
     {{ importmap(['app', 'schedules']) }}
@@ -7,22 +9,12 @@
 
 {% block body %}
 
-{% set numHours = schedule.latesthour - schedule.earliesthour + 1 %}
-{% set numOfferings = schedule.offerings | length %}
-{% set hourHeight = numHours * 13 * 4 %}
-{% set offeringHeight = numOfferings * 40 %}
-
 <div class='schedule'>
-
-    <div id='calendar' title="{{ schedule.name }}" style="height: 400px">
-        <input type='hidden' name='jsonUrl' value="{{ path('schedule_events_json', {scheduleId: schedule.id}) }}"/>
-        <input type='hidden' name='start_hour' value="{{ schedule.earliesthour }}"/>
-        <input type='hidden' name='end_hour' value="{{ schedule.latesthour + 1 }}"/>
-        <input type='hidden' name='show_sunday' value="{{ schedule.hasEventsOnSunday ? 'yes':'no' }}"/>
-        <input type='hidden' name='show_saturday' value="{{ schedule.hasEventsOnSaturday ? 'yes':'no' }}"/>
+    <div class="calendar-container">
+        <img class='calendar_img' src='{{ path('schedule_png', {scheduleId: schedule.id}) }}' alt='Weekly Schedule Image'/>
     </div>
 
-    <ul {{ hourHeight + offeringHeight > 630 ? 'style="page-break-before: always;"' }}>
+    <ul class="offering-list">
 {% if schedule.offerings is empty %}
         <li style='visibility: hidden'> &nbsp; </li>
 {% endif %}
