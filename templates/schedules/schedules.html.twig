@@ -54,8 +54,20 @@
     </div>
 {% endfor %}
 
-<form id='schedule_create' class="row row--sm-gutters" action="{{ path('create_schedule', {catalogId: selectedCatalogId}) }}" method="post">
+<form id='schedule_create' class="row row--sm-gutters mb-6" action="{{ path('create_schedule', {catalogId: selectedCatalogId}) }}" method="post">
     <input type="hidden" name="term" value="{{ osidIdToString(selectedTermId) }}"/>
     <input type="submit" class="button button--block button--sm" id="submit_schedule_create" value="+ Create new schedule"/>
     <input type='hidden' name='csrf_key' value='{{ csrf_token('create-schedule') }}' />
 </form>
+
+<aside class="schedule-help bg-gray-lighter typography f2 mb-6 p-5">
+    <p><strong>Important:</strong> This tool is for planning purposes only. It does not register you for classes.</p>
+    <p><strong>Basic Usage:</strong></p>
+    <ol>
+        <li>Search for courses in the catalog and save interesting ones.</li>
+        <li>Create one or more schedules in the Planner.</li>
+        <li>Add courses to schedules.</li>
+        <li>Print or email your schedules.</li>
+    </ol>
+    <p>For more help see: <a href="https://go.middlebury.edu/catalog-help" class="link-external">go/catalog-help</a></p>
+</aside>

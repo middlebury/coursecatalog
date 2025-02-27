@@ -45,6 +45,13 @@ form.edit_schedule_name_form {
     display: none;
 }
 
+.schedule-help p, .schedule-help li {
+    font-size: .875rem;
+}
+.schedule-help ol > li::before {
+    top: 0;
+}
+
 /* Constrain the dialog so that it can be responsive in width. */
 .add-to-schedule-dialog {
     width: 100%;
