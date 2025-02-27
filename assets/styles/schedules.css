@@ -53,7 +53,7 @@ form.edit_schedule_name_form {
 }
 
 /* Constrain the dialog so that it can be responsive in width. */
-.add-to-schedule-dialog {
+.add-to-schedule-dialog, .remove-from-schedule-dialog {
     width: 100%;
     max-width: 700px;
 }

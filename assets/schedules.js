@@ -116,9 +116,10 @@ $("document").ready(function () {
         var button = $(this).siblings(".remove_button");
         var removeDialog = $(this).dialog({
             autoOpen: false,
-            width: 600,
+            width: '100%',
             modal: true,
         });
+        removeDialog.parent().addClass('remove-from-schedule-dialog');
 
         button.data("removeDialog", removeDialog);
     });
@@ -136,12 +137,14 @@ $("document").ready(function () {
         var button = $(this).siblings(".change_sections_button");
         var addDialog = $(this).dialog({
             autoOpen: false,
-            width: 600,
+            width: '100%',
+            position: { my: "center top", at: "center top", of: window },
             modal: true,
             close: function (event, ui) {
                 $(this).find("ul.section_sets").empty();
             },
         });
+        addDialog.parent().addClass('add-to-schedule-dialog');
 
         button.data("addDialog", addDialog);
     });
