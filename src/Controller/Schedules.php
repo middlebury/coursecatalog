@@ -849,7 +849,7 @@ class Schedules extends AbstractController
             imagettftext($im, $size, 0, $textLeft, $textTop, $black, $data['fontFile'], $event['location']);
 
             $size = 10;
-            $bb = imagettfbbox($size, 0, $data['fontFile'], $event['crn']);
+            $bb = imagettfbbox($size, 0, $data['fontFile'], 'CRN: '.$event['crn']);
             $textWidth = $bb[2] - $bb[0];
             $textHeight = $bb[1] - $bb[5];
             // $textTop = $top + $textHeight +$textHeight + 34;
