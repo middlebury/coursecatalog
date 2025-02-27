@@ -1,25 +1,28 @@
 {% if schedule.offerings is not empty %}
-<table style='border: 0px; width: 100%; font-size: 12px;'>
 {% for offering in schedule.offerings %}
-    {% set hasCollisions = scheduleHasCollisions(schedule, offering.id) %}
-    <tr style="{{ hasCollisions ? "color: red;" }}">
-        <td style='border-top: 1px dotted; vertical-align: top; white-space: nowrap;'>
-            <a href='{{ path('view_offering', {offeringId: offering}) }}' target='_blank' style="font-weight: bold; {{ hasCollisions ? "color: red;" }}">{{ offering.displayname }}</a>
-            </br>CRN: {{ offering.coursereferencenumber }}
-        </td>
-        <td style='border-top: 1px dotted; vertical-align: top; white-space: nowrap;'>
-            <a href='{{ path('view_offering', {offeringId: offering}) }}' target='_blank' style="{{ hasCollisions ? "color: red;" }}">{{ offering.title | nl2br }}</a>
-        </td>
-        <td style='border-top: 1px dotted; vertical-align: top; {{ scheduleHasCollisions(schedule, offering.id) }}'>
+    <div style='border-top: 1px dotted; vertical-align: top; margin-bottom: 0.5rem;'>
+        <div style="float: right">
+            CRN: {{ offering.coursereferencenumber }}
+        </div>
+
+        <div style="font-weight: bold; margin-bottom: 0.5rem;">
+            <a href="{{ path('view_offering', {offeringId: offering.id}) }}" target='_blank'>
+                {{ offering.displayname }}
+            </a>
+        </div>
+        <div style="margin-bottom: 0.5rem;">
+            {{ offering.title | nl2br }}
+        </div>
+
+        <div style='margin-bottom: 0.5rem; {{ scheduleHasCollisions(schedule, offering.id) ? "color: red" }}'>
             {{ formatScheduleInfo(offering.scheduleinfo) | raw }}
-            {% if hasCollisions %}
-            <div style="text-transform: uppercase; margin-left: 1rem;">Conflict</div>
+            {% if scheduleHasCollisions(schedule, offering.id) %}
+            <div style="float: right; text-transform: uppercase; margin-left: 1rem;">Conflict</div>
             {% endif %}
-        </td>
-        <td style='border-top: 1px dotted; vertical-align: top;'>
+        </div>
+        <div style="margin-bottom: 0.5rem;">
             {{ offering.locationinfo | nl2br }}
-        </td>
-    </tr>
+        </div>
+    </div>
 {% endfor %}
-</table>
 {% endif %}
