@@ -265,6 +265,7 @@ class Schedule
             // Check for collisions
             foreach ($this->events as $i => $event) {
                 $this->events[$i]['collisions'] = $this->numCollisions($event, $this->events);
+                $this->events[$i]['collision_position'] = $this->collisionPosition($event, $this->events);
             }
         }
 
@@ -448,6 +449,29 @@ class Schedule
         }
 
         return $collisions;
+    }
+
+    /**
+     * Answer a sorted position (0-based) of this event in a list of collisions.
+     *
+     * @param array $compEvents
+     *
+     * @return int
+     */
+    private function collisionPosition(array $event, $compEvents)
+    {
+        $collisions = [
+            $event['id'],
+        ];
+        // If we have a different event on the same day check its time for collisions.
+        foreach ($compEvents as $compEvent) {
+            if ($this->eventsCollide($event, $compEvent)) {
+                $collisions[] = $compEvent['id'];
+            }
+        }
+        sort($collisions);
+
+        return array_search($event['id'], $collisions);
     }
 
     /**

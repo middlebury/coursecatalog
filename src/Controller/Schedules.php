@@ -812,8 +812,16 @@ class Schedules extends AbstractController
                 $eventBorderColor = $blue;
             }
             $dayPosition = $event['dayOfWeek'] - $startDay;
-            $left = $timeWidth + ($dayWidth * $dayPosition) + 1;		// 1px margin
-            $right = $left + $dayWidth - 2;	// 1px margin
+
+            if ($event['collisions']) {
+                $eventWidth = $dayWidth / ($event['collisions'] + 1);
+                $left = ($eventWidth * $event['collision_position']) + $timeWidth + ($dayWidth * $dayPosition) + 1;		// 1px margin
+                $right = $left + $eventWidth - 2;	// 1px margin
+            } else {
+                $eventWidth = $dayWidth;
+                $left = $timeWidth + ($dayWidth * $dayPosition) + 1;		// 1px margin
+                $right = $left + $dayWidth - 2;	// 1px margin
+            }
 
             $top = $this->timePosition($gridStartTime, $hourHeight, $event['startTime']) + $headerHeight;
             $bottom = $this->timePosition($gridStartTime, $hourHeight, $event['endTime']) + $headerHeight;
@@ -829,7 +837,11 @@ class Schedules extends AbstractController
             $textWidth = $bb[2] - $bb[0];
             $textHeight = $bb[1] - $bb[5];
             $textTop = $top + $textHeight + 3;
-            $textLeft = $left + round(($dayWidth - $textWidth) / 2);
+            if ($event['collisions']) {
+                $textLeft = $left + 2;
+            } else {
+                $textLeft = $left + round(($eventWidth - $textWidth) / 2);
+            }
             imagettftext($im, $size, 0, $textLeft, $textTop, $black, $data['fontFile'], $string);
 
             $size = 10;
@@ -837,7 +849,11 @@ class Schedules extends AbstractController
             $textWidth = $bb[2] - $bb[0];
             $textHeight = $bb[1] - $bb[5];
             $textTop = $top + $textHeight + 16;
-            $textLeft = $left + round(($dayWidth - $textWidth) / 2);
+            if ($event['collisions']) {
+                $textLeft = $left + 2;
+            } else {
+                $textLeft = $left + round(($eventWidth - $textWidth) / 2);
+            }
             imagettftext($im, $size, 0, $textLeft, $textTop, $black, $data['fontFile'], $event['name']);
 
             $size = 10;
@@ -845,7 +861,11 @@ class Schedules extends AbstractController
             $textWidth = $bb[2] - $bb[0];
             $textHeight = $bb[1] - $bb[5];
             $textTop = $top + $textHeight + $textHeight + 22;
-            $textLeft = $left + round(($dayWidth - $textWidth) / 2);
+            if ($event['collisions']) {
+                $textLeft = $left + 2;
+            } else {
+                $textLeft = $left + round(($eventWidth - $textWidth) / 2);
+            }
             imagettftext($im, $size, 0, $textLeft, $textTop, $black, $data['fontFile'], $event['location']);
 
             $size = 10;
@@ -854,7 +874,11 @@ class Schedules extends AbstractController
             $textHeight = $bb[1] - $bb[5];
             // $textTop = $top + $textHeight +$textHeight + 34;
             $textTop += 14;
-            $textLeft = $left + round(($dayWidth - $textWidth) / 3);
+            if ($event['collisions']) {
+                $textLeft = $left + 2;
+            } else {
+                $textLeft = $left + round(($eventWidth - $textWidth) / 2);
+            }
             imagettftext($im, $size, 0, $textLeft, $textTop, $black, $data['fontFile'], 'CRN: '.$event['crn']);
         }
 
