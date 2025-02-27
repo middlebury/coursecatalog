@@ -4,10 +4,8 @@
 {% else %}
     <ul id="bookmarked_courses">
 {% for course in bookmarked_courses %}
-        <li class='bookmarked_course'>
-            <div class='remove_course'>
-                <a class='remove_course button button--sm' title='Remove Course Bookmark' href='{{ path('remove_bookmark', {courseId: course}) }}'>X</a>
-            </div>
+        <li class='bookmarked_course container'>
+            {{ include('schedules/bookmark_control.html.twig', {courseId: course.id}, with_context = false) }}
             <div class='course_info'>
                 <a href="{{ path('view_course', {courseId: course, termId: selectedTermId}) }}"  target="_blank">{{ course.displayname }} - {{ course.title }}</a>
             </div>

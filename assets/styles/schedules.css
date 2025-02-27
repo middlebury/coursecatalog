@@ -103,6 +103,7 @@ li.bookmarked_course {
     margin-bottom: 10px;
     list-style-type: none;
     border-top: 1px dotted;
+    padding-top: 0.25rem;
 }
 form.add_to_schedule_form {
     float: left;
