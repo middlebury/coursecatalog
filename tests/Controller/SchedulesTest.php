@@ -41,7 +41,7 @@ class SchedulesTest extends WebTestCase
         // Find the greatest Schedule Id after creating the new one.
         $scheduleId = 0;
         foreach ($crawler->filter('div.schedule') as $scheduleDiv) {
-            $id = (int) str_replace('schedule_', '', $scheduleDiv->getAttribute('id'));
+            $id = (int) str_replace('schedule-', '', $scheduleDiv->getAttribute('id'));
             if ($id > $scheduleId) {
                 $scheduleId = $id;
             }
@@ -110,9 +110,9 @@ class SchedulesTest extends WebTestCase
             ]
         );
         // Make sure we have our sections listed in the schedule.
-        $this->assertGreaterThan(0, $crawler->filter("#schedule_$scheduleId .offerings .offering .offering_name a:contains('CHEM0104A-F09')")->count());
-        $this->assertGreaterThan(0, $crawler->filter("#schedule_$scheduleId .offerings .offering .offering_name a:contains('CHEM0104T-F09')")->count());
-        $this->assertGreaterThan(0, $crawler->filter("#schedule_$scheduleId .offerings .offering .offering_name a:contains('CHEM0104W-F09')")->count());
+        $this->assertGreaterThan(0, $crawler->filter("#schedule-$scheduleId .offerings .offering .offering_name a:contains('CHEM0104A-F09')")->count());
+        $this->assertGreaterThan(0, $crawler->filter("#schedule-$scheduleId .offerings .offering .offering_name a:contains('CHEM0104T-F09')")->count());
+        $this->assertGreaterThan(0, $crawler->filter("#schedule-$scheduleId .offerings .offering .offering_name a:contains('CHEM0104W-F09')")->count());
 
         // Ensure that we can load the image of the schedule.
         $client->request('GET', "/schedules/png/$scheduleId.png");
@@ -136,9 +136,9 @@ class SchedulesTest extends WebTestCase
         // Ensure that we can load the print view of the schedule.
         $client->request('GET', "/schedules/print/$scheduleId");
         $this->assertResponseIsSuccessful();
-        $this->assertGreaterThan(0, $crawler->filter("#schedule_$scheduleId .offering .offering_name a:contains('CHEM0104A-F09')")->count());
-        $this->assertGreaterThan(0, $crawler->filter("#schedule_$scheduleId .offering .offering_name a:contains('CHEM0104T-F09')")->count());
-        $this->assertGreaterThan(0, $crawler->filter("#schedule_$scheduleId .offering .offering_name a:contains('CHEM0104W-F09')")->count());
+        $this->assertGreaterThan(0, $crawler->filter("#schedule-$scheduleId .offering .offering_name a:contains('CHEM0104A-F09')")->count());
+        $this->assertGreaterThan(0, $crawler->filter("#schedule-$scheduleId .offering .offering_name a:contains('CHEM0104T-F09')")->count());
+        $this->assertGreaterThan(0, $crawler->filter("#schedule-$scheduleId .offering .offering_name a:contains('CHEM0104W-F09')")->count());
 
         // Ensure that we can load the JSON list of events for the schedule.
         $client->request('GET', "/schedules/eventsjson/$scheduleId.json");
@@ -168,10 +168,10 @@ class SchedulesTest extends WebTestCase
         );
 
         // We should have sections from both courses.
-        $this->assertGreaterThan(0, $crawler->filter("#schedule_$scheduleId .offering .offering_name a:contains('CHEM0104A-F09')")->count());
-        $this->assertGreaterThan(0, $crawler->filter("#schedule_$scheduleId .offering .offering_name a:contains('CHEM0104T-F09')")->count());
-        $this->assertGreaterThan(0, $crawler->filter("#schedule_$scheduleId .offering .offering_name a:contains('CHEM0104W-F09')")->count());
-        $this->assertGreaterThan(0, $crawler->filter("#schedule_$scheduleId .offering .offering_name a:contains('PHYS0201A-F09')")->count());
+        $this->assertGreaterThan(0, $crawler->filter("#schedule-$scheduleId .offering .offering_name a:contains('CHEM0104A-F09')")->count());
+        $this->assertGreaterThan(0, $crawler->filter("#schedule-$scheduleId .offering .offering_name a:contains('CHEM0104T-F09')")->count());
+        $this->assertGreaterThan(0, $crawler->filter("#schedule-$scheduleId .offering .offering_name a:contains('CHEM0104W-F09')")->count());
+        $this->assertGreaterThan(0, $crawler->filter("#schedule-$scheduleId .offering .offering_name a:contains('PHYS0201A-F09')")->count());
         // print $crawler->outerHtml();
 
         // Remove the Chemistry sections.
@@ -180,10 +180,10 @@ class SchedulesTest extends WebTestCase
         $this->assertResponseIsSuccessful();
 
         // We should now only have sections from PHYS.
-        $this->assertGreaterThan(0, $crawler->filter("#schedule_$scheduleId .offering .offering_name a:contains('PHYS0201A-F09')")->count());
-        $this->assertEquals(0, $crawler->filter("#schedule_$scheduleId .offering .offering_name a:contains('CHEM0104A-F09')")->count());
-        $this->assertEquals(0, $crawler->filter("#schedule_$scheduleId .offering .offering_name a:contains('CHEM0104T-F09')")->count());
-        $this->assertEquals(0, $crawler->filter("#schedule_$scheduleId .offering .offering_name a:contains('CHEM0104W-F09')")->count());
+        $this->assertGreaterThan(0, $crawler->filter("#schedule-$scheduleId .offering .offering_name a:contains('PHYS0201A-F09')")->count());
+        $this->assertEquals(0, $crawler->filter("#schedule-$scheduleId .offering .offering_name a:contains('CHEM0104A-F09')")->count());
+        $this->assertEquals(0, $crawler->filter("#schedule-$scheduleId .offering .offering_name a:contains('CHEM0104T-F09')")->count());
+        $this->assertEquals(0, $crawler->filter("#schedule-$scheduleId .offering .offering_name a:contains('CHEM0104W-F09')")->count());
     }
 
     public function testEmail()
