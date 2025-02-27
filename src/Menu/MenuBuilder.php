@@ -90,9 +90,9 @@ class MenuBuilder
         }
 
         if ($user) {
-            $menu->addChild('Schedule Builder', ['route' => 'schedules']);
+            $menu->addChild('Schedule Planner', ['route' => 'schedules']);
         } else {
-            $menu->addChild('Schedule Builder', [
+            $menu->addChild('Schedule Planner', [
                 'route' => 'login',
                 'routeParameters' => [
                     'returnTo' => $this->urlGenerator->generate('schedules', ['catalogId' => $selectedCatalogId]),
@@ -195,11 +195,11 @@ class MenuBuilder
 
         // Schedule link.
         $user = $this->security->getUser();
-        $menu->addChild('Schedule Builder', ['route' => 'schedules']);
+        $menu->addChild('Schedule Planner', ['route' => 'schedules']);
         if ($user) {
-            $menu->addChild('Schedule Builder', ['route' => 'schedules']);
+            $menu->addChild('Schedule Planner', ['route' => 'schedules']);
         } else {
-            $menu->addChild('Schedule Builder', [
+            $menu->addChild('Schedule Planner', [
                 'route' => 'login',
                 'routeParameters' => [
                     'returnTo' => $this->urlGenerator->generate('schedules', ['catalogId' => $selectedCatalogId]),
