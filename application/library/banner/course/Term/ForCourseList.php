@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 4/13/09
  *
@@ -16,6 +17,9 @@
  */
 class banner_course_Term_ForCourseList extends banner_course_CachingPdoQueryList implements osid_course_TermList, osid_id_IdList
 {
+    private osid_id_Id $courseId;
+    private banner_course_AbstractSession $session;
+
     /**
      * Constructor.
      *
@@ -110,11 +114,14 @@ ORDER BY STVTERM_CODE ASC
      * Answer an object from a result row.
      *
      * @since 4/13/09
+     *
+     * @return osid_course_Term
+     *                          An object for the row data
      */
     protected function getObjectFromRow(array $row)
     {
         return new banner_course_Term(
-            $this->session->getOsidIdFromString($row['STVTERM_CODE'], 'term/'),
+            $this->session->getOsidIdFromString($row['STVTERM_CODE'], 'term-'),
             $row['STVTERM_DESC'],
             $row['STVTERM_START_DATE'],
             $row['STVTERM_END_DATE']);

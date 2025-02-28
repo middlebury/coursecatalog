@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block assets %}
+    arrow_cross: "{{ asset("images/arrow_cross.png") }}",
+{% endblock %}
+
+{% block importmap %}
+    {# do NOT call parent() #}
+    {{ importmap(['app', 'export']) }}
+{% endblock %}
+
+{% set showLeftNav = false %}
+{% set bodyTypography = true %}
+{% block body %}
+<div class='admin-menu'><a href="{{ path('admin_index') }}">&laquo; Back to Administration</a></div>
+
+<div class='config-menu'>
+    <select name='config-selector' id="config-selector">
+        <option value="">Select a configuration</option>
+{% for config in configs %}
+        <option value="{{ path('export_config_form', {exportId: config.id}) }}" {{ selected_config and selected_config.id == config.id ? 'selected="selected"' }}>{{ config.label }}</option>
+{% endfor %}
+    </select>
+    <p class='inline-p'> - or - <a href="{{ path('export_config_create_form') }}">Create a new configuration</a></p>
+</div>
+
+<div id='config-body' data-latest-url="{{ selected_config ? path('export_config_latest_revision', {exportId: selected_config.id}) }}" data-courselist-url="{{ selected_config ? path('export_config_generate_course_list', {catalogId: selected_config.catalogid}) }}" data-insert-revision-url="{{ selected_config ? path('export_config_insert_revision', {exportId: selected_config.id}) }}" data-delete-url="{{ selected_config ? path('export_config_delete', {exportId: selected_config.id}) }}">
+{% if selected_config and selected_config.id %}
+        <input id='catalogId' type='hidden' value='{{ osidIdToString(selected_config.catalogid) }}'></input>
+        <input id='configId' type='hidden' value='{{ selected_config.id }}'></input>
+        <input id='csrf-key-config-modify' type='hidden' name='csrf_key' value='{{ csrf_token('admin-export-config-modify') }}' />
+
+        <div class='error-message error-div'>Error: </div>
+
+        <!-- Top Nav -->
+        <button class='link-button' id="save-export-config-button">Save</button>
+        <button class='link-button' id="reset-export-config-button">Reset</button>
+        <button class='link-button' id="delete-export-config-button">Delete this config</button>
+        <button class='link-button' id="show-hide-export-config-groups-button">Show/Hide all groups</button>
+        <a class='link-button' href="{{ path('export_config_revisions', {exportId: selected_config.id}) }}">Revision history</a>
+
+        <!-- Content -->
+        <div><textarea id='note' class='note' style='width:100%' placeholder='(Optional) Write a note about this revision'></textarea></div>
+        <ul id='sections-list' class='sections-list'></ul>
+        <div class='error-message error-div'>Error: </div>
+
+        <!-- Bottom Nav -->
+        <button class='link-button' id="save-export-config-button">Save</button>
+        <button class='link-button' id="reset-export-config-button">Reset</button>
+        <button class='link-button' id="delete-export-config-button">Delete this config</button>
+        <button class='link-button' id="show-hide-export-config-groups-button">Show/Hide all groups</button>
+        <a class='link-button' href="{{ path('export_config_revisions', {exportId: selected_config.id}) }}">Revision history</a>
+{% endif %}
+</div>
+{% endblock %}

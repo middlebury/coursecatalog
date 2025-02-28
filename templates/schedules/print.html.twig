@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ schedule.name }}{% endblock %}
+{% block bodyClasses %}print-schedule{% endblock %}
+{% block importmap %}
+    {# do NOT call parent() #}
+    {{ importmap(['app', 'schedules']) }}
+{% endblock %}
+
+{% block body %}
+
+<div class='schedule'>
+    <div class="calendar-container">
+        <img class='calendar_img' src='{{ path('schedule_png', {scheduleId: schedule.id}) }}' alt='Weekly Schedule Image'/>
+    </div>
+
+    <ul class="offering-list">
+{% if schedule.offerings is empty %}
+        <li style='visibility: hidden'> &nbsp; </li>
+{% endif %}
+{% for offering in schedule.offerings %}
+        <li class='offering'>
+            <div class='crn'>
+                CRN: {{ offering.coursereferencenumber }}
+            </div>
+
+            <div class='offering_name'>
+                <a href="{{ path('view_offering', {offeringId: offering.id}) }}" target='_blank'>
+                    {{ offering.displayname }}
+                </a>
+            </div>
+            <div class='offering_title'>
+                <a href="{{ path('view_offering', {offeringId: offering.id}) }}" target='_blank'>
+                    {{ offering.title | nl2br }}
+                </a>
+            </div>
+
+            <div class='time {{ scheduleHasCollisions(schedule, offering.id) ? "conflicting" }}'>
+                {{ formatScheduleInfo(offering.scheduleinfo) | raw }}
+                {% if scheduleHasCollisions(schedule, offering.id) %}
+                <div class="conflicting float-right ml-4 text-caps">Conflict</div>
+                {% endif %}
+            </div>
+            <div class='location'>
+                {{ offering.locationinfo | nl2br }}
+            </div>
+        </li>
+{% endfor %}
+    </ul>
+</div>
+{% endblock %}

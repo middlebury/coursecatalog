@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+{% set bodyTypography = true %}
+
+{% block content_heading %}
+<h2>{{ offering.title|nl2br }}</h2>
+{% endblock %}
+
+{% block content_controls %}
+{{ include('schedules/bookmark_control.html.twig', {courseId: offering.course.id}, with_context = false) }}
+{% endblock %}
+
+{% block body %}
+{% if offering.description %}
+    <div>{{ offering.description|raw }}</div>
+{% endif %}
+
+<dl class='section_info'>
+    <dt>Term:</dt>
+    <dd><a href='{{ path('view_term', {termId: offering.term}) }}'>{{ offering.term.displayname }}</a></dd>
+
+{% if location %}
+    <dt>Location:</dt>
+    <dd>
+        <a href='{{ path('view_resource', {resourceId: location, catalogId: catalogId, termId: offering.term}) }}'>{{ location.displayname }}</a>
+        {% if location.description %}
+            <span class='location_description'>{{ location.description }}</span>
+        {% endif %}
+    </dd>
+{% elseif offering.locationinfo %}
+    <dt>Location:</dt>
+    <dd>{{ offering.locationinfo }}</dd>
+{% endif %}
+
+{% if offering.scheduleinfo %}
+    <dt>Schedule:</dt>
+    <dd>{{ offering.scheduleinfo|nl2br|noWrapParentheticals|raw }}</dd>
+{% endif %}
+
+<dt>Type:</dt>
+<dd>{{ offering.genustype.displayname }}</dd>
+
+{% if instructionMethodTopics is not empty %}
+    <dt>Course Modality:</dt>
+    <dd>
+    {% for topic in instructionMethodTopics %}
+        <a href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+    {% endfor %}
+    </dd>
+{% endif %}
+
+{% if instructors is not null %}
+    <dt>Instructors:</dt>
+    <dd>
+    {% for instructor in instructors %}
+        <a href='{{ path('view_resource', {resourceId: instructor, catalogId: catalogId, termId: offering.term}) }}'>{{ instructor.displayname }}</a>{{ not loop.last ? ',' }}
+    {% endfor %}
+    </dd>
+{% endif %}
+
+<dt>Subject:</dt>
+<dd>
+{% for topic in subjectTopics %}
+    <a href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+{% endfor %}
+</dd>
+
+<dt>Department:</dt>
+<dd>
+{% for topic in departmentTopics %}
+    <a href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+{% endfor %}
+</dd>
+
+<dt>Division:</dt>
+<dd>
+{% for topic in divisionTopics %}
+    <a href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+{% endfor %}
+</dd>
+
+<dt>Requirements Fulfilled:</dt>
+<dd>
+{% for topic in requirementTopics %}
+    <a href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+{% endfor %}
+</dd>
+
+{% if blockTopics is not empty %}
+    <dt>Additional Details:</dt>
+    <dd>
+    {% for topic in blockTopics %}
+        <a href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+    {% endfor %}
+    </dd>
+{% endif %}
+
+{% if levelTopics is not empty %}
+    <dt>Levels:</dt>
+    <dd>
+    {% for topic in levelTopics %}
+        <a href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+    {% endfor %}
+    </dd>
+{% endif %}
+
+{% if alternates is not empty %}
+    <dt>Cross-Listed As:</dt>
+    <dd>
+    {% for alternate in alternates %}
+        <a href='{{ path('view_offering', {offeringId: alternate.offering, catalogId: catalogId, termId: offering.term}) }}'>{{ alternate.offering.displayname }}</a>
+        {{ alternate.is_primary ? ' * ' }}
+        <br/>
+    {% endfor %}
+    </dd>
+{% endif %}
+
+{% if availabilityLink is not empty %}
+    <dt>Availability:</dt>
+    <dd><a class="link-underline" href='{{ availabilityLink.uri }}'>{{ availabilityLink.label }}</a></dd>
+{% endif %}
+
+</dl>
+
+<dl class='section_properties'>
+{% for property in properties %}
+    <dt>{{ property.displayname }}{{ property.displayname != property.displaylabel ? " (#{property.displaylabel})" }}:</dt>
+    <dd>{{ property.value }}</dd>
+{% endfor %}
+</dl>
+
+<div class='clear'></div>
+
+<h2>Course</h2>
+<div>
+    <a href='{{ path('view_course', {courseId: offering.course, catalogId: catalogId, termId: offering.term }) }}'>{{ offering.course.displayname }}</a>
+</div>
+{% endblock %}

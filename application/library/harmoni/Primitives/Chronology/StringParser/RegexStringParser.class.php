@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 5/24/05
  *
@@ -72,6 +73,6 @@ abstract class RegexStringParser extends StringParser
     {
         $regex = call_user_func([static::class, 'getRegex']);
 
-        return preg_match($regex, $this->input);
+        return (bool) preg_match($regex, $this->input);
     }
 }

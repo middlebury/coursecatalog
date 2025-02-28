@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- https://phpunit.readthedocs.io/en/latest/configuration.html -->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
+         backupGlobals="false"
+         colors="true"
+         bootstrap="tests/bootstrap.php"
+         convertDeprecationsToExceptions="false"
+>
+    <php>
+        <ini name="display_errors" value="1" />
+        <ini name="error_reporting" value="-1" />
+        <server name="APP_ENV" value="test" force="true" />
+        <server name="SHELL_VERBOSITY" value="-1" />
+        <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
+        <server name="SYMFONY_PHPUNIT_VERSION" value="9.6" />
+        <env name="KERNEL_CLASS" value="App\Kernel" />
+    </php>
+
+    <testsuites>
+        <testsuite name="acceptance">
+            <directory>tests/Controller</directory>
+        </testsuite>
+        <testsuite name="model">
+            <directory>application/test/banner</directory>
+        </testsuite>
+        <testsuite name="cached_model">
+            <directory>application/test/apc</directory>
+        </testsuite>
+        <testsuite name="primitives">
+            <directory>application/library/harmoni/tests</directory>
+        </testsuite>
+        <testsuite name="service">
+            <directory>tests/Service</directory>
+        </testsuite>
+        <testsuite name="all">
+            <directory>application/library/harmoni/tests</directory>
+            <directory>application/test/banner</directory>
+            <directory>application/test/apc</directory>
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+    </coverage>
+
+    <listeners>
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
+    </listeners>
+
+    <extensions>
+    </extensions>
+</phpunit>

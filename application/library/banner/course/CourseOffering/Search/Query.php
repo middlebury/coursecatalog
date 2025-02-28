@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 5/04/09
  *
@@ -13,6 +14,10 @@
  */
 class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQuery implements osid_course_CourseOfferingQuery, osid_course_CourseOfferingQueryRecord, middlebury_course_CourseOffering_Search_InstructorsQueryRecord, middlebury_course_CourseOffering_Search_WeeklyScheduleQueryRecord, middlebury_course_CourseOffering_Search_EnrollmentQueryRecord
 {
+    private osid_type_Type $wildcardStringMatchType;
+    private osid_type_Type $booleanStringMatchType;
+    private string $keywordString;
+
     /**
      * Constructor.
      *
@@ -256,7 +261,7 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
             return null;
         }
 
-        if (!preg_match('/^genera:offering\/([a-z]+)$/i', $genusType->getIdentifier(), $matches)) {
+        if (!preg_match('/^genera:offering-([a-z]+)$/i', $genusType->getIdentifier(), $matches)) {
             return null;
         }
 
@@ -663,8 +668,8 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
     /**
      *  Tests if a <code> CourseQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a course query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a course query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -726,8 +731,8 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
     /**
      *  Tests if a <code> TermQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a term query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a term query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -810,8 +815,8 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
     /**
      *  Tests if a <code> TopicQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a topic query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a topic query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -895,8 +900,8 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
     {
         // Try room locations
         try {
-            $locationString = $this->session->getDatabaseIdString($resourceId, 'resource/place/room/');
-            $locationParts = explode('/', $locationString);
+            $locationString = $this->session->getDatabaseIdString($resourceId, 'resource-place-room-');
+            $locationParts = explode('-', $locationString);
             $this->addClause(
                 'location',
                 '(SSRMEET_BLDG_CODE = ? AND SSRMEET_ROOM_CODE = ?)',
@@ -906,7 +911,7 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
         // Try building locations
         catch (osid_NotFoundException $e) {
             try {
-                $building = $this->session->getDatabaseIdString($resourceId, 'resource/place/building/');
+                $building = $this->session->getDatabaseIdString($resourceId, 'resource-place-building-');
                 $this->addClause(
                     'location',
                     'SSRMEET_BLDG_CODE = ?',
@@ -915,7 +920,7 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
             }
             // Try campus locations
             catch (osid_NotFoundException $e) {
-                $campus = $this->session->getDatabaseIdString($resourceId, 'resource/place/campus/');
+                $campus = $this->session->getDatabaseIdString($resourceId, 'resource-place-campus-');
                 $this->addClause(
                     'location',
                     'SSBSECT_CAMP_CODE = ?',
@@ -928,8 +933,8 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
     /**
      *  Tests if a <code> ResourceQuery </code> is available for the location.
      *
-     * @return boolean <code> true </code> if a resource query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a resource query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1032,8 +1037,8 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
     /**
      *  Tests if a <code> CalendarQuery </code> is available for the location.
      *
-     * @return boolean <code> true </code> if a calendar query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a calendar query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1099,8 +1104,8 @@ class banner_course_CourseOffering_Search_Query extends banner_course_AbstractQu
      *  Tests if a <code> LearningObjective </code> is available for the
      *  location.
      *
-     * @return boolean <code> true </code> if a learning objective query
-     *                        interface is available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a learning objective query
+     *                     interface is available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1178,8 +1183,8 @@ AND SCBCRSE_COLL_CODE IN (
 			catalog_id = ?
 	))',
             [
-                $this->session->getDatabaseIdString($courseCatalogId, 'catalog/'),
-                $this->session->getDatabaseIdString($courseCatalogId, 'catalog/'),
+                $this->session->getDatabaseIdString($courseCatalogId, 'catalog-'),
+                $this->session->getDatabaseIdString($courseCatalogId, 'catalog-'),
             ],
             $match);
     }
@@ -1187,8 +1192,8 @@ AND SCBCRSE_COLL_CODE IN (
     /**
      *  Tests if a <code> CourseCatalogQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a course catalog query
-     *                        interface is available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a course catalog query
+     *                     interface is available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1273,15 +1278,15 @@ AND SCBCRSE_COLL_CODE IN (
      */
     public function matchInstructorId(osid_id_Id $instructorId, $match)
     {
-        $this->addClause('instructor_id', 'WEB_ID = ?', [$this->session->getDatabaseIdString($instructorId, 'resource/person/')], $match);
+        $this->addClause('instructor_id', 'WEB_ID = ?', [$this->session->getDatabaseIdString($instructorId, 'resource-person-')], $match);
         $this->addTableJoin('LEFT JOIN SYVINST ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)');
     }
 
     /**
      *  Tests if an <code> InstructorQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a instructor query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a instructor query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */

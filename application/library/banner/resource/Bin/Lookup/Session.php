@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 5/04/09
  *
@@ -40,7 +41,7 @@ class banner_resource_Bin_Lookup_Session extends banner_AbstractSession implemen
      */
     public function __construct(banner_ManagerInterface $manager)
     {
-        parent::__construct($manager, 'catalog/');
+        parent::__construct($manager, 'catalog-');
     }
 
     /**
@@ -51,8 +52,8 @@ class banner_resource_Bin_Lookup_Session extends banner_AbstractSession implemen
      *  application that may opt not to offer lookup operations to
      *  unauthorized users.
      *
-     * @return boolean <code> false </code> if lookup methods are not
-     *                        authorized, <code> true </code> otherwise
+     * @return bool <code> false </code> if lookup methods are not
+     *                     authorized, <code> true </code> otherwise
      *
      * @throws osid_IllegalStateException this session has been closed
      *

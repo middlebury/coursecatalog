@@ -38,14 +38,12 @@ class ByteSize extends Integer
      *
      * @static
      */
-    public static function suffixForPower($power)
+    public static function suffixForPower(int $power)
     {
         $multiple = (int) ($power / 10);
         if ($multiple < 0 || $multiple > 8) {
-            throwError(new Error("Invalid power, $power. Valid values are multiples of ten, 0-80.",
-                'ByteSize', true));
+            throw new InvalidArgumentException("Invalid power, $power. Valid values are multiples of ten, 0-80.");
         }
-
         $suffixes = ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
 
         return $suffixes[$multiple];
@@ -59,16 +57,14 @@ class ByteSize extends Integer
      * Answer a new object with the string value specified.
      *
      * @param string $stringValue String representation of the size
-     * @param optional string $class The class to instantiate. Do NOT use outside
-     *		of this package.
      *
-     * @return object ByteSize
+     * @return ByteSize
      *
      * @static
      *
      * @since 7/14/05
      */
-    public static function fromString($stringValue, $class = 'ByteSize')
+    public static function fromString(string $stringValue)
     {
         if (preg_match("/([0-9\.]+)\s*(B|k|kB|M|MB|G|GB|T|TB|P|PB|E|EB|Z|ZB|Y|YB)\s*$/i",
             $stringValue, $matches)) {
@@ -87,44 +83,7 @@ class ByteSize extends Integer
             throw new InvalidArgumentException("Format '$stringValue' not recognized.");
         }
 
-        eval('$result = '.$class.'::withValue($bytes, $class);');
-
-        return $result;
-    }
-
-    /**
-     * Answer a new object with the value specified.
-     *
-     * @param int $value Integer number of Bytes
-     * @param optional string $class The class to instantiate. Do NOT use outside
-     *		of this package.
-     *
-     * @return object ByteSize
-     *
-     * @static
-     *
-     * @since 7/14/05
-     */
-    public static function withValue($value, $class = 'ByteSize')
-    {
-        return parent::withValue($value, $class);
-    }
-
-    /**
-     * Answer a new object with the value zero.
-     *
-     * @param optional string $class The class to instantiate. Do NOT use outside
-     *		of this package.
-     *
-     * @return object ByteSize
-     *
-     * @static
-     *
-     * @since 7/14/05
-     */
-    public static function zero($class = 'ByteSize')
-    {
-        return parent::zero($class);
+        return static::withValue($bytes);
     }
 
     /*********************************************************
@@ -196,7 +155,7 @@ class ByteSize extends Integer
      */
     public function value()
     {
-        return round($this->_value, 0);
+        return round(parent::value(), 0);
     }
 
     /**
@@ -209,7 +168,7 @@ class ByteSize extends Integer
      *
      * @since 10/11/05
      */
-    public function multipleOfPowerOf2($power)
+    public function multipleOfPowerOf2(int $power)
     {
         return $this->value() / 2 ** $power;
     }
@@ -243,14 +202,10 @@ class ByteSize extends Integer
      *********************************************************/
 
     /**
-     * Set the internal value to a PHP primitive.
-     *
-     * @return void
-     *
-     * @since 7/14/05
+     * Cast an input value so that it is of the appropriate storage type.
      */
-    public function _setValue($value)
+    protected function cast($value)
     {
-        $this->_value = $value;
+        return $value;
     }
 }

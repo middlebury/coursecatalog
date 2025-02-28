@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% set showLeftNav = false %}
+{% set bodyTypography = true %}
+{% block body %}
+<p><a href="{{ path('admin_index') }}">&laquo; Back to Administration</a></p>
+
+<p>Anti-requisites are course-equivalency entries that indicate that a course can't be taken if another already has been. This is in contrast to most usage of equivalency which indicates that courses are the same thing. Anti-requisites listed below will be filtered out of cross-list entries for courses.</p>
+<p>Please Note: Any changes made here will affect views for authenticated users immediately, but will not affect catalog archives or anonymous views until the next nightly sync.</p>
+
+
+
+<table class='section_admin'>
+<thead>
+    <tr>
+        <th>Subject Code</th>
+        <th>Course Number</th>
+        <th>Subject Code Equivalent</th>
+        <th>Course Number Equivalent</th>
+        <th>Date Added</th>
+        <th>Added By</th>
+        <th>Comments</th>
+        <th>Actions</th>
+    </tr>
+</thead>
+<tbody>
+
+{% for antirequisite in antirequisites %}
+    <tr>
+        <td class='subj_code'>{{ antirequisite.subj_code }}</td>
+        <td class='crse_numb'>{{ antirequisite.crse_numb }}</td>
+        <td class='subj_code_eqiv'>{{ antirequisite.subj_code_eqiv }}</td>
+        <td class='crse_numb_eqiv'>{{ antirequisite.crse_numb_eqiv }}</td>
+        <td class='added_date'>{{ antirequisite.added_date }}</td>
+        <td class='added_by'>{{ antirequisite.added_by }}</td>
+        <td class='comments'>{{ antirequisite.comments }}</td>
+
+        <td class='actions'>
+            <form class="delete-antirequisite-form" action='{{ path('delete_antirequisite') }}' method='post'>
+                <input type='hidden' name='delete' value='delete' />
+                <input type='hidden' name='subj_code' value='{{ antirequisite.subj_code }}' />
+                <input type='hidden' name='crse_numb' value='{{ antirequisite.crse_numb }}' />
+                <input type='hidden' name='subj_code_eqiv' value='{{ antirequisite.subj_code_eqiv }}' />
+                <input type='hidden' name='crse_numb_eqiv' value='{{ antirequisite.crse_numb_eqiv }}' />
+                <input type='hidden' name='csrf_key' value='{{ csrf_token('admin-antirequisites-delete') }}' />
+                <input type='hidden' name='search_subj_code' value='{{ search_subj_code }}' />
+                <input type='hidden' name='search_crse_numb' value='{{ search_crse_numb }}' />
+                <input type='button' value='Delete'
+                    onclick='if (confirm("Delete {{ antirequisite.subj_code }} {{ antirequisite.crse_numb }} &raquo; {{ antirequisite.subj_code_eqiv }} {{ antirequisite.crse_numb_eqiv }}?")) {this.form.submit();}' />
+            </form>
+        </td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+
+<a name="add_new"></a>
+<h4>Add a new anti-requisite</h4>
+
+<p>Search for a subject code and course number to find related equivalencies.</p>
+<form id="search-antirequisites-form" action="{{ path('add_antirequisites') }}#add_new" method='get'>
+    <label for="search_subj_code">Subject Code: <input type='text' name='search_subj_code' value='{{ search_subj_code }}' size="4"></label>
+    <label for="search_crse_numb">Course Number: <input type='text' name='search_crse_numb' value='{{ search_crse_numb }}' size="5"></label>
+    <input type="submit" name="search" value="Search">
+</form>
+
+{% if searchResults is not empty %}
+<form id="add-antirequisites-form" action="{{ path('add_antirequisites') }}#add_new" method='post'>
+    <table class='section_admin'>
+    <thead>
+        <tr>
+            <th>Add?</th>
+            <th>Subject Code</th>
+            <th>Course Number</th>
+            <th>Subject Code Equivalent</th>
+            <th>Course Number Equivalent</th>
+            <th>Date Added</th>
+            <th>Added By</th>
+            <th>Comments</th>
+        </tr>
+    </thead>
+    <tbody>
+{% for eqiv in searchResults %}
+        <tr>
+        <td>
+{% if eqiv.antirequisite %}
+            <input type='checkbox' name='already_added' value='{{ eqiv.SCREQIV_SUBJ_CODE }}/{{ eqiv.SCREQIV_CRSE_NUMB }}/{{ eqiv.SCREQIV_SUBJ_CODE_EQIV }}/{{ eqiv.SCREQIV_CRSE_NUMB_EQIV }}' disabled='disabled' checked='checked'>
+{% else %}
+            <input type='checkbox' name='equivalents_to_add[]' value='{{ eqiv.SCREQIV_SUBJ_CODE }}/{{ eqiv.SCREQIV_CRSE_NUMB }}/{{ eqiv.SCREQIV_SUBJ_CODE_EQIV }}/{{ eqiv.SCREQIV_CRSE_NUMB_EQIV }}'>
+{% endif %}
+        </td>
+        <td>
+        {{ eqiv.SCREQIV_SUBJ_CODE }}
+        </td>
+        <td>
+        {{ eqiv.SCREQIV_CRSE_NUMB }}
+        </td>
+        <td>
+        {{ eqiv.SCREQIV_SUBJ_CODE_EQIV }}
+        </td>
+        <td>
+        {{ eqiv.SCREQIV_CRSE_NUMB_EQIV }}
+        </td>
+        <td>
+            {{ eqiv.antirequisite ? eqiv.added_date }}
+        </td>
+        <td>
+            {{ eqiv.antirequisite ? eqiv.added_by }}
+        </td>
+        <td>
+{% if eqiv.antirequisite %}
+            {{ eqiv.comments }}
+{% else %}
+            <textarea name='{{ eqiv.SCREQIV_SUBJ_CODE }}/{{ eqiv.SCREQIV_CRSE_NUMB }}/{{ eqiv.SCREQIV_SUBJ_CODE_EQIV }}/{{ eqiv.SCREQIV_CRSE_NUMB_EQIV }}-comments'></textarea>
+{% endif %}
+        </td>
+    </tr>
+{% endfor %}
+    </tbody>
+    </table>
+    <input type='hidden' name='csrf_key' value='{{ csrf_token('admin-antirequisites-add') }}' />
+    <input type='hidden' name='search_subj_code' value='{{ search_subj_code }}'>
+    <input type='hidden' name='search_crse_numb' value='{{ search_crse_numb }}'>
+    <input type='submit' name='add' value='Mark checked as anti-requisites' />
+</form>
+{% endif %}
+{% endblock %}

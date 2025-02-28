@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block importmap %}
+    {# do NOT call parent() #}
+    {{ importmap(['app', 'schedules']) }}
+{% endblock %}
+
+{% block body %}
+<div class='schedule_planner'>
+    <form action='#' method='get' id='schedules_term_choice'>
+        <div class="course-catalog-search row row--sm-gutters">
+        {{ include('schedules/catalog_select.html.twig', {selectedCatalogId: selectedCatalogId, catalogs: catalogs}, with_context = false) }}
+        {{ include('schedules/term_select.html.twig', {selectedCatalogId: selectedCatalogId, selectedTermId: selectedTermId, terms: terms}, with_context = false) }}
+        </div>
+    </form>
+
+    <div id='schedules'>
+        <h2>Schedules for {{ include('schedules/selected_term_name.html.twig', {selectedTermId: selectedTermId, terms: terms}, with_context = false) }}</h2>
+
+        {{ include('schedules/schedules.html.twig', {schedules: schedules, selectedCatalogId: selectedCatalogId, selectedTermId: selectedTermId, emailEnabled: emailEnabled, terms: terms}, with_context = false) }}
+    </div>
+    <div id="bookmarks" style="display: none">
+        <h2>Saved Courses in {{ include('schedules/selected_term_name.html.twig', {selectedTermId: selectedTermId, terms: terms}, with_context = false) }}</h2>
+
+        {{ include('schedules/bookmarks.html.twig', {bookmarked_courses: bookmarked_courses, schedules: schedules, selectedCatalogId: selectedCatalogId, selectedTermId: selectedTermId}, with_context = false) }}
+    </div>
+</div>
+{% endblock %}

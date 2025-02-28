@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 4/9/09
  *
@@ -17,6 +18,12 @@
  */
 class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osid_course_CourseManager
 {
+    // The underlying course manager.
+    private osid_course_CourseManager $manager;
+    private osid_resource_ResourceManager $resourceManager;
+    private osid_calendaring_CalendarManager $calendarManager;
+    private osid_learning_ObjectiveManager $learningManager;
+
     /**
      * Set the configuration and class paths.
      *
@@ -28,12 +35,21 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     {
         parent::__construct();
 
-        $this->setId(new phpkit_id_URNInetId('urn:inet:middlebury.edu:id:implementations/apc_course'));
+        $this->setId(new phpkit_id_URNInetId('urn:inet:middlebury.edu:id:implementations.apc_course'));
         $this->setDisplayName('APC Caching Course Manager');
         $this->setDescription('This is a CourseManager implementation that provides read-only, unauthenticated, access to course information stored in an underlying course manager.');
     }
-    // The underlying course manager.
-    private $manager;
+
+    /**
+     * Allow access to the underlying database for test setup/tear down.
+     *
+     * @return PDO
+     *             The backing database
+     */
+    public function getDB()
+    {
+        return $this->manager->getDB();
+    }
 
     /*********************************************************
      * From OsidManager
@@ -74,7 +90,7 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
         try {
             $implClassName = phpkit_configuration_ConfigUtil::getSingleValuedValue(
                 $runtime->getConfiguration(),
-                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:apc_course/impl_class_name'),
+                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:apc_course.impl_class_name'),
                 new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
         } catch (osid_NotFoundException $e) {
             throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode(), $e);
@@ -1396,8 +1412,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  used to create a lookup or admin session. Federation is not exposed
      *  when a set of catalogs appears as a single catalog.
      *
-     * @return boolean <code> true </code> if visible federation is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if visible federation is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1409,8 +1425,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if looking up courses is supported.
      *
-     * @return boolean <code> true </code> if course lookup is supported,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if course lookup is supported,
+     *                     <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1422,8 +1438,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if searching courses is supported.
      *
-     * @return boolean <code> true </code> if course search is supported,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if course search is supported,
+     *                     <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1435,8 +1451,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if course <code> </code> administrative service is supported.
      *
-     * @return boolean <code> true </code> if course administration is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if course administration is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1448,8 +1464,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if a course <code> </code> notification service is supported.
      *
-     * @return boolean <code> true </code> if course notification is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if course notification is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1461,8 +1477,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if a course catalogging service is supported.
      *
-     * @return boolean <code> true </code> if course catalogging is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if course catalogging is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1475,8 +1491,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  Tests if a course catalogging service is supported. A course
      *  catalogging service maps courses to catalogs.
      *
-     * @return boolean <code> true </code> if course catalogging is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if course catalogging is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1488,8 +1504,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if looking up course offerings is supported.
      *
-     * @return boolean <code> true </code> if course offering lookup is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if course offering lookup is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1501,8 +1517,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if searching course offerings is supported.
      *
-     * @return boolean <code> true </code> if course offering search is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if course offering search is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1515,8 +1531,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  Tests if course <code> </code> offering <code> </code> administrative
      *  service is supported.
      *
-     * @return boolean <code> true </code> if course offering administration
-     *                        is supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if course offering administration
+     *                     is supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1529,8 +1545,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  Tests if a course offering <code> </code> notification service is
      *  supported.
      *
-     * @return boolean <code> true </code> if course offering notification is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if course offering notification is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1543,8 +1559,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  Tests if course <code> </code> offering <code> </code> hierarchy
      *  traversal service is supported.
      *
-     * @return boolean <code> true </code> if course offering hierarchy is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if course offering hierarchy is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1557,8 +1573,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  Tests if a course offering <code> </code> hierarchy design service is
      *  supported.
      *
-     * @return boolean <code> true </code> if course offering hierarchy
-     *                        design is supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if course offering hierarchy
+     *                     design is supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1570,8 +1586,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if the course offering hierarchy supports node sequencing.
      *
-     * @return boolean <code> true </code> if course offering hierarchy node
-     *                        sequencing is supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if course offering hierarchy node
+     *                     sequencing is supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1583,8 +1599,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if a course offering catalogging service is supported.
      *
-     * @return boolean <code> true </code> if course offering catalog is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if course offering catalog is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1597,8 +1613,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  Tests if a course offering catalogging service is supported. A
      *  catalogging service maps course offerings to catalogs.
      *
-     * @return boolean <code> true </code> if course offering catalogging is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if course offering catalogging is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1610,8 +1626,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if looking up terms is supported.
      *
-     * @return boolean <code> true </code> if term lookup is supported,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if term lookup is supported,
+     *                     <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1623,8 +1639,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if searching terms is supported.
      *
-     * @return boolean <code> true </code> if term search is supported,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if term search is supported,
+     *                     <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1636,8 +1652,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if term <code> </code> administrative service is supported.
      *
-     * @return boolean <code> true </code> if term administration is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if term administration is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1649,8 +1665,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if a term <code> </code> notification service is supported.
      *
-     * @return boolean <code> true </code> if term notification is supported,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if term notification is supported,
+     *                     <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1662,8 +1678,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if term <code> </code> hierarchy traversal service is supported.
      *
-     * @return boolean <code> true </code> if term hierarchy is supported,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if term hierarchy is supported,
+     *                     <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1675,8 +1691,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if a term <code> </code> hierarchy design service is supported.
      *
-     * @return boolean <code> true </code> if term hierarchy design is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if term hierarchy design is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1688,8 +1704,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if the term hierarchy supports node sequencing.
      *
-     * @return boolean <code> true </code> if term hierarchy node sequencing
-     *                        is supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if term hierarchy node sequencing
+     *                     is supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1701,8 +1717,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if a term catalogging service is supported.
      *
-     * @return boolean <code> true </code> if term catalog is supported,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if term catalog is supported,
+     *                     <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1715,8 +1731,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  Tests if a term catalogging service is supported. A catalogging
      *  service maps terms to catalogs.
      *
-     * @return boolean <code> true </code> if term catalogging is supported,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if term catalogging is supported,
+     *                     <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1728,8 +1744,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if looking up topics is supported.
      *
-     * @return boolean <code> true </code> if topic lookup is supported,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if topic lookup is supported,
+     *                     <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1741,8 +1757,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if searching topics is supported.
      *
-     * @return boolean <code> true </code> if topic search is supported,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if topic search is supported,
+     *                     <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1754,8 +1770,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if topic <code> </code> administrative service is supported.
      *
-     * @return boolean <code> true </code> if topic administration is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if topic administration is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1767,8 +1783,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if a topic <code> </code> notification service is supported.
      *
-     * @return boolean <code> true </code> if topic notification is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if topic notification is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1781,8 +1797,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  Tests if topic <code> </code> hierarchy traversal service is
      *  supported.
      *
-     * @return boolean <code> true </code> if topic hierarchy is supported,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if topic hierarchy is supported,
+     *                     <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1794,8 +1810,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if a topic <code> </code> hierarchy design service is supported.
      *
-     * @return boolean <code> true </code> if topic hierarchy design is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if topic hierarchy design is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1807,8 +1823,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if the topic hierarchy supports node sequencing.
      *
-     * @return boolean <code> true </code> if topic hierarchy node sequencing
-     *                        is supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if topic hierarchy node sequencing
+     *                     is supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1820,8 +1836,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if a topic catalogging service is supported.
      *
-     * @return boolean <code> true </code> if topic catalog is supported,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if topic catalog is supported,
+     *                     <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1834,8 +1850,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  Tests if a topic catalogging service is supported. A catalogging
      *  service maps terms to catalogs.
      *
-     * @return boolean <code> true </code> if topic catalogging is supported,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if topic catalogging is supported,
+     *                     <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1847,8 +1863,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if looking up course catalogs is supported.
      *
-     * @return boolean <code> true </code> if course catalog lookup is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if course catalog lookup is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1860,8 +1876,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if searching course catalogs is supported.
      *
-     * @return boolean <code> true </code> if course catalog search is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if course catalog search is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1874,8 +1890,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  Tests if course <code> catalog </code> administrative service is
      *  supported.
      *
-     * @return boolean <code> true </code> if course catalog administration
-     *                        is supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if course catalog administration
+     *                     is supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1888,8 +1904,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  Tests if a course catalog <code> </code> notification service is
      *  supported.
      *
-     * @return boolean <code> true </code> if course catalog notification is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if course catalog notification is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1902,8 +1918,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  Tests for the availability of a course catalog hierarchy traversal
      *  service.
      *
-     * @return boolean <code> true </code> if course catalog hierarchy
-     *                        traversal is available, <code> false </code> otherwise
+     * @return bool <code> true </code> if course catalog hierarchy
+     *                     traversal is available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented in all
      *              providers.
@@ -1917,8 +1933,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  Tests for the availability of a course catalog hierarchy design
      *  service.
      *
-     * @return boolean <code> true </code> if course catalog hierarchy design
-     *                        is available, <code> false </code> otherwise
+     * @return bool <code> true </code> if course catalog hierarchy design
+     *                     is available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1930,8 +1946,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
     /**
      *  Tests if the course catalog hierarchy supports node sequencing.
      *
-     * @return boolean <code> true </code> if course catalog hierarchy node
-     *                        sequencing is supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if course catalog hierarchy node
+     *                     sequencing is supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -1962,8 +1978,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  @param object osid_type_Type $courseRecordType a <code> Type </code>
      *          indicating a <code> Course </code> record type
      *
-     * @return boolean <code> true </code> if the given <code> Type </code>
-     *                        is supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if the given <code> Type </code>
+     *                     is supported, <code> false </code> otherwise
      *
      * @throws osid_NullArgumentException null argument provided
      *
@@ -1997,8 +2013,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  @param object osid_type_Type $courseSearchRecordType a <code> Type
      *          </code> indicating a <code> Course </code> search record type
      *
-     * @return boolean <code> true </code> if the given search record type is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if the given search record type is
+     *                     supported, <code> false </code> otherwise
      *
      * @throws osid_NullArgumentException null argument provided
      *
@@ -2033,8 +2049,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *          </code> indicating an <code> CourseOffering </code> record
      *          type
      *
-     * @return boolean <code> true </code> if the given record type is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if the given record type is
+     *                     supported, <code> false </code> otherwise
      *
      * @throws osid_NullArgumentException null argument provided
      *
@@ -2068,8 +2084,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *          Type </code> indicating an <code> CourseOffering </code>
      *          search type
      *
-     * @return boolean <code> true </code> if the given <code> Type </code>
-     *                        is supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if the given <code> Type </code>
+     *                     is supported, <code> false </code> otherwise
      *
      * @throws osid_NullArgumentException null argument provided
      *
@@ -2102,8 +2118,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  @param object osid_type_Type $termRecordType a <code> Type </code>
      *          indicating a <code> Term </code> record type
      *
-     * @return boolean <code> true </code> if the given <code> Type </code>
-     *                        is supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if the given <code> Type </code>
+     *                     is supported, <code> false </code> otherwise
      *
      * @throws osid_NullArgumentException null argument provided
      *
@@ -2136,8 +2152,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  @param object osid_type_Type $termSearchRecordType a <code> Type
      *          </code> indicating a <code> Term </code> search record type
      *
-     * @return boolean <code> true </code> if the given <code> Type </code>
-     *                        is supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if the given <code> Type </code>
+     *                     is supported, <code> false </code> otherwise
      *
      * @throws osid_NullArgumentException null argument provided
      *
@@ -2170,8 +2186,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  @param object osid_type_Type $topicRecordType a <code> Type </code>
      *          indicating a <code> Topic </code> record type
      *
-     * @return boolean <code> true </code> if the given type is supported,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if the given type is supported,
+     *                     <code> false </code> otherwise
      *
      * @throws osid_NullArgumentException null argument provided
      *
@@ -2204,8 +2220,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  @param object osid_type_Type $topicSearchRecordType a <code> Type
      *          </code> indicating a <code> Topic </code> search record type
      *
-     * @return boolean <code> true </code> if the given Type is supported,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if the given Type is supported,
+     *                     <code> false </code> otherwise
      *
      * @throws osid_NullArgumentException null argument provided
      *
@@ -2239,8 +2255,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *  @param object osid_type_Type $courseCatalogrecordType a <code> Type
      *          </code> indicating an <code> CourseCatalog </code> record type
      *
-     * @return boolean <code> true </code> if the given <code> Type </code>
-     *                        is supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if the given <code> Type </code>
+     *                     is supported, <code> false </code> otherwise
      *
      * @throws osid_NullArgumentException null argument provided
      *
@@ -2275,8 +2291,8 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      *          </code> indicating an <code> CourseCatalog </code> search
      *          record type
      *
-     * @return boolean <code> true </code> if the given <code> Type </code>
-     *                        is supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if the given <code> Type </code>
+     *                     is supported, <code> false </code> otherwise
      *
      * @throws osid_NullArgumentException null argument provided
      *

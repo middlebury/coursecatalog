@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {{ include(
+        'partials/offerings.html.twig',
+        {
+            offerings: offerings,
+            term: term,
+            offeringsForAllTermsUrl: NULL,
+            hideOfferingInstructors: FALSE,
+            selectedOffering: NULL
+        },
+        with_context = false
+    )}}
+{% endblock %}

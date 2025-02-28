@@ -18,6 +18,8 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 --
 
 INSERT INTO `catalog_term` (`catalog_id`, `term_code`, `term_display_label`) VALUES
+('BLSE', '200970', 'L'),
+('BLSE', '201070', 'L'),
 ('MCUG', '200390', 'F'),
 ('MCUG', '200420', 'S'),
 ('MCUG', '200490', 'F'),
@@ -101,6 +103,23 @@ INSERT INTO `catalog_term_match` (`catalog_id`, `term_code_match`, `term_display
 -- Dumping data for table `GTVINSM`
 --
 
+INSERT INTO `GTVINSM` (`GTVINSM_CODE`, `GTVINSM_DESC`, `GTVINSM_ACTIVITY_DATE`, `GTVINSM_USER_ID`, `GTVINSM_VR_MSG_NO`) VALUES
+('BL', 'Blended', '2020-07-08', 'JENTHOMPSON', NULL),
+('EJ', 'Japan SA mainly in English', '2010-10-11', 'KWEISS', NULL),
+('ENGL', 'Japan SA in English', '2010-10-11', 'KWEISS', NULL),
+('FON', 'Flexible Online', '2020-07-08', 'JENTHOMPSON', NULL),
+('HX', 'Hyflex', '2020-07-08', 'JENTHOMPSON', NULL),
+('HYB', 'Hybrid', '2014-09-12', 'KWEISS', NULL),
+('JAPNS', 'Japan SA in language', '2010-10-11', 'KWEISS', NULL),
+('JE', 'Japan SA mainly in Japanese', '2010-10-11', 'KWEISS', NULL),
+('MM', 'Multimodal', '2020-07-08', 'JENTHOMPSON', NULL),
+('ONASY', 'Asynchronous Online', '2022-07-27', 'JENTHOMPSON', NULL),
+('ONL', 'Online', '2009-06-17', 'LEROYG', '8'),
+('ONL5', 'Online, Half-Credit', '2023-01-03', 'JENTHOMPSON', NULL),
+('PERS', 'In-Person', '2020-07-08', 'JENTHOMPSON', NULL),
+('PERS5', 'In-Person, Half-Credit', '2022-03-30', 'JENTHOMPSON', NULL),
+('SON', 'Scheduled Online', '2020-07-08', 'JENTHOMPSON', NULL),
+('WAIVE', 'MIIS Course Waiver', '2010-10-11', 'KWEISS', '8');
 
 --
 -- Dumping data for table `GTVINTP`
@@ -1414,8 +1433,10 @@ INSERT INTO `STVTERM` (`STVTERM_CODE`, `STVTERM_DESC`, `STVTERM_START_DATE`, `ST
 ('200923', 'Spring 09 Round 1-Check Status', '2009-02-09', '2009-05-19', '0809', '2008-10-29', '3', '2', '5', '2009', '0000-00-00', '0000-00-00', NULL, 'S'),
 ('200924', 'First Year Seminar Choices', '2009-02-09', '2009-05-19', '0809', '2008-12-15', '3', '2', '5', '2009', '0000-00-00', '0000-00-00', NULL, 'S'),
 ('200925', 'FY Preferences,ADVISING ONLY', '2009-02-09', '2009-05-19', '0809', '2008-12-15', '3', '2', '5', '2009', '0000-00-00', '0000-00-00', NULL, 'S'),
+('200970', 'Summer 2009', '2009-06-10', '2009-08-08', '0910', '2008-12-19', '5', '7', '8', '2010', '2009-06-10', '2009-08-08', NULL, 'M'),
 ('200990', 'Fall 2009', '2009-09-07', '2009-12-15', '0910', '2009-04-01', '1', '9', '12', '2010', '0000-00-00', '0000-00-00', NULL, 'S'),
 ('200993', 'Fall 09: Round 1 -Check Status', '2009-09-07', '2009-12-15', '0910', '2009-04-01', '1', '9', '12', '2010', '0000-00-00', '0000-00-00', NULL, 'S'),
+('201070', 'Summer 2010', '2010-06-16', '2010-08-06', '1011', '2009-12-11', '5', '7', '8', '2011', '2010-06-16', '2010-08-06', NULL, 'M'),
 ('201690', 'Fall 2016', '2016-09-07', '2016-12-15', '0910', '2016-04-01', '1', '9', '12', '2017', '0000-00-00', '0000-00-00', NULL, 'S');
 
 --

@@ -1,0 +1,9 @@
+            <div class="col-md-6 form-group">
+                <label for="catalog">Catalog: </label>
+                <select name="catalog" id="catalog" class="form-control">
+                    <option value='{{ path('schedules') }}'>All Catalogs</option>
+{% for catalog in catalogs %}
+                    <option value="{{ path('schedules', {catalogId: catalog, termId: null}) }}" {{ selectedCatalogId and osidIdsEqual(selectedCatalogId, catalog.id) ? 'selected="selected"' }}>{{ catalog.displayname }}</option>
+{% endfor %}
+                </select>
+            </div>

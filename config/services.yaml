@@ -1,0 +1,131 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+    app.osid.runtime.config_path: 'configuration.plist'
+    app.osid.runtime.courseimpl: '%env(COURSE_MANAGER_IMPL)%'
+    app.osid.id.authority_to_shorten: 'middlebury.edu'
+    app.osid.reference_date: 'now'
+    app.catalog.banner_web_url: '%env(CATALOG_BANNER_WEB_URL)%'
+    app.schedules.email.enabled: '%env(bool:SCHEDULES_EMAIL_ENABLED)%'
+    app.schedules.email.send_mail_as_user: '%env(bool:SCHEDULES_EMAIL_SEND_MAIL_AS_USER)%'
+    app.schedules.email.send_mail_as: '%env(SCHEDULES_EMAIL_SEND_MAIL_AS)%'
+    app.schedules.image.font_file: '%env(SCHEDULES_IMAGE_FONT_FILE)%'
+
+when@test:
+    parameters:
+        app.osid.runtime.config_path: 'application/test/banner/configuration.plist'
+        app.osid.reference_date: '2009-08-15'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    app.menu_builder:
+        class: App\Menu\MenuBuilder
+        arguments:
+            $factory: "@knp_menu.factory"
+            $catalogMenuLinks: '%env(json:CATALOG_MENU_LINKS)%'
+        tags:
+            - { name: knp_menu.menu_builder, method: createMainMenu, alias: main }
+            - { name: knp_menu.menu_builder, method: createSecondaryMenu, alias: secondary }
+            - { name: knp_menu.menu_builder, method: createAdminMenu, alias: admin }
+
+    App\Routing\OsidRouter:
+        decorates: 'router'
+    App\Routing\OsidValueResolver:
+        tags:
+            - controller.argument_value_resolver:
+                name: osid_id
+                priority: 150
+    App\Service\Osid\Runtime:
+        arguments:
+            $configPath: '%app.osid.runtime.config_path%'
+            $courseImpl: '%app.osid.runtime.courseimpl%'
+    App\Service\Osid\DataLoader:
+        arguments:
+            $bannerWebUrl: '%app.catalog.banner_web_url%'
+    App\Service\Osid\IdMap:
+        arguments:
+            $idAuthorityToShorten: '%app.osid.id.authority_to_shorten%'
+    App\Service\Osid\TermHelper:
+        arguments:
+            $referenceDate: '%app.osid.reference_date%'
+    App\Service\Osid\TypeMap:
+        arguments:
+            $idAuthorityToShorten: '%app.osid.id.authority_to_shorten%'
+    App\Service\Osid\TypeHelper:
+        arguments:
+            $defaultOfferingGenusTypesToSearch:
+                - 'urn:inet:middlebury.edu:genera:offering-LCT'
+                - 'urn:inet:middlebury.edu:genera:offering-SEM'
+                - 'urn:inet:middlebury.edu:genera:offering-PRC'
+                - 'urn:inet:middlebury.edu:genera:offering-WKS'
+    App\Service\CatalogSync\Director:
+        arguments:
+            $container: '@service_container'
+            $syncStrategy: '%env(SYNC_STRATEGY)%'
+            $errorMailTo: '%env(SYNC_ERROR_MAIL_TO)%'
+            $errorMailFrom: '%env(SYNC_ERROR_MAIL_FROM)%'
+    sync.strategy.oci:
+        class: 'App\Service\CatalogSync\Syncer\OciSyncer'
+        public: true
+        arguments:
+            $allowedBlckCodes: '%env(json:SYNC_ALLOWED_BLOCK_CODES)%'
+    sync.strategy.oci_with_cache:
+        class: 'App\Service\CatalogSync\Syncer\OciWithCacheSyncer'
+        public: true
+        arguments:
+            $allowedBlckCodes: '%env(json:SYNC_ALLOWED_BLOCK_CODES)%'
+            $temp_db: '@sync.temp_db'
+            $mysqlCommand: '%env(SYNC_MYSQL_COMMAND)%'
+            $mysqldumpCommand: '%env(SYNC_MYSQLDUMP_COMMAND)%'
+    sync.strategy.pdo_mysql:
+        class: 'App\Service\CatalogSync\Syncer\PdoMysqlSyncer'
+        public: true
+        arguments:
+            $allowedBlckCodes: '%env(json:SYNC_ALLOWED_BLOCK_CODES)%'
+    App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase:
+        arguments:
+            $dsn: '%env(SYNC_DESTINATION_DSN)%'
+            $username: '%env(SYNC_DESTINATION_USERNAME)%'
+            $password: '%env(SYNC_DESTINATION_PASSWORD)%'
+    App\Service\CatalogSync\Database\Source\OciSourceDatabase:
+        arguments:
+            $tns: '%env(SYNC_SOURCE_OCI_TNS)%'
+            $username: '%env(SYNC_SOURCE_OCI_USERNAME)%'
+            $password: '%env(SYNC_SOURCE_OCI_PASSWORD)%'
+    sync.temp_db:
+        class: 'App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase'
+        arguments:
+            $dsn: '%env(SYNC_TEMP_DSN)%'
+            $username: '%env(SYNC_TEMP_USERNAME)%'
+            $password: '%env(SYNC_TEMP_PASSWORD)%'
+    App\Service\CatalogSync\Database\Source\PdoMysqlSourceDatabase:
+        arguments:
+            $dsn: '%env(SYNC_SOURCE_PDOMYSQL_DSN)%'
+            $username: '%env(SYNC_SOURCE_PDOMYSQL_USERNAME)%'
+            $password: '%env(SYNC_SOURCE_PDOMYSQL_PASSWORD)%'
+    App\Archive\Storage\ArchiveStorage:
+        arguments:
+            $basePath: '%env(ARCHIVE_BASE_PATH)%'
+    App\EventListener\CacheControlListener:
+        arguments:
+            $maxAge: '%env(int:PUBLIC_CACHE_MAX_AGE)%'
+            $sharedMaxAge: '%env(int:PUBLIC_CACHE_SHARED_MAX_AGE)%'

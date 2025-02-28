@@ -1,0 +1,32 @@
+{% if offerings is not empty %}
+            <catalog:offering_list>
+{% set currentTerm = null %}
+{% for item in offerings %}
+{% set offering = item.offering %}
+{% if currentTerm is null or currentTerm.id != offering.termid %}
+{% if currentTerm is not null %}
+                </catalog:offering_term>
+{% endif %}
+{% set currentTerm = offering.term %}
+                <catalog:offering_term id="{{ osidIdToString(currentTerm.id) }}" name="{{ currentTerm.displayname }}">
+{% endif %}
+                    <catalog:offering id="{{ osidIdToString(offering.id) }}" href="{{ url('view_offering', {offeringId: offering}) }}">
+                        <catalog:display_name>{{ offering.displayname }}</catalog:display_name>
+                        <catalog:title>{{ offering.title }}</catalog:title>
+                        <catalog:description><![CDATA[{{ offering.description|raw }}]]></catalog:description>
+                        <catalog:type id="{{ osidTypeToString(offering.genustype) }}">{{ offering.genustype.displayname }}</catalog:type>
+                        <catalog:term id="{{ osidIdToString(offering.term.id) }}">{{ offering.term.displayname }}</catalog:term>
+                        <catalog:location id="{{ osidIdToString(offering.locationid) }}">{{ offering.locationInfo }}</catalog:location>
+                        <catalog:schedule>{{ offering.scheduleinfo }}</catalog:schedule>
+{% for instructor in offering.instructors %}
+                        <catalog:instructor id="{{ osidIdToString(instructor.resource.id) }}">
+                            <catalog:given_name>{{ instructor.givename }}</catalog:given_name>
+                            <catalog:surname>{{ instructor.surname }}</catalog:surname>
+                            <catalog:display_name>{{ instructor.resource.displayname }}</catalog:display_name>
+                        </catalog:instructor>
+{% endfor %}
+                    </catalog:offering>
+{% endfor %}
+                </catalog:offering_term>
+            </catalog:offering_list>
+{% endif %}

@@ -179,7 +179,6 @@ class XML_HTMLSax3_OpeningTagState {
     function parse($context) {
         $tag = $context->scanUntilCharacters("/> \n\r\t");
         if ($tag != '') {
-            $this->attrs = array();
             $Attributes = $this->parseAttributes($context);
             $char = $context->scanCharacter();
             if ($char == '/') {

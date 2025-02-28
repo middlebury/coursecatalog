@@ -1,0 +1,14 @@
+{% extends 'base.xml.twig' %}
+{% block items %}
+{%~ for term in terms %}
+        <item>
+            <title>{{ term.displayname }}</title>
+            <link>{{ url('view_term', {termId: term, catalogId: catalogId}) }}</link>
+            <description><![CDATA[{{ term.description | raw }}]]></description>
+            <catalog:id>{{ osidIdToString(term.id) }}</catalog:id>
+            <catalog:start_date>{{ term.starttime | date('Y-m-d') }}</catalog:start_date>
+            <catalog:end_date>{{ term.endtime | date('Y-m-d') }}</catalog:end_date>
+            <catalog:weeks>{{ dateRangeToWeeks(term.starttime, term.endtime) }}</catalog:weeks>
+        </item>
+{% endfor %}
+{% endblock %}

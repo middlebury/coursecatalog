@@ -13,7 +13,18 @@ class banner_course_Topic_Search_OrderTest extends TestCase
     /**
      * @var banner_course_Topic_Search_Order
      */
-    protected $object;
+    protected osid_course_TopicSearchOrder $object;
+
+    private osid_course_TopicSearchSession $session;
+    private osid_type_Type $wildcardStringMatchType;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $miisId;
+    private osid_id_Id $termId;
+    private osid_type_Type $termType;
+    private osid_type_Type $subjectType;
+    private osid_type_Type $departmentType;
+    private osid_type_Type $divisionType;
+    private osid_type_Type $requirementType;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -23,20 +34,20 @@ class banner_course_Topic_Search_OrderTest extends TestCase
     {
         $this->wildcardStringMatchType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:search:wildcard');
 
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
-        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
+        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MCUG');
+        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MIIS');
 
         $this->session = self::$courseManager->getTopicSearchSessionForCatalog($this->mcugId);
         $this->object = $this->session->getTopicSearchOrder();
 
-        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200820');
+        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term-200820');
 
         $this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
 
-        $this->subjectType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/subject');
-        $this->departmentType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/department');
-        $this->divisionType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/division');
-        $this->requirementType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/requirement');
+        $this->subjectType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-subject');
+        $this->departmentType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-department');
+        $this->divisionType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-division');
+        $this->requirementType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-requirement');
     }
 
     /**

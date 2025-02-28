@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 5/24/05
  *
@@ -115,11 +116,11 @@ $
         }
 
         if (isset($matches[2])) {
-            $this->setMinute($matches[2]);
+            $this->setMinute((int) $matches[2]);
         }
 
         if (isset($matches[3])) {
-            $this->setSecond($matches[3]);
+            $this->setSecond((int) $matches[3]);
         }
     }
 }

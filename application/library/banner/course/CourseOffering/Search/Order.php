@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 5/20/09
  *
@@ -192,8 +193,8 @@ class banner_course_CourseOffering_Search_Order extends banner_course_AbstractSe
     /**
      *  Tests if a course order interface is available.
      *
-     * @return boolean <code> true </code> if a course order interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a course order interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -233,8 +234,8 @@ class banner_course_CourseOffering_Search_Order extends banner_course_AbstractSe
     /**
      *  Tests if a term order interface is available.
      *
-     * @return boolean <code> true </code> if a term order interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a term order interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -283,8 +284,8 @@ class banner_course_CourseOffering_Search_Order extends banner_course_AbstractSe
     /**
      *  Tests if a resource order interface is available for the location.
      *
-     * @return boolean <code> true </code> if a location order interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a location order interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -345,8 +346,8 @@ class banner_course_CourseOffering_Search_Order extends banner_course_AbstractSe
     /**
      *  Tests if a resource order interface is available for the calendar.
      *
-     * @return boolean <code> true </code> if a calendar order interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a calendar order interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -388,8 +389,8 @@ class banner_course_CourseOffering_Search_Order extends banner_course_AbstractSe
      *  Tests if a resource order interface is available for the learning
      *  objective.
      *
-     * @return boolean <code> true </code> if a learning objective order
-     *                        interface is available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a learning objective order
+     *                     interface is available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */

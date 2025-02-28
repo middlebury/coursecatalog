@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 5/5/05
  *
@@ -41,12 +42,11 @@ abstract class SObject
      * If the classes have any instance varaibles with the same names, copy them across.
      * If this is bad for a class, override this method.
      *
-     * @param string $targetClass    As mentiond here,
-     *                               {@link http://www.php.net/manual/en/ref.classobj.php} there is no good way
-     *                               to inherit class methods such that they can know the class of
-     *                               the reciever (child class) instead of the class name of the implementer
-     *                               (parent class). As such, we need to pass our target classname.
-     * @param object $aSimilarObject
+     * @param string $targetClass As mentiond here,
+     *                            {@link http://www.php.net/manual/en/ref.classobj.php} there is no good way
+     *                            to inherit class methods such that they can know the class of
+     *                            the reciever (child class) instead of the class name of the implementer
+     *                            (parent class). As such, we need to pass our target classname.
      *
      * @return object
      *
@@ -54,7 +54,7 @@ abstract class SObject
      *
      * @since 5/5/05
      */
-    public static function newFrom($targetClass, $aSimilarObject)
+    public static function newFrom(string $targetClass, SObject $aSimilarObject)
     {
         $newObject = new $targetClass();
         $newObject->copySameFrom($aSimilarObject);
@@ -71,15 +71,13 @@ abstract class SObject
      * If = is redefined in any subclass, consider also redefining the
      * message hash.
      *
-     * @param object $anObject
-     *
      * @return bool
      *
      * @since 7/11/05
      */
     public function isEqualTo($anObject)
     {
-        return $this === $anObject;
+        return $this == $anObject;
     }
 
     /**
@@ -87,8 +85,6 @@ abstract class SObject
      *
      * WARNING: This method is here for convience. DO NOT OVERRIDE.
      * OVERRIDE isEqualTo() instead.
-     *
-     * @param object $anObject
      *
      * @return bool
      *
@@ -103,8 +99,6 @@ abstract class SObject
      * Answer whether the receiver and the argument are not the
      * same.
      *
-     * @param object $anObject
-     *
      * @return bool
      *
      * @since 7/11/05
@@ -117,32 +111,17 @@ abstract class SObject
     /**
      * Answer whether the receiver and the argument Reference the same object.
      *
-     * @param object $anObject
-     *
      * @return bool
      *
      * @since 7/11/05
      */
     public function isReferenceTo($anObject)
     {
-        // Store the value of $anObject
-        $temp = $anObject;
-
-        // Set the value of $anObject to something unique and see if $this
-        // has changed as well.
-        $anObject = uniqid('test_ref');
-        $is_ref = ($anObject === $this);
-
-        // Put back the original value.
-        $anObject = $temp;
-
-        return $is_ref;
+        return $this === $anObject;
     }
 
     /**
      * Answer whether the receiver and the argument do not reference the same object.
-     *
-     * @param object $anObject
      *
      * @return bool
      *
@@ -163,17 +142,13 @@ abstract class SObject
      *
      * 'as' seems to be a reserved word, so 'asA' is used instead.
      *
-     * @param string $aSimilarClass
-     *
      * @return object
      *
      * @since 5/5/05
      */
-    public function asA($aSimilarClass)
+    public function asA(string $aSimilarClass)
     {
-        $obj = self::newFrom($aSimilarClass, $this);
-
-        return $obj;
+        return static::newFrom($aSimilarClass, $this);
     }
 
     /**
@@ -206,7 +181,6 @@ abstract class SObject
             $string .= 'n';
         }
 
-        $classname[0] = strtoupper($classname[0]);
         $string .= ' '.$classname;
 
         return $string;
@@ -235,8 +209,6 @@ abstract class SObject
      * Copy to myself all instance variables named the same in otherObject.
      * This ignores otherObject's control over its own inst vars.
      *
-     * @param object $otherObject
-     *
      * @return void
      *
      * @since 5/5/05
@@ -262,8 +234,7 @@ abstract class SObject
      */
     public function copyTwoLevel()
     {
-        $class = static::class;
-        $newObject = new $class();
+        $newObject = new static();
 
         $varList = array_keys(get_object_vars($this));
         foreach ($varList as $varName) {
@@ -292,8 +263,7 @@ abstract class SObject
      */
     public function deepCopy()
     {
-        $class = static::class;
-        $newObject = new $class();
+        $newObject = new static();
 
         $varList = array_keys(get_object_vars($this));
         foreach ($varList as $varName) {
@@ -376,8 +346,7 @@ abstract class SObject
      */
     public function shallowCopy()
     {
-        $class = static::class;
-        $newObject = new $class();
+        $newObject = new static();
 
         $varList = array_keys(get_object_vars($this));
         foreach ($varList as $varName) {

@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% set showLeftNav = false %}
+{% set bodyTypography = true %}
+
+{% block breadcrumbs %}
+<nav class="breadcrumb " aria-label="Breadcrumb">
+  <ol class="breadcrumb__list">
+{% for breadcrumb in breadcrumbs %}
+    {% if not loop.last %}
+    <li class="breadcrumb__item">
+      <a href="{{ breadcrumb.uri }}" class="breadcrumb__link">{{ breadcrumb.label }}</a>
+    </li>
+    {% endif %}
+{% endfor %}
+  </ol>
+</nav>
+{% endblock %}

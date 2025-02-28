@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 6/11/09
  *
@@ -18,6 +19,24 @@
  */
 class banner_course_Topic_Search_Query implements osid_course_TopicQuery, middlebury_course_Topic_Search_TermQueryRecord
 {
+    private osid_course_TopicQuery $requirementQuery;
+    private osid_course_TopicQuery $levelQuery;
+    private osid_course_TopicQuery $blockQuery;
+    private osid_course_TopicQuery $instructionMethodQuery;
+    private osid_course_TopicQuery $divisionQuery;
+    private osid_course_TopicQuery $departmentQuery;
+    private osid_course_TopicQuery $subjectQuery;
+    private osid_type_Type $wildcardStringMatchType;
+    private osid_type_Type $termType;
+    private osid_type_Type $subjectType;
+    private osid_type_Type $departmentType;
+    private osid_type_Type $divisionType;
+    private osid_type_Type $requirementType;
+    private osid_type_Type $levelType;
+    private osid_type_Type $blockType;
+    private osid_type_Type $instructionMethodType;
+    private array $toInclude;
+
     /**
      * Constructor.
      *
@@ -39,13 +58,13 @@ class banner_course_Topic_Search_Query implements osid_course_TopicQuery, middle
 
         $this->termType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');
 
-        $this->subjectType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/subject');
-        $this->departmentType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/department');
-        $this->divisionType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/division');
-        $this->requirementType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/requirement');
-        $this->levelType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/level');
-        $this->blockType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/block');
-        $this->instructionMethodType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/instruction_method');
+        $this->subjectType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-subject');
+        $this->departmentType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-department');
+        $this->divisionType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-division');
+        $this->requirementType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-requirement');
+        $this->levelType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-level');
+        $this->blockType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-block');
+        $this->instructionMethodType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-instruction_method');
 
         $this->toInclude = [];
     }
@@ -355,8 +374,8 @@ class banner_course_Topic_Search_Query implements osid_course_TopicQuery, middle
      *  @param object osid_type_Type $searchType a <code> Type </code>
      *          indicating a string match type
      *
-     * @return boolean <code> true </code> if the given Type is supported,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if the given Type is supported,
+     *                     <code> false </code> otherwise
      *
      * @throws osid_NullArgumentException null argument provided
      *
@@ -577,9 +596,9 @@ class banner_course_Topic_Search_Query implements osid_course_TopicQuery, middle
      *
      *  @param object osid_type_Type $recordType a type
      *
-     * @return boolean <code> true </code> if a record query of the given
-     *                        record <code> Type </code> is available, <code> false </code>
-     *                        otherwise
+     * @return bool <code> true </code> if a record query of the given
+     *                     record <code> Type </code> is available, <code> false </code>
+     *                     otherwise
      *
      * @throws osid_NullArgumentException <code> recordType </code> is <code>
      *                                           null </code>
@@ -616,8 +635,8 @@ class banner_course_Topic_Search_Query implements osid_course_TopicQuery, middle
     /**
      *  Tests if a <code> CourseOfferingQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a course offering query
-     *                        interface is available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a course offering query
+     *                     interface is available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -681,8 +700,8 @@ class banner_course_Topic_Search_Query implements osid_course_TopicQuery, middle
     /**
      *  Tests if a <code> CourseCatalogQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a course catalog query
-     *                        interface is available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a course catalog query
+     *                     interface is available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -749,9 +768,9 @@ class banner_course_Topic_Search_Query implements osid_course_TopicQuery, middle
      *
      *  @param object osid_type_Type $recordType a type
      *
-     * @return boolean <code> true </code> if the given record <code> Type
-     *                        </code> is implemented by this record, <code> false </code>
-     *                        otherwise
+     * @return bool <code> true </code> if the given record <code> Type
+     *                     </code> is implemented by this record, <code> false </code>
+     *                     otherwise
      *
      * @throws osid_NullArgumentException <code> recordType </code> is <code>
      *                                           null </code>
@@ -801,8 +820,8 @@ class banner_course_Topic_Search_Query implements osid_course_TopicQuery, middle
     /**
      *  Tests if an <code> TermQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a term query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a term query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */

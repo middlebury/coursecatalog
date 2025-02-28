@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% set showLeftNav = false %}
+{% set bodyTypography = true %}
+{% block body %}
+<div class='admin-menu'><a href="{{ path('admin_index') }}">&laquo; Back to Administration</a></div>
+
+<h2>Format Description</h2>
+<p>Course and section descriptions in the catalog should be primarily plain text. If a second paragraph is needed, use two new lines. Descriptions should not have any other text-formatting other than bold and italics as described below.</p>
+
+<p>This text format is chosen to allow good legibility when displayed as plain text in Banner as well as allow for needed formatting when displaying on the web. This format is also simple and easy to type.</p>
+
+<p>Bold formatting can be applied to text by surrounding a word or phrase with asterisks. Similarly, surrounding a word or phrase with forward-slashes will apply italic formatting.</p>
+
+<ul>
+	<li>Surround italic text with forward-slashes: <code>/Italic text/</code></li>
+	<li>Surround bold text with asterisks: <code>*Bold text*</code></li>
+	<li>There should not be a space between the asterisks or slashes and the word or phrase. If a space exists, no formatting will be applied.
+		<br/>Correct: &nbsp; <code>/italic text/</code>
+		<br/>Incorrect: <code>/ italic text /</code>
+	</li>
+	<li>Punctuation can be inside or outside of the asterisks or slashes.</li>
+	<li>Slashes or asterisks surrounded by letters or numbers will not cause formatting changes: <code>normal/text normal*text</code></li>
+	<li>Use two new-lines to separate paragraphs</li>
+</ul>
+
+<h2>Test your text</h2>
+<h3>Input:</h3>
+
+<form id="markup-test-form" action="{{ path('markup') }}" method='post'>
+	<textarea rows='10' cols='80' name='sample_text'>{{ sampleText | raw }}</textarea>
+	<br/><input type='submit' value='Submit'/>
+</form>
+<a href="{{ path('markup') }}"><button>Reset to example</button></a>
+
+<h3>Output:</h3>
+<p id="markup-test-output">
+{{ output | raw }}
+</p>
+
+<br/><br/>
+<hr/>
+
+<p>This is other text that shouldn't be affected by bold or italics in the paragraph above.</p>
+{% endblock %}

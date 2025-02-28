@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 5/27/09
  *
@@ -16,6 +17,19 @@
  */
 class banner_course_Topic_Search_List extends banner_course_Topic_AbstractList implements osid_course_TopicList, osid_course_TopicSearchResults
 {
+    private PDO $db;
+    private osid_course_TopicQuery $topicQuery;
+    private string $requirementWhere;
+    private string $divisionWhere;
+    private string $departmentWhere;
+    private string $subjectWhere;
+    private string $levelWhere;
+    private string $blockWhere;
+    private string $instructionMethodWhere;
+    private string $orderBy;
+    private ?string $limit;
+    private array $parameters;
+
     /**
      * Constructor.
      *
@@ -450,9 +464,9 @@ class banner_course_Topic_Search_List extends banner_course_Topic_AbstractList i
      *
      *  @param object osid_type_Type $searchRecordType a type
      *
-     * @return boolean <code> true </code> if a search record the given
-     *                        record <code> Type </code> is available, <code> false </code>
-     *                        otherwise
+     * @return bool <code> true </code> if a search record the given
+     *                     record <code> Type </code> is available, <code> false </code>
+     *                     otherwise
      *
      * @throws osid_NullArgumentException <code> searchRecordType </code> is
      *                                           <code> null </code>

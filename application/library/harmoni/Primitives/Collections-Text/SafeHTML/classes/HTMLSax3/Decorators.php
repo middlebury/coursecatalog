@@ -53,7 +53,7 @@ class XML_HTMLSax3_Trim
     /**
      * Constructs XML_HTMLSax3_Trim.
      *
-     * @param object handler object being decorated
+     * @param handler object being decorated
      * @param string original handler method
      */
     public function __construct($orig_obj, $orig_method)
@@ -103,7 +103,7 @@ class XML_HTMLSax3_CaseFolding
     /**
      * Constructs XML_HTMLSax3_CaseFolding.
      *
-     * @param object handler object being decorated
+     * @param handler object being decorated
      * @param string original open handler method
      * @param string original close handler method
      */
@@ -159,7 +159,7 @@ class XML_HTMLSax3_Linefeed
     /**
      * Constructs XML_HTMLSax3_LineFeed.
      *
-     * @param object handler object being decorated
+     * @param handler object being decorated
      * @param string original handler method
      */
     public function __construct($orig_obj, $orig_method)
@@ -204,7 +204,7 @@ class XML_HTMLSax3_Tab
     /**
      * Constructs XML_HTMLSax3_Tab.
      *
-     * @param object handler object being decorated
+     * @param handler object being decorated
      * @param string original handler method
      */
     public function __construct($orig_obj, $orig_method)
@@ -250,7 +250,7 @@ class XML_HTMLSax3_Entities_Parsed
     /**
      * Constructs XML_HTMLSax3_Entities_Parsed.
      *
-     * @param object handler object being decorated
+     * @param handler object being decorated
      * @param string original handler method
      */
     public function __construct($orig_obj, $orig_method)
@@ -306,7 +306,7 @@ class XML_HTMLSax3_Entities_Unparsed
     /**
      * Constructs XML_HTMLSax3_Entities_Unparsed.
      *
-     * @param object handler object being decorated
+     * @param handler object being decorated
      * @param string original handler method
      */
     public function __construct($orig_obj, $orig_method)
@@ -352,7 +352,7 @@ class XML_HTMLSax3_Escape_Stripper
     /**
      * Constructs XML_HTMLSax3_Entities_Unparsed.
      *
-     * @param object handler object being decorated
+     * @param handler object being decorated
      * @param string original handler method
      */
     public function __construct($orig_obj, $orig_method)

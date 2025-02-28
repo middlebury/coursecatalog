@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% set showLeftNav = false %}
+{% set bodyTypography = true %}
+{% block body %}
+<div><a href="{{ path('admin_index') }}">&laquo; Back to Administration</a></div>
+
+<form action="{{ path('admin_terms_list') }}" method="GET">
+    <select name='catalog' onchange="this.form.submit();">
+{% for catalog in catalogs %}
+    <option value="{{ catalog }}" {{ catalog == selectedCatalog ? 'selected="selected"' }}>{{ catalog }}</option>";
+{% endfor %}
+    </select>
+</form>
+
+<p>Please Note: Any changes made here will take effect during the next synchronization with Banner</p>
+
+<table class='section_admin'>
+<thead>
+    <tr>
+        <th>Term Code</th>
+        <th>Description</th>
+        <th>Sections</th>
+        <th>Manual Override</th>
+        <th>Active?</th>
+    </tr>
+</thead>
+<tbody>
+
+{% for term in terms %}
+    <tr {{ term.active ? 'class="active"' }}>
+    <td class='code'>{{ term.STVTERM_CODE }}</td>
+    <td class='desc'>{{ term.STVTERM_DESC }}</td>
+    <td class='num_sections'>{{ term.num_sections }}</td>
+
+    <td class='disable'>
+        <form action='{{ path('admin_terms_update') }}' method='post'>
+            <input type='hidden' name='catalog' value='{{ selectedCatalog }}' />
+            <input type='hidden' name='term' value='{{ term.STVTERM_CODE }}' />
+            <input type='hidden' name='change_visibility' value='true' />
+            <input type='hidden' name='csrf_key' value='{{ csrf_token('admin-terms-update') }}' />
+            <input type='checkbox' name='disabled' value='true'
+                {{ term.manually_disabled ? ' checked="checked"' }} onchange='if (confirm("{{ term.manually_disabled ? 'Enable':'Disable' }} {{ term.STVTERM_CODE }}?")) {this.form.submit();}'
+                id="disable-{{ term.STVTERM_CODE }}"
+                />
+            <label for="disable-{{ term.STVTERM_CODE }}">Disabled?</label>
+        </form>
+    </td>
+
+    <td class='is_active'>
+{% if term.active %}
+        Yes
+{% else %}
+        No:
+        {{ term.manually_disabled ? 'Manually disabled. ' }}
+        {{ term.num_sections is empty ? 'Zero sections. ' }}
+{% endif %}
+        </td>
+    </tr>
+
+{% endfor %}
+</tbody>
+</table>
+{% endblock %}

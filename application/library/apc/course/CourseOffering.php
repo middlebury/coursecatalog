@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
@@ -569,8 +570,8 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     /**
      *  Tests if this course offering has an associated location resource.
      *
-     * @return boolean <code> true </code> if this course offering has a
-     *                        location resource, <code> false </code> otherwise
+     * @return bool <code> true </code> if this course offering has a
+     *                     location resource, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -647,8 +648,8 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     /**
      *  Tests if this course offering has an associated calendar.
      *
-     * @return boolean <code> true </code> if this course offering has a
-     *                        calendar, <code> false </code> otherwise
+     * @return bool <code> true </code> if this course offering has a
+     *                     calendar, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -714,8 +715,8 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     /**
      *  Tests if this course offering has an associated learning objective.
      *
-     * @return boolean <code> true </code> if this course offering has a
-     *                        learning objective, <code> false </code> otherwise
+     * @return bool <code> true </code> if this course offering has a
+     *                     learning objective, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -844,9 +845,9 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
      *
      *  @param object osid_type_Type $recordType a type
      *
-     * @return boolean <code> true </code> if the given record <code> Type
-     *                        </code> is implemented by this record, <code> false </code>
-     *                        otherwise
+     * @return bool <code> true </code> if the given record <code> Type
+     *                     </code> is implemented by this record, <code> false </code>
+     *                     otherwise
      *
      * @throws osid_NullArgumentException <code> recordType </code> is <code>
      *                                           null </code>
@@ -977,8 +978,8 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
     /**
      * Tests if this course offering has any alternate course offerings.
      *
-     * @return boolean <code> true </code> if this course offering has any
-     *                        alternates, <code> false </code> otherwise
+     * @return bool <code> true </code> if this course offering has any
+     *                     alternates, <code> false </code> otherwise
      *
      * @compliance mandatory This method must be implemented.
      */

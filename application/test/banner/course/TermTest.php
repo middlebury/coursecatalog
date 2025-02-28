@@ -11,7 +11,12 @@ class banner_course_TermTest extends phpkit_test_phpunit_AbstractOsidObjectTest
     /**
      * @var banner_course_Term
      */
-    protected $object;
+    protected osid_course_Term $object;
+
+    private osid_course_TermLookupSession $session;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $unknownId;
+    private osid_id_Id $termId;
 
     /**
      * Answer the Object to test.
@@ -31,9 +36,9 @@ class banner_course_TermTest extends phpkit_test_phpunit_AbstractOsidObjectTest
      */
     protected function setUp(): void
     {
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
+        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MCUG');
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
-        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200890');
+        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term-200890');
 
         $this->session = self::$courseManager->getTermLookupSessionForCatalog($this->mcugId);
         $this->object = $this->session->getTerm($this->termId);

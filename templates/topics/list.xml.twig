@@ -1,0 +1,12 @@
+{% extends 'base.xml.twig' %}
+{% block items %}
+{%~ for topic in subjectTopics|merge(departmentTopics, divisionTopics, requirementTopics) %}
+        <item>
+            <title>{{ topic.displayname }}</title>
+            <link>{{ url('view_topic', {topicId: topic, catalogId: catalogId}) }}</link>
+            <description><![CDATA[{{ topic.description | raw }}]]></description>
+            <catalog:id>{{ osidIdToString(topic.id) }}</catalog:id>
+            <catalog:genustype>{{ osidTypeToString(topic.genustype) }}</catalog:genustype>
+        </item>
+{% endfor %}
+{% endblock %}

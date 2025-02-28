@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 5/23/05
  *
@@ -146,13 +147,11 @@ $
      * To allow for very large days, override setDay to not use intval(). and
      * to just leave the days as a string for now.
      *
-     * @param int $anInteger
-     *
      * @return void
      *
      * @since 5/25/05
      */
-    public function setDay($anInteger)
+    public function setDay(int $anInteger)
     {
         $this->day = $anInteger;
     }

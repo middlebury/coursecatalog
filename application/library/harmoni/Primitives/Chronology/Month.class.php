@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 5/4/05
  *
@@ -48,15 +49,13 @@ class Month extends Timespan
     /**
      * Return the index of a string Month.
      *
-     * @param string $aNameString
-     *
      * @return int
      *
      * @since 5/4/05
      *
      * @static
      */
-    public static function indexOfMonth($aNameString)
+    public static function indexOfMonth(string $aNameString)
     {
         foreach (ChronologyConstants::MonthNames() as $i => $name) {
             if (preg_match("/$aNameString.*/i", $name)) {
@@ -64,18 +63,11 @@ class Month extends Timespan
             }
         }
 
-        $errorString = $aNameString.' is not a recognized month name.';
-        if (function_exists('throwError')) {
-            throwError(new Error($errorString));
-        } else {
-            exit($errorString);
-        }
+        throw new InvalidArgumentException($aNameString.' is not a recognized month name.');
     }
 
     /**
      * Return the name of the month at index.
-     *
-     * @param int $anInteger
      *
      * @return string
      *
@@ -83,19 +75,14 @@ class Month extends Timespan
      *
      * @static
      */
-    public static function nameOfMonth($anInteger)
+    public static function nameOfMonth(int $anInteger)
     {
         $names = ChronologyConstants::MonthNames();
         if ($names[$anInteger]) {
             return $names[$anInteger];
         }
 
-        $errorString = $anInteger.' is not a valid month index.';
-        if (function_exists('throwError')) {
-            throwError(new Error($errorString));
-        } else {
-            exit($errorString);
-        }
+        throw new InvalidArgumentException($aNameString.' is not a valid month index.');
     }
 
     /**
@@ -110,7 +97,7 @@ class Month extends Timespan
      *
      * @static
      */
-    public static function daysInMonthForYear($indexOrNameString, $yearInteger)
+    public static function daysInMonthForYear(int|string $indexOrNameString, int $yearInteger)
     {
         if (is_numeric($indexOrNameString)) {
             $index = $indexOrNameString;
@@ -119,12 +106,7 @@ class Month extends Timespan
         }
 
         if ($index < 1 | $index > 12) {
-            $errorString = $index.' is not a valid month index.';
-            if (function_exists('throwError')) {
-                throwError(new Error($errorString));
-            } else {
-                exit($errorString);
-            }
+            throw new InvalidArgumentException($aNameString.' is not a valid month index.');
         }
 
         $monthDays = ChronologyConstants::DaysInMonth();
@@ -139,167 +121,47 @@ class Month extends Timespan
 
     /*********************************************************
      * Class Methods - Instance Creation
-     *
-     * All static instance creation methods have an optional
-     * $class parameter which is used to get around the limitations
-     * of not being	able to find the class of the object that
-     * recieved the initial method call rather than the one in
-     * which it is implemented. These parameters SHOULD NOT BE
-     * USED OUTSIDE OF THIS PACKAGE.
      *********************************************************/
-
-    /**
-     * Answer a new object that represents now.
-     *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Month
-     *
-     * @since 5/5/05
-     *
-     * @static
-     */
-    public static function current($class = 'Month')
-    {
-        $obj = parent::current($class);
-
-        return $obj;
-    }
-
-    /**
-     * Answer a Month starting on the Squeak epoch: 1 January 1901.
-     *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Month
-     *
-     * @since 5/5/05
-     *
-     * @static
-     */
-    public static function epoch($class = 'Month')
-    {
-        $obj = parent::epoch($class);
-
-        return $obj;
-    }
 
     /**
      * Read a month from the stream in any of the forms:
      *
      *		- July 1998
      *
-     * @param string $aString
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Month
+     * @return Month
      *
      * @since 5/10/05
      *
      * @static
      */
-    public static function fromString($aString, $class = 'Month')
+    public static function fromString(string $aString)
     {
         $parser = StringParser::getParserFor($aString);
 
         if (!is_string($aString) || !preg_match('/[^\W]/', $aString) || !$parser) {
-            $null = null;
-
-            return $null;
-            // die("'".$aString."' is not in a valid format.");
+            return null;
         }
 
-        eval('$result = '.$class.'::withMonthYear($parser->month(),
-					$parser->year(), $class);');
-
-        return $result;
-    }
-
-    /**
-     * Create a new object starting now, with zero duration.
-     *
-     * @param object DateAndTime $aDateAndTime
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Month
-     *
-     * @since 5/5/05
-     *
-     * @static
-     */
-    public static function starting($aDateAndTime, $class = 'Month')
-    {
-        $obj = parent::starting($aDateAndTime, $class);
-
-        return $obj;
-    }
-
-    /**
-     * Create a new object with given start and end DateAndTimes.
-     *
-     * @param object DateAndTime $startDateAndTime
-     * @param object DateAndTime $endDateAndTime
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Month
-     *
-     * @since 5/11/05
-     *
-     * @static
-     */
-    public static function startingEnding($startDateAndTime, $endDateAndTime,
-        $class = 'Month')
-    {
-        $obj = parent::startingEnding($startDateAndTime, $endDateAndTime, $class);
-
-        return $obj;
+        return static::withMonthYear($parser->month(), $parser->year());
     }
 
     /**
      * Create a new object starting now, with a given duration.
      * Override - as each month has a defined duration.
      *
-     * @param object DateAndTime $aDateAndTime
-     * @param object Duration $aDuration
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Month
+     * @return Month
      *
      * @since 5/5/05
      *
      * @static
      */
-    public static function startingDuration($aDateAndTime, $aDuration, $class = 'Month')
+    public static function startingDuration(AsDateAndTime $aDateAndTime, Duration $aDuration)
     {
-        // Validate our passed class name.
-        if (!(strtolower($class) == strtolower('Month')
-            || is_subclass_of(new $class(), 'Month'))) {
-            exit("Class, '$class', is not a subclass of 'Month'.");
-        }
-
         $start = $aDateAndTime->asDateAndTime();
         $adjusted = DateAndTime::withYearMonthDay($start->year(), $start->month(), 1);
-        $days = self::daysInMonthForYear($adjusted->month(), $adjusted->year());
+        $days = static::daysInMonthForYear($adjusted->month(), $adjusted->year());
 
-        $month = new $class();
+        $month = new static();
         $month->setStart($adjusted);
         $month->setDuration(Duration::withDays($days));
 
@@ -313,24 +175,16 @@ class Month extends Timespan
      *
      * @param string $anIntegerOrStringMonth
      * @param int    $anIntegerYear          four-digit year
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
      *
-     * @return object Month
+     * @return Month
      *
      * @since 5/11/05
      *
      * @static
      */
-    public static function withMonthYear($anIntegerOrStringMonth, $anIntegerYear,
-        $class = 'Month')
+    public static function withMonthYear(int|string $anIntegerOrStringMonth, int $anIntegerYear)
     {
-        eval('$result = '.$class.'::starting(DateAndTime::withYearMonthDay(
-			$anIntegerYear, $anIntegerOrStringMonth, 1), $class);');
-
-        return $result;
+        return static::starting(DateAndTime::withYearMonthDay($anIntegerYear, $anIntegerOrStringMonth, 1));
     }
 
     /*********************************************************
@@ -380,7 +234,7 @@ class Month extends Timespan
      *
      * @since 5/23/05
      */
-    public function printableString($printLeadingSpaceToo = false)
+    public function printableString(bool $printLeadingSpaceToo = false)
     {
         return $this->name().' '.$this->startYear();
     }
@@ -392,18 +246,16 @@ class Month extends Timespan
     /**
      * Answer the previous object of our duration.
      *
-     * @return object Timespan
+     * @return Timespan
      *
      * @since 5/10/05
      */
     public function previous()
     {
-        eval('$result = '.static::class.'::startingDuration(
- 			$this->start->minus(Duration::withDays(1)),
- 			$this->duration,
- 			"'.static::class.'");');
-
-        return $result;
+        return static::startingDuration(
+            $this->start->minus(Duration::withDays(1)),
+            $this->duration
+        );
     }
 
     /*********************************************************
@@ -413,7 +265,7 @@ class Month extends Timespan
     /**
      * Answer the receiver as a Month.
      *
-     * @return object Month
+     * @return Month
      *
      * @since 5/23/05
      */

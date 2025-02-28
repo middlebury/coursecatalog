@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block importmap %}
+    {# do NOT call parent() #}
+    {{ importmap(['app', 'export_revision_diff']) }}
+{% endblock %}
+
+{% set showLeftNav = false %}
+{% set bodyTypography = true %}
+{% block body %}
+
+<div id='diff'></div>
+<textarea id="rev1" data-rev-id="{{ rev1.id }}" data-rev-date="{{ rev1.timestamp | date('Y-m-j H:i:s') }}" style="display:none">{{ rev1.json }}</textarea>
+<textarea id="rev2" data-rev-id="{{ rev2.id }}" data-rev-date="{{ rev2.timestamp | date('Y-m-j H:i:s') }}" style="display:none">{{ rev2.json }}</textarea>
+
+{% endblock %}

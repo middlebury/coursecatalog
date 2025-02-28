@@ -1,0 +1,81 @@
+name: coursecatalog
+recipe: symfony
+config:
+  webroot: public
+  php: 8.3
+  database: mariadb:10.11
+services:
+  appserver:
+    build_as_root:
+      - apt update
+      - mkdir /opt/oracle
+      - rm -Rf /opt/oracle/*
+      # Fetch binaries directly from Oracle:
+      # https://www.oracle.com/database/technologies/instant-client/downloads.html
+      - curl https://download.oracle.com/otn_software/linux/instantclient/instantclient-basic-linux-arm64.zip > /opt/oracle/instantclient-basic.zip
+      - curl https://download.oracle.com/otn_software/linux/instantclient/instantclient-sdk-linux-arm64.zip > /opt/oracle/instantclient-sdk.zip
+      # Unzip
+      - unzip -o /opt/oracle/instantclient-basic.zip -d /opt/oracle
+      - unzip -o /opt/oracle/instantclient-sdk.zip -d /opt/oracle
+      # Add sqlplus command line Oracle client for debugging.
+      - curl https://download.oracle.com/otn_software/linux/instantclient/instantclient-sqlplus-linux-arm64.zip > /opt/oracle/instantclient-sqlplus.zip
+      - unzip -o /opt/oracle/instantclient-sqlplus.zip -d /opt/oracle
+      # Delete all of our downloads.
+      - rm /opt/oracle/*.zip
+      # Make a symlink to the versioned directory.
+      - ln -s /opt/oracle/instantclient_* /opt/oracle/instantclient
+      # Make OS aware of newly installed libraries
+      - echo /opt/oracle/instantclient > /etc/ld.so.conf.d/oracle-instantclient.conf
+      - ldconfig -v
+      # Set the interpreter for the Oracle command-line tools.
+      # See: https://askubuntu.com/questions/1397724/no-such-file-or-directory-when-running-sqlplus-command
+      # This is not needed for the Oci8 PHP extension itself, but is needed to
+      # get sqlplus command-line Oracle client working for debugging.
+      - apt -y install patchelf
+      - patchelf --set-interpreter /lib/ld-linux-aarch64.so.1 /opt/oracle/instantclient/adrci
+      - patchelf --set-interpreter /lib/ld-linux-aarch64.so.1 /opt/oracle/instantclient/genezi
+      - patchelf --set-interpreter /lib/ld-linux-aarch64.so.1 /opt/oracle/instantclient/sqlplus
+      - patchelf --set-interpreter /lib/ld-linux-aarch64.so.1 /opt/oracle/instantclient/uidrvci
+      # Install libaio1 -- when missing was preventing the extension from loading.
+      - apt install libaio1
+      # Install and enable OCI8
+      - echo "instantclient,/opt/oracle/instantclient" | pecl install oci8-3.2.1
+      - docker-php-ext-enable oci8
+    overrides:
+      environment:
+        MAILER_DSN: smtp://mailpit:1025
+  cacheserver:
+      type: varnish:6.0
+      backend: appserver
+      config:
+          vcl: config/external/varnish.vcl
+  phpmyadmin:
+    type: phpmyadmin
+    hosts:
+      - database
+  mailpit:
+    scanner: false
+    api: 3
+    type: lando
+    services:
+      image: axllent/mailpit
+      volumes:
+        - mailpit:/data
+      ports:
+        - 8025 # Web UI.
+        - 1025 # SMTP.
+      environment:
+        MP_MAX_MESSAGES: 5000
+        MP_DATA_FILE: /data/mailpit.db
+        MP_SMTP_AUTH_ACCEPT_ANY: 1
+        MP_SMTP_AUTH_ALLOW_INSECURE: 1
+      command: '/mailpit'
+    volumes:
+      mailpit:
+proxy:
+    mailpit:
+        - mail.coursecatalog.lndo.site:8025
+    phpmyadmin:
+        - phpmyadmin.coursecatalog.lndo.site
+    cacheserver:
+        - cached.coursecatalog.lndo.site

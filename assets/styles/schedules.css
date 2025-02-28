@@ -1,0 +1,258 @@
+
+/*********************************************************
+ * Print view calendar styles
+ *********************************************************/
+
+.toastui-calendar-timegrid {
+    min-height: auto;
+    height: 95%;
+}
+
+.toastui-calendar-day-name__date {
+    display: none;
+}
+.toastui-calendar-day-name__name {
+    font-size: 1.5em;
+}
+.calendar_event_title {
+    font-weight: bold;
+}
+.calendar_event_time {
+    background-color: darkgreen;
+    color: white;
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+@media print {
+    .print-schedule .content-controls-container, .print-schedule .app-header {
+        display: none;
+    }
+}
+.print-schedule .page-nav-container {
+    display: none;
+}
+.print-schedule .calendar-container {
+    text-align: center;
+}
+.print-schedule img.calendar_img {
+    margin-bottom: 0.5rem;
+}
+.print-schedule .offering-list {
+    page-break-before: auto;
+}
+
+/*********************************************************
+ * Schedule styles
+ *********************************************************/
+
+div.schedule {
+    padding: 1rem;
+    border: 1px solid;
+}
+
+div.schedule div.term_name {
+    font-weight: bold;
+}
+
+form.delete_schedule {
+    float: right;
+}
+
+form.edit_schedule_name_form {
+    display: none;
+}
+
+.schedule-help p, .schedule-help li {
+    font-size: .875rem;
+}
+.schedule-help ol > li::before {
+    top: 0;
+}
+
+/* Constrain the dialog so that it can be responsive in width. */
+.add-to-schedule-dialog, .remove-from-schedule-dialog {
+    width: 100%;
+    max-width: 700px;
+}
+
+div.section_dialog ul.section_types {
+    margin-left: 0;
+}
+div.section_dialog ul.section_types li {
+    list-style-type: none;
+}
+div.section_dialog ul.section_type {
+    border-top: 1px dotted;
+    margin-left: 0;
+}
+div.section_dialog ul {
+    clear: both;
+}
+
+div.section_dialog li.section {
+    clear: both;
+    margin-bottom: 10px;
+}
+
+div.section_dialog li.loading {
+    color: green;
+}
+
+div.section_dialog li.section div.section_time, div.section_dialog li.section div.section_location {
+    clear: both;
+}
+
+div.section_dialog li.section .section_name {
+    font-weight: bold;
+}
+
+div.section_dialog li.section div.section_info {
+    float: none;
+    margin-left: 2em;
+}
+
+div.section_dialog li.section div.section_instructor {
+    float: right;
+}
+div.section_dialog li.section div.conflicting {
+    color: #F00;
+}
+
+ul#bookmarked_courses {
+    padding: 3px;
+    margin-left: 0px;
+}
+li.bookmarked_course {
+    clear: both;
+    margin-bottom: 10px;
+    list-style-type: none;
+    border-top: 1px dotted;
+    padding-top: 0.25rem;
+}
+form.add_to_schedule_form {
+    float: left;
+}
+li.bookmarked_course, li.bookmarked_course div.course_info {
+    white-space: nowrap;
+}
+li.bookmarked_course div.remove_course {
+    float: right;
+}
+.remove_dialog form.remove_offering_form {
+    display: inline;
+}
+
+
+div.schedule ul.offerings {
+    padding: 3px;
+    margin-left: 0px;
+}
+div.schedule li.offering {
+    clear: both;
+    margin-bottom: 10px;
+    list-style-type: none;
+    border-top: 1px dotted;
+}
+div.schedule li.offering div.separator {
+    float: left;
+    width: 20px;
+    text-align: center;
+}
+div.schedule li.offering div.offering_name {
+    font-weight: bold;
+}
+div.schedule li.offering div.offering_title {
+    margin-bottom: 0.5rem;
+}
+div.schedule li.offering .conflicting {
+    color: #F00;
+}
+
+div.schedule li.offering .time {
+    clear: both;
+    margin-bottom: 0.5rem;
+}
+
+div.schedule li.offering .crn {
+    float: right;
+    margin-bottom: 0.5rem;
+}
+
+img.calendar_img, img.calendar_button {
+    width: 100%;
+    _border: 1px solid #939393; /* IE-only */
+}
+
+div.schedule li.offering div.remove_dialog {
+    display: none;
+}
+
+div.schedule li.offering .remove_button {
+    display: block;
+    float: right;
+}
+
+/*********************************************************
+ * Email dialog
+ *********************************************************/
+.email-schedule-dialog {
+ width: 100%;
+ max-width: 800px;
+}
+div.email_dialog label {
+    display: block;
+    float: left;
+    width: 100px;
+}
+div.email_dialog div.row {
+    clear: both;
+}
+div.email_dialog div.controls {
+    margin-bottom: 10px;
+}
+div.email_dialog .hint {
+    font-size: smaller;
+    font-style: italic;
+}
+div.email_dialog .notice {
+    border: 1px solid red;
+    color: red;
+    padding: 3px;
+}
+
+div.email_dialog img.calendar_img {
+    width: 650px;
+    _border: 1px solid #939393; /* IE-only */
+}
+
+div.email_dialog ul.offerings {
+    font-size: 12px;
+    padding: 3px;
+    margin-left: 0px;
+}
+div.email_dialog li.offering {
+    clear: both;
+    margin-bottom: 10px;
+    list-style-type: none;
+    border-top: 1px dotted;
+}
+div.email_dialog li.offering div.separator {
+    float: left;
+    width: 20px;
+    text-align: center;
+}
+div.email_dialog li.offering div.offering_name {
+    float: left;
+    width: 101px;
+}
+div.email_dialog li.offering div.offering_title {
+    float: left;
+    width: 200px;
+    height: 3em;
+    white-space: nowrap;
+    overflow: hidden;
+}
+div.email_dialog li.offering .conflicting {
+    color: #F00;
+}

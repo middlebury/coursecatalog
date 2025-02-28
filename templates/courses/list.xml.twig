@@ -1,0 +1,6 @@
+{% extends 'base.xml.twig' %}
+{% block items %}
+{% for course_data in courses %}
+{{ include('partials/course.xml.twig', course_data, with_context = FALSE) }}
+{% endfor %}
+{% endblock %}

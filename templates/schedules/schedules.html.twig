@@ -1,0 +1,76 @@
+{% for schedule in schedules %}
+    <div class='schedule form-group' id='schedule-{{ schedule.id }}'>
+        {% if selectedTermId is empty %}
+        <div class='term_name'>{{ schedule.termname }}</div>
+        {% endif %}
+
+        <form class='delete_schedule' id='delete_schedule_{{ schedule.id }}' action="{{ path('delete_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}" method='post'>
+            <input type='hidden' name='csrf_key' value='{{ csrf_token('delete-schedule') }}' />
+            <input type='submit' class="button button--sm" id='submit_delete_schedule_{{ schedule.id }}' title="Delete this schedule" value='Delete'/>
+        </form>
+
+        <h3 class="form-group">{{ schedule.name }} <button class="button button--sm edit_schedule_name_button" data-form-id="update_schedule_{{ schedule.id }}">Edit</button></h3>
+        <form class="form-group edit_schedule_name_form" id='update_schedule_{{ schedule.id }}' action='{{ path('update_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}' method='post'>
+            <input type='text' class='form-control' name='name' value="{{ schedule.name }}"/>
+            <input type='hidden' name='csrf_key' value='{{ csrf_token('update-schedule') }}' />
+            <input type='submit' class='button button--primary' id='submit_update_schedule_{{ schedule.id }}' value='Save'/>
+        </form>
+
+        <div class="print-and-email-buttons">
+            <a class='print_button button button--sm' href='{{ path('print_schedule', {scheduleId: schedule.id}) }}' title='Click for print view.' target='print_view'>Print</a>
+            {{ include('schedules/email-dialog.html.twig', {schedule: schedule, emailEnabled: emailEnabled}, with_context = false) }}
+        </div>
+
+        {{ include('schedules/schedule_calendar_dialog.html.twig', {schedule: schedule}, with_context = false) }}
+
+        <ul class='offerings'>
+        {% if schedule.offerings is empty %}
+            <li style='visibility: hidden'> &nbsp; </li>
+        {% else %}
+        {% for offering in schedule.offerings %}
+            <li class='offering'>
+                {{ include('schedules/remove_offering_dialog.html.twig', {schedule: schedule, selectedCatalogId: selectedCatalogId, selectedTermId: selectedTermId, offering: offering}, with_context = false) }}
+                <div class='offering_name'>
+                    <a href='{{ path('view_offering', {offeringId: offering}) }}' target='_blank'>
+                        {{ offering.displayname}}
+                    </a>
+                </div>
+                <div class='offering_title'>
+                    <a href='{{ path('view_offering', {offeringId: offering}) }}' target='_blank'>
+                        {{ offering.title | nl2br }}
+                    </a>
+                </div>
+                <div class="time {{ scheduleHasCollisions(schedule, offering.id) ? "conflicting" }}">
+                    {{ formatScheduleInfo(offering.scheduleinfo) | raw }}
+                    {% if scheduleHasCollisions(schedule, offering.id) %}
+                    <div class="conflicting float-right ml-4 mr-3 text-caps">Conflict</div>
+                    {% endif %}
+                </div>
+                <div class='location'>{{ offering.locationinfo | nl2br }}</div>
+            </li>
+        {% endfor %}
+        {% endif %}
+
+        </ul>
+
+        <button id='add-to-schedule_{{ schedule.id }}' data-schedule-id="{{ schedule.id }}" data-schedule-name="{{ schedule.name }}" class="add-to-schedule button button--sm button--block">+ Add Course</button>
+    </div>
+{% endfor %}
+
+<form id='schedule_create' class="row row--sm-gutters mt-6 mb-6" action="{{ path('create_schedule', {catalogId: selectedCatalogId}) }}" method="post">
+    <input type="hidden" name="term" value="{{ osidIdToString(selectedTermId) }}"/>
+    <input type="submit" class="button button--block button--sm" id="submit_schedule_create" value="+ Create new schedule"/>
+    <input type='hidden' name='csrf_key' value='{{ csrf_token('create-schedule') }}' />
+</form>
+
+<aside class="schedule-help bg-gray-lighter typography f2 mb-6 p-5">
+    <p><strong>Important:</strong> This tool is for planning purposes only. It does not register you for classes.</p>
+    <p><strong>Basic Usage:</strong></p>
+    <ol>
+        <li>Search for courses in the catalog and save interesting ones.</li>
+        <li>Create one or more schedules in the Planner.</li>
+        <li>Add courses to schedules.</li>
+        <li>Print or email your schedules.</li>
+    </ol>
+    <p>For more help see: <a href="https://go.middlebury.edu/catalog-help" class="link-external">go/catalog-help</a></p>
+</aside>

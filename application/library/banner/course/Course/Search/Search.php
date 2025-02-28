@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 10/14/09
  *
@@ -96,6 +97,6 @@ class banner_course_Course_Search_Search extends banner_course_AbstractSearch im
      */
     public function getCourseSearchRecord(osid_type_Type $courseSearchRecordType)
     {
-        throw new osid_UnsupportedException();
+        throw new osid_UnsupportedException('The CourseSearchRecordType passed is not supported.');
     }
 }

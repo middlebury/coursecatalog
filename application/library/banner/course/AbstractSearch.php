@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 10/14/09
  *
@@ -217,9 +218,9 @@ abstract class banner_course_AbstractSearch
      *
      *  @param object osid_type_Type $searchRecordType a type
      *
-     * @return boolean <code> true </code> if a search record the given
-     *                        record <code> Type </code> is available, <code> false </code>
-     *                        otherwise
+     * @return bool <code> true </code> if a search record the given
+     *                     record <code> Type </code> is available, <code> false </code>
+     *                     otherwise
      *
      * @throws osid_NullArgumentException <code> searchRecordType </code> is
      *                                           <code> null </code>

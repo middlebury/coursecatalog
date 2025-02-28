@@ -5,14 +5,117 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "apereo/phpcas": "^1.6",
-        "psr/log": "^1.0",
-        "onelogin/php-saml": "^4.2",
-        "microsoft/microsoft-graph": "^2.12"
+        "php": ">=8.1",
+        "ext-ctype": "*",
+        "ext-iconv": "*",
+        "doctrine/dbal": "^3",
+        "doctrine/doctrine-bundle": "^2.13",
+        "doctrine/doctrine-migrations-bundle": "^3.3",
+        "doctrine/orm": "^3.3",
+        "knplabs/knp-menu-bundle": "^3.5",
+        "knplabs/knp-paginator-bundle": "^6.6",
+        "microsoft/microsoft-graph": "^2.12",
+        "middlebury/midd-frontend": "^4.0",
+        "nbgrp/onelogin-saml-bundle": "^1.4",
+        "oki/osid-phpkit": "dev-master",
+        "symfony/apache-pack": "^1.0",
+        "symfony/asset": "6.4.*",
+        "symfony/asset-mapper": "6.4.*",
+        "symfony/console": "6.4.*",
+        "symfony/doctrine-messenger": "6.4.*",
+        "symfony/dotenv": "6.4.*",
+        "symfony/flex": "^2",
+        "symfony/framework-bundle": "6.4.*",
+        "symfony/mailer": "6.4.*",
+        "symfony/messenger": "6.4.*",
+        "symfony/monolog-bundle": "^3.0",
+        "symfony/runtime": "6.4.*",
+        "symfony/twig-bundle": "6.4.*",
+        "symfony/yaml": "6.4.*"
     },
     "config": {
         "allow-plugins": {
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "symfony/flex": true,
+            "symfony/runtime": true,
+            "tbachert/spi": true
+        },
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        },
+        "psr-0": {
+            "osid_": "vendor/oki/osid-phpkit/",
+            "phpkit_": "vendor/oki/osid-phpkit/",
+            "": ["application/library/", "application/test/"]
+        },
+        "classmap": [
+            "library/fsmparser/",
+            "application/library/harmoni/Primitives/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "App\\Tests\\": "tests/"
         }
+    },
+    "replace": {
+        "symfony/polyfill-ctype": "*",
+        "symfony/polyfill-iconv": "*",
+        "symfony/polyfill-php72": "*",
+        "symfony/polyfill-php73": "*",
+        "symfony/polyfill-php74": "*",
+        "symfony/polyfill-php80": "*",
+        "symfony/polyfill-php81": "*"
+    },
+    "scripts": {
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd",
+            "importmap:install": "symfony-cmd"
+        },
+        "post-install-cmd": [
+            "@auto-scripts"
+        ],
+        "post-update-cmd": [
+            "@auto-scripts"
+        ]
+    },
+    "conflict": {
+        "symfony/symfony": "*"
+    },
+    "extra": {
+        "symfony": {
+            "allow-contrib": true,
+            "require": "6.4.*"
+        }
+    },
+    "repositories": {
+        "oki/osid-phpkit": {
+            "type": "package",
+            "package": {
+                "name": "oki/osid-phpkit",
+                "version": "dev-master",
+                "type": "library",
+                "source": {
+                    "url": "https://git.assembla.com/osid-phpkit.git",
+                    "type": "git",
+                    "reference": "f862f1de1359697dff671cc507311f5427f8a663"
+                }
+            }
+        }
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.64",
+        "phpunit/phpunit": "^9.5",
+        "symfony/browser-kit": "6.4.*",
+        "symfony/css-selector": "6.4.*",
+        "symfony/debug-bundle": "6.4.*",
+        "symfony/maker-bundle": "^1.61",
+        "symfony/phpunit-bridge": "^7.1",
+        "symfony/stopwatch": "6.4.*",
+        "symfony/web-profiler-bundle": "6.4.*"
     }
 }

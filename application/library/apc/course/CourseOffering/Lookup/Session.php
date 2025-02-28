@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
@@ -36,6 +37,8 @@
  */
 class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSession implements osid_course_CourseOfferingLookupSession
 {
+    private osid_course_CourseOfferingLookupSession $session;
+
     /**
      * Constructor.
      *
@@ -48,8 +51,6 @@ class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSessio
         $this->session = $session;
         parent::__construct($manager);
     }
-    protected $session;
-    protected $manager;
 
     /**
      *  Gets the <code> CourseCatalog </code> <code> Id </code> associated
@@ -91,8 +92,8 @@ class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSessio
      *  hint to an application that may not offer lookup operations to
      *  unauthorized users.
      *
-     * @return boolean <code> false </code> if lookup methods are not
-     *                        authorized, <code> true </code> otherwise
+     * @return bool <code> false </code> if lookup methods are not
+     *                     authorized, <code> true </code> otherwise
      *
      * @throws osid_IllegalStateException this session has been closed
      *
@@ -476,6 +477,34 @@ class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSessio
                 $val[] = $types->getNextType();
             }
             $this->cacheSetObj('genus_types', $val);
+        }
+
+        return new phpkit_type_ArrayTypeList($val);
+    }
+
+    /**
+     *  Gets a list of the genus types for course offerings in a given term.
+     *
+     * @param osid_id_Id $termId the term id to scope to
+     *
+     * @return object osid_id_TypeList the list of course offering genus types
+     *
+     *  @compliance mandatory This method must be implemented.
+     *
+     * @throws osid_OperationFailedException  unable to complete request
+     * @throws osid_PermissionDeniedException authorization failure
+     */
+    public function getCourseOfferingGenusTypesByTermId(osid_id_Id $termId)
+    {
+        $key = 'genus_types_in_'.$this->session->getTermCodeFromTermId($termId);
+        $val = $this->cacheGetObj($key);
+        if (null === $val) {
+            $val = [];
+            $types = $this->session->getCourseOfferingGenusTypesByTermId($termId);
+            while ($types->hasNext()) {
+                $val[] = $types->getNextType();
+            }
+            $this->cacheSetObj($key, $val);
         }
 
         return new phpkit_type_ArrayTypeList($val);

@@ -11,7 +11,16 @@ class banner_course_CourseTest extends phpkit_test_phpunit_AbstractOsidObjectTes
     /**
      * @var banner_course_Course
      */
-    protected $object;
+    protected osid_course_Course $object;
+
+    private osid_course_CourseLookupSession $session;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $physId;
+    private osid_id_Id $geolId;
+    private osid_id_Id $geogId;
+    private osid_id_Id $chemId;
+    private osid_type_Type $termRecordType;
+    private osid_type_Type $alternatesType;
 
     /**
      * Answer the Object to test.
@@ -31,11 +40,11 @@ class banner_course_CourseTest extends phpkit_test_phpunit_AbstractOsidObjectTes
      */
     protected function setUp(): void
     {
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
-        $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
-        $this->geolId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/GEOL0250');
-        $this->geogId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/GEOG0250');
-        $this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHEM0104');
+        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MCUG');
+        $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-PHYS0201');
+        $this->geolId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-GEOL0250');
+        $this->geogId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-GEOG0250');
+        $this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-CHEM0104');
         $this->session = self::$courseManager->getCourseLookupSessionForCatalog($this->mcugId);
         $this->object = $this->session->getCourse($this->physId);
 
@@ -120,10 +129,10 @@ class banner_course_CourseTest extends phpkit_test_phpunit_AbstractOsidObjectTes
     {
         $list = $this->object->getTopicIds();
         $identifiers = [
-            'topic/subject/PHYS',
-            'topic/department/PHYS',
-            'topic/division/NSCI',
-            'topic/level/UG',
+            'topic-subject-PHYS',
+            'topic-department-PHYS',
+            'topic-division-NSCI',
+            'topic-level-UG',
         ];
         $found = [];
         $this->assertTrue($list->hasNext());

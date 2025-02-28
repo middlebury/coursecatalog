@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block importmap %}
+    {# do NOT call parent() #}
+    {{ importmap(['app', 'export_jobs']) }}
+{% endblock %}
+
+{% set showLeftNav = false %}
+{% set bodyTypography = true %}
+{% block body %}
+<div class='admin-menu'><a href="{{ path('admin_index') }}">&laquo; Back to Administration</a></div>
+
+<div class='job-menu'>
+    <button class='link-button save-jobs-button' value='save'>Save</button>
+    <button class='link-button reset-jobs-button' value='reset'>Reset to last save</button>
+    <a class='link-button' href="{{ path('export_new_job_form') }}">Create a new job</a>
+</div>
+
+<div class='error-message error-div'>Error: </div>
+
+<div id='jobs' class='job-schedule' data-list-jobs-url="{{ path('export_list_jobs_json') }}" data-delete-job-url="{{ path('export_delete_job', {job: '-jobId-'}) }}" data-delete-job-csrf_key="{{ csrf_token('admin-export-delete-job') }}" data-list-config-revisions-url="{{ path('export_update_job', {job: '-jobId-'}) }}" data-update-job-url="{{ path('export_update_job', {job: '-jobId-'}) }}" data-update-job-csrf_key="{{ csrf_token('admin-export-update-job') }}" data-valid-term-url="{{ path('export_term_valid', {catalogId: '-catalogId-', termString: '-termString-'}) }}" data-run-job-url="{{ path('export_enqueue_single_job', {jobId: '-jobId-'}) }}" data-run-job-csrf_key="{{ csrf_token('admin-run-export') }}" data-job-progress-url="{{ path('export_progress_json') }}" data-archive-base-url="{{ path('view_archive') }}">
+    <table id='job-table' class='job-table'>
+        <tr>
+            <th>Active</th>
+            <th>Export Path</th>
+            <th>Config</th>
+            <th>Revision to Export</th>
+            <th>Terms</th>
+            <th>Actions</th>
+        </tr>
+    </table>
+</div>
+
+<div class='job-menu'>
+    <button class='link-button save-jobs-button' value='save'>Save</button>
+    <button class='link-button reset-jobs-button' value='reset'>Reset to last save</button>
+    <a class='link-button' href="{{ path('export_new_job_form') }}">Create a new job</a>
+</div>
+{% endblock %}

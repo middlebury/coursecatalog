@@ -1,0 +1,123 @@
+/* Archive styles */
+br {
+    mso-data-placement:same-cell;
+}
+.print_button {
+    float: right;
+    margin: 0 2em 2em 2em;
+}
+.courses {
+    margin-top: 6em;
+    margin-bottom: 6em;
+    /*border-top: 1px solid #777;*/
+}
+.course {
+    margin-top: 3em;
+    margin-bottom: 3em;
+}
+.course_requirements strong {
+    font-weight: bold;
+}
+.course_instructors {
+    font-style: italic;
+}
+a.local_anchor {
+    display: block;
+    height: 0px;
+    text-decoration: none;
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+.generated_date {
+    font-style: italic;
+    font-size: smaller;
+}
+.toc {
+    margin-top: 2em;
+    margin-bottom: 3em;
+    clear: both;
+}
+ul.toc-list {
+    float: left;
+    width: 45%;
+}
+.clearfix {
+    height: 0px;
+    clear: both;
+}
+.jump_link {
+    display: inline-block;
+    margin-bottom: 0.5em;
+}
+.course h3 {
+    border-bottom: 1px solid #aaa;
+    padding-bottom: 0.25em;
+    margin-bottom: 0.25em;
+    font-size: 1.3em;
+}
+.course .course_description {
+    margin-top: 0.25em;
+    display: inline;
+}
+.course .course_requirements, .course .course_instructors {
+    display: inline;
+}
+.course_section {
+    margin-bottom: 2em;
+}
+.course_term h4 {
+    margin-bottom: 0.1em;
+    font-size: 1.1em;
+}
+.course .alternates {
+    margin-top: 0.3em;
+}
+.course_section .course_section_numbers {
+    font-style: italic;
+    font-size: 0.9em;
+}
+.message {
+    border: 1px solid #777;
+    background-color: #ddd;
+    padding: 1em;
+}
+
+@media screen {
+    header.catalog_header h1 {
+        display: none;
+    }
+}
+
+/* Print-specific styles */
+@media print {
+    .print_button, .app-header__title, .jump_link, .page-header__title {
+        display: none;
+    }
+    a.alternate[href]::after, .toc a[href]::after {
+        display: none;
+    }
+    body {
+        font-size: 10pt;
+    }
+    .program {
+        page-break-before: always;
+    }
+    .course {
+        page-break-inside: avoid;
+    }
+    .course_section {
+        page-break-inside: avoid;
+    }
+    ul.toc-list {
+        width: 40%;
+    }
+
+    /* Override some of the typography styles to condense the output. */
+    .catalog p, .catalog ul, .catalog ol {
+        font-size: 1em;
+    }
+    .catalog ul > li::before, .catalog ol > li::before {
+        top: inherit;
+    }
+}

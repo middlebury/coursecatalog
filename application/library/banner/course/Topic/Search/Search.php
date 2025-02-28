@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 6/11/09
  *
@@ -52,9 +53,9 @@ class banner_course_Topic_Search_Search extends banner_course_AbstractSearch imp
      *
      *  @param object osid_type_Type $searchRecordType a type
      *
-     * @return boolean <code> true </code> if a search record the given
-     *                        record <code> Type </code> is available, <code> false </code>
-     *                        otherwise
+     * @return bool <code> true </code> if a search record the given
+     *                     record <code> Type </code> is available, <code> false </code>
+     *                     otherwise
      *
      * @throws osid_NullArgumentException <code> searchRecordType </code> is
      *                                           <code> null </code>
@@ -143,6 +144,6 @@ class banner_course_Topic_Search_Search extends banner_course_AbstractSearch imp
      */
     public function getTopicSearchRecord(osid_type_Type $topicSearchRecordType)
     {
-        throw new osid_UnsupportedException();
+        throw new osid_UnsupportedException('The TopicSearchRecordType passed is not supported.');
     }
 }

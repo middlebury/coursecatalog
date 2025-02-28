@@ -53,8 +53,8 @@ interface middlebury_course_Topic_Search_TermQueryRecord extends osid_course_Top
     /**
      *  Tests if an <code> TermQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a term query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a term query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */

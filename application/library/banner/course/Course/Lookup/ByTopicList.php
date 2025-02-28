@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 4/13/09
  *
@@ -16,6 +17,8 @@
  */
 class banner_course_Course_Lookup_ByTopicList extends banner_course_Course_AbstractList implements osid_course_CourseList
 {
+    private osid_id_Id $topicId;
+
     /**
      * Constructor.
      *

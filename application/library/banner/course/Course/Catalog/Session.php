@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 4/21/09
  *
@@ -34,7 +35,7 @@ class banner_course_Course_Catalog_Session extends banner_course_Course_Abstract
      */
     public function __construct(banner_course_CourseManagerInterface $manager)
     {
-        parent::__construct($manager, 'catalog/');
+        parent::__construct($manager, 'catalog-');
     }
 
     /**
@@ -71,8 +72,8 @@ class banner_course_Course_Catalog_Session extends banner_course_Course_Abstract
      *  </code> This is intended as a hint to an application that may opt not
      *  to offer lookup operations to unauthorized users.
      *
-     * @return boolean <code> false </code> if looking up mappings is not
-     *                        authorized, <code> true </code> otherwise
+     * @return bool <code> false </code> if looking up mappings is not
+     *                     authorized, <code> true </code> otherwise
      *
      * @throws osid_IllegalStateException this session has been closed
      *
@@ -242,7 +243,7 @@ class banner_course_Course_Catalog_Session extends banner_course_Course_Abstract
 
         $ids = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $ids[] = $this->getOsidIdFromString($row['catalog_id'], 'catalog/');
+            $ids[] = $this->getOsidIdFromString($row['catalog_id'], 'catalog-');
         }
         $statement->closeCursor();
 
@@ -279,7 +280,7 @@ class banner_course_Course_Catalog_Session extends banner_course_Course_Abstract
         $catalogs = [];
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $catalogs[] = new banner_course_CourseCatalog(
-                $this->getOsidIdFromString($row['catalog_id'], 'catalog/'),
+                $this->getOsidIdFromString($row['catalog_id'], 'catalog-'),
                 $row['catalog_title']);
         }
         $statement->closeCursor();

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 10/10/07
  *
@@ -245,7 +246,7 @@ class harmoni_ErrorHandler
     /**
      * Handle an Exception.
      *
-     * @param object Exception $exception
+     * @param Exception $exception
      *
      * @return void
      *
@@ -433,7 +434,6 @@ class harmoni_ErrorHandler
     /**
      * Log an Exception.
      *
-     * @param object Exception $exception
      * @param optional string $logName Defaults to the Harmoni log
      *
      * @return void

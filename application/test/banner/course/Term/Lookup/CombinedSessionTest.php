@@ -11,7 +11,16 @@ class banner_course_Term_Lookup_CombinedSessionTest extends phpkit_test_phpunit_
     /**
      * @var banner_course_CourseCatalog_Lookup_Session
      */
-    protected $session;
+    protected osid_course_TermLookupSession $session;
+
+    private osid_id_Id $mcugId;
+    private osid_id_Id $unknownId;
+    private osid_id_Id $termId;
+    private osid_id_Id $springTermId;
+    private osid_id_Id $badTermId;
+    private osid_type_Type $unknownType;
+    private osid_type_Type $generaNoneType;
+    private osid_type_Type $secondaryType;
 
     /**
      * Answer the session object to test.
@@ -31,11 +40,11 @@ class banner_course_Term_Lookup_CombinedSessionTest extends phpkit_test_phpunit_
      */
     protected function setUp(): void
     {
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
+        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MCUG');
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
-        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200890');
-        $this->springTermId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200920');
-        $this->badTermId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200866');
+        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term-200890');
+        $this->springTermId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term-200920');
+        $this->badTermId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term-200866');
 
         $this->session = self::$courseManager->getTermLookupSession();
         $this->session->useComparativeView();
@@ -196,7 +205,7 @@ class banner_course_Term_Lookup_CombinedSessionTest extends phpkit_test_phpunit_
     {
         $terms = $this->session->getTerms();
         $this->assertInstanceOf('osid_course_TermList', $terms);
-        $this->assertEquals(14, $terms->available());
+        $this->assertEquals(16, $terms->available());
         $this->assertInstanceOf('osid_course_Term', $terms->getNextTerm());
         $this->assertInstanceOf('osid_course_Term', $terms->getNextTerm());
     }

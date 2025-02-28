@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 11/18/09
  *
@@ -49,7 +50,7 @@ WHERE
         self::$requirementTopics_stmt->execute($parameters);
         $topicIds = [];
         while ($row = self::$requirementTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
-            $topicIds[] = $this->getOsidIdFromString($row['SCRATTR_ATTR_CODE'], 'topic/requirement/');
+            $topicIds[] = $this->getOsidIdFromString($row['SCRATTR_ATTR_CODE'], 'topic-requirement-');
         }
         self::$requirementTopics_stmt->closeCursor();
 
@@ -89,7 +90,7 @@ WHERE
         self::$levelTopics_stmt->execute($parameters);
         $topicIds = [];
         while ($row = self::$levelTopics_stmt->fetch(PDO::FETCH_ASSOC)) {
-            $topicIds[] = $this->getOsidIdFromString($row['SCRLEVL_LEVL_CODE'], 'topic/level/');
+            $topicIds[] = $this->getOsidIdFromString($row['SCRLEVL_LEVL_CODE'], 'topic-level-');
         }
         self::$levelTopics_stmt->closeCursor();
 

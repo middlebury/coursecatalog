@@ -11,7 +11,23 @@ class banner_resource_Resource_Lookup_SessionTest extends phpkit_test_phpunit_Ab
     /**
      * @var banner_course_Course_Lookup_Session
      */
-    protected $session;
+    protected osid_resource_ResourceLookupSession $session;
+    private osid_resource_ResourceManager $manager;
+    private osid_id_Id $allBinId;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $miisId;
+    private osid_type_Type $personType;
+    private osid_type_Type $roomType;
+    private osid_type_Type $buildingType;
+    private osid_type_Type $campusType;
+    private osid_type_Type $placeType;
+    private osid_type_Type $unknownType;
+    private osid_id_Id $unknownId;
+    private osid_id_Id $person1Id;
+    private osid_id_Id $person2Id;
+    private osid_id_Id $campusId;
+    private osid_id_Id $buildingId;
+    private osid_id_Id $roomId;
 
     /**
      * Answer the session object to test.
@@ -31,21 +47,21 @@ class banner_resource_Resource_Lookup_SessionTest extends phpkit_test_phpunit_Ab
      */
     protected function setUp(): void
     {
-        $this->allBinId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/all');
+        $this->allBinId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource-all');
         $this->manager = self::$courseManager->getResourceManager();
         $this->session = $this->manager->getResourceLookupSession();
 
-        $this->personType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource/person');
-        $this->roomType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource/place/room');
-        $this->buildingType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource/place/building');
-        $this->campusType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource/place/campus');
-        $this->placeType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource/place');
+        $this->personType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource-person');
+        $this->roomType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource-place-room');
+        $this->buildingType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource-place-building');
+        $this->campusType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource-place-campus');
+        $this->placeType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource-place');
 
-        $this->person1Id = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/WEBID1000002');
-        $this->person2Id = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/person/WEBID1000007');
-        $this->campusId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/place/campus/M');
-        $this->buildingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/place/building/MBH');
-        $this->roomId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource/place/room/MBH/538');
+        $this->person1Id = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource-person-WEBID1000002');
+        $this->person2Id = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource-person-WEBID1000007');
+        $this->campusId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource-place-campus-M');
+        $this->buildingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource-place-building-MBH');
+        $this->roomId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource-place-room-MBH-538');
 
         $this->unknownType = new phpkit_type_URNInetType('urn:inet:osid.org:unknown_type');
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
@@ -143,7 +159,7 @@ class banner_resource_Resource_Lookup_SessionTest extends phpkit_test_phpunit_Ab
         $this->assertEquals(14, $resources->available());
         $this->assertInstanceOf('osid_resource_Resource', $resources->getNextResource());
         $resourceGenusType = $resources->getNextResource()->getGenusType();
-        $this->assertEquals('genera:resource/person', $resourceGenusType->getIdentifier());
+        $this->assertEquals('genera:resource-person', $resourceGenusType->getIdentifier());
         $this->assertTrue($resourceGenusType->isEqual($this->personType));
     }
 
@@ -191,7 +207,7 @@ class banner_resource_Resource_Lookup_SessionTest extends phpkit_test_phpunit_Ab
         $this->assertEquals(14, $resources->available());
         $this->assertInstanceOf('osid_resource_Resource', $resources->getNextResource());
         $resourceGenusType = $resources->getNextResource()->getGenusType();
-        $this->assertEquals('genera:resource/person', $resourceGenusType->getIdentifier());
+        $this->assertEquals('genera:resource-person', $resourceGenusType->getIdentifier());
         $this->assertTrue($resourceGenusType->isEqual($this->personType));
     }
 

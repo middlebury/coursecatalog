@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block importmap %}
+    {# do NOT call parent() #}
+    {{ importmap(['app', 'export']) }}
+{% endblock %}
+
+{% set showLeftNav = false %}
+{% set bodyTypography = true %}
+{% block body %}
+<div class='admin-menu'><a href="{{ path('export_config_form') }}">&laquo; Back to Archive Export Configuration</a></div>
+
+<form id="config-create-form" class='config-create-form' action="{{ path('export_config_create') }}" method="post">
+    <input id='csrf-key-config-create' type='hidden' name='csrf_key' value='{{ csrf_token('admin-export-config-create') }}' />
+    <label for='label'>Label:</label><input name='label'></input><br>
+    <label for='catalog_id'>Catalog:</label>
+        <select name='catalog_id'>
+{% for catalog in catalogs %}
+            <option value='{{ osidIdToString(catalog.id) }}'>{{ catalog.displayname }}</option>
+{% endfor %}
+        </select>
+    <input class='submit-button' type='submit'></input>
+</form>
+{% endblock %}

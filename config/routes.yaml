@@ -1,0 +1,16 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+nbgrp_saml:
+    resource: "@NbgrpOneloginSamlBundle/Resources/config/routes.php"
+
+catalogs:
+    path: /catalogs
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+    defaults:
+        route: 'list_catalogs'
+        # redirections are temporary by default (code 302) but you can make them permanent (code 301)
+        permanent: true

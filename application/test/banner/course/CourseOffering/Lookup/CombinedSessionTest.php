@@ -11,7 +11,32 @@ class banner_course_CourseOffering_Lookup_CombinedSessionTest extends phpkit_tes
     /**
      * @var banner_course_CourseCatalog_Lookup_Session
      */
-    protected $session;
+    protected osid_course_CourseOfferingLookupSession $session;
+
+    private osid_id_Id $allId;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $miisId;
+    private osid_id_Id $unknownId;
+    private osid_id_Id $physId;
+    private osid_id_Id $mathId;
+    private osid_id_Id $chemId;
+    private osid_id_Id $physOfferingId;
+    private osid_id_Id $geolOfferingId;
+    private osid_id_Id $unknownOfferingId;
+    private osid_id_Id $termId;
+    private osid_id_Id $physDeptTopicId;
+    private osid_id_Id $chemDeptTopicId;
+    private osid_id_Id $physSubjTopicId;
+    private osid_id_Id $chemSubjTopicId;
+    private osid_id_Id $dedReqTopicId;
+    private osid_id_Id $sciReqTopicId;
+    private osid_type_Type $unknownType;
+    private osid_type_Type $generaNoneType;
+    private osid_type_Type $secondaryType;
+    private osid_type_Type $undergraduateType;
+    private osid_type_Type $lectureType;
+    private osid_type_Type $labType;
+    private osid_type_Type $discussionType;
 
     /**
      * Answer the session object to test.
@@ -31,40 +56,40 @@ class banner_course_CourseOffering_Lookup_CombinedSessionTest extends phpkit_tes
      */
     protected function setUp(): void
     {
-        $this->allId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/all');
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
-        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
+        $this->allId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-all');
+        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MCUG');
+        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MIIS');
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
 
         $this->session = self::$courseManager->getCourseOfferingLookupSession();
         $this->session->useFederatedCourseCatalogView();
 
-        $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/PHYS0201');
-        $this->mathId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/MATH0300');
-        $this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHEM0104');
+        $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-PHYS0201');
+        $this->mathId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-MATH0300');
+        $this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-CHEM0104');
 
-        $this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200890/90143');
-        $this->geolOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/200420/20663');
-        $this->unknownOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section/178293/2101');
+        $this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section-200890-90143');
+        $this->geolOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section-200420-20663');
+        $this->unknownOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section-178293-2101');
 
-        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term/200890');
+        $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term-200890');
 
-        $this->physDeptTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/PHYS');
-        $this->chemDeptTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/department/CHEM');
-        $this->physSubjTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/PHYS');
-        $this->chemSubjTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/subject/CHEM');
-        $this->dedReqTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/DED');
-        $this->sciReqTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic/requirement/SCI');
+        $this->physDeptTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic-department-PHYS');
+        $this->chemDeptTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic-department-CHEM');
+        $this->physSubjTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic-subject-PHYS');
+        $this->chemSubjTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic-subject-CHEM');
+        $this->dedReqTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic-requirement-DED');
+        $this->sciReqTopicId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:topic-requirement-SCI');
 
-        $this->unknownType = new phpkit_type_URNInetType('urn:inet:osid.org:unknown_type');
+        $this->unknownType = new phpkit_type_URNInetType('urn:inet:osid-org:unknown_type');
 
         $this->generaNoneType = new phpkit_type_URNInetType('urn:inet:osid.org:genera:none');
         $this->secondaryType = new phpkit_type_URNInetType('urn:inet:osid.org:genera:secondary');
         $this->undergraduateType = new phpkit_type_URNInetType('urn:inet:osid.org:genera:undergraduate');
 
-        $this->lectureType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/LCT');
-        $this->labType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/LAB');
-        $this->discussionType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering/DSC');
+        $this->lectureType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering-LCT');
+        $this->labType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering-LAB');
+        $this->discussionType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:offering-DSC');
     }
 
     /**

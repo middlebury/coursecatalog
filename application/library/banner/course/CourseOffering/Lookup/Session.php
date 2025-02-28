@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 4/9/09
  *
@@ -38,6 +39,9 @@
  */
 class banner_course_CourseOffering_Lookup_Session extends banner_course_CourseOffering_AbstractSession implements osid_course_CourseOfferingLookupSession, middlebury_course_CourseOffering_Lookup_SessionInterface
 {
+    private osid_id_Id $catalogId;
+    private osid_course_CourseCatalog $catalog;
+
     /**
      * Constructor.
      *
@@ -47,7 +51,7 @@ class banner_course_CourseOffering_Lookup_Session extends banner_course_CourseOf
      */
     public function __construct(banner_course_CourseManagerInterface $manager, osid_id_Id $catalogId)
     {
-        parent::__construct($manager, 'section/');
+        parent::__construct($manager, 'section-');
 
         $this->catalogId = $catalogId;
     }
@@ -98,8 +102,8 @@ class banner_course_CourseOffering_Lookup_Session extends banner_course_CourseOf
      *  hint to an application that may not offer lookup operations to
      *  unauthorized users.
      *
-     * @return boolean <code> false </code> if lookup methods are not
-     *                        authorized, <code> true </code> otherwise
+     * @return bool <code> false </code> if lookup methods are not
+     *                     authorized, <code> true </code> otherwise
      *
      * @throws osid_IllegalStateException this session has been closed
      *
@@ -264,8 +268,8 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
         $row = self::$getOffering_stmts[$catalogWhere]->fetch(PDO::FETCH_ASSOC);
         self::$getOffering_stmts[$catalogWhere]->closeCursor();
 
-        if (!$row['SSBSECT_CRN'] || !$row['SSBSECT_TERM_CODE']) {
-            throw new osid_NotFoundException('Could not find a course offering matching the term code '.$this->getTermCodeFromOfferingId($courseOfferingId).' and the crn '.$this->getCrnFromOfferingId($courseOfferingId).'.');
+        if (!$row || !$row['SSBSECT_CRN'] || !$row['SSBSECT_TERM_CODE']) {
+            throw new osid_NotFoundException('Could not find a course offering matching the term code '.$this->getTermCodeFromOfferingId($courseOfferingId).' and the crn '.$this->getCrnFromOfferingId($courseOfferingId).'-');
         }
 
         return new banner_course_CourseOffering($row, $this);
@@ -651,5 +655,22 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
     public function getCourseOfferingGenusTypes()
     {
         return new banner_course_CourseOffering_GenusTypeList($this->manager->getDB(), $this);
+    }
+
+    /**
+     *  Gets a list of the genus types for course offerings in a given term.
+     *
+     * @param osid_id_Id $termId the term id to scope to
+     *
+     * @return object osid_id_TypeList the list of course offering genus types
+     *
+     *  @compliance mandatory This method must be implemented.
+     *
+     * @throws osid_OperationFailedException  unable to complete request
+     * @throws osid_PermissionDeniedException authorization failure
+     */
+    public function getCourseOfferingGenusTypesByTermId(osid_id_Id $termId)
+    {
+        return new banner_course_CourseOffering_GenusTypeList($this->manager->getDB(), $this, $termId);
     }
 }

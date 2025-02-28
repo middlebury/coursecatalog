@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 10/14/09
  *
@@ -13,6 +14,10 @@
  */
 class banner_course_Course_Search_Query extends banner_course_AbstractQuery implements osid_course_CourseQuery, middlebury_course_Course_Search_TopicQueryRecord, middlebury_course_Course_Search_InstructorsQueryRecord, middlebury_course_Course_Search_LocationQueryRecord, middlebury_course_Course_Search_TermQueryRecord
 {
+    private osid_type_Type $wildcardStringMatchType;
+    private osid_type_Type $booleanStringMatchType;
+    private string $keywordString;
+
     /**
      * Constructor.
      *
@@ -500,8 +505,8 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
     /**
      *  Tests if a <code> CourseOfferingQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a course offering query
-     *                        interface is available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a course offering query
+     *                     interface is available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -575,15 +580,15 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
 				course_catalog_college
 			WHERE
 				catalog_id = ?)',
-            [$this->session->getDatabaseIdString($courseCatalogId, 'catalog/')],
+            [$this->session->getDatabaseIdString($courseCatalogId, 'catalog-')],
             $match);
     }
 
     /**
      *  Tests if a <code> CourseCatalogQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a course catalog query
-     *                        interface is available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a course catalog query
+     *                     interface is available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -706,8 +711,8 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
     /**
      *  Tests if an <code> TopicQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a topic query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a topic query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -752,7 +757,7 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
      */
     public function matchInstructorId(osid_id_Id $instructorId, $match)
     {
-        $this->addClause('instructor_id', 'WEB_ID = ?', [$this->session->getDatabaseIdString($instructorId, 'resource/person/')], $match);
+        $this->addClause('instructor_id', 'WEB_ID = ?', [$this->session->getDatabaseIdString($instructorId, 'resource-person-')], $match);
         $this->addTableJoin('LEFT JOIN SSBSECT ON (SCBCRSE_SUBJ_CODE = SSBSECT_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SSBSECT_CRSE_NUMB)');
         $this->addTableJoin('LEFT JOIN SYVINST ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)');
 
@@ -764,8 +769,8 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
     /**
      *  Tests if an <code> InstructorQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a instructor query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a instructor query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -810,7 +815,7 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
      */
     public function matchTermId(osid_id_Id $termId, $match)
     {
-        $this->addClause('term_id', 'SSBSECT_TERM_CODE = ?', [$this->session->getDatabaseIdString($termId, 'term/')], $match);
+        $this->addClause('term_id', 'SSBSECT_TERM_CODE = ?', [$this->session->getDatabaseIdString($termId, 'term-')], $match);
         $this->addTableJoin('LEFT JOIN SSBSECT ON (SCBCRSE_SUBJ_CODE = SSBSECT_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SSBSECT_CRSE_NUMB)');
 
         $this->addClause('active_sections', 'SSBSECT_SSTS_CODE = ? AND (course_catalog.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != course_catalog.prnt_ind_to_exclude)', ['A'], true);
@@ -821,8 +826,8 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
     /**
      *  Tests if an <code> TermQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a term query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a term query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -867,7 +872,7 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
      */
     public function matchLocationId(osid_id_Id $instructorId, $match)
     {
-        $this->addClause('location_id', 'SSBSECT_CAMP_CODE = ?', [$this->session->getDatabaseIdString($instructorId, 'resource/place/campus/')], $match);
+        $this->addClause('location_id', 'SSBSECT_CAMP_CODE = ?', [$this->session->getDatabaseIdString($instructorId, 'resource-place-campus-')], $match);
         $this->addTableJoin('LEFT JOIN SSBSECT ON (SCBCRSE_SUBJ_CODE = SSBSECT_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SSBSECT_CRSE_NUMB)');
 
         $this->addClause('active_sections', 'SSBSECT_SSTS_CODE = ? AND (course_catalog.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != course_catalog.prnt_ind_to_exclude)', ['A'], true);
@@ -878,8 +883,8 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
     /**
      *  Tests if a <code> LocationQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a location query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a location query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */

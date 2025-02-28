@@ -1,0 +1,28 @@
+<div class='offering_list typography'>
+{% if term %}
+    <h2>Sections in {{ term.displayname }}</h2>
+    {% if offeringsForAllTermsUrl %}
+    <div class='all_terms_link'><a href="{{ offeringsForAllTermsUrl }}">show sections in all terms</a></div>
+    {% endif %}
+{% else %}
+    <h2>Sections</h2>
+{% endif %}
+
+{% set currentTerm = null %}
+{% for item in offerings %}
+    {% if currentTerm is null or currentTerm.id != item.offering.termid %}
+        {% set currentTerm = item.offering.term %}
+        <h4>{{ currentTerm.displayname }}</h4>
+    {% endif %}
+    {% if selectedOffering and selectedOffering.id == item.offering.id %}
+        <div class='selected_offering'>
+    {% else %}
+        <div>
+    {% endif %}
+    <a class='offering_link' href="{{ path('view_offering', {offeringId: item.offering}) }}">{{item.offering.displayname}}</a>
+    <span class='type'>{{ item.offering.genustype.displayname }}</span>
+    {% if item.instructor_names %}
+    <span class='instructor'>({{ item.instructor_names|join(', ') }})</span>
+    {% endif %}
+    </div>
+{% endfor %}

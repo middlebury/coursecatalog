@@ -1,0 +1,17 @@
+{% extends 'base.xml.twig' %}
+{% block items %}
+    {% if previousTerm %}{{ include('partials/term.xml.twig', {term: previousTerm, key: 'previous_term'}) }}{% endif %}
+    {% if term %}{{ include('partials/term.xml.twig', {term: term, key: 'chosen_term'}) }}{% endif %}
+    {% if nextTerm %}{{ include('partials/term.xml.twig', {term: nextTerm, key: 'next_term'}) }}{% endif %}
+{% if terms %}
+        <catalog:all_terms>
+        {%~ for t in terms %}
+            {{ include('partials/term.xml.twig', {term: t, key: 'term'}) -}}
+        {% endfor %}
+        </catalog:all_terms>
+{% endif %}
+
+{% for offering in offerings %}
+{{ include('partials/offering.xml.twig', offering | merge({catalogId: catalogId}), with_context = false) }}
+{% endfor %}
+{% endblock %}

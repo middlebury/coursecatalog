@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 5/04/09
  *
@@ -42,6 +43,9 @@
  */
 class banner_resource_ResourceManager extends phpkit_AbstractOsidManager implements osid_resource_ResourceManager, banner_resource_ResourceManagerInterface
 {
+    private PDO $db;
+    private string $idAuthority;
+
     /*********************************************************
      * From banner_ManagerInterface
      *********************************************************/
@@ -78,7 +82,7 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
      */
     public function getCombinedBinId()
     {
-        return new phpkit_id_Id($this->getIdAuthority(), 'urn', 'resource/all');
+        return new phpkit_id_Id($this->getIdAuthority(), 'urn', 'resource-all');
     }
 
     /*********************************************************
@@ -120,17 +124,17 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
         try {
             $dsn = phpkit_configuration_ConfigUtil::getSingleValuedValue(
                 $runtime->getConfiguration(),
-                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/pdo_dsn'),
+                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course.pdo_dsn'),
                 new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
 
             $username = phpkit_configuration_ConfigUtil::getSingleValuedValue(
                 $runtime->getConfiguration(),
-                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/pdo_username'),
+                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course.pdo_username'),
                 new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
 
             $password = phpkit_configuration_ConfigUtil::getSingleValuedValue(
                 $runtime->getConfiguration(),
-                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/pdo_password'),
+                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course.pdo_password'),
                 new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
         } catch (osid_NotFoundException $e) {
             throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode());
@@ -139,7 +143,7 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
         try {
             $debug = phpkit_configuration_ConfigUtil::getSingleValuedValue(
                 $runtime->getConfiguration(),
-                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/pdo_count_queries'),
+                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course.pdo_count_queries'),
                 new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/Boolean'));
         } catch (osid_ConfigurationErrorException $e) {
             $debug = false;
@@ -158,10 +162,10 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
         try {
             $this->idAuthority = phpkit_configuration_ConfigUtil::getSingleValuedValue(
                 $runtime->getConfiguration(),
-                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course/id_authority'),
+                new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course.id_authority'),
                 new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
             if (!strlen($this->idAuthority)) {
-                throw new osid_ConfigurationErrorException('urn:inet:middlebury.edu:config:banner_course/id_authority must be specified.');
+                throw new osid_ConfigurationErrorException('urn:inet:middlebury.edu:config:banner_course.id_authority must be specified.');
             }
         } catch (osid_NotFoundException $e) {
             throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode());
@@ -544,8 +548,8 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
     /**
      *  Tests if federation is visible.
      *
-     * @return boolean <code> true </code> if visible federation is supported
-     *                        <code> , </code> <code> false </code> otherwise
+     * @return bool <code> true </code> if visible federation is supported
+     *                     <code> , </code> <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -557,8 +561,8 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
     /**
      *  Tests if resource lookup is supported.
      *
-     * @return boolean <code> true </code> if resource lookup is supported
-     *                        <code> , </code> <code> false </code> otherwise
+     * @return bool <code> true </code> if resource lookup is supported
+     *                     <code> , </code> <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -570,8 +574,8 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
     /**
      *  Tests if resource search is supported.
      *
-     * @return boolean <code> true </code> if resource search is supported
-     *                        <code> , </code> <code> false </code> otherwise
+     * @return bool <code> true </code> if resource search is supported
+     *                     <code> , </code> <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -583,8 +587,8 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
     /**
      *  Tests if resource administration is supported.
      *
-     * @return boolean <code> true </code> if resource administration is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if resource administration is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -597,8 +601,8 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
      *  Tests if resource notification is supported. Messages may be sent when
      *  resources are created, modified, or deleted.
      *
-     * @return boolean <code> true </code> if resource notification is
-     *                        supported <code> , </code> <code> false </code> otherwise
+     * @return bool <code> true </code> if resource notification is
+     *                     supported <code> , </code> <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -610,8 +614,8 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
     /**
      *  Tests if rerieving mappings of resource and bins is supported.
      *
-     * @return boolean <code> true </code> if resource bin mapping retrieval
-     *                        is supported <code> , </code> <code> false </code> otherwise
+     * @return bool <code> true </code> if resource bin mapping retrieval
+     *                     is supported <code> , </code> <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -623,8 +627,8 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
     /**
      *  Tests if managing mappings of resources and bins is supported.
      *
-     * @return boolean <code> true </code> if resource bin assignment is
-     *                        supported <code> , </code> <code> false </code> otherwise
+     * @return bool <code> true </code> if resource bin assignment is
+     *                     supported <code> , </code> <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -636,8 +640,8 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
     /**
      *  Tests if bin lookup is supported.
      *
-     * @return boolean <code> true </code> if bin lookup is supported <code>
-     *                        , </code> <code> false </code> otherwise
+     * @return bool <code> true </code> if bin lookup is supported <code>
+     *                     , </code> <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -649,8 +653,8 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
     /**
      *  Tests if bin search is supported.
      *
-     * @return boolean <code> true </code> if bin search is supported <code>
-     *                        , </code> <code> false </code> otherwise
+     * @return bool <code> true </code> if bin search is supported <code>
+     *                     , </code> <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -662,8 +666,8 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
     /**
      *  Tests if bin administration is supported.
      *
-     * @return boolean <code> true </code> if bin administration is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if bin administration is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -678,8 +682,8 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
      *  Notifications for resources within bins are sent via the resource
      *  notification session.
      *
-     * @return boolean <code> true </code> if bin notification is supported
-     *                        <code> , </code> <code> false </code> otherwise
+     * @return bool <code> true </code> if bin notification is supported
+     *                     <code> , </code> <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -691,8 +695,8 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
     /**
      *  Tests if a bin hierarchy traversal is supported.
      *
-     * @return boolean <code> true </code> if a bin hierarchy traversal is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if a bin hierarchy traversal is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -704,8 +708,8 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
     /**
      *  Tests if a bin hierarchy design is supported.
      *
-     * @return boolean <code> true </code> if a bin hierarchy design is
-     *                        supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if a bin hierarchy design is
+     *                     supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -717,8 +721,8 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
     /**
      *  Tests if the bin hierarchy supports node sequencing.
      *
-     * @return boolean <code> true </code> if bin hierarchy node sequencing
-     *                        is supported, <code> false </code> otherwise
+     * @return bool <code> true </code> if bin hierarchy node sequencing
+     *                     is supported, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */
@@ -747,8 +751,8 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
      *
      *  @param object osid_type_Type $resourceRecordType the resource type
      *
-     * @return boolean <code> true </code> if the resource record type is
-     *                        supported <code> , </code> <code> false </code> otherwise
+     * @return bool <code> true </code> if the resource record type is
+     *                     supported <code> , </code> <code> false </code> otherwise
      *
      * @throws osid_NullArgumentException null argument provided
      *
@@ -780,8 +784,8 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
      *  @param object osid_type_Type $resourceSearchRecordType the resource
      *          search type
      *
-     * @return boolean <code> true </code> if the resource search record type
-     *                        is supported <code> , </code> <code> false </code> otherwise
+     * @return bool <code> true </code> if the resource search record type
+     *                     is supported <code> , </code> <code> false </code> otherwise
      *
      * @throws osid_NullArgumentException null argument provided
      *
@@ -812,8 +816,8 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
      *
      *  @param object osid_type_Type $binRecordType the bin record type
      *
-     * @return boolean <code> true </code> if the bin record type is
-     *                        supported <code> , </code> <code> false </code> otherwise
+     * @return bool <code> true </code> if the bin record type is
+     *                     supported <code> , </code> <code> false </code> otherwise
      *
      * @throws osid_NullArgumentException null argument provided
      *
@@ -845,8 +849,8 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
      *  @param object osid_type_Type $binSearchRecordType the bin search
      *          record type
      *
-     * @return boolean <code> true </code> if the bin search record type is
-     *                        supported <code> , </code> <code> false </code> otherwise
+     * @return bool <code> true </code> if the bin search record type is
+     *                     supported <code> , </code> <code> false </code> otherwise
      *
      * @throws osid_NullArgumentException null argument provided
      *

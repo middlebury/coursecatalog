@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+{{ include(
+    'partials/offerings.html.twig',
+    {
+        offerings: offerings,
+        catalogId: catalogId,
+        term: term,
+        offeringsForAllTermsUrl: offeringsForAllTermsUrl,
+        hideOfferingInstructors: FALSE,
+        selectedOffering: NULL
+    },
+    with_context = false
+)}}
+
+{% if offering_count > offering_display_limit %}
+    <div class="more">and {{ offering_count -  offering_display_limit }} more...</div>
+{% endif %}
+
+{% endblock %}

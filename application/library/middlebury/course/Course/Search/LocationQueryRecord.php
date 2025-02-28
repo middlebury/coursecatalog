@@ -57,8 +57,8 @@ interface middlebury_course_Course_Search_LocationQueryRecord extends osid_cours
     /**
      *  Tests if a <code> LocationQuery </code> is available.
      *
-     * @return boolean <code> true </code> if a location query interface is
-     *                        available, <code> false </code> otherwise
+     * @return bool <code> true </code> if a location query interface is
+     *                     available, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */

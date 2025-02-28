@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 5/3/05
  *
@@ -52,7 +53,7 @@ class TimeZone extends SObject
     /**
      * Answer the default time zone - GMT.
      *
-     * @return object TimeZone
+     * @return TimeZone
      *
      * @since 5/3/05
      *
@@ -60,32 +61,25 @@ class TimeZone extends SObject
      */
     public static function defaultTimeZone()
     {
-        $obj = self::offsetNameAbbreviation(
+        return static::offsetNameAbbreviation(
             Duration::withHours(0),
             'Greenwich Mean Time',
             'GMT');
-
-        return $obj;
     }
 
     /**
      * Create a new Timezone.
      *
-     * @param object Duration $aDuration
-     * @param string $aStringName
-     *
-     * @return object TimeZone
+     * @return TimeZone
      *
      * @static
      *
      * @since 5/3/05
      */
-    public static function offsetNameAbbreviation($aDuration, $aStringName = null,
+    public static function offsetNameAbbreviation(Duration $aDuration, ?string $aStringName = null,
         $aStringAbbreviation = null)
     {
-        $obj = new self($aDuration, $aStringName, $aStringAbbreviation);
-
-        return $obj;
+        return new static($aDuration, $aStringName, $aStringAbbreviation);
     }
 
     /*********************************************************
@@ -157,17 +151,18 @@ class TimeZone extends SObject
      * 	Instance Methods - private
      *********************************************************/
 
+    private $offset;
+    private $name;
+    private $abbreviation;
+
     /**
      * Create a new Timezone.
      *
-     * @param object Duration $aDuration
-     * @param string $aStringName
-     *
-     * @return object TimeZone
+     * @return TimeZone
      *
      * @since 5/3/05
      */
-    public function __construct($aDuration, $aStringName, $aStringAbbreviation)
+    public function __construct(Duration $aDuration, string $aStringName, string $aStringAbbreviation)
     {
         $this->offset = $aDuration;
         $this->name = $aStringName;
@@ -181,7 +176,7 @@ class TimeZone extends SObject
     /**
      * Return the offset of this TimeZone.
      *
-     * @return object Duration
+     * @return Duration
      *
      * @since 5/3/05
      */

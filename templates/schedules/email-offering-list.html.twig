@@ -1,0 +1,28 @@
+{% if schedule.offerings is not empty %}
+{% for offering in schedule.offerings %}
+    <div style='border-top: 1px dotted; vertical-align: top; margin-bottom: 0.5rem;'>
+        <div style="float: right">
+            CRN: {{ offering.coursereferencenumber }}
+        </div>
+
+        <div style="font-weight: bold; margin-bottom: 0.5rem;">
+            <a href="{{ path('view_offering', {offeringId: offering.id}) }}" target='_blank'>
+                {{ offering.displayname }}
+            </a>
+        </div>
+        <div style="margin-bottom: 0.5rem;">
+            {{ offering.title | nl2br }}
+        </div>
+
+        <div style='margin-bottom: 0.5rem; {{ scheduleHasCollisions(schedule, offering.id) ? "color: red" }}'>
+            {{ formatScheduleInfo(offering.scheduleinfo) | raw }}
+            {% if scheduleHasCollisions(schedule, offering.id) %}
+            <div style="float: right; text-transform: uppercase; margin-left: 1rem;">Conflict</div>
+            {% endif %}
+        </div>
+        <div style="margin-bottom: 0.5rem;">
+            {{ offering.locationinfo | nl2br }}
+        </div>
+    </div>
+{% endfor %}
+{% endif %}

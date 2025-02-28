@@ -1,0 +1,12 @@
+{% extends 'archive/archive_base.html.twig' %}
+
+{% block importmap %}
+    {# do NOT call parent() #}
+    {{ importmap(['app', 'archive']) }}
+{% endblock %}
+
+{% block body %}
+
+{{ archive_content|raw }}
+
+{% endblock %}

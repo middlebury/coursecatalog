@@ -1,0 +1,6 @@
+framework:
+    asset_mapper:
+        # The paths to make available to the asset mapper.
+        paths:
+            assets/: ''
+            vendor/middlebury/midd-frontend/: 'midd-frontend'

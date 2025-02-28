@@ -1,0 +1,810 @@
+<?php
+
+/**
+ * @copyright Copyright &copy; 2005, Middlebury College
+ * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
+ *
+ * @version $Id: HtmlStringTestCase.class.php,v 1.11 2007/09/04 20:25:27 adamfranco Exp $
+ *
+ * @see http://harmoni.sourceforge.net/
+ *
+ * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
+ *
+ * @since 5/3/05
+ */
+
+use PHPUnit\Framework\TestCase;
+
+/**
+ * A single unit test case. This class is intended to test one particular
+ * class. Replace 'testedclass.php' below with the class you would like to
+ * test.
+ *
+ * @since 5/3/05
+ *
+ * @copyright Copyright &copy; 2005, Middlebury College
+ * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
+ *
+ * @version $Id: HtmlStringTestCase.class.php,v 1.11 2007/09/04 20:25:27 adamfranco Exp $
+ *
+ * @see http://harmoni.sourceforge.net/
+ *
+ * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
+ */
+class HtmlStringTest extends TestCase
+{
+    /**
+     *  Sets up unit test wide variables at the start
+     *	 of each test method.
+     */
+    protected function setUp(): void
+    {
+    }
+
+    /**
+     *	  Clears the data set in the setUp() method call.
+     */
+    protected function tearDown(): void
+    {
+        // perhaps, unset $obj here
+    }
+
+    /**
+     * Test the creation methods.
+     */
+    public function testTrimTagHandling()
+    {
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(100);
+        $this->assertEquals($string, $htmlString->asString());
+
+        // test single html tags <hr/>
+        $string =
+"Hello world.<hr/>
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(100);
+        $this->assertEquals($string, $htmlString->asString());
+
+        $string =
+"Hello world.<img src='' border='1' />
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(100);
+        $this->assertEquals($string, $htmlString->asString());
+
+        // Test bad html tags.
+        $string =
+"Hello world.<hr> <img src='' border='1'>
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+"Hello world.<hr/> <img src='' border='1'/>
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(100);
+        $this->assertEquals($result, $htmlString->asString());
+
+        // test re-nesting
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong><em>fox</strong></em>
+jumped over the lazy <em>dog</em>.</p>";
+        $htmlString = HtmlString::withValue($string);
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong><em>fox</em></strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $htmlString->trim(100);
+        $this->assertEquals($string, $htmlString->asString());
+    }
+
+    /**
+     * Test unescaped less-thans and greater-thans.
+     */
+    public function testUnescapedLessGreater()
+    {
+        $string =
+"Hello < world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+"Hello &lt; world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(100);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+"Hello > world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+"Hello &gt; world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(100);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+'Hello > world.';
+        $result =
+'Hello &gt; world.';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(3);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+"Hello <world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+"Hello &lt;world.
+<p style='font-size: large;'>The...</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(3);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+"Hello<world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+"Hello&lt;world.
+<p style='font-size: large;'>The quick...</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(3);
+        $this->assertEquals($result, $htmlString->asString());
+    }
+
+    /**
+     * Test the creation methods.
+     */
+    public function testTrimLengths()
+    {
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+'Hello...';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(1);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+'Hello world....';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(2);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+"Hello   \n \n\t \n\r  world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+"Hello   \n \n\t \n\r  world....";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(2);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+"Hello world.
+<p style='font-size: large;'>The...</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(3);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+"Hello world.
+<p style='font-size: large;'>The quick...</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(4);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+"Hello world.
+<p style='font-size: large;'>The quick brown...</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(5);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>...</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(6);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped...</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(7);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over...</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(8);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the...</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(9);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy...</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(10);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(11);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(12);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(13);
+        $this->assertEquals($result, $htmlString->asString());
+    }
+
+    /**
+     * Test Elipses.
+     */
+    public function testElipses()
+    {
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+'Hello world....';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(2);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+jumped over the lazy <em>dog</em>.</p>";
+        $result =
+'Hello world.';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(2, false);
+        $this->assertEquals($result, $htmlString->asString());
+    }
+
+    /**
+     * Test unescaped less-thans and greater-thans.
+     */
+    public function testTrimmingInNested()
+    {
+        $string =
+'Hello world.
+<div>
+	<ul>
+		<li>This is one</li>
+		<li>This is two</li>
+		<li>This is three</li>
+		<li>This is four</li>
+		<li>This is five</li>
+	</ul>
+</div>';
+        $result =
+'Hello world.
+<div>
+	<ul>
+		<li>This is one</li>
+		<li>This is two</li></ul>...</div>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(8);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+'Hello world.
+<div>
+	<ul>
+		<li>This is one</li>
+		<li>This is two</li>
+		<li>This is three</li>
+		<li>This is four</li>
+		<li>This is five</li>
+	</ul>
+</div>';
+        $result =
+'Hello world.
+<div>
+	<ul>
+		<li>This is one</li>
+		<li>This is...</li></ul></div>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(7);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+'Hello world.
+<div>
+	<table>
+		<tr>
+			<td>This is one</td>
+			<td>This is two</td>
+		</tr>
+		<tr>
+			<td>This is three</td>
+			<td>This is four</td>
+		</tr>
+	</table>
+</div>';
+        $result =
+'Hello world.
+<div>
+	<table>
+		<tr>
+			<td>This is...</td></tr></table></div>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(4);
+        $this->assertEquals($result, $htmlString->asString());
+
+        $string =
+'Hello world.
+<div>
+	<table>
+		<tr>
+			<td>This is one</td>
+			<td>This is two</td>
+		</tr>
+		<tr>
+			<td>This is three</td>
+			<td>This is four</td>
+		</tr>
+	</table>
+</div>';
+        $result =
+'Hello world.
+<div>
+	<table>
+		<tr>
+			<td>This is one</td></tr></table>...</div>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(5);
+        $this->assertEquals($result, $htmlString->asString());
+    }
+
+    /**
+     * Test a real-life block of html.
+     */
+    public function testDcBlock()
+    {
+        ob_start();
+        echo <<<END
+<h2>Dublin Core Metadata Element Set, Version 1.1: Reference Description</h2>
+<a name="introduction" id="introduction"></a>
+<h3>Introduction</h3>
+<p>The Dublin Core metadata element set is a standard for cross-domain
+information resource description. Here an information resource is
+defined to be "anything that has identity". This is the definition used
+in Internet RFC 2396, "Uniform Resource Identifiers (URI): Generic
+Syntax", by Tim Berners-Lee et al. There are no fundamental
+restrictions to the types of resources to which Dublin Core metadata
+can be assigned.</p>
+<p>Three formally endorsed versions exist of the Dublin Core Metadata Element Set, version 1.1:</p>
+
+<ul>
+<li>ISO Standard 15836-2003 (February 2003): <a href="http://www.niso.org/international/SC4/n515.pdf">http://www.niso.org/international/SC4/n515.pdf</a></li>
+<li>NISO Standard Z39.85-2001 (September 2001): <a href="http://www.niso.org/standards/resources/Z39-85.pdf">http://www.niso.org/standards/resources/Z39-85.pdf</a></li>
+<li>CEN Workshop Agreement CWA 13874 (March 2000, no longer available)</li></ul>
+<p>The current document has been brought into line with the ISO and
+NISO standards. The more comprehensive document "DCMI Metadata Terms" (<a href="http://dublincore.org/documents/dcmi-terms/">http://dublincore.org/documents/dcmi-terms/</a>) includes the latest and authoritative term declarations for the Dublin Core Metadata Element Set, Version 1.1.</p>
+<p>For an overview and links to full specifications of all metadata
+terms maintained by the Dublin Core Metadata Initiative please see:: <a href="http://dublincore.org/usage/documents/overview/">http://dublincore.org/usage/documents/overview/</a>.</p>
+END;
+        $string = ob_get_clean();
+
+        ob_start();
+        echo <<<END
+<h2>Dublin Core Metadata Element Set, Version 1.1: Reference Description</h2>
+<a name="introduction" id="introduction"></a>
+<h3>Introduction</h3>
+<p>The Dublin Core metadata element set is a standard for cross-domain
+information resource description. Here an information resource is
+defined to be "anything that has identity". This is the definition used
+in Internet RFC 2396, "Uniform Resource Identifiers (URI): Generic
+Syntax", by Tim Berners-Lee et al. There are no fundamental
+restrictions to the types of resources to which Dublin Core metadata
+can be assigned.</p>
+<p>Three formally endorsed versions exist of the Dublin Core Metadata Element Set, version 1.1:</p>
+
+<ul>
+<li>ISO Standard 15836-2003 (February 2003): <a href="http://www.niso.org/international/SC4/n515.pdf">http://www.niso.org/international/SC4/n515.pdf</a></li>
+<li>NISO Standard Z39.85-2001 (September 2001):...</li></ul>
+END;
+        $result = ob_get_clean();
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(99);
+        $this->assertEquals($result, $htmlString->asString());
+
+        ob_start();
+        echo <<<END
+<h2>Dublin Core Metadata Element Set, Version 1.1: Reference Description</h2>
+<a name="introduction" id="introduction"></a>
+<h3>Introduction</h3>
+<p>The Dublin Core metadata element set is a standard for cross-domain
+information resource description. Here an information resource is
+defined to be "anything that has identity". This is the definition used
+in Internet RFC 2396, "Uniform Resource Identifiers (URI): Generic
+Syntax", by Tim Berners-Lee et al. There are no fundamental
+restrictions to the types of resources to which Dublin Core metadata
+can be assigned.</p>
+<p>Three formally endorsed versions exist of the Dublin Core Metadata Element Set, version 1.1:</p>
+
+<ul>
+<li>ISO Standard 15836-2003 (February 2003): <a href="http://www.niso.org/international/SC4/n515.pdf">http://www.niso.org/international/SC4/n515.pdf</a></li>
+<li>NISO Standard Z39.85-2001 (September 2001): <a href="http://www.niso.org/standards/resources/Z39-85.pdf">http://www.niso.org/standards/resources/Z39-85.pdf</a></li>
+<li>CEN Workshop Agreement CWA 13874 (March 2000, no longer available)</li></ul>
+<p>The current document has been brought into line with the ISO and
+NISO standards. The more comprehensive document "DCMI Metadata Terms" (<a href="http://dublincore.org/documents/dcmi-terms/">http://dublincore.org/documents/dcmi-terms/</a>) includes the latest and authoritative term declarations for the Dublin Core Metadata Element Set, Version 1.1.</p>
+<p>For an overview and links to full specifications of all metadata
+terms maintained by the Dublin Core Metadata Initiative please see:: <a href="http://dublincore.org/usage/documents/overview/">http://dublincore.org/usage/documents/overview/</a>.</p>
+END;
+        $string = ob_get_clean();
+
+        ob_start();
+        echo <<<END
+<h2>Dublin Core Metadata Element Set, Version 1.1: Reference Description</h2>
+<a name="introduction" id="introduction"></a>
+<h3>Introduction</h3>
+<p>The Dublin Core metadata element set is a standard for cross-domain
+information resource description. Here an information resource is
+defined to be "anything that has identity". This is the definition used
+in Internet RFC 2396, "Uniform Resource Identifiers (URI): Generic
+Syntax", by Tim Berners-Lee et al. There are no fundamental
+restrictions to the types of resources to which Dublin Core metadata
+can be assigned.</p>
+<p>Three formally endorsed versions exist of the Dublin Core Metadata Element Set, version 1.1:</p>
+
+<ul>
+<li>ISO Standard 15836-2003 (February 2003): <a href="http://www.niso.org/international/SC4/n515.pdf">http://www.niso.org/international/SC4/n515.pdf</a></li>
+<li>NISO Standard Z39.85-2001 (September 2001): <a href="http://www.niso.org/standards/resources/Z39-85.pdf">http://www.niso.org/standards/resources/Z39-85.pdf</a></li></ul>...
+END;
+        $result = ob_get_clean();
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->trim(100);
+        $this->assertEquals($result, $htmlString->asString());
+    }
+
+    /**
+     * Test CDATA sections.
+     */
+    public function testCdata()
+    {
+        $string = '<![CDATA[Hello.]]>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string, $htmlString->asString());
+
+        $string =
+'<![CDATA[
+Hello.
+]]>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string, $htmlString->asString());
+
+        $string =
+'<![CDATA[  <  ]]>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string, $htmlString->asString());
+
+        $string =
+'<![CDATA[  >  ]]>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string, $htmlString->asString());
+
+        $string = '<![CDATA[&]]>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string, $htmlString->asString());
+
+        $string = '<![CDATA[ & ]]>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string, $htmlString->asString());
+
+        $string = 'Hello there <![CDATA[ & ]]> with CDATA';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string, $htmlString->asString());
+
+        $string =
+'Blah Blah
+
+<p> Below is CDATA:
+
+<![CDATA[
+ && lordy > dloryg
+]]>;
+
+<br/>Above is CDATA.
+</p>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string, $htmlString->asString());
+
+        $string =
+'<div>
+	<p>Hello there</p>
+	<style>
+		<![CDATA[ & ]]>
+	</style>
+	with CDATA.
+</div>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string, $htmlString->asString());
+
+        $string =
+'<![CDATA[
+		&
+		<
+		>
+]]>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string, $htmlString->asString());
+
+        $string =
+"Hello world.
+<p style='font-size: large;'>The quick brown <strong>fox</strong>
+
+<![CDATA[
+	& < >
+]]>
+
+jumped over the lazy <em>dog</em>.</p>";
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string, $htmlString->asString());
+
+        $string =
+'<![CDATA[
+Hello.
+';
+        $string2 =
+'<![CDATA[
+Hello.
+]]>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string2, $htmlString->asString());
+    }
+
+    public function testComments()
+    {
+        $string =
+'Hello
+<!---->
+Goodbye';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string, $htmlString->asString());
+
+        $string =
+'Hello
+<!-- -->
+Goodbye';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string, $htmlString->asString());
+
+        $string =
+'Hello
+<!-- You my
+mommy.-->
+Goodbye';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string, $htmlString->asString());
+    }
+
+    public function testCloseTags()
+    {
+        $string =
+'</div><p>Hello world.</p>';
+        $string2 =
+'<p>Hello world.</p>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string2, $htmlString->asString());
+
+        $string =
+'</td></tr></table><p>Hello </div> world.</p>';
+        $string2 =
+'<p>Hello </p> world.';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string2, $htmlString->asString());
+    }
+
+    public function testTables()
+    {
+        $string =
+'<tr><td>Hello world.</td></tr>';
+        $string2 =
+'<table><tr><td>Hello world.</td></tr></table>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string2, $htmlString->asString());
+
+        $string =
+'<td>Hello world.</td>';
+        $string2 =
+'<table><tr><td>Hello world.</td></tr></table>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string2, $htmlString->asString());
+
+        $string =
+'<th>Hello world.</th>';
+        $string2 =
+'<table><tr><th>Hello world.</th></tr></table>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string2, $htmlString->asString());
+
+        $string =
+'<tbody><th>Hello world.</th>';
+        $string2 =
+'<table><tbody><tr><th>Hello world.</th></tr></tbody></table>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string2, $htmlString->asString());
+    }
+
+    public function testLists()
+    {
+        $string =
+'<li>Hello world.</li>';
+        $string2 =
+'<ul><li>Hello world.</li></ul>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string2, $htmlString->asString());
+
+        $string =
+'<li>Hello world.';
+        $string2 =
+'<ul><li>Hello world.</li></ul>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string2, $htmlString->asString());
+
+        $string =
+'<dt>saying:</dt>';
+        $string2 =
+'<dl><dt>saying:</dt></dl>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string2, $htmlString->asString());
+
+        $string =
+'<dt>saying:</dt>
+<dd>Hello world.</dd>';
+        $string2 =
+'<dl><dt>saying:</dt>
+<dd>Hello world.</dd></dl>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string2, $htmlString->asString());
+    }
+
+    public function testSelect()
+    {
+        $string =
+'<option>Hello world.';
+        $string2 =
+'<select><option>Hello world.</option></select>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string2, $htmlString->asString());
+
+        $string =
+'<optgroup><option>Hello world.</optgroup></option>';
+        $string2 =
+'<select><optgroup><option>Hello world.</option></optgroup></select>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string2, $htmlString->asString());
+
+        $string =
+'<optgroup><option>Hello world.</optgroup></option></select>';
+        $string2 =
+'<select><optgroup><option>Hello world.</option></optgroup></select>';
+        $htmlString = HtmlString::withValue($string);
+        $htmlString->clean();
+        $this->assertEquals($string2, $htmlString->asString());
+    }
+}

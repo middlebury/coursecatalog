@@ -1,13 +1,11 @@
 <?php
+
 /**
  * @since 4/14/09
  *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-
-include_once 'fsmparserclass.inc.php';
-include_once 'harmoni/Primitives/Collections-Text/HtmlString.class.php';
 
 /**
  *  <p>A <code> Course </code> represents a canonical learning unit. A <code>
@@ -293,6 +291,12 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
     private static $fsmParser;
 
     private $raw_description;
+    private string $title;
+    private float $credits;
+    private array $topicIds;
+    private bool $hasAlternates;
+    private banner_course_AbstractSession $session;
+    private array $allTopicIds;
 
     /**
      * Constructor.
@@ -517,9 +521,9 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
      *
      *  @param object osid_type_Type $recordType a type
      *
-     * @return boolean <code> true </code> if the given record <code> Type
-     *                        </code> is implemented by this record, <code> false </code>
-     *                        otherwise
+     * @return bool <code> true </code> if the given record <code> Type
+     *                     </code> is implemented by this record, <code> false </code>
+     *                     otherwise
      *
      * @throws osid_NullArgumentException <code> recordType </code> is <code>
      *                                           null </code>
@@ -578,8 +582,8 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
     /**
      * Tests if this course has any alternate courses.
      *
-     * @return boolean <code> true </code> if this course has any
-     *                        alternates, <code> false </code> otherwise
+     * @return bool <code> true </code> if this course has any
+     *                     alternates, <code> false </code> otherwise
      *
      * @compliance mandatory This method must be implemented.
      */
@@ -676,8 +680,8 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
     /**
      * Tests if this course has any alternate courses, effective between the terms specified (inclusive).
      *
-     * @return boolean <code> true </code> if this course has any
-     *                        alternates, <code> false </code> otherwise
+     * @return bool <code> true </code> if this course has any
+     *                     alternates, <code> false </code> otherwise
      *
      * @compliance mandatory This method must be implemented.
      */
@@ -799,7 +803,7 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
         }
         $linkSetIds = array_unique($linkSetIds);
         foreach ($linkSetIds as $key => $val) {
-            $linkSetIds[$key] = $this->session->getOsidIdFromString($val, 'link_set/');
+            $linkSetIds[$key] = $this->session->getOsidIdFromString($val, 'link_set.');
         }
 
         return new phpkit_id_ArrayIdList($linkSetIds);
@@ -830,7 +834,7 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
                 $setId = substr($linkIdString, 1, 1);
                 // The type id is the first charactor.
                 $typeId = substr($linkIdString, 0, 1);
-                if ($linkSetId->isEqual($this->session->getOsidIdFromString($setId, 'link_set/'))) {
+                if ($linkSetId->isEqual($this->session->getOsidIdFromString($setId, 'link_set.'))) {
                     $linkTypeIds[] = $typeId;
                 }
             }
@@ -843,7 +847,7 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
         }
 
         foreach ($linkTypeIds as $key => $val) {
-            $linkTypeIds[$key] = $this->session->getOsidIdFromString($val, 'link_type/');
+            $linkTypeIds[$key] = $this->session->getOsidIdFromString($val, 'link_type.');
         }
 
         return new phpkit_id_ArrayIdList($linkTypeIds);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 5/27/09
  *
@@ -16,6 +17,17 @@
  */
 class banner_course_CourseOffering_Search_List extends banner_course_CourseOffering_AbstractList implements osid_course_CourseOfferingList, osid_course_CourseOfferingSearchResults
 {
+    private PDO $db;
+    private osid_course_CourseOfferingQuery $courseQuery;
+    private string $having;
+    private string $where;
+    private string $orderBy;
+    private ?string $limit;
+    private array $additionalColumns;
+    private array $additionalTableJoins;
+    private array $parameters;
+    private int $resultSize;
+
     /**
      * Constructor.
      *
@@ -230,9 +242,9 @@ class banner_course_CourseOffering_Search_List extends banner_course_CourseOffer
      *
      *  @param object osid_type_Type $searchRecordType a type
      *
-     * @return boolean <code> true </code> if a search record the given
-     *                        record <code> Type </code> is available, <code> false </code>
-     *                        otherwise
+     * @return bool <code> true </code> if a search record the given
+     *                     record <code> Type </code> is available, <code> false </code>
+     *                     otherwise
      *
      * @throws osid_NullArgumentException <code> searchRecordType </code> is
      *                                           <code> null </code>

@@ -5,6 +5,8 @@ $finder = (new PhpCsFixer\Finder())
     ->notPath([
         'vendor',
         '#^library#',
+        '#^application/library/harmoni/Primitives/Collections-Text/SafeHTML/classes/HTMLSax3#',
+        '#^var#',
     ])
 ;
 

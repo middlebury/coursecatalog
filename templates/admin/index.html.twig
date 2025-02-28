@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block page_title %}Course Catalog Administration{% endblock %}
+
+{% set showLeftNav = false %}
+{% set bodyTypography = true %}
+{% block body %}
+<ul>
+    <li><a href="{{ path("admin_terms_list") }}">Manage Term Visibility</a></li>
+    <li><a href="{{ path("list_antirequisites") }}">Manage Anti-Requisites</a></li>
+    <li><a href="{{ path('export_config_form') }}">Manage Catalog Archive Configurations</a></li>
+    <li><a href="{{ path("export_list_jobs") }}">Manage Catalog Archive Scheduling</a></li>
+    <li><a href="{{ path("masquerade") }}">Masquerade</a></li>
+    <li><a href="{{ path("markup") }}">View Catalog Markup Example</a></li>
+</ul>
+{% endblock %}

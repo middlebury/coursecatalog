@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+{% for term in terms %}
+    <h2><a href='{{ path('view_term', {termId: term, catalogId: catalogId}) }}'>{{ term.displayname }}</a></h2>
+    <div>{{ term.description }}</div>
+{% endfor %}
+
+{% endblock %}

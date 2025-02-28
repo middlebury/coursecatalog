@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 5/2/05
  *
@@ -37,17 +38,17 @@ require_once __DIR__.'/../Magnitudes/Magnitude.class.php';
  *
  * @author Adam Franco <adam AT adamfranco DOT com> <afranco AT middlebury DOT edu>
  */
-class Timespan extends Magnitude
+class Timespan extends Magnitude implements AsDateAndTime
 {
     /**
-     * @var object DateAndTime; The starting point of this time-span
+     * @var DateAndTime; The starting point of this time-span
      *
      * @since 5/11/05
      */
     public $start;
 
     /**
-     * @var object duration; The duration of this time-span
+     * @var duration; The duration of this time-span
      *
      * @since 5/11/05
      */
@@ -55,104 +56,63 @@ class Timespan extends Magnitude
 
     /*********************************************************
      * Class Methods - Instance Creation
-     *
-     * All static instance creation methods have an optional
-     * $class parameter which is used to get around the limitations
-     * of not being	able to find the class of the object that
-     * recieved the initial method call rather than the one in
-     * which it is implemented. These parameters SHOULD NOT BE
-     * USED OUTSIDE OF THIS PACKAGE.
      *********************************************************/
     /**
      * Answer a new object that represents now.
      *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Timespan
+     * @return Timespan
      *
      * @since 5/5/05
      *
      * @static
      */
-    public static function current($class = 'Timespan')
+    public static function current()
     {
-        eval('$result = '.$class.'::starting(DateAndTime::now(), $class);');
-
-        return $result;
+        return static::starting(DateAndTime::now());
     }
 
     /**
      * Answer a Timespan starting on the Squeak epoch: 1 January 1901.
      *
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Timespan
+     * @return Timespan
      *
      * @since 5/5/05
      *
      * @static
      */
-    public static function epoch($class = 'Timespan')
+    public static function epoch()
     {
-        eval('$result = '.$class.'::starting(DateAndTime::epoch(), $class);');
-
-        return $result;
+        return static::starting(DateAndTime::epoch());
     }
 
     /**
      * Create a new object starting now, with zero duration.
      *
-     * @param object DateAndTime $aDateAndTime
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
-     *
-     * @return object Timespan
+     * @return Timespan
      *
      * @since 5/5/05
      *
      * @static
      */
-    public static function starting($aDateAndTime, $class = 'Timespan')
+    public static function starting(AsDateAndTime $aDateAndTime)
     {
-        eval('$result = '.$class.'::startingDuration(
-				$aDateAndTime, Duration::zero(), $class);');
-
-        return $result;
+        return static::startingDuration($aDateAndTime, Duration::zero());
     }
 
     /**
      * Create a new object.
      *
-     * @param object DateAndTime $aDateAndTime
-     * @param object Duration $aDuration
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
+     * @param DateAndTime $aDateAndTime
      *
-     * @return object Timespan
+     * @return Timespan
      *
      * @since 5/5/05
      *
      * @static
      */
-    public static function startingDuration($aDateAndTime, $aDuration, $class = 'Timespan')
+    public static function startingDuration(AsDateAndTime $aDateAndTime, Duration $aDuration)
     {
-        // Validate our passed class name.
-        if (!(strtolower($class) == strtolower('Timespan')
-            || is_subclass_of(new $class(), 'Timespan'))) {
-            exit("Class, '$class', is not a subclass of 'Timespan'.");
-        }
-
-        $timeSpan = new $class();
+        $timeSpan = new static();
         $timeSpan->setStart($aDateAndTime);
         $timeSpan->setDuration($aDuration);
 
@@ -162,28 +122,21 @@ class Timespan extends Magnitude
     /**
      * Create a new object with given start and end DateAndTimes.
      *
-     * @param object DateAndTime $startDateAndTime
-     * @param object DateAndTime $endDateAndTime
-     * @param optional string $class DO NOT USE OUTSIDE OF PACKAGE.
-     *		This parameter is used to get around the limitations of not being
-     *		able to find the class of the object that recieved the initial
-     *		method call.
+     * @param DateAndTime $startDateAndTime
+     * @param DateAndTime $endDateAndTime
      *
-     * @return object Timespan
+     * @return Timespan
      *
      * @since 5/11/05
      *
      * @static
      */
-    public static function startingEnding($startDateAndTime, $endDateAndTime, $class = 'Timespan')
+    public static function startingEnding(AsDateAndTime $startDateAndTime, AsDateAndTime $endDateAndTime)
     {
-        $end = $endDateAndTime->asDateAndTime();
-        eval('$result = '.$class.'::startingDuration(
-			$startDateAndTime,
-			$end->minus($startDateAndTime),
-			$class);');
-
-        return $result;
+        return static::startingDuration(
+            $startDateAndTime,
+            $endDateAndTime->asDateAndTime()->minus($startDateAndTime)
+        );
     }
 
     /*********************************************************
@@ -194,7 +147,7 @@ class Timespan extends Magnitude
      * Do not use this constructor for building objects, please use the
      * class-methods Timespan::new(), Timespan::starting(), etcetera, instead.
      *
-     * @return object Timespan
+     * @return Timespan
      *
      * @since 5/2/05
      */
@@ -205,27 +158,25 @@ class Timespan extends Magnitude
     /**
      * Store the start DateAndTime of this timespan.
      *
-     * @param object DateAndTime $aDateAndTime
+     * @param DateAndTime $aDateAndTime
      *
      * @return void
      *
      * @since 5/4/05
      */
-    public function setStart($aDateAndTime)
+    public function setStart(AsDateAndTime $aDateAndTime)
     {
-        $this->start = $aDateAndTime;
+        $this->start = $aDateAndTime->asDateAndTime();
     }
 
     /**
      * Set the Duration of this timespan.
      *
-     * @param object Duration $aDuration
-     *
      * @return void
      *
      * @since 5/4/05
      */
-    public function setDuration($aDuration)
+    public function setDuration(Duration $aDuration)
     {
         $this->duration = $aDuration;
     }
@@ -237,7 +188,7 @@ class Timespan extends Magnitude
     /**
      * Test if this Timespan is equal to a Timespan.
      *
-     * @param object Timespan $aTimespan
+     * @param Timespan $aTimespan
      *
      * @return bool
      *
@@ -252,8 +203,6 @@ class Timespan extends Magnitude
     /**
      * Test if this Timespan is less than a comparand.
      *
-     * @param object $aComparand
-     *
      * @return bool
      *
      * @since 5/3/05
@@ -266,13 +215,13 @@ class Timespan extends Magnitude
     /**
      * Answer TRUE if the argument is within the timespan covered by the reciever.
      *
-     * @param object dateAndTime $aDateAndTime A DateAndTime or Timespan
+     * @param DateAndTime $aDateAndTime A DateAndTime or Timespan
      *
      * @return bool
      *
      * @since 5/13/05
      */
-    public function includes($aDateAndTime)
+    public function includes(AsDateAndTime $aDateAndTime)
     {
         // If the argument is a Timespan, check the end-date as well.
         if ('timespan' == strtolower($aDateAndTime::class)
@@ -297,7 +246,7 @@ class Timespan extends Magnitude
      *
      * @since 5/13/05
      */
-    public function includesAllOf($anArray)
+    public function includesAllOf(array $anArray)
     {
         foreach (array_keys($anArray) as $key) {
             if (!$this->includes($anArray[$key])) {
@@ -317,7 +266,7 @@ class Timespan extends Magnitude
      *
      * @since 5/13/05
      */
-    public function includesAnyOf($anArray)
+    public function includesAnyOf(array $anArray)
     {
         foreach (array_keys($anArray) as $key) {
             if ($this->includes($anArray[$key])) {
@@ -335,13 +284,11 @@ class Timespan extends Magnitude
     /**
      * Return the Timespan both have in common, or null.
      *
-     * @param object Timespan $aTimespan
-     *
-     * @return mixed object Timespan OR null
+     * @return mixed Timespan OR null
      *
      * @since 5/13/05
      */
-    public function intersection($aTimespan)
+    public function intersection(Timespan $aTimespan)
     {
         $start = $this->start();
         $end = $this->end();
@@ -354,18 +301,14 @@ class Timespan extends Magnitude
 
             return $null;
         } else {
-            eval('$result = '.static::class.'::startingEnding($aBeginning, $anEnd);');
-
-            return $result;
+            return static::startingEnding($aBeginning, $anEnd);
         }
     }
 
     /**
      * Subtract a Duration or DateAndTime.
      *
-     * @param object $operand
-     *
-     * @return object timespan (if operand is a Duration) OR Duration (if operand is a DateAndTime)
+     * @return timespan (if operand is a Duration) OR Duration (if operand is a DateAndTime)
      *
      * @since 5/3/05
      */
@@ -373,14 +316,14 @@ class Timespan extends Magnitude
     {
         $methods = get_class_methods($operand);
 
-        // If this conforms to the DateAndTimeProtocal
+        // If this conforms to the DateAndTimeProtocol
         if (in_array('asdateandtime', $methods)
             | in_array('asDateAndTime', $methods)) {
             $obj = $this->start->minus($operand);
 
             return $obj;
         }
-        // If this conforms to the Duration protocal
+        // If this conforms to the Duration protocol
         else {
             $obj = $this->plus($operand->negated());
 
@@ -391,66 +334,53 @@ class Timespan extends Magnitude
     /**
      * Answer the next object of our duration.
      *
-     * @return object Timespan
+     * @return Timespan
      *
      * @since 5/10/05
      */
     public function next()
     {
-        eval('$result = '.static::class.'::startingDuration(
- 			$this->start->plus($this->duration),
- 			$this->duration,
- 			"'.static::class.'");');
-
-        return $result;
+        return static::startingDuration(
+            $this->start->plus($this->duration),
+            $this->duration
+        );
     }
 
     /**
      * Add a Duration.
      *
-     * @param object Duration $aDuration
-     *
-     * @return object timespan The result
+     * @return timespan The result
      *
      * @since 5/3/05
      */
-    public function plus($aDuration)
+    public function plus(Duration $aDuration)
     {
-        $classname = static::class;
-
-        eval('$result = '.$classname.'::startingDuration($this->start->plus($aDuration),
-			$this->duration());');
-
-        return $result;
+        return static::startingDuration($this->start->plus($aDuration), $this->duration());
     }
 
     /**
      * Answer the previous object of our duration.
      *
-     * @return object Timespan
+     * @return Timespan
      *
      * @since 5/10/05
      */
     public function previous()
     {
-        eval('$result = '.static::class.'::startingDuration(
- 			$this->start->minus($this->duration),
- 			$this->duration,
- 			"'.static::class.'");');
-
-        return $result;
+        return static::startingDuration(
+            $this->start->minus($this->duration),
+            $this->duration
+        );
     }
 
     /**
      * Return the Timespan spanned by both.
      *
-     * @param object Timespan $aTimespan
-     *
-     * @return mixed object Timespan OR null
+     * @return mixed Timespan OR null
      *
      * @since 5/13/05
      */
-    public function union($aTimespan)
+    public function union(Timespan $aTimespan)
     {
         $start = $this->start();
         $end = $this->end();
@@ -458,11 +388,11 @@ class Timespan extends Magnitude
         $aBeginning = $start->min($aTimespan->start());
         $anEnd = $end->max($aTimespan->end());
 
-        $obj = self::startingEnding(
+        // Note that we return the base Timespan rather than a Mondy/Week/Year
+        // since those have fixed durations.
+        return Timespan::startingEnding(
             $aBeginning,
             $anEnd->plus(DateAndTime::clockPrecision()));
-
-        return $obj;
     }
 
     /*********************************************************
@@ -568,7 +498,7 @@ class Timespan extends Magnitude
     /**
      * Answer the Duration of this timespan.
      *
-     * @return object Duration
+     * @return Duration
      *
      * @since 5/11/05
      */
@@ -580,7 +510,7 @@ class Timespan extends Magnitude
     /**
      * Answer the end of this timespan.
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/11/05
      */
@@ -638,7 +568,7 @@ class Timespan extends Magnitude
      *
      * @since 5/13/05
      */
-    public function printableString($printLeadingSpaceToo = false)
+    public function printableString(bool $printLeadingSpaceToo = false)
     {
         return $this->start->printableString().'D'.$this->duration->printableString();
     }
@@ -694,7 +624,7 @@ class Timespan extends Magnitude
     /**
      * Answer the start DateAndTime of this timespan.
      *
-     * @return object DateAndTime
+     * @return DateAndTime
      *
      * @since 5/11/05
      */
@@ -726,7 +656,7 @@ class Timespan extends Magnitude
      *
      * @since 5/13/05
      */
-    public function every($aDuration)
+    public function every(Duration $aDuration)
     {
         $every = [];
 
@@ -944,18 +874,19 @@ class Timespan extends Magnitude
     /**
      * Answer an Timespan. anEnd must be aDateAndTime or a Timespan.
      *
-     * @param object $anEnd Must be a DateAndTime or a Timespan
+     * @param $anEnd Must be a DateAndTime or a Timespan
      *
-     * @return object Timespan
+     * @return Timespan
      *
      * @since 5/13/05
      */
     public function to($anEnd)
     {
-        $obj = self::startingEnding($this->start(), $anEnd->asDateAndTime());
-
-        return $obj;
+        // Note that we return the base Timespan rather than a Mondy/Week/Year
+        // since those have fixed durations.
+        return Timespan::startingEnding($this->start(), $anEnd->asDateAndTime());
     }
 }
 
 require_once __DIR__.'/DateAndTime.class.php';
+require_once __DIR__.'/AsDateAndTime.php';

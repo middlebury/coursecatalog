@@ -1,0 +1,260 @@
+{% extends 'base.html.twig' %}
+
+{% block importmap %}
+    {# do NOT call parent() #}
+    {{ importmap(['app', 'offering_search']) }}
+{% endblock %}
+
+{% block body %}
+<form action="{{ form_action }}" method="get">
+    <div class="catalog-search row row--sm-gutters">
+        <div class="col-md-6 form-group">
+            <label for="term" class="label">By Term</label>
+            <select class="form-control" id="by-term" name="term" required name="term" onchange="this.form['search'].value = ''; this.form.submit();">
+                <option value='ANY'>Any Term</option>
+{% for term in terms %}
+                <option value="{{ osidIdToString(term.id) }}" {{ selectedTermId and osidIdsEqual(selectedTermId, term.id)? 'selected="selected"' }}>{{ term.displayname }}</option>
+{% endfor %}
+            </select>
+        </div>
+        <div class="col-md-6 form-group">
+            <label for="department" class="label">By Subject/Department</label>
+            <select class="form-control" id="department" name="department">
+                <option value=''>Any Subject or Department</option>
+                <optgroup label='Subjects'>
+{% for topic in subjects %}
+                    <option value="{{ osidIdToString(topic.id) }}" {{ selectedDepartmentId and  osidIdsEqual(selectedDepartmentId, topic.id) ? 'selected="selected"' }}>{{ topic.displayname }}</option>
+{% endfor %}
+                </optgroup>
+                <optgroup label='Departments'>
+{% for topic in departments %}
+                    <option value="{{ osidIdToString(topic.id) }}" {{ selectedDepartmentId and  osidIdsEqual(selectedDepartmentId, topic.id) ? 'selected="selected"' }}>{{ topic.displayname }}</option>
+{% endfor %}
+                </optgroup>
+            </select>
+        </div>
+
+        <div class="col-md-12 form-group">
+            <label for="keywords" class="label">Keywords</label>
+            <input type="text" class="form-control" name="keywords" id="keywords" ria-describedby="instructions"  value="{{ keywords }}">
+            <p class="f1 font-semibold">By default results only have to match one of the supplied keywords. Use a plus (+) before a word to require it or a minus (-) to exclude it. Use an asterisk (*) as a wildcard.</p>
+        </div>
+
+        <fieldset class="col-md-12 form-group form-group--course-type">
+            <legend class="label">
+                <p class="f2">Type</p>
+                <p class="f1">(Leave all blank for no preference)</p>
+            </legend>
+            <div class="checkbox-group d-flex flex-wrap">
+              {% for type in genusTypes %}
+                <div class="checkbox checkbox--filter">
+                    <input type='checkbox' class="checkbox__input" name='type[]' value="{{ osidTypeToString(type) }}" id="input-type-{{ osidTypeToString(type) }}" {{ osidTypeInArray(type, selectedGenusTypes)? 'checked="checked"' }}>
+                    <label class="checkbox__label" for="input-type-{{ osidTypeToString(type) }}">{{ type.displayname }}</label>
+                </div>
+              {% endfor %}
+            </div>
+        </fieldset>
+
+        <div class="col-12 mb-5" role="tablist">
+        {% set id = '1' %}
+        <div class="my-2 catalog-search-item-tab js-catalog-search-item-{{id}}">
+          <a
+            href="#catalog-search-item-label-{{id}}"
+            class="catalog-search-item__link"
+            data-toggle-target=".js-catalog-search-item-{{id}}"
+            aria-expanded="false"
+            aria-controls="catalog-search-item-content-{{id}}"
+            aria-labelledby="catalog-search-item-label-{{id}}"
+            role="tab"
+          >
+            <h2 class="catalog-search-item__title">
+              <span id="catalog-search-item-label-{{id}}">Day of the week, Time, Campus</span>
+
+              <span class="catalog-search-item-close">&ndash;</span>
+              <span class="catalog-search-item-open">&#43;</span>
+            </h2>
+          </a>
+          <div role="tabpanel" id="catalog-search-item-content-{{id}}" class="row mx-0 catalog-search-item-content">
+
+              <fieldset class="col-md-6 form-group">
+                  <legend class="label">Day of the week</legend>
+                  <div class="checkbox-group d-flex flex-wrap">
+                      <div class="checkbox checkbox--filter">
+                          <input type='checkbox' class="checkbox__input" name='days[]' value='sunday' id='input-days-sunday' {{ 'sunday' in searchParams.days ? 'checked="checked"' }} />
+                          <label for='input-days-sunday' class="checkbox__label">Sunday</label>
+                      </div>
+                      <div class="checkbox checkbox--filter">
+                          <input type='checkbox' class="checkbox__input" name='days[]' value='monday' id='input-days-monday' {{ 'monday' in searchParams.days ? 'checked="checked"' }} />
+                          <label for='input-days-monday' class="checkbox__label">Monday</label>
+                      </div>
+                      <div class="checkbox checkbox--filter">
+                          <input type='checkbox' class="checkbox__input" name='days[]' value='tuesday' id='input-days-tuesday' {{ 'tuesday' in searchParams.days ? 'checked="checked"' }} />
+                          <label for='input-days-tuesday' class="checkbox__label">Tuesday</label>
+                      </div>
+                      <div class="checkbox checkbox--filter">
+                          <input type='checkbox' class="checkbox__input" name='days[]' value='wednesday' id='input-days-wednesday' {{ 'wednesday' in searchParams.days ? 'checked="checked"' }} />
+                          <label for='input-days-wednesday' class="checkbox__label">Wednesday</label>
+                      </div>
+                      <div class="checkbox checkbox--filter">
+                          <input type='checkbox' class="checkbox__input" name='days[]' value='thursday' id='input-days-thursday' {{ 'thursday' in searchParams.days ? 'checked="checked"' }} />
+                          <label for='input-days-thursday' class="checkbox__label">Thursday</label>
+                      </div>
+                      <div class="checkbox checkbox--filter">
+                          <input type='checkbox' class="checkbox__input" name='days[]' value='friday' id='input-days-friday' {{ 'friday' in searchParams.days ? 'checked="checked"' }} />
+                          <label for='input-days-friday' class="checkbox__label">Friday</label>
+                      </div>
+                      <div class="checkbox checkbox--filter">
+                          <input type='checkbox' class="checkbox__input" name='days[]' value='saturday' id='input-days-saturday' {{ 'saturday' in searchParams.days ? 'checked="checked"' }} />
+                          <label for='input-days-saturday' class="checkbox__label">Saturday</label>
+                      </div>
+                  </div>
+                  <p class="f1 font-semibold mb-3">Leave all unchecked if no preference.</p>
+
+                  <div class="form-check">
+                      <input type="radio" name="days_mode" class="form-check__input" id="course-catalog-days-inclusive" value="inclusive" {{ searchParams.days_mode is empty or searchParams.days_mode == 'inclusive'  ? 'checked="checked"' }}>
+                      <label for="course-catalog-days-inclusive" class="form-check__label">Inclusive search - meets on all of the selected days and possibly others</label>
+                  </div>
+                  <div class="form-check">
+                      <input type="radio" name="days_mode" class="form-check__input" id="course-catalog-days-exclusive" value="exclusive" {{ searchParams.days_mode == 'exclusive'  ? 'checked="checked"' }}>
+                      <label for="course-catalog-days-exclusive" class="form-check__label">Exclusive search - meets only on selected days, not on unselected days</label>
+                  </div>
+              </fieldset>
+
+              <div class="col-md-6 form-group">
+                  <label for="last_name" class="label">Time</label>
+                  <label class="d-inline-flex">From
+                      <select class="form-control ml-2" name="time_start" class="time_select">
+                          <option value='0' {{ timeStart is empty ? "selected='selected'" }}>Any Time</option>
+          {% for s in range(1800, 84600, 1800) %}
+                          <option value="{{ s }}" {{ timeStart == s ? "selected='selected'" }}>{{ secondsToTime(s) }}</option>
+          {% endfor %}
+                      </select>
+                  </label>
+                  <label class="d-inline-flex ml-3">To
+                      <select class="form-control ml-2" name="time_end" class="time_select">
+          {% for s in range(1800, 84600, 1800) %}
+                          <option value="{{ s }}" {{ timeEnd == s ? "selected='selected'" }}>{{ secondsToTime(s) }}</option>
+          {% endfor %}
+                          <option value='86400' {{ timeEnd == 86400 ? "selected='selected'" }}>Any Time</option>
+                      </select>
+                  </label>
+              </div>
+
+              {% if campuses is not empty %}
+                  <fieldset class="col-md-6 form-group">
+                      <legend class="label">
+                          <p class="f2">Campus</p>
+                          <p class="f1">(Leave all blank for no preference)</p>
+                      </legend>
+                      <div class="checkbox-group">
+                        {% for resource in campuses %}
+                          <div class="checkbox checkbox--filter">
+                              <input type="checkbox" name='campus[]' class="checkbox__input" id="input-campus-{{ osidIdToString(resource.id) }}" value="{{ osidIdToString(resource.id) }}" {{ osidIdInArray(resource.id, selectedCampusIds)? 'checked="checked"' }}>
+                              <label for="input-campus-{{ osidIdToString(resource.id) }}" id="input-campus-label-{{ osidIdToString(resource.id) }}" class="checkbox__label">{{ resource.displayname }}</label>
+                          </div>
+                        {% endfor %}
+                      </div>
+                  </fieldset>
+              {% endif %}
+            </div>
+        </div>
+
+        {% set id = '2' %}
+        <div class="my-2 catalog-search-item-tab js-catalog-search-item-{{id}}">
+          <a
+            href="#catalog-search-item-label-{{id}}"
+            class="catalog-search-item__link"
+            data-toggle-target=".js-catalog-search-item-{{id}}"
+            aria-expanded="false"
+            aria-controls="catalog-search-item-content-{{id}}"
+            aria-labelledby="catalog-search-item-label-{{id}}"
+            role="tab"
+          >
+            <h2 class="catalog-search-item__title">
+              <span id="catalog-search-item-label-{{id}}">Satisfies requirements, Course Modality, Level</span>
+
+              <span class="catalog-search-item-close">&ndash;</span>
+              <span class="catalog-search-item-open">&#43;</span>
+            </h2>
+          </a>
+          <div role="tabpanel" id="catalog-search-item-content-{{id}}" class="row mx-0 catalog-search-item-content">
+
+{% if requirements is not empty %}
+            <fieldset class="col-md-6 form-group">
+                <legend class="label">
+                    <p class="f2">Satisfies requirements</p>
+                    <p class="f1">(Leave all blank for no preference)</p>
+                </legend>
+                <div class="checkbox-group d-flex flex-wrap">
+{% for topic in requirements %}
+                    <div class="checkbox checkbox--filter">
+                        <input type='checkbox' class="checkbox__input" name='requirement[]' value="{{ osidIdToString(topic.id) }}" id="input-requirement-{{ osidIdToString(topic.id) }}" {{ osidIdInArray(topic.id, selectedRequirementIds)? 'checked="checked"' }}/>
+                        <label for="input-requirement-{{ osidIdToString(topic.id) }}" class="checkbox__label">{{ topic.displayname }}</label>
+                    </div>
+{% endfor %}
+                </div>
+            </fieldset>
+{% endif %}
+
+{% if instructionMethods is not empty %}
+            <fieldset class="col-md-6 form-group">
+                <legend class="label">
+                <p class="f2">Course Modality</p>
+                <p class="f1">(Leave all blank for no preference)</p>
+                </legend>
+                <div class="checkbox-group">
+                {% for topic in instructionMethods %}
+                    <div class="checkbox checkbox--filter">
+                        <input type="checkbox" class="checkbox__input" name='instruction_method[]' value="{{ osidIdToString(topic.id) }}" id="input-instruction_method-{{ osidIdToString(topic.id) }}" {{ osidIdInArray(topic.id, selectedInstructionMethodIds)? 'checked="checked"' }}>
+                        <label for="input-instruction_method-{{ osidIdToString(topic.id) }}" id="checkbox-mod-label-{{loop.index}}" class="checkbox__label">{{ topic.displayname }}</label>
+                    </div>
+                {% endfor %}
+                </div>
+            </fieldset>
+{% endif %}
+
+            <fieldset class="col-md-6 form-group">
+                <legend class="label">
+                    <p class="f2">Level</p>
+                    <p class="f1">(Leave all blank for no preference)</p>
+                </legend>
+                <div class="checkbox-group">
+                {% for topic in levels %}
+                    <div class="checkbox checkbox--filter">
+                        <input name='level[]' type="checkbox" class="checkbox__input" id="input-level-{{ osidIdToString(topic.id) }}" value="{{ osidIdToString(topic.id) }}" {{ osidIdInArray(topic.id, selectedLevelIds)? 'checked="checked"' }}>
+                        <label for="input-level-{{ osidIdToString(topic.id) }}" id="checkbox-level-label-{{ osidIdToString(topic.id) }}" class="checkbox__label">{{topic.displayname}}</label>
+                    </div>
+                {% endfor %}
+                </div>
+            </fieldset>
+
+    {% if blocks is not empty %}
+            <fieldset class="col-md-6 form-group">
+                <legend class="label">
+                <p class="f2">Additional Details</p>
+                <p class="f1">(Leave all blank for no preference)</p>
+                </legend>
+                <div class="checkbox-group">
+                {% for topic in blocks %}
+                    <div class="checkbox checkbox--filter">
+                        <input type="checkbox" class="checkbox__input" name='block[]' value="{{ osidIdToString(topic.id) }}" id="input-block-{{ osidIdToString(topic.id) }}" {{ osidIdInArray(topic.id, selectedBlockIds)? 'checked="checked"' }}>
+                        <label for="input-block-{{ osidIdToString(topic.id) }}" id="checkbox-mod-label-{{loop.index}}" class="checkbox__label">{{ topic.displayname }}</label>
+                    </div>
+                {% endfor %}
+                </div>
+            </fieldset>
+    {% endif %}
+        </div>
+    </div>
+
+        <div class="col-12 col-xl-4 form-group">
+            <input type="submit" name='search' value="Search" class="button button--primary d-block d-md-inline-block">
+        </div>
+
+        </div>
+    </div>
+</form>
+
+{{ include('offerings/partials/search-result-list.html.twig', {paginator: paginator, catalogId: catalogId}, with_context = false) }}
+
+{% endblock %}

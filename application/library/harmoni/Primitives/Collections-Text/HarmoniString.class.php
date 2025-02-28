@@ -14,7 +14,7 @@ class HarmoniString extends SObject
 {
     protected $_string;
 
-    public function __construct($string = '')
+    public function __construct(string $string = '')
     {
         $this->_string = (string) $string;
     }
@@ -35,17 +35,13 @@ class HarmoniString extends SObject
     /**
      * Instantiates a new String object with the passed value.
      *
-     * @param string $value
-     *
      * @return ref object
      *
      * @static
      */
-    public static function withValue($value)
+    public static function withValue(string $value)
     {
-        $string = new String($value);
-
-        return $string;
+        return new static($value);
     }
 
     /**
@@ -53,25 +49,19 @@ class HarmoniString extends SObject
      *
      * allowing 'fromString' for string values
      *
-     * @param string $aString
-     *
      * @return ref object
      *
      * @static
      */
-    public static function fromString($aString)
+    public static function fromString(string $aString)
     {
-        $string = new String($aString);
-
-        return $string;
+        return new static($aString);
     }
 
     /**
      * Answer whether the receiver and the argument are the same.
      * If = is redefined in any subclass, consider also redefining the
      * message hash.
-     *
-     * @param object $anObject
      *
      * @return bool
      *

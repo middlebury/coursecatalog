@@ -11,10 +11,11 @@ class banner_course_Course_Catalog_SessionTest extends phpkit_test_phpunit_Abstr
     /**
      * @var banner_course_CourseCatalog_Lookup_Session
      */
-    protected $session;
-
-    protected $mcugId;
-    protected $miisId;
+    private osid_id_Id $mcugId;
+    private osid_id_Id $miisId;
+    private osid_id_Id $unknownId;
+    private osid_course_CourseCatalogSession $session;
+    private osid_id_Id $chemId;
 
     /**
      * Answer the session object to test.
@@ -36,11 +37,11 @@ class banner_course_Course_Catalog_SessionTest extends phpkit_test_phpunit_Abstr
     {
         $this->session = self::$courseManager->getCourseCatalogSession();
 
-        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MCUG');
-        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog/MIIS');
+        $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MCUG');
+        $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MIIS');
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
 
-        $this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course/CHEM0104');
+        $this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-CHEM0104');
     }
 
     /**

@@ -1,0 +1,7 @@
+{% if selectedTermId %}
+{%- for term in terms %}
+{{ selectedTermId and osidIdsEqual(selectedTermId, term.id) ? term.displayname }}
+{%- endfor %}
+{% else %}
+All Terms
+{% endif %}

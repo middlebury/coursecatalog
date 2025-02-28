@@ -1,0 +1,26 @@
+{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+    <a href="{{ path("remove_bookmark", {courseId: courseId}) }}"
+        {{ not isBookmarked(courseId) ? " style='display: none;'" }}
+        title='click to forget'
+        class='bookmark-control bookmark-forget f2 float-right catalog-save-button'
+        data-course-id="{{ osidIdToString(courseId) }}"
+    >
+        <svg class="icon catalog-save-button--saved" focusable="false" aria-hidden="true">
+            <use xlink:href="#icon-save-close"></use>
+        </svg>
+        Saved
+    </a>
+    <a href="{{ path("add_bookmark", {courseId: courseId}) }}"
+        {{ isBookmarked(courseId) ? " style='display: none;'" }}
+        title='click to save'
+        class='bookmark-control bookmark-save f2 float-right catalog-save-button'
+        data-course-id="{{ osidIdToString(courseId) }}"
+    >
+        <svg class="icon" focusable="false" aria-hidden="true">
+            <use xlink:href="#icon-save-open"></use>
+        </svg>
+        Save
+    </a>
+{% else %}
+    <a href="{{ path("login", {returnTo: app.request.uri }) }}" class="f2 float-right">Log-in to save</a>
+{% endif %}

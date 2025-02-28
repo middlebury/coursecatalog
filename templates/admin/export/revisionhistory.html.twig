@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block importmap %}
+    {# do NOT call parent() #}
+    {{ importmap(['app', 'export_revision_history']) }}
+{% endblock %}
+
+{% set showLeftNav = false %}
+{% set bodyTypography = true %}
+{% block body %}
+<div class='admin-menu'><a href="{{ path('export_config_form', {exportId: config.id}) }}">&laquo; Back to catalog export configuration</a></div>
+
+<div class='config-menu'>
+    <button class="compare-revisions-button" data-url="{{ path('export_config_revision_diff', {exportId: config.id, rev1: '-rev1-', rev2: '-rev2-'}) }}">Compare selected revisions</button>
+</div>
+
+{% if revisions | length %}
+<input id='csrf-key-config-revert' type='hidden' name='csrf_key' value='{{ csrf_token('admin-export-config-revert') }}' />
+<table id='revisions-table'>
+    <tr>
+        <th>Compare</th>
+        <th>Date</th>
+        <th>Author</th>
+        <th>Note</th>
+        <th>JSON</th>
+        <th>Actions</th>
+    </tr>
+{% for revision in revisions %}
+    <tr>
+            <td>
+                <input id='radio{{ revision.id }}' type='radio'/>
+                <input class='revId' type='hidden' value='{{ revision.id }}' />
+            </td>
+            <td class='timestamp'>{{ revision.timestamp | date('Y-m-j H:i:s') }}</td>
+            <td>{{ revision.userdisplayname }}</td>
+            <td width='200'>{{ revision.note }}</td>
+            <td>
+                <a class='link-button' href='{{ path('export_config_revision_json', {exportId: config.id, revisionId: revision.id}) }}' target="_blank">View JSON</a>
+            </td>
+            <td>
+                <button class="revert-button" data-rev-id="{{ revision.id }}" data-url="{{ path('export_config_revert_to_revision', {exportId: config.id}) }}">Revert to this revision</button>
+            </td>
+    </tr>
+{% endfor %}
+</table>
+{% else %}
+    No revisions in history for config: {{ config.label }}
+{% endif %}
+{% endblock %}

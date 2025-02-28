@@ -1,0 +1,1 @@
+<catalog:{{ key }} id="{{ osidIdToString(term.id) }}" href="{{ url('view_term', {termId: term}) }}" start_date="{{ term.starttime | date('Y-m-d') }}" end_date="{{ term.endtime | date('Y-m-d') }}" weeks="{{ dateRangeToWeeks(term.starttime, term.endtime) }}">{{ term.displayname }}</catalog:{{ key }}>

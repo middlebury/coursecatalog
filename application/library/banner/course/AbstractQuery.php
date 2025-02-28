@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 6/11/09
  *
@@ -314,8 +315,8 @@ abstract class banner_course_AbstractQuery
      *  @param object osid_type_Type $searchType a <code> Type </code>
      *          indicating a string match type
      *
-     * @return boolean <code> true </code> if the given Type is supported,
-     *                        <code> false </code> otherwise
+     * @return bool <code> true </code> if the given Type is supported,
+     *                     <code> false </code> otherwise
      *
      * @throws osid_NullArgumentException null argument provided
      *
@@ -352,9 +353,9 @@ abstract class banner_course_AbstractQuery
      *
      *  @param object osid_type_Type $recordType a type
      *
-     * @return boolean <code> true </code> if an order record of the given
-     *                        record <code> Type </code> is available, <code> false </code>
-     *                        otherwise
+     * @return bool <code> true </code> if an order record of the given
+     *                     record <code> Type </code> is available, <code> false </code>
+     *                     otherwise
      *
      * @throws osid_NullArgumentException <code> recordType </code> is <code>
      *                                           null </code>
@@ -385,9 +386,9 @@ abstract class banner_course_AbstractQuery
      *
      *  @param object osid_type_Type $recordType a type
      *
-     * @return boolean <code> true </code> if the given record <code> Type
-     *                        </code> is implemented by this record, <code> false </code>
-     *                        otherwise
+     * @return bool <code> true </code> if the given record <code> Type
+     *                     </code> is implemented by this record, <code> false </code>
+     *                     otherwise
      *
      * @throws osid_NullArgumentException <code> recordType </code> is <code>
      *                                           null </code>

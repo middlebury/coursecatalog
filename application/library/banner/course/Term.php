@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 4/14/09
  *
@@ -12,6 +13,9 @@
  */
 class banner_course_Term extends phpkit_AbstractOsidObject implements osid_course_Term
 {
+    private $startDate;
+    private $endDate;
+
     /**
      * Constructor.
      *
@@ -74,8 +78,8 @@ class banner_course_Term extends phpkit_AbstractOsidObject implements osid_cours
     /**
      *  Tests if this term has an associated calendar.
      *
-     * @return boolean <code> true </code> if there is a calendar associated
-     *                        with this term, <code> false </code> otherwise
+     * @return bool <code> true </code> if there is a calendar associated
+     *                     with this term, <code> false </code> otherwise
      *
      *  @compliance mandatory This method must be implemented.
      */

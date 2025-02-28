@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright Copyright &copy; 2010, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
@@ -14,6 +15,12 @@
  */
 class apc_course_Course extends apc_Cachable implements osid_course_Course, middlebury_course_Course_TermsRecord, middlebury_course_Course_AlternatesRecord, middlebury_course_Course_LinkRecord
 {
+    private osid_course_Course $course;
+    private osid_course_CourseLookupSession $session;
+    private apc_course_Course_Lookup_Session $apcSession;
+    private osid_id_Id $id;
+    private array $localRecordTypes;
+
     /**
      * Constructor.
      *
@@ -35,11 +42,6 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
             new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:link'),
         ];
     }
-    private $course;
-    private $session;
-    private $apcSession;
-    private $id;
-    private $localRecordTypes;
 
     /**
      * Answer our internal course object.
@@ -511,9 +513,9 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
      *
      *  @param object osid_type_Type $recordType a type
      *
-     * @return boolean <code> true </code> if the given record <code> Type
-     *                        </code> is implemented by this record, <code> false </code>
-     *                        otherwise
+     * @return bool <code> true </code> if the given record <code> Type
+     *                     </code> is implemented by this record, <code> false </code>
+     *                     otherwise
      *
      * @throws osid_NullArgumentException <code> recordType </code> is <code>
      *                                           null </code>
@@ -600,8 +602,8 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
     /**
      * Tests if this course has any alternate courses.
      *
-     * @return boolean <code> true </code> if this course has any
-     *                        alternates, <code> false </code> otherwise
+     * @return bool <code> true </code> if this course has any
+     *                     alternates, <code> false </code> otherwise
      *
      * @compliance mandatory This method must be implemented.
      */

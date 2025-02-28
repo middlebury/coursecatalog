@@ -1,0 +1,118 @@
+<div class="catalog-result-card mt-5 pb-4">
+    <div class="d-inline-block col-6 px-0">
+        <p class="f3 font-semibold"><a class="link-underline" href="{{ path('view_offering', {offeringId: item.offering}) }}">{{ item.offering.displayname }}</a> {{ item.is_primary ? " * " }}</p>
+
+    {% if item.alternates is not empty %}
+        <p class="f2 font-semibold">Cross-Listed As:
+        {% for alternate in item.alternates %}
+            <a class="link-underline" href='{{ path('view_offering', {offeringId: alternate.offering}) }}'>{{ alternate.offering.displayname }}</a>
+            {{ alternate.is_primary ? ' * ' }}
+            {{ not loop.last ? ',' }}
+        {% endfor %}
+        </p>
+    {% endif %}
+    </div>
+
+    {{ include(
+        'schedules/bookmark_control.html.twig',
+        {
+            courseId: item.offering.course.id,
+        },
+        with_context = false
+    )}}
+
+    <h3 class="pt-2">{{ item.offering.title }}</h3>
+    <p class='f2 pb-2 pt-2 description'>{{ item.offering.description | raw }}</p>
+
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="f2">
+                <div class="pt-2 pb-2">
+                    <dt class="d-block font-semibold">Type:</dt>
+                    <dd>{{ item.offering.genustype.displayname }}</dd>
+                </div>
+            {% if item.instructionMethodTopics is not empty %}
+                <div class="pt-2 pb-2 border-top">
+                    <dt class="d-block font-semibold">Course Modality:</dt>
+                    <dd>
+                    {% for topic in item.instructionMethodTopics %}
+                        <a class="link-underline" href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: item.offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+                    {% endfor %}
+                    </dd>
+                </div>
+            {% endif %}
+                <div class="pt-2 pb-2 border-top">
+                    <dt class="d-block font-semibold">Term:</dt>
+                    <dd><a class="link-underline" href='{{ path('view_term', {termId: item.offering.term}) }}'>{{ item.offering.term.displayname }}</a></dd>
+                </div>
+                <div class="pt-2 pb-2 border-top">
+                    <dt class="d-block font-semibold">Department:</dt>
+                    <dd>
+                    {% for topic in item.departmentTopics %}
+                        <a class="link-underline" href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: item.offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+                    {% endfor %}
+                    </dd>
+                </div>
+                <div class="pt-2 pb-2 border-top">
+                    <dt class="d-block font-semibold">Requirements Fulfilled:</dt>
+                    <dd>
+                        {% for topic in item.requirementTopics %}
+                            <a class="link-underline" href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: item.offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+                        {% endfor %}
+                    </dd>
+                </div>
+            {% if item.blockTopics is not empty %}
+                <div class="pt-2 pb-2 border-top">
+                    <dt class="d-block font-semibold">Additional Details:</dt>
+                    <dd>
+                    {% for topic in item.blockTopics %}
+                        <a class="link-underline" href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: item.offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+                    {% endfor %}
+                    </dd>
+                </div>
+            {% endif %}
+            </dl>
+        </div>
+        <div class="col-md-6">
+            <dl class="f2">
+            {% if item.instructors is not null %}
+                <div class="pt-2 pb-2">
+                    <dt class="d-block font-semibold">Instructors:</dt>
+                    <dd>
+                    {% for instructor in item.instructors %}
+                        <a class="link-underline" href='{{ path('view_resource', {resourceId: instructor, termId: item.offering.term}) }}'>{{ instructor.displayname }}</a>{{ not loop.last ? ',' }}
+                    {% endfor %}
+                    </dd>
+                </div>
+            {% endif %}
+            {% if (item.location is defined and item.location) or (item.locationinfo is defined and item.locationinfo) %}
+                <div class="pt-2 pb-2 border-top">
+                    <dt class="d-block font-semibold">Location:</dt>
+                    <dd>
+                    {% if item.location %}
+                        <a class="link-underline" href='{{ path('view_resource', {resourceId: item.location, termId: item.offering.term}) }}'>{{ item.location.displayname }}</a>
+                        {% if item.location.description %}
+                            <span class='location_description'>({{ item.location.description }})</span>
+                        {% endif %}
+                    {% elseif item.offering.locationinfo %}
+                        {{ item.offering.locationinfo }}
+                    {% endif %}
+                    </dd>
+                </div>
+            {% endif %}
+            {% if item.offering.scheduleinfo %}
+                <div class="pt-2 pb-2 border-top">
+                    <dt class="d-block font-semibold">Schedule:</dt>
+                    <dd>{{ item.offering.scheduleinfo|nl2br|noWrapParentheticals|raw }}</span></dd>
+                </div>
+            {% endif %}
+            {% if item.availabilityLink is not empty %}
+                <div class="pt-2 pb-2 border-top">
+                    <dt class="d-block font-semibold">Availability:</dt>
+                    <dd><a class="link-underline" href='{{ item.availabilityLink.uri }}'>{{ item.availabilityLink.label }}</a></dd>
+                </div>
+            {% endif %}
+            </dl>
+        </div>
+    </div>
+</div>

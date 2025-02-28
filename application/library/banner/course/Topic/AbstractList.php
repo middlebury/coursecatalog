@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @since 4/13/09
  *
@@ -562,14 +563,17 @@ GROUP BY SCBCRSE_SUBJ_CODE)
      * Answer an object from a result row.
      *
      * @since 4/13/09
+     *
+     * @return osid_course_Topic
+     *                           An object for the row data
      */
     final protected function getObjectFromRow(array $row)
     {
         return new banner_course_Topic(
-            $this->session->getOsidIdFromString($row['type'].'/'.$row['id'], 'topic/'),
+            $this->session->getOsidIdFromString($row['type'].'-'.$row['id'], 'topic-'),
             trim($row['display_name']),
             '',
-            new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic/'.$row['type'])
+            new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:topic-'.$row['type'])
         );
     }
 
