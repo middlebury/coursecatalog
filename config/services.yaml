@@ -81,7 +81,7 @@ services:
         arguments:
             $container: '@service_container'
             $syncStrategy: '%env(SYNC_STRATEGY)%'
-            $errorMailTo: '%env(SYNC_ERROR_MAIL_TO)%'
+            $errorMailTo: '%env(csv:SYNC_ERROR_MAIL_TO)%'
             $errorMailFrom: '%env(SYNC_ERROR_MAIL_FROM)%'
     sync.strategy.oci:
         class: 'App\Service\CatalogSync\Syncer\OciSyncer'
