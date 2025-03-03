@@ -47,17 +47,16 @@ class OciSyncer extends AbstractSyncer implements Syncer
     public function exception_error_handler($errno, $errstr, $errfile = null, $errLine = null, $errcontext = null)
     {
         if (!is_null($errfile)) {
-            $errstr .= " ON ".$errfile;
+            $errstr .= ' ON '.$errfile;
         }
         if (!is_null($errLine)) {
-            $errstr .= " LINE ".$errLine;
+            $errstr .= ' LINE '.$errLine;
         }
         if (is_null($errcontext)) {
             throw new \Exception($errstr, $errno);
         } else {
             throw new \Exception($errstr, $errno, $errcontext);
         }
-
     }
 
     /**
