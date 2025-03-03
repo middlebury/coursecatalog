@@ -754,7 +754,7 @@ abstract class AbstractSyncer
             foreach ($this->allowedBlckCodes as $code) {
                 $codes[] = "'".$code."'";
             }
-            $where = 'WHERE SSRBLCK_BLCK_CODE IN ('.implode(', ', $codes).')';
+            $where = 'SSRBLCK_BLCK_CODE IN ('.implode(', ', $codes).')';
         } else {
             $where = '';
         }
