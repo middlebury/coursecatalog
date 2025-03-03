@@ -12,6 +12,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 final class CacheControlListener
 {
+    public const NEVER_CACHE_HEADER = 'X-App-Never-Cache-Response';
+
     public function __construct(
         private int $maxAge = 300,
         private int $sharedMaxAge = 604800,
@@ -27,6 +29,11 @@ final class CacheControlListener
             // data before marking the response as private.
             if ($event->getRequest()->getSession()->isStarted()) {
                 $event->getResponse()->setPrivate();
+            } elseif ($event->getResponse()->headers->get(self::NEVER_CACHE_HEADER)) {
+                // Ensure that a response isn't public if our custom header has been
+                // added to it.
+                $event->getResponse()->setPrivate();
+                $event->getResponse()->headers->remove(self::NEVER_CACHE_HEADER);
             } else {
                 $response = $event->getResponse();
                 $response->setPublic();
