@@ -92,12 +92,14 @@ class OciSelectStatement implements SelectStatement
 
     /**
      * Convert an Oracle date to a MySQL date.
-     *
-     * @param string $value
      */
-    protected function toMySQLDate($value): string
+    protected function toMySQLDate(?string $value): ?string
     {
-        return date('Y-m-d', strtotime($value));
+        if (is_null($value)) {
+            return null;
+        } else {
+            return date('Y-m-d', strtotime($value));
+        }
     }
 
     /**
