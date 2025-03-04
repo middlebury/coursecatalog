@@ -8,8 +8,8 @@ use PHPUnit\Framework\TestCase;
  */
 class banner_course_CourseDescriptionConversionTest extends TestCase
 {
-
-    public function testSampleDescription() {
+    public function testSampleDescription()
+    {
         // First Line.
         $this->assertEquals(
             'This is some text. Shakespeare wrote <em>The Merchant of Venice</em> as well as <em>Macbeth</em>. Words can have slashes in them such as AC/DC, but this does not indicate italics.',
@@ -37,55 +37,57 @@ Spaces around slashes such as this / don\'t cause italics either. Quotes may be 
         );
     }
 
-    public function testHtmlStartOfDescription() {
+    public function testHtmlStartOfDescription()
+    {
         // Bold.
         $this->assertEquals(
-            "<strong>Hello World.</strong> Foo.",
+            '<strong>Hello World.</strong> Foo.',
             banner_course_Course::convertDescription(
-                "<strong>Hello World.</strong> Foo."
+                '<strong>Hello World.</strong> Foo.'
             )
         );
         $this->assertEquals(
-            "<strong>Hello World.</strong> Foo.",
+            '<strong>Hello World.</strong> Foo.',
             banner_course_Course::convertDescription(
-                "<b>Hello World.</b> Foo."
+                '<b>Hello World.</b> Foo.'
             )
         );
         $this->assertEquals(
-            "<strong>Hello World.</strong> Foo.",
+            '<strong>Hello World.</strong> Foo.',
             banner_course_Course::convertDescription(
-                "<strong>Hello World.</strong> Foo."
+                '<strong>Hello World.</strong> Foo.'
             )
         );
         // Italic.
         $this->assertEquals(
-            "<strong>Hello World.</strong> Foo.",
+            '<strong>Hello World.</strong> Foo.',
             banner_course_Course::convertDescription(
-                "<strong>Hello World.</strong> Foo."
+                '<strong>Hello World.</strong> Foo.'
             )
         );
         $this->assertEquals(
-            "<strong>Hello World.</strong> Foo.",
+            '<strong>Hello World.</strong> Foo.',
             banner_course_Course::convertDescription(
-                "<b>Hello World.</b> Foo."
+                '<b>Hello World.</b> Foo.'
             )
         );
         $this->assertEquals(
-            "<strong>Hello World.</strong> Foo.",
+            '<strong>Hello World.</strong> Foo.',
             banner_course_Course::convertDescription(
-                "<strong>Hello World.</strong> Foo."
+                '<strong>Hello World.</strong> Foo.'
             )
         );
         // Paragraph.
         $this->assertEquals(
-            "<p>Hello World.</p> Foo.",
+            '<p>Hello World.</p> Foo.',
             banner_course_Course::convertDescription(
-                "<p>Hello World.</p> Foo."
+                '<p>Hello World.</p> Foo.'
             )
         );
     }
 
-    public function testMoreHtml() {
+    public function testMoreHtml()
+    {
         $this->assertEquals(
             '<strong>Artificial Intelligence and International Security</strong><br />
 Welcome to a course that delves into the heart of 21st-century power dynamics. We\'ll explore how the digital revolution, spearheaded by AI and tech giants, is reshaping international security and social norms. From presidents being deplatformed to elections influenced by foreign startups, we\'ll analyze real-world cases that highlight the shifting balance between governments and the private sector. The course encourages critical thinking about the ethical implications of this new world order: How do we support equity and protect democratic values in an era of unprecedented technological power? Through lively debates and hands-on projects, students will develop the skills to navigate and influence the complex intersection of technology, politics, and social justice in a rapidly evolving international system. Special attention will be given to career opportunities in this critical issue area.',
