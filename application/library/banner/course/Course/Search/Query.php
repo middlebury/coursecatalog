@@ -759,7 +759,8 @@ class banner_course_Course_Search_Query extends banner_course_AbstractQuery impl
     {
         $this->addClause('instructor_id', 'WEB_ID = ?', [$this->session->getDatabaseIdString($instructorId, 'resource-person-')], $match);
         $this->addTableJoin('LEFT JOIN SSBSECT ON (SCBCRSE_SUBJ_CODE = SSBSECT_SUBJ_CODE AND SCBCRSE_CRSE_NUMB = SSBSECT_CRSE_NUMB)');
-        $this->addTableJoin('LEFT JOIN SYVINST ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)');
+        $this->addTableJoin('LEFT JOIN SIRASGN ON (SIRASGN_TERM_CODE = SSBSECT_TERM_CODE AND SIRASGN_CRN = SSBSECT_CRN)');
+        $this->addTableJoin('LEFT JOIN instructors i ON (SIRASGN_PIDM = i.PIDM)');
 
         $this->addClause('active_sections', 'SSBSECT_SSTS_CODE = ? AND (course_catalog.prnt_ind_to_exclude IS NULL OR SSBSECT_PRNT_IND != course_catalog.prnt_ind_to_exclude)', ['A'], true);
         $this->addTableJoin('INNER JOIN course_catalog_college ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE');

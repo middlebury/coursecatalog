@@ -241,13 +241,13 @@ class banner_resource_Resource_Lookup_CombinedSession extends banner_AbstractSes
         if (!isset(self::$getPersonResource_stmt)) {
             $query =
 'SELECT
-	WEB_ID,
-	SYVINST_LAST_NAME,
-	SYVINST_FIRST_NAME
+    WEB_ID,
+    LAST_NAME,
+    FIRST_NAME
 FROM
-	SYVINST
+    instructors
 WHERE
-	WEB_ID = :webid
+    WEB_ID = :webid
 ';
             self::$getPersonResource_stmt = $this->manager->getDB()->prepare($query);
         }
@@ -265,8 +265,8 @@ WHERE
 
         return new banner_resource_Resource_Person(
             $this->getOsidIdFromString($row['WEB_ID'], 'resource-person-'),
-            $row['SYVINST_LAST_NAME'],
-            $row['SYVINST_FIRST_NAME']
+            $row['LAST_NAME'],
+            $row['FIRST_NAME']
         );
     }
 
@@ -284,11 +284,11 @@ WHERE
         if (!isset(self::$getPersonResources_stmt)) {
             $query =
 'SELECT
-	WEB_ID,
-	SYVINST_LAST_NAME,
-	SYVINST_FIRST_NAME
+    WEB_ID,
+    LAST_NAME,
+    FIRST_NAME
 FROM
-	SYVINST
+    instructors
 GROUP BY WEB_ID
 ';
             self::$getPersonResources_stmt = $this->manager->getDB()->prepare($query);
@@ -300,8 +300,8 @@ GROUP BY WEB_ID
         while ($row = self::$getPersonResources_stmt->fetch(PDO::FETCH_ASSOC)) {
             $resources[] = new banner_resource_Resource_Person(
                 $this->getOsidIdFromString($row['WEB_ID'], 'resource-person-'),
-                $row['SYVINST_LAST_NAME'],
-                $row['SYVINST_FIRST_NAME']
+                $row['LAST_NAME'],
+                $row['FIRST_NAME']
             );
         }
         self::$getPersonResources_stmt->closeCursor();

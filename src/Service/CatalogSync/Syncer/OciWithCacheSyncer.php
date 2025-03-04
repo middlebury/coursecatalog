@@ -167,7 +167,7 @@ class OciWithCacheSyncer extends OciSyncer implements Syncer
             'STVSUBJ',
             'STVTERM',
             'STVTRMT',
-            'SYVINST',
+            'instructors',
         ];
     }
 }

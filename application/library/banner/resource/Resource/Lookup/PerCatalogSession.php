@@ -285,13 +285,14 @@ class banner_resource_Resource_Lookup_PerCatalogSession extends banner_AbstractS
         if (!isset(self::$getPersonResource_stmt)) {
             $query =
 'SELECT
-	WEB_ID,
-	SYVINST_LAST_NAME,
-	SYVINST_FIRST_NAME
+    WEB_ID,
+    LAST_NAME,
+    FIRST_NAME
 FROM
-	SYVINST
-	INNER JOIN ssbsect_scbcrse ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)
-	INNER JOIN course_catalog_college ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
+    instructors i
+    INNER JOIN SIRASGN ON (i.PIDM = SIRASGN_PIDM)
+    INNER JOIN ssbsect_scbcrse ON (SIRASGN_TERM_CODE = SSBSECT_TERM_CODE AND SIRASGN_CRN = SSBSECT_CRN)
+    INNER JOIN course_catalog_college ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
     INNER JOIN course_catalog ON course_catalog_college.catalog_id = course_catalog.catalog_id
 WHERE
 	WEB_ID = :webid
@@ -325,8 +326,8 @@ WHERE
 
         return new banner_resource_Resource_Person(
             $this->getOsidIdFromString($row['WEB_ID'], 'resource-person-'),
-            $row['SYVINST_LAST_NAME'],
-            $row['SYVINST_FIRST_NAME']
+            $row['LAST_NAME'],
+            $row['FIRST_NAME']
         );
     }
 
@@ -344,14 +345,15 @@ WHERE
         if (!isset(self::$getPersonResources_stmt)) {
             $query =
 'SELECT
-	WEB_ID,
-	SYVINST_LAST_NAME,
-	SYVINST_FIRST_NAME
+    WEB_ID,
+    LAST_NAME,
+    FIRST_NAME
 FROM
-	ssbsect_scbcrse
-	INNER JOIN SYVINST ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)
-	INNER JOIN course_catalog_college ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
-	INNER JOIN course_catalog ON course_catalog_college.catalog_id = course_catalog.catalog_id
+    ssbsect_scbcrse
+    INNER JOIN SIRASGN ON (SIRASGN_TERM_CODE = SSBSECT_TERM_CODE AND SIRASGN_CRN = SSBSECT_CRN)
+    INNER JOIN instructors i ON (SIRASGN_PIDM = i.PIDM)
+    INNER JOIN course_catalog_college ON course_catalog_college.coll_code = SCBCRSE_COLL_CODE
+    INNER JOIN course_catalog ON course_catalog_college.catalog_id = course_catalog.catalog_id
 WHERE
 
 	SCBCRSE_COLL_CODE IN (
@@ -375,8 +377,8 @@ GROUP BY WEB_ID
         while ($row = self::$getPersonResources_stmt->fetch(PDO::FETCH_ASSOC)) {
             $resources[] = new banner_resource_Resource_Person(
                 $this->getOsidIdFromString($row['WEB_ID'], 'resource-person-'),
-                $row['SYVINST_LAST_NAME'],
-                $row['SYVINST_FIRST_NAME']
+                $row['LAST_NAME'],
+                $row['FIRST_NAME']
             );
         }
         self::$getPersonResources_stmt->closeCursor();

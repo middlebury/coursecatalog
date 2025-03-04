@@ -439,8 +439,9 @@ class banner_course_CourseOffering_Search_Order extends banner_course_AbstractSe
      */
     public function orderByInstructor()
     {
-        $this->addOrderColumns(['SYVINST_LAST_NAME', 'SYVINST_FIRST_NAME']);
-        $this->addTableJoin('LEFT JOIN SYVINST ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)');
+        $this->addOrderColumns(['LAST_NAME', 'FIRST_NAME']);
+        $this->addTableJoin('LEFT JOIN SIRASGN ON (SIRASGN_TERM_CODE = SSBSECT_TERM_CODE AND SIRASGN_CRN = SSBSECT_CRN)');
+        $this->addTableJoin('LEFT JOIN instructors i ON (SIRASGN_PIDM = i.PIDM)');
     }
 
     /*********************************************************

@@ -925,18 +925,16 @@ CREATE TABLE IF NOT EXISTS `STVTRMT` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `SYVINST`
+-- Table structure for table `instructors`
 --
 
-CREATE TABLE IF NOT EXISTS `SYVINST` (
-  `SYVINST_TERM_CODE` varchar(6) NOT NULL default '' COMMENT 'Term of the faculty member assignment',
-  `SYVINST_CRN` varchar(5) NOT NULL default '' COMMENT 'The course reference of the course that the instructor was assigned to',
-  `SYVINST_PIDM` decimal(8,0) NOT NULL default '0' COMMENT 'The Pidm of the faculty member',
-  `SYVINST_LAST_NAME` varchar(240) NOT NULL default '' COMMENT 'This field defines the last name of person.',
-  `SYVINST_FIRST_NAME` varchar(4000) default NULL COMMENT 'This field identifies the first name of person.',
+CREATE TABLE IF NOT EXISTS `instructors` (
+  `PIDM` decimal(8,0) NOT NULL default '0' COMMENT 'The Pidm of the faculty member',
   `WEB_ID` varchar(100) NULL COMMENT 'This field is used in web applications to identify individuals rather than using their PIDMs.',
-  PRIMARY KEY  (`SYVINST_TERM_CODE`,`SYVINST_CRN`,`SYVINST_PIDM`),
-  KEY `SYVINST_PIDM` (`SYVINST_PIDM`)
+  `FIRST_NAME` varchar(4000) default NULL COMMENT 'This field identifies the first name of person.',
+  `LAST_NAME` varchar(240) NOT NULL default '' COMMENT 'This field defines the last name of person.',
+  PRIMARY KEY  (`PIDM`),
+  KEY `WEB_ID` (`WEB_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --

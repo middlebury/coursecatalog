@@ -308,8 +308,8 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
     {
         $this->object->orderByInstructor();
         $this->object->descend();
-        $this->assertEquals('ORDER BY SYVINST_LAST_NAME DESC, SYVINST_FIRST_NAME DESC', $this->object->getOrderByClause());
-        $this->assertCount(1, $this->object->getAdditionalTableJoins());
+        $this->assertEquals('ORDER BY LAST_NAME DESC, FIRST_NAME DESC', $this->object->getOrderByClause());
+        $this->assertCount(2, $this->object->getAdditionalTableJoins());
     }
 
     /*********************************************************

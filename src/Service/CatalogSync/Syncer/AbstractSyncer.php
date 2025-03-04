@@ -1167,20 +1167,26 @@ abstract class AbstractSyncer
         $insert->insertAll($select);
         $this->output->write("...\tUpdated STVTRMT\n");
 
-        // SATURN_MIDD.SYVINST
-        $this->output->write("Updating SYVINST\t");
-        $target_db->truncate('SYVINST');
-        $insert = $target_db->prepareInsert('SYVINST', [
-            'SYVINST_TERM_CODE',
-            'SYVINST_CRN',
-            'SYVINST_PIDM',
-            'SYVINST_LAST_NAME',
-            'SYVINST_FIRST_NAME',
+        // SATURN_MIDD.instructors
+        $this->output->write("Updating instructors\t");
+        $target_db->truncate('instructors');
+        $insert = $target_db->prepareInsert('instructors', [
+            'PIDM',
             'WEB_ID',
+            'FIRST_NAME',
+            'LAST_NAME',
         ]);
-        $select = $source_db->query('SATURN_MIDD.SYVINST');
-        $select->convertBin2Hex('WEB_ID');
-        $insert->insertAll($select, [$this, 'preprocessSyvinstRow']);
+        $select = $source_db->query(
+            'IDM_MIDD.person',
+            [
+                'PIDM',
+                'MIDDLEBURY_COLLEGE_UID AS WEB_ID',
+                'FIRST_NAME',
+                'LAST_NAME',
+            ],
+            'PIDM IN (SELECT DISTINCT(SIRASGN_PIDM) FROM SIRASGN)'
+        );
+        $insert->insertAll($select, [$this, 'preprocessInstructorRow']);
         $this->output->write("...\tUpdated SYVINST\n");
 
         $target_db->commit();
@@ -1190,19 +1196,19 @@ abstract class AbstractSyncer
      * Validate that user rows contain valid data and fix to avoid failure on
      * user accounts.
      */
-    public function preprocessSyvinstRow(object $row): void
+    public function preprocessInstructorRow(object $row): void
     {
         $missing = [];
-        if (empty($row->SYVINST_FIRST_NAME)) {
-            $missing[] = 'SYVINST_FIRST_NAME';
-            $row->SYVINST_FIRST_NAME = 'Unknown';
+        if (empty($row->FIRST_NAME)) {
+            $missing[] = 'FIRST_NAME';
+            $row->FIRST_NAME = 'Unknown';
         }
-        if (empty($row->SYVINST_LAST_NAME)) {
-            $missing[] = 'SYVINST_LAST_NAME';
-            $row->SYVINST_LAST_NAME = 'Unknown';
+        if (empty($row->LAST_NAME)) {
+            $missing[] = 'LAST_NAME';
+            $row->LAST_NAME = 'Unknown';
         }
         if (count($missing)) {
-            $message = 'Encountered bad user data in SYVINST. SYVINST_PIDM='.$row->SYVINST_PIDM.' has empty values for '.implode(', ', $missing).'. Using "Unknown" as a placeholder, but upstream data should be fixed.';
+            $message = 'Encountered bad user data in IDM_MIDD.person. PIDM='.$row->PIDM.' has empty values for '.implode(', ', $missing).'. Using "Unknown" as a placeholder, but upstream data should be fixed.';
             $this->nonFatalErrors[] = $message;
             echo $message."\n";
         }

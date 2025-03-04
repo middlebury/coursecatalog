@@ -1279,7 +1279,8 @@ AND SCBCRSE_COLL_CODE IN (
     public function matchInstructorId(osid_id_Id $instructorId, $match)
     {
         $this->addClause('instructor_id', 'WEB_ID = ?', [$this->session->getDatabaseIdString($instructorId, 'resource-person-')], $match);
-        $this->addTableJoin('LEFT JOIN SYVINST ON (SYVINST_TERM_CODE = SSBSECT_TERM_CODE AND SYVINST_CRN = SSBSECT_CRN)');
+        $this->addTableJoin('LEFT JOIN SIRASGN ON (SIRASGN_TERM_CODE = SSBSECT_TERM_CODE AND SIRASGN_CRN = SSBSECT_CRN)');
+        $this->addTableJoin('LEFT JOIN instructors i ON (SIRASGN_PIDM = i.PIDM)');
     }
 
     /**

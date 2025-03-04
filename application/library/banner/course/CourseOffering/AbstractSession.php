@@ -48,8 +48,8 @@ abstract class banner_course_CourseOffering_AbstractSession extends banner_cours
         foreach ($this->getInstructorDataForOffering($offeringId) as $row) {
             $people[] = new banner_resource_Resource_Person(
                 $this->getOsidIdFromString($row['WEB_ID'], 'resource-person-'),
-                $row['SYVINST_LAST_NAME'],
-                $row['SYVINST_FIRST_NAME']
+                $row['LAST_NAME'],
+                $row['FIRST_NAME']
             );
         }
 
@@ -89,19 +89,17 @@ abstract class banner_course_CourseOffering_AbstractSession extends banner_cours
             $query = '
 SELECT
 	WEB_ID,
-	SYVINST_LAST_NAME,
-	SYVINST_FIRST_NAME,
+	LAST_NAME,
+	FIRST_NAME,
 	SIRASGN_PRIMARY_IND
 FROM
-	SYVINST
-	INNER JOIN SIRASGN ON SIRASGN_PIDM = SYVINST_PIDM
+	SIRASGN
+    INNER JOIN instructors i ON SIRASGN_PIDM = i.PIDM
 WHERE
-	SYVINST_TERM_CODE = :term_code
-	AND SIRASGN_TERM_CODE = :term_code
-	AND SYVINST_CRN = :crn
+	SIRASGN_TERM_CODE = :term_code
 	AND SIRASGN_CRN = :crn
 ORDER BY
-	SIRASGN_PRIMARY_IND DESC, SYVINST_LAST_NAME, SYVINST_FIRST_NAME
+	SIRASGN_PRIMARY_IND DESC, LAST_NAME, FIRST_NAME
 ';
             self::$instructorsForOffering_stmt = $this->manager->getDB()->prepare($query);
         }
