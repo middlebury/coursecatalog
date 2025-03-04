@@ -39,7 +39,7 @@ class BuildIndiciesCommand extends Command
             ini_set('memory_limit', $input->getOption('memory-limit'));
         }
 
-        $courseManager = $this - osidRuntime->getCourseManager();
+        $courseManager = $this->osidRuntime->getCourseManager();
 
         if (!$courseManager->supportsCourseOfferingSearch()) {
             $io->error('CourseOfferingSearch is unsupported. Not building indices.');
