@@ -136,11 +136,22 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
              * Normal state
              *********************************************************/
 
-            // Enter from unknown into normal state if the first character is not a slash or bold.
-            self::$fsmParser->FSM('/[^\/\*]/s', 'echo $STRING;', 'CDATA', 'UNKNOWN');
+            // Enter from unknown into normal state if the first character is
+            // not a slash (italic) or asterisk (bold).
+            self::$fsmParser->FSM(
+                '/[^\/\*]/s',
+                'echo $STRING;',
+                'CDATA',
+                'UNKNOWN'
+            );
 
             // In normal state, catch all other data
-            self::$fsmParser->FSM('/./s', 'echo $STRING;', 'CDATA', 'CDATA');
+            self::$fsmParser->FSM(
+                '/./s',
+                'echo $STRING;',
+                'CDATA',
+                'CDATA'
+            );
 
             /*********************************************************
              * HTLM tag handling.
@@ -149,26 +160,26 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
             // Enter into Italic with <em> or <i> tags.
             self::$fsmParser->FSM(
                 '/<em>|<i>/i',
-                'preg_match("/<em>|<i>/i", $STRING, $m); echo "<em>".$m[1];',
+                'preg_match("/<em>|<i>/i", $STRING, $m); echo "<em>";',
                 'ITALIC');
 
             // close italic with </em> or </i> tags.
             self::$fsmParser->FSM(
                 '/<\/em>|<\/i>/i',
-                'preg_match("/<\/em>|<\/i>/i", $STRING, $m); echo "</em>".$m[1];',
+                'preg_match("/<\/em>|<\/i>/i", $STRING, $m); echo "</em>";',
                 'CDATA',
                 'ITALIC');
 
             // Enter into Bold with <strong> or <b> tags.
             self::$fsmParser->FSM(
                 '/<strong>|<b>/i',
-                'preg_match("/<strong>|<b>/i", $STRING, $m); echo "<strong>".$m[1];',
+                'preg_match("/<strong>|<b>/i", $STRING, $m); echo "<strong>";',
                 'BOLD');
 
-            // close italic with </strong> or </b> tags.
+            // close bold with </strong> or </b> tags.
             self::$fsmParser->FSM(
                 '/<\/strong>|<\/b>/i',
-                'preg_match("/<\/strong>|<\/b>/i", $STRING, $m); echo "</strong>".$m[1];',
+                'preg_match("/<\/strong>|<\/b>/i", $STRING, $m); echo "</strong>";',
                 'CDATA',
                 'BOLD');
 

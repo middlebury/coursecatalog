@@ -81,12 +81,16 @@ class FSMParser {
    }
    if(is_null($tok_key)){$RET=FSMSTOP_UNHANDLED;break;}
    $STATE=$this->STATE;
-   if(is_array($result=eval($this->FSM[$tok_key]["do"]))){
-    $this->STATE=$result["NEWSTATE"]?$result["NEWSTATE"]:($this->FSM[$tok_key]["ds"]?$this->FSM[$tok_key]["ds"]:$this->STATE);
-    if($result["STOP"]){$RET=FSMSTOP_STOP;break;}
-   }else{
-    $this->STATE=$result?$result:($this->FSM[$tok_key]["ds"]?$this->FSM[$tok_key]["ds"]:$this->STATE);
-   }
+    try {
+      if(is_array($result=eval($this->FSM[$tok_key]["do"]))){
+        $this->STATE=$result["NEWSTATE"]?$result["NEWSTATE"]:($this->FSM[$tok_key]["ds"]?$this->FSM[$tok_key]["ds"]:$this->STATE);
+        if($result["STOP"]){$RET=FSMSTOP_STOP;break;}
+      }else{
+        $this->STATE=$result?$result:($this->FSM[$tok_key]["ds"]?$this->FSM[$tok_key]["ds"]:$this->STATE);
+      }
+    } catch (\Exception $e) {
+      throw new Exception("Failed evaluating `".$this->FSM[$tok_key]["do"]."` on STRING: `".$STRING."` of TEXT: `".$text."`", $e->getCode(), $e);
+    }
    $PTR+=$tok_off+$tok_len;
    unset($tok_off);
    unset($tok_len);
