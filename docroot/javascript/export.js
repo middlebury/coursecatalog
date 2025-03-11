@@ -49,7 +49,7 @@ function generateInputTag(type, value, callback) {
 
       // If we've already loaded the data, just use it.
       if (courselist_data[$('#catalogId').val()]) {
-        getCourseListInputForData(courselist_data[$('#catalogId').val()], value, callback);
+        setCourseListInputForData(courselist_data[$('#catalogId').val()], value, callback);
       } else {
         // If we don't have data yet, add our element to the queue to be rendered.
         courselists_to_populate.push({
