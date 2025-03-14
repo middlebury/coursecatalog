@@ -381,7 +381,7 @@ class TopicsTest extends WebTestCase
     public function testListSubjectsTxtAll(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listsubjectstxt');
+        $client->request('GET', '/topics/listtxt/subjects');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -392,7 +392,7 @@ class TopicsTest extends WebTestCase
     public function testListSubjectsTxtByCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listsubjectstxt/catalog-MCUG');
+        $client->request('GET', '/topics/listtxt/subjects/catalog-MCUG');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -403,7 +403,7 @@ class TopicsTest extends WebTestCase
     public function testListDepartmentsTxtAll(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listdepartmentstxt');
+        $client->request('GET', '/topics/listtxt/departments');
         $response = $client->getResponse();
 
         // print $response->getContent();
@@ -416,7 +416,7 @@ class TopicsTest extends WebTestCase
     public function testListDepartmentsTxtByCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listdepartmentstxt/catalog-MCUG');
+        $client->request('GET', '/topics/listtxt/departments/catalog-MCUG');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -427,7 +427,7 @@ class TopicsTest extends WebTestCase
     public function testListDepartmentsTxtByOtherCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listdepartmentstxt/catalog-BLSE');
+        $client->request('GET', '/topics/listtxt/departments/catalog-BLSE');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -438,7 +438,7 @@ class TopicsTest extends WebTestCase
     public function testListRequirementsTxtAll(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listrequirementstxt');
+        $client->request('GET', '/topics/listtxt/requirements');
         $response = $client->getResponse();
 
         // print $response->getContent();
@@ -450,7 +450,7 @@ class TopicsTest extends WebTestCase
     public function testListRequirementsTxtByCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listrequirementstxt/catalog-MCUG');
+        $client->request('GET', '/topics/listtxt/requirements/catalog-MCUG');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -460,7 +460,7 @@ class TopicsTest extends WebTestCase
     public function testListRequirementsTxtByOtherCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listrequirementstxt/catalog-BLSE');
+        $client->request('GET', '/topics/listtxt/requirements/catalog-BLSE');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -470,7 +470,7 @@ class TopicsTest extends WebTestCase
     public function testListLevelsTxtAll(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listlevelstxt');
+        $client->request('GET', '/topics/listtxt/levels');
         $response = $client->getResponse();
 
         // print $response->getContent();
@@ -483,7 +483,7 @@ class TopicsTest extends WebTestCase
     public function testListLevelsTxtByCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listlevelstxt/catalog-MCUG');
+        $client->request('GET', '/topics/listtxt/levels/catalog-MCUG');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -494,7 +494,7 @@ class TopicsTest extends WebTestCase
     public function testListLevelsTxtByOtherCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listlevelstxt/catalog-BLSE');
+        $client->request('GET', '/topics/listtxt/levels/catalog-BLSE');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -505,7 +505,7 @@ class TopicsTest extends WebTestCase
     public function testListBlocksTxtAll(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listblockstxt');
+        $client->request('GET', '/topics/listtxt/blocks');
         $response = $client->getResponse();
 
         // print $response->getContent();
@@ -517,7 +517,7 @@ class TopicsTest extends WebTestCase
     public function testListBlocksTxtByCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listblockstxt/catalog-MCUG');
+        $client->request('GET', '/topics/listtxt/blocks/catalog-MCUG');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -527,7 +527,7 @@ class TopicsTest extends WebTestCase
     public function testListBlocksTxtByOtherCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listblockstxt/catalog-BLSE');
+        $client->request('GET', '/topics/listtxt/blocks/catalog-BLSE');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -537,7 +537,7 @@ class TopicsTest extends WebTestCase
     public function testListInstructionMethodsTxtAll(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listinstructionmethodstxt');
+        $client->request('GET', '/topics/listtxt/instructionmethods');
         $response = $client->getResponse();
 
         // print $response->getContent();
@@ -549,7 +549,7 @@ class TopicsTest extends WebTestCase
     public function testListInstructionMethodsTxtByCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listinstructionmethodstxt/catalog-MCLS');
+        $client->request('GET', '/topics/listtxt/instructionmethods/catalog-MCLS');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();
@@ -559,7 +559,7 @@ class TopicsTest extends WebTestCase
     public function testListInstructionMethodsTxtByOtherCatalog(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/topics/listinstructionmethodstxt/catalog-MCUG');
+        $client->request('GET', '/topics/listtxt/instructionmethods/catalog-MCUG');
         $response = $client->getResponse();
 
         $this->assertResponseIsSuccessful();

@@ -195,7 +195,7 @@ class Topics extends AbstractController
     /**
      * List all subject topics as a text file with each line being Id|DisplayName.
      */
-    #[Route('/topics/listsubjectstxt/{catalogId}', name: 'list_subjects_txt')]
+    #[Route('/topics/listtxt/subjects/{catalogId}', name: 'list_subjects_txt')]
     public function listsubjectstxtAction(?\osid_id_Id $catalogId = null)
     {
         return $this->renderTextList(
@@ -207,7 +207,7 @@ class Topics extends AbstractController
     /**
      * List all requirement topics as a text file with each line being Id|DisplayName.
      */
-    #[Route('/topics/listrequirementstxt/{catalogId}', name: 'list_requirements_txt')]
+    #[Route('/topics/listtxt/requirements/{catalogId}', name: 'list_requirements_txt')]
     public function listrequirementstxtAction(?\osid_id_Id $catalogId = null)
     {
         return $this->renderTextList(
@@ -219,7 +219,7 @@ class Topics extends AbstractController
     /**
      * List all level topics as a text file with each line being Id|DisplayName.
      */
-    #[Route('/topics/listlevelstxt/{catalogId}', name: 'list_levels_txt')]
+    #[Route('/topics/listtxt/levels/{catalogId}', name: 'list_levels_txt')]
     public function listlevelstxtAction(?\osid_id_Id $catalogId = null)
     {
         return $this->renderTextList(
@@ -231,7 +231,7 @@ class Topics extends AbstractController
     /**
      * List all block topics as a text file with each line being Id|DisplayName.
      */
-    #[Route('/topics/listblockstxt/{catalogId}', name: 'list_blocks_txt')]
+    #[Route('/topics/listtxt/blocks/{catalogId}', name: 'list_blocks_txt')]
     public function listblockstxtAction(?\osid_id_Id $catalogId = null)
     {
         return $this->renderTextList(
@@ -243,7 +243,7 @@ class Topics extends AbstractController
     /**
      * List all instruction-methods topics as a text file with each line being Id|DisplayName.
      */
-    #[Route('/topics/listinstructionmethodstxt/{catalogId}', name: 'list_instructionmethods_txt')]
+    #[Route('/topics/listtxt/instructionmethods/{catalogId}', name: 'list_instructionmethods_txt')]
     public function listinstructionmethodstxtAction(?\osid_id_Id $catalogId = null)
     {
         return $this->renderTextList(
@@ -255,7 +255,7 @@ class Topics extends AbstractController
     /**
      * List all department topics as a text file with each line being Id|DisplayName.
      */
-    #[Route('/topics/listdepartmentstxt/{catalogId}', name: 'list_departments_txt')]
+    #[Route('/topics/listtxt/departments/{catalogId}', name: 'list_departments_txt')]
     public function listdepartmentstxtAction(?\osid_id_Id $catalogId = null)
     {
         return $this->renderTextList(
