@@ -71,7 +71,7 @@ class banner_course_Topic_Lookup_CombinedSessionTest extends TestCase
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
 
         $this->session = self::$courseManager->getTopicLookupSession();
-        $this->session->useComparativeView();
+        $this->session->useComparativeTopicView();
         $this->session->useFederatedCourseCatalogView();
 
         $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-PHYS0201');

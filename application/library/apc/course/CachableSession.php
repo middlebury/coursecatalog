@@ -32,7 +32,7 @@ abstract class apc_course_CachableSession extends apc_course_AbstractSession
 
         $catalogId = $this->getCourseCatalogId();
 
-        $this->idString = $catalogId->getIdentifierNamespace().':'.$catalogId->getAuthority().':'.$catalogId->getIdentifier();
+        $this->idString = $this->osidIdToString($catalogId);
     }
     private string $collectionId;
     private string $idString;
@@ -125,5 +125,13 @@ abstract class apc_course_CachableSession extends apc_course_AbstractSession
     private function hash($key)
     {
         return $this->collectionId.':'.$this->idString.':'.$key;
+    }
+
+    /**
+     * Convert an OSID Id to a string representation.
+     */
+    protected function osidIdToString(osid_id_Id $id): string
+    {
+        return $id->getIdentifierNamespace().':'.$id->getAuthority().':'.$id->getIdentifier();
     }
 }

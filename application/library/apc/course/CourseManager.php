@@ -942,7 +942,7 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      */
     public function getTopicLookupSession()
     {
-        return $this->manager->getTopicLookupSession();
+        return new apc_course_Topic_Lookup_Session($this, $this->manager->getTopicLookupSession());
     }
 
     /**
@@ -972,7 +972,7 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      */
     public function getTopicLookupSessionForCatalog(osid_id_Id $courseCatalogId)
     {
-        return $this->manager->getTopicLookupSessionForCatalog($courseCatalogId);
+        return new apc_course_Topic_Lookup_Session($this, $this->manager->getTopicLookupSessionForCatalog($courseCatalogId));
     }
 
     /**
