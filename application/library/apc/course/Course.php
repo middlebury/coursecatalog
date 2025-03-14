@@ -465,7 +465,7 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
      */
     public function getTopics()
     {
-        return $this->getMyCourse()->getTopics();
+        return $this->apcSession->getTopicLookupSession()->getTopicsByIds($this->getTopicIds());
     }
 
     /**

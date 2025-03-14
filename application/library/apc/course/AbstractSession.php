@@ -102,4 +102,19 @@ abstract class apc_course_AbstractSession extends phpkit_AbstractOsidSession
 
         return $this->resourceLookupSession;
     }
+
+    /**
+     * Answer a topic lookup session.
+     *
+     * @return osid_course_TopicLookupSession
+     */
+    public function getTopicLookupSession()
+    {
+        if (!isset($this->topicLookupSession)) {
+            $this->topicLookupSession = $this->manager->getTopicLookupSessionForCatalog($this->getCourseCatalogId());
+            $this->topicLookupSession->useFederatedCourseCatalogView();
+        }
+
+        return $this->topicLookupSession;
+    }
 }

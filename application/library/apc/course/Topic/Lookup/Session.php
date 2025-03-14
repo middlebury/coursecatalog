@@ -259,7 +259,6 @@ class apc_course_Topic_Lookup_Session extends apc_course_CachableSession impleme
                 $topicList = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList($ids));
                 while ($topicList->hasNext()) {
                     $topics[] = $topicList->getNextTopic();
-
                 }
                 $cached = new phpkit_course_ArrayTopicList($topics);
                 $this->cacheSetObj($key, $cached);
