@@ -134,4 +134,12 @@ abstract class apc_course_CachableSession extends apc_course_AbstractSession
     {
         return $id->getIdentifierNamespace().':'.$id->getAuthority().':'.$id->getIdentifier();
     }
+
+    /**
+     * Convert an OSID Type to a string representation.
+     */
+    protected function osidTypeToString(osid_type_Type $type): string
+    {
+        return $type->getIdentifierNamespace().':'.$type->getAuthority().':'.$type->getIdentifier();
+    }
 }

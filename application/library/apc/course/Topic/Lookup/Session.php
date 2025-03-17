@@ -298,7 +298,19 @@ class apc_course_Topic_Lookup_Session extends apc_course_CachableSession impleme
      */
     public function getTopicsByGenusType(osid_type_Type $topicGenusType)
     {
-        return $this->session->getTopicsByGenusType($topicGenusType);
+        $key = 'getTopicsByGenusType:'.$this->osidTypeToString($topicGenusType);
+        $cached = $this->cacheGetObj($key);
+        if (is_null($cached)) {
+            $topics = [];
+            $topicList = $this->session->getTopicsByGenusType($topicGenusType);
+            while ($topicList->hasNext()) {
+                $topics[] = $topicList->getNextTopic();
+            }
+            $cached = new phpkit_course_ArrayTopicList($topics);
+            $this->cacheSetObj($key, $cached);
+        }
+
+        return $cached;
     }
 
     /**
@@ -325,7 +337,19 @@ class apc_course_Topic_Lookup_Session extends apc_course_CachableSession impleme
      */
     public function getTopicsByParentGenusType(osid_type_Type $topicGenusType)
     {
-        return $this->session->getTopicsByParentGenusType($topicGenusType);
+        $key = 'getTopicsByParentGenusType:'.$this->osidTypeToString($topicGenusType);
+        $cached = $this->cacheGetObj($key);
+        if (is_null($cached)) {
+            $topics = [];
+            $topicList = $this->session->getTopicsByParentGenusType($topicGenusType);
+            while ($topicList->hasNext()) {
+                $topics[] = $topicList->getNextTopic();
+            }
+            $cached = new phpkit_course_ArrayTopicList($topics);
+            $this->cacheSetObj($key, $cached);
+        }
+
+        return $cached;
     }
 
     /**
@@ -350,7 +374,19 @@ class apc_course_Topic_Lookup_Session extends apc_course_CachableSession impleme
      */
     public function getTopicsByRecordType(osid_type_Type $topicRecordType)
     {
-        return $this->session->getTopicsByRecordType($topicRecordType);
+        $key = 'getTopicsByRecordType:'.$this->osidTypeToString($topicRecordType);
+        $cached = $this->cacheGetObj($key);
+        if (is_null($cached)) {
+            $topics = [];
+            $topicList = $this->session->getTopicsByRecordType($topicRecordType);
+            while ($topicList->hasNext()) {
+                $topics[] = $topicList->getNextTopic();
+            }
+            $cached = new phpkit_course_ArrayTopicList($topics);
+            $this->cacheSetObj($key, $cached);
+        }
+
+        return $cached;
     }
 
     /**
@@ -369,6 +405,18 @@ class apc_course_Topic_Lookup_Session extends apc_course_CachableSession impleme
      */
     public function getTopics()
     {
-        return $this->session->getTopics();
+        $key = 'getTopics';
+        $cached = $this->cacheGetObj($key);
+        if (is_null($cached)) {
+            $topics = [];
+            $topicList = $this->session->getTopics();
+            while ($topicList->hasNext()) {
+                $topics[] = $topicList->getNextTopic();
+            }
+            $cached = new phpkit_course_ArrayTopicList($topics);
+            $this->cacheSetObj($key, $cached);
+        }
+
+        return $cached;
     }
 }
