@@ -32,8 +32,9 @@ class banner_course_CourseOffering_Search_Search extends banner_course_AbstractS
     public function searchWithinCourseOfferingResults(osid_course_CourseOfferingSearchResults $results)
     {
         $ids = [];
-        while ($results->hasNext()) {
-            $id = $results->getNextCourseOffering()->getId();
+        $offerings = $results->getCourseOfferings();
+        while ($offerings->hasNext()) {
+            $id = $offerings->getNextCourseOffering()->getId();
             $this->addWhereClause('course_offering_id', '(SSBSECT_TERM_CODE = ? AND SSBSECT_CRN = ?)',
                 [$this->session->getTermCodeFromOfferingId($id),
                     $this->session->getCrnFromOfferingId($id)]);

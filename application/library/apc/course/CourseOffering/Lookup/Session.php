@@ -53,6 +53,14 @@ class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSessio
     }
 
     /**
+     * Helper method within the APC package.
+     */
+    public function getWrappedSession(): osid_course_CourseOfferingLookupSession
+    {
+        return $this->session;
+    }
+
+    /**
      *  Gets the <code> CourseCatalog </code> <code> Id </code> associated
      *  with this session.
      *
@@ -179,7 +187,7 @@ class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSessio
      */
     public function getCourseOffering(osid_id_Id $courseOfferingId)
     {
-        return new apc_course_CourseOffering($this, $this->session, $courseOfferingId);
+        return new apc_course_CourseOffering($this, $courseOfferingId);
     }
 
     /**
@@ -209,7 +217,7 @@ class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSessio
      */
     public function getCourseOfferingsByIds(osid_id_IdList $courseOfferingIdList)
     {
-        return $this->session->getCourseOfferingsByIds($courseOfferingIdList);
+        return new apc_course_CourseOffering_List($this, $this->session->getCourseOfferingsByIds($courseOfferingIdList));
     }
 
     /**
@@ -237,7 +245,7 @@ class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSessio
      */
     public function getCourseOfferingsByGenusType(osid_type_Type $courseOfferingGenusType)
     {
-        return $this->session->getCourseOfferingsByGenusType($courseOfferingGenusType);
+        return new apc_course_CourseOffering_List($this, $this->session->getCourseOfferingsByGenusType($courseOfferingGenusType));
     }
 
     /**
@@ -265,7 +273,7 @@ class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSessio
      */
     public function getCourseOfferingsByParentGenusType(osid_type_Type $courseOfferingGenusType)
     {
-        return $this->session->getCourseOfferingsByParentGenusType($courseOfferingGenusType);
+        return new apc_course_CourseOffering_List($this, $this->session->getCourseOfferingsByParentGenusType($courseOfferingGenusType));
     }
 
     /**
@@ -292,7 +300,7 @@ class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSessio
      */
     public function getCourseOfferingsByRecordType(osid_type_Type $courseOfferingRecordType)
     {
-        return $this->session->getCourseOfferingsByRecordType($courseOfferingRecordType);
+        return new apc_course_CourseOffering_List($this, $this->session->getCourseOfferingsByRecordType($courseOfferingRecordType));
     }
 
     /**
@@ -317,7 +325,7 @@ class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSessio
      */
     public function getCourseOfferingsForCourse(osid_id_Id $courseId)
     {
-        return $this->session->getCourseOfferingsForCourse($courseId);
+        return new apc_course_CourseOffering_List($this, $this->session->getCourseOfferingsForCourse($courseId));
     }
 
     /**
@@ -342,7 +350,7 @@ class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSessio
      */
     public function getCourseOfferingsByTerm(osid_id_Id $termId)
     {
-        return $this->session->getCourseOfferingsByTerm($termId);
+        return new apc_course_CourseOffering_List($this, $this->session->getCourseOfferingsByTerm($termId));
     }
 
     /**
@@ -370,7 +378,7 @@ class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSessio
     public function getCourseOfferingsByTermForCourse(osid_id_Id $termId,
         osid_id_Id $courseId)
     {
-        return $this->session->getCourseOfferingsByTermForCourse($termId, $courseId);
+        return new apc_course_CourseOffering_List($this, $this->session->getCourseOfferingsByTermForCourse($termId, $courseId));
     }
 
     /**
@@ -398,7 +406,7 @@ class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSessio
      */
     public function getCourseOfferingsByTopic(osid_id_Id $topicId)
     {
-        return $this->session->getCourseOfferingsByTopic($topicId);
+        return new apc_course_CourseOffering_List($this, $this->session->getCourseOfferingsByTopic($topicId));
     }
 
     /**
@@ -429,7 +437,7 @@ class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSessio
     public function getCourseOfferingsByTermByTopic(osid_id_Id $termId,
         osid_id_Id $topicId)
     {
-        return $this->session->getCourseOfferingsByTermByTopic($termId, $topicId);
+        return new apc_course_CourseOffering_List($this, $this->session->getCourseOfferingsByTermByTopic($termId, $topicId));
     }
 
     /**
@@ -450,7 +458,7 @@ class apc_course_CourseOffering_Lookup_Session extends apc_course_CachableSessio
      */
     public function getCourseOfferings()
     {
-        return $this->session->getCourseOfferings();
+        return new apc_course_CourseOffering_List($this, $this->session->getCourseOfferings());
     }
 
     /*********************************************************

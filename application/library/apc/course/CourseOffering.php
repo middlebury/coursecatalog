@@ -13,22 +13,29 @@
  */
 class apc_course_CourseOffering extends apc_Cachable implements osid_course_CourseOffering, middlebury_course_CourseOffering_InstructorsRecord, middlebury_course_CourseOffering_AlternatesRecord, middlebury_course_CourseOffering_LinkRecord
 {
+    private osid_course_CourseOffering $offering;
+    private osid_id_Id $id;
+    private $localRecordTypes;
+
     /**
      * Constructor.
-     *
-     * @param osid_course_CourseLookupSession $session
      *
      * @return void
      *
      * @since 8/10/10
      */
-    public function __construct(apc_course_CourseOffering_Lookup_Session $apcSession, osid_course_CourseOfferingLookupSession $session, osid_id_Id $id)
-    {
-        parent::__construct($id->getIdentifierNamespace().':'.$id->getAuthority().':'.$id->getIdentifier());
+    public function __construct(
+        private apc_course_CourseOffering_Lookup_Session $apcSession,
+        osid_id_Id|osid_course_CourseOffering $offeringOrId,
+    ) {
+        if ($offeringOrId instanceof osid_course_CourseOffering) {
+            $this->offering = $offeringOrId;
+            $this->id = $offeringOrId->getId();
+        } else {
+            $this->id = $offeringOrId;
+        }
 
-        $this->apcSession = $apcSession;
-        $this->session = $session;
-        $this->id = $id;
+        parent::__construct($this->id->getIdentifierNamespace().':'.$this->id->getAuthority().':'.$this->id->getIdentifier());
 
         $this->localRecordTypes = [
             new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors'),
@@ -37,11 +44,6 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
             new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:link'),
         ];
     }
-    private $courseOffering;
-    private $session;
-    private $apcSession;
-    private $id;
-    private $localRecordTypes;
 
     /**
      * Answer our internal course offering object.
@@ -52,11 +54,11 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
      */
     private function getOffering()
     {
-        if (!isset($this->courseOffering)) {
-            $this->courseOffering = $this->session->getCourseOffering($this->getId());
+        if (!isset($this->offering)) {
+            $this->offering = $this->apcSession->getWrappedSession()->getCourseOffering($this->getId());
         }
 
-        return $this->courseOffering;
+        return $this->offering;
     }
 
     /*********************************************************
@@ -547,7 +549,8 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
      */
     public function getTopics()
     {
-        return $this->getOffering()->getTopics();
+        return $this->apcSession->getTopicLookupSession()
+            ->getTopicsByIds($this->getOffering()->getTopicIds());
     }
 
     /**
@@ -1025,7 +1028,7 @@ class apc_course_CourseOffering extends apc_Cachable implements osid_course_Cour
      */
     public function getAlternates()
     {
-        return $this->session->getCourseOfferingsByIds($this->getAlternateIds());
+        return $this->apcSession->getCourseOfferingsByIds($this->getAlternateIds());
     }
 
     /**

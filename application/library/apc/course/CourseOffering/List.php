@@ -1,16 +1,16 @@
 <?php
 
 /**
- * A List for retrieving APC-wrapped courses from an underlying implementation.
+ * A List for retrieving APC-wrapped course offerings from an underlying implementation.
  *
  * @copyright Copyright &copy; 2025, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class apc_course_Course_List implements osid_course_CourseList
+class apc_course_CourseOffering_List implements osid_course_CourseOfferingList
 {
     public function __construct(
-        protected apc_course_Course_Lookup_Session $apcSession,
-        protected osid_course_CourseList $courses,
+        protected apc_course_CourseOffering_Lookup_Session $apcSession,
+        protected osid_course_CourseOfferingList $offerings,
     ) {
     }
 
@@ -32,7 +32,7 @@ class apc_course_Course_List implements osid_course_CourseList
      */
     public function hasNext()
     {
-        return $this->courses->hasNext();
+        return $this->offerings->hasNext();
     }
 
     /**
@@ -65,7 +65,7 @@ class apc_course_Course_List implements osid_course_CourseList
      */
     public function available()
     {
-        return $this->courses->available();
+        return $this->offerings->available();
     }
 
     /**
@@ -83,7 +83,7 @@ class apc_course_Course_List implements osid_course_CourseList
      */
     public function skip($n)
     {
-        $this->courses->skip($n);
+        $this->offerings->skip($n);
     }
 
     /**
@@ -91,16 +91,17 @@ class apc_course_Course_List implements osid_course_CourseList
      */
     public function done()
     {
-        $this->courses->done();
+        $this->offerings->done();
     }
 
     /**
-     *  Gets the next <code> Course </code> in this list.
+     *  Gets the next <code> CourseOffering </code> in this list.
      *
-     * @return object osid_course_Course the next <code> Course </code> in
-     *                this list. The <code> hasNext() </code> method should be used
-     *                to test that a next <code> Course </code> is available before
-     *                calling this method.
+     * @return object osid_course_CourseOffering the next <code>
+     *                CourseOffering </code> in this list. The <code> hasNext()
+     *                </code> method should be used to test that a next <code>
+     *                CourseOffering </code> is available before calling this
+     *                method.
      *
      * @throws osid_IllegalStateException    no more elements available in this
      *                                       list or this list has been closed
@@ -108,23 +109,24 @@ class apc_course_Course_List implements osid_course_CourseList
      *
      *  @compliance mandatory This method must be implemented.
      */
-    public function getNextCourse()
+    public function getNextCourseOffering()
     {
-        return new apc_course_Course($this->apcSession, $this->courses->getNextCourse());
+        return new apc_course_CourseOffering($this->apcSession, $this->offerings->getNextCourseOffering());
     }
 
     /**
-     *  Gets the next set of <code> Course </code> elements in this list. The
-     *  specified amount must be less than or equal to the return from <code>
-     *  available(). </code>.
+     *  Gets the next set of <code> CourseOffering </code> elements in this
+     *  list. The specified amount must be less than or equal to the return
+     *  from <code> available(). </code>.
      *
-     * @param int $n the number of <code> Course </code> elements
+     * @param int $n the number of <code> CourseOffering </code> elements
      *               requested which must be less than or equal to <code>
      *               available() </code>
      *
-     * @return array of osid_course_Course objects  an array of <code> Course
-     *               </code> elements. <code> </code> The length of the array is
-     *               less than or equal to the number specified.
+     * @return array of osid_course_CourseOffering objects  an array of
+     *               <code> CourseOffering </code> elements. <code> </code> The
+     *               length of the array is less than or equal to the number
+     *               specified.
      *
      * @throws osid_IllegalStateException    no more elements available in this
      *                                       list or this list has been closed
@@ -133,11 +135,11 @@ class apc_course_Course_List implements osid_course_CourseList
      *
      *  @compliance mandatory This method must be implemented.
      */
-    public function getNextCourses($n)
+    public function getNextCourseOfferings($n)
     {
         $results = [];
-        foreach ($this->courses->getNextCourses($n) as $course) {
-            $results[] = new apc_course_Course($this->apcSession, $course);
+        foreach ($this->offerings->getNextCourseOfferings($n) as $offering) {
+            $results[] = new apc_course_CourseOffering($this->apcSession, $offering);
         }
 
         return $results;

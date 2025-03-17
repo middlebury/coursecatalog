@@ -423,7 +423,7 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      */
     public function getCourseOfferingSearchSession()
     {
-        return $this->manager->getCourseOfferingSearchSession();
+        return new apc_course_CourseOffering_Search_Session($this, $this->manager->getCourseOfferingSearchSession());
     }
 
     /**
@@ -453,7 +453,7 @@ class apc_course_CourseManager extends phpkit_AbstractOsidManager implements osi
      */
     public function getCourseOfferingSearchSessionForCatalog(osid_id_Id $courseCatalogId)
     {
-        return $this->manager->getCourseOfferingSearchSessionForCatalog($courseCatalogId);
+        return new apc_course_CourseOffering_Search_Session($this, $this->manager->getCourseOfferingSearchSessionForCatalog($courseCatalogId));
     }
 
     /**
