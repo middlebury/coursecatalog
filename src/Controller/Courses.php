@@ -195,7 +195,7 @@ class Courses extends AbstractController
         // Limit to just active courses
         $query->matchGenusType(new \phpkit_type_URNInetType('urn:inet:middlebury.edu:status-active'), true);
 
-        $courses = $searchSession->getCoursesByQuery($query)->getCourses();
+        $courses = $searchSession->getCoursesByQuery($query);
 
         $recentCourses = new DepartmentRecentCourses($this->osidIdMap, $courses, $this->getParameter('app.osid.reference_date'));
         if ($request->get('cutoff')) {

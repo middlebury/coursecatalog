@@ -27,8 +27,9 @@ class banner_course_Course_Search_Search extends banner_course_AbstractSearch im
      */
     public function searchWithinCourseResults(osid_course_CourseSearchResults $results)
     {
-        while ($results->hasNext()) {
-            $id = $results->getNextCourse()->getId();
+        $courses = $results->getCourses();
+        while ($courses->hasNext()) {
+            $id = $courses->getNextCourse()->getId();
             $this->addWhereClause('course_id', '(SCBCRSE_SUBJ_CODE = ? AND SCBCRSE_CRSE_NUMB = ?)',
                 [$this->session->getSubjectFromCourseId($id),
                     $this->session->getNumberFromCourseId($id)]);
