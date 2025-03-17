@@ -21,6 +21,7 @@ abstract class apc_course_AbstractSession extends phpkit_AbstractOsidSession
     private osid_course_CourseLookupSession $courseLookupSession;
     private osid_course_CourseOfferingLookupSession $courseOfferingLookupSession;
     private osid_course_TermLookupSession $termLookupSession;
+    private osid_course_TopicLookupSession $topicLookupSession;
     private osid_resource_ResourceLookupSession $resourceLookupSession;
 
     /**

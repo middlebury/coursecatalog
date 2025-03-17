@@ -60,6 +60,14 @@ class apc_course_Course_Lookup_Session extends apc_course_CachableSession implem
     }
 
     /**
+     * Helper method within the APC package.
+     */
+    public function getWrappedSession(): osid_course_CourseLookupSession
+    {
+        return $this->session;
+    }
+
+    /**
      *  Gets the <code> CourseCatalog </code> <code> Id </code> associated
      *  with this session.
      *
@@ -185,7 +193,7 @@ class apc_course_Course_Lookup_Session extends apc_course_CachableSession implem
      */
     public function getCourse(osid_id_Id $courseId)
     {
-        return new apc_course_Course($this, $this->session, $courseId);
+        return new apc_course_Course($this, $courseId);
     }
 
     /**
@@ -215,7 +223,8 @@ class apc_course_Course_Lookup_Session extends apc_course_CachableSession implem
      */
     public function getCoursesByIds(osid_id_IdList $courseIdList)
     {
-        return $this->session->getCoursesByIds($courseIdList);
+        // Wrap course objects as APCu versions
+        return new apc_course_Course_List($this, $this->session->getCoursesByIds($courseIdList));
     }
 
     /**
@@ -242,7 +251,8 @@ class apc_course_Course_Lookup_Session extends apc_course_CachableSession implem
      */
     public function getCoursesByGenusType(osid_type_Type $courseGenusType)
     {
-        return $this->session->getCoursesByGenusType($courseGenusType);
+        // Wrap course objects as APCu versions
+        return new apc_course_Course_List($this, $this->session->getCoursesByGenusType($courseGenusType));
     }
 
     /**
@@ -269,7 +279,8 @@ class apc_course_Course_Lookup_Session extends apc_course_CachableSession implem
      */
     public function getCoursesByParentGenusType(osid_type_Type $courseGenusType)
     {
-        return $this->session->getCoursesByParentGenusType($courseGenusType);
+        // Wrap course objects as APCu versions
+        return new apc_course_Course_List($this, $this->session->getCoursesByParentGenusType($courseGenusType));
     }
 
     /**
@@ -294,7 +305,8 @@ class apc_course_Course_Lookup_Session extends apc_course_CachableSession implem
      */
     public function getCoursesByRecordType(osid_type_Type $courseRecordType)
     {
-        return $this->session->getCoursesByRecordType($courseRecordType);
+        // Wrap course objects as APCu versions
+        return new apc_course_Course_List($this, $this->session->getCoursesByRecordType($courseRecordType));
     }
 
     /**
@@ -322,7 +334,8 @@ class apc_course_Course_Lookup_Session extends apc_course_CachableSession implem
      */
     public function getCoursesByTopic(osid_id_Id $topicId)
     {
-        return $this->session->getCoursesByTopic($topicId);
+        // Wrap course objects as APCu versions
+        return new apc_course_Course_List($this, $this->session->getCoursesByTopic($topicId));
     }
 
     /**
@@ -342,6 +355,7 @@ class apc_course_Course_Lookup_Session extends apc_course_CachableSession implem
      */
     public function getCourses()
     {
-        return $this->session->getCourses();
+        // Wrap course objects as APCu versions
+        return new apc_course_Course_List($this, $this->session->getCourses());
     }
 }

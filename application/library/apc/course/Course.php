@@ -28,13 +28,17 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
      *
      * @since 8/10/10
      */
-    public function __construct(apc_course_Course_Lookup_Session $apcSession, osid_course_CourseLookupSession $session, osid_id_Id $id)
+    public function __construct(apc_course_Course_Lookup_Session $apcSession, osid_id_Id|osid_course_Course $courseOrId)
     {
-        parent::__construct($id->getIdentifierNamespace().':'.$id->getAuthority().':'.$id->getIdentifier());
+        if ($courseOrId instanceof osid_course_Course) {
+            $this->course = $courseOrId;
+            $this->id = $courseOrId->getId();
+        } else {
+            $this->id = $courseOrId;
+        }
+        parent::__construct($this->id->getIdentifierNamespace().':'.$this->id->getAuthority().':'.$this->id->getIdentifier());
 
         $this->apcSession = $apcSession;
-        $this->session = $session;
-        $this->id = $id;
 
         $this->localRecordTypes = [
             new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms'),
@@ -53,7 +57,7 @@ class apc_course_Course extends apc_Cachable implements osid_course_Course, midd
     private function getMyCourse()
     {
         if (!isset($this->course)) {
-            $this->course = $this->session->getCourse($this->getId());
+            $this->course = $this->apcSession->getWrappedSession()->getCourse($this->getId());
         }
 
         return $this->course;
