@@ -223,7 +223,9 @@ CREATE TABLE IF NOT EXISTS `SCBCRSE` (
   `SCBCRSE_DATA_ORIGIN` varchar(30) default NULL COMMENT 'DATA SOURCE: Source system that created or updated the row',
   `SCBCRSE_USER_ID` varchar(30) default NULL COMMENT 'USER ID: User who inserted or last update the data',
   UNIQUE KEY `SCBCRSE_KEY_INDEX` (`SCBCRSE_SUBJ_CODE`,`SCBCRSE_CRSE_NUMB`,`SCBCRSE_EFF_TERM`),
-  KEY `SCBCRSE_COLL_CODE` (`SCBCRSE_COLL_CODE`)
+  KEY `SCBCRSE_COLL_CODE` (`SCBCRSE_COLL_CODE`),
+  KEY `SCBCRSE_DEPT_CODE` (`SCBCRSE_DEPT_CODE`),
+  KEY `SCBCRSE_DIVS_CODE` (`SCBCRSE_DIVS_CODE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Course General Information Base Table';
 
 
@@ -290,7 +292,8 @@ CREATE TABLE IF NOT EXISTS `SCRLEVL` (
   `SCRLEVL_EFF_TERM` varchar(6) NOT NULL COMMENT 'This field identifies the term this version of the course level becomes effective.',
   `SCRLEVL_LEVL_CODE` varchar(2) NOT NULL COMMENT 'This field is used to authorize the level for which a course may be offered.    Each course must be authorized to be offered for at least one level.  A         course can be authorized for an unlimited number of levels.',
   `SCRLEVL_ACTIVITY_DATE` date NOT NULL COMMENT 'This field specifies the most current date record was created or updated.',
-  PRIMARY KEY  (`SCRLEVL_SUBJ_CODE`,`SCRLEVL_CRSE_NUMB`,`SCRLEVL_EFF_TERM`,`SCRLEVL_LEVL_CODE`)
+  PRIMARY KEY  (`SCRLEVL_SUBJ_CODE`,`SCRLEVL_CRSE_NUMB`,`SCRLEVL_EFF_TERM`,`SCRLEVL_LEVL_CODE`),
+  KEY `SCRLEVL_LEVL_CODE` (`SCRLEVL_LEVL_CODE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Course Level Repeating Table';
 
 
@@ -450,6 +453,7 @@ CREATE TABLE IF NOT EXISTS `SSBSECT` (
   PRIMARY KEY  (`SSBSECT_TERM_CODE`,`SSBSECT_CRN`),
   UNIQUE KEY `SSBSECT_INDEX_SUBJ` (`SSBSECT_SUBJ_CODE`,`SSBSECT_CRSE_NUMB`,`SSBSECT_TERM_CODE`,`SSBSECT_CRN`),
   KEY `SSBSECT_GSCH_INDEX` (`SSBSECT_GSCH_NAME`),
+  KEY `SSBSECT_INSM_CODE` (`SSBSECT_INSM_CODE`),
   KEY `SSBSECT_PTRM_DATE_INDEX` (`SSBSECT_PTRM_START_DATE`),
   KEY `SSBSECT_DATE_INDEX` (`SSBSECT_REG_FROM_DATE`,`SSBSECT_REG_TO_DATE`,`SSBSECT_TERM_CODE`),
   FULLTEXT KEY `SSBSECT_fulltext_index` (`SSBSECT_fulltext`)
@@ -483,7 +487,8 @@ CREATE TABLE IF NOT EXISTS `SSRATTR` (
   `SSRATTR_CRN` varchar(5) NOT NULL default '' COMMENT 'This field defines the course reference number for which you are creating a section attribute code.',
   `SSRATTR_ATTR_CODE` varchar(4) NOT NULL default '' COMMENT 'This field defines the attribute code of the section.',
   `SSRATTR_ACTIVITY_DATE` date NOT NULL default '0000-00-00' COMMENT 'This field contains the most current date the record was added or changed.',
-  PRIMARY KEY  (`SSRATTR_TERM_CODE`,`SSRATTR_CRN`,`SSRATTR_ATTR_CODE`)
+  PRIMARY KEY  (`SSRATTR_TERM_CODE`,`SSRATTR_CRN`,`SSRATTR_ATTR_CODE`),
+  KEY `SSRATTR_ATTR_CODE` (`SSRATTR_ATTR_CODE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Degree Program Attribute Repeating Table';
 
 -- --------------------------------------------------------
