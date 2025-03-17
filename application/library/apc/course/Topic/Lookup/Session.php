@@ -37,6 +37,8 @@
 class apc_course_Topic_Lookup_Session extends apc_course_CachableSession implements osid_course_TopicLookupSession
 {
     private osid_course_TopicLookupSession $session;
+    private string $cpFlag = '';
+    private string $fiFlag = '';
 
     /**
      * Constructor.
@@ -113,6 +115,7 @@ class apc_course_Topic_Lookup_Session extends apc_course_CachableSession impleme
      */
     public function useComparativeTopicView()
     {
+        $this->cpFlag = 'C';
         $this->session->useComparativeTopicView();
     }
 
@@ -126,6 +129,7 @@ class apc_course_Topic_Lookup_Session extends apc_course_CachableSession impleme
      */
     public function usePlenaryTopicView()
     {
+        $this->cpFlag = 'P';
         $this->session->usePlenaryTopicView();
     }
 
@@ -138,6 +142,7 @@ class apc_course_Topic_Lookup_Session extends apc_course_CachableSession impleme
      */
     public function useFederatedCourseCatalogView()
     {
+        $this->fiFlag = 'F';
         $this->session->useFederatedCourseCatalogView();
     }
 
@@ -149,6 +154,7 @@ class apc_course_Topic_Lookup_Session extends apc_course_CachableSession impleme
      */
     public function useIsolatedCourseCatalogView()
     {
+        $this->fiFlag = 'I';
         $this->session->useIsolatedCourseCatalogView();
     }
 
@@ -176,7 +182,7 @@ class apc_course_Topic_Lookup_Session extends apc_course_CachableSession impleme
      */
     public function getTopic(osid_id_Id $topicId)
     {
-        $key = 'getTopic:'.$this->osidIdToString($topicId);
+        $key = 'getTopic:'.$this->cpFlag.$this->fiFlag.':'.$this->osidIdToString($topicId);
         $cached = $this->cacheGetObj($key);
         if (is_null($cached)) {
             try {
@@ -245,33 +251,20 @@ class apc_course_Topic_Lookup_Session extends apc_course_CachableSession impleme
      */
     public function getTopicsByIds(osid_id_IdList $topicIdList)
     {
-        $key = 'getTopicsByIds:';
-        $ids = [];
+        $topics = [];
         while ($topicIdList->hasNext()) {
-            $id = $topicIdList->getNextId();
-            $ids[] = $id;
-            $key .= $this->osidIdToString($id).';';
-        }
-        $cached = $this->cacheGetObj($key);
-        if (is_null($cached)) {
             try {
-                $topics = [];
-                $topicList = $this->session->getTopicsByIds(new phpkit_id_ArrayIdList($ids));
-                while ($topicList->hasNext()) {
-                    $topics[] = $topicList->getNextTopic();
-                }
-                $cached = new phpkit_course_ArrayTopicList($topics);
-                $this->cacheSetObj($key, $cached);
+                $topics[] = $this->getTopic($topicIdList->getNextId());
             } catch (osid_NotFoundException $e) {
-                $cached = $e->getMessage();
-                $this->cacheSetObj($key, $cached);
+                // Ignore missing topics in Comparative view and just return
+                // those in the id list that exist.
+                if ('P' == $this->cpFlag) {
+                    throw $e;
+                }
             }
         }
-        if (is_string($cached)) {
-            throw new osid_NotFoundException($cached);
-        } else {
-            return $cached;
-        }
+
+        return new phpkit_course_ArrayTopicList($topics);
     }
 
     /**
@@ -298,7 +291,7 @@ class apc_course_Topic_Lookup_Session extends apc_course_CachableSession impleme
      */
     public function getTopicsByGenusType(osid_type_Type $topicGenusType)
     {
-        $key = 'getTopicsByGenusType:'.$this->osidTypeToString($topicGenusType);
+        $key = 'getTopicsByGenusType:'.$this->cpFlag.$this->fiFlag.':'.$this->osidTypeToString($topicGenusType);
         $cached = $this->cacheGetObj($key);
         if (is_null($cached)) {
             $topics = [];
@@ -337,7 +330,7 @@ class apc_course_Topic_Lookup_Session extends apc_course_CachableSession impleme
      */
     public function getTopicsByParentGenusType(osid_type_Type $topicGenusType)
     {
-        $key = 'getTopicsByParentGenusType:'.$this->osidTypeToString($topicGenusType);
+        $key = 'getTopicsByParentGenusType:'.$this->cpFlag.$this->fiFlag.':'.$this->osidTypeToString($topicGenusType);
         $cached = $this->cacheGetObj($key);
         if (is_null($cached)) {
             $topics = [];
@@ -374,7 +367,7 @@ class apc_course_Topic_Lookup_Session extends apc_course_CachableSession impleme
      */
     public function getTopicsByRecordType(osid_type_Type $topicRecordType)
     {
-        $key = 'getTopicsByRecordType:'.$this->osidTypeToString($topicRecordType);
+        $key = 'getTopicsByRecordType:'.$this->cpFlag.$this->fiFlag.':'.$this->osidTypeToString($topicRecordType);
         $cached = $this->cacheGetObj($key);
         if (is_null($cached)) {
             $topics = [];
@@ -405,7 +398,7 @@ class apc_course_Topic_Lookup_Session extends apc_course_CachableSession impleme
      */
     public function getTopics()
     {
-        $key = 'getTopics';
+        $key = 'getTopics:'.$this->cpFlag.$this->fiFlag;
         $cached = $this->cacheGetObj($key);
         if (is_null($cached)) {
             $topics = [];
