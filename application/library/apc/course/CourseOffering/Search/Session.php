@@ -232,4 +232,21 @@ class apc_course_CourseOffering_Search_Session extends apc_course_CachableSessio
             $this->session->getCourseOfferingsBySearch($courseOfferingQuery, $courseOfferingSearch)
         );
     }
+
+    /*********************************************************
+     * Support for building full-text indices
+     *********************************************************/
+
+    /**
+     * Build or rebuild the full-text course-offering index.
+     *
+     * @param optional boolean $displayStatus If true, status output will be printed
+     *
+     * @return bool true on success
+     */
+    public function buildIndex($displayStatus = false)
+    {
+        // Pass through index building to our underlying implementation.
+        return $this->session->buildIndex($displayStatus);
+    }
 }
