@@ -127,8 +127,7 @@ class Topics extends AbstractController
                 [
                     'topicId' => $topicId,
                     'catalogId' => $catalogId,
-                ],
-                UrlGeneratorInterface::ABSOLUTE_URL
+                ]
             );
         } else {
             $offerings = $offeringLookupSession->getCourseOfferingsByTopic($topicId);
