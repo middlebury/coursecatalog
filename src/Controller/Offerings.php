@@ -273,9 +273,8 @@ class Offerings extends AbstractController
      *               The parts of the search preparation in an array: data, searchSession,
      *               and query
      */
-    protected function prepareSearch(Request $request, ?\osid_id_Id $catalogId = null)
+    protected function prepareSearch(Request $request, ?\osid_id_Id $catalogId = null, ?\osid_id_Id $termId = null)
     {
-        $termIdString = $request->get('term');
         $data = [];
         if ($catalogId) {
             $offeringSearchSession = $this->osidRuntime->getCourseManager()->getCourseOfferingSearchSessionForCatalog($catalogId);
@@ -305,19 +304,24 @@ class Offerings extends AbstractController
         $data['term'] = null;
         $data['nextTerm'] = null;
         $data['previousTerm'] = null;
-        if ('ANY' == $termIdString) {
-            // Don't set a term
-            $termId = null;
-        } elseif (!$termIdString || 'CURRENT' == $termIdString) {
-            // When accessing the "current" term via xml, use the term we are in.
-            // When displaying the search interface, use the next upcoming term.
-            if ('searchxml' == $request->get('action')) {
-                $termId = $this->osidTermHelper->getCurrentTermId($offeringSearchSession->getCourseCatalogId());
+        if (is_null($termId)) {
+            $termIdString = $request->get('term');
+            if ('ANY' == $termIdString) {
+                // Don't set a term
+                $termId = null;
+            } elseif (!$termIdString || 'CURRENT' == $termIdString) {
+                // When accessing the "current" term via xml, use the term we are in.
+                // When displaying the search interface, use the next upcoming term.
+                if ('searchxml' == $request->get('action')) {
+                    $termId = $this->osidTermHelper->getCurrentTermId($offeringSearchSession->getCourseCatalogId());
+                } else {
+                    $termId = $this->osidTermHelper->getNextOrLatestTermId($offeringSearchSession->getCourseCatalogId());
+                }
             } else {
-                $termId = $this->osidTermHelper->getNextOrLatestTermId($offeringSearchSession->getCourseCatalogId());
+                $termId = $this->osidIdMap->fromString($termIdString);
             }
         } else {
-            $termId = $this->osidIdMap->fromString($termIdString);
+            $termIdString = $this->osidIdMap->toString($termId);
         }
         if (isset($termId)) {
             $data['term'] = $termLookupSession->getTerm($termId);
