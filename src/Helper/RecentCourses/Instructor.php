@@ -30,13 +30,14 @@ class Instructor implements RecentCoursesInterface
      */
     public function __construct(
         protected IdMap $osidIdMap,
-        \osid_course_CourseOfferingSearchResults $offerings,
+        \osid_course_CourseOfferingSearchResults $offeringResults,
         protected \osid_course_CourseLookupSession $courseLookupSession,
         string $referenceDate = 'now',
     ) {
         $this->referenceDate = new \DateTime($referenceDate);
         $this->recentInterval = new \DateInterval('P4Y');
         $this->alternatesType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates');
+        $offerings = $offeringResults->getCourseOfferings();
         while ($offerings->hasNext()) {
             $this->allOfferings[] = $offerings->getNextCourseOffering();
         }
