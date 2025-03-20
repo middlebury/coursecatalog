@@ -47,7 +47,7 @@
 {% elseif offering.locationinfo %}
             <catalog:location>{{ offering.locationinfo }}</catalog:location>
 {% endif %}
-            <catalog:schedule{% if weekly_schedule %} meeting_start_date="{{ weekly_schedule.meetingstartdate|date('Y-m-d') }}" meeting_end_date="{{ weekly_schedule.meetingenddate|date('Y-m-d') }}"{% endif %}>{{ offering.scheduleinfo|raw }}</catalog:schedule>
+            <catalog:schedule{% if weekly_schedule %}{% if weekly_schedule.hasmeetingstartdate %} meeting_start_date="{{ weekly_schedule.meetingstartdate|date('Y-m-d') }}"{% endif %}{% if weekly_schedule.hasmeetingenddate %} meeting_end_date="{{ weekly_schedule.meetingenddate|date('Y-m-d') }}"{% endif %}{% endif %}>{{ offering.scheduleinfo|raw }}</catalog:schedule>
 {% for property in properties %}
             <catalog:property>
                 <catalog:display_name>{{ property.displayname }}</catalog:display_name>
