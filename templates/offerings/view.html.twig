@@ -33,7 +33,7 @@
 
 {% if offering.scheduleinfo %}
     <dt>Schedule:</dt>
-    <dd>{{ offering.scheduleinfo|nl2br|noWrapParentheticals|raw }}</dd>
+    <dd>{{ offering.scheduleinfo == 'TBD' ? '<span title="To Be Determined">TBD</span>' : offering.scheduleinfo|nl2br|noWrapParentheticals|raw }}</dd>
 {% endif %}
 
 <dt>Type:</dt>

@@ -109,7 +109,7 @@
             {% if item.offering.scheduleinfo %}
                 <div class="pt-2 pb-2 border-top">
                     <dt class="d-block font-semibold">Schedule:</dt>
-                    <dd>{{ item.offering.scheduleinfo|nl2br|noWrapParentheticals|raw }}</span></dd>
+                    <dd>{{ item.offering.scheduleinfo == 'TBD' ? '<span title="To Be Determined">TBD</span>' : item.offering.scheduleinfo|nl2br|noWrapParentheticals|raw }}</dd>
                 </div>
             {% endif %}
             {% if item.availabilityLink is not empty %}
