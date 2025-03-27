@@ -110,8 +110,12 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
         //		text<p>
         //		other text<p>
         //		third text<p>
-        $output = preg_replace('#<p>\s+#i', '<p>', $output);
-        $output = preg_replace('#\s+</p>#i', '</p>', $output);
+        $output = preg_replace('#<p>(\s+)#i', "\n$1", $output);
+        $output = preg_replace('#(\s+)</p>#i', '$1', $output);
+        // Remove all other <p> tags to allow inclusion of the output in a
+        // paragraph tag.
+        $output = preg_replace('#<p>#i', '', $output);
+        $output = preg_replace('#</p>#i', '', $output);
 
         return nl2br($output);
     }
