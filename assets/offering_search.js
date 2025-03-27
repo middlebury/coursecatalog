@@ -5,7 +5,7 @@ expander($);
 
 $("document").ready(function () {
     $("p.description").expander({
-        slicePoint: 140, // default is 100
+        slicePoint: 475, // default is 100
         expandPrefix: "... ", // text to come before the expand link
         expandText: "read more", // default is 'read more...'
         userCollapseText: "[collapse]", // default is '[collapse expanded text]'
