@@ -80,9 +80,13 @@
 
 <dt>Requirements Fulfilled:</dt>
 <dd>
-{% for topic in requirementTopics %}
-    <a href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
-{% endfor %}
+{% if requirementTopics is not empty %}
+    {% for topic in requirementTopics %}
+        <a href='{{ path('view_topic', {topicId: topic, catalogId: catalogId, termId: offering.term}) }}'>{{ topic.displayname }}</a>{{ not loop.last ? ',' }}
+    {% endfor %}
+{% else %}
+    <span title="None">N/A</span>
+{% endif %}
 </dd>
 
 {% if blockTopics is not empty %}
