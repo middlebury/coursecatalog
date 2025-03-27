@@ -81,9 +81,13 @@
                 <div class="pt-2 pb-2">
                     <dt class="d-block font-semibold">Instructors:</dt>
                     <dd>
+                {% if item.instructors is not empty %}
                     {% for instructor in item.instructors %}
                         <a class="link-underline" href='{{ path('view_resource', {resourceId: instructor, termId: item.offering.term}) }}'>{{ instructor.displayname }}</a>{{ not loop.last ? ',' }}
                     {% endfor %}
+                {% else %}
+                    <span title="To Be Determined">TBD</span>
+                {% endif %}
                     </dd>
                 </div>
             {% endif %}

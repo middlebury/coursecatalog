@@ -51,9 +51,13 @@
 {% if instructors is not null %}
     <dt>Instructors:</dt>
     <dd>
-    {% for instructor in instructors %}
-        <a href='{{ path('view_resource', {resourceId: instructor, catalogId: catalogId, termId: offering.term}) }}'>{{ instructor.displayname }}</a>{{ not loop.last ? ',' }}
-    {% endfor %}
+    {% if instructors is not empty %}
+        {% for instructor in instructors %}
+            <a href='{{ path('view_resource', {resourceId: instructor, catalogId: catalogId, termId: offering.term}) }}'>{{ instructor.displayname }}</a>{{ not loop.last ? ',' }}
+        {% endfor %}
+    {% else %}
+        <span title="To Be Determined">TBD</span>
+    {% endif %}
     </dd>
 {% endif %}
 
