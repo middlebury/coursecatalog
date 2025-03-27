@@ -77,9 +77,9 @@ Spaces around slashes such as this / don\'t cause italics either. Quotes may be 
                 '<strong>Hello World.</strong> Foo.'
             )
         );
-        // Paragraph.
+        // Paragraph -- these should be stripped.
         $this->assertEquals(
-            '<p>Hello World.</p> Foo.',
+            'Hello World. Foo.',
             banner_course_Course::convertDescription(
                 '<p>Hello World.</p> Foo.'
             )
