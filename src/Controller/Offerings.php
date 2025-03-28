@@ -632,11 +632,11 @@ class Offerings extends AbstractController
 
         // Campuses
         $data['selectedCampusIds'] = [];
-        if ($request->get('location')) {
-            if (is_array($request->get('location'))) {
-                $campuses = $request->get('location');
+        if ($request->get('campus')) {
+            if (is_array($request->get('campus'))) {
+                $campuses = $request->get('campus');
             } else {
-                $campuses = [$request->get('location')];
+                $campuses = [$request->get('campus')];
             }
 
             if (count($campuses)) {
@@ -645,7 +645,7 @@ class Offerings extends AbstractController
                     $query->matchLocationId($id, true);
                     $data['selectedCampusIds'][] = $id;
                 }
-                $data['searchParams']['location'] = $campuses;
+                $data['searchParams']['campus'] = $campuses;
             }
         }
 
