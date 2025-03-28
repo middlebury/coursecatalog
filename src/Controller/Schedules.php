@@ -208,7 +208,7 @@ class Schedules extends AbstractController
 
         $offering = $lookupSession->getCourseOffering($offeringIds[0]);
         $course = $offering->getCourse();
-        $termId = $offering->getTermId();
+        $firstOfferingTermId = $offering->getTermId();
 
         $selectedLinkSet = $this->osidIdMap->fromString($request->get('section_set'));
         $linkTypes = $course->getLinkTypeIdsForTermAndSet($termId, $selectedLinkSet);
@@ -247,7 +247,7 @@ class Schedules extends AbstractController
             }
 
             // Also check that the sections are from the same course and term.
-            if (!$offering->getTermId()->isEqual($termId)) {
+            if (!$offering->getTermId()->isEqual($firstOfferingTermId)) {
                 throw new \Exception('Trying to add offerings from multiple terms.');
             }
             if (!$offering->getCourseId()->isEqual($course->getId())) {
