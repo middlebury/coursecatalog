@@ -1,6 +1,7 @@
 {% if bookmarked_courses is empty %}
-    <p class='notice'>You have no starred courses for this term. Please <a href="{{ path('search_offerings', {catalogId: selectedCatalogId, termId: selectedTermId})}}">search for courses</a> and star interesting ones first.</p>
-
+    <div id="bookmarked_courses" class="typography">
+        <p class='notice'>You have no saved courses for this program/term. Please <a href="{{ path('search_offerings', {catalogId: selectedCatalogId, term: selectedTermId})}}">search for courses</a> and save interesting ones first.</p>
+    </div>
 {% else %}
     <ul id="bookmarked_courses">
 {% for course in bookmarked_courses %}
