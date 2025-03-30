@@ -476,7 +476,7 @@ class ArchiveHtmlGenerator
         $order->ascend();
         $search = $context['offeringSearchSession']->getCourseOfferingSearch();
         $search->orderCourseOfferingResults($order);
-        $offerings = $context['offeringSearchSession']->getCourseOfferingsBySearch($offeringQuery, $search);
+        $offerings = $context['offeringSearchSession']->getCourseOfferingsBySearch($offeringQuery, $search)->getCourseOfferings();
 
         // each offering (section) may have the same or different title and description from other sections
         // of the course. Group the sections by title/description and term so that
