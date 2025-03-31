@@ -418,7 +418,7 @@ GROUP BY
         }
 
         $roomString = $this->getDatabaseIdString($resourceId, 'resource-place-room-');
-        if (!preg_match('#^([a-z0-9_-]+)\-(.+)$#i', $roomString, $matches)) {
+        if (!preg_match('#^([a-z0-9_]+)\-(.+)$#i', $roomString, $matches)) {
             throw new osid_NotFoundException("Room string '$roomString' doesn't match.");
         }
 
