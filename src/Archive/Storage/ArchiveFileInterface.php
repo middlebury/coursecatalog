@@ -5,6 +5,11 @@ namespace App\Archive\Storage;
 interface ArchiveFileInterface extends ArchiveItemIterface
 {
     /**
+     * Answer the mime-type of the file.
+     */
+    public function mimeType(): string;
+
+    /**
      * Answer the content of the file.
      */
     public function getFileContent(): string;

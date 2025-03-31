@@ -6,6 +6,7 @@ use App\Archive\Storage\ArchiveDirectoryInterface;
 use App\Archive\Storage\ArchiveFileInterface;
 use App\Archive\Storage\ArchiveStorage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 
@@ -53,8 +54,10 @@ class Archives extends AbstractController
 
         if ($item->isDir()) {
             return $this->viewDirectory($item, $data);
+        } elseif ('text/html' == $item->mimeType()) {
+            return $this->viewHtmlFile($item, $data);
         } else {
-            return $this->viewFile($item, $data);
+            return $this->viewRawFile($item, $data);
         }
     }
 
@@ -73,11 +76,23 @@ class Archives extends AbstractController
     /**
      * Build a Archive file view.
      */
-    public function viewFile(ArchiveFileInterface $item, array $data = [])
+    public function viewHtmlFile(ArchiveFileInterface $item, array $data = [])
     {
         $data['page_title'] = $item->getTitle();
         $data['archive_content'] = $item->getBodyHtml();
 
         return $this->render('archive/file.html.twig', $data);
+    }
+
+    /**
+     * Answer a raw file.
+     */
+    public function viewRawFile(ArchiveFileInterface $item, array $data = [])
+    {
+        $response = new Response($item->getFileContent());
+        $response->headers->set('Content-Type', $item->mimeType());
+        $response->headers->set('Content-Disposition', 'filename="'.$item->basename().'"');
+
+        return $response;
     }
 }

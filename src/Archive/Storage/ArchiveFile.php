@@ -51,6 +51,14 @@ class ArchiveFile implements ArchiveFileInterface
     }
 
     /**
+     * Answer the mime-type of the file.
+     */
+    public function mimeType(): string
+    {
+        return mime_content_type($this->realPath());
+    }
+
+    /**
      * Answer the content of the file.
      */
     public function getFileContent(): string
@@ -63,10 +71,14 @@ class ArchiveFile implements ArchiveFileInterface
      */
     public function getTitle(): string
     {
-        $doc = $this->getDomDocument();
-        $xpath = new \DOMXPath($doc);
+        if ('html' == strtolower(pathinfo($this->basename(), \PATHINFO_EXTENSION))) {
+            $doc = $this->getDomDocument();
+            $xpath = new \DOMXPath($doc);
 
-        return $xpath->query('/html/head/title')->item(0)->nodeValue;
+            return $xpath->query('/html/head/title')->item(0)->nodeValue;
+        } else {
+            throw new \Exception('Cannot extract a title from a non-HTML file.');
+        }
     }
 
     /**
