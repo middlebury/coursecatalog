@@ -592,11 +592,13 @@ class Schedules extends AbstractController
             $this->schedules->setSavedUserCatalogId($catalogId);
         } else {
             // Check for a saved catalog id.
-            $this->catalogId = $this->schedules->getSavedUserCatalogId();
+            if (!is_null($this->schedules->getSavedUserCatalogId())) {
+                $this->catalogId = $this->schedules->getSavedUserCatalogId();
+            }
         }
 
         // Load the termLookupSession
-        if ($this->catalogId) {
+        if (!empty($this->catalogId)) {
             $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSessionForCatalog($this->catalogId);
         } else {
             $this->termLookupSession = $this->osidRuntime->getCourseManager()->getTermLookupSession();
