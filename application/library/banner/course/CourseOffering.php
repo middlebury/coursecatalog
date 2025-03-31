@@ -605,6 +605,9 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
      */
     protected function as12HourTime($time)
     {
+        if (is_null($time)) {
+            return '?';
+        }
         $parts = date_parse_from_format('Hi', $time);
 
         return date('g:ia', mktime($parts['hour'], $parts['minute']));
