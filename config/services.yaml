@@ -76,6 +76,7 @@ services:
             $defaultOfferingGenusTypesToSearch:
                 - 'urn:inet:middlebury.edu:genera:offering-LCT'
                 - 'urn:inet:middlebury.edu:genera:offering-SEM'
+                - 'urn:inet:middlebury.edu:genera:offering-ONL'
                 - 'urn:inet:middlebury.edu:genera:offering-PRC'
                 - 'urn:inet:middlebury.edu:genera:offering-WKS'
     App\Service\CatalogSync\Director:
