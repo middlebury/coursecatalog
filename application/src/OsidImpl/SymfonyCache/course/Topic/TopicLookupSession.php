@@ -48,8 +48,6 @@ class TopicLookupSession extends CachableSession implements \osid_course_TopicLo
      * Constructor.
      *
      * @return void
-     *
-     * @since 4/10/09
      */
     public function __construct(\osid_course_CourseManager $manager, \osid_course_TopicLookupSession $session)
     {
@@ -208,8 +206,6 @@ class TopicLookupSession extends CachableSession implements \osid_course_TopicLo
      * Answer the type string corresponding to the topic id.
      *
      * @return string
-     *
-     * @since 4/24/09
      */
     public function getTopicType(\osid_id_Id $topicId)
     {
@@ -220,8 +216,6 @@ class TopicLookupSession extends CachableSession implements \osid_course_TopicLo
      * Answer the value string corresponding to the topic id.
      *
      * @return string
-     *
-     * @since 4/24/09
      */
     public function getTopicValue(\osid_id_Id $topicId)
     {

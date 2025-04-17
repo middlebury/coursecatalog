@@ -16,8 +16,6 @@ abstract class Cachable
      * @param string $collectionId
      *
      * @return void
-     *
-     * @since 8/10/10
      */
     protected function __construct($idString, $collectionId = null)
     {
@@ -35,8 +33,6 @@ abstract class Cachable
      * Answer data from the cache or NULL if not available.
      *
      * @param string $key
-     *
-     * @since 8/10/10
      */
     protected function cacheGetPlain($key)
     {
@@ -52,8 +48,6 @@ abstract class Cachable
      * Set data into the cache and return the data.
      *
      * @param string $key
-     *
-     * @since 8/10/10
      */
     protected function cacheSetPlain($key, $value)
     {
@@ -66,8 +60,6 @@ abstract class Cachable
      * Answer data from the cache or NULL if not available.
      *
      * @param string $key
-     *
-     * @since 8/10/10
      */
     protected function cacheGetObj($key)
     {
@@ -83,8 +75,6 @@ abstract class Cachable
      * Set data into the cache and return the data.
      *
      * @param string $key
-     *
-     * @since 8/10/10
      */
     protected function cacheSetObj($key, $value)
     {
@@ -99,12 +89,10 @@ abstract class Cachable
      * @param string $key
      *
      * @return void
-     *
-     * @since 8/10/10
      */
     protected function cacheDelete($key)
     {
-        apcu_delete($this->hash($key));
+        $this->cache->deleteItem($this->hash($key));
     }
 
     /**
@@ -113,8 +101,6 @@ abstract class Cachable
      * @param string $key
      *
      * @return string
-     *
-     * @since 8/10/10
      */
     private function hash($key)
     {

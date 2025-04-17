@@ -23,8 +23,6 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      * Constructor.
      *
      * @return void
-     *
-     * @since 8/10/10
      */
     public function __construct(CourseLookupSession $cacheSession, \osid_id_Id|\osid_course_Course $courseOrId)
     {
@@ -49,8 +47,6 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      * Answer our internal course object.
      *
      * @return \osid_course_Course
-     *
-     * @since 8/10/10
      */
     private function getMyCourse()
     {
@@ -342,8 +338,6 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      * Convert a type to a string.
      *
      * @return string
-     *
-     * @since 4/30/09
      */
     private function typeToString(\osid_type_Type $type)
     {
@@ -698,8 +692,6 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      * of each type within that set.
      *
      * @return \osid_id_IdList
-     *
-     * @since 8/3/10
      */
     public function getLinkSetIdsForTerm(\osid_id_Id $termId)
     {
@@ -733,8 +725,6 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      * of each type within that set.
      *
      * @return \osid_id_IdList
-     *
-     * @since 8/3/10
      */
     public function getLinkTypeIdsForTermAndSet(\osid_id_Id $termId, \osid_id_Id $linkSetId)
     {

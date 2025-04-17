@@ -40,8 +40,6 @@ class CourseOfferingSearchSession extends CachableSession implements \osid_cours
      * Constructor.
      *
      * @return void
-     *
-     * @since 4/10/09
      */
     public function __construct(
         \osid_course_CourseManager $manager,

@@ -29,8 +29,6 @@ class CourseManager extends \phpkit_AbstractOsidManager implements \osid_course_
      * Set the configuration and class paths.
      *
      * @return void
-     *
-     * @since 4/9/09
      */
     public function __construct()
     {

@@ -14,8 +14,6 @@ abstract class CachableSession extends AbstractSession
      * Contructor.
      *
      * @return void
-     *
-     * @since 8/10/10
      */
     public function __construct(\osid_course_CourseManager $manager)
     {
@@ -34,8 +32,6 @@ abstract class CachableSession extends AbstractSession
      * Answer data from the cache or NULL if not available.
      *
      * @param string $key
-     *
-     * @since 8/10/10
      */
     protected function cacheGetPlain($key)
     {
@@ -51,8 +47,6 @@ abstract class CachableSession extends AbstractSession
      * Set data into the cache and return the data.
      *
      * @param string $key
-     *
-     * @since 8/10/10
      */
     protected function cacheSetPlain($key, $value)
     {
@@ -65,8 +59,6 @@ abstract class CachableSession extends AbstractSession
      * Answer data from the cache or NULL if not available.
      *
      * @param string $key
-     *
-     * @since 8/10/10
      */
     protected function cacheGetObj($key)
     {
@@ -82,8 +74,6 @@ abstract class CachableSession extends AbstractSession
      * Set data into the cache and return the data.
      *
      * @param string $key
-     *
-     * @since 8/10/10
      */
     protected function cacheSetObj($key, $value)
     {
@@ -98,8 +88,6 @@ abstract class CachableSession extends AbstractSession
      * @param string $key
      *
      * @return void
-     *
-     * @since 8/10/10
      */
     protected function cacheDelete($key)
     {
@@ -112,8 +100,6 @@ abstract class CachableSession extends AbstractSession
      * @param string $key
      *
      * @return string
-     *
-     * @since 8/10/10
      */
     private function hash($key)
     {

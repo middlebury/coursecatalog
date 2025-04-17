@@ -20,8 +20,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * Constructor.
      *
      * @return void
-     *
-     * @since 8/10/10
      */
     public function __construct(
         private CourseOfferingLookupSession $cacheSession,
@@ -48,8 +46,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * Answer our internal course offering object.
      *
      * @return \osid_course_CourseOffering
-     *
-     * @since 8/10/10
      */
     private function getOffering()
     {
@@ -341,8 +337,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * Convert a type to a string.
      *
      * @return string
-     *
-     * @since 4/30/09
      */
     private function typeToString(\osid_type_Type $type)
     {
@@ -936,8 +930,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * of each type within that set.
      *
      * @return \osid_id_Id
-     *
-     * @since 8/3/10
      */
     public function getLinkSetId()
     {
@@ -961,8 +953,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * of each type within that set.
      *
      * @return \osid_id_Id
-     *
-     * @since 8/3/10
      */
     public function getLinkTypeId()
     {
@@ -1081,8 +1071,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * @compliance mandatory This method must be implemented.
      *
      * @throws \osid_IllegalStateException <code>meetsOnSunday()</code> is <code>false</code>
-     *
-     * @since 6/10/09
      */
     public function getSundayStartTimes()
     {
@@ -1103,8 +1091,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * @compliance mandatory This method must be implemented.
      *
      * @throws \osid_IllegalStateException <code>meetsOnSunday()</code> is <code>false</code>
-     *
-     * @since 6/10/09
      */
     public function getSundayEndTimes()
     {
@@ -1142,8 +1128,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * @compliance mandatory This method must be implemented.
      *
      * @throws \osid_IllegalStateException <code>meetsOnMonday()</code> is <code>false</code>
-     *
-     * @since 6/10/09
      */
     public function getMondayStartTimes()
     {
@@ -1164,8 +1148,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * @compliance mandatory This method must be implemented.
      *
      * @throws \osid_IllegalStateException <code>meetsOnMonday()</code> is <code>false</code>
-     *
-     * @since 6/10/09
      */
     public function getMondayEndTimes()
     {
@@ -1203,8 +1185,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * @compliance mandatory This method must be implemented.
      *
      * @throws \osid_IllegalStateException <code>meetsOnTuesday()</code> is <code>false</code>
-     *
-     * @since 6/10/09
      */
     public function getTuesdayStartTimes()
     {
@@ -1225,8 +1205,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * @compliance mandatory This method must be implemented.
      *
      * @throws \osid_IllegalStateException <code>meetsOnTuesday()</code> is <code>false</code>
-     *
-     * @since 6/10/09
      */
     public function getTuesdayEndTimes()
     {
@@ -1264,8 +1242,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * @compliance mandatory This method must be implemented.
      *
      * @throws \osid_IllegalStateException <code>meetsOnWednesday()</code> is <code>false</code>
-     *
-     * @since 6/10/09
      */
     public function getWednesdayStartTimes()
     {
@@ -1286,8 +1262,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * @compliance mandatory This method must be implemented.
      *
      * @throws \osid_IllegalStateException <code>meetsOnWednesday()</code> is <code>false</code>
-     *
-     * @since 6/10/09
      */
     public function getWednesdayEndTimes()
     {
@@ -1325,8 +1299,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * @compliance mandatory This method must be implemented.
      *
      * @throws \osid_IllegalStateException <code>meetsOnThursday()</code> is <code>false</code>
-     *
-     * @since 6/10/09
      */
     public function getThursdayStartTimes()
     {
@@ -1347,8 +1319,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * @compliance mandatory This method must be implemented.
      *
      * @throws \osid_IllegalStateException <code>meetsOnThursday()</code> is <code>false</code>
-     *
-     * @since 6/10/09
      */
     public function getThursdayEndTimes()
     {
@@ -1386,8 +1356,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * @compliance mandatory This method must be implemented.
      *
      * @throws \osid_IllegalStateException <code>meetsOnFriday()</code> is <code>false</code>
-     *
-     * @since 6/10/09
      */
     public function getFridayStartTimes()
     {
@@ -1408,8 +1376,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * @compliance mandatory This method must be implemented.
      *
      * @throws \osid_IllegalStateException <code>meetsOnFriday()</code> is <code>false</code>
-     *
-     * @since 6/10/09
      */
     public function getFridayEndTimes()
     {
@@ -1447,8 +1413,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * @compliance mandatory This method must be implemented.
      *
      * @throws \osid_IllegalStateException <code>meetsOnSaturday()</code> is <code>false</code>
-     *
-     * @since 6/10/09
      */
     public function getSaturdayStartTimes()
     {
@@ -1469,8 +1433,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      * @compliance mandatory This method must be implemented.
      *
      * @throws \osid_IllegalStateException <code>meetsOnSaturday()</code> is <code>false</code>
-     *
-     * @since 6/10/09
      */
     public function getSaturdayEndTimes()
     {

@@ -5,8 +5,6 @@ namespace Catalog\OsidImpl\SymfonyCache;
 /**
  * Common methods for cacheable sessions.
  *
- * @since 8/10/10
- *
  * @copyright Copyright &copy; 2009, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
@@ -23,8 +21,6 @@ abstract class AbstractSession extends \phpkit_AbstractOsidSession
      * Constructor.
      *
      * @return void
-     *
-     * @since 8/11/10
      */
     public function __construct(\osid_course_CourseManager $manager)
     {
@@ -35,8 +31,6 @@ abstract class AbstractSession extends \phpkit_AbstractOsidSession
      * Answer the course lookup session.
      *
      * @return \osid_course_CourseLookupSession
-     *
-     * @since 4/16/09
      */
     public function getCourseLookupSession()
     {
@@ -52,8 +46,6 @@ abstract class AbstractSession extends \phpkit_AbstractOsidSession
      * Answer the courseoffering lookup session.
      *
      * @return \osid_course_CourseOfferingLookupSession
-     *
-     * @since 4/16/09
      */
     public function getCourseOfferingLookupSession()
     {
@@ -69,8 +61,6 @@ abstract class AbstractSession extends \phpkit_AbstractOsidSession
      * Answer a term lookup session.
      *
      * @return \osid_course_TermLookupSession
-     *
-     * @since 4/16/09
      */
     public function getTermLookupSession()
     {
@@ -87,8 +77,6 @@ abstract class AbstractSession extends \phpkit_AbstractOsidSession
      * Answer a Resource lookup session.
      *
      * @return \osid_resource_ResourceLookupSession
-     *
-     * @since 4/16/09
      */
     public function getResourceLookupSession()
     {
