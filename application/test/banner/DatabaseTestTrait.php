@@ -38,10 +38,21 @@ trait banner_DatabaseTestTrait
         self::resetMemoryLimit();
     }
 
+    /**
+     * Answer the path for the OSID config used by this test.
+     *
+     * @return string
+     *                The filesytem path to the configuration plist file
+     */
+    public static function getOsidConfigPath(): string
+    {
+        return __DIR__.'/configuration.plist';
+    }
+
     public static function getDB()
     {
         if (empty(self::$db)) {
-            self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(__DIR__.'/configuration.plist');
+            self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(static::getOsidConfigPath());
             self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
             self::$db = self::$courseManager->getDB();
         }
@@ -57,7 +68,7 @@ trait banner_DatabaseTestTrait
     public static function loadBannerDb()
     {
         // Initialize our testing database
-        self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(__DIR__.'/configuration.plist');
+        self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(static::getOsidConfigPath());
         self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
         $db = self::$courseManager->getDB();
         harmoni_SQLUtils::runSQLfile(__DIR__.'/sql/drop_tables.sql', $db);
