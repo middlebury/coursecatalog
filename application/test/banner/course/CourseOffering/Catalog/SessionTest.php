@@ -36,7 +36,7 @@ class banner_course_CourseOffering_Catalog_SessionTest extends phpkit_test_phpun
      */
     protected function setUp(): void
     {
-        $this->session = self::$courseManager->getCourseOfferingCatalogSession();
+        $this->session = self::getCourseManager()->getCourseOfferingCatalogSession();
 
         $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MCUG');
         $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MIIS');

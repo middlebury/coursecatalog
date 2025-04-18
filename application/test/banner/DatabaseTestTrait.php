@@ -4,7 +4,6 @@ trait banner_DatabaseTestTrait
 {
     public static $runtimeManager;
     public static $courseManager;
-    public static $db;
 
     public static function setUpBeforeClass(): void
     {
@@ -14,6 +13,8 @@ trait banner_DatabaseTestTrait
     public static function tearDownAfterClass(): void
     {
         self::tearDownDatabase();
+        self::$courseManager = null;
+        self::$runtimeManager = null;
     }
 
     public static function setUpDatabase(): void
@@ -49,15 +50,19 @@ trait banner_DatabaseTestTrait
         return __DIR__.'/configuration.plist';
     }
 
-    public static function getDB()
+    public static function getCourseManager()
     {
-        if (empty(self::$db)) {
+        if (empty(self::$courseManager)) {
             self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(static::getOsidConfigPath());
             self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
-            self::$db = self::$courseManager->getDB();
         }
 
-        return self::$db;
+        return self::$courseManager;
+    }
+
+    public static function getDB(): PDO
+    {
+        return self::getCourseManager()->getDB();
     }
 
     /**
@@ -68,15 +73,13 @@ trait banner_DatabaseTestTrait
     public static function loadBannerDb()
     {
         // Initialize our testing database
-        self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(static::getOsidConfigPath());
-        self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
-        $db = self::$courseManager->getDB();
+        $db = self::getDB();
         harmoni_SQLUtils::runSQLfile(__DIR__.'/sql/drop_tables.sql', $db);
         harmoni_SQLUtils::runSQLfile(APPLICATION_PATH.'/library/banner/sql/table_creation.sql', $db);
         harmoni_SQLUtils::runSQLfile(__DIR__.'/sql/test_data.sql', $db);
 
         // Build our full-text search index.
-        $searchSession = self::$courseManager->getCourseOfferingSearchSession();
+        $searchSession = self::getCourseManager()->getCourseOfferingSearchSession();
         $searchSession->buildIndex(false);
 
         if (method_exists($db, 'resetCounters')) {
@@ -135,7 +138,7 @@ trait banner_DatabaseTestTrait
         }
         harmoni_SQLUtils::runSQLfile(__DIR__.'/sql/drop_tables.sql', $db);
 
-        self::$courseManager->shutdown();
+        self::getCourseManager()->shutdown();
         self::$runtimeManager->shutdown();
     }
 

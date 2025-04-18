@@ -40,7 +40,7 @@ class banner_course_CourseCatalog_Lookup_SessionTest extends phpkit_test_phpunit
      */
     protected function setUp(): void
     {
-        $this->session = self::$courseManager->getCourseCatalogLookupSession();
+        $this->session = self::getCourseManager()->getCourseCatalogLookupSession();
 
         $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MCUG');
         $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MIIS');

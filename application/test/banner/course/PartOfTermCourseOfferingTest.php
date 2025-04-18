@@ -53,8 +53,8 @@ class banner_course_PartOfTermCourseOfferingTest extends phpkit_test_phpunit_Abs
         $this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section-200390-90260');
         $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-PHYS0201');
 
-        $this->session = self::$courseManager->getCourseOfferingLookupSessionForCatalog($this->mclsCatalogId);
-        $this->searchSession = self::$courseManager->getCourseOfferingSearchSessionForCatalog($this->mclsCatalogId);
+        $this->session = self::getCourseManager()->getCourseOfferingLookupSessionForCatalog($this->mclsCatalogId);
+        $this->searchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($this->mclsCatalogId);
         $this->object = $this->session->getCourseOffering($this->hebmOfferingId);
 
         $this->instructorsType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors');
@@ -150,7 +150,7 @@ class banner_course_PartOfTermCourseOfferingTest extends phpkit_test_phpunit_Abs
      */
     public function testOfferingSearchBaseTermUg()
     {
-        $this->searchSession = self::$courseManager->getCourseOfferingSearchSessionForCatalog($this->mcugCatalogId);
+        $this->searchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($this->mcugCatalogId);
 
         $query = $this->searchSession->getCourseOfferingQuery();
         $query->matchTermId(new phpkit_id_URNInetId('urn:inet:middlebury.edu:term-200390'), true);
@@ -166,7 +166,7 @@ class banner_course_PartOfTermCourseOfferingTest extends phpkit_test_phpunit_Abs
      */
     public function testOfferingSearchPartOfTermUg1()
     {
-        $this->searchSession = self::$courseManager->getCourseOfferingSearchSessionForCatalog($this->mcugCatalogId);
+        $this->searchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($this->mcugCatalogId);
         $query = $this->searchSession->getCourseOfferingQuery();
         $query->matchTermId(new phpkit_id_URNInetId('urn:inet:middlebury.edu:term-200390-1'), true);
         $query->matchCourseId($this->physId, true);
@@ -181,7 +181,7 @@ class banner_course_PartOfTermCourseOfferingTest extends phpkit_test_phpunit_Abs
      */
     public function testOfferingSearchPartOfTermUgHbm()
     {
-        $this->searchSession = self::$courseManager->getCourseOfferingSearchSessionForCatalog($this->mcugCatalogId);
+        $this->searchSession = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($this->mcugCatalogId);
         $query = $this->searchSession->getCourseOfferingQuery();
         $query->matchTermId(new phpkit_id_URNInetId('urn:inet:middlebury.edu:term-200390-HBM'), true);
         $query->matchCourseId($this->physId, true);

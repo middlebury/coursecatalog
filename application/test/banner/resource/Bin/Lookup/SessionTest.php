@@ -39,7 +39,7 @@ class banner_resource_Bin_Lookup_SessionTest extends phpkit_test_phpunit_Abstrac
      */
     protected function setUp(): void
     {
-        $this->manager = self::$courseManager->getResourceManager();
+        $this->manager = self::getCourseManager()->getResourceManager();
         $this->session = $this->manager->getBinLookupSession();
 
         $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MCUG');

@@ -36,7 +36,7 @@ class banner_course_CourseOffering_Search_OrderTest extends TestCase
         $this->wildcardStringMatchType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:search:wildcard');
 
         $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MCUG');
-        $this->session = self::$courseManager->getCourseOfferingSearchSessionForCatalog($this->mcugId);
+        $this->session = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($this->mcugId);
 
         $this->object = $this->session->getCourseOfferingSearchOrder();
 

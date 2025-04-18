@@ -58,7 +58,7 @@ class banner_course_CourseOffering_Search_QueryTest extends TestCase
         $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MCUG');
         $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MIIS');
 
-        $this->session = self::$courseManager->getCourseOfferingSearchSessionForCatalog($this->mcugId);
+        $this->session = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($this->mcugId);
         $this->object = $this->session->getCourseOfferingQuery();
 
         $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-PHYS0201');

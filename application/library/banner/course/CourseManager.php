@@ -58,6 +58,10 @@ class banner_course_CourseManager extends phpkit_AbstractOsidManager implements 
      */
     public function getDB()
     {
+        if (empty($this->db)) {
+            throw new osid_IllegalStateException('No database connection. Either this manager was not initialized or was shut down.');
+        }
+
         return $this->db;
     }
 

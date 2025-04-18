@@ -46,7 +46,7 @@ class banner_course_Term_Lookup_SessionTest extends phpkit_test_phpunit_Abstract
         $this->springTermId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term-200920');
         $this->badTermId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term-200866');
 
-        $this->session = self::$courseManager->getTermLookupSessionForCatalog($this->mcugId);
+        $this->session = self::getCourseManager()->getTermLookupSessionForCatalog($this->mcugId);
 
         $this->unknownType = new phpkit_type_URNInetType('urn:inet:osid.org:unknown_type');
         $this->generaNoneType = new phpkit_type_URNInetType('urn:inet:osid.org:genera:none');

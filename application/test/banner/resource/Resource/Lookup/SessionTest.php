@@ -48,7 +48,7 @@ class banner_resource_Resource_Lookup_SessionTest extends phpkit_test_phpunit_Ab
     protected function setUp(): void
     {
         $this->allBinId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource-all');
-        $this->manager = self::$courseManager->getResourceManager();
+        $this->manager = self::getCourseManager()->getResourceManager();
         $this->session = $this->manager->getResourceLookupSession();
 
         $this->personType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource-person');

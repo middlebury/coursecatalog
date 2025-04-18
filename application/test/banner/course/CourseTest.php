@@ -45,7 +45,7 @@ class banner_course_CourseTest extends phpkit_test_phpunit_AbstractOsidObjectTes
         $this->geolId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-GEOL0250');
         $this->geogId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-GEOG0250');
         $this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-CHEM0104');
-        $this->session = self::$courseManager->getCourseLookupSessionForCatalog($this->mcugId);
+        $this->session = self::getCourseManager()->getCourseLookupSessionForCatalog($this->mcugId);
         $this->object = $this->session->getCourse($this->physId);
 
         $this->termRecordType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms');

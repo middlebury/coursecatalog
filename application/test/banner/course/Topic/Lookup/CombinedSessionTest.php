@@ -70,7 +70,7 @@ class banner_course_Topic_Lookup_CombinedSessionTest extends TestCase
         $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MIIS');
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
 
-        $this->session = self::$courseManager->getTopicLookupSession();
+        $this->session = self::getCourseManager()->getTopicLookupSession();
         $this->session->useComparativeTopicView();
         $this->session->useFederatedCourseCatalogView();
 
