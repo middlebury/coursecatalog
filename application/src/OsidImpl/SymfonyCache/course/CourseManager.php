@@ -7,7 +7,7 @@ use Catalog\OsidImpl\SymfonyCache\course\Course\CourseSearchSession;
 use Catalog\OsidImpl\SymfonyCache\course\CourseOffering\CourseOfferingLookupSession;
 use Catalog\OsidImpl\SymfonyCache\course\CourseOffering\CourseOfferingSearchSession;
 use Catalog\OsidImpl\SymfonyCache\course\Topic\TopicLookupSession;
-use Symfony\Contracts\Cache\CacheInterface;
+use Psr\Cache\CacheItemPoolInterface;
 
 /**
  * This is a CourseManager implementation that provides read-only, cached
@@ -23,7 +23,7 @@ class CourseManager extends \phpkit_AbstractOsidManager implements \osid_course_
     private \osid_resource_ResourceManager $resourceManager;
     private \osid_calendaring_CalendarManager $calendarManager;
     private \osid_learning_ObjectiveManager $learningManager;
-    private CacheInterface $cache;
+    private CacheItemPoolInterface $cache;
 
     /**
      * Set the configuration and class paths.
@@ -53,7 +53,7 @@ class CourseManager extends \phpkit_AbstractOsidManager implements \osid_course_
     /**
      * Set the Symfony Cache service implementation.
      */
-    public function setCache(CacheInterface $cache)
+    public function setCache(CacheItemPoolInterface $cache)
     {
         if (isset($this->cache)) {
             throw new \osid_IllegalStateException('The cache has already been set.');
@@ -64,7 +64,7 @@ class CourseManager extends \phpkit_AbstractOsidManager implements \osid_course_
     /**
      * Answer the Symfony Cache service implementation.
      */
-    public function getCache(): CacheInterface
+    public function getCache(): CacheItemPoolInterface
     {
         if (!isset($this->cache)) {
             throw new \osid_IllegalStateException('The cache has not been set.');

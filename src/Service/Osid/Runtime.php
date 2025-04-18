@@ -2,6 +2,7 @@
 
 namespace App\Service\Osid;
 
+use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Path;
 
@@ -32,6 +33,7 @@ class Runtime
         #[Autowire('%kernel.project_dir%')]
         private string $projectDir,
         private string $courseImpl = 'banner_course_CourseManager',
+        private ?CacheItemPoolInterface $cache = null,
     ) {
         $this->setConfigPath($configPath);
     }
@@ -86,6 +88,14 @@ class Runtime
             if (class_exists($this->courseImpl)) {
                 $runtimeManager = $this->getRuntimeManager();
                 $this->courseManager = $runtimeManager->getManager(\osid_OSID::COURSE(), $this->courseImpl, '3.0.0');
+
+                // Inject our cache implementation into the course manager.
+                if (method_exists($this->courseManager, 'setCache')) {
+                    if (empty($this->cache)) {
+                        throw new \osid_IllegalStateException('The Course manager needs a cache, but one was not autowired.');
+                    }
+                    $this->courseManager->setCache($this->cache);
+                }
             } else {
                 throw new \InvalidArgumentException('Unknown CourseManger implementation class: '.$this->courseImpl);
             }
