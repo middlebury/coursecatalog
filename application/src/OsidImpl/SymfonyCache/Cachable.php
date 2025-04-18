@@ -2,6 +2,8 @@
 
 namespace Catalog\OsidImpl\SymfonyCache;
 
+use Psr\Cache\CacheItemPoolInterface;
+
 /**
  * A cachable object.
  *
@@ -10,24 +12,15 @@ namespace Catalog\OsidImpl\SymfonyCache;
  */
 abstract class Cachable
 {
-    /**
-     * Contructor.
-     *
-     * @param string $collectionId
-     *
-     * @return void
-     */
-    protected function __construct($idString, $collectionId = null)
-    {
+    protected function __construct(
+        private CacheItemPoolInterface $cache,
+        private $idString,
+        private $collectionId = null,
+    ) {
         if (!$collectionId) {
-            $collectionId = static::class;
+            $this->collectionId = static::class;
         }
-
-        $this->collectionId = $collectionId;
-        $this->idString = $idString;
     }
-    private $collectionId;
-    private $idString;
 
     /**
      * Answer data from the cache or NULL if not available.
@@ -36,12 +29,7 @@ abstract class Cachable
      */
     protected function cacheGetPlain($key)
     {
-        $result = apcu_fetch($this->hash($key), $success);
-        if (!$success) {
-            return null;
-        }
-
-        return $result;
+        return $this->cache->getItem($this->hash($key))->get();
     }
 
     /**
@@ -51,7 +39,10 @@ abstract class Cachable
      */
     protected function cacheSetPlain($key, $value)
     {
-        $success = apcu_store($this->hash($key), $value);
+        // create a new item by trying to get it from the cache.
+        $item = $this->cache->getItem($this->hash($key));
+        $item->set($value);
+        $this->cache->save($item);
 
         return $value;
     }
@@ -63,12 +54,8 @@ abstract class Cachable
      */
     protected function cacheGetObj($key)
     {
-        $result = apcu_fetch($this->hash($key), $success);
-        if (!$success) {
-            return null;
-        }
-
-        return unserialize($result);
+        // No difference between plain/object in this implementation.
+        return $this->cacheGetPlain($key);
     }
 
     /**
@@ -78,9 +65,8 @@ abstract class Cachable
      */
     protected function cacheSetObj($key, $value)
     {
-        $success = apcu_store($this->hash($key), serialize($value));
-
-        return $value;
+        // No difference between plain/object in this implementation.
+        return $this->cacheSetPlain($key, $value);
     }
 
     /**
@@ -104,6 +90,6 @@ abstract class Cachable
      */
     private function hash($key)
     {
-        return $this->collectionId.':'.$this->idString.':'.$key;
+        return str_replace('\\', '-', str_replace(':', '_', str_replace('.', ',', $this->collectionId.';'.$this->idString.';'.$key)));
     }
 }

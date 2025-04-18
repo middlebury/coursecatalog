@@ -2,6 +2,9 @@
 
 namespace Catalog\OsidImpl\SymfonyCache;
 
+use Catalog\OsidImpl\SymfonyCache\course\CourseManager;
+use Psr\Cache\CacheItemPoolInterface;
+
 /**
  * A cachable session.
  *
@@ -10,23 +13,29 @@ namespace Catalog\OsidImpl\SymfonyCache;
  */
 abstract class CachableSession extends AbstractSession
 {
+    private string $collectionId;
+    private string $idString;
+    private CacheItemPoolInterface $cache;
+
     /**
      * Contructor.
      *
      * @return void
      */
-    public function __construct(\osid_course_CourseManager $manager)
-    {
+    public function __construct(
+        CourseManager $manager,
+    ) {
         parent::__construct($manager);
 
         $this->collectionId = static::class;
-
-        $catalogId = $this->getCourseCatalogId();
-
-        $this->idString = $this->osidIdToString($catalogId);
+        $this->idString = $this->osidIdToString($this->getCourseCatalogId());
+        $this->cache = $manager->getCache();
     }
-    private string $collectionId;
-    private string $idString;
+
+    public function getCache(): CacheItemPoolInterface
+    {
+        return $this->cache;
+    }
 
     /**
      * Answer data from the cache or NULL if not available.
@@ -35,12 +44,7 @@ abstract class CachableSession extends AbstractSession
      */
     protected function cacheGetPlain($key)
     {
-        $result = apcu_fetch($this->hash($key), $success);
-        if (!$success) {
-            return null;
-        }
-
-        return $result;
+        return $this->cache->getItem($this->hash($key))->get();
     }
 
     /**
@@ -50,7 +54,10 @@ abstract class CachableSession extends AbstractSession
      */
     protected function cacheSetPlain($key, $value)
     {
-        $success = apcu_store($this->hash($key), $value);
+        // create a new item by trying to get it from the cache.
+        $item = $this->cache->getItem($this->hash($key));
+        $item->set($value);
+        $this->cache->save($item);
 
         return $value;
     }
@@ -62,12 +69,8 @@ abstract class CachableSession extends AbstractSession
      */
     protected function cacheGetObj($key)
     {
-        $result = apcu_fetch($this->hash($key), $success);
-        if (!$success) {
-            return null;
-        }
-
-        return unserialize($result);
+        // No difference between plain/object in this implementation.
+        return $this->cacheGetPlain($key);
     }
 
     /**
@@ -77,9 +80,8 @@ abstract class CachableSession extends AbstractSession
      */
     protected function cacheSetObj($key, $value)
     {
-        $success = apcu_store($this->hash($key), serialize($value));
-
-        return $value;
+        // No difference between plain/object in this implementation.
+        return $this->cacheSetPlain($key, $value);
     }
 
     /**
@@ -91,7 +93,7 @@ abstract class CachableSession extends AbstractSession
      */
     protected function cacheDelete($key)
     {
-        apcu_delete($this->hash($key));
+        $this->cache->deleteItem($this->hash($key));
     }
 
     /**
@@ -103,7 +105,7 @@ abstract class CachableSession extends AbstractSession
      */
     private function hash($key)
     {
-        return $this->collectionId.':'.$this->idString.':'.$key;
+        return str_replace('\\', '-', str_replace(':', '_', str_replace('.', ',', $this->collectionId.';'.$this->idString.';'.$key)));
     }
 
     /**
@@ -111,7 +113,7 @@ abstract class CachableSession extends AbstractSession
      */
     protected function osidIdToString(\osid_id_Id $id): string
     {
-        return $id->getIdentifierNamespace().':'.$id->getAuthority().':'.$id->getIdentifier();
+        return $id->getIdentifierNamespace().';'.$id->getAuthority().';'.$id->getIdentifier();
     }
 
     /**
@@ -119,6 +121,6 @@ abstract class CachableSession extends AbstractSession
      */
     protected function osidTypeToString(\osid_type_Type $type): string
     {
-        return $type->getIdentifierNamespace().':'.$type->getAuthority().':'.$type->getIdentifier();
+        return $type->getIdentifierNamespace().';'.$type->getAuthority().';'.$type->getIdentifier();
     }
 }

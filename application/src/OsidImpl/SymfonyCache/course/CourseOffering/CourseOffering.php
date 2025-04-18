@@ -32,7 +32,10 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
             $this->id = $offeringOrId;
         }
 
-        parent::__construct($this->id->getIdentifierNamespace().':'.$this->id->getAuthority().':'.$this->id->getIdentifier());
+        parent::__construct(
+            $cacheSession->getCache(),
+            $this->id->getIdentifierNamespace().':'.$this->id->getAuthority().':'.$this->id->getIdentifier()
+        );
 
         $this->localRecordTypes = [
             new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors'),

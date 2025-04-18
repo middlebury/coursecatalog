@@ -32,7 +32,10 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
         } else {
             $this->id = $courseOrId;
         }
-        parent::__construct($this->id->getIdentifierNamespace().':'.$this->id->getAuthority().':'.$this->id->getIdentifier());
+        parent::__construct(
+            $cacheSession->getCache(),
+            $this->id->getIdentifierNamespace().':'.$this->id->getAuthority().':'.$this->id->getIdentifier()
+        );
 
         $this->cacheSession = $cacheSession;
 

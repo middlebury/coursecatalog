@@ -64,7 +64,7 @@ class CourseManager extends \phpkit_AbstractOsidManager implements \osid_course_
     /**
      * Answer the Symfony Cache service implementation.
      */
-    public function getCache(CacheInterface $cache): CacheInterface
+    public function getCache(): CacheInterface
     {
         if (!isset($this->cache)) {
             throw new \osid_IllegalStateException('The cache has not been set.');
