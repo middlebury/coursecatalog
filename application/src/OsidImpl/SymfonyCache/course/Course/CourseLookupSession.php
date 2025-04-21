@@ -216,7 +216,7 @@ class CourseLookupSession extends CachableSession implements \osid_course_Course
      */
     public function getCoursesByIds(\osid_id_IdList $courseIdList)
     {
-        // Wrap course objects as APCu versions
+        // Wrap course objects as cacheable versions
         return new CourseList($this, $this->session->getCoursesByIds($courseIdList));
     }
 
@@ -244,7 +244,7 @@ class CourseLookupSession extends CachableSession implements \osid_course_Course
      */
     public function getCoursesByGenusType(\osid_type_Type $courseGenusType)
     {
-        // Wrap course objects as APCu versions
+        // Wrap course objects as cacheable versions
         return new CourseList($this, $this->session->getCoursesByGenusType($courseGenusType));
     }
 
@@ -272,7 +272,7 @@ class CourseLookupSession extends CachableSession implements \osid_course_Course
      */
     public function getCoursesByParentGenusType(\osid_type_Type $courseGenusType)
     {
-        // Wrap course objects as APCu versions
+        // Wrap course objects as cacheable versions
         return new CourseList($this, $this->session->getCoursesByParentGenusType($courseGenusType));
     }
 
@@ -298,7 +298,7 @@ class CourseLookupSession extends CachableSession implements \osid_course_Course
      */
     public function getCoursesByRecordType(\osid_type_Type $courseRecordType)
     {
-        // Wrap course objects as APCu versions
+        // Wrap course objects as cacheable versions
         return new CourseList($this, $this->session->getCoursesByRecordType($courseRecordType));
     }
 
@@ -327,7 +327,7 @@ class CourseLookupSession extends CachableSession implements \osid_course_Course
      */
     public function getCoursesByTopic(\osid_id_Id $topicId)
     {
-        // Wrap course objects as APCu versions
+        // Wrap course objects as cacheable versions
         return new CourseList($this, $this->session->getCoursesByTopic($topicId));
     }
 
@@ -348,7 +348,7 @@ class CourseLookupSession extends CachableSession implements \osid_course_Course
      */
     public function getCourses()
     {
-        // Wrap course objects as APCu versions
+        // Wrap course objects as cacheable versions
         return new CourseList($this, $this->session->getCourses());
     }
 }
