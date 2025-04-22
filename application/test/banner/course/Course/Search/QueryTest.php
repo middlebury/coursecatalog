@@ -55,7 +55,7 @@ class banner_course_Course_Search_QueryTest extends TestCase
         $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MIIS');
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
 
-        $this->session = self::$courseManager->getCourseSearchSessionForCatalog($this->mcugId);
+        $this->session = self::getCourseManager()->getCourseSearchSessionForCatalog($this->mcugId);
 
         $this->wildcardStringMatchType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:search:wildcard');
 

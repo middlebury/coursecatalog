@@ -37,7 +37,7 @@ class banner_course_Topic_Search_OrderTest extends TestCase
         $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MCUG');
         $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MIIS');
 
-        $this->session = self::$courseManager->getTopicSearchSessionForCatalog($this->mcugId);
+        $this->session = self::getCourseManager()->getTopicSearchSessionForCatalog($this->mcugId);
         $this->object = $this->session->getTopicSearchOrder();
 
         $this->termId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term-200820');

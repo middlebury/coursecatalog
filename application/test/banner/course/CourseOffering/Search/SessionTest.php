@@ -57,7 +57,7 @@ class banner_course_CourseOffering_Search_SessionTest extends phpkit_test_phpuni
         $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MIIS');
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
 
-        $this->session = self::$courseManager->getCourseOfferingSearchSessionForCatalog($this->mcugId);
+        $this->session = self::getCourseManager()->getCourseOfferingSearchSessionForCatalog($this->mcugId);
 
         $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-PHYS0201');
         $this->mathId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-MATH0300');

@@ -2,6 +2,8 @@
 
 namespace App\Service\Osid;
 
+use Psr\Cache\CacheItemPoolInterface;
+
 /**
  * A helper to with functions for handling terms.
  *
@@ -32,6 +34,7 @@ class TermHelper
     public function __construct(
         private Runtime $runtime,
         private IdMap $idMap,
+        private CacheItemPoolInterface $cache,
         ?string $referenceDate = 'now',
     ) {
         $this->referenceDate = new \DateTime($referenceDate);
@@ -50,10 +53,10 @@ class TermHelper
      */
     public function getNextOrLatestTermId(\osid_id_Id $catalogId)
     {
-        $catalogIdString = $this->idMap->toString($catalogId);
-        $cacheKey = 'upcoming_term::'.$catalogIdString;
-        $currentTerm = self::cache_get($cacheKey);
-        if (!$currentTerm) {
+        $cacheKey = $this->osidIdToCacheKey('upcoming_term', $catalogId);
+        $cacheItem = $this->cache->getItem($cacheKey);
+        $currentTerm = $cacheItem->get();
+        if (empty($currentTerm)) {
             $manager = $this->runtime->getCourseManager();
             if (!$manager->supportsTermLookup()) {
                 throw new \osid_NotFoundException('Could not determine a current term id. The manager does not support term lookup.');
@@ -64,7 +67,8 @@ class TermHelper
                 throw new \osid_NotFoundException('Could not determine an upcoming term id for the catalog passed.');
             }
 
-            self::cache_set($cacheKey, $currentTerm);
+            $cacheItem->set($currentTerm);
+            $this->cache->save($cacheItem);
         }
 
         return $currentTerm;
@@ -82,10 +86,10 @@ class TermHelper
      */
     public function getCurrentTermId(\osid_id_Id $catalogId)
     {
-        $catalogIdString = $this->idMap->toString($catalogId);
-        $cacheKey = 'current_term::'.$catalogIdString;
-        $currentTerm = self::cache_get($cacheKey);
-        if (!$currentTerm) {
+        $cacheKey = $this->osidIdToCacheKey('current_term', $catalogId);
+        $cacheItem = $this->cache->getItem($cacheKey);
+        $currentTerm = $cacheItem->get();
+        if (empty($currentTerm)) {
             $manager = $this->runtime->getCourseManager();
             if (!$manager->supportsTermLookup()) {
                 throw new \osid_NotFoundException('Could not determine a current term id. The manager does not support term lookup.');
@@ -96,59 +100,18 @@ class TermHelper
                 throw new \osid_NotFoundException('Could not determine a current term id for the catalog passed.');
             }
 
-            self::cache_set($cacheKey, $currentTerm);
+            $cacheItem->set($currentTerm);
+            $this->cache->save($cacheItem);
         }
 
         return $currentTerm;
     }
 
-    /**
-     * Fetch from cache.
-     *
-     * @param string $key
-     *
-     * @return mixed, FALSE on failure
-     *
-     * @since 6/9/10
-     */
-    private static function cache_get($key)
+    private function osidIdToCacheKey(string $prefix, \osid_id_Id $id)
     {
-        if (function_exists('apcu_fetch')) {
-            return apcu_fetch($key);
-        }
-        // Fall back to Session caching if APC is not available.
-        else {
-            if (!isset($_SESSION['cache'][$key])) {
-                return false;
-            }
+        $idString = $this->idMap->toString($id);
 
-            return $_SESSION['cache'][$key];
-        }
-    }
-
-    /**
-     * Set an item in the cache.
-     *
-     * @param string $key
-     *
-     * @return bool true on success, false on failure
-     *
-     * @since 6/9/10
-     */
-    private static function cache_set($key, $value)
-    {
-        if (function_exists('apcu_fetch')) {
-            return apcu_store($key, $value, 3600);
-        }
-        // Fall back to Session caching if APC is not available.
-        else {
-            if (!isset($_SESSION['cache'])) {
-                $_SESSION['cache'] = [];
-            }
-            $_SESSION['cache'][$key] = $value;
-
-            return true;
-        }
+        return str_replace('\\', '-', str_replace(':', '_', str_replace('.', ',', $prefix.'--'.$idString)));
     }
 
     /**

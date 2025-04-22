@@ -46,7 +46,7 @@ class banner_course_Term_Lookup_CombinedSessionTest extends phpkit_test_phpunit_
         $this->springTermId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term-200920');
         $this->badTermId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:term-200866');
 
-        $this->session = self::$courseManager->getTermLookupSession();
+        $this->session = self::getCourseManager()->getTermLookupSession();
         $this->session->useComparativeView();
         $this->session->useFederatedCourseCatalogView();
 

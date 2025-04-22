@@ -42,7 +42,7 @@ class banner_course_CourseCatalogTest extends phpkit_test_phpunit_AbstractOsidOb
         $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MIIS');
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
 
-        $this->session = self::$courseManager->getCourseLookupSessionForCatalog($this->mcugId);
+        $this->session = self::getCourseManager()->getCourseLookupSessionForCatalog($this->mcugId);
 
         $this->object = $this->session->getCourseCatalog($this->mcugId);
 

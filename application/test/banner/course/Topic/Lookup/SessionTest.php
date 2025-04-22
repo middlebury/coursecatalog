@@ -70,7 +70,7 @@ class banner_course_Topic_Lookup_SessionTest extends TestCase
         $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MIIS');
         $this->unknownId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:unknown_id');
 
-        $this->session = self::$courseManager->getTopicLookupSessionForCatalog($this->mcugId);
+        $this->session = self::getCourseManager()->getTopicLookupSessionForCatalog($this->mcugId);
 
         $this->physId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-PHYS0201');
         $this->geolId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-GEOL0300');

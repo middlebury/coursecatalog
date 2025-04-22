@@ -38,7 +38,7 @@ class banner_course_Term_Catalog_SessionTest extends TestCase
      */
     protected function setUp(): void
     {
-        $this->session = self::$courseManager->getTermCatalogSession();
+        $this->session = self::getCourseManager()->getTermCatalogSession();
 
         $this->mcugId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MCUG');
         $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MIIS');

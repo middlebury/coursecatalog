@@ -44,7 +44,8 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/"
+            "App\\": "src/",
+            "Catalog\\": "application/src/"
         },
         "psr-0": {
             "osid_": "vendor/oki/osid-phpkit/",
@@ -58,7 +59,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\Tests\\": "tests/"
+            "App\\Tests\\": "tests/",
+            "Catalog\\Tests\\SymfonyCache\\": "application/test/SymfonyCache"
         }
     },
     "replace": {

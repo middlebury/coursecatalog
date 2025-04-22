@@ -51,7 +51,7 @@ class banner_resource_Resource_Lookup_PerCatalogSessionTest extends phpkit_test_
         $this->miisId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:catalog-MIIS');
 
         $this->allBinId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:resource-all');
-        $this->manager = self::$courseManager->getResourceManager();
+        $this->manager = self::getCourseManager()->getResourceManager();
         $this->session = $this->manager->getResourceLookupSessionForBin($this->mcugId);
 
         $this->personType = new phpkit_type_URNInetType('urn:inet:middlebury.edu:genera:resource-person');
