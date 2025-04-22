@@ -164,3 +164,17 @@ SAML_IDP_X509CERT="MIIC...."
 # Implementation Notes
 
 The implementation of this system is layered such that the Web UI code is separated from the data model. The data model is an implementation of the [Open Knowledge Initiative](http://www.okiproject.org/) (O.K.I.) Open Service Interface Definition (OSID) for Course information, the [Course OSID](http://en.wikipedia.org/wiki/CourseManagement_Open_Service_Interface_Definition) ([detailed doc](http://sourceforge.net/project/downloading.php?group_id=69345&amp;filename=OSID_CourseMgmt_rel_2_0.pdf&amp;40157442)). Because of this structure, it is possible for other institutions to modify the data model (the OSID implementation) so as to use the same UI code against different data sources, be they different Banner implementations or alternative systems. See also [OSID Usage](https://github.com/middlebury/coursecatalog/wiki/OSID-Usage).
+
+# Change Log
+
+## 2.0.1
+- Added support for application and data-model caching via the Symfony Cache component
+  which supports Memcached, Redis, and other cache back-ends in addition to APCu.
+
+## 2.0.0
+- Completely rewritten application code based on Symfony 6.4.
+- Installation via composer
+- New theme and UI.
+
+## 1.1
+Last release based on the Zend Framework.
