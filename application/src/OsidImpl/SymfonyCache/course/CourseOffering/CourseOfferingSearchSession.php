@@ -164,7 +164,7 @@ class CourseOfferingSearchSession extends CachableSession implements \osid_cours
      */
     public function getCourseOfferingsByQuery(\osid_course_CourseOfferingQuery $courseQuery)
     {
-        // Wrap course objects as APCu versions
+        // Wrap course objects as SymfonyCache versions
         return new CourseOfferingList(
             $this->manager->getCourseOfferingLookupSessionForCatalog($this->getCourseCatalogId()),
             $this->session->getCourseOfferingsByQuery($courseQuery),
@@ -228,7 +228,7 @@ class CourseOfferingSearchSession extends CachableSession implements \osid_cours
     public function getCourseOfferingsBySearch(\osid_course_CourseOfferingQuery $courseOfferingQuery,
         \osid_course_CourseOfferingSearch $courseOfferingSearch)
     {
-        // Wrap course objects as APCu versions
+        // Wrap course objects as SymfonyCache versions
         return new CourseOfferingSearchResults(
             $this->manager->getCourseOfferingLookupSessionForCatalog($this->getCourseCatalogId()),
             $this->session->getCourseOfferingsBySearch($courseOfferingQuery, $courseOfferingSearch)

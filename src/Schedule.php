@@ -225,7 +225,8 @@ class Schedule
                     $offering = $lookupSession->getCourseOffering($offeringId);
 
                     // This existence test (getDisplayName) shouldn't really be needed,
-                    // but the apc_course_CourseOffering_Lookup_Session::getCourseOffering($id)
+                    // but the
+                    // Catalog\OsidImpl\SymfonyCache\course\CourseOfferingLookupSession::getCourseOffering($id)
                     // method blindly returns course offerings without checking their
                     // existence. While this is a huge performance boost, it also means
                     // that the CourseOffering returned might not be fully usable.

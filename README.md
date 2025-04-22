@@ -167,6 +167,9 @@ The implementation of this system is layered such that the Web UI code is separa
 
 # Change Log
 
+## 2.1.0
+- Remove support for the apc_course_CourseManager
+
 ## 2.0.1
 - Added support for application and data-model caching via the Symfony Cache component
   which supports Memcached, Redis, and other cache back-ends in addition to APCu.

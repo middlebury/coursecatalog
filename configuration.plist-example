@@ -26,7 +26,5 @@
 
 	<key>urn:inet:middlebury.edu:config:symfonycache_course.impl_class_name</key>
 	<string>banner_course_CourseManager</string>
-	<key>urn:inet:middlebury.edu:config:apc_course.impl_class_name</key>
-	<string>banner_course_CourseManager</string>
 </dict>
 </plist>

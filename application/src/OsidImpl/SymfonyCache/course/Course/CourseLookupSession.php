@@ -53,7 +53,7 @@ class CourseLookupSession extends CachableSession implements \osid_course_Course
     }
 
     /**
-     * Helper method within the APC package.
+     * Helper method within the SymfonyCache package.
      */
     public function getWrappedSession(): \osid_course_CourseLookupSession
     {

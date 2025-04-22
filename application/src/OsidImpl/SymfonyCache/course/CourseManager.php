@@ -35,7 +35,7 @@ class CourseManager extends \phpkit_AbstractOsidManager implements \osid_course_
         parent::__construct();
 
         $this->setId(new \phpkit_id_URNInetId('urn:inet:middlebury.edu:id:implementations.symfonycache_course'));
-        $this->setDisplayName('APC Caching Course Manager');
+        $this->setDisplayName('Symfony Caching Course Manager');
         $this->setDescription('This is a CourseManager implementation that provides read-only, unauthenticated, access to course information stored in an underlying course manager.');
     }
 

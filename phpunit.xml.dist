@@ -27,7 +27,6 @@
         </testsuite>
         <testsuite name="cached_model">
             <directory>application/test/SymfonyCache</directory>
-            <directory>application/test/apc</directory>
         </testsuite>
         <testsuite name="primitives">
             <directory>application/library/harmoni/tests</directory>
@@ -39,7 +38,7 @@
             <directory>application/library/harmoni/tests</directory>
             <directory>application/test/banner</directory>
             <directory>application/test/SymfonyCache</directory>
-            <directory>application/test/apc</directory>            <directory>tests</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
 

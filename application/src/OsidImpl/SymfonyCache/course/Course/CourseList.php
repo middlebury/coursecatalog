@@ -3,7 +3,7 @@
 namespace Catalog\OsidImpl\SymfonyCache\course\Course;
 
 /**
- * A List for retrieving APC-wrapped courses from an underlying implementation.
+ * A List for retrieving Cache-wrapped courses from an underlying implementation.
  *
  * @copyright Copyright &copy; 2025, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
