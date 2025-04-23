@@ -10,7 +10,7 @@ use Catalog\OsidImpl\SymfonyCache\Cachable;
  *  time and place through the creation of a <code> CourseOffering. </code>
  *  </p>.
  */
-class CourseOffering extends Cachable implements \osid_course_CourseOffering, \middlebury_course_CourseOffering_InstructorsRecord, \middlebury_course_CourseOffering_AlternatesRecord, \middlebury_course_CourseOffering_LinkRecord
+class CourseOffering extends Cachable implements \osid_course_CourseOffering, \middlebury_course_CourseOffering_AlternatesRecord
 {
     private \osid_course_CourseOffering $offering;
     private \osid_id_Id $id;
@@ -38,10 +38,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
         );
 
         $this->localRecordTypes = [
-            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors'),
-            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:weekly_schedule'),
             new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates'),
-            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:link'),
         ];
     }
 
@@ -127,12 +124,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getDisplayName()
     {
-        $val = $this->cacheGetInstance('displayName');
-        if (null === $val) {
-            return $this->cacheSetInstance('displayName', $this->getOffering()->getDisplayName());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->getDisplayName();
     }
 
     /**
@@ -153,12 +145,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getDescription()
     {
-        $val = $this->cacheGetInstance('description');
-        if (null === $val) {
-            return $this->cacheSetInstance('description', $this->getOffering()->getDescription());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->getDescription();
     }
 
     /**
@@ -176,17 +163,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getRecordTypes()
     {
-        $val = $this->cacheGetInstance('recordTypes');
-        if (null === $val) {
-            $val = [];
-            $types = $this->getOffering()->getRecordTypes();
-            while ($types->hasNext()) {
-                $val[] = $types->getNextType();
-            }
-            $this->cacheSetInstance('recordTypes', $val);
-        }
-
-        return new \phpkit_type_ArrayTypeList($val);
+        return $this->getOffering()->getRecordTypes();
     }
 
     /**
@@ -207,14 +184,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function hasRecordType(\osid_type_Type $recordType)
     {
-        $types = $this->getRecordTypes();
-        while ($types->hasNext()) {
-            if ($recordType->isEqual($types->getNextType())) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->getOffering()->hasRecordType($recordType);
     }
 
     /**
@@ -226,12 +196,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getGenusType()
     {
-        $val = $this->cacheGetInstance('genusType');
-        if (null === $val) {
-            return $this->cacheSetInstance('genusType', $this->getOffering()->getGenusType());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->getGenusType();
     }
 
     /**
@@ -251,7 +216,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function isOfGenusType(\osid_type_Type $genusType)
     {
-        return $this->getGenusType()->isEqual($genusType);
+        return $this->getOffering()->isOfGenusType($genusType);
     }
 
     /**
@@ -329,21 +294,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getPropertiesByRecordType(\osid_type_Type $recordType)
     {
-        if (!$this->hasRecordType($recordType)) {
-            throw new \osid_UnsupportedException('record type not supported');
-        }
-
         return $this->getOffering()->getPropertiesByRecordType($recordType);
-    }
-
-    /**
-     * Convert a type to a string.
-     *
-     * @return string
-     */
-    private function typeToString(\osid_type_Type $type)
-    {
-        return $type->getIdentifierNamespace().':'.$type->getAuthority().':'.$type->getIdentifier();
     }
 
     /*********************************************************
@@ -362,12 +313,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getTitle()
     {
-        $val = $this->cacheGetInstance('title');
-        if (null === $val) {
-            return $this->cacheSetInstance('title', $this->getOffering()->getTitle());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->getTitle();
     }
 
     /**
@@ -380,12 +326,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getNumber()
     {
-        $val = $this->cacheGetInstance('number');
-        if (null === $val) {
-            return $this->cacheSetInstance('number', $this->getOffering()->getNumber());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->getNumber();
     }
 
     /**
@@ -398,12 +339,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getCourseReferenceNumber()
     {
-        $val = $this->cacheGetInstance('crn');
-        if (null === $val) {
-            return $this->cacheSetInstance('crn', $this->getOffering()->getCourseReferenceNumber());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->getCourseReferenceNumber();
     }
 
     /**
@@ -415,12 +351,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getCredits()
     {
-        $val = $this->cacheGetInstance('credits');
-        if (null === $val) {
-            return $this->cacheSetInstance('credits', $this->getOffering()->getCredits());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->getCredits();
     }
 
     /**
@@ -432,12 +363,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getPrereqInfo()
     {
-        $val = $this->cacheGetInstance('prerequisites');
-        if (null === $val) {
-            return $this->cacheSetInstance('prerequisites', $this->getOffering()->getPrereqInfo());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->getPrereqInfo();
     }
 
     /**
@@ -450,12 +376,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getCourseId()
     {
-        $val = $this->cacheGetInstance('course_id');
-        if (null === $val) {
-            return $this->cacheSetInstance('course_id', $this->getOffering()->getCourseId());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->getCourseId();
     }
 
     /**
@@ -482,12 +403,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getTermId()
     {
-        $val = $this->cacheGetInstance('term_id');
-        if (null === $val) {
-            return $this->cacheSetInstance('term_id', $this->getOffering()->getTermId());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->getTermId();
     }
 
     /**
@@ -501,7 +417,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getTerm()
     {
-        return $this->getOffering()->getTerm();
+        return $this->cacheSession->getTermLookupSession()->getTerm($this->getTermId());
     }
 
     /**
@@ -518,17 +434,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getTopicIds()
     {
-        $val = $this->cacheGetInstance('topic_ids');
-        if (null === $val) {
-            $val = [];
-            $ids = $this->getOffering()->getTopicIds();
-            while ($ids->hasNext()) {
-                $val[] = $ids->getNextId();
-            }
-            $this->cacheSetInstance('topic_ids', $val);
-        }
-
-        return new \phpkit_id_ArrayIdList($val);
+        return $this->getOffering()->getTopicIds();
     }
 
     /**
@@ -546,7 +452,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
     public function getTopics()
     {
         return $this->cacheSession->getTopicLookupSession()
-            ->getTopicsByIds($this->getOffering()->getTopicIds());
+            ->getTopicsByIds($this->getTopicIds());
     }
 
     /**
@@ -558,12 +464,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getLocationInfo()
     {
-        $val = $this->cacheGetInstance('location_info');
-        if (null === $val) {
-            return $this->cacheSetInstance('location_info', $this->getOffering()->getLocationInfo());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->getLocationInfo();
     }
 
     /**
@@ -576,12 +477,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function hasLocation()
     {
-        $val = $this->cacheGetInstance('has_location');
-        if (null === $val) {
-            return $this->cacheSetInstance('has_location', $this->getOffering()->hasLocation());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->hasLocation();
     }
 
     /**
@@ -597,12 +493,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getLocationId()
     {
-        $val = $this->cacheGetInstance('lcoation_id');
-        if (null === $val) {
-            return $this->cacheSetInstance('lcoation_id', $this->getOffering()->getLocationId());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->getLocationId();
     }
 
     /**
@@ -636,12 +527,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getScheduleInfo()
     {
-        $val = $this->cacheGetInstance('schedule_info');
-        if (null === $val) {
-            return $this->cacheSetInstance('schedule_info', $this->getOffering()->getScheduleInfo());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->getScheduleInfo();
     }
 
     /**
@@ -654,12 +540,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function hasCalendar()
     {
-        $val = $this->cacheGetInstance('has_calendar');
-        if (null === $val) {
-            return $this->cacheSetInstance('has_calendar', $this->getOffering()->hasCalendar());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->hasCalendar();
     }
 
     /**
@@ -677,16 +558,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getCalendarId()
     {
-        if (!$this->hasCalendar()) {
-            throw new \osid_IllegalStateException('hasCalendar() is false.');
-        }
-
-        $val = $this->cacheGetInstance('schedule_info');
-        if (null === $val) {
-            return $this->cacheSetInstance('schedule_info', $this->getOffering()->getScheduleInfo());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->getCalendarId();
     }
 
     /**
@@ -704,10 +576,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getCalendar()
     {
-        if (!$this->hasCalendar()) {
-            throw new \osid_IllegalStateException('hasCalendar() is false.');
-        }
-
         return $this->getOffering()->getCalendar();
     }
 
@@ -721,12 +589,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function hasLearningObjective()
     {
-        $val = $this->cacheGetInstance('hasLearningObjective');
-        if (null === $val) {
-            return $this->cacheSetInstance('hasLearningObjective', $this->getOffering()->hasLearningObjective());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->hasLearningObjective();
     }
 
     /**
@@ -743,16 +606,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getLearningObjectiveId()
     {
-        if (!$this->hasLearningObjective()) {
-            throw new \osid_IllegalStateException('hasLearningObjective() is false.');
-        }
-
-        $val = $this->cacheGetInstance('learningObjectiveId');
-        if (null === $val) {
-            return $this->cacheSetInstance('learningObjectiveId', $this->getOffering()->getLearningObjectiveId());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->getLearningObjectiveId();
     }
 
     /**
@@ -771,10 +625,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getLearningObjective()
     {
-        if (!$this->hasLearningObjective()) {
-            throw new \osid_IllegalStateException('hasLearningObjective() is false.');
-        }
-
         return $this->getOffering()->getLearningObjective();
     }
 
@@ -788,12 +638,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getURL()
     {
-        $val = $this->cacheGetInstance('url');
-        if (null === $val) {
-            return $this->cacheSetInstance('url', $this->getOffering()->getURL());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->getURL();
     }
 
     /**
@@ -878,96 +723,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
     }
 
     /*********************************************************
-     * InstructorsRecord support
-     *********************************************************/
-
-    /**
-     *  Gets the Ids of the instructors associated with this course offering.
-     *
-     * @return object \osid_id_IdList the list of instructor ids
-     *
-     *  @compliance mandatory This method must be implemented.
-     *
-     * @throws \osid_OperationFailedException  unable to complete request
-     * @throws \osid_PermissionDeniedException authorization failure
-     */
-    public function getInstructorIds()
-    {
-        $val = $this->cacheGetInstance('instructor_ids');
-        if (null === $val) {
-            return $this->cacheSetInstance('instructor_ids', $this->getOffering()->getInstructorIds());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     *  Gets the <code> Resources </code> representing the instructors associated
-     *  with this course offering.
-     *
-     * @return object \osid_resource_ResourceList the list of instructors
-     *
-     *  @compliance mandatory This method must be implemented.
-     *
-     * @throws \osid_OperationFailedException  unable to complete request
-     * @throws \osid_PermissionDeniedException authorization failure
-     */
-    public function getInstructors()
-    {
-        return $this->getOffering()->getInstructors();
-    }
-
-    /*********************************************************
-     * LinkRecord support
-     *********************************************************/
-
-    /**
-     * Answer the link-set id for the offering.
-     *
-     * The offerings of a course in a term will be grouped into one or more link sets
-     * (set 1, set 2, set 3, etc).
-     * Each offering also has a link type (such as lecture, discussion, lab, etc).
-     *
-     * When registering for a Course that has multiple Offerings (such as lecture + lab or
-     * lectures at different times), students must choose a link set and then one offering
-     * of each type within that set.
-     *
-     * @return \osid_id_Id
-     */
-    public function getLinkSetId()
-    {
-        $val = $this->cacheGetInstance('link_set_id');
-        if (null === $val) {
-            return $this->cacheSetInstance('link_set_id', $this->getOffering()->getLinkSetId());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer the link-type id for the offering.
-     *
-     * The offerings of a course in a term will be grouped into one or more link sets
-     * (set 1, set 2, set 3, etc).
-     * Each offering also has a link type (such as lecture, discussion, lab, etc).
-     *
-     * When registering for a Course that has multiple Offerings (such as lecture + lab or
-     * lectures at different times), students must choose a link set and then one offering
-     * of each type within that set.
-     *
-     * @return \osid_id_Id
-     */
-    public function getLinkTypeId()
-    {
-        $val = $this->cacheGetInstance('link_type_id');
-        if (null === $val) {
-            return $this->cacheSetInstance('link_type_id', $this->getOffering()->getLinkTypeId());
-        } else {
-            return $val;
-        }
-    }
-
-    /*********************************************************
      * AlternatesRecord support
      *********************************************************/
     /**
@@ -980,12 +735,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function hasAlternates()
     {
-        $val = $this->cacheGetInstance('hasAlternates');
-        if (null === $val) {
-            return $this->cacheSetInstance('hasAlternates', $this->getOffering()->hasAlternates());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->hasAlternates();
     }
 
     /**
@@ -1000,12 +750,7 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getAlternateIds()
     {
-        $val = $this->cacheGetInstance('alternate_ids');
-        if (null === $val) {
-            return $this->cacheSetInstance('alternate_ids', $this->getOffering()->getAlternateIds());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->getAlternateIds();
     }
 
     /**
@@ -1036,478 +781,6 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function isPrimary()
     {
-        $val = $this->cacheGetInstance('isPrimary');
-        if (null === $val) {
-            return $this->cacheSetInstance('isPrimary', $this->getOffering()->isPrimary());
-        } else {
-            return $val;
-        }
-    }
-
-    /*********************************************************
-     * WeeklyScheduleRecord support
-     *********************************************************/
-
-    /**
-     * Answer true if this CourseOffering meets on Sunday.
-     *
-     * @return bool
-     *
-     * @compliance mandatory This method must be implemented.
-     */
-    public function meetsOnSunday()
-    {
-        $val = $this->cacheGetInstance('meetsOnSunday');
-        if (null === $val) {
-            return $this->cacheSetInstance('meetsOnSunday', $this->getOffering()->meetsOnSunday());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer time the meeting starts on Sunday.
-     *
-     * @return array an array of start-times whose order matches those returned by getSundayEndTimes()
-     *               Times are  in seconds from midnight Sunday morning
-     *
-     * @compliance mandatory This method must be implemented.
-     *
-     * @throws \osid_IllegalStateException <code>meetsOnSunday()</code> is <code>false</code>
-     */
-    public function getSundayStartTimes()
-    {
-        $val = $this->cacheGetInstance('SundayStartTimes');
-        if (null === $val) {
-            return $this->cacheSetInstance('SundayStartTimes', $this->getOffering()->getSundayStartTimes());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer time the meeting ends on Sunday.
-     *
-     * @return array an array of end-times whose order matches those returned by getSundayStartTimes()
-     *               Times are  in seconds from midnight Sunday morning
-     *
-     * @compliance mandatory This method must be implemented.
-     *
-     * @throws \osid_IllegalStateException <code>meetsOnSunday()</code> is <code>false</code>
-     */
-    public function getSundayEndTimes()
-    {
-        $val = $this->cacheGetInstance('SundayEndTimes');
-        if (null === $val) {
-            return $this->cacheSetInstance('SundayEndTimes', $this->getOffering()->getSundayEndTimes());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer true if this CourseOffering meets on Monday.
-     *
-     * @return bool
-     *
-     * @compliance mandatory This method must be implemented.
-     */
-    public function meetsOnMonday()
-    {
-        $val = $this->cacheGetInstance('meetsOnMonday');
-        if (null === $val) {
-            return $this->cacheSetInstance('meetsOnMonday', $this->getOffering()->meetsOnMonday());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer time the meeting starts on Monday.
-     *
-     * @return array an array of start-times whose order matches those returned by getMondayEndTimes()
-     *               Times are  in seconds from midnight Monday morning
-     *
-     * @compliance mandatory This method must be implemented.
-     *
-     * @throws \osid_IllegalStateException <code>meetsOnMonday()</code> is <code>false</code>
-     */
-    public function getMondayStartTimes()
-    {
-        $val = $this->cacheGetInstance('MondayStartTimes');
-        if (null === $val) {
-            return $this->cacheSetInstance('MondayStartTimes', $this->getOffering()->getMondayStartTimes());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer time the meeting ends on Monday.
-     *
-     * @return array an array of end-times whose order matches those returned by getMondayStartTimes()
-     *               Times are  in seconds from midnight Monday morning
-     *
-     * @compliance mandatory This method must be implemented.
-     *
-     * @throws \osid_IllegalStateException <code>meetsOnMonday()</code> is <code>false</code>
-     */
-    public function getMondayEndTimes()
-    {
-        $val = $this->cacheGetInstance('MondayEndTimes');
-        if (null === $val) {
-            return $this->cacheSetInstance('MondayEndTimes', $this->getOffering()->getMondayEndTimes());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer true if this CourseOffering meets on Tuesday.
-     *
-     * @return bool
-     *
-     * @compliance mandatory This method must be implemented.
-     */
-    public function meetsOnTuesday()
-    {
-        $val = $this->cacheGetInstance('meetsOnTuesday');
-        if (null === $val) {
-            return $this->cacheSetInstance('meetsOnTuesday', $this->getOffering()->meetsOnTuesday());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer time the meeting starts on Tuesday.
-     *
-     * @return array an array of start-times whose order matches those returned by getTuesdayEndTimes()
-     *               Times are  in seconds from midnight Tuesday morning
-     *
-     * @compliance mandatory This method must be implemented.
-     *
-     * @throws \osid_IllegalStateException <code>meetsOnTuesday()</code> is <code>false</code>
-     */
-    public function getTuesdayStartTimes()
-    {
-        $val = $this->cacheGetInstance('TuesdayStartTimes');
-        if (null === $val) {
-            return $this->cacheSetInstance('TuesdayStartTimes', $this->getOffering()->getTuesdayStartTimes());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer time the meeting ends on Tuesday.
-     *
-     * @return array an array of end-times whose order matches those returned by getTuesdayStartTimes()
-     *               Times are  in seconds from midnight Tuesday morning
-     *
-     * @compliance mandatory This method must be implemented.
-     *
-     * @throws \osid_IllegalStateException <code>meetsOnTuesday()</code> is <code>false</code>
-     */
-    public function getTuesdayEndTimes()
-    {
-        $val = $this->cacheGetInstance('TuesdayEndTimes');
-        if (null === $val) {
-            return $this->cacheSetInstance('TuesdayEndTimes', $this->getOffering()->getTuesdayEndTimes());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer true if this CourseOffering meets on Wednesday.
-     *
-     * @return bool
-     *
-     * @compliance mandatory This method must be implemented.
-     */
-    public function meetsOnWednesday()
-    {
-        $val = $this->cacheGetInstance('meetsOnWednesday');
-        if (null === $val) {
-            return $this->cacheSetInstance('meetsOnWednesday', $this->getOffering()->meetsOnWednesday());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer time the meeting starts on Wednesday.
-     *
-     * @return array an array of start-times whose order matches those returned by getWednesdayEndTimes()
-     *               Times are  in seconds from midnight Wednesday morning
-     *
-     * @compliance mandatory This method must be implemented.
-     *
-     * @throws \osid_IllegalStateException <code>meetsOnWednesday()</code> is <code>false</code>
-     */
-    public function getWednesdayStartTimes()
-    {
-        $val = $this->cacheGetInstance('WednesdayStartTimes');
-        if (null === $val) {
-            return $this->cacheSetInstance('WednesdayStartTimes', $this->getOffering()->getWednesdayStartTimes());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer time the meeting ends on Wednesday.
-     *
-     * @return array an array of end-times whose order matches those returned by getWednesdayStartTimes()
-     *               Times are  in seconds from midnight Wednesday morning
-     *
-     * @compliance mandatory This method must be implemented.
-     *
-     * @throws \osid_IllegalStateException <code>meetsOnWednesday()</code> is <code>false</code>
-     */
-    public function getWednesdayEndTimes()
-    {
-        $val = $this->cacheGetInstance('WednesdayEndTimes');
-        if (null === $val) {
-            return $this->cacheSetInstance('WednesdayEndTimes', $this->getOffering()->getWednesdayEndTimes());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer true if this CourseOffering meets on Thursday.
-     *
-     * @return bool
-     *
-     * @compliance mandatory This method must be implemented.
-     */
-    public function meetsOnThursday()
-    {
-        $val = $this->cacheGetInstance('meetsOnThursday');
-        if (null === $val) {
-            return $this->cacheSetInstance('meetsOnThursday', $this->getOffering()->meetsOnThursday());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer time the meeting starts on Thursday.
-     *
-     * @return array an array of start-times whose order matches those returned by getThursdayEndTimes()
-     *               Times are  in seconds from midnight Thursday morning
-     *
-     * @compliance mandatory This method must be implemented.
-     *
-     * @throws \osid_IllegalStateException <code>meetsOnThursday()</code> is <code>false</code>
-     */
-    public function getThursdayStartTimes()
-    {
-        $val = $this->cacheGetInstance('ThursdayStartTimes');
-        if (null === $val) {
-            return $this->cacheSetInstance('ThursdayStartTimes', $this->getOffering()->getThursdayStartTimes());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer time the meeting ends on Thursday.
-     *
-     * @return array an array of end-times whose order matches those returned by getThursdayStartTimes()
-     *               Times are  in seconds from midnight Thursday morning
-     *
-     * @compliance mandatory This method must be implemented.
-     *
-     * @throws \osid_IllegalStateException <code>meetsOnThursday()</code> is <code>false</code>
-     */
-    public function getThursdayEndTimes()
-    {
-        $val = $this->cacheGetInstance('ThursdayEndTimes');
-        if (null === $val) {
-            return $this->cacheSetInstance('ThursdayEndTimes', $this->getOffering()->getThursdayEndTimes());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer true if this CourseOffering meets on Friday.
-     *
-     * @return bool
-     *
-     * @compliance mandatory This method must be implemented.
-     */
-    public function meetsOnFriday()
-    {
-        $val = $this->cacheGetInstance('meetsOnFriday');
-        if (null === $val) {
-            return $this->cacheSetInstance('meetsOnFriday', $this->getOffering()->meetsOnFriday());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer time the meeting starts on Friday.
-     *
-     * @return array an array of start-times whose order matches those returned by getFridayEndTimes()
-     *               Times are  in seconds from midnight Friday morning
-     *
-     * @compliance mandatory This method must be implemented.
-     *
-     * @throws \osid_IllegalStateException <code>meetsOnFriday()</code> is <code>false</code>
-     */
-    public function getFridayStartTimes()
-    {
-        $val = $this->cacheGetInstance('FridayStartTimes');
-        if (null === $val) {
-            return $this->cacheSetInstance('FridayStartTimes', $this->getOffering()->getFridayStartTimes());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer time the meeting ends on Friday.
-     *
-     * @return array an array of end-times whose order matches those returned by getFridayStartTimes()
-     *               Times are  in seconds from midnight Friday morning
-     *
-     * @compliance mandatory This method must be implemented.
-     *
-     * @throws \osid_IllegalStateException <code>meetsOnFriday()</code> is <code>false</code>
-     */
-    public function getFridayEndTimes()
-    {
-        $val = $this->cacheGetInstance('FridayEndTimes');
-        if (null === $val) {
-            return $this->cacheSetInstance('FridayEndTimes', $this->getOffering()->getFridayEndTimes());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer true if this CourseOffering meets on Saturday.
-     *
-     * @return bool
-     *
-     * @compliance mandatory This method must be implemented.
-     */
-    public function meetsOnSaturday()
-    {
-        $val = $this->cacheGetInstance('meetsOnSaturday');
-        if (null === $val) {
-            return $this->cacheSetInstance('meetsOnSaturday', $this->getOffering()->meetsOnSaturday());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer time the meeting starts on Saturday.
-     *
-     * @return array an array of start-times whose order matches those returned by getSaturdayEndTimes()
-     *               Times are  in seconds from midnight Saturday morning
-     *
-     * @compliance mandatory This method must be implemented.
-     *
-     * @throws \osid_IllegalStateException <code>meetsOnSaturday()</code> is <code>false</code>
-     */
-    public function getSaturdayStartTimes()
-    {
-        $val = $this->cacheGetInstance('SaturdayStartTimes');
-        if (null === $val) {
-            return $this->cacheSetInstance('SaturdayStartTimes', $this->getOffering()->getSaturdayStartTimes());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer time the meeting ends on Saturday.
-     *
-     * @return array an array of end-times whose order matches those returned by getSaturdayStartTimes()
-     *               Times are  in seconds from midnight Saturday morning
-     *
-     * @compliance mandatory This method must be implemented.
-     *
-     * @throws \osid_IllegalStateException <code>meetsOnSaturday()</code> is <code>false</code>
-     */
-    public function getSaturdayEndTimes()
-    {
-        $val = $this->cacheGetInstance('SaturdayEndTimes');
-        if (null === $val) {
-            return $this->cacheSetInstance('SaturdayEndTimes', $this->getOffering()->getSaturdayEndTimes());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer true if there is a date/time on which section meeting begins.
-     *
-     * @return bool
-     *              If a start date of the section is set
-     */
-    public function hasMeetingStartDate()
-    {
-        $val = $this->cacheGetInstance('hasMeetingStartDate');
-        if (null === $val) {
-            return $this->cacheSetInstance('hasMeetingStartDate', $this->getOffering()->hasMeetingStartDate());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer date/time on which section meeting begins.
-     *
-     * @return dateTime
-     *                  The start date of the section
-     */
-    public function getMeetingStartDate()
-    {
-        $val = $this->cacheGetInstance('MeetingStartDate');
-        if (null === $val) {
-            return $this->cacheSetInstance('MeetingStartDate', $this->getOffering()->getMeetingStartDate());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer true if there is a date/time on which section meeting ends.
-     *
-     * @return bool
-     *              If a start date of the section is set
-     */
-    public function hasMeetingEndDate()
-    {
-        $val = $this->cacheGetInstance('hasMeetingEndDate');
-        if (null === $val) {
-            return $this->cacheSetInstance('hasMeetingEndDate', $this->getOffering()->hasMeetingEndDate());
-        } else {
-            return $val;
-        }
-    }
-
-    /**
-     * Answer date/time on which the section meeting ends.
-     *
-     * @return DateTime
-     *                  The end date
-     */
-    public function getMeetingEndDate()
-    {
-        $val = $this->cacheGetInstance('MeetingEndDate');
-        if (null === $val) {
-            return $this->cacheSetInstance('MeetingEndDate', $this->getOffering()->getMeetingEndDate());
-        } else {
-            return $val;
-        }
+        return $this->getOffering()->isPrimary();
     }
 }

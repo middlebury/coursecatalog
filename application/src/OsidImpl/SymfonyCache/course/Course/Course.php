@@ -12,7 +12,7 @@ use Catalog\OsidImpl\SymfonyCache\Cachable;
  * @copyright Copyright &copy; 2025, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class Course extends Cachable implements \osid_course_Course, \middlebury_course_Course_TermsRecord, \middlebury_course_Course_AlternatesRecord, \middlebury_course_Course_LinkRecord
+class Course extends Cachable implements \osid_course_Course, \middlebury_course_Course_TermsRecord, \middlebury_course_Course_AlternatesRecord
 {
     private CourseLookupSession $cacheSession;
     private \osid_course_Course $course;
@@ -42,7 +42,6 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
         $this->localRecordTypes = [
             new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:terms'),
             new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:alternates'),
-            new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:link'),
         ];
     }
 
@@ -128,12 +127,7 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      */
     public function getDisplayName()
     {
-        $val = $this->cacheGetInstance('displayName');
-        if (null === $val) {
-            return $this->cacheSetInstance('displayName', $this->getMyCourse()->getDisplayName());
-        } else {
-            return $val;
-        }
+        return $this->getMyCourse()->getDisplayName();
     }
 
     /**
@@ -154,12 +148,7 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      */
     public function getDescription()
     {
-        $val = $this->cacheGetInstance('description');
-        if (null === $val) {
-            return $this->cacheSetInstance('description', $this->getMyCourse()->getDescription());
-        } else {
-            return $val;
-        }
+        return $this->getMyCourse()->getDescription();
     }
 
     /**
@@ -177,17 +166,7 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      */
     public function getRecordTypes()
     {
-        $val = $this->cacheGetInstance('recordTypes');
-        if (null === $val) {
-            $val = [];
-            $types = $this->getMyCourse()->getRecordTypes();
-            while ($types->hasNext()) {
-                $val[] = $types->getNextType();
-            }
-            $this->cacheSetInstance('recordTypes', $val);
-        }
-
-        return new \phpkit_type_ArrayTypeList($val);
+        return $this->getMyCourse()->getRecordTypes();
     }
 
     /**
@@ -208,14 +187,7 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      */
     public function hasRecordType(\osid_type_Type $recordType)
     {
-        $types = $this->getRecordTypes();
-        while ($types->hasNext()) {
-            if ($recordType->isEqual($types->getNextType())) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->getMyCourse()->hasRecordType($recordType);
     }
 
     /**
@@ -227,12 +199,7 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      */
     public function getGenusType()
     {
-        $val = $this->cacheGetInstance('genusType');
-        if (null === $val) {
-            return $this->cacheSetInstance('genusType', $this->getMyCourse()->getGenusType());
-        } else {
-            return $val;
-        }
+        return $this->getMyCourse()->getGenusType();
     }
 
     /**
@@ -252,7 +219,7 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      */
     public function isOfGenusType(\osid_type_Type $genusType)
     {
-        return $this->getGenusType()->isEqual($genusType);
+        return $this->getMyCourse()->isOfGenusType($genusType);
     }
 
     /**
@@ -330,10 +297,6 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      */
     public function getPropertiesByRecordType(\osid_type_Type $recordType)
     {
-        if (!$this->hasRecordType($recordType)) {
-            throw new \osid_UnsupportedException('record type not supported');
-        }
-
         return $this->getMyCourse()->getPropertiesByRecordType($recordType);
     }
 
@@ -363,12 +326,7 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      */
     public function getTitle()
     {
-        $val = $this->cacheGetInstance('title');
-        if (null === $val) {
-            return $this->cacheSetInstance('title', $this->getMyCourse()->getTitle());
-        } else {
-            return $val;
-        }
+        return $this->getMyCourse()->getTitle();
     }
 
     /**
@@ -381,12 +339,7 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      */
     public function getNumber()
     {
-        $val = $this->cacheGetInstance('number');
-        if (null === $val) {
-            return $this->cacheSetInstance('number', $this->getMyCourse()->getNumber());
-        } else {
-            return $val;
-        }
+        return $this->getMyCourse()->getNumber();
     }
 
     /**
@@ -398,12 +351,7 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      */
     public function getCredits()
     {
-        $val = $this->cacheGetInstance('credits');
-        if (null === $val) {
-            return $this->cacheSetInstance('credits', $this->getMyCourse()->getCredits());
-        } else {
-            return $val;
-        }
+        return $this->getMyCourse()->getCredits();
     }
 
     /**
@@ -415,12 +363,7 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      */
     public function getPrereqInfo()
     {
-        $val = $this->cacheGetInstance('prerequisites');
-        if (null === $val) {
-            return $this->cacheSetInstance('prerequisites', $this->getMyCourse()->getPrereqInfo());
-        } else {
-            return $val;
-        }
+        return $this->getMyCourse()->getPrereqInfo();
     }
 
     /**
@@ -437,17 +380,7 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      */
     public function getTopicIds()
     {
-        $val = $this->cacheGetInstance('topic_ids');
-        if (null === $val) {
-            $val = [];
-            $ids = $this->getMyCourse()->getTopicIds();
-            while ($ids->hasNext()) {
-                $val[] = $ids->getNextId();
-            }
-            $this->cacheSetInstance('topic_ids', $val);
-        }
-
-        return new \phpkit_id_ArrayIdList($val);
+        return $this->getMyCourse()->getTopicIds();
     }
 
     /**
@@ -565,17 +498,7 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      */
     public function getTermIds()
     {
-        $val = $this->cacheGetInstance('term_ids');
-        if (null === $val) {
-            $val = [];
-            $ids = $this->getMyCourse()->getTermIds();
-            while ($ids->hasNext()) {
-                $val[] = $ids->getNextId();
-            }
-            $this->cacheSetInstance('term_ids', $val);
-        }
-
-        return new \phpkit_id_ArrayIdList($val);
+        return $this->getMyCourse()->getTermIds();
     }
 
     /**
@@ -608,12 +531,7 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      */
     public function hasAlternates()
     {
-        $val = $this->cacheGetInstance('hasAlternates');
-        if (null === $val) {
-            return $this->cacheSetInstance('hasAlternates', $this->getMyCourse()->hasAlternates());
-        } else {
-            return $val;
-        }
+        return $this->getMyCourse()->hasAlternates();
     }
 
     /**
@@ -628,17 +546,7 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      */
     public function getAlternateIds()
     {
-        $val = $this->cacheGetInstance('alternate_ids');
-        if (null === $val) {
-            $val = [];
-            $ids = $this->getMyCourse()->getAlternateIds();
-            while ($ids->hasNext()) {
-                $val[] = $ids->getNextId();
-            }
-            $this->cacheSetInstance('alternate_ids', $val);
-        }
-
-        return new \phpkit_id_ArrayIdList($val);
+        return $this->getMyCourse()->getAlternateIds();
     }
 
     /**
@@ -672,83 +580,6 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
      */
     public function isPrimary()
     {
-        $val = $this->cacheGetInstance('isPrimary');
-        if (null === $val) {
-            return $this->cacheSetInstance('isPrimary', $this->getMyCourse()->isPrimary());
-        } else {
-            return $val;
-        }
-    }
-
-    /*********************************************************
-     * 	Methods from \middlebury_course_Course_LinkRecord
-     *********************************************************/
-    /**
-     * Answer the link-set ids for the offerings of this course in the term specified.
-     *
-     * The offerings of a course in a term will be grouped into one or more link sets
-     * (set 1, set 2, set 3, etc).
-     * Each offering also has a link type (such as lecture, discussion, lab, etc).
-     *
-     * When registering for a Course that has multiple Offerings (such as lecture + lab or
-     * lectures at different times), students must choose a link set and then one offering
-     * of each type within that set.
-     *
-     * @return \osid_id_IdList
-     */
-    public function getLinkSetIdsForTerm(\osid_id_Id $termId)
-    {
-        $cacheKey = 'link_set_ids::'
-            .$termId->getIdentifierNamespace().'::'
-            .$termId->getAuthority().'::'
-            .$termId->getIdentifier();
-
-        $val = $this->cacheGetInstance($cacheKey);
-        if (null === $val) {
-            $val = [];
-            $ids = $this->getMyCourse()->getLinkSetIdsForTerm($termId);
-            while ($ids->hasNext()) {
-                $val[] = $ids->getNextId();
-            }
-            $this->cacheSetInstance($cacheKey, $val);
-        }
-
-        return new \phpkit_id_ArrayIdList($val);
-    }
-
-    /**
-     * Answer the link-type ids for the offerings of this course in the term specified.
-     *
-     * The offerings of a course in a term will be grouped into one or more link sets
-     * (set 1, set 2, set 3, etc).
-     * Each offering also has a link type (such as lecture, discussion, lab, etc).
-     *
-     * When registering for a Course that has multiple Offerings (such as lecture + lab or
-     * lectures at different times), students must choose a link set and then one offering
-     * of each type within that set.
-     *
-     * @return \osid_id_IdList
-     */
-    public function getLinkTypeIdsForTermAndSet(\osid_id_Id $termId, \osid_id_Id $linkSetId)
-    {
-        $cacheKey = 'link_type_ids::'
-            .$termId->getIdentifierNamespace().'::'
-            .$termId->getAuthority().'::'
-            .$termId->getIdentifier().'::'
-            .$linkSetId->getIdentifierNamespace().'::'
-            .$linkSetId->getAuthority().'::'
-            .$linkSetId->getIdentifier();
-
-        $val = $this->cacheGetInstance($cacheKey);
-        if (null === $val) {
-            $val = [];
-            $ids = $this->getMyCourse()->getLinkTypeIdsForTermAndSet($termId, $linkSetId);
-            while ($ids->hasNext()) {
-                $val[] = $ids->getNextId();
-            }
-            $this->cacheSetInstance($cacheKey, $val);
-        }
-
-        return new \phpkit_id_ArrayIdList($val);
+        return $this->getMyCourse()->isPrimary();
     }
 }
