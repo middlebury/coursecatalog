@@ -185,14 +185,14 @@ class TopicLookupSession extends CachableSession implements \osid_course_TopicLo
     public function getTopic(\osid_id_Id $topicId)
     {
         $key = 'getTopic:'.$this->cpFlag.$this->fiFlag.':'.$this->osidIdToString($topicId);
-        $cached = $this->cacheGetObj($key);
+        $cached = $this->cacheGetInstance($key);
         if (is_null($cached)) {
             try {
                 $cached = $this->session->getTopic($topicId);
-                $this->cacheSetObj($key, $cached);
+                $this->cacheSetInstance($key, $cached);
             } catch (\osid_NotFoundException $e) {
                 $cached = $e->getMessage();
-                $this->cacheSetObj($key, $cached);
+                $this->cacheSetInstance($key, $cached);
             }
         }
         if (is_string($cached)) {
@@ -290,7 +290,7 @@ class TopicLookupSession extends CachableSession implements \osid_course_TopicLo
     public function getTopicsByGenusType(\osid_type_Type $topicGenusType)
     {
         $key = 'getTopicsByGenusType:'.$this->cpFlag.$this->fiFlag.':'.$this->osidTypeToString($topicGenusType);
-        $cached = $this->cacheGetObj($key);
+        $cached = $this->cacheGetInstance($key);
         if (is_null($cached)) {
             $topics = [];
             $topicList = $this->session->getTopicsByGenusType($topicGenusType);
@@ -298,7 +298,7 @@ class TopicLookupSession extends CachableSession implements \osid_course_TopicLo
                 $topics[] = $topicList->getNextTopic();
             }
             $cached = new \phpkit_course_ArrayTopicList($topics);
-            $this->cacheSetObj($key, $cached);
+            $this->cacheSetInstance($key, $cached);
         }
 
         return $cached;
@@ -329,7 +329,7 @@ class TopicLookupSession extends CachableSession implements \osid_course_TopicLo
     public function getTopicsByParentGenusType(\osid_type_Type $topicGenusType)
     {
         $key = 'getTopicsByParentGenusType:'.$this->cpFlag.$this->fiFlag.':'.$this->osidTypeToString($topicGenusType);
-        $cached = $this->cacheGetObj($key);
+        $cached = $this->cacheGetInstance($key);
         if (is_null($cached)) {
             $topics = [];
             $topicList = $this->session->getTopicsByParentGenusType($topicGenusType);
@@ -337,7 +337,7 @@ class TopicLookupSession extends CachableSession implements \osid_course_TopicLo
                 $topics[] = $topicList->getNextTopic();
             }
             $cached = new \phpkit_course_ArrayTopicList($topics);
-            $this->cacheSetObj($key, $cached);
+            $this->cacheSetInstance($key, $cached);
         }
 
         return $cached;
@@ -366,7 +366,7 @@ class TopicLookupSession extends CachableSession implements \osid_course_TopicLo
     public function getTopicsByRecordType(\osid_type_Type $topicRecordType)
     {
         $key = 'getTopicsByRecordType:'.$this->cpFlag.$this->fiFlag.':'.$this->osidTypeToString($topicRecordType);
-        $cached = $this->cacheGetObj($key);
+        $cached = $this->cacheGetInstance($key);
         if (is_null($cached)) {
             $topics = [];
             $topicList = $this->session->getTopicsByRecordType($topicRecordType);
@@ -374,7 +374,7 @@ class TopicLookupSession extends CachableSession implements \osid_course_TopicLo
                 $topics[] = $topicList->getNextTopic();
             }
             $cached = new \phpkit_course_ArrayTopicList($topics);
-            $this->cacheSetObj($key, $cached);
+            $this->cacheSetInstance($key, $cached);
         }
 
         return $cached;
@@ -397,7 +397,7 @@ class TopicLookupSession extends CachableSession implements \osid_course_TopicLo
     public function getTopics()
     {
         $key = 'getTopics:'.$this->cpFlag.$this->fiFlag;
-        $cached = $this->cacheGetObj($key);
+        $cached = $this->cacheGetInstance($key);
         if (is_null($cached)) {
             $topics = [];
             $topicList = $this->session->getTopics();
@@ -405,7 +405,7 @@ class TopicLookupSession extends CachableSession implements \osid_course_TopicLo
                 $topics[] = $topicList->getNextTopic();
             }
             $cached = new \phpkit_course_ArrayTopicList($topics);
-            $this->cacheSetObj($key, $cached);
+            $this->cacheSetInstance($key, $cached);
         }
 
         return $cached;

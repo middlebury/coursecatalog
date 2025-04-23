@@ -127,9 +127,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getDisplayName()
     {
-        $val = $this->cacheGetPlain('displayName');
+        $val = $this->cacheGetInstance('displayName');
         if (null === $val) {
-            return $this->cacheSetPlain('displayName', $this->getOffering()->getDisplayName());
+            return $this->cacheSetInstance('displayName', $this->getOffering()->getDisplayName());
         } else {
             return $val;
         }
@@ -153,9 +153,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getDescription()
     {
-        $val = $this->cacheGetPlain('description');
+        $val = $this->cacheGetInstance('description');
         if (null === $val) {
-            return $this->cacheSetPlain('description', $this->getOffering()->getDescription());
+            return $this->cacheSetInstance('description', $this->getOffering()->getDescription());
         } else {
             return $val;
         }
@@ -176,14 +176,14 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getRecordTypes()
     {
-        $val = $this->cacheGetObj('recordTypes');
+        $val = $this->cacheGetInstance('recordTypes');
         if (null === $val) {
             $val = [];
             $types = $this->getOffering()->getRecordTypes();
             while ($types->hasNext()) {
                 $val[] = $types->getNextType();
             }
-            $this->cacheSetObj('recordTypes', $val);
+            $this->cacheSetInstance('recordTypes', $val);
         }
 
         return new \phpkit_type_ArrayTypeList($val);
@@ -226,9 +226,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getGenusType()
     {
-        $val = $this->cacheGetObj('genusType');
+        $val = $this->cacheGetInstance('genusType');
         if (null === $val) {
-            return $this->cacheSetObj('genusType', $this->getOffering()->getGenusType());
+            return $this->cacheSetInstance('genusType', $this->getOffering()->getGenusType());
         } else {
             return $val;
         }
@@ -362,9 +362,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getTitle()
     {
-        $val = $this->cacheGetPlain('title');
+        $val = $this->cacheGetInstance('title');
         if (null === $val) {
-            return $this->cacheSetPlain('title', $this->getOffering()->getTitle());
+            return $this->cacheSetInstance('title', $this->getOffering()->getTitle());
         } else {
             return $val;
         }
@@ -380,9 +380,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getNumber()
     {
-        $val = $this->cacheGetPlain('number');
+        $val = $this->cacheGetInstance('number');
         if (null === $val) {
-            return $this->cacheSetPlain('number', $this->getOffering()->getNumber());
+            return $this->cacheSetInstance('number', $this->getOffering()->getNumber());
         } else {
             return $val;
         }
@@ -398,9 +398,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getCourseReferenceNumber()
     {
-        $val = $this->cacheGetPlain('crn');
+        $val = $this->cacheGetInstance('crn');
         if (null === $val) {
-            return $this->cacheSetPlain('crn', $this->getOffering()->getCourseReferenceNumber());
+            return $this->cacheSetInstance('crn', $this->getOffering()->getCourseReferenceNumber());
         } else {
             return $val;
         }
@@ -415,9 +415,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getCredits()
     {
-        $val = $this->cacheGetPlain('credits');
+        $val = $this->cacheGetInstance('credits');
         if (null === $val) {
-            return $this->cacheSetPlain('credits', $this->getOffering()->getCredits());
+            return $this->cacheSetInstance('credits', $this->getOffering()->getCredits());
         } else {
             return $val;
         }
@@ -432,9 +432,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getPrereqInfo()
     {
-        $val = $this->cacheGetPlain('prerequisites');
+        $val = $this->cacheGetInstance('prerequisites');
         if (null === $val) {
-            return $this->cacheSetPlain('prerequisites', $this->getOffering()->getPrereqInfo());
+            return $this->cacheSetInstance('prerequisites', $this->getOffering()->getPrereqInfo());
         } else {
             return $val;
         }
@@ -450,9 +450,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getCourseId()
     {
-        $val = $this->cacheGetObj('course_id');
+        $val = $this->cacheGetInstance('course_id');
         if (null === $val) {
-            return $this->cacheSetObj('course_id', $this->getOffering()->getCourseId());
+            return $this->cacheSetInstance('course_id', $this->getOffering()->getCourseId());
         } else {
             return $val;
         }
@@ -482,9 +482,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getTermId()
     {
-        $val = $this->cacheGetObj('term_id');
+        $val = $this->cacheGetInstance('term_id');
         if (null === $val) {
-            return $this->cacheSetObj('term_id', $this->getOffering()->getTermId());
+            return $this->cacheSetInstance('term_id', $this->getOffering()->getTermId());
         } else {
             return $val;
         }
@@ -518,14 +518,14 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getTopicIds()
     {
-        $val = $this->cacheGetObj('topic_ids');
+        $val = $this->cacheGetInstance('topic_ids');
         if (null === $val) {
             $val = [];
             $ids = $this->getOffering()->getTopicIds();
             while ($ids->hasNext()) {
                 $val[] = $ids->getNextId();
             }
-            $this->cacheSetObj('topic_ids', $val);
+            $this->cacheSetInstance('topic_ids', $val);
         }
 
         return new \phpkit_id_ArrayIdList($val);
@@ -558,9 +558,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getLocationInfo()
     {
-        $val = $this->cacheGetPlain('location_info');
+        $val = $this->cacheGetInstance('location_info');
         if (null === $val) {
-            return $this->cacheSetPlain('location_info', $this->getOffering()->getLocationInfo());
+            return $this->cacheSetInstance('location_info', $this->getOffering()->getLocationInfo());
         } else {
             return $val;
         }
@@ -576,9 +576,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function hasLocation()
     {
-        $val = $this->cacheGetPlain('has_location');
+        $val = $this->cacheGetInstance('has_location');
         if (null === $val) {
-            return $this->cacheSetPlain('has_location', $this->getOffering()->hasLocation());
+            return $this->cacheSetInstance('has_location', $this->getOffering()->hasLocation());
         } else {
             return $val;
         }
@@ -597,9 +597,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getLocationId()
     {
-        $val = $this->cacheGetObj('lcoation_id');
+        $val = $this->cacheGetInstance('lcoation_id');
         if (null === $val) {
-            return $this->cacheSetObj('lcoation_id', $this->getOffering()->getLocationId());
+            return $this->cacheSetInstance('lcoation_id', $this->getOffering()->getLocationId());
         } else {
             return $val;
         }
@@ -636,9 +636,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getScheduleInfo()
     {
-        $val = $this->cacheGetPlain('schedule_info');
+        $val = $this->cacheGetInstance('schedule_info');
         if (null === $val) {
-            return $this->cacheSetPlain('schedule_info', $this->getOffering()->getScheduleInfo());
+            return $this->cacheSetInstance('schedule_info', $this->getOffering()->getScheduleInfo());
         } else {
             return $val;
         }
@@ -654,9 +654,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function hasCalendar()
     {
-        $val = $this->cacheGetPlain('has_calendar');
+        $val = $this->cacheGetInstance('has_calendar');
         if (null === $val) {
-            return $this->cacheSetPlain('has_calendar', $this->getOffering()->hasCalendar());
+            return $this->cacheSetInstance('has_calendar', $this->getOffering()->hasCalendar());
         } else {
             return $val;
         }
@@ -681,9 +681,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
             throw new \osid_IllegalStateException('hasCalendar() is false.');
         }
 
-        $val = $this->cacheGetObj('schedule_info');
+        $val = $this->cacheGetInstance('schedule_info');
         if (null === $val) {
-            return $this->cacheSetObj('schedule_info', $this->getOffering()->getScheduleInfo());
+            return $this->cacheSetInstance('schedule_info', $this->getOffering()->getScheduleInfo());
         } else {
             return $val;
         }
@@ -721,9 +721,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function hasLearningObjective()
     {
-        $val = $this->cacheGetPlain('hasLearningObjective');
+        $val = $this->cacheGetInstance('hasLearningObjective');
         if (null === $val) {
-            return $this->cacheSetPlain('hasLearningObjective', $this->getOffering()->hasLearningObjective());
+            return $this->cacheSetInstance('hasLearningObjective', $this->getOffering()->hasLearningObjective());
         } else {
             return $val;
         }
@@ -747,9 +747,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
             throw new \osid_IllegalStateException('hasLearningObjective() is false.');
         }
 
-        $val = $this->cacheGetObj('learningObjectiveId');
+        $val = $this->cacheGetInstance('learningObjectiveId');
         if (null === $val) {
-            return $this->cacheSetObj('learningObjectiveId', $this->getOffering()->getLearningObjectiveId());
+            return $this->cacheSetInstance('learningObjectiveId', $this->getOffering()->getLearningObjectiveId());
         } else {
             return $val;
         }
@@ -788,9 +788,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getURL()
     {
-        $val = $this->cacheGetPlain('url');
+        $val = $this->cacheGetInstance('url');
         if (null === $val) {
-            return $this->cacheSetPlain('url', $this->getOffering()->getURL());
+            return $this->cacheSetInstance('url', $this->getOffering()->getURL());
         } else {
             return $val;
         }
@@ -893,9 +893,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getInstructorIds()
     {
-        $val = $this->cacheGetObj('instructor_ids');
+        $val = $this->cacheGetInstance('instructor_ids');
         if (null === $val) {
-            return $this->cacheSetObj('instructor_ids', $this->getOffering()->getInstructorIds());
+            return $this->cacheSetInstance('instructor_ids', $this->getOffering()->getInstructorIds());
         } else {
             return $val;
         }
@@ -936,9 +936,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getLinkSetId()
     {
-        $val = $this->cacheGetPlain('link_set_id');
+        $val = $this->cacheGetInstance('link_set_id');
         if (null === $val) {
-            return $this->cacheSetPlain('link_set_id', $this->getOffering()->getLinkSetId());
+            return $this->cacheSetInstance('link_set_id', $this->getOffering()->getLinkSetId());
         } else {
             return $val;
         }
@@ -959,9 +959,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getLinkTypeId()
     {
-        $val = $this->cacheGetPlain('link_type_id');
+        $val = $this->cacheGetInstance('link_type_id');
         if (null === $val) {
-            return $this->cacheSetPlain('link_type_id', $this->getOffering()->getLinkTypeId());
+            return $this->cacheSetInstance('link_type_id', $this->getOffering()->getLinkTypeId());
         } else {
             return $val;
         }
@@ -980,9 +980,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function hasAlternates()
     {
-        $val = $this->cacheGetPlain('hasAlternates');
+        $val = $this->cacheGetInstance('hasAlternates');
         if (null === $val) {
-            return $this->cacheSetPlain('hasAlternates', $this->getOffering()->hasAlternates());
+            return $this->cacheSetInstance('hasAlternates', $this->getOffering()->hasAlternates());
         } else {
             return $val;
         }
@@ -1000,9 +1000,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getAlternateIds()
     {
-        $val = $this->cacheGetObj('alternate_ids');
+        $val = $this->cacheGetInstance('alternate_ids');
         if (null === $val) {
-            return $this->cacheSetObj('alternate_ids', $this->getOffering()->getAlternateIds());
+            return $this->cacheSetInstance('alternate_ids', $this->getOffering()->getAlternateIds());
         } else {
             return $val;
         }
@@ -1036,9 +1036,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function isPrimary()
     {
-        $val = $this->cacheGetPlain('isPrimary');
+        $val = $this->cacheGetInstance('isPrimary');
         if (null === $val) {
-            return $this->cacheSetPlain('isPrimary', $this->getOffering()->isPrimary());
+            return $this->cacheSetInstance('isPrimary', $this->getOffering()->isPrimary());
         } else {
             return $val;
         }
@@ -1057,9 +1057,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function meetsOnSunday()
     {
-        $val = $this->cacheGetPlain('meetsOnSunday');
+        $val = $this->cacheGetInstance('meetsOnSunday');
         if (null === $val) {
-            return $this->cacheSetPlain('meetsOnSunday', $this->getOffering()->meetsOnSunday());
+            return $this->cacheSetInstance('meetsOnSunday', $this->getOffering()->meetsOnSunday());
         } else {
             return $val;
         }
@@ -1077,9 +1077,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getSundayStartTimes()
     {
-        $val = $this->cacheGetPlain('SundayStartTimes');
+        $val = $this->cacheGetInstance('SundayStartTimes');
         if (null === $val) {
-            return $this->cacheSetPlain('SundayStartTimes', $this->getOffering()->getSundayStartTimes());
+            return $this->cacheSetInstance('SundayStartTimes', $this->getOffering()->getSundayStartTimes());
         } else {
             return $val;
         }
@@ -1097,9 +1097,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getSundayEndTimes()
     {
-        $val = $this->cacheGetPlain('SundayEndTimes');
+        $val = $this->cacheGetInstance('SundayEndTimes');
         if (null === $val) {
-            return $this->cacheSetPlain('SundayEndTimes', $this->getOffering()->getSundayEndTimes());
+            return $this->cacheSetInstance('SundayEndTimes', $this->getOffering()->getSundayEndTimes());
         } else {
             return $val;
         }
@@ -1114,9 +1114,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function meetsOnMonday()
     {
-        $val = $this->cacheGetPlain('meetsOnMonday');
+        $val = $this->cacheGetInstance('meetsOnMonday');
         if (null === $val) {
-            return $this->cacheSetPlain('meetsOnMonday', $this->getOffering()->meetsOnMonday());
+            return $this->cacheSetInstance('meetsOnMonday', $this->getOffering()->meetsOnMonday());
         } else {
             return $val;
         }
@@ -1134,9 +1134,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getMondayStartTimes()
     {
-        $val = $this->cacheGetPlain('MondayStartTimes');
+        $val = $this->cacheGetInstance('MondayStartTimes');
         if (null === $val) {
-            return $this->cacheSetPlain('MondayStartTimes', $this->getOffering()->getMondayStartTimes());
+            return $this->cacheSetInstance('MondayStartTimes', $this->getOffering()->getMondayStartTimes());
         } else {
             return $val;
         }
@@ -1154,9 +1154,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getMondayEndTimes()
     {
-        $val = $this->cacheGetPlain('MondayEndTimes');
+        $val = $this->cacheGetInstance('MondayEndTimes');
         if (null === $val) {
-            return $this->cacheSetPlain('MondayEndTimes', $this->getOffering()->getMondayEndTimes());
+            return $this->cacheSetInstance('MondayEndTimes', $this->getOffering()->getMondayEndTimes());
         } else {
             return $val;
         }
@@ -1171,9 +1171,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function meetsOnTuesday()
     {
-        $val = $this->cacheGetPlain('meetsOnTuesday');
+        $val = $this->cacheGetInstance('meetsOnTuesday');
         if (null === $val) {
-            return $this->cacheSetPlain('meetsOnTuesday', $this->getOffering()->meetsOnTuesday());
+            return $this->cacheSetInstance('meetsOnTuesday', $this->getOffering()->meetsOnTuesday());
         } else {
             return $val;
         }
@@ -1191,9 +1191,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getTuesdayStartTimes()
     {
-        $val = $this->cacheGetPlain('TuesdayStartTimes');
+        $val = $this->cacheGetInstance('TuesdayStartTimes');
         if (null === $val) {
-            return $this->cacheSetPlain('TuesdayStartTimes', $this->getOffering()->getTuesdayStartTimes());
+            return $this->cacheSetInstance('TuesdayStartTimes', $this->getOffering()->getTuesdayStartTimes());
         } else {
             return $val;
         }
@@ -1211,9 +1211,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getTuesdayEndTimes()
     {
-        $val = $this->cacheGetPlain('TuesdayEndTimes');
+        $val = $this->cacheGetInstance('TuesdayEndTimes');
         if (null === $val) {
-            return $this->cacheSetPlain('TuesdayEndTimes', $this->getOffering()->getTuesdayEndTimes());
+            return $this->cacheSetInstance('TuesdayEndTimes', $this->getOffering()->getTuesdayEndTimes());
         } else {
             return $val;
         }
@@ -1228,9 +1228,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function meetsOnWednesday()
     {
-        $val = $this->cacheGetPlain('meetsOnWednesday');
+        $val = $this->cacheGetInstance('meetsOnWednesday');
         if (null === $val) {
-            return $this->cacheSetPlain('meetsOnWednesday', $this->getOffering()->meetsOnWednesday());
+            return $this->cacheSetInstance('meetsOnWednesday', $this->getOffering()->meetsOnWednesday());
         } else {
             return $val;
         }
@@ -1248,9 +1248,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getWednesdayStartTimes()
     {
-        $val = $this->cacheGetPlain('WednesdayStartTimes');
+        $val = $this->cacheGetInstance('WednesdayStartTimes');
         if (null === $val) {
-            return $this->cacheSetPlain('WednesdayStartTimes', $this->getOffering()->getWednesdayStartTimes());
+            return $this->cacheSetInstance('WednesdayStartTimes', $this->getOffering()->getWednesdayStartTimes());
         } else {
             return $val;
         }
@@ -1268,9 +1268,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getWednesdayEndTimes()
     {
-        $val = $this->cacheGetPlain('WednesdayEndTimes');
+        $val = $this->cacheGetInstance('WednesdayEndTimes');
         if (null === $val) {
-            return $this->cacheSetPlain('WednesdayEndTimes', $this->getOffering()->getWednesdayEndTimes());
+            return $this->cacheSetInstance('WednesdayEndTimes', $this->getOffering()->getWednesdayEndTimes());
         } else {
             return $val;
         }
@@ -1285,9 +1285,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function meetsOnThursday()
     {
-        $val = $this->cacheGetPlain('meetsOnThursday');
+        $val = $this->cacheGetInstance('meetsOnThursday');
         if (null === $val) {
-            return $this->cacheSetPlain('meetsOnThursday', $this->getOffering()->meetsOnThursday());
+            return $this->cacheSetInstance('meetsOnThursday', $this->getOffering()->meetsOnThursday());
         } else {
             return $val;
         }
@@ -1305,9 +1305,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getThursdayStartTimes()
     {
-        $val = $this->cacheGetPlain('ThursdayStartTimes');
+        $val = $this->cacheGetInstance('ThursdayStartTimes');
         if (null === $val) {
-            return $this->cacheSetPlain('ThursdayStartTimes', $this->getOffering()->getThursdayStartTimes());
+            return $this->cacheSetInstance('ThursdayStartTimes', $this->getOffering()->getThursdayStartTimes());
         } else {
             return $val;
         }
@@ -1325,9 +1325,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getThursdayEndTimes()
     {
-        $val = $this->cacheGetPlain('ThursdayEndTimes');
+        $val = $this->cacheGetInstance('ThursdayEndTimes');
         if (null === $val) {
-            return $this->cacheSetPlain('ThursdayEndTimes', $this->getOffering()->getThursdayEndTimes());
+            return $this->cacheSetInstance('ThursdayEndTimes', $this->getOffering()->getThursdayEndTimes());
         } else {
             return $val;
         }
@@ -1342,9 +1342,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function meetsOnFriday()
     {
-        $val = $this->cacheGetPlain('meetsOnFriday');
+        $val = $this->cacheGetInstance('meetsOnFriday');
         if (null === $val) {
-            return $this->cacheSetPlain('meetsOnFriday', $this->getOffering()->meetsOnFriday());
+            return $this->cacheSetInstance('meetsOnFriday', $this->getOffering()->meetsOnFriday());
         } else {
             return $val;
         }
@@ -1362,9 +1362,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getFridayStartTimes()
     {
-        $val = $this->cacheGetPlain('FridayStartTimes');
+        $val = $this->cacheGetInstance('FridayStartTimes');
         if (null === $val) {
-            return $this->cacheSetPlain('FridayStartTimes', $this->getOffering()->getFridayStartTimes());
+            return $this->cacheSetInstance('FridayStartTimes', $this->getOffering()->getFridayStartTimes());
         } else {
             return $val;
         }
@@ -1382,9 +1382,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getFridayEndTimes()
     {
-        $val = $this->cacheGetPlain('FridayEndTimes');
+        $val = $this->cacheGetInstance('FridayEndTimes');
         if (null === $val) {
-            return $this->cacheSetPlain('FridayEndTimes', $this->getOffering()->getFridayEndTimes());
+            return $this->cacheSetInstance('FridayEndTimes', $this->getOffering()->getFridayEndTimes());
         } else {
             return $val;
         }
@@ -1399,9 +1399,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function meetsOnSaturday()
     {
-        $val = $this->cacheGetPlain('meetsOnSaturday');
+        $val = $this->cacheGetInstance('meetsOnSaturday');
         if (null === $val) {
-            return $this->cacheSetPlain('meetsOnSaturday', $this->getOffering()->meetsOnSaturday());
+            return $this->cacheSetInstance('meetsOnSaturday', $this->getOffering()->meetsOnSaturday());
         } else {
             return $val;
         }
@@ -1419,9 +1419,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getSaturdayStartTimes()
     {
-        $val = $this->cacheGetPlain('SaturdayStartTimes');
+        $val = $this->cacheGetInstance('SaturdayStartTimes');
         if (null === $val) {
-            return $this->cacheSetPlain('SaturdayStartTimes', $this->getOffering()->getSaturdayStartTimes());
+            return $this->cacheSetInstance('SaturdayStartTimes', $this->getOffering()->getSaturdayStartTimes());
         } else {
             return $val;
         }
@@ -1439,9 +1439,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getSaturdayEndTimes()
     {
-        $val = $this->cacheGetPlain('SaturdayEndTimes');
+        $val = $this->cacheGetInstance('SaturdayEndTimes');
         if (null === $val) {
-            return $this->cacheSetPlain('SaturdayEndTimes', $this->getOffering()->getSaturdayEndTimes());
+            return $this->cacheSetInstance('SaturdayEndTimes', $this->getOffering()->getSaturdayEndTimes());
         } else {
             return $val;
         }
@@ -1455,9 +1455,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function hasMeetingStartDate()
     {
-        $val = $this->cacheGetPlain('hasMeetingStartDate');
+        $val = $this->cacheGetInstance('hasMeetingStartDate');
         if (null === $val) {
-            return $this->cacheSetPlain('hasMeetingStartDate', $this->getOffering()->hasMeetingStartDate());
+            return $this->cacheSetInstance('hasMeetingStartDate', $this->getOffering()->hasMeetingStartDate());
         } else {
             return $val;
         }
@@ -1471,9 +1471,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getMeetingStartDate()
     {
-        $val = $this->cacheGetPlain('MeetingStartDate');
+        $val = $this->cacheGetInstance('MeetingStartDate');
         if (null === $val) {
-            return $this->cacheSetPlain('MeetingStartDate', $this->getOffering()->getMeetingStartDate());
+            return $this->cacheSetInstance('MeetingStartDate', $this->getOffering()->getMeetingStartDate());
         } else {
             return $val;
         }
@@ -1487,9 +1487,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function hasMeetingEndDate()
     {
-        $val = $this->cacheGetPlain('hasMeetingEndDate');
+        $val = $this->cacheGetInstance('hasMeetingEndDate');
         if (null === $val) {
-            return $this->cacheSetPlain('hasMeetingEndDate', $this->getOffering()->hasMeetingEndDate());
+            return $this->cacheSetInstance('hasMeetingEndDate', $this->getOffering()->hasMeetingEndDate());
         } else {
             return $val;
         }
@@ -1503,9 +1503,9 @@ class CourseOffering extends Cachable implements \osid_course_CourseOffering, \m
      */
     public function getMeetingEndDate()
     {
-        $val = $this->cacheGetPlain('MeetingEndDate');
+        $val = $this->cacheGetInstance('MeetingEndDate');
         if (null === $val) {
-            return $this->cacheSetPlain('MeetingEndDate', $this->getOffering()->getMeetingEndDate());
+            return $this->cacheSetInstance('MeetingEndDate', $this->getOffering()->getMeetingEndDate());
         } else {
             return $val;
         }

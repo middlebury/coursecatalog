@@ -23,50 +23,28 @@ abstract class Cachable
     }
 
     /**
-     * Answer data from the cache or NULL if not available.
+     * Answer data from the cache specific to this instance or NULL if unavailable.
      *
      * @param string $key
      */
-    protected function cacheGetPlain($key)
+    protected function cacheGetInstance($key)
     {
-        return $this->cache->getItem($this->hash($key))->get();
+        return $this->cache->getItem($this->hashInstance($key))->get();
     }
 
     /**
-     * Set data into the cache and return the data.
+     * Set data into the cache specific to this instance and return the data.
      *
      * @param string $key
      */
-    protected function cacheSetPlain($key, $value)
+    protected function cacheSetInstance($key, $value)
     {
         // create a new item by trying to get it from the cache.
-        $item = $this->cache->getItem($this->hash($key));
+        $item = $this->cache->getItem($this->hashInstance($key));
         $item->set($value);
         $this->cache->save($item);
 
         return $value;
-    }
-
-    /**
-     * Answer data from the cache or NULL if not available.
-     *
-     * @param string $key
-     */
-    protected function cacheGetObj($key)
-    {
-        // No difference between plain/object in this implementation.
-        return $this->cacheGetPlain($key);
-    }
-
-    /**
-     * Set data into the cache and return the data.
-     *
-     * @param string $key
-     */
-    protected function cacheSetObj($key, $value)
-    {
-        // No difference between plain/object in this implementation.
-        return $this->cacheSetPlain($key, $value);
     }
 
     /**
@@ -76,9 +54,9 @@ abstract class Cachable
      *
      * @return void
      */
-    protected function cacheDelete($key)
+    protected function cacheDeleteInstance($key)
     {
-        $this->cache->deleteItem($this->hash($key));
+        $this->cache->deleteItem($this->hashInstance($key));
     }
 
     /**
@@ -88,7 +66,7 @@ abstract class Cachable
      *
      * @return string
      */
-    private function hash($key)
+    private function hashInstance($key)
     {
         return str_replace('\\', '-', str_replace(':', '_', str_replace('.', ',', $this->collectionId.';'.$this->idString.';'.$key)));
     }

@@ -474,14 +474,14 @@ class CourseOfferingLookupSession extends CachableSession implements \osid_cours
      */
     public function getCourseOfferingGenusTypes()
     {
-        $val = $this->cacheGetObj('genus_types');
+        $val = $this->cacheGetInstance('genus_types');
         if (null === $val) {
             $val = [];
             $types = $this->session->getCourseOfferingGenusTypes();
             while ($types->hasNext()) {
                 $val[] = $types->getNextType();
             }
-            $this->cacheSetObj('genus_types', $val);
+            $this->cacheSetInstance('genus_types', $val);
         }
 
         return new \phpkit_type_ArrayTypeList($val);
@@ -502,14 +502,14 @@ class CourseOfferingLookupSession extends CachableSession implements \osid_cours
     public function getCourseOfferingGenusTypesByTermId(\osid_id_Id $termId)
     {
         $key = 'genus_types_in_'.$this->session->getTermCodeFromTermId($termId);
-        $val = $this->cacheGetObj($key);
+        $val = $this->cacheGetInstance($key);
         if (null === $val) {
             $val = [];
             $types = $this->session->getCourseOfferingGenusTypesByTermId($termId);
             while ($types->hasNext()) {
                 $val[] = $types->getNextType();
             }
-            $this->cacheSetObj($key, $val);
+            $this->cacheSetInstance($key, $val);
         }
 
         return new \phpkit_type_ArrayTypeList($val);
