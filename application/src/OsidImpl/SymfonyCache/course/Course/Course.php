@@ -61,8 +61,8 @@ class Course extends Cachable implements \osid_course_Course, \middlebury_course
     }
 
     /*********************************************************
- * Interface Methods
- *********************************************************/
+    * Interface Methods
+    *********************************************************/
 
     /*********************************************************
      * \osid_OsidObject
