@@ -7,7 +7,7 @@ mariadb:
     # the CLI will return an error.
     type: mariadb:11.4
     # The disk attribute is the size of the persistent disk (in MB) allocated to the service.
-    disk: 1024
+    disk: 1536
 
 # The name given to the Memcached service (lowercase alphanumeric only).
 memcached:
