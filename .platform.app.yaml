@@ -21,7 +21,7 @@ mounts:
     source_path: archives
 
 # The size of the persistent disk of the application (in MB).
-disk: 128
+# disk: 128
 
 # The relationships of the application with services or other applications.
 #
