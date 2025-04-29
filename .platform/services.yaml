@@ -19,7 +19,7 @@ memcached:
     type: memcached:1.6
 
 # The name given to the Network Storage service (lowercase alphanumeric only).
-archives:
+network-storage:
     # The type of your service (network-storage), which uses the format
     # 'type:version'. Be sure to consult the Network Storage documentation
     # (https://docs.platform.sh/add-services/network-storage.html#supported-versions)

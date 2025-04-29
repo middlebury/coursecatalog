@@ -15,12 +15,13 @@ type: 'php:8.4'
 # application container. The 'source_path' specifies the subdirectory
 # from within the source that the mount should point at.
 mounts:
-  'var/cache':
-    source: local
-    source_path: cache
+  'var/archives':
+    source: service
+    service: network-storage
+    source_path: archives
 
 # The size of the persistent disk of the application (in MB).
-disk: 512
+disk: 128
 
 # The relationships of the application with services or other applications.
 #
@@ -30,3 +31,4 @@ disk: 512
 relationships:
     mariadb: 'mariadb:mysql'
     memcached: 'memcached:memcached'
+    null: 'network-storage:archives'
