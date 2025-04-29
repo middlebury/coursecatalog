@@ -31,4 +31,3 @@ disk: 128
 relationships:
     mariadb: 'mariadb:mysql'
     memcached: 'memcached:memcached'
-    null: 'network-storage:archives'
