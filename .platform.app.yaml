@@ -19,7 +19,7 @@ runtime:
 build:
     flavor: none
 
-disk: 1024
+disk: 256
 
 web:
     locations:
