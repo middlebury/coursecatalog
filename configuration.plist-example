@@ -18,11 +18,11 @@
  -->
 	</dict>
 	<key>urn:inet:middlebury.edu:config:banner_course.pdo_dsn</key>
-	<string>mysql:dbname=afranco_catalog;host=localhost</string>
+	<string>mysql:dbname=DATABASE_NAME;host=DATABASE_HOST</string>
 	<key>urn:inet:middlebury.edu:config:banner_course.pdo_password</key>
-	<string>testpassword</string>
+	<string>DATABASE_PASSWORD</string>
 	<key>urn:inet:middlebury.edu:config:banner_course.pdo_username</key>
-	<string>testuser</string>
+	<string>DATABASE_USERNAME</string>
 
 	<key>urn:inet:middlebury.edu:config:symfonycache_course.impl_class_name</key>
 	<string>banner_course_CourseManager</string>

@@ -57,6 +57,12 @@ hooks:
 
         NODE_VERSION=22 symfony-build
 
+        cp configuration.plist-example configuration.plist
+        sed -i "s/DATABASE_NAME/$DATABASE_NAME/" configuration.plist
+        sed -i "s/DATABASE_HOST/$DATABASE_HOST/" configuration.plist
+        sed -i "s/DATABASE_USERNAME/$DATABASE_USERNAME/" configuration.plist
+        sed -i "s/DATABASE_PASSWORD/$DATABASE_PASSWORD/" configuration.plist
+
     deploy: |
         set -x -e
 
