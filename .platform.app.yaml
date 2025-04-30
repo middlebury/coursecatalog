@@ -63,6 +63,8 @@ hooks:
         sed -i "s/DATABASE_USERNAME/$DATABASE_USERNAME/" configuration.plist
         sed -i "s/DATABASE_PASSWORD/$DATABASE_PASSWORD/" configuration.plist
 
+        echo "DATABASE_URL=\"$DATABASE_URL\"" >> .env.local
+
     deploy: |
         set -x -e
 
