@@ -1,30 +1,4 @@
-# The name given to the MariaDB/MySQL service (lowercase alphanumeric only).
-mariadb:
-    # The type of your service (mariadb), which uses the format
-    # 'type:version'. Be sure to consult the MariaDB/MySQL documentation
-    # (https://docs.platform.sh/add-services/mysql.html#supported-versions)
-    # when choosing a version. If you specify a version number which is not available,
-    # the CLI will return an error.
-    type: mariadb:11.4
-    # The disk attribute is the size of the persistent disk (in MB) allocated to the service.
-    disk: 1536
 
-# The name given to the Memcached service (lowercase alphanumeric only).
-memcached:
-    # The type of your service (memcached), which uses the format
-    # 'type:version'. Be sure to consult the Memcached documentation
-    # (https://docs.platform.sh/add-services/memcached.html#supported-versions)
-    # when choosing a version. If you specify a version number which is not available,
-    # the CLI will return an error.
-    type: memcached:1.6
+database:
+    type: mysql:11.0
 
-# The name given to the Network Storage service (lowercase alphanumeric only).
-network-storage:
-    # The type of your service (network-storage), which uses the format
-    # 'type:version'. Be sure to consult the Network Storage documentation
-    # (https://docs.platform.sh/add-services/network-storage.html#supported-versions)
-    # when choosing a version. If you specify a version number which is not available,
-    # the CLI will return an error.
-    type: network-storage:2.0
-    # The disk attribute is the size of the persistent disk (in MB) allocated to the service.
-    disk: 1024
