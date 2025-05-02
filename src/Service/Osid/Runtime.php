@@ -2,9 +2,10 @@
 
 namespace App\Service\Osid;
 
+use Catalog\OsidImpl\Middlebury\configuration\ArrayValueLookupSession;
+use Catalog\OsidImpl\Middlebury\OsidRuntimeManager;
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\Filesystem\Path;
 
 /**
  * A helper to provide access to the CourseManager OSID and OSID configuration.
@@ -16,63 +17,27 @@ use Symfony\Component\Filesystem\Path;
  */
 class Runtime
 {
-    private $runtimeManager;
-    private $courseManager;
-    private $configPath;
+    private \osid_OsidRuntimeManager $runtimeManager;
+    private \osid_course_CourseManager $courseManager;
+    private \osid_configuration_ValueLookupSession $configuration;
 
     /**
      * Create a new OSID service instance.
      *
-     * @param string $configPath
-     *                           The path to the Osid Configuration XML file
      * @param string $courseImpl
      *                           The OSID CourseManager implementation class to use
      */
     public function __construct(
-        string $configPath,
+        array $config,
         #[Autowire('%kernel.project_dir%')]
         private string $projectDir,
         private string $courseImpl = 'banner_course_CourseManager',
         private ?CacheItemPoolInterface $cache = null,
     ) {
-        $this->setConfigPath($configPath);
-    }
-
-    /**
-     * Answer the configuration path.
-     *
-     * @return string
-     *
-     * @since 6/11/09
-     */
-    public function getConfigPath()
-    {
-        if (!isset($this->configPath)) {
-            $this->configPath = $this->projectDir.'/configuration.plist';
-        }
-
-        return $this->configPath;
-    }
-
-    /**
-     * Set the configuration path.
-     *
-     * @param string $path
-     *
-     * @since 6/11/09
-     *
-     * @throws osid_IllegalStateException the config path has already been set
-     */
-    public function setConfigPath($path)
-    {
-        if (!Path::isAbsolute($path)) {
-            $path = Path::makeAbsolute($path, $this->projectDir);
-        }
-        if (isset($this->configPath) && $this->configPath != $path) {
-            throw new \osid_IllegalStateException('the config path has already been set');
-        }
-
-        $this->configPath = $path;
+        $this->configuration = new ArrayValueLookupSession(
+            new \phpkit_id_Id('localhost', 'urn', 'symfony_configuration'),
+            $config
+        );
     }
 
     /**
@@ -114,7 +79,7 @@ class Runtime
     public function getRuntimeManager()
     {
         if (!isset($this->runtimeManager)) {
-            $this->runtimeManager = new \phpkit_AutoloadOsidRuntimeManager($this->getConfigPath());
+            $this->runtimeManager = new OsidRuntimeManager($this->configuration);
         }
 
         return $this->runtimeManager;

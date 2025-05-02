@@ -4,7 +4,6 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    app.osid.runtime.config_path: 'configuration.plist'
     app.osid.runtime.courseimpl: '%env(COURSE_MANAGER_IMPL)%'
     app.osid.id.authority_to_shorten: 'middlebury.edu'
     app.osid.reference_date: 'now'
@@ -57,7 +56,14 @@ services:
                 priority: 150
     App\Service\Osid\Runtime:
         arguments:
-            $configPath: '%app.osid.runtime.config_path%'
+            $config:
+                - { id: 'urn:inet:middlebury.edu:config:banner_course.id_authority', value: 'middlebury.edu' }
+                - { id: 'urn:inet:middlebury.edu:config:banner_course.pdo_count_queries', value: true }
+                # - { id: 'urn:inet:middlebury.edu:config:banner_course.pdo_driver_options', values: { 'PDO::ATTR_PERSISTENT': true, 'PDO::MYSQL_ATTR_INIT_COMMAND': 'SET NAMES utf8' } }
+                - { id: 'urn:inet:middlebury.edu:config:banner_course.pdo_dsn', value: 'mysql:dbname=%env(DATABASE_DATABASE)%;host=%env(DATABASE_HOST)%' }
+                - { id: 'urn:inet:middlebury.edu:config:banner_course.pdo_username', value: '%env(DATABASE_USERNAME)%' }
+                - { id: 'urn:inet:middlebury.edu:config:banner_course.pdo_password', value: '%env(DATABASE_PASSWORD)%' }
+                - { id: 'urn:inet:middlebury.edu:config:symfonycache_course.impl_class_name', value: '%env(SYMFONYCACHE_BACKING_COURSE_MANAGER_IMPL)%' }
             $courseImpl: '%app.osid.runtime.courseimpl%'
     App\Service\Osid\DataLoader:
         arguments:
