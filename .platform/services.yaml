@@ -12,7 +12,7 @@ database:
         schemas:
           - main
         endpoints:
-          mysql:
+          user:
             default_schema: main
             privileges:
               main: admin
