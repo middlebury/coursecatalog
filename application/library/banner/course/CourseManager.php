@@ -140,10 +140,6 @@ class banner_course_CourseManager extends phpkit_AbstractOsidManager implements 
                 $runtime->getConfiguration(),
                 new phpkit_id_URNInetId('urn:inet:middlebury.edu:config:banner_course.pdo_password'),
                 new phpkit_type_Type('urn', 'middlebury.edu', 'Primitives/String'));
-
-            if (empty($password)) {
-                $password = null;
-            }
         } catch (osid_NotFoundException $e) {
             throw new osid_ConfigurationErrorException($e->getMessage(), $e->getCode(), $e);
         }
