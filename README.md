@@ -41,7 +41,7 @@ These instructions assume that you have a POSIX machine running Apache with PHP 
    ```
 4. Make a symbolic link to the `coursecatalog/docroot/` directory in a web-accessible directory or add a virtualhost rooted in the `coursecatalog/docroot/` directory.
 5. Create a MySQL database for the catalogs data and a cache of Banner data.
-6. Make copies of the example config files at `configuration.plist`, `frontend_config.ini`, and `update_config.ini` and edit values to match your environment.
+6. Make a `.env.local` file and add database configuration details at a minimum.
 7. Create the database tables defined in `application/library/banner/course/sql/table_creation.sql`
 8. Run the script at `bin/update-from-banner.php` to dump Banner data into the the MySQL database:
    ```
@@ -121,24 +121,21 @@ Most of the Course Catalog OSID API is covered by PHPUnit tests. To run these te
 
 1. Install PHPUnit if you do not have it available.
 2. Create an empty MySQL database for running the tests.
-3. Edit `application/test/banner/configuration.plist` and enter your database configuration parameters.
+3. Edit `.env.test` and enter your database configuration parameters.
 4. On the command-line, change directory to your course-catalog source directory.
 5. Run the command `phpunit application/test/TestSuite.php`
 
 # Configuration
 
-To configure the OSID Course data model, copy `configuration.plist-example` to
-`configuration.plist` and edit the values in that file to point at your
-application's database server.
-
-To configure the rest of the application, create a `.env.local` file and copy
+To configure the application, create a `.env.local` file and copy
 the sections you need to modify from `.env`.
 
 ## `.env`/`.env.local` changes
 
 ### Database
 At a minimum, you will likely need to configure the `DATABASE_URL` to point at
-your application database.
+your application database as well as repeating that config in `DATABASE_HOST`,
+`DATABASE_DATABASE`, `DATABASE_USERNAME`, and `DATABASE_PASSWORD`.
 
 ### Saml Authentication
 If you choose to use authentication, you will need to update these values to fit
@@ -158,7 +155,7 @@ SAML_IDP_X509CERT="MIIC...."
    commonly fetched results around the underlying implemenation. By default the
    `apc_course_CourseManager` uses the `banner_course_CourseManager` as its
    underlying implementation, but this can be configured to a custom one in
-   `configuration.plist`
+   `SYMFONYCACHE_BACKING_COURSE_MANAGER_IMPL`
 
 
 # Implementation Notes

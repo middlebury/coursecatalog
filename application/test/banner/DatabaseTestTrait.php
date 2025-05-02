@@ -1,5 +1,8 @@
 <?php
 
+use Catalog\OsidImpl\Middlebury\configuration\ArrayValueLookupSession;
+use Catalog\OsidImpl\Middlebury\OsidRuntimeManager;
+
 trait banner_DatabaseTestTrait
 {
     public static $runtimeManager;
@@ -40,20 +43,45 @@ trait banner_DatabaseTestTrait
     }
 
     /**
-     * Answer the path for the OSID config used by this test.
-     *
-     * @return string
-     *                The filesytem path to the configuration plist file
+     * Answer the OSID config used by this test.
      */
-    public static function getOsidConfigPath(): string
+    public static function getOsidConfig(): osid_configuration_ValueLookupSession
     {
-        return __DIR__.'/configuration.plist';
+        return new ArrayValueLookupSession(
+            new phpkit_id_Id('localhost', 'urn', 'symfonytest_configuration'),
+            [
+                [
+                    'id' => 'urn:inet:middlebury.edu:config:banner_course.id_authority',
+                    'value' => 'middlebury.edu',
+                ],
+                [
+                    'id' => 'urn:inet:middlebury.edu:config:banner_course.pdo_count_queries',
+                    'value' => false,
+                ],
+                [
+                    'id' => 'urn:inet:middlebury.edu:config:banner_course.pdo_dsn',
+                    'value' => 'mysql:dbname='.$_ENV['DATABASE_DATABASE'].';host='.$_ENV['DATABASE_HOST'],
+                ],
+                [
+                    'id' => 'urn:inet:middlebury.edu:config:banner_course.pdo_username',
+                    'value' => $_ENV['DATABASE_USERNAME'],
+                ],
+                [
+                    'id' => 'urn:inet:middlebury.edu:config:banner_course.pdo_password',
+                    'value' => $_ENV['DATABASE_PASSWORD'],
+                ],
+                [
+                    'id' => 'urn:inet:middlebury.edu:config:symfonycache_course.impl_class_name',
+                    'value' => $_ENV['COURSE_MANAGER_IMPL'],
+                ],
+            ]
+        );
     }
 
     public static function getCourseManager()
     {
         if (empty(self::$courseManager)) {
-            self::$runtimeManager = new phpkit_AutoloadOsidRuntimeManager(static::getOsidConfigPath());
+            self::$runtimeManager = new OsidRuntimeManager(static::getOsidConfig());
             self::$courseManager = self::$runtimeManager->getManager(osid_OSID::COURSE(), 'banner_course_CourseManager', '3.0.0');
         }
 
