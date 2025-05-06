@@ -1179,7 +1179,7 @@ abstract class AbstractSyncer
         $select = $source_db->query(
             'IDM_MIDD.person',
             [
-                'PIDM',
+                'DISTINCT(PIDM)',
                 'MIDDLEBURY_COLLEGE_UID AS WEB_ID',
                 'FIRST_NAME',
                 'LAST_NAME',
