@@ -308,6 +308,9 @@ class ArchiveHtmlGenerator
         ob_start();
         foreach ($descriptions as $description) {
             $body = $description->nodeValue;
+            // Ensure that we have a UTF-8 string.
+            // https://stackoverflow.com/questions/28502051/%C3%82-character-showing-up-instead-of-nbsp
+            $body = mb_convert_encoding($body, 'HTML-ENTITIES', 'UTF-8');
             // Parse the HTML
             $html = new \DOMDocument();
             // Force the HTML snippet to be interpreted as UTF-8 as that is what Drupal
