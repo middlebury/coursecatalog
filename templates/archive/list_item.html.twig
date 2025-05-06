@@ -2,7 +2,7 @@
     <a name='{{ course.anchor }}' class='local_anchor'></a>
     <h3>{{ course.display_name }} {{ course.title }} {{ course.term_strings|join(', ') }}</h3>
 {% if course.terms is not defined or course.terms is empty %}
-    <span class='course_description'>{{ course.description }}</span>
+    <span class='course_description'>{{ course.description | striptags('<strong>,<a>,<em>,<br>,<p>') | raw }}</span>
     {{ include('archive/requirements.html.twig', {requirements: course.requirements}, with_context = false) }}
     <em class='course_instructors'>{{ course.instructors }}</em>
 {% else %}
