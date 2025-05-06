@@ -363,7 +363,10 @@ class ArchiveHtmlGenerator
         if ($bodies->length) {
             foreach ($bodies as $domBody) {
                 foreach ($domBody->childNodes as $child) {
-                    echo $feedDoc->saveHTML($child);
+                    // Ensure that if &nbsp; got converted to \u{A0}, that it is
+                    // converted back to &nbsp;.
+                    // https://stackoverflow.com/questions/28502051/%C3%82-character-showing-up-instead-of-nbsp
+                    echo mb_convert_encoding($feedDoc->saveHTML($child), 'HTML-ENTITIES', 'UTF-8');
                 }
             }
         }
