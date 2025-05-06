@@ -4,7 +4,7 @@
         <item>
             <title>{{ topic.displayname }}</title>
             <link>{{ url('view_topic', {topicId: topic, catalogId: catalogId}) }}</link>
-            <description><![CDATA[{{ topic.description | striptags('<strong>,<a>,<em>,<br>,<p>') | raw }}]]></description>
+            <description><![CDATA[{{ topic.description | raw }}]]></description>
             <catalog:id>{{ osidIdToString(topic.id) }}</catalog:id>
             <catalog:genustype>{{ osidTypeToString(topic.genustype) }}</catalog:genustype>
         </item>

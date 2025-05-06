@@ -4,6 +4,6 @@
 {% block body %}
     {% for course in courses %}
         <h2><a href="{{ path('view_course', {courseId: course.id}) }}">{{ course.displayname }}</a> - {{ course.title }}</h2>
-        <div>{{ course.description | striptags('<strong>,<a>,<em>,<br>,<p>') | raw }}</div>
+        <div>{{ course.description | raw }}</div>
     {% endfor %}
 {% endblock %}

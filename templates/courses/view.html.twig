@@ -12,7 +12,7 @@
 
 {% block body %}
 {% if course.description %}
-<div>{{ course.description | striptags('<strong>,<a>,<em>,<br>,<p>') | raw }}</div>
+<div>{{ course.description|raw }}</div>
 {% endif %}
 <dl class='course_info'>
     <dt>Subject:</dt>

@@ -5,7 +5,7 @@
     <ul>
     {% for catalog in catalogs %}
         <li><a href="{{ path('view_catalog', { catalogId: catalog.id }) }}">{{ catalog.displayname }}</a>
-        <div>{{ catalog.description | striptags('<strong>,<a>,<em>,<br>,<p>') | raw }}</div>
+        <div>{{ catalog.description | raw }}</div>
         </li>
     {% endfor %}
     </ul>
