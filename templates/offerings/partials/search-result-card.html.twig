@@ -22,7 +22,7 @@
     )}}
 
     <h3 class="pt-2">{{ item.offering.title }}</h3>
-    <p class='f2 pb-2 pt-2 description'>{{ item.offering.description | raw }}</p>
+    <p class='f2 pb-2 pt-2 description'>{{ item.offering.description | striptags('<strong>,<a>,<em>,<br>,<p>') | raw }}</p>
 
     <div class="row">
         <div class="col-md-6">

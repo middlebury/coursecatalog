@@ -2,7 +2,7 @@
             <title>{{ course.displayname }}{% if include_alternates_in_title and alternates is not empty %}{% for alternate in alternates %} / {{ alternate.course.displayname }}{% endfor %}{% endif %} - {{ course.title }}</title>
             <link>{{ url('view_course', {courseId: course}) }}</link>
             <guid isPermaLink="true">{{ url('view_course', {courseId: course}) }}</guid>
-            <description><![CDATA[{{ course.description|raw }}]]></description>
+            <description><![CDATA[{{ course.description | striptags('<strong>,<a>,<em>,<br>,<p>') | raw }}]]></description>
             <catalog:id>{{ osidIdToString(course.id) }}</catalog:id>
             <catalog:display_name>{{ course.displayname }}</catalog:display_name>
             <catalog:title>{{ course.title }}</catalog:title>

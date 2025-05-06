@@ -13,7 +13,7 @@
                     <catalog:offering id="{{ osidIdToString(offering.id) }}" href="{{ url('view_offering', {offeringId: offering}) }}">
                         <catalog:display_name>{{ offering.displayname }}</catalog:display_name>
                         <catalog:title>{{ offering.title }}</catalog:title>
-                        <catalog:description><![CDATA[{{ offering.description|raw }}]]></catalog:description>
+                        <catalog:description><![CDATA[{{ offering.description | striptags('<strong>,<a>,<em>,<br>,<p>') | raw }}]]></catalog:description>
                         <catalog:type id="{{ osidTypeToString(offering.genustype) }}">{{ offering.genustype.displayname }}</catalog:type>
                         <catalog:term id="{{ osidIdToString(offering.term.id) }}">{{ offering.term.displayname }}</catalog:term>
                         <catalog:location id="{{ osidIdToString(offering.locationid) }}">{{ offering.locationInfo }}</catalog:location>

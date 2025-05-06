@@ -11,7 +11,7 @@
 
 {% block body %}
 {% if offering.description %}
-    <div>{{ offering.description|raw }}</div>
+    <div>{{ offering.description | striptags('<strong>,<a>,<em>,<br>,<p>') | raw }}</div>
 {% endif %}
 
 <dl class='section_info'>

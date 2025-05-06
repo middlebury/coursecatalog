@@ -1,7 +1,7 @@
         <item>
             <title>{{ offering.displayname }}</title>
             <link>{{ url('view_offering', {'offeringId': offering}) }}</link>
-            <description><![CDATA[{{ offering.description|raw }}]]></description>
+            <description><![CDATA[{{ offering.description | striptags('<strong>,<a>,<em>,<br>,<p>') | raw }}]]></description>
             <catalog:title>{{ offering.title }}</catalog:title>
             <catalog:id>{{ osidIdToString(offering.id) }}</catalog:id>
 {%~ if is_primary is not null %}

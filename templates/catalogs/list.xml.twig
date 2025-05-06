@@ -4,7 +4,7 @@
         <item>
             <title>{{ catalog.displayname }}</title>
             <link>{{ url('view_catalog', {catalogId: catalog.id}) }}</link>
-            <description><![CDATA[{{ catalog.description | raw }}]]></description>
+            <description><![CDATA[{{ catalog.description | striptags('<strong>,<a>,<em>,<br>,<p>') | raw }}]]></description>
             <catalog:id>{{ osidIdToString(catalog.id) }}</catalog:id>
         </item>
 {% endfor %}
