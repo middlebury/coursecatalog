@@ -60,7 +60,7 @@ services:
                 - { id: 'urn:inet:middlebury.edu:config:banner_course.id_authority', value: 'middlebury.edu' }
                 - { id: 'urn:inet:middlebury.edu:config:banner_course.pdo_count_queries', value: true }
                 # - { id: 'urn:inet:middlebury.edu:config:banner_course.pdo_driver_options', values: { 'PDO::ATTR_PERSISTENT': true, 'PDO::MYSQL_ATTR_INIT_COMMAND': 'SET NAMES utf8' } }
-                - { id: 'urn:inet:middlebury.edu:config:banner_course.pdo_dsn', value: 'mysql:dbname=%env(DATABASE_DATABASE)%;host=%env(DATABASE_HOST)%' }
+                - { id: 'urn:inet:middlebury.edu:config:banner_course.pdo_dsn', value: 'mysql:dbname=%env(DATABASE_DATABASE)%;host=%env(DATABASE_HOST)%;charset=%env(DATABASE_CHARSET)%' }
                 - { id: 'urn:inet:middlebury.edu:config:banner_course.pdo_username', value: '%env(DATABASE_USERNAME)%' }
                 - { id: 'urn:inet:middlebury.edu:config:banner_course.pdo_password', value: '%env(DATABASE_PASSWORD)%' }
                 - { id: 'urn:inet:middlebury.edu:config:symfonycache_course.impl_class_name', value: '%env(SYMFONYCACHE_BACKING_COURSE_MANAGER_IMPL)%' }
