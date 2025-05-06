@@ -1,7 +1,7 @@
 <span class='course_requirements'>
 {% for req in requirements %}
     <strong>{{ req.label }}</strong>
-    {% if req.req_seats is not empty %}
+    {% if req.req_seats is defined and req.req_seats is not empty %}
         {% if (req.term_seats | length) == 1 and req.req_seats != req.total_seats %}
              ({{ req.req_seats }} seats)
         {% elseif req.term_seats | length %}
