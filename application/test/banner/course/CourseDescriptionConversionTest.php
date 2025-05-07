@@ -97,4 +97,44 @@ Welcome to a course that delves into the heart of 21st-century power dynamics. W
             )
         );
     }
+
+    public function testItalicsAtStart()
+    {
+        $this->assertEquals(
+            '<em>Italic text</em> is great.',
+            banner_course_Course::convertDescription(
+                '/Italic text/ is great.'
+            )
+        );
+    }
+
+    public function testItalicsAtEnd()
+    {
+        $this->assertEquals(
+            'This course examines conservation and environmental policy in the United States. In order to better understand the current nature of the conservation and environmental policy process, we will begin by tracing the development of past ideas, institutions, and policies related to this policy arena. We will then focus on contemporary conservation and environmental politics and policy making—gridlock in Congress, interest group pressure, the role of the courts and the president, and a move away from national policy making—toward the states, collaboration, and civil society. 3 hrs. lect./disc. <em>(American Politics)</em>',
+            banner_course_Course::convertDescription(
+                'This course examines conservation and environmental policy in the United States. In order to better understand the current nature of the conservation and environmental policy process, we will begin by tracing the development of past ideas, institutions, and policies related to this policy arena. We will then focus on contemporary conservation and environmental politics and policy making—gridlock in Congress, interest group pressure, the role of the courts and the president, and a move away from national policy making—toward the states, collaboration, and civil society. 3 hrs. lect./disc. /(American Politics)/'
+            )
+        );
+    }
+
+    public function testBoldAtStart()
+    {
+        $this->assertEquals(
+            '<strong>Bold text</strong> is great.',
+            banner_course_Course::convertDescription(
+                '*Bold text* is great.'
+            )
+        );
+    }
+
+    public function testBoldAtEnd()
+    {
+        $this->assertEquals(
+            'This is some <strong>bold text</strong>',
+            banner_course_Course::convertDescription(
+                'This is some *bold text*'
+            )
+        );
+    }
 }
