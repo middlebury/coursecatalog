@@ -59,6 +59,11 @@ class OciToFileSyncer extends OciSyncer implements Syncer
             mkdir($this->destinationDirectory);
         }
 
+        if (!is_dir($this->destinationDirectory) || !is_writeable($this->destinationDirectory)) {
+            throw new \Exception('Cannot write to ' . $this->destinationDirectory);
+        }
+        chdir($this->destinationDirectory);
+
         // Export the tables from our temporary database
         $this->output->write('Dumping banner tables to file 	...');
         $filename = 'catalog-banner-export-' . date('c') . '.sql';
@@ -68,7 +73,7 @@ class OciToFileSyncer extends OciSyncer implements Syncer
             .' -p'.escapeshellarg($this->destination_db->getPassword())
             .' '.escapeshellarg($this->destination_db->getDatabase())
             .' '.implode(' ', $this->getBannerTables())
-            .' > '.$this->destinationDirectory.'/'.$filename;
+            .' > '.$filename;
         exec($command, $output, $return_var);
         $this->output->write("	done\n");
         if ($return_var) {
@@ -77,7 +82,7 @@ class OciToFileSyncer extends OciSyncer implements Syncer
 
         // Create a sha1 hash
         $this->output->write('Hashing the SQL export 	...');
-        $command = $this->sha256command.' '.$this->destinationDirectory.'/'.$filename.' > '.$this->destinationDirectory.'/'.$filename.'.sha256';
+        $command = $this->sha256command.' '.$filename.' > '.$filename.'.sha256';
         exec($command, $output, $return_var);
         $this->output->write("	done\n");
         if ($return_var) {
