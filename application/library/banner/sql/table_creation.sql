@@ -245,7 +245,7 @@ CREATE TABLE IF NOT EXISTS `SCBDESC` (
   `SCBDESC_TERM_CODE_END` varchar(6) default NULL COMMENT 'End Term.  Identifies the term that the course description effective term ends',
   PRIMARY KEY  (`SCBDESC_SUBJ_CODE`,`SCBDESC_CRSE_NUMB`,`SCBDESC_TERM_CODE_EFF`),
   FULLTEXT KEY `SCBDESC_TEXT_NARRATIVE` (`SCBDESC_TEXT_NARRATIVE`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Course Catalog Description Narrative Text Table';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Course Catalog Description Narrative Text Table';
 
 -- --------------------------------------------------------
 
@@ -457,7 +457,7 @@ CREATE TABLE IF NOT EXISTS `SSBSECT` (
   KEY `SSBSECT_PTRM_DATE_INDEX` (`SSBSECT_PTRM_START_DATE`),
   KEY `SSBSECT_DATE_INDEX` (`SSBSECT_REG_FROM_DATE`,`SSBSECT_REG_TO_DATE`,`SSBSECT_TERM_CODE`),
   FULLTEXT KEY `SSBSECT_fulltext_index` (`SSBSECT_fulltext`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Section General Information Base Table';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Section General Information Base Table';
 
 -- --------------------------------------------------------
 
