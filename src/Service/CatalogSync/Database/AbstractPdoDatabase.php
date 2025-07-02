@@ -48,6 +48,10 @@ class AbstractPdoDatabase
         $this->pdo = $this->createPdo();
     }
 
+    public function getPdo(): \PDO {
+        return $this->pdo;
+    }
+
     /**
      * Answer a Pdo instance based on configuration parameters.
      *
