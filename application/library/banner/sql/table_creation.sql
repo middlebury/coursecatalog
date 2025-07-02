@@ -950,10 +950,10 @@ CREATE TABLE IF NOT EXISTS `instructors` (
 -- Constraints for table `catalog_term_match`
 --
 ALTER TABLE `catalog_term_match`
-  ADD CONSTRAINT `catalog_term_match_ibfk_1` FOREIGN KEY (`catalog_id`) REFERENCES `course_catalog` (`catalog_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `catalog_term_match_ibfk_1` FOREIGN KEY IF NOT EXISTS (`catalog_id`) REFERENCES `course_catalog` (`catalog_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `course_catalog_college`
 --
 ALTER TABLE `course_catalog_college`
-  ADD CONSTRAINT `course_catalog_college_ibfk_1` FOREIGN KEY (`catalog_id`) REFERENCES `course_catalog` (`catalog_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `course_catalog_college_ibfk_1` FOREIGN KEY IF NOT EXISTS (`catalog_id`) REFERENCES `course_catalog` (`catalog_id`) ON DELETE CASCADE ON UPDATE CASCADE;
