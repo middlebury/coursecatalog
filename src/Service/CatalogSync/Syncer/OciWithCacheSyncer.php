@@ -9,6 +9,7 @@
 
 namespace App\Service\CatalogSync\Syncer;
 
+use App\Service\CatalogSync\BannerTableListingTrait;
 use App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase;
 use App\Service\CatalogSync\Database\DestinationDatabase;
 use App\Service\CatalogSync\Database\Source\OciSourceDatabase;
@@ -25,6 +26,8 @@ use App\Service\CatalogSync\Database\Source\OciSourceDatabase;
  */
 class OciWithCacheSyncer extends OciSyncer implements Syncer
 {
+    use BannerTableListingTrait;
+
     public function __construct(
         OciSourceDatabase $source_db,
         PdoDestinationDatabase $destination_db,
@@ -116,58 +119,5 @@ class OciWithCacheSyncer extends OciSyncer implements Syncer
     {
         parent::disconnect();
         $this->temp_db->disconnect();
-    }
-
-    /**
-     * Answer a list of the Banner tables.
-     */
-    protected function getBannerTables(): array
-    {
-        return [
-            'GORINTG',
-            'GTVDUNT',
-            'GTVINSM',
-            'GTVINTP',
-            'GTVMTYP',
-            'GTVSCHS',
-            'SCBCRSE',
-            'SCBDESC',
-            'SCRATTR',
-            'SCREQIV',
-            'SCRLEVL',
-            'SIRASGN',
-            'SOBPTRM',
-            'SSBDESC',
-            'SSBSECT',
-            'SSBXLST',
-            'SSRATTR',
-            'SSRBLCK',
-            'SSRMEET',
-            'SSRXLST',
-            'STVACYR',
-            'STVAPRV',
-            'STVASTY',
-            'STVATTR',
-            'STVBLCK',
-            'STVBLDG',
-            'STVCAMP',
-            'STVCIPC',
-            'STVCOLL',
-            'STVCOMT',
-            'STVCSTA',
-            'STVDEPT',
-            'STVDIVS',
-            'STVFCNT',
-            'STVLEVL',
-            'STVMEET',
-            'STVPTRM',
-            'STVPWAV',
-            'STVREPS',
-            'STVSCHD',
-            'STVSUBJ',
-            'STVTERM',
-            'STVTRMT',
-            'instructors',
-        ];
     }
 }
