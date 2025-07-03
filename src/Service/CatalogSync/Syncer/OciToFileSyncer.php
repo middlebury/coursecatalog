@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @since 2/22/16
+ * @since 7/3/2025
  *
- * @copyright Copyright &copy; 2016, Middlebury College
+ * @copyright Copyright &copy; 2025, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 
@@ -18,9 +18,9 @@ use App\Service\CatalogSync\Database\Source\OciSourceDatabase;
  * on the source side and a MySQL-PDO connection on the temporary cache side,
  * and mysqldump to copy from the temporary cache to a file export.
  *
- * @since 2/22/16
+ * @since 7/3/2025
  *
- * @copyright Copyright &copy; 2016, Middlebury College
+ * @copyright Copyright &copy; 2025, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
 class OciToFileSyncer extends OciSyncer implements Syncer
