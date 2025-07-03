@@ -27,7 +27,7 @@ class OciToFileSyncer extends OciSyncer implements Syncer
 {
     public function __construct(
         OciSourceDatabase $source_db,
-        private string $destinationDirectory,
+        private string $syncFileDirectory,
         PdoDestinationDatabase $temp_db,
         array $allowedBlckCodes = [],
         private string $mysqlCommand = 'mysql',
@@ -55,14 +55,14 @@ class OciToFileSyncer extends OciSyncer implements Syncer
      */
     public function postCopy(): void
     {
-        if (!file_exists($this->destinationDirectory)) {
-            mkdir($this->destinationDirectory);
+        if (!file_exists($this->syncFileDirectory)) {
+            mkdir($this->syncFileDirectory);
         }
 
-        if (!is_dir($this->destinationDirectory) || !is_writeable($this->destinationDirectory)) {
-            throw new \Exception('Cannot write to ' . $this->destinationDirectory);
+        if (!is_dir($this->syncFileDirectory) || !is_writeable($this->syncFileDirectory)) {
+            throw new \Exception('Cannot write to ' . $this->syncFileDirectory);
         }
-        chdir($this->destinationDirectory);
+        chdir($this->syncFileDirectory);
 
         // Export the tables from our temporary database
         $this->output->write('Dumping banner tables to file 	...');

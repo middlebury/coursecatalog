@@ -113,7 +113,7 @@ services:
         class: 'App\Service\CatalogSync\Syncer\OciToFileSyncer'
         public: true
         arguments:
-            $destinationDirectory: '%env(SYNC_SQL_EXPORT_DIRECTORY)%'
+            $syncFileDirectory: '%env(SYNC_SQL_EXPORT_DIRECTORY)%'
             $temp_db: '@sync.temp_db'
             $allowedBlckCodes: '%env(json:SYNC_ALLOWED_BLOCK_CODES)%'
     sync.strategy.from_file:
