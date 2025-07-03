@@ -73,7 +73,7 @@ class OciToFileSyncer extends OciSyncer implements Syncer
             .' -p'.escapeshellarg($this->destination_db->getPassword())
             .' '.escapeshellarg($this->destination_db->getDatabase())
             .' '.implode(' ', $this->getBannerTables())
-            .' > '.$filename;
+            .' > '.escapeshellarg($filename);
         exec($command, $output, $return_var);
         $this->output->write("	done\n");
         if ($return_var) {
@@ -82,7 +82,7 @@ class OciToFileSyncer extends OciSyncer implements Syncer
 
         // Create a sha1 hash
         $this->output->write('Hashing the SQL export 	...');
-        $command = $this->sha256command.' '.$filename.' > '.$filename.'.sha256';
+        $command = $this->sha256command.' '.escapeshellarg($filename).' > '.escapeshellarg($filename.'.sha256');
         exec($command, $output, $return_var);
         $this->output->write("	done\n");
         if ($return_var) {
