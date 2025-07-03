@@ -109,6 +109,18 @@ services:
         public: true
         arguments:
             $allowedBlckCodes: '%env(json:SYNC_ALLOWED_BLOCK_CODES)%'
+    sync.strategy.oci_to_file:
+        class: 'App\Service\CatalogSync\Syncer\OciToFileSyncer'
+        public: true
+        arguments:
+            $syncFileDirectory: '%env(SYNC_SQL_EXPORT_DIRECTORY)%'
+            $temp_db: '@sync.temp_db'
+            $allowedBlckCodes: '%env(json:SYNC_ALLOWED_BLOCK_CODES)%'
+    sync.strategy.from_file:
+        class: 'App\Service\CatalogSync\Syncer\FromFileSyncer'
+        public: true
+        arguments:
+            $syncFileDirectory: '%env(SYNC_SQL_EXPORT_DIRECTORY)%'
     App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase:
         arguments:
             $dsn: '%env(SYNC_DESTINATION_DSN)%'
