@@ -11,7 +11,6 @@ namespace App\Service\CatalogSync\Syncer;
 
 use App\Service\CatalogSync\BannerTableListingTrait;
 use App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase;
-use App\Service\CatalogSync\Database\DestinationDatabase;
 use App\Service\CatalogSync\Database\Source\OciSourceDatabase;
 
 /**
@@ -63,13 +62,13 @@ class OciToFileSyncer extends OciSyncer implements Syncer
         }
 
         if (!is_dir($this->syncFileDirectory) || !is_writeable($this->syncFileDirectory)) {
-            throw new \Exception('Cannot write to ' . $this->syncFileDirectory);
+            throw new \Exception('Cannot write to '.$this->syncFileDirectory);
         }
         chdir($this->syncFileDirectory);
 
         // Export the tables from our temporary database
         $this->output->write('Dumping banner tables to file 	...');
-        $filename = 'catalog-banner-export-' . date('c') . '.sql';
+        $filename = 'catalog-banner-export-'.date('c').'.sql';
         $command = $this->mysqldumpCommand.' --add-drop-table --single-transaction '
             .' -h '.escapeshellarg($this->destination_db->getHost())
             .' -u '.escapeshellarg($this->destination_db->getUsername())
@@ -96,7 +95,8 @@ class OciToFileSyncer extends OciSyncer implements Syncer
     /**
      * Update derived data in the destination database.
      */
-    public function updateDerived(): void {
+    public function updateDerived(): void
+    {
         // Nothing to do since our temporary database won't have
         // derived tables.
     }

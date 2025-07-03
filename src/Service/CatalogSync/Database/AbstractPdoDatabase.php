@@ -48,7 +48,8 @@ class AbstractPdoDatabase
         $this->pdo = $this->createPdo();
     }
 
-    public function getPdo(): \PDO {
+    public function getPdo(): \PDO
+    {
         return $this->pdo;
     }
 

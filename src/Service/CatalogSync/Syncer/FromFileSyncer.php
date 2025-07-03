@@ -9,9 +9,8 @@
 
 namespace App\Service\CatalogSync\Syncer;
 
-use App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase;
-use App\Service\CatalogSync\Database\SourceDatabase;
 use App\Service\CatalogSync\BannerTableListingTrait;
+use App\Service\CatalogSync\Database\Destination\PdoDestinationDatabase;
 
 /**
  * This class implements the Banner-to-Catalog sync using a SQL file data source.
@@ -41,7 +40,7 @@ class FromFileSyncer extends AbstractSyncer implements Syncer
     protected function validateSource(): void
     {
         if (!is_dir($this->syncFileDirectory) || !is_readable($this->syncFileDirectory)) {
-            throw new \Exception('Cannot read from ' . $this->syncFileDirectory);
+            throw new \Exception('Cannot read from '.$this->syncFileDirectory);
         }
         // Find the latest SQL file for which a valid hash exists.
         $this->getLatestValidSqlFile($this->syncFileDirectory);
@@ -50,7 +49,8 @@ class FromFileSyncer extends AbstractSyncer implements Syncer
     /**
      * Copy data.
      */
-    public function copy(): void {
+    public function copy(): void
+    {
         // Find the latest SQL file for which a valid hash exists.
         $latestValidFile = $this->getLatestValidSqlFile($this->syncFileDirectory);
         if (file_exists($this->syncFileDirectory.'/latest.txt')
@@ -92,17 +92,19 @@ class FromFileSyncer extends AbstractSyncer implements Syncer
      * Answer the latest .sql file that matches its .sql.sha256 hash.
      *
      * @param string $directory
-     *   The directory to search.
+     *                          The directory to search
+     *
      * @return string
-     *   The relative path to the SQL file.
+     *                The relative path to the SQL file
      */
-    protected function getLatestValidSqlFile(string $directory): string {
+    protected function getLatestValidSqlFile(string $directory): string
+    {
         $latest = null;
         $latestTstamp = null;
         $oldWD = getcwd();
         chdir($directory);
         foreach (scandir('.', SCANDIR_SORT_DESCENDING) as $file) {
-            if (pathinfo($file, PATHINFO_EXTENSION) == 'sql' && file_exists($file.'.sha256')) {
+            if ('sql' == pathinfo($file, PATHINFO_EXTENSION) && file_exists($file.'.sha256')) {
                 if (is_null($latestTstamp) || filemtime($file) > $latestTstamp) {
                     // Check if the file matches its hash.
                     $command = $this->sha256command.' -c '.escapeshellarg($file.'.sha256');
