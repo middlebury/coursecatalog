@@ -211,7 +211,8 @@ class Schedules extends AbstractController
         $firstOfferingTermId = $offering->getTermId();
 
         $selectedLinkSet = $this->osidIdMap->fromString($request->get('section_set'));
-        $linkTypes = $course->getLinkTypeIdsForTermAndSet($termId, $selectedLinkSet);
+        $linkRecord = $course->getCourseRecord($linkType);
+        $linkTypes = $linkRecord->getLinkTypeIdsForTermAndSet($termId, $selectedLinkSet);
         $requiredLinkTypes = [];
         while ($linkTypes->hasNext()) {
             $requiredLinkTypes[] = [
@@ -356,7 +357,8 @@ class Schedules extends AbstractController
         while ($results->hasNext()) {
             $offering = $results->getNextCourseOffering();
 
-            $instructors = $offering->getInstructors();
+            $instructorsRecord = $offering->getCourseOfferingRecord($instructorType);
+            $instructors = $instructorsRecord->getInstructors();
             $instructorString = '';
             while ($instructors->hasNext()) {
                 $instructorString .= $instructors->getNextResource()->getDisplayName().', ';
