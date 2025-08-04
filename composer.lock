@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a83c98f8f451ae8b03a4e80869d91d0c",
+    "content-hash": "30fccdbc458e781cc7cc361417cdc8ca",
     "packages": [
         {
             "name": "brick/math",
@@ -2954,10 +2954,10 @@
         },
         {
             "name": "oki/osid-phpkit",
-            "version": "dev-master",
+            "version": "dev-main",
             "source": {
                 "type": "git",
-                "url": "https://git.assembla.com/osid-phpkit.git",
+                "url": "https://github.com/middlebury/osid-phpkit.git",
                 "reference": "f862f1de1359697dff671cc507311f5427f8a663"
             },
             "type": "library"

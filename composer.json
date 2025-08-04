@@ -17,7 +17,7 @@
         "microsoft/microsoft-graph": "^2.12",
         "middlebury/midd-frontend": "^4.0",
         "nbgrp/onelogin-saml-bundle": "^1.4",
-        "oki/osid-phpkit": "dev-master",
+        "oki/osid-phpkit": "dev-main",
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "6.4.*",
         "symfony/asset-mapper": "6.4.*",
@@ -99,10 +99,10 @@
             "type": "package",
             "package": {
                 "name": "oki/osid-phpkit",
-                "version": "dev-master",
+                "version": "dev-main",
                 "type": "library",
                 "source": {
-                    "url": "https://git.assembla.com/osid-phpkit.git",
+                    "url": "https://github.com/middlebury/osid-phpkit.git",
                     "type": "git",
                     "reference": "f862f1de1359697dff671cc507311f5427f8a663"
                 }
