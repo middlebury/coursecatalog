@@ -115,7 +115,7 @@ In development, the worker process can be manually started with:
 lando ssh -c "bin/console messenger:consume -vv"
 ```
 
-## Unit Tests
+### Unit Tests
 
 Most of the Course Catalog OSID API is covered by PHPUnit tests. To run these tests:
 
@@ -123,7 +123,18 @@ Most of the Course Catalog OSID API is covered by PHPUnit tests. To run these te
 2. Create an empty MySQL database for running the tests.
 3. Edit `.env.test` and enter your database configuration parameters.
 4. On the command-line, change directory to your course-catalog source directory.
-5. Run the command `phpunit application/test/TestSuite.php`
+5. Run the command `phpunit` from within the application directory.
+   If you are using lando for your development environment, run
+   `lando ssh -c "phpunit"`
+
+### Code style checks
+Use `php-cs-fixer` to check coding style with:
+
+    lando ssh -c "vendor/bin/php-cs-fixer check"
+
+`php-cs-fixer` can automatically make some changes with:
+
+    lando ssh -c "vendor/bin/php-cs-fixer fix"
 
 # Configuration
 
