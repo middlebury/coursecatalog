@@ -94,10 +94,9 @@ class MenuBuilder
         } else {
             $menu->addChild('Schedule Planner', [
                 'route' => 'login',
-                'routeParameters' => [
-                    'returnTo' => $this->urlGenerator->generate('schedules', ['catalogId' => $selectedCatalogId]),
-                ],
             ]);
+            $menu['Schedule Planner']->setLinkAttribute('data-return-to', $this->urlGenerator->generate('schedules', ['catalogId' => $selectedCatalogId]));
+            $menu['Schedule Planner']->setLinkAttribute('class', 'login');
         }
 
         $menu->addChild('Course Hub', ['uri' => 'https://courses.middlebury.edu']);
@@ -133,10 +132,8 @@ class MenuBuilder
         } else {
             $menu->addChild('Log in', [
                 'route' => 'login',
-                'routeParameters' => [
-                    'returnTo' => $currentRequest->getRequestUri(),
-                ],
             ]);
+            $menu['Log in']->setLinkAttribute('class', 'login');
         }
 
         return $menu;
@@ -201,10 +198,9 @@ class MenuBuilder
         } else {
             $menu->addChild('Schedule Planner', [
                 'route' => 'login',
-                'routeParameters' => [
-                    'returnTo' => $this->urlGenerator->generate('schedules', ['catalogId' => $selectedCatalogId]),
-                ],
             ]);
+            $menu['Schedule Planner']->setLinkAttribute('data-return-to', $this->urlGenerator->generate('schedules', ['catalogId' => $selectedCatalogId]));
+            $menu['Schedule Planner']->setLinkAttribute('class', 'login');
         }
 
         return $menu;

@@ -22,5 +22,5 @@
         Save
     </a>
 {% else %}
-    <a href="{{ path("login", {returnTo: app.request.uri }) }}" class="f2 float-right">Log-in to save</a>
+    <a href="{{ path("login") }}" class="f2 float-right login">Log-in to save</a>
 {% endif %}
