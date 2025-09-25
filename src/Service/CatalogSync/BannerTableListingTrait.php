@@ -5,8 +5,8 @@ namespace App\Service\CatalogSync;
 /**
  * Provides access to a listing of Banner tables for sync.
  */
-trait BannerTableListingTrait {
-
+trait BannerTableListingTrait
+{
     /**
      * Answer a list of the Banner tables.
      */
@@ -59,5 +59,4 @@ trait BannerTableListingTrait {
             'instructors',
         ];
     }
-
 }
