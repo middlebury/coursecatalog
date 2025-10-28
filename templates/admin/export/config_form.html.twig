@@ -44,12 +44,6 @@
         <ul id='sections-list' class='sections-list'></ul>
         <div class='error-message error-div'>Error: </div>
 
-        <!-- Bottom Nav -->
-        <button class='link-button' id="save-export-config-button">Save</button>
-        <button class='link-button' id="reset-export-config-button">Reset</button>
-        <button class='link-button' id="delete-export-config-button">Delete this config</button>
-        <button class='link-button' id="show-hide-export-config-groups-button">Show/Hide all groups</button>
-        <a class='link-button' href="{{ path('export_config_revisions', {exportId: selected_config.id}) }}">Revision history</a>
 {% endif %}
 </div>
 {% endblock %}
