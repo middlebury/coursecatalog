@@ -38,7 +38,7 @@
                 <a class='link-button' href='{{ path('export_config_revision_json', {exportId: config.id, revisionId: revision.id}) }}' target="_blank">View JSON</a>
             </td>
             <td>
-                <button class="revert-button" data-rev-id="{{ revision.id }}" data-url="{{ path('export_config_revert_to_revision', {exportId: config.id}) }}">Revert to this revision</button>
+                <button class="revert-button link-button" data-rev-id="{{ revision.id }}" data-url="{{ path('export_config_revert_to_revision', {exportId: config.id}) }}">Revert to this revision</button>
             </td>
     </tr>
 {% endfor %}
