@@ -11,7 +11,7 @@
 <div class='admin-menu'><a href="{{ path('export_config_form', {exportId: config.id}) }}">&laquo; Back to catalog export configuration</a></div>
 
 <div class='config-menu'>
-    <button class="compare-revisions-button" data-url="{{ path('export_config_revision_diff', {exportId: config.id, rev1: '-rev1-', rev2: '-rev2-'}) }}">Compare selected revisions</button>
+    <button class="compare-revisions-button link-button" data-url="{{ path('export_config_revision_diff', {exportId: config.id, rev1: '-rev1-', rev2: '-rev2-'}) }}">Compare selected revisions</button>
 </div>
 
 {% if revisions | length %}
