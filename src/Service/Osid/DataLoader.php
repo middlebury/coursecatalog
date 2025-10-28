@@ -441,9 +441,11 @@ class DataLoader
         $bannerIdRecordType = new \phpkit_type_URNInetType('urn:inet:middlebury.edu:record:banner_identifiers');
         if (!empty($this->bannerWebUrl) && $courseOffering->hasRecordType($bannerIdRecordType)) {
             $bannerIdRecord = $courseOffering->getCourseOfferingRecord($bannerIdRecordType);
+            $uri = preg_replace('/{{\s*term_code\s*}}/', $bannerIdRecord->getTermCode(), $this->bannerWebUrl);
+            $uri = preg_replace('/{{\s*crn\s*}}/', $bannerIdRecord->getCourseReferenceNumber(), $uri);
 
             return [
-                'uri' => $this->bannerWebUrl.'?term_in='.$bannerIdRecord->getTermCode().'&crn_in='.$bannerIdRecord->getCourseReferenceNumber(),
+                'uri' => $uri,
                 'label' => 'View availability, prerequisites, and other requirements.',
             ];
         }
