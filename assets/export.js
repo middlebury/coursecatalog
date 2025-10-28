@@ -576,22 +576,30 @@ function saveJSON() {
         // Ensure valid JSON if no sections are present.
         if (JSONString === "}") JSONString = "{}";
 
+        $(".error-message").html("<p>Saving....</p>");
+        $(".error-message").addClass("success");
+        $(".error-message").removeClass("hidden error");
+
         $.ajax({
             url: $("#config-body").data("insert-revision-url"),
             type: "POST",
-            dataType: "json",
+            dataType: "text",
             data: {
                 csrf_key: $('#csrf-key-config-modify').val(),
                 note: $("#note").val(),
                 jsonData: JSONString,
             },
             error: function (error) {
+                $(".error-message").html("<p>Error (" + error.status + ", " + error.statusText + "): " + error.responseText + "</p>");
+                $(".error-message").addClass("error");
+                $(".error-message").removeClass("hidden success");
                 console.log(error);
             },
             success: function (data) {
                 $(".error-message").html("<p>Saved successfully</p>");
-                $(".error-message").removeClass("hidden error");
                 $(".error-message").addClass("success");
+                $(".error-message").removeClass("hidden error");
+                $("#note").val(''); // clear out the note after saving.
                 setTimeout(function () {
                     $(".error-message").addClass("hidden");
                     $(".error-message").removeClass("success");
