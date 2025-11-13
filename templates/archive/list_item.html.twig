@@ -13,10 +13,10 @@
         <div class='course_section'>
             {% if section.section_numbers is not empty %}
             <div class='course_section_numbers'>{{ section.section_numbers > 1 ? 'Sections':'Section' }} {{ section.section_numbers|join(', ') }}</div>
-            <span class='course_description'>{{ section.description }}</span>
+            {% endif %}
+            <span class='course_description'>{{ section.description | striptags('<strong>,<a>,<em>,<br>,<p>') | raw }}</span>
             {{ include('archive/requirements.html.twig', {requirements: section.requirements}, with_context = false) }}
             <em class='course_instructors'>{{ section.instructors }}</em>
-            {% endif %}
         </div>
         {% endfor %}
     </div>
