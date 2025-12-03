@@ -252,6 +252,7 @@ WHERE
 
 	AND term_code = :section_term_code
 	AND SSBSECT_CRN = :section_crn
+	AND SSBSECT_SSTS_CODE != \'I\'
 
 GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 ';
