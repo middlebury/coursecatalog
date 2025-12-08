@@ -270,7 +270,7 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
         self::$getOffering_stmts[$catalogWhere]->closeCursor();
 
         if (!$row || !$row['SSBSECT_CRN'] || !$row['SSBSECT_TERM_CODE']) {
-            throw new osid_NotFoundException('Could not find a course offering matching the term code '.$this->getTermCodeFromOfferingId($courseOfferingId).' and the crn '.$this->getCrnFromOfferingId($courseOfferingId).'-');
+            throw new osid_NotFoundException('Could not find a course offering matching the term code '.$this->getTermCodeFromOfferingId($courseOfferingId).' and the crn '.$this->getCrnFromOfferingId($courseOfferingId));
         }
 
         return new banner_course_CourseOffering($row, $this);
