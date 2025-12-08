@@ -124,6 +124,7 @@ SELECT
 	*
 FROM
 	SSRXLST
+	INNER JOIN SSBSECT ON SSRXLST_TERM_CODE = SSBSECT_TERM_CODE AND SSRXLST_CRN = SSBSECT_CRN
 WHERE
 	SSRXLST_XLST_GROUP IN
 		(SELECT
@@ -136,6 +137,7 @@ WHERE
 		)
 	AND SSRXLST_TERM_CODE = :term_code_2
 	AND SSRXLST_CRN != :crn_2
+	AND SSBSECT_SSTS_CODE = \'A\'
 ';
             self::$alternatesForOffering_stmt = $this->manager->getDB()->prepare($query);
         }
