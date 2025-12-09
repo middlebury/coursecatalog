@@ -14,3 +14,5 @@ nbgrp_onelogin_saml:
                 singleLogoutService:
                     url: '%env(SAML_IDP_SINGLELOGOUTSERVICE)%'
                 x509cert: '%env(SAML_IDP_X509CERT)%'
+            security:
+                requestedAuthnContext: false
