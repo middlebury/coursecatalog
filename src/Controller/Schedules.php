@@ -9,6 +9,8 @@ use App\Service\Osid\Runtime;
 use App\Service\Osid\TermHelper;
 use App\Service\Schedules as SchedulesService;
 use App\Twig\SchedulesExtension;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,8 +27,10 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  * @copyright Copyright &copy; 2024, Middlebury College
  * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License (GPL)
  */
-class Schedules extends AbstractController
+class Schedules extends AbstractController implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     protected \osid_id_Id $catalogId;
     protected \osid_id_Id $termId;
     protected \osid_course_TermLookupSession $termLookupSession;
@@ -568,6 +572,7 @@ class Schedules extends AbstractController
 
             return $response;
         } catch (\Exception $e) {
+            $this->logger->error($e->getMessage(), ['exception' => $e]);
             $response = new Response($e->getMessage());
             $response->setStatusCode(500);
             $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
