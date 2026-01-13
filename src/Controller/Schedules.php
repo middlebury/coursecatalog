@@ -568,7 +568,7 @@ class Schedules extends AbstractController
 
             return $response;
         } catch (\Exception $e) {
-            $response = new Response($e->message);
+            $response = new Response($e->message());
             $response->setStatusCode(500);
             $response->headers->set('Content-Type', 'text/plain; charset=utf-8');
 
