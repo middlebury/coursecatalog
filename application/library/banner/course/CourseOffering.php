@@ -114,10 +114,10 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
             .'-'.$row['term_display_label']
             .substr($row['STVTERM_START_DATE'], 2, 2));
 
-        if (!empty($row['SSBDESC_TEXT_NARRATIVE'])) {
-            $this->setRawDescription($row['SSBDESC_TEXT_NARRATIVE']);
-        } elseif (!empty($row['SCBDESC_TEXT_NARRATIVE'])) {
-            $this->setRawDescription($row['SCBDESC_TEXT_NARRATIVE']);
+        if (!empty(trim($row['SSBDESC_TEXT_NARRATIVE']))) {
+            $this->setRawDescription(trim($row['SSBDESC_TEXT_NARRATIVE']));
+        } elseif (!empty(trim($row['SCBDESC_TEXT_NARRATIVE']))) {
+            $this->setRawDescription(trim($row['SCBDESC_TEXT_NARRATIVE']));
         } else {
             $this->setDescription('');
         }
