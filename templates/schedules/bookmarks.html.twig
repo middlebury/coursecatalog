@@ -10,7 +10,7 @@
             <div class='course_info'>
                 <a href="{{ path('view_course', {courseId: course, termId: selectedTermId}) }}"  target="_blank">{{ course.displayname }} - {{ course.title }}</a>
             </div>
-            <button class="add_to_schedule_button button button--primary button--sm" value="" >Add to schedule...</button>
+            <button class="add_to_schedule_button button button--primary button--sm" value="" aria-haspopup='dialog' >Add to schedule...</button>
             <div class="add_section_dialog section_dialog" title="Add which sections?" style='display: none'>
                 <form action="{{ path('add_to_schedule', {catalogId: selectedCatalogId, termId: selectedTermId}) }}" class="add_section_form" method="post">
                     <div class='section_set' style='display: none'>Choose a group:
