@@ -6,18 +6,27 @@
 
         <form class='delete_schedule' id='delete_schedule_{{ schedule.id }}' action="{{ path('delete_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}" method='post'>
             <input type='hidden' name='csrf_key' value='{{ csrf_token('delete-schedule') }}' />
-            <input type='submit' class="button button--sm" id='submit_delete_schedule_{{ schedule.id }}' title="Delete this schedule" value='Delete'/>
+            <input type='submit' class="button button--sm button--primary button--outline" id='submit_delete_schedule_{{ schedule.id }}' title="Delete this schedule" value='Delete'/>
         </form>
 
-        <h3 class="form-group">{{ schedule.name }} <button class="button button--sm edit_schedule_name_button" data-form-id="update_schedule_{{ schedule.id }}" aria-haspopup='dialog'>Edit</button></h3>
+        <h3>{{ schedule.name }}</h3>
+
+        <div class="schedule-title--edit">
+            <button class="f4 ml-2 hover-fadeout edit_schedule_name_button" data-form-id="update_schedule_{{ schedule.id }}" aria-labelledby="midd-tooltip-label-{{ schedule.id }}" aria-haspopup='dialog'>
+                <svg class="icon" focusable="false" aria-hidden="true">
+                    <use xlink:href="#icon-pencil"> </use>
+                </svg>
+            </button>
+            <div class="tooltip__label" role="tooltip" id="midd-tooltip-label-{{ schedule.id }}">Edit title</div>
+        </div>
         <form class="form-group edit_schedule_name_form" id='update_schedule_{{ schedule.id }}' action='{{ path('update_schedule', {scheduleId: schedule.id, catalogId: selectedCatalogId, termId: selectedTermId}) }}' method='post'>
             <input type='text' class='form-control' aria-label="Edit name" name='name' value="{{ schedule.name }}"/>
             <input type='hidden' name='csrf_key' value='{{ csrf_token('update-schedule') }}' />
             <input type='submit' class='button button--primary' id='submit_update_schedule_{{ schedule.id }}' value='Save'/>
         </form>
 
-        <div class="print-and-email-buttons">
-            <a class='print_button button button--sm' href='{{ path('print_schedule', {scheduleId: schedule.id}) }}' title='Click for print view.' target='print_view' aria-haspopup='dialog'>Print</a>
+        <div class="print-and-email-buttons py-2">
+            <a class="print_button f2 font-bold link-underline" href="{{ path('print_schedule', {scheduleId: schedule.id}) }}" title="Click for print view." target="print_view" aria-haspopup='dialog'>Print</a>
             {{ include('schedules/email-dialog.html.twig', {schedule: schedule, emailEnabled: emailEnabled}, with_context = false) }}
         </div>
 
@@ -53,17 +62,17 @@
 
         </ul>
 
-        <button id='add-to-schedule_{{ schedule.id }}' data-schedule-id="{{ schedule.id }}" data-schedule-name="{{ schedule.name }}" class="add-to-schedule button button--sm button--block" aria-haspopup='dialog'>+ Add Course</button>
+        <button id='add-to-schedule_{{ schedule.id }}' data-schedule-id="{{ schedule.id }}" data-schedule-name="{{ schedule.name }}" class="add-to-schedule button button--sm button--primary button--block" aria-haspopup='dialog'>+ Add Course</button>
     </div>
 {% endfor %}
 
 <form id='schedule_create' class="row row--sm-gutters mt-6 mb-6" action="{{ path('create_schedule', {catalogId: selectedCatalogId}) }}" method="post">
     <input type="hidden" name="term" value="{{ osidIdToString(selectedTermId) }}"/>
-    <input type="submit" class="button button--block button--sm" id="submit_schedule_create" value="+ Create new schedule"/>
+    <input type="submit" class="m-auto button button--sm button--primary" id="submit_schedule_create" value="+ Create new schedule"/>
     <input type='hidden' name='csrf_key' value='{{ csrf_token('create-schedule') }}' />
 </form>
 
-<aside class="schedule-help bg-gray-lighter typography f2 mb-6 p-5">
+<aside class="schedule-help bg-gray-lighter typography f2 mb-6 p-5" data-landmark-index="6">
     <p><strong>Important:</strong> This tool is for planning purposes only. It does not register you for classes.</p>
     <p><strong>Basic Usage:</strong></p>
     <ol>

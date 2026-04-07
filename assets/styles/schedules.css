@@ -46,30 +46,6 @@
  * Schedule styles
  *********************************************************/
 
-div.schedule {
-    padding: 1rem;
-    border: 1px solid;
-}
-
-div.schedule div.term_name {
-    font-weight: bold;
-}
-
-form.delete_schedule {
-    float: right;
-}
-
-form.edit_schedule_name_form {
-    display: none;
-}
-
-.schedule-help p, .schedule-help li {
-    font-size: .875rem;
-}
-.schedule-help ol > li::before {
-    top: 0;
-}
-
 /* Constrain the dialog so that it can be responsive in width. */
 .add-to-schedule-dialog, .remove-from-schedule-dialog {
     width: 100%;
@@ -137,59 +113,6 @@ li.bookmarked_course, li.bookmarked_course div.course_info {
     white-space: nowrap;
 }
 li.bookmarked_course div.remove_course {
-    float: right;
-}
-.remove_dialog form.remove_offering_form {
-    display: inline;
-}
-
-
-div.schedule ul.offerings {
-    padding: 3px;
-    margin-left: 0px;
-}
-div.schedule li.offering {
-    clear: both;
-    margin-bottom: 10px;
-    list-style-type: none;
-    border-top: 1px dotted;
-}
-div.schedule li.offering div.separator {
-    float: left;
-    width: 20px;
-    text-align: center;
-}
-div.schedule li.offering div.offering_name {
-    font-weight: bold;
-}
-div.schedule li.offering div.offering_title {
-    margin-bottom: 0.5rem;
-}
-div.schedule li.offering .conflicting {
-    color: #F00;
-}
-
-div.schedule li.offering .time {
-    clear: both;
-    margin-bottom: 0.5rem;
-}
-
-div.schedule li.offering .crn {
-    float: right;
-    margin-bottom: 0.5rem;
-}
-
-img.calendar_img, img.calendar_button {
-    width: 100%;
-    _border: 1px solid #939393; /* IE-only */
-}
-
-div.schedule li.offering div.remove_dialog {
-    display: none;
-}
-
-div.schedule li.offering .remove_button {
-    display: block;
     float: right;
 }
 

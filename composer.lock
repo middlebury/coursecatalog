@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5921d901fd53996cf894f9689a2fd712",
+    "content-hash": "4557012cb3c82bbc2ee8ea5024330f41",
     "packages": [
         {
             "name": "brick/math",
@@ -2604,16 +2604,16 @@
         },
         {
             "name": "middlebury/midd-frontend",
-            "version": "4.3.16",
+            "version": "4.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/middlebury/midd-frontend.git",
-                "reference": "62f58f8ecee32a3348691382c9ebfb5a91afd411"
+                "reference": "b1db9b29e37e9c0694c976e7b7a3cce34d6a4338"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/middlebury/midd-frontend/zipball/62f58f8ecee32a3348691382c9ebfb5a91afd411",
-                "reference": "62f58f8ecee32a3348691382c9ebfb5a91afd411",
+                "url": "https://api.github.com/repos/middlebury/midd-frontend/zipball/b1db9b29e37e9c0694c976e7b7a3cce34d6a4338",
+                "reference": "b1db9b29e37e9c0694c976e7b7a3cce34d6a4338",
                 "shasum": ""
             },
             "type": "drupal-library",
@@ -2625,9 +2625,9 @@
             "homepage": "https://github.com/middlebury/midd-frontend",
             "support": {
                 "issues": "https://github.com/middlebury/midd-frontend/issues",
-                "source": "https://github.com/middlebury/midd-frontend/tree/4.3.16"
+                "source": "https://github.com/middlebury/midd-frontend/tree/4.5.0"
             },
-            "time": "2026-01-09T16:23:42+00:00"
+            "time": "2026-04-07T17:59:36+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -12292,5 +12292,5 @@
         "ext-iconv": "*"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }

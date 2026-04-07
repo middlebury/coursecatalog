@@ -15,7 +15,7 @@
         "knplabs/knp-menu-bundle": "^3.5",
         "knplabs/knp-paginator-bundle": "^6.6",
         "microsoft/microsoft-graph": "^2.12",
-        "middlebury/midd-frontend": "^4.0",
+        "middlebury/midd-frontend": "^4.5",
         "nbgrp/onelogin-saml-bundle": "^1.4",
         "oki/osid-phpkit": "dev-main",
         "symfony/apache-pack": "^1.0",
