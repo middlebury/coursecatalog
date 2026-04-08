@@ -116,6 +116,10 @@ li.bookmarked_course div.remove_course {
     float: right;
 }
 
+button.remove_button {
+    margin-top: 0.5em;
+}
+
 /*********************************************************
  * Email dialog
  *********************************************************/
