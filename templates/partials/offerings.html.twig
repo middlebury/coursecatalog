@@ -12,7 +12,7 @@
 {% for item in offerings %}
     {% if currentTerm is null or currentTerm.id != item.offering.termid %}
         {% set currentTerm = item.offering.term %}
-        <h4>{{ currentTerm.displayname }}</h4>
+        <h3>{{ currentTerm.displayname }}</h3>
     {% endif %}
     {% if selectedOffering and selectedOffering.id == item.offering.id %}
         <div class='selected_offering'>

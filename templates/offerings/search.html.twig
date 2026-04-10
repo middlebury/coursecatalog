@@ -10,7 +10,7 @@
     <div class="catalog-search row row--sm-gutters">
         <div class="col-md-6 form-group">
             <label for="term" class="label">By Term</label>
-            <select class="form-control" id="by-term" name="term" required name="term" onchange="this.form['search'].value = ''; this.form.submit();">
+            <select class="form-control" id="term" name="term" required name="term" onchange="this.form['search'].value = ''; this.form.submit();">
                 <option value='ANY'>Any Term</option>
 {% for term in terms %}
                 <option value="{{ osidIdToString(term.id) }}" {{ selectedTermId and osidIdsEqual(selectedTermId, term.id)? 'selected="selected"' }}>{{ term.displayname }}</option>

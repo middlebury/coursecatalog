@@ -1,1 +1,18 @@
 
+a.more-link {
+    border-bottom: 1px solid;
+}
+
+a.more-link:hover {
+    text-decoration: none;
+    border-bottom: none;
+}
+
+a.less-link {
+    border-bottom: 1px solid;
+}
+
+a.less-link:hover {
+    text-decoration: none;
+    border-bottom: none;
+}
