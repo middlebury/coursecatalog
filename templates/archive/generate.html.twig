@@ -49,10 +49,12 @@
                 </article>
             {% elseif section.type == 'courses' %}
                 <section class='courses'>
+                {% if section.courses | length %}
                     <h2 class='visually-hidden'>Courses</h2>
-                {% for course in section.courses %}
+                    {% for course in section.courses %}
                     {{ include('archive/list_item.html.twig', {course: course}, with_context = false) }}
-                {% endfor %}
+                    {% endfor %}
+                {% endif %}
                 </section>
             {% elseif section.type == 'toc' %}
 
