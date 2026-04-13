@@ -209,6 +209,7 @@ class ArchiveHtmlGenerator
     {
         $totalSections = count($sections);
         $currentSection = 1;
+        $previousSectionType = null;
         foreach ($sections as $key => &$section) {
             $text = '';
             if (!empty($section['text'])) {
@@ -236,7 +237,13 @@ class ArchiveHtmlGenerator
                     $section['text'] = \banner_course_Course::convertDescription($section['text']);
                     break;
                 case 'page_content':
-                    $section['content'] = $this->getRequirements($section['url']);
+                    if ($previousSectionType == 'h2') {
+                        $parentLevel = 3;
+                    } else {
+                        $parentLevel = 2;
+                    }
+                    $section['content'] = $this->getRequirements($section['url'], $parentLevel);
+                    $section['heading_level'] = $parentLevel;
                     break;
                 case 'courses':
                     $section['courses'] = $this->getCourses($section['id'], $context, $section['number_filter']);
@@ -252,6 +259,7 @@ class ArchiveHtmlGenerator
                 $totalSections,
             ));
             ++$currentSection;
+            $previousSectionType = $section['type'];
         }
 
         return $sections;
@@ -262,12 +270,12 @@ class ArchiveHtmlGenerator
      *
      * @return string
      */
-    protected function getRequirements($url)
+    protected function getRequirements(string $url, int $parentLevel = 2)
     {
         // D9 URL, don't bother with RSS attempt.
         if (preg_match('#^https://www\.middlebury\.edu/(college|institute)/#', $url)) {
             try {
-                return $this->getRequirementsFromD9Html($url);
+                return $this->getRequirementsFromD9Html($url, $parentLevel);
             } catch (\Exception $e) {
                 return $e->getMessage();
             }
@@ -278,7 +286,7 @@ class ArchiveHtmlGenerator
                 try {
                     return $this->getRequirementsFromD7Rss($url);
                 } catch (RequirementNotXmlException $e) {
-                    return $this->getRequirementsFromD9Html($url);
+                    return $this->getRequirementsFromD9Html($url, $parentLevel);
                 }
             } catch (\Exception $e) {
                 return $e->getMessage();
@@ -340,7 +348,7 @@ class ArchiveHtmlGenerator
      *
      * @return string
      */
-    protected function getRequirementsFromD9Html($url)
+    protected function getRequirementsFromD9Html(string $url, int $parentLevel = 2)
     {
         $response = $this->httpClient->request('GET', $url);
         if (200 != $response->getStatusCode()) {
@@ -365,7 +373,7 @@ class ArchiveHtmlGenerator
             foreach ($bodies as $domBody) {
                 // Catalog sections use an H2, so we should start at h3 and
                 // go down in order.
-                $this->normalizeHeadingLevels($xpath, $domBody, 2);
+                $this->normalizeHeadingLevels($xpath, $domBody, $parentLevel);
 
                 foreach ($domBody->childNodes as $child) {
                     // Ensure that if &nbsp; got converted to \u{A0}, that it is
@@ -392,13 +400,13 @@ class ArchiveHtmlGenerator
     protected function normalizeHeadingLevels(\DOMXPath $xpath, \DOMNode $contextNode, int $parentLevel)
     {
         $headings = [];
-        for ($i = $parentLevel; $i <= 6; ++$i) {
+        for ($i = 1; $i <= 6; ++$i) {
             $headings[$i] = [];
             foreach ($xpath->query('h'.$i, $contextNode) as $heading) {
                 $headings[$i][] = $heading;
             }
         }
-        for ($i = $parentLevel; $i <= 6; ++$i) {
+        for ($i = 1; $i <= 6; ++$i) {
             if (count($headings[$i])) {
                 $this->fillHeadingsDown($headings, $i, $parentLevel + 1);
                 break;
