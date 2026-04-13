@@ -110,9 +110,9 @@ class banner_course_Course_Search_List extends banner_course_Course_AbstractList
     {
         if (isset($this->additionalColumns)) {
             return $this->additionalColumns;
-        } else {
-            return parent::getAdditionalColumns();
         }
+
+        return parent::getAdditionalColumns();
     }
 
     /**
@@ -126,9 +126,9 @@ class banner_course_Course_Search_List extends banner_course_Course_AbstractList
     {
         if ($this->orderBy) {
             return $this->orderBy;
-        } else {
-            return parent::getOrderByClause();
         }
+
+        return parent::getOrderByClause();
     }
 
     /**
@@ -142,9 +142,9 @@ class banner_course_Course_Search_List extends banner_course_Course_AbstractList
     {
         if ($this->limit) {
             return $this->limit;
-        } else {
-            return parent::getLimitClause();
         }
+
+        return parent::getLimitClause();
     }
 
     /**

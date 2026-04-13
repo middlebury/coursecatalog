@@ -76,9 +76,8 @@ class ArchiveFile implements ArchiveFileInterface
             $xpath = new \DOMXPath($doc);
 
             return $xpath->query('/html/head/title')->item(0)->nodeValue;
-        } else {
-            throw new \Exception('Cannot extract a title from a non-HTML file.');
         }
+        throw new \Exception('Cannot extract a title from a non-HTML file.');
     }
 
     /**

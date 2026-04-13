@@ -74,9 +74,9 @@ ORDER BY STVSCHD_DESC ASC
     {
         if ($this->session->getCourseCatalogId()->isEqual($this->session->getCombinedCatalogId())) {
             return 'TRUE';
-        } else {
-            return 'catalog_id = :catalog_id';
         }
+
+        return 'catalog_id = :catalog_id';
     }
 
     /**
@@ -90,18 +90,18 @@ ORDER BY STVSCHD_DESC ASC
     {
         if ($this->session->getCourseCatalogId()->isEqual($this->session->getCombinedCatalogId())) {
             return 'TRUE';
-        } else {
-            return 'catalog_id = :catalog_id2';
         }
+
+        return 'catalog_id = :catalog_id2';
     }
 
     private function getTermWhere(?osid_id_Id $termId = null)
     {
         if (empty($termId)) {
             return 'TRUE';
-        } else {
-            return 'SSBSECT_TERM_CODE = :term_code';
         }
+
+        return 'SSBSECT_TERM_CODE = :term_code';
     }
 
     /**

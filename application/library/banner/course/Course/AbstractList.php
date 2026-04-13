@@ -105,9 +105,9 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
         $columns = $this->getAdditionalColumns();
         if (count($columns)) {
             return ",\n\t".implode(",\n\t", $columns);
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -146,9 +146,9 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
         }
         if (strlen(trim($terms))) {
             return $terms.$activeWhere;
-        } else {
-            return 'TRUE'.$activeWhere;
         }
+
+        return 'TRUE'.$activeWhere;
     }
 
     /**
@@ -162,9 +162,9 @@ GROUP BY SCBCRSE_SUBJ_CODE , SCBCRSE_CRSE_NUMB
     {
         if (null === $this->catalogId || $this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
             return 'TRUE';
-        } else {
-            return 'catalog_id = :catalog_id';
         }
+
+        return 'catalog_id = :catalog_id';
     }
 
     /**

@@ -98,9 +98,9 @@ class banner_course_Term_Lookup_CombinedSession extends banner_course_Term_Looku
         if ($this->usesIsolatedView()) {
             if ($this->usesPlenaryView()) {
                 throw new osid_NotFoundException('This catalog does not directly contain any terms. Use useFederatedView() to access terms in child catalogs.');
-            } else {
-                return new phpkit_EmptyList();
             }
+
+            return new phpkit_EmptyList();
         }
 
         return parent::getTermsByIds($termIdList);

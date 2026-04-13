@@ -47,9 +47,9 @@ abstract class banner_course_AbstractSearchOrder
         $orderTerms = $this->getOrderByTerms();
         if (count($orderTerms)) {
             return 'ORDER BY '.implode(', ', $orderTerms);
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**

@@ -34,8 +34,8 @@ abstract class AbstractOsidIdentifierMap
     {
         if (isset($this->idAuthorityToShorten)) {
             return $this->idAuthorityToShorten;
-        } else {
-            return false;
         }
+
+        return false;
     }
 }

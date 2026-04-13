@@ -272,9 +272,9 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
     {
         if (null === $this->catalogId || $this->catalogId->isEqual($this->getCombinedCatalogId())) {
             return 'TRUE';
-        } else {
-            return 'catalog_id = :catalog_id';
         }
+
+        return 'catalog_id = :catalog_id';
     }
 
     /**
@@ -366,9 +366,9 @@ ORDER BY SCBCRSE_SUBJ_CODE ASC , SCBCRSE_CRSE_NUMB ASC
     {
         if ($courseGenusType->isEqual(new phpkit_type_URNInetType('urn:inet:osid.org:genera:none'))) {
             return $this->getCourses();
-        } else {
-            return new phpkit_EmptyList();
         }
+
+        return new phpkit_EmptyList();
     }
 
     /**

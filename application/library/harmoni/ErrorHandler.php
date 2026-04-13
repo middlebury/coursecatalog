@@ -194,9 +194,8 @@ class harmoni_ErrorHandler
                 return;
             }
             // Die if the error is fatal.
-            else {
-                exit;
-            }
+
+            exit;
         }
 
         $backtrace = debug_backtrace();
@@ -238,9 +237,8 @@ class harmoni_ErrorHandler
         // do a bitwise comparison of the error level to the current fatalErrors level
         if (!($errorType & $this->fatalErrors)) {
             return;
-        } else {
-            exit;
         }
+        exit;
     }
 
     /**

@@ -26,9 +26,8 @@ class TypeMap extends AbstractOsidIdentifierMap
         } catch (\osid_InvalidArgumentException $e) {
             if ($this->getIdAuthorityToShorten()) {
                 return new \phpkit_type_Type('urn', $this->getIdAuthorityToShorten(), $idString);
-            } else {
-                throw $e;
             }
+            throw $e;
         }
     }
 
@@ -45,8 +44,8 @@ class TypeMap extends AbstractOsidIdentifierMap
                 && 'urn' == strtolower($type->getIdentifierNamespace())
                 && strtolower($type->getAuthority()) == $this->getIdAuthorityToShorten()) {
             return $type->getIdentifier();
-        } else {
-            return \phpkit_type_URNInetType::getInetURNString($type);
         }
+
+        return \phpkit_type_URNInetType::getInetURNString($type);
     }
 }

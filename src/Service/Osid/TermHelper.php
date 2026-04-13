@@ -163,11 +163,10 @@ class TermHelper
             return $upcomingIds[0];
         }
         // Otherwise return the most recent past term
-        else {
-            array_multisort($pastDates, \SORT_NUMERIC, \SORT_DESC, $pastIds);
 
-            return $pastIds[0];
-        }
+        array_multisort($pastDates, \SORT_NUMERIC, \SORT_DESC, $pastIds);
+
+        return $pastIds[0];
     }
 
     /**

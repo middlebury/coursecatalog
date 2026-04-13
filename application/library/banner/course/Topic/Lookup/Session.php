@@ -1018,9 +1018,9 @@ GROUP BY GTVINSM_CODE
     {
         if (null === $this->catalogId || $this->catalogId->isEqual($this->getCombinedCatalogId())) {
             return 'TRUE';
-        } else {
-            return 'catalog_id = :catalog_id';
         }
+
+        return 'catalog_id = :catalog_id';
     }
 
     /**

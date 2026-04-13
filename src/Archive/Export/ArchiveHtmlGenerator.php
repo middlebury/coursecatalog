@@ -237,7 +237,7 @@ class ArchiveHtmlGenerator
                     $section['text'] = \banner_course_Course::convertDescription($section['text']);
                     break;
                 case 'page_content':
-                    if ($previousSectionType == 'h2') {
+                    if ('h2' == $previousSectionType) {
                         $parentLevel = 3;
                     } else {
                         $parentLevel = 2;
@@ -944,9 +944,9 @@ class ArchiveHtmlGenerator
         if ($termIdString) {
             if (empty($sectionInstructors[$termIdString]['instructorString'])) {
                 return '';
-            } else {
-                return '('.$sectionInstructors[$termIdString]['instructorString'].')';
             }
+
+            return '('.$sectionInstructors[$termIdString]['instructorString'].')';
         }
 
         // For a course with just a single term, use that term's instructors
@@ -955,9 +955,9 @@ class ArchiveHtmlGenerator
             $info = current($sectionInstructors);
             if (empty($info['instructorString'])) {
                 return '';
-            } else {
-                return '('.$info['instructorString'].')';
             }
+
+            return '('.$info['instructorString'].')';
         }
 
         // For courses with multiple terms, first find out if the instructor list is always the same.
@@ -974,21 +974,20 @@ class ArchiveHtmlGenerator
         if ($instructorListConstant) {
             if (empty($firstTerm['instructorString'])) {
                 return '';
-            } else {
-                return '('.$firstTerm['instructorString'].')';
-            }
-        }
-        // If we have a different instructor list each term, identify them.
-        else {
-            $termStrings = [];
-            foreach ($sectionInstructors as $termId => $info) {
-                if (!empty($info['instructorString'])) {
-                    $termStrings[] = $info['label'].': '.$info['instructorString'];
-                }
             }
 
-            return '('.implode('; ', $termStrings).')';
+            return '('.$firstTerm['instructorString'].')';
         }
+        // If we have a different instructor list each term, identify them.
+
+        $termStrings = [];
+        foreach ($sectionInstructors as $termId => $info) {
+            if (!empty($info['instructorString'])) {
+                $termStrings[] = $info['label'].': '.$info['instructorString'];
+            }
+        }
+
+        return '('.implode('; ', $termStrings).')';
     }
 
     public function _textToLink($text)

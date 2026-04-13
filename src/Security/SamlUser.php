@@ -96,9 +96,9 @@ class SamlUser implements SamlUserInterface
             return trim($this->givenName.' '.$this->surname);
         } elseif ($this->email) {
             return $this->email;
-        } else {
-            return $this->id;
         }
+
+        return $this->id;
     }
 
     /**
@@ -108,8 +108,7 @@ class SamlUser implements SamlUserInterface
     {
         if ($this->email) {
             return $this->email;
-        } else {
-            throw new \Exception('No email is set for user '.$this->id);
         }
+        throw new \Exception('No email is set for user '.$this->id);
     }
 }

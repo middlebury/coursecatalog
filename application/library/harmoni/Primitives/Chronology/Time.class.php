@@ -268,9 +268,9 @@ class Time extends Magnitude implements AsDateAndTime
     {
         if ($this->hour() < 12) {
             return 'AM';
-        } else {
-            return 'PM';
         }
+
+        return 'PM';
     }
 
     /**
@@ -401,9 +401,9 @@ class Time extends Magnitude implements AsDateAndTime
 
         if ($myTicks[0] != $comparandTicks[0]) {
             return false;
-        } else {
-            return $myTicks[1] == $comparandTicks[1];
         }
+
+        return $myTicks[1] == $comparandTicks[1];
     }
 
     /**

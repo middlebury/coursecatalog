@@ -114,9 +114,9 @@ class Month extends Timespan
 
         if (2 == $index && Year::isYearLeapYear($yearInteger)) {
             return $days + 1;
-        } else {
-            return $days;
         }
+
+        return $days;
     }
 
     /*********************************************************

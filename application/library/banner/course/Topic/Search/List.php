@@ -201,9 +201,9 @@ class banner_course_Topic_Search_List extends banner_course_Topic_AbstractList i
     {
         if ($this->orderBy) {
             return $this->orderBy;
-        } else {
-            return parent::getOrderByClause();
         }
+
+        return parent::getOrderByClause();
     }
 
     /**
@@ -217,9 +217,9 @@ class banner_course_Topic_Search_List extends banner_course_Topic_AbstractList i
     {
         if ($this->limit) {
             return $this->limit;
-        } else {
-            return parent::getLimitClause();
         }
+
+        return parent::getLimitClause();
     }
 
     /**

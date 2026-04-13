@@ -88,9 +88,8 @@ class AbstractPdoDatabase
             $options[\PDO::MYSQL_ATTR_MAX_BUFFER_SIZE] = 1024 * 1024 * 100;
         }
         // The mysqlnd driver on the other hand allocates buffers as big as needed.
-        else {
-            // nothing needed.
-        }
+
+        // nothing needed.
 
         return $options;
     }

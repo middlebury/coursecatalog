@@ -26,9 +26,8 @@ class IdMap extends AbstractOsidIdentifierMap
         } catch (\osid_InvalidArgumentException $e) {
             if ($this->getIdAuthorityToShorten()) {
                 return new \phpkit_id_Id($this->getIdAuthorityToShorten(), 'urn', $idString);
-            } else {
-                throw $e;
             }
+            throw $e;
         }
     }
 
@@ -45,9 +44,9 @@ class IdMap extends AbstractOsidIdentifierMap
                 && 'urn' == strtolower($id->getIdentifierNamespace())
                 && strtolower($id->getAuthority()) == $this->getIdAuthorityToShorten()) {
             return $id->getIdentifier();
-        } else {
-            return \phpkit_id_URNInetId::getInetURNString($id);
         }
+
+        return \phpkit_id_URNInetId::getInetURNString($id);
     }
 
     /**
@@ -66,9 +65,8 @@ class IdMap extends AbstractOsidIdentifierMap
         } catch (\osid_InvalidArgumentException $e) {
             if ($this->getIdAuthorityToShorten()) {
                 return new \phpkit_type_Type('urn', $this->getIdAuthorityToShorten(), $typeString);
-            } else {
-                throw $e;
             }
+            throw $e;
         }
     }
 
@@ -85,8 +83,8 @@ class IdMap extends AbstractOsidIdentifierMap
                 && 'urn' == strtolower($type->getIdentifierNamespace())
                 && strtolower($type->getAuthority()) == $this->getIdAuthorityToShorten()) {
             return $type->getIdentifier();
-        } else {
-            return \phpkit_type_URNInetType::getInetURNString($type);
         }
+
+        return \phpkit_type_URNInetType::getInetURNString($type);
     }
 }

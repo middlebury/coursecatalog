@@ -145,9 +145,8 @@ class Schedule
         } catch (Zend_Db_Statement_Exception $e) {
             if (23000 == $e->getCode()) {
                 throw new \Exception('Offering already added.', 23000);
-            } else {
-                throw $e;
             }
+            throw $e;
         }
     }
 

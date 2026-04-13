@@ -108,9 +108,9 @@ abstract class Magnitude extends SObject
     {
         if ($this->isGreaterThan($aMagnitude)) {
             return $this;
-        } else {
-            return $aMagnitude;
         }
+
+        return $aMagnitude;
     }
 
     /**
@@ -125,8 +125,8 @@ abstract class Magnitude extends SObject
     {
         if ($this->isLessThan($aMagnitude)) {
             return $this;
-        } else {
-            return $aMagnitude;
         }
+
+        return $aMagnitude;
     }
 }

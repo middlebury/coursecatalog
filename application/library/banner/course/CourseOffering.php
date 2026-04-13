@@ -292,9 +292,9 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
     {
         if (isset($this->row['SSBSECT_CREDIT_HRS']) && !empty($this->row['SSBSECT_CREDIT_HRS'])) {
             return (float) $this->row['SSBSECT_CREDIT_HRS'];
-        } else {
-            return $this->getCourse()->getCredits();
         }
+
+        return $this->getCourse()->getCredits();
     }
 
     /**
@@ -460,9 +460,9 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
 
         if (count($parts)) {
             return $campus.' Campus: '.implode(', ', $parts);
-        } else {
-            return $campus;
         }
+
+        return $campus;
     }
 
     /**
@@ -575,23 +575,22 @@ class banner_course_CourseOffering extends phpkit_AbstractOsidObject implements 
             return implode("\n", $parts);
         }
         // If no schedule is set, use a standardized message.
-        else {
-            // Flexible Online.
-            if ('FON' == $this->row['GTVINSM_CODE']) {
-                return 'Flexible Online';
-            }
-            // MIIS Institute Online asynchronous.
-            if ('ONASY' == $this->row['GTVINSM_CODE']) {
-                return '';
-            }
-            // Cross-listed sections that don't have schedules entered.
-            if ($this->hasAlternates() && !$this->isPrimary()) {
-                return 'Unscheduled cross-list, see primary section.';
-            }
 
-            // Default case.
-            return 'TBD';
+        // Flexible Online.
+        if ('FON' == $this->row['GTVINSM_CODE']) {
+            return 'Flexible Online';
         }
+        // MIIS Institute Online asynchronous.
+        if ('ONASY' == $this->row['GTVINSM_CODE']) {
+            return '';
+        }
+        // Cross-listed sections that don't have schedules entered.
+        if ($this->hasAlternates() && !$this->isPrimary()) {
+            return 'Unscheduled cross-list, see primary section.';
+        }
+
+        // Default case.
+        return 'TBD';
     }
 
     /**

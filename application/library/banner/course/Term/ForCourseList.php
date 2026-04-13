@@ -83,9 +83,9 @@ ORDER BY STVTERM_CODE ASC
     {
         if ($this->session->getCourseCatalogId()->isEqual($this->session->getCombinedCatalogId())) {
             return 'TRUE';
-        } else {
-            return 'catalog_id = :catalog_id';
         }
+
+        return 'catalog_id = :catalog_id';
     }
 
     /**

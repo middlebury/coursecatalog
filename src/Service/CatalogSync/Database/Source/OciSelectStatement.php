@@ -97,9 +97,9 @@ class OciSelectStatement implements SelectStatement
     {
         if (is_null($value)) {
             return null;
-        } else {
-            return date('Y-m-d', strtotime($value));
         }
+
+        return date('Y-m-d', strtotime($value));
     }
 
     /**
@@ -121,9 +121,9 @@ class OciSelectStatement implements SelectStatement
     {
         if (null === $value) {
             return null;
-        } else {
-            return $value->load();
         }
+
+        return $value->load();
     }
 
     /**

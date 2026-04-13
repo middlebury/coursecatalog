@@ -218,9 +218,9 @@ WHERE
     {
         if ($binGenusType->isEqual(new phpkit_type_URNInetType('urn:inet:osid.org:genera:none'))) {
             return $this->getBins();
-        } else {
-            return new phpkit_resource_ArrayBinList([]);
         }
+
+        return new phpkit_resource_ArrayBinList([]);
     }
 
     /**

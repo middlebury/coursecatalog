@@ -106,9 +106,9 @@ class Year extends Timespan
 
         if (self::isYearLeapYear($anInteger)) {
             return 365 + 1;
-        } else {
-            return 365;
         }
+
+        return 365;
     }
 
     /**
@@ -131,9 +131,9 @@ class Year extends Timespan
         if ((0 != $adjustedYear % 4)
             || ((0 == $adjustedYear % 100) && (0 != $adjustedYear % 400))) {
             return false;
-        } else {
-            return true;
         }
+
+        return true;
     }
 
     /*********************************************************

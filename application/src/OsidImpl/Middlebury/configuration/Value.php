@@ -89,9 +89,8 @@ class Value implements \osid_configuration_Value
                 case 'Primitives/Array':
                     if (is_array($this->value)) {
                         return $this->value;
-                    } else {
-                        \osid_UnsupportedException('Could not convert a '.gettype($this->value).' to an Array.');
                     }
+                    \osid_UnsupportedException('Could not convert a '.gettype($this->value).' to an Array.');
             }
         }
 

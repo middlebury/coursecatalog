@@ -57,25 +57,22 @@ class ArchiveFileManager
             ));
 
             return;
-        } else {
-            // Move our temporary file to our html directory and update
-            $this->archiveStorage->rename($tempPath, $finalPath, true);
-            // Update our symbolic link to point at the new file.
-            $this->archiveStorage->makeLink($latestLinkPath, 'html/'.$filename);
-            // Delete our temporary directory.
-            $this->archiveStorage->delete($tempDir);
-
-            $this->eventDispatcher->dispatch(new ExportProgressEvent(
-                $job,
-                getmypid(),
-                'Export finished. A new version has been stored at '.$finalPath,
-                0,
-                0,
-                true,
-            ));
-
-            return;
         }
+        // Move our temporary file to our html directory and update
+        $this->archiveStorage->rename($tempPath, $finalPath, true);
+        // Update our symbolic link to point at the new file.
+        $this->archiveStorage->makeLink($latestLinkPath, 'html/'.$filename);
+        // Delete our temporary directory.
+        $this->archiveStorage->delete($tempDir);
+
+        $this->eventDispatcher->dispatch(new ExportProgressEvent(
+            $job,
+            getmypid(),
+            'Export finished. A new version has been stored at '.$finalPath,
+            0,
+            0,
+            true,
+        ));
     }
 
     /**

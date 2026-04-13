@@ -56,9 +56,9 @@ class Archives extends AbstractController
             return $this->viewDirectory($item, $data);
         } elseif ('text/html' == $item->mimeType()) {
             return $this->viewHtmlFile($item, $data);
-        } else {
-            return $this->viewRawFile($item, $data);
         }
+
+        return $this->viewRawFile($item, $data);
     }
 
     /**

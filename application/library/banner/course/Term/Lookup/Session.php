@@ -198,9 +198,9 @@ class banner_course_Term_Lookup_Session extends banner_course_AbstractSession im
 
         if (empty($matches[2])) {
             return $this->getBaseTerm($idString);
-        } else {
-            return $this->getPartOfTerm($matches[1], $matches[2]);
         }
+
+        return $this->getPartOfTerm($matches[1], $matches[2]);
     }
 
     private static $getTerm_stmts = [];
@@ -362,9 +362,9 @@ ORDER BY STVTERM_CODE DESC, SOBPTRM_PTRM_CODE ASC
     {
         if (null === $this->catalogId || $this->catalogId->isEqual($this->getCombinedCatalogId())) {
             return 'TRUE';
-        } else {
-            return 'catalog_id = :catalog_id';
         }
+
+        return 'catalog_id = :catalog_id';
     }
 
     /**
@@ -455,9 +455,9 @@ ORDER BY STVTERM_CODE DESC, SOBPTRM_PTRM_CODE ASC
     {
         if ($termGenusType->isEqual(new phpkit_type_URNInetType('urn:inet:osid.org:genera:none'))) {
             return $this->getTerms();
-        } else {
-            return new phpkit_EmptyList();
         }
+
+        return new phpkit_EmptyList();
     }
 
     /**

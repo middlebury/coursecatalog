@@ -693,9 +693,9 @@ FROM
             $resourceList->addList($this->getRoomResources());
 
             return $resourceList;
-        } else {
-            return $this->getResourcesByGenusType($resourceGenusType);
         }
+
+        return $this->getResourcesByGenusType($resourceGenusType);
     }
 
     /**

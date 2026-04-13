@@ -126,8 +126,8 @@ class banner_course_CourseOffering_Lookup_ByTermByTopicList extends banner_cours
             return 'LEFT JOIN scrlevl_recent ON (SSBSECT_SUBJ_CODE = SCRLEVL_SUBJ_CODE AND SSBSECT_CRSE_NUMB = SCRLEVL_CRSE_NUMB)';
         } elseif ('block' == $this->session->getTopicLookupSession()->getTopicType($this->topicId)) {
             return 'LEFT JOIN SSRBLCK ON (SSBSECT_TERM_CODE = SSRBLCK_TERM_CODE AND SSBSECT_CRN = SSRBLCK_CRN)';
-        } else {
-            return '';
         }
+
+        return '';
     }
 }

@@ -192,9 +192,9 @@ abstract class Number extends Magnitude
     {
         if ($this->isLessThan(Integer::zero())) {
             return $this->negated();
-        } else {
-            return $this;
         }
+
+        return $this;
     }
 
     /**
@@ -277,12 +277,11 @@ abstract class Number extends Magnitude
     {
         if ($this->isLessThanOrEqualTo(Integer::zero())) {
             return $this->truncated();
-        } else {
-            $temp = $this->negated();
-            $temp = $temp->floor();
-
-            return $temp->negated();
         }
+        $temp = $this->negated();
+        $temp = $temp->floor();
+
+        return $temp->negated();
     }
 
     /**
@@ -297,13 +296,12 @@ abstract class Number extends Magnitude
         $truncation = $this->truncated();
         if ($this->isGreaterThanOrEqualTo(Integer::zero())) {
             return $truncation;
-        } else {
-            if ($this->isEqualTo($truncation)) {
-                return $truncation;
-            } else {
-                return $truncation->minus(Integer::withValue(1));
-            }
         }
+        if ($this->isEqualTo($truncation)) {
+            return $truncation;
+        }
+
+        return $truncation->minus(Integer::withValue(1));
     }
 
     /**

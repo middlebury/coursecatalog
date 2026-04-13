@@ -230,11 +230,10 @@ class Timespan extends Magnitude implements AsDateAndTime
                 && $this->includes($aDateAndTime->end());
         }
         // If the argument is a DateAndTime, just check it.
-        else {
-            $asDandT = $aDateAndTime->asDateAndTime();
 
-            return $asDandT->isBetween($this->start(), $this->end());
-        }
+        $asDandT = $aDateAndTime->asDateAndTime();
+
+        return $asDandT->isBetween($this->start(), $this->end());
     }
 
     /**
@@ -300,9 +299,9 @@ class Timespan extends Magnitude implements AsDateAndTime
             $null = null;
 
             return $null;
-        } else {
-            return static::startingEnding($aBeginning, $anEnd);
         }
+
+        return static::startingEnding($aBeginning, $anEnd);
     }
 
     /**
@@ -324,11 +323,10 @@ class Timespan extends Magnitude implements AsDateAndTime
             return $obj;
         }
         // If this conforms to the Duration protocol
-        else {
-            $obj = $this->plus($operand->negated());
 
-            return $obj;
-        }
+        $obj = $this->plus($operand->negated());
+
+        return $obj;
     }
 
     /**

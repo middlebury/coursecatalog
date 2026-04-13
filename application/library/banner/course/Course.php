@@ -669,9 +669,9 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
             if ($offering->isPrimary()) {
                 if ($offering->getCourseId()->isEqual($this->getId())) {
                     return true;
-                } else {
-                    return false;
                 }
+
+                return false;
             }
         }
 
@@ -767,9 +767,9 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
             if ($offering->isPrimary()) {
                 if ($offering->getCourseId()->isEqual($this->getId())) {
                     return true;
-                } else {
-                    return false;
                 }
+
+                return false;
             }
         }
 

@@ -49,9 +49,9 @@ class ArchiveStorage
             return new ArchiveDirectory($this->basePath, $path);
         } elseif (is_link($this->basePath.'/'.$path)) {
             return new ArchiveLink($this->basePath, $path);
-        } else {
-            return new ArchiveFile($this->basePath, $path);
         }
+
+        return new ArchiveFile($this->basePath, $path);
     }
 
     /**
@@ -163,10 +163,9 @@ class ArchiveStorage
             chdir($cwd);
 
             return $this->get($path);
-        } else {
-            chdir($cwd);
-            throw new \Exception("Failed to create symlink at $path pointing at $targetPath)");
         }
+        chdir($cwd);
+        throw new \Exception("Failed to create symlink at $path pointing at $targetPath)");
     }
 
     /**

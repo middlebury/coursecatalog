@@ -106,9 +106,9 @@ class banner_course_Course_Lookup_CombinedSession extends banner_course_Course_L
         if ($this->usesIsolatedView()) {
             if ($this->usesPlenaryView()) {
                 throw new osid_NotFoundException('This catalog does not directly contain any courses. Use useFederatedView() to access courses in child catalogs.');
-            } else {
-                return new phpkit_EmptyList();
             }
+
+            return new phpkit_EmptyList();
         }
 
         return parent::getCoursesByIds($courseIdList);

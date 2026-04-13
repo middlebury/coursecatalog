@@ -71,9 +71,8 @@ class Masquerade extends AbstractController
             $tokenStorage->setToken($impersonationToken);
 
             return $redirect;
-        } else {
-            throw new \Exception('Failed to impersonate user');
         }
+        throw new \Exception('Failed to impersonate user');
     }
 
     #[Route('/masquerade/exit', name: 'masquerade_exit')]

@@ -155,9 +155,9 @@ HAVING ".$this->getAllHavingTerms().'
         $columns = $this->getAdditionalColumns();
         if (count($columns)) {
             return ",\n\t".implode(",\n\t", $columns);
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -190,9 +190,9 @@ HAVING ".$this->getAllHavingTerms().'
         $terms = $this->getWhereTerms();
         if (strlen(trim($terms))) {
             return $terms;
-        } else {
-            return 'TRUE';
         }
+
+        return 'TRUE';
     }
 
     /**
@@ -206,9 +206,9 @@ HAVING ".$this->getAllHavingTerms().'
     {
         if (null === $this->catalogId || $this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
             return 'TRUE';
-        } else {
-            return 'catalog_id = :catalog_id';
         }
+
+        return 'catalog_id = :catalog_id';
     }
 
     /**
@@ -222,9 +222,9 @@ HAVING ".$this->getAllHavingTerms().'
     {
         if (null === $this->catalogId || $this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
             return 'TRUE';
-        } else {
-            return 'catalog_id = :catalog_id2';
         }
+
+        return 'catalog_id = :catalog_id2';
     }
 
     /**
@@ -239,9 +239,9 @@ HAVING ".$this->getAllHavingTerms().'
         $terms = $this->getHavingTerms();
         if (strlen(trim($terms))) {
             return $terms;
-        } else {
-            return 'TRUE';
         }
+
+        return 'TRUE';
     }
 
     /**

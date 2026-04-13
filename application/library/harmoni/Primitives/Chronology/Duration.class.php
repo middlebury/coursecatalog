@@ -248,9 +248,9 @@ class Duration extends Magnitude
     {
         if ($this->isPositive()) {
             return floor($this->seconds / ChronologyConstants::SecondsInDay());
-        } else {
-            return 0 - floor(abs($this->seconds) / ChronologyConstants::SecondsInDay());
         }
+
+        return 0 - floor(abs($this->seconds) / ChronologyConstants::SecondsInDay());
     }
 
     /**
@@ -272,17 +272,16 @@ class Duration extends Magnitude
             $remainderDuration = $this->minus(self::withDays($this->days()));
 
             return $remainderDuration->hours();
-        } else {
-            if (!$this->isNegative()) {
-                return floor(
-                    (round($this->seconds) % ChronologyConstants::SecondsInDay())
-                    / ChronologyConstants::SecondsInHour());
-            } else {
-                return 0 - floor(
-                    (abs(round($this->seconds)) % ChronologyConstants::SecondsInDay())
-                    / ChronologyConstants::SecondsInHour());
-            }
         }
+        if (!$this->isNegative()) {
+            return floor(
+                (round($this->seconds) % ChronologyConstants::SecondsInDay())
+                / ChronologyConstants::SecondsInHour());
+        }
+
+        return 0 - floor(
+            (abs(round($this->seconds)) % ChronologyConstants::SecondsInDay())
+            / ChronologyConstants::SecondsInHour());
     }
 
     /**
@@ -304,17 +303,16 @@ class Duration extends Magnitude
             $remainderDuration = $this->minus(self::withDays($this->days()));
 
             return $remainderDuration->minutes();
-        } else {
-            if (!$this->isNegative()) {
-                return floor(
-                    (round($this->seconds) % ChronologyConstants::SecondsInHour())
-                    / ChronologyConstants::SecondsInMinute());
-            } else {
-                return 0 - floor(
-                    (abs(round($this->seconds)) % ChronologyConstants::SecondsInHour())
-                    / ChronologyConstants::SecondsInMinute());
-            }
         }
+        if (!$this->isNegative()) {
+            return floor(
+                (round($this->seconds) % ChronologyConstants::SecondsInHour())
+                / ChronologyConstants::SecondsInMinute());
+        }
+
+        return 0 - floor(
+            (abs(round($this->seconds)) % ChronologyConstants::SecondsInHour())
+            / ChronologyConstants::SecondsInMinute());
     }
 
     /**
@@ -359,14 +357,13 @@ class Duration extends Magnitude
             $remainderDuration = $this->minus(self::withDays($this->days()));
 
             return $remainderDuration->seconds();
-        } else {
-            if ($this->isPositive()) {
-                return fmod($this->seconds, ChronologyConstants::SecondsInMinute());
-            } else {
-                return 0 -
-                    fmod(abs($this->seconds), ChronologyConstants::SecondsInMinute());
-            }
         }
+        if ($this->isPositive()) {
+            return fmod($this->seconds, ChronologyConstants::SecondsInMinute());
+        }
+
+        return 0 -
+            fmod(abs($this->seconds), ChronologyConstants::SecondsInMinute());
     }
 
     /*********************************************************
@@ -452,11 +449,10 @@ class Duration extends Magnitude
     {
         if (is_numeric($operand)) {
             return new static($this->asSeconds() / $operand);
-        } else {
-            $denominator = $operand->asDuration();
-
-            return new static($this->asSeconds() / $denominator->asSeconds());
         }
+        $denominator = $operand->asDuration();
+
+        return new static($this->asSeconds() / $denominator->asSeconds());
     }
 
     /**
@@ -486,11 +482,10 @@ class Duration extends Magnitude
     {
         if (is_numeric($operand)) {
             return new static($this->asSeconds() * $operand);
-        } else {
-            $duration = $operand->asDuration();
-
-            return new static($this->asSeconds() * $duration->asSeconds());
         }
+        $duration = $operand->asDuration();
+
+        return new static($this->asSeconds() * $duration->asSeconds());
     }
 
     /**

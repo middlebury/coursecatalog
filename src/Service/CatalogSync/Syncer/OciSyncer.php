@@ -54,9 +54,8 @@ class OciSyncer extends AbstractSyncer implements Syncer
         }
         if (is_null($errcontext)) {
             throw new \Exception($errstr, $errno);
-        } else {
-            throw new \Exception($errstr, $errno, $errcontext);
         }
+        throw new \Exception($errstr, $errno, $errcontext);
     }
 
     /**

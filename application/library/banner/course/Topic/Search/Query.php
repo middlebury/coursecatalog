@@ -80,9 +80,9 @@ class banner_course_Topic_Search_Query implements osid_course_TopicQuery, middle
     {
         if (!count($this->toInclude)) {
             return true;
-        } else {
-            return in_array('requirement', $this->toInclude);
         }
+
+        return in_array('requirement', $this->toInclude);
     }
 
     /**
@@ -96,9 +96,9 @@ class banner_course_Topic_Search_Query implements osid_course_TopicQuery, middle
     {
         if (!count($this->toInclude)) {
             return true;
-        } else {
-            return in_array('level', $this->toInclude);
         }
+
+        return in_array('level', $this->toInclude);
     }
 
     /**
@@ -112,9 +112,9 @@ class banner_course_Topic_Search_Query implements osid_course_TopicQuery, middle
     {
         if (!count($this->toInclude)) {
             return true;
-        } else {
-            return in_array('block', $this->toInclude);
         }
+
+        return in_array('block', $this->toInclude);
     }
 
     /**
@@ -128,9 +128,9 @@ class banner_course_Topic_Search_Query implements osid_course_TopicQuery, middle
     {
         if (!count($this->toInclude)) {
             return true;
-        } else {
-            return in_array('instruction_method', $this->toInclude);
         }
+
+        return in_array('instruction_method', $this->toInclude);
     }
 
     /**
@@ -144,9 +144,9 @@ class banner_course_Topic_Search_Query implements osid_course_TopicQuery, middle
     {
         if (!count($this->toInclude)) {
             return true;
-        } else {
-            return in_array('division', $this->toInclude);
         }
+
+        return in_array('division', $this->toInclude);
     }
 
     /**
@@ -160,9 +160,9 @@ class banner_course_Topic_Search_Query implements osid_course_TopicQuery, middle
     {
         if (!count($this->toInclude)) {
             return true;
-        } else {
-            return in_array('department', $this->toInclude);
         }
+
+        return in_array('department', $this->toInclude);
     }
 
     /**
@@ -176,9 +176,9 @@ class banner_course_Topic_Search_Query implements osid_course_TopicQuery, middle
     {
         if (!count($this->toInclude)) {
             return true;
-        } else {
-            return in_array('subject', $this->toInclude);
         }
+
+        return in_array('subject', $this->toInclude);
     }
 
     /**
@@ -750,9 +750,8 @@ class banner_course_Topic_Search_Query implements osid_course_TopicQuery, middle
     {
         if ($this->hasRecordType($topicRecordType)) {
             return $this;
-        } else {
-            throw new osid_UnsupportedException('The topic type passed is not supported.');
         }
+        throw new osid_UnsupportedException('The topic type passed is not supported.');
     }
 
     /*********************************************************

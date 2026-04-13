@@ -197,9 +197,9 @@ class TopicLookupSession extends CachableSession implements \osid_course_TopicLo
         }
         if (is_string($cached)) {
             throw new \osid_NotFoundException($cached);
-        } else {
-            return $cached;
         }
+
+        return $cached;
     }
 
     /**

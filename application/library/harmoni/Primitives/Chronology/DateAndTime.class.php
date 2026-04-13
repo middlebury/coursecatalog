@@ -148,9 +148,9 @@ class DateAndTime extends Magnitude implements AsDateAndTime
                 $tzAbbreviation,
                 $tzAbbreviation
             );
-        } else {
-            return TimeZone::defaultTimeZone();
         }
+
+        return TimeZone::defaultTimeZone();
     }
 
     /*********************************************************
@@ -224,15 +224,14 @@ class DateAndTime extends Magnitude implements AsDateAndTime
                 (int) $parser->minute(),
                 (int) $parser->second()
             );
-        } else {
-            if (is_null($parser->month())) {
-                return static::withYearMonthDay($parser->year(), 1, 1);
-            } elseif (is_null($parser->day())) {
-                return static::withYearMonthDay($parser->year(), $parser->month(), 1);
-            } else {
-                return static::withYearMonthDay($parser->year(), $parser->month(), $parser->day());
-            }
         }
+        if (is_null($parser->month())) {
+            return static::withYearMonthDay($parser->year(), 1, 1);
+        } elseif (is_null($parser->day())) {
+            return static::withYearMonthDay($parser->year(), $parser->month(), 1);
+        }
+
+        return static::withYearMonthDay($parser->year(), $parser->month(), $parser->day());
     }
 
     /**
@@ -1238,9 +1237,9 @@ class DateAndTime extends Magnitude implements AsDateAndTime
 
         if ($myTicks[0] != $comparandTicks[0]) {
             return false;
-        } else {
-            return $myTicks[1] == $comparandTicks[1];
         }
+
+        return $myTicks[1] == $comparandTicks[1];
     }
 
     /**
@@ -1267,10 +1266,10 @@ class DateAndTime extends Magnitude implements AsDateAndTime
 
         if ($myTicks[0] < $comparandTicks[0]) {
             return true;
-        } else {
-            return ($myTicks[0] == $comparandTicks[0])
-                    && ($myTicks[1] < $comparandTicks[1]);
         }
+
+        return ($myTicks[0] == $comparandTicks[0])
+                && ($myTicks[1] < $comparandTicks[1]);
     }
 
     /*********************************************************
@@ -1304,11 +1303,10 @@ class DateAndTime extends Magnitude implements AsDateAndTime
             return $obj;
         }
         // If this conforms to the Duration protocol
-        else {
-            $obj = $this->plus($operand->negated());
 
-            return $obj;
-        }
+        $obj = $this->plus($operand->negated());
+
+        return $obj;
     }
 
     /**
@@ -1392,11 +1390,10 @@ class DateAndTime extends Magnitude implements AsDateAndTime
         $myOffset = $this->offset();
         if ($myOffset->isEqualTo(self::localOffset())) {
             return $this;
-        } else {
-            $obj = $this->utcOffset(self::localOffset());
-
-            return $obj;
         }
+        $obj = $this->utcOffset(self::localOffset());
+
+        return $obj;
     }
 
     /**

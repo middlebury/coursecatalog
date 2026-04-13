@@ -65,9 +65,9 @@ class banner_resource_Resource_Lookup_PerCatalogSession extends banner_AbstractS
     {
         if (null === $this->binId || $this->binId->isEqual($this->manager->getCombinedBinId())) {
             return 'TRUE';
-        } else {
-            return 'catalog_id = :catalog_id';
         }
+
+        return 'catalog_id = :catalog_id';
     }
 
     /**
@@ -837,9 +837,9 @@ ORDER BY STVCAMP_DESC
             $resourceList->addList($this->getRoomResources());
 
             return $resourceList;
-        } else {
-            return $this->getResourcesByGenusType($resourceGenusType);
         }
+
+        return $this->getResourcesByGenusType($resourceGenusType);
     }
 
     /**

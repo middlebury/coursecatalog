@@ -99,9 +99,9 @@ abstract class banner_course_AbstractSearch
         $orderTerms = $this->getOrderByTerms();
         if (count($orderTerms)) {
             return 'ORDER BY '.implode(', ', $orderTerms);
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -115,9 +115,9 @@ abstract class banner_course_AbstractSearch
     {
         if (null === $this->order) {
             return [];
-        } else {
-            return $this->order->getOrderByTerms();
         }
+
+        return $this->order->getOrderByTerms();
     }
 
     /**
@@ -167,9 +167,9 @@ abstract class banner_course_AbstractSearch
     {
         if ($this->order) {
             return $this->order->getAdditionalTableJoins();
-        } else {
-            return [];
         }
+
+        return [];
     }
 
     /*********************************************************

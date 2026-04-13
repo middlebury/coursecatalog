@@ -72,9 +72,8 @@ class AdminExporterTest extends WebTestCase
             return $this->mockJob2;
         } elseif (3 == $jobId) {
             return $this->mockJob3;
-        } else {
-            throw new \InvalidArgumentException('Unknown job.');
         }
+        throw new \InvalidArgumentException('Unknown job.');
     }
 
     private function setUpUser(): SamlUser

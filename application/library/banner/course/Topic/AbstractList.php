@@ -259,9 +259,9 @@ GROUP BY SCBCRSE_SUBJ_CODE)
         $terms = $this->getRequirementWhereTerms();
         if (strlen(trim($terms))) {
             return $terms;
-        } else {
-            return 'TRUE';
         }
+
+        return 'TRUE';
     }
 
     /**
@@ -276,9 +276,9 @@ GROUP BY SCBCRSE_SUBJ_CODE)
         $terms = $this->getLevelWhereTerms();
         if (strlen(trim($terms))) {
             return $terms;
-        } else {
-            return 'TRUE';
         }
+
+        return 'TRUE';
     }
 
     /**
@@ -293,9 +293,9 @@ GROUP BY SCBCRSE_SUBJ_CODE)
         $terms = $this->getBlockWhereTerms();
         if (strlen(trim($terms))) {
             return $terms;
-        } else {
-            return 'TRUE';
         }
+
+        return 'TRUE';
     }
 
     /**
@@ -310,9 +310,9 @@ GROUP BY SCBCRSE_SUBJ_CODE)
         $terms = $this->getInstructionMethodWhereTerms();
         if (strlen(trim($terms))) {
             return $terms;
-        } else {
-            return 'TRUE';
         }
+
+        return 'TRUE';
     }
 
     /**
@@ -327,9 +327,9 @@ GROUP BY SCBCRSE_SUBJ_CODE)
         $terms = $this->getDivisionWhereTerms();
         if (strlen(trim($terms))) {
             return $terms;
-        } else {
-            return 'TRUE';
         }
+
+        return 'TRUE';
     }
 
     /**
@@ -344,9 +344,9 @@ GROUP BY SCBCRSE_SUBJ_CODE)
         $terms = $this->getDepartmentWhereTerms();
         if (strlen(trim($terms))) {
             return $terms;
-        } else {
-            return 'TRUE';
         }
+
+        return 'TRUE';
     }
 
     /**
@@ -361,9 +361,9 @@ GROUP BY SCBCRSE_SUBJ_CODE)
         $terms = $this->getSubjectWhereTerms();
         if (strlen(trim($terms))) {
             return $terms;
-        } else {
-            return 'TRUE';
         }
+
+        return 'TRUE';
     }
 
     /**
@@ -379,9 +379,9 @@ GROUP BY SCBCRSE_SUBJ_CODE)
     {
         if (null === $this->catalogId || $this->catalogId->isEqual($this->session->getCombinedCatalogId())) {
             return 'TRUE';
-        } else {
-            return 'course_catalog_college.catalog_id = :'.$prefix.'_catalog_id';
         }
+
+        return 'course_catalog_college.catalog_id = :'.$prefix.'_catalog_id';
     }
 
     /**

@@ -317,9 +317,9 @@ class HtmlString extends HarmoniString
 
             if ('.' == substr($trimmed, strlen(trim($trimmed)) - 1, 1)) {
                 return trim($trimmed).'..';
-            } else {
-                return trim($trimmed).'...';
             }
+
+            return trim($trimmed).'...';
         }
     }
 

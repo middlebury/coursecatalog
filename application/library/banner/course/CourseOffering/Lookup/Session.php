@@ -287,8 +287,9 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
     {
         if (null === $this->catalogId || $this->catalogId->isEqual($this->getCombinedCatalogId())) {
             return 'TRUE';
-        } else {
-            return '
+        }
+
+        return '
 	catalog_id = :catalog_id
 	AND SCBCRSE_COLL_CODE IN (
 		SELECT
@@ -298,7 +299,6 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
 		WHERE
 			catalog_id = :catalog_id2
 	)	';
-        }
     }
 
     /**
@@ -451,9 +451,9 @@ GROUP BY SSBSECT_TERM_CODE, SSBSECT_CRN
     {
         if ($courseOfferingRecordType->isEqual(new phpkit_type_URNInetType('urn:inet:middlebury.edu:record:instructors'))) {
             return $this->getCourseOfferings();
-        } else {
-            return new phpkit_EmptyList();
         }
+
+        return new phpkit_EmptyList();
     }
 
     /**

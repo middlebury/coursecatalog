@@ -98,18 +98,16 @@ abstract class StringParser extends SObject
             if ($parser->canHandle()) {
                 $handled = true;
                 break;
-            } else {
-                next($parserClasses);
             }
+            next($parserClasses);
         }
 
         if ($handled && is_object($parser)) {
             return $parser;
-        } else {
-            $false = false;
-
-            return $false;
         }
+        $false = false;
+
+        return $false;
     }
 
     /*********************************************************

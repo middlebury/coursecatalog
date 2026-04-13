@@ -229,9 +229,9 @@ WHERE
     {
         if ($courseCatalogGenusType->isEqual(new phpkit_type_URNInetType('urn:inet:osid.org:genera:none'))) {
             return $this->getCourseCatalogs();
-        } else {
-            return new phpkit_course_ArrayCourseCatalogList([]);
         }
+
+        return new phpkit_course_ArrayCourseCatalogList([]);
     }
 
     /**

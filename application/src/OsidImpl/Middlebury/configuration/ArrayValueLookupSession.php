@@ -205,9 +205,8 @@ class ArrayValueLookupSession implements \osid_configuration_ValueLookupSession
         }
         if ($found) {
             return $values;
-        } else {
-            throw new \osid_NotFoundException("Configuration key $idString is not set.");
         }
+        throw new \osid_NotFoundException("Configuration key $idString is not set.");
     }
 
     /*********************************************************

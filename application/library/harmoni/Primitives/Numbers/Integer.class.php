@@ -36,9 +36,9 @@ class Integer extends Number
     {
         if ($aNumber instanceof Integer) {
             return static::withValue($this->value() + $aNumber->value());
-        } else {
-            return Float::withValue($this->value() + $aNumber->value());
         }
+
+        return Float::withValue($this->value() + $aNumber->value());
     }
 
     /**
@@ -52,9 +52,9 @@ class Integer extends Number
     {
         if ($aNumber instanceof Integer) {
             return static::withValue($this->value() * $aNumber->value());
-        } else {
-            return Float::withValue($this->value() * $aNumber->value());
         }
+
+        return Float::withValue($this->value() * $aNumber->value());
     }
 
     /**

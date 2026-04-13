@@ -242,9 +242,8 @@ class Schedules extends AbstractController implements LoggerAwareInterface
                     $checked = true;
                     if ($info['found']) {
                         throw new \Exception('A second section from the same link-group is selected.');
-                    } else {
-                        $requiredLinkTypes[$key]['found'] = true;
                     }
+                    $requiredLinkTypes[$key]['found'] = true;
                 }
             }
             if (!$checked) {
@@ -650,9 +649,8 @@ class Schedules extends AbstractController implements LoggerAwareInterface
             return $name.' <'.$this->getUser()->getEmail().'>';
         } elseif ($this->getParameter('app.schedules.email.send_mail_as')) {
             return $name.' - Catalog <'.$this->getParameter('app.schedules.email.send_mail_as').'>';
-        } else {
-            throw new \Exception('schedules.email.send_mail_as_user is false, but schedules.email.send_mail_as is not set.');
         }
+        throw new \Exception('schedules.email.send_mail_as_user is false, but schedules.email.send_mail_as is not set.');
     }
 
     /**

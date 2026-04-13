@@ -157,7 +157,7 @@ class OsidRuntimeManager extends \phpkit_AbstractOsidManager implements \osid_Os
 
         // Validate manager is an instance of the requested OSID.
         $interface = $osid->getManager();
-        if (!($manager instanceof $interface)) {
+        if (!$manager instanceof $interface) {
             throw new \osid_UnsupportedException(get_class($manager).' is not an instance of '.$osid->manager());
         }
 

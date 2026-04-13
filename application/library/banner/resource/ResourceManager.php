@@ -224,9 +224,9 @@ class banner_resource_ResourceManager extends phpkit_AbstractOsidManager impleme
     {
         if ($binId->isEqual($this->getCombinedBinId())) {
             return $this->getResourceLookupSession();
-        } else {
-            return new banner_resource_Resource_Lookup_PerCatalogSession($this, $binId);
         }
+
+        return new banner_resource_Resource_Lookup_PerCatalogSession($this, $binId);
     }
 
     /**
