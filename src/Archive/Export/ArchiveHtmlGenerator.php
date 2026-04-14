@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Twig\Environment as TwigEnvironment;
+use Vikpe\HtmlHeadingNormalizer;
 
 /**
  * Generates an Archive of the catalog.
@@ -242,7 +243,10 @@ class ArchiveHtmlGenerator
                     } else {
                         $parentLevel = 2;
                     }
-                    $section['content'] = $this->getRequirements($section['url'], $parentLevel);
+                    $section['content'] = HtmlHeadingNormalizer::min(
+                        $this->getRequirements($section['url']),
+                        $parentLevel + 1
+                    );
                     $section['heading_level'] = $parentLevel;
                     break;
                 case 'courses':
@@ -270,12 +274,12 @@ class ArchiveHtmlGenerator
      *
      * @return string
      */
-    protected function getRequirements(string $url, int $parentLevel = 2)
+    protected function getRequirements(string $url)
     {
         // D9 URL, don't bother with RSS attempt.
         if (preg_match('#^https://www\.middlebury\.edu/(college|institute)/#', $url)) {
             try {
-                return $this->getRequirementsFromD9Html($url, $parentLevel);
+                return $this->getRequirementsFromD9Html($url);
             } catch (\Exception $e) {
                 return $e->getMessage();
             }
@@ -286,7 +290,7 @@ class ArchiveHtmlGenerator
                 try {
                     return $this->getRequirementsFromD7Rss($url);
                 } catch (RequirementNotXmlException $e) {
-                    return $this->getRequirementsFromD9Html($url, $parentLevel);
+                    return $this->getRequirementsFromD9Html($url);
                 }
             } catch (\Exception $e) {
                 return $e->getMessage();
@@ -348,7 +352,7 @@ class ArchiveHtmlGenerator
      *
      * @return string
      */
-    protected function getRequirementsFromD9Html(string $url, int $parentLevel = 2)
+    protected function getRequirementsFromD9Html(string $url)
     {
         $response = $this->httpClient->request('GET', $url);
         if (200 != $response->getStatusCode()) {
@@ -371,10 +375,6 @@ class ArchiveHtmlGenerator
         $bodies = $xpath->query('//div[contains(@class, "paragraphs")]/div');
         if ($bodies->length) {
             foreach ($bodies as $domBody) {
-                // Catalog sections use an H2, so we should start at h3 and
-                // go down in order.
-                $this->normalizeHeadingLevels($xpath, $domBody, $parentLevel);
-
                 foreach ($domBody->childNodes as $child) {
                     // Ensure that if &nbsp; got converted to \u{A0}, that it is
                     // converted back to &nbsp;.
@@ -385,88 +385,6 @@ class ArchiveHtmlGenerator
         }
 
         return ob_get_clean();
-    }
-
-    /**
-     * Ensure headings start below the parent level and don't skip levels.
-     *
-     * @param \DOMXPath $xpath
-     *                               XPath for the document to search
-     * @param \DOMNode  $contextNode
-     *                               A Node below which searches will happen (not the full document)
-     * @param int       $parentLevel
-     *                               The heading-level under which headings should be shifted below
-     */
-    protected function normalizeHeadingLevels(\DOMXPath $xpath, \DOMNode $contextNode, int $parentLevel)
-    {
-        $headings = [];
-        for ($i = 1; $i <= 6; ++$i) {
-            $headings[$i] = [];
-            foreach ($xpath->query('h'.$i, $contextNode) as $heading) {
-                $headings[$i][] = $heading;
-            }
-        }
-        for ($i = 1; $i <= 6; ++$i) {
-            if (count($headings[$i])) {
-                $this->fillHeadingsDown($headings, $i, $parentLevel + 1);
-                break;
-            }
-        }
-    }
-
-    /**
-     * Shift the headings at a beginning level to a target level recursively.
-     *
-     * @param array &$headings
-     *                              An array of headings at their original levels that we are working with
-     * @param int   $beginningLevel
-     *                              The original level to source headings from
-     * @param int   $targetLevel
-     *                              The target level to rename these headings to
-     */
-    protected function fillHeadingsDown(array &$headings, int $beginningLevel, int $targetLevel)
-    {
-        // Change all headings at the beginningLevel to the target level.
-        foreach ($headings[$beginningLevel] as $i => $heading) {
-            $headings[$beginningLevel][$i] = $this->changeNodeName($heading, 'h'.$targetLevel);
-        }
-        // Recurse to lower levels, ensuring that the next heading level down
-        // fills in directly below the current target level.
-        for ($i = $beginningLevel + 1; $i <= 6; ++$i) {
-            if (count($headings[$i])) {
-                $this->fillHeadingsDown($headings, $i, $targetLevel + 1);
-                break;
-            }
-        }
-    }
-
-    /**
-     * Change a node name in a DOMDocument.
-     *
-     * Node names are read-only, so a copy needs to be made with the new name
-     * which then replaces the original node.
-     *
-     * Based on the answer at https://stackoverflow.com/a/775923/15872 which
-     * was subsequently updated to reflect currently working code.
-     *
-     * @param \DOMNode $node
-     *                              The node whose name we'll change
-     * @param string   $newNodeName
-     *                              The new node name to change to
-     */
-    public function changeNodeName(\DOMNode $node, string $newNodeName)
-    {
-        $newnode = $node->ownerDocument->createElement($newNodeName);
-        foreach ($node->childNodes as $child) {
-            $child = $node->ownerDocument->importNode($child, true);
-            $newnode->appendChild($child);
-        }
-        foreach ($node->attributes as $attr) {
-            $newnode->setAttribute($attr->nodeName, $attr->nodeValue);
-        }
-        $node->parentNode->replaceChild($newnode, $node);
-
-        return $newnode;
     }
 
     /**

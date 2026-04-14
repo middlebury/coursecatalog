@@ -32,7 +32,8 @@
         "symfony/runtime": "6.4.*",
         "symfony/translation": "6.4.*",
         "symfony/twig-bundle": "6.4.*",
-        "symfony/yaml": "6.4.*"
+        "symfony/yaml": "6.4.*",
+        "vikpe/php-html-heading-normalizer": "dev-accessible-hierarchy"
     },
     "config": {
         "allow-plugins": {
@@ -108,6 +109,10 @@
                     "reference": "f862f1de1359697dff671cc507311f5427f8a663"
                 }
             }
+        },
+        "vikpe/php-html-heading-normalizer": {
+            "type": "vcs",
+            "url": "https://github.com/middlebury/php-html-heading-normalizer.git"
         }
     },
     "require-dev": {

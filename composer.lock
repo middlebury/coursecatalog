@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4557012cb3c82bbc2ee8ea5024330f41",
+    "content-hash": "c753c0df59541a1f5a4f7b5cc636e8cd",
     "packages": [
         {
             "name": "brick/math",
@@ -8842,6 +8842,63 @@
                 }
             ],
             "time": "2026-03-17T21:31:11+00:00"
+        },
+        {
+            "name": "vikpe/php-html-heading-normalizer",
+            "version": "dev-accessible-hierarchy",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/middlebury/php-html-heading-normalizer.git",
+                "reference": "0253e26620880fdade796af26b62a2397dda5de7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/middlebury/php-html-heading-normalizer/zipball/0253e26620880fdade796af26b62a2397dda5de7",
+                "reference": "0253e26620880fdade796af26b62a2397dda5de7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "codeclimate/php-test-reporter": "~0.4.1",
+                "phpunit/phpunit": "~12.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Vikpe\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "classmap": [
+                    "tests"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Viktor Persson",
+                    "email": "viktor.persson@arcsin.se",
+                    "homepage": "https://github.com/vikpe"
+                }
+            ],
+            "description": "PHP class for normalizing (promote/demote) HTML headings",
+            "homepage": "https://github.com/vikpe/php-html-heading-normalizer",
+            "keywords": [
+                "demote",
+                "headings",
+                "html",
+                "normalize",
+                "promote"
+            ],
+            "support": {
+                "issues": "https://github.com/vikpe/php-html-heading-normalizer/issues",
+                "source": "https://github.com/vikpe/php-html-heading-normalizer"
+            },
+            "time": "2026-04-15T16:44:34+00:00"
         }
     ],
     "packages-dev": [
@@ -12286,7 +12343,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "oki/osid-phpkit": 20
+        "oki/osid-phpkit": 20,
+        "vikpe/php-html-heading-normalizer": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
