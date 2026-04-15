@@ -39,12 +39,10 @@
                 {{ section.text | raw }}
             {% elseif section.type == 'html' %}
                 <article class='requirements'>
-                    <h2 class='visually_hidden'>Requirements</h2>
                     {{ section.text | raw }}
                 </article>
             {% elseif section.type == 'page_content' %}
                 <article class='requirements'>
-                    <h{{ section.heading_level }} class='visually-hidden'>Requirements</h{{ section.heading_level }}>
                     {{ section.content | raw }}
                 </article>
             {% elseif section.type == 'courses' %}

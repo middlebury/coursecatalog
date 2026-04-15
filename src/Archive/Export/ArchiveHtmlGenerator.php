@@ -239,15 +239,14 @@ class ArchiveHtmlGenerator
                     break;
                 case 'page_content':
                     if ('h2' == $previousSectionType) {
-                        $parentLevel = 3;
-                    } else {
                         $parentLevel = 2;
+                    } else {
+                        $parentLevel = 1;
                     }
                     $section['content'] = HtmlHeadingNormalizer::min(
                         $this->getRequirements($section['url']),
                         $parentLevel + 1
                     );
-                    $section['heading_level'] = $parentLevel;
                     break;
                 case 'courses':
                     $section['courses'] = $this->getCourses($section['id'], $context, $section['number_filter']);
