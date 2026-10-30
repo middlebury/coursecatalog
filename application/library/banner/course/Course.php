@@ -48,6 +48,8 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
         $output = ob_get_clean();
         $urlRegex = '{
   \\b
+  # Match a leading name@ to identify email addresses.
+  ([\w.-]+@)?
   # Match the leading part (proto://hostname, or just hostname)
   (
 	# http://, or https:// leading part
@@ -86,8 +88,12 @@ class banner_course_Course extends phpkit_AbstractOsidObject implements osid_cou
             foreach ($matches as $match) {
                 $start = strpos($output, $match[0]);
 
+                // Case for email address.
+                if (!empty($match[1])) {
+                    $link = '<a href="mailto:'.$match[0].'">'.$match[0].'</a>';
+                }
                 // Case with leading protocol://
-                if (!empty($match[2])) {
+                elseif (!empty($match[3])) {
                     $link = '<a href="'.$match[0].'">'.$match[0].'</a>';
                 }
                 // just www.example.edu
