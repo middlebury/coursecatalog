@@ -1,0 +1,89 @@
+name: PHPUnit
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: phpunit-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+
+    services:
+      database:
+        # Match the version used in .lando.yml.
+        image: mariadb:10.11
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          # The image creates this database and grants the user below
+          # ALL PRIVILEGES on it, equivalent to:
+          #   CREATE DATABASE symfony_test;
+          #   GRANT ALL PRIVILEGES ON symfony_test.* TO 'symfony'@'%';
+          MARIADB_DATABASE: symfony_test
+          MARIADB_USER: symfony
+          MARIADB_PASSWORD: symfony
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    env:
+      APP_ENV: test
+      # Real environment variables take precedence over .env and .env.test.
+      # Doctrine appends "_test" to the database name in the test environment
+      # (see config/packages/doctrine.yaml), so this connects to symfony_test.
+      DATABASE_URL: "mysql://symfony:symfony@127.0.0.1:3306/symfony?serverVersion=10.11.0-MariaDB&charset=utf8mb4"
+      # .env.test points the legacy Banner/OSID connection at the Lando host
+      # "database"; in Actions the service is published on localhost. The
+      # database name, user, and password from .env.test already match the
+      # service above.
+      DATABASE_HOST: 127.0.0.1
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Schedule images are rendered with the font at SCHEDULES_IMAGE_FONT_FILE
+      # (/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf). Install it if the
+      # runner image doesn't already include it.
+      - name: Ensure DejaVu fonts are installed
+        run: |
+          if [ ! -f /usr/share/fonts/truetype/dejavu/DejaVuSans.ttf ]; then
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends fonts-dejavu-core
+          fi
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: ctype, iconv, intl, mbstring, pdo_mysql, gd, zip
+          coverage: none
+          tools: composer:v2
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
+      - name: Install importmap assets
+        run: bin/console importmap:install
+
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit
