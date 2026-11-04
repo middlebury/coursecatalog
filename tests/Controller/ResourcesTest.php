@@ -40,8 +40,8 @@ class ResourcesTest extends WebTestCase
 
         $this->assertSelectorTextContains('h1', 'Dudley Derringer');
 
-        $this->assertGreaterThan(0, $crawler->filter('.offering_list h4:contains("Fall 2008")')->count());
-        $this->assertGreaterThan(0, $crawler->filter('.offering_list h4:contains("Fall 2003")')->count());
+        $this->assertGreaterThan(0, $crawler->filter('.offering_list h3:contains("Fall 2008")')->count());
+        $this->assertGreaterThan(0, $crawler->filter('.offering_list h3:contains("Fall 2003")')->count());
     }
 
     public function testViewPersonTerm(): void
@@ -54,8 +54,8 @@ class ResourcesTest extends WebTestCase
 
         $this->assertSelectorTextContains('h1', 'Dudley Derringer');
 
-        $this->assertGreaterThan(0, $crawler->filter('.offering_list h4:contains("Fall 2008")')->count());
-        $this->assertEquals(0, $crawler->filter('.offering_list h4:contains("Fall 2003")')->count());
+        $this->assertGreaterThan(0, $crawler->filter('.offering_list h3:contains("Fall 2008")')->count());
+        $this->assertEquals(0, $crawler->filter('.offering_list h3:contains("Fall 2003")')->count());
     }
 
     public function testViewRoom(): void
@@ -68,9 +68,9 @@ class ResourcesTest extends WebTestCase
 
         $this->assertSelectorTextContains('h1', 'McCardell Bicentennial Hall 560');
 
-        $this->assertGreaterThan(0, $crawler->filter('.offering_list h4:contains("Fall 2009")')->count());
-        $this->assertGreaterThan(0, $crawler->filter('.offering_list h4:contains("Spring 2009")')->count());
-        $this->assertGreaterThan(0, $crawler->filter('.offering_list h4:contains("Fall 2008")')->count());
+        $this->assertGreaterThan(0, $crawler->filter('.offering_list h3:contains("Fall 2009")')->count());
+        $this->assertGreaterThan(0, $crawler->filter('.offering_list h3:contains("Spring 2009")')->count());
+        $this->assertGreaterThan(0, $crawler->filter('.offering_list h3:contains("Fall 2008")')->count());
     }
 
     public function testViewRoomTerm(): void
@@ -83,8 +83,8 @@ class ResourcesTest extends WebTestCase
 
         $this->assertSelectorTextContains('h1', 'McCardell Bicentennial Hall 560');
 
-        $this->assertGreaterThan(0, $crawler->filter('.offering_list h4:contains("Fall 2009")')->count());
-        $this->assertEquals(0, $crawler->filter('.offering_list h4:contains("Spring 2009")')->count());
-        $this->assertEquals(0, $crawler->filter('.offering_list h4:contains("Fall 2008")')->count());
+        $this->assertGreaterThan(0, $crawler->filter('.offering_list h3:contains("Fall 2009")')->count());
+        $this->assertEquals(0, $crawler->filter('.offering_list h3:contains("Spring 2009")')->count());
+        $this->assertEquals(0, $crawler->filter('.offering_list h3:contains("Fall 2008")')->count());
     }
 }
