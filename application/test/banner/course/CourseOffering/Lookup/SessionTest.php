@@ -20,6 +20,7 @@ class banner_course_CourseOffering_Lookup_SessionTest extends phpkit_test_phpuni
     private osid_id_Id $mathId;
     private osid_id_Id $chemId;
     private osid_id_Id $physOfferingId;
+    private osid_id_Id $geogOfferingId;
     private osid_id_Id $geolOfferingId;
     private osid_id_Id $unknownOfferingId;
     private osid_id_Id $termId;
@@ -67,6 +68,7 @@ class banner_course_CourseOffering_Lookup_SessionTest extends phpkit_test_phpuni
         $this->chemId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:course-CHEM0104');
 
         $this->physOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section-200890-90143');
+        $this->geogOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section-200390-90684');
         $this->geolOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section-200420-20663');
         $this->unknownOfferingId = new phpkit_id_URNInetId('urn:inet:middlebury.edu:section-178293-2101');
 
@@ -121,7 +123,7 @@ class banner_course_CourseOffering_Lookup_SessionTest extends phpkit_test_phpuni
         $this->session->useComparativeCourseOfferingView();
         $offerings = $this->session->getCourseOfferingsByIds(new phpkit_id_ArrayIdList([
             $this->physOfferingId,
-            $this->geolOfferingId,
+            $this->geogOfferingId,
             $this->unknownOfferingId]));
         $this->assertEquals(2, $offerings->available());
     }
@@ -136,7 +138,7 @@ class banner_course_CourseOffering_Lookup_SessionTest extends phpkit_test_phpuni
         $this->session->usePlenaryCourseOfferingView();
         $offerings = $this->session->getCourseOfferingsByIds(new phpkit_id_ArrayIdList([
             $this->physOfferingId,
-            $this->geolOfferingId,
+            $this->geogOfferingId,
             $this->unknownOfferingId]));
     }
 
@@ -146,7 +148,7 @@ class banner_course_CourseOffering_Lookup_SessionTest extends phpkit_test_phpuni
         $this->session->useFederatedCourseCatalogView();
         $offerings = $this->session->getCourseOfferingsByIds(new phpkit_id_ArrayIdList([
             $this->physOfferingId,
-            $this->geolOfferingId,
+            $this->geogOfferingId,
             $this->unknownOfferingId]));
         $this->assertEquals(2, $offerings->available());
 
@@ -154,7 +156,7 @@ class banner_course_CourseOffering_Lookup_SessionTest extends phpkit_test_phpuni
         try {
             $offerings = $this->session->getCourseOfferingsByIds(new phpkit_id_ArrayIdList([
                 $this->physOfferingId,
-                $this->geolOfferingId,
+                $this->geogOfferingId,
                 $this->unknownOfferingId]));
             $this->fail('should have thrown an osid_NotFoundException.');
         } catch (osid_NotFoundException $e) {
@@ -168,7 +170,7 @@ class banner_course_CourseOffering_Lookup_SessionTest extends phpkit_test_phpuni
         $this->session->useIsolatedCourseCatalogView();
         $offerings = $this->session->getCourseOfferingsByIds(new phpkit_id_ArrayIdList([
             $this->physOfferingId,
-            $this->geolOfferingId,
+            $this->geogOfferingId,
             $this->unknownOfferingId]));
         $this->assertEquals(2, $offerings->available());
 
@@ -176,7 +178,7 @@ class banner_course_CourseOffering_Lookup_SessionTest extends phpkit_test_phpuni
         try {
             $offerings = $this->session->getCourseOfferingsByIds(new phpkit_id_ArrayIdList([
                 $this->physOfferingId,
-                $this->geolOfferingId,
+                $this->geogOfferingId,
                 $this->unknownOfferingId]));
             $this->fail('Should have thrown an osid_NotFoundException');
         } catch (osid_NotFoundException $e) {
@@ -186,7 +188,7 @@ class banner_course_CourseOffering_Lookup_SessionTest extends phpkit_test_phpuni
         $this->session->usePlenaryCourseOfferingView();
         $offerings = $this->session->getCourseOfferingsByIds(new phpkit_id_ArrayIdList([
             $this->physOfferingId,
-            $this->geolOfferingId]));
+            $this->geogOfferingId]));
         $this->assertEquals(2, $offerings->available());
     }
 
@@ -199,7 +201,7 @@ class banner_course_CourseOffering_Lookup_SessionTest extends phpkit_test_phpuni
     {
         $offerings = $this->session->getCourseOfferingsByIds(new phpkit_id_ArrayIdList([
             $this->physOfferingId,
-            $this->geolOfferingId]));
+            $this->geogOfferingId]));
         $this->assertEquals(2, $offerings->available());
         while ($offerings->hasNext()) {
             $this->assertInstanceOf('osid_course_CourseOffering', $offerings->getNextCourseOffering());
