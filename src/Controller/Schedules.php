@@ -484,7 +484,7 @@ class Schedules extends AbstractController implements LoggerAwareInterface
         $image = $this->generateImage($data);
         ob_start();
         imagepng($image);
-        imagedestroy($image);
+        unset($image);
         $response = new Response(ob_get_clean());
         $response->headers->set('Content-Type', 'image/png');
 
@@ -535,7 +535,7 @@ class Schedules extends AbstractController implements LoggerAwareInterface
             $image = $this->generateImage($imageData);
             ob_start();
             imagepng($image);
-            imagedestroy($image);
+            unset($image);
             $imageData = ob_get_clean();
 
             $userEmail = $this->getUser()->getEmail();
