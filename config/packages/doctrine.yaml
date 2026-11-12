@@ -13,8 +13,7 @@ doctrine:
         # Doctrine Migrations diffs.
         schema_filter: ~^(?!antirequisites|archive_|catalog_|course_catalog|user_|GOR|GTV|SCB|SCR|SIR|SOB|SSB|SSR|STV|SYV|screqiv_current)~
     orm:
-        auto_generate_proxy_classes: true
-        enable_lazy_ghost_objects: true
+        enable_native_lazy_objects: true
         report_fields_where_declared: true
         validate_xml_mapping: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
@@ -36,8 +35,6 @@ when@test:
 when@prod:
     doctrine:
         orm:
-            auto_generate_proxy_classes: false
-            proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
             query_cache_driver:
                 type: pool
                 pool: doctrine.system_cache_pool
