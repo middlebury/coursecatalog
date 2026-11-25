@@ -36,14 +36,28 @@ services:
       - patchelf --set-interpreter /lib/ld-linux-aarch64.so.1 /opt/oracle/instantclient/genezi
       - patchelf --set-interpreter /lib/ld-linux-aarch64.so.1 /opt/oracle/instantclient/sqlplus
       - patchelf --set-interpreter /lib/ld-linux-aarch64.so.1 /opt/oracle/instantclient/uidrvci
-      # Install libaio1 -- when missing was preventing the extension from loading.
-      - apt install libaio1
+      # Install libaio -- when missing was preventing the extension from loading.
+      # Debian trixie renamed libaio1 to libaio1t64 (64-bit time_t transition)
+      # and its library to libaio.so.1t64, but the Oracle client still links
+      # against libaio.so.1, so add a symlink with the old name.
+      - apt -y install libaio1t64
+      - ln -sf /usr/lib/aarch64-linux-gnu/libaio.so.1t64 /usr/lib/aarch64-linux-gnu/libaio.so.1
+      - ldconfig
       # Install and enable OCI8
       - echo "instantclient,/opt/oracle/instantclient" | pecl install oci8-3.2.1
       - docker-php-ext-enable oci8
     overrides:
       environment:
         MAILER_DSN: smtp://mailpit:1025
+      # Work around a bug in the Lando symfony recipe (@lando/symfony 1.12.2):
+      # its first build step runs the Symfony CLI installer and then
+      # `mv /root/.symfony5/bin/symfony /usr/local/bin/symfony`, but the
+      # installer now saves to /root/.config/symfony-cli/ unless /root/.symfony5
+      # already exists. The failed `mv` aborts the build before composer (and our
+      # build_as_root steps) are installed. Mounting /root/.symfony5 makes the
+      # installer use the legacy location the recipe expects.
+      tmpfs:
+        - /root/.symfony5
   cacheserver:
       type: varnish:6.0
       backend: appserver
